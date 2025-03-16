@@ -990,4 +990,10 @@
 	<string id="st_materials_for_repair">
 		<text>Необходимо для ремонта:</text>
 	</string>
+	<string id="st_undress_helmet">
+		<text>снять шлем</text>
+	</string>
+	<string id="st_dress_helmet">
+		<text>надеть шлем</text>
+	</string>
 </string_table>

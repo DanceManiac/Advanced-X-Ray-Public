@@ -27,6 +27,7 @@ class CTradeParameters;
 class CPurchaseList;
 class CWeapon;
 class CCustomOutfit;
+class CHelmet;
 
 class CInventoryOwner : public CAttachmentOwner {							
 public:
@@ -135,7 +136,8 @@ public:
 	//максимальный переносимы вес
 	virtual float MaxCarryWeight			() const;
 
-	virtual CCustomOutfit*			GetOutfit()	const {return NULL;};
+	virtual CCustomOutfit*			GetOutfit()	const {return nullptr;};
+			CInventoryItem*			GetHelmet() const;
 
 	//////////////////////////////////////////////////////////////////////////
 	//игровые характеристики персонажа

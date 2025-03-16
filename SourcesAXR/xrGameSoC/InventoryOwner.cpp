@@ -28,6 +28,7 @@
 #include "alife_object_registry.h"
 
 #include "CustomOutfit.h"
+#include "ActorHelmet.h"
 #include "CustomBackpack.h"
 #include "Bolt.h"
 
@@ -499,6 +500,11 @@ void CInventoryOwner::OnItemSlot	(CInventoryItem *inventory_item, EItemPlace pre
 CInventoryItem* CInventoryOwner::GetCurrentOutfit() const
 {
     return inventory().m_slots[OUTFIT_SLOT].m_pIItem;
+}
+
+CInventoryItem* CInventoryOwner::GetHelmet() const
+{
+	return inventory().m_slots[HELMET_SLOT].m_pIItem;
 }
 
 void CInventoryOwner::on_weapon_shot_start		(CWeapon *weapon)

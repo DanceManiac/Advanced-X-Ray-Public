@@ -22,6 +22,7 @@
 #include "SleepEffector.h"
 #include "character_info.h"
 #include "CustomOutfit.h"
+#include "ActorHelmet.h"
 #include "actorcondition.h"
 #include "UIGameCustom.h"
 #include "game_cl_base_weapon_usage_statistic.h"
@@ -1856,9 +1857,14 @@ void CActor::UpdateRestores()
 	}
 	else
 	{
-		/* if (GetNightVisionStatus())
+		CHelmet* pHelmet1 = smart_cast<CHelmet*>(inventory().ItemFromSlot(HELMET_SLOT));
+		CHelmet* pHelmet2 = smart_cast<CHelmet*>(inventory().ItemFromSlot(SECOND_HELMET_SLOT));
+		if (!pHelmet1 && !pHelmet2)
 		{
-		} */
+			/* 		if (GetNightVisionStatus())
+			{
+			}*/
+		}
 	}
 
 	CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
@@ -2270,6 +2276,7 @@ void CActor::NVGAnimCheckDetector()
 void CActor::StartNVGAnimation()
 {
 	CWeapon* Wpn = smart_cast<CWeapon*>(inventory().ActiveItem());
+	CHelmet* pHelmet = smart_cast<CHelmet*>(inventory().ItemFromSlot(HELMET_SLOT));
 	CCustomOutfit* pOutfit = smart_cast<CCustomOutfit*>(inventory().ItemFromSlot(OUTFIT_SLOT));
 
 	if (Wpn && Wpn->IsZoomed())
@@ -2283,7 +2290,7 @@ void CActor::StartNVGAnimation()
 		return;
 	}
 
-	if (!(pOutfit && pOutfit->m_NightVisionSect.size()))
+	if (!(pHelmet && pHelmet->m_NightVisionSect.size()) && !(pOutfit && pOutfit->m_NightVisionSect.size()))
 		return;
 
 	if (Wpn && !(Wpn->GetState() == CWeapon::eIdle))
@@ -2388,9 +2395,10 @@ void CActor::CleanMask()
 		return;
 
 	CWeapon* Wpn = smart_cast<CWeapon*>(inventory().ActiveItem());
+	CHelmet* pHelmet = smart_cast<CHelmet*>(inventory().ItemFromSlot(HELMET_SLOT));
 	CCustomOutfit* pOutfit = smart_cast<CCustomOutfit*>(inventory().ItemFromSlot(OUTFIT_SLOT));
 
-	if (!(pOutfit && pOutfit->m_b_HasGlass))
+	if (!(pHelmet && pHelmet->m_b_HasGlass) && !(pOutfit && pOutfit->m_b_HasGlass))
 		return;
 
 	if (Wpn && (!(Wpn->GetState() == CWeapon::eIdle) || Wpn->IsZoomed()))
@@ -2563,17 +2571,17 @@ void CActor::SwitchNightVision(bool vision_on, bool use_sounds, bool send_event)
 
 	bool bIsActiveNow = m_night_vision->IsActive();
 
-	CCustomOutfit* pOutfit = smart_cast<CCustomOutfit*>(inventory().ItemFromSlot(OUTFIT_SLOT));
-	if (pOutfit && pOutfit->m_NightVisionSect.size())
+	CHelmet* pHelmet = smart_cast<CHelmet*>(inventory().ItemFromSlot(HELMET_SLOT));
+	if (pHelmet && pHelmet->m_NightVisionSect.size())
 	{
 		if (m_bNightVisionAllow)
 		{
 			if (m_bNightVisionOn && !bIsActiveNow)
 			{
-				m_night_vision->Start(pOutfit->m_NightVisionSect, this, use_sounds);
+				m_night_vision->Start(pHelmet->m_NightVisionSect, this, use_sounds);
 
 				if (ps_r__ShaderNVG)
-					g_pGamePersistent->devices_shader_data.nightvision_lum_factor = pOutfit->m_fNightVisionLumFactor;
+					g_pGamePersistent->devices_shader_data.nightvision_lum_factor = pHelmet->m_fNightVisionLumFactor;
 			}
 		}
 		else
@@ -2581,6 +2589,29 @@ void CActor::SwitchNightVision(bool vision_on, bool use_sounds, bool send_event)
 			m_night_vision->OnDisabled(this, use_sounds);
 			m_bNightVisionOn = false;
 			g_pGamePersistent->devices_shader_data.nightvision_lum_factor = 0.0f;
+		}
+	}
+	else
+	{
+		CCustomOutfit* pOutfit = smart_cast<CCustomOutfit*>(inventory().ItemFromSlot(OUTFIT_SLOT));
+		if (pOutfit && pOutfit->m_NightVisionSect.size())
+		{
+			if (m_bNightVisionAllow)
+			{
+				if (m_bNightVisionOn && !bIsActiveNow)
+				{
+					m_night_vision->Start(pOutfit->m_NightVisionSect, this, use_sounds);
+
+					if (ps_r__ShaderNVG)
+						g_pGamePersistent->devices_shader_data.nightvision_lum_factor = pOutfit->m_fNightVisionLumFactor;
+				}
+			}
+			else
+			{
+				m_night_vision->OnDisabled(this, use_sounds);
+				m_bNightVisionOn = false;
+				g_pGamePersistent->devices_shader_data.nightvision_lum_factor = 0.0f;
+			}
 		}
 	}
 

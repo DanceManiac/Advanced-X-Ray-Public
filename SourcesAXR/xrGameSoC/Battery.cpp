@@ -86,8 +86,10 @@ bool CBattery::Useful() const
 	return false;
 }
 
-void CBattery::UseBy(CEntityAlive* entity_alive)
+bool CBattery::UseBy(CEntityAlive* entity_alive)
 {
+	if (!inherited::Useful()) return false;
+
 	CTorch* flashlight = smart_cast<CTorch*>(Actor()->inventory().ItemFromSlot(TORCH_SLOT));
 	CDetectorAnomaly* anomaly_detector = nullptr;
 
@@ -123,6 +125,8 @@ void CBattery::UseBy(CEntityAlive* entity_alive)
 		ChargeAnomalyDetector(anomaly_detector);
 
 	m_iUseFor = 0;
+
+	return true;
 }
 
 void CBattery::ChargeTorch(CTorch* flashlight)

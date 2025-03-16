@@ -596,6 +596,7 @@
     <ClInclude Include="abstract_location_selector_inline.h" />
     <ClInclude Include="abstract_path_manager.h" />
     <ClInclude Include="abstract_path_manager_inline.h" />
+    <ClInclude Include="ActorHelmet.h" />
     <ClInclude Include="ai\monsters\anti_aim_ability.h" />
     <ClInclude Include="ai\monsters\monster_aura.h" />
     <ClInclude Include="AnomalyDetector.h" />
@@ -1972,6 +1973,7 @@
     <ClInclude Include="ZudaArtifact.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ActorHelmet.cpp" />
     <ClCompile Include="ActorNightVision.cpp" />
     <ClCompile Include="ActorSkills.cpp" />
     <ClCompile Include="actor_script.cpp" />

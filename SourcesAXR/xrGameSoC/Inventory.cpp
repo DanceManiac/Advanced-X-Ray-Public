@@ -24,6 +24,8 @@
 #include "player_hud.h"
 #include "GamePersistent.h"
 #include "CustomBackpack.h"
+#include "CustomOutfit.h"
+#include "ActorHelmet.h"
 #include "HUDManager.h"
 #include "UIGameSP.h"
 #include "ui\UIInventoryWnd.h"
@@ -87,7 +89,8 @@ CInventory::CInventory()
 	m_fMaxWeight								= inv_settings->r_float	(inv_sect, "max_weight");
 	m_iMaxBelt									= inv_settings->r_s32	(inv_sect, "max_belt");
 	
-	m_slots.resize								(LAST_SLOT);
+	u32 sz										= inv_settings->r_s32(inv_sect, "slots");
+	m_slots.resize								(sz);
 	
 	m_iActiveSlot								= NO_ACTIVE_SLOT;
 	m_iNextActiveSlot							= NO_ACTIVE_SLOT;
@@ -502,7 +505,7 @@ bool CInventory::Slot(PIItem pIItem, bool bNotActivate)
 	m_pOwner->OnItemSlot		(pIItem, pIItem->m_eItemPlace);
 	EItemPlace prev_place		= pIItem->m_eItemPlace;
 	pIItem->m_eItemPlace		= eItemPlaceSlot;
-	pIItem->OnMoveToSlot		();
+	pIItem->OnMoveToSlot		(prev_place);
 	
 	if (prev_place == eItemPlaceRuck)
 		Actor()->ChangeInventoryFullness(-pIItem->GetOccupiedInvSpace());
@@ -1310,6 +1313,25 @@ bool CInventory::CanPutInSlot(PIItem pIItem) const
 	if (!m_bSlotsUseful) return false;
 
 	if ( !GetOwner()->CanPutInSlot(pIItem, pIItem->GetSlot() ) ) return false;
+
+	CCustomOutfit* pOutfit = m_pOwner->GetOutfit();
+	CHelmet* pHelmet1 = smart_cast<CHelmet*>(m_pOwner->inventory().ItemFromSlot(HELMET_SLOT));
+	CHelmet* pHelmet2 = smart_cast<CHelmet*>(m_pOwner->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
+
+	if (pOutfit || pHelmet1 || pHelmet2)
+	{
+		if (pIItem->GetSlot() == HELMET_SLOT)
+		{
+			if ((pOutfit && !pOutfit->bIsHelmetAvaliable) || (pHelmet2 && !pHelmet2->m_bSecondHelmetEnabled))
+				return false;
+		}
+
+		if (pIItem->GetSlot() == SECOND_HELMET_SLOT)
+		{
+			if ((pOutfit && !pOutfit->bIsSecondHelmetAvaliable) || (pHelmet1 && !pHelmet1->m_bSecondHelmetEnabled))
+				return false;
+		}
+	}
 
 	if (pIItem->GetSlot() < m_slots.size() && 
 		m_slots[pIItem->GetSlot()].m_pIItem == NULL )

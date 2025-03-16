@@ -147,7 +147,7 @@ public:
 
 	EItemPlace					m_eItemPlace;
 
-	virtual void				OnMoveToSlot		() {};
+	virtual void				OnMoveToSlot		(EItemPlace prev) {};
 	virtual void				OnMoveToBelt		() {};
 	virtual void				OnMoveToRuck		(EItemPlace prev) {};
 	virtual void				OnDrop				() {};

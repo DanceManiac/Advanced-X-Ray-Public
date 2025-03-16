@@ -11,10 +11,12 @@
 #include "Actor.h"
 #include "inventory.h"
 #include "CustomOutfit.h"
+#include "ActorHelmet.h"
 
 CAntigasFilter::CAntigasFilter()
 {
 	m_iPortionsNum = -1;
+	m_iUseFor = 0;
 	m_fCondition = 1.0f;
 	//m_physic_item = 0;
 }
@@ -52,10 +54,16 @@ bool CAntigasFilter::Useful() const
 bool CAntigasFilter::UseAllowed()
 {
 	CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(Actor()->inventory().ItemFromSlot(OUTFIT_SLOT));
+	CHelmet* helmet = smart_cast<CHelmet*>(Actor()->inventory().ItemFromSlot(HELMET_SLOT));
+	CHelmet* helmet2 = smart_cast<CHelmet*>(Actor()->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
 
-	if (outfit)
+	if (outfit || helmet || helmet2)
 	{
-		if (outfit->m_bUseFilter && outfit->m_fFilterCondition <= 0.99f && outfit->IsNecessaryItem(this->cNameSect().c_str(), outfit->m_SuitableFilters))
+		if (outfit && outfit->m_bUseFilter && outfit->m_fFilterCondition <= 0.99f && outfit->IsNecessaryItem(this->cNameSect().c_str(), outfit->m_SuitableFilters))
+			return true;
+		else if (helmet && helmet->m_bUseFilter && helmet->m_fFilterCondition <= 0.99f && helmet->IsNecessaryItem(this->cNameSect().c_str(), helmet->m_SuitableFilters))
+			return true;
+		else if (helmet2 && helmet2->m_bUseFilter && helmet2->m_fFilterCondition <= 0.99f && helmet2->IsNecessaryItem(this->cNameSect().c_str(), helmet2->m_SuitableFilters))
 			return true;
 		else
 			return false;
@@ -64,21 +72,51 @@ bool CAntigasFilter::UseAllowed()
 		return false;
 }
 
-void CAntigasFilter::UseBy(CEntityAlive* entity_alive)
+bool CAntigasFilter::UseBy(CEntityAlive* entity_alive)
 {
+	if (!inherited::Useful()) return false;
+
 	CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(Actor()->inventory().ItemFromSlot(OUTFIT_SLOT));
+	CHelmet* helmet = smart_cast<CHelmet*>(Actor()->inventory().ItemFromSlot(HELMET_SLOT));
+	CHelmet* helmet2 = smart_cast<CHelmet*>(Actor()->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
 
-	if (outfit)
+	if (m_iUseFor == 0)
 	{
-		if (outfit->m_bUseFilter)
-			ChangeInOutfit();
+		if (outfit && !helmet)
+		{
+			if (outfit->m_bUseFilter)
+				ChangeInOutfit();
+		}
+		else if (!outfit && helmet)
+		{
+			if (helmet->m_bUseFilter)
+				ChangeInHelmet();
+		}
+		else if (outfit && helmet)
+		{
+			float outfit_filter = outfit->m_fFilterCondition;
+			float helmet_filter = helmet->m_fFilterCondition;
+			if (outfit->m_bUseFilter && (outfit_filter < helmet_filter))
+				ChangeInOutfit();
+			else if (helmet->m_bUseFilter)
+				ChangeInHelmet();
+		}
 	}
+	else if (m_iUseFor == 1)
+		ChangeInOutfit();
+	else if (m_iUseFor == 2)
+		ChangeInHelmet();
+	else
+		ChangeInSecondHelmet();
 
-	//уменьшить количество порций
 	if (m_iPortionsNum > 0)
-		--(m_iPortionsNum);
+		--m_iPortionsNum;
 	else
 		m_iPortionsNum = 0;
+
+	m_iUseFor = 0;
+
+	return true;
 }
 
 void CAntigasFilter::ChangeInOutfit()
@@ -87,6 +125,22 @@ void CAntigasFilter::ChangeInOutfit()
 
 	if (outfit)
 		outfit->FilterReplace(m_fCondition);
+}
+
+void CAntigasFilter::ChangeInHelmet()
+{
+	CHelmet* helmet = smart_cast<CHelmet*>(Actor()->inventory().ItemFromSlot(HELMET_SLOT));
+
+	if (helmet)
+		helmet->FilterReplace(m_fCondition);
+}
+
+void CAntigasFilter::ChangeInSecondHelmet()
+{
+	CHelmet* helmet2 = smart_cast<CHelmet*>(Actor()->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
+
+	if (helmet2)
+		helmet2->FilterReplace(m_fCondition);
 }
 
 void CAntigasFilter::ChangeFilterCondition(float val)

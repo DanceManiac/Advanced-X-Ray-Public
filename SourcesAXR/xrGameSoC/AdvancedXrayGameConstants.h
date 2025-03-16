@@ -8,6 +8,8 @@ namespace GameConstants
 	bool GetBinocularSlotEnabled();
 	bool GetTorchSlotEnabled();
 	bool GetBackpackSlotEnabled();
+	bool GetHelmetSlotEnabled();
+	bool GetSecondHelmetSlotEnabled();
 	bool GetDosimeterSlotEnabled();
 	bool GetPantsSlotEnabled();
 	bool GetPdaSlotEnabled();

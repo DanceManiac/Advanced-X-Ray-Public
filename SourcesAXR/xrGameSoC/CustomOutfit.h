@@ -36,7 +36,7 @@ public:
 	float							GetPowerLoss		();
 
 
-	virtual void					OnMoveToSlot		();
+	virtual void					OnMoveToSlot		(EItemPlace prev);
 	virtual void					OnMoveToRuck		(EItemPlace prev);
 
 	bool							IsNecessaryItem		(const shared_str& item_sect, xr_vector<shared_str> item);
@@ -81,6 +81,8 @@ public:
 	xr_vector<std::pair<shared_str, int>> m_ItemsForRepair;
 	xr_vector<LPCSTR>				m_ItemsForRepairNames;
 
+	bool							bIsHelmetAvaliable;
+	bool							bIsSecondHelmetAvaliable;
 	bool							m_b_HasGlass;
 	bool							m_bUseFilter;
 	bool							m_bHasLSS;
@@ -94,6 +96,7 @@ public:
 	const shared_str&				GetFullIconName			() const	{return m_full_icon_name;};
 
 	IC	int							GetOutfitNV_Type		() const { return m_NightVisionType; }
+		bool						IsHelmetAvaliable		() const { return bIsHelmetAvaliable; }
 		float						GetInventoryCapacity	() const { return m_fInventoryCapacity; }
 
 	virtual CCustomOutfit*			cast_outfit() { return this; }

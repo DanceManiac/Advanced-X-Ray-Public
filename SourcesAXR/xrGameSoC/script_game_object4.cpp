@@ -30,6 +30,7 @@
 #include "MosquitoBald.h"
 #include "ZoneCampfire.h"
 #include "CustomOutfit.h"
+#include "ActorHelmet.h"
 #include "Artefact.h"
 #include "Weapon.h"
 #include "WeaponAmmo.h"
@@ -335,6 +336,7 @@ TEST_OBJECT_CLASS(CScriptGameObject::IsActor, CActor)
 TEST_OBJECT_CLASS(CScriptGameObject::IsCustomMonster, CCustomMonster)
 TEST_OBJECT_CLASS(CScriptGameObject::IsWeapon, CWeapon)
 TEST_OBJECT_CLASS(CScriptGameObject::IsCustomOutfit, CCustomOutfit)
+TEST_OBJECT_CLASS(CScriptGameObject::IsHelmet, CHelmet)
 TEST_OBJECT_CLASS(CScriptGameObject::IsScope, CScope)
 TEST_OBJECT_CLASS(CScriptGameObject::IsSilencer, CSilencer)
 TEST_OBJECT_CLASS(CScriptGameObject::IsGrenadeLauncher, CGrenadeLauncher)

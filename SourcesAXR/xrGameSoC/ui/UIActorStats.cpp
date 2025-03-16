@@ -5,6 +5,7 @@
 #include "UIScrollView.h"
 #include "../actor.h"
 #include "../CustomOutfit.h"
+#include "../ActorHelmet.h"
 #include "../string_table.h"
 
 CUIActorStats::CUIActorStats()
@@ -83,6 +84,21 @@ void CUIActorStats::Update(CCustomOutfit* outfit)
     SetItem(ALife::eHitTypeExplosion,		false);
 }
 
+void CUIActorStats::Update(CHelmet* helmet)
+{
+	m_helmet = helmet;
+
+	SetItem(ALife::eHitTypeBurn, false);
+	SetItem(ALife::eHitTypeShock, false);
+	SetItem(ALife::eHitTypeChemicalBurn, false);
+	SetItem(ALife::eHitTypeRadiation, false);
+	SetItem(ALife::eHitTypeTelepatic, false);
+	SetItem(ALife::eHitTypeWound, false);
+	SetItem(ALife::eHitTypeFireWound, false);
+	SetItem(ALife::eHitTypeStrike, false);
+	SetItem(ALife::eHitTypeExplosion, false);
+}
+
 void CUIActorStats::SetItem(u32 hitType, bool force_add)
 {
 	string128 _buff;
@@ -92,6 +108,7 @@ void CUIActorStats::SetItem(u32 hitType, bool force_add)
 	CUIStatic* _s		= m_items[hitType];
 
 	_val_outfit			= m_outfit ? m_outfit->GetDefHitTypeProtection(ALife::EHitType(hitType)) : 1.0f;
+	_val_outfit			+= m_helmet ? m_helmet->GetDefHitTypeProtection(ALife::EHitType(hitType)) : 0.0f;
 	_val_outfit			= 1.0f - _val_outfit;
 
 

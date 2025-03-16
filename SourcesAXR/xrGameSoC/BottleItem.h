@@ -28,7 +28,7 @@ public:
 	
 
 			void					BreakToPieces		();
-	virtual void					UseBy				(CEntityAlive* entity_alive);
+	virtual bool					UseBy				(CEntityAlive* entity_alive);
 protected:
 	//партиклы разбивания бутылки
 	shared_str m_sBreakParticles;

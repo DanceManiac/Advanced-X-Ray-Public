@@ -296,6 +296,14 @@ SERVER_ENTITY_DECLARE_END
 add_to_type_list(CSE_ALifeItemCustomOutfit)
 #define script_type_list save_type_list(CSE_ALifeItemCustomOutfit)
 
+SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemHelmet,CSE_ALifeItem)
+									CSE_ALifeItemHelmet	(LPCSTR caSection);
+	virtual							~CSE_ALifeItemHelmet	();
+	virtual BOOL					Net_Relevant			();
+SERVER_ENTITY_DECLARE_END
+add_to_type_list(CSE_ALifeItemHelmet)
+#define script_type_list save_type_list(CSE_ALifeItemHelmet)
+
 #pragma warning(pop)
 
 #endif

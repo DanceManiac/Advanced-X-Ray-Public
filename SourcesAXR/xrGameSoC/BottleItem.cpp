@@ -81,7 +81,9 @@ void	CBottleItem::Hit					(SHit* pHDS)
 	}
 }
 
-void CBottleItem::UseBy				(CEntityAlive* entity_alive)
+bool CBottleItem::UseBy				(CEntityAlive* entity_alive)
 {
 	inherited::UseBy					(entity_alive);
+
+	return true;
 }

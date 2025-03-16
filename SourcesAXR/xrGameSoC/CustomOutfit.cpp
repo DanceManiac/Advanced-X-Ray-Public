@@ -14,6 +14,7 @@
 #include "AntigasFilter.h"
 #include "Inventory.h"
 #include "player_hud.h"
+#include "ActorHelmet.h"
 
 CCustomOutfit::CCustomOutfit()
 {
@@ -26,6 +27,8 @@ CCustomOutfit::CCustomOutfit()
 
 	m_boneProtection = xr_new<SBoneProtections>();
 
+	bIsHelmetAvaliable = true;
+	bIsSecondHelmetAvaliable = true;
 	m_bUseFilter = false;
 	m_b_HasGlass = false;
 	m_bHasLSS = false;
@@ -125,6 +128,9 @@ void CCustomOutfit::Load(LPCSTR section)
 	
 	m_fFilterDegradation			= READ_IF_EXISTS(pSettings, r_float, section, "filter_degradation_speed", 0.0f);
 	m_fMaxFilterCondition			= READ_IF_EXISTS(pSettings, r_float, section, "max_filter_condition", 1.0f);
+
+	bIsHelmetAvaliable				= !!READ_IF_EXISTS(pSettings, r_bool, section, "helmet_avaliable", true);
+	bIsSecondHelmetAvaliable		= !!READ_IF_EXISTS(pSettings, r_bool, section, "second_helmet_avaliable", bIsHelmetAvaliable);
 
 	m_b_HasGlass					= !!READ_IF_EXISTS(pSettings, r_bool, section, "has_glass", FALSE);
 	m_bUseFilter					= READ_IF_EXISTS(pSettings, r_bool, section, "use_filter", false);
@@ -287,7 +293,7 @@ BOOL	CCustomOutfit::BonePassBullet					(int boneID)
 	return m_boneProtection->getBonePassBullet(s16(boneID));
 };
 
-void	CCustomOutfit::OnMoveToSlot		()
+void	CCustomOutfit::OnMoveToSlot		(EItemPlace prev)
 {
 	if (m_pInventory)
 	{
@@ -325,6 +331,32 @@ void	CCustomOutfit::OnMoveToSlot		()
 				g_player_hud->load(pSettings->r_string(cNameSect(), "player_hud_section"));
 			else
 				g_player_hud->load_default();
+
+			if (prev == eItemPlaceSlot || prev == eItemPlaceUndefined)
+			{
+				if (!bIsHelmetAvaliable)
+				{
+					if (pActor->GetNightVisionStatus())
+						pActor->SwitchNightVision(true, false);
+
+					CHelmet* pHelmet1 = smart_cast<CHelmet*>(pActor->inventory().ItemFromSlot(HELMET_SLOT));
+
+					if (pHelmet1)
+					{
+						pActor->inventory().Ruck(pHelmet1);
+					}
+				}
+
+				if (!bIsSecondHelmetAvaliable)
+				{
+					CHelmet* pHelmet2 = smart_cast<CHelmet*>(pActor->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
+
+					if (pHelmet2)
+					{
+						pActor->inventory().Ruck(pHelmet2);
+					}
+				}
+			}
 		}
 	}
 };
@@ -385,7 +417,9 @@ void	CCustomOutfit::OnMoveToRuck		(EItemPlace prev)
 		if (pActor)
 		{
 			ApplySkinModel(pActor, false, false);
-			pActor->SwitchNightVision(false);
+
+			if (!bIsHelmetAvaliable)
+				pActor->SwitchNightVision(false);
 		}
 	}
 };

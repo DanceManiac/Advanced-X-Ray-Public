@@ -10,6 +10,7 @@
 #include "../hudmanager.h"
 
 #include "../CustomOutfit.h"
+#include "../ActorHelmet.h"
 #include "../CustomBackpack.h"
 
 #include "../weapon.h"
@@ -45,32 +46,34 @@ using namespace InventoryUtilities;
 #define				INVENTORY_ITEM_XML		"inventory_item.xml"
 #define				INVENTORY_XML			"inventory_new.xml"
 
-CUIInventoryWnd*	g_pInvWnd = NULL;
+CUIInventoryWnd*	g_pInvWnd = nullptr;
 
 extern bool SSFX_UI_DoF_active;
 
 CUIInventoryWnd::CUIInventoryWnd()
 {
 	m_iCurrentActiveSlot				= NO_ACTIVE_SLOT;
-	UIRank								= NULL;
+	UIRank								= nullptr;
 
-	m_pUIBagList						= NULL;
-	m_pUIBeltList						= NULL;
-	m_pUIPistolList						= NULL;
-	m_pUIAutomaticList					= NULL;
-	m_pUIOutfitList						= NULL;
+	m_pUIBagList						= nullptr;
+	m_pUIBeltList						= nullptr;
+	m_pUIPistolList						= nullptr;
+	m_pUIAutomaticList					= nullptr;
+	m_pUIOutfitList						= nullptr;
 
 	// M.F.S. Team: New Slots
-	m_pUIKnifeList						= NULL;
-	m_pUITorchList						= NULL;
-	m_pUIBinocularList					= NULL;
-	m_pUIPdaList						= NULL;
-	m_pUIDosimeterList					= NULL;
-	m_pUIBackpackList					= NULL;
-	m_pUIPantsList						= NULL;
+	m_pUIKnifeList						= nullptr;
+	m_pUITorchList						= nullptr;
+	m_pUIBinocularList					= nullptr;
+	m_pUIPdaList						= nullptr;
+	m_pUIDosimeterList					= nullptr;
+	m_pUIBackpackList					= nullptr;
+	m_pUIPantsList						= nullptr;
+	m_pUIHelmetList						= nullptr;
+	m_pUISecondHelmetList				= nullptr;
 
 	Init								();
-	SetCurrentItem						(NULL);
+	SetCurrentItem						(nullptr);
 
 	g_pInvWnd							= this;
 	m_b_need_reinit						= false;
@@ -244,6 +247,24 @@ void CUIInventoryWnd::Init()
 		BindDragDropListEnents			(m_pUIPantsList);
 	}
 
+	if (GameConstants::GetHelmetSlotEnabled())
+	{
+		m_pUIHelmetList = xr_new<CUIDragDropListEx>();
+		AttachChild(m_pUIHelmetList);
+		m_pUIHelmetList->SetAutoDelete(true);
+		xml_init.InitDragDropListEx(uiXml, "dragdrop_helmet", 0, m_pUIHelmetList);
+		BindDragDropListEnents(m_pUIHelmetList);
+	}
+
+	if (GameConstants::GetSecondHelmetSlotEnabled())
+	{
+		m_pUISecondHelmetList = xr_new<CUIDragDropListEx>();
+		AttachChild(m_pUISecondHelmetList);
+		m_pUISecondHelmetList->SetAutoDelete(true);
+		xml_init.InitDragDropListEx(uiXml, "dragdrop_second_helmet", 0, m_pUISecondHelmetList);
+		BindDragDropListEnents(m_pUISecondHelmetList);
+	}
+
 	//pop-up menu
 	UIPropertiesBox							= xr_new <CUIPropertiesBox>();
 	AttachChild								(UIPropertiesBox);
@@ -322,6 +343,12 @@ EDDListType CUIInventoryWnd::GetType(CUIDragDropListEx* l)
 		return iwSlot;
 
 	if (m_pUIPantsList && l == m_pUIPantsList)
+		return iwSlot;
+
+	if (m_pUIHelmetList && l == m_pUIHelmetList)
+		return iwSlot;
+
+	if (m_pUISecondHelmetList && l == m_pUISecondHelmetList)
 		return iwSlot;
 
 	NODEFAULT;

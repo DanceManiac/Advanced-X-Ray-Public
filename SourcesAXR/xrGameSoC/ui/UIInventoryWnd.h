@@ -119,6 +119,8 @@ protected:
 	CUIStatic*					m_BackpackSlotHighlight;
 	CUIStatic*					m_PantsSlotHighlight;
 	CUIStatic*					m_PdaSlotHighlight;
+	CUIStatic*					m_HelmetSlotHighlight;
+	CUIStatic*					m_SecondHelmetSlotHighlight;
 
 	bool						m_highlight_clear;
 
@@ -130,6 +132,8 @@ protected:
 	CUIDragDropListEx*			m_pUIDosimeterList;
 	CUIDragDropListEx*			m_pUIBackpackList;
 	CUIDragDropListEx*			m_pUIPantsList;
+	CUIDragDropListEx*			m_pUIHelmetList;
+	CUIDragDropListEx*			m_pUISecondHelmetList;
 
 	void						ClearAllLists				();
 	void						BindDragDropListEnents		(CUIDragDropListEx* lst);

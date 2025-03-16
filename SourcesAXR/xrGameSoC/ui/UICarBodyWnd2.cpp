@@ -9,6 +9,7 @@
 #include "antirad.h"
 #include "BottleItem.h"
 #include "CustomOutfit.h"
+#include "ActorHelmet.h"
 #include "eatable_item.h"
 #include "Inventory.h"
 #include "InventoryBox.h"
@@ -281,16 +282,16 @@ void CUICarBodyWnd::ProcessPropertiesBoxClicked(CUIWindow* w, void* d)
 			EatItem(cell_item);
 			break;
 		}
-	case REPAIR_KIT_KNIFE:
+	case REPAIR_KIT_HELMET:
 		{
-			CRepairKit* repair_kit = smart_cast<CRepairKit*>(item);
+		CRepairKit* repair_kit = smart_cast<CRepairKit*>(item);
 			if (!repair_kit)
 				break;
 			repair_kit->m_iUseFor = 2;
 			EatItem(cell_item);
 			break;
 		}
-	case REPAIR_KIT_WPN1:
+	case REPAIR_KIT_SECOND_HELMET:
 		{
 			CRepairKit* repair_kit = smart_cast<CRepairKit*>(item);
 			if (!repair_kit)
@@ -299,7 +300,7 @@ void CUICarBodyWnd::ProcessPropertiesBoxClicked(CUIWindow* w, void* d)
 			EatItem(cell_item);
 			break;
 		}
-	case REPAIR_KIT_WPN2:
+	case REPAIR_KIT_KNIFE:
 		{
 			CRepairKit* repair_kit = smart_cast<CRepairKit*>(item);
 			if (!repair_kit)
@@ -308,11 +309,48 @@ void CUICarBodyWnd::ProcessPropertiesBoxClicked(CUIWindow* w, void* d)
 			EatItem(cell_item);
 			break;
 		}
+	case REPAIR_KIT_WPN1:
+		{
+			CRepairKit* repair_kit = smart_cast<CRepairKit*>(item);
+			if (!repair_kit)
+				break;
+			repair_kit->m_iUseFor = 5;
+			EatItem(cell_item);
+			break;
+		}
+	case REPAIR_KIT_WPN2:
+		{
+			CRepairKit* repair_kit = smart_cast<CRepairKit*>(item);
+			if (!repair_kit)
+				break;
+			repair_kit->m_iUseFor = 6;
+			EatItem(cell_item);
+			break;
+		}
 	case FILTER_CHANGE_OUTFIT:
 		{
 			CAntigasFilter* filter = smart_cast<CAntigasFilter*>(item);
 			if (!filter)
 				break;
+			filter->m_iUseFor = 1;
+			EatItem(cell_item);
+			break;
+		}
+	case FILTER_CHANGE_HELMET:
+		{
+			CAntigasFilter* filter = smart_cast<CAntigasFilter*>(item);
+			if (!filter)
+				break;
+			filter->m_iUseFor = 2;
+			EatItem(cell_item);
+			break;
+		}
+	case FILTER_CHANGE_SECOND_HELMET:
+		{
+			CAntigasFilter* filter = smart_cast<CAntigasFilter*>(item);
+			if (!filter)
+				break;
+			filter->m_iUseFor = 3;
 			EatItem(cell_item);
 			break;
 		}
@@ -430,23 +468,37 @@ void CUICarBodyWnd::PropertiesBoxForUsing(PIItem item, bool& b_show)
 	CTorch* item_in_torch_slot = smart_cast<CTorch*>(m_pOurObject->inventory().ItemFromSlot(TORCH_SLOT));
 	//CCustomDetector* item_in_detector_slot = smart_cast<CCustomDetector*>(m_pOurObject->inventory().ItemFromSlot(DETECTOR_SLOT));
 	CCustomOutfit* item_in_outfit_slot = smart_cast<CCustomOutfit*>(m_pOurObject->inventory().ItemFromSlot(OUTFIT_SLOT));
+	CHelmet* item_in_helmet_slot = smart_cast<CHelmet*>(m_pOurObject->inventory().ItemFromSlot(HELMET_SLOT));
+	CHelmet* item_in_helmet2_slot = smart_cast<CHelmet*>(m_pOurObject->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
 	CDetectorAnomaly* item_in_anomaly_detector_slot = smart_cast<CDetectorAnomaly*>(m_pOurObject->inventory().ItemFromSlot(DETECTOR_SLOT));
 	CWeapon* item_in_knife_slot = smart_cast<CWeapon*>(m_pOurObject->inventory().ItemFromSlot(KNIFE_SLOT));
 	CWeapon* item_in_wpn1_slot = smart_cast<CWeapon*>(m_pOurObject->inventory().ItemFromSlot(PISTOL_SLOT));
 	CWeapon* item_in_wpn2_slot = smart_cast<CWeapon*>(m_pOurObject->inventory().ItemFromSlot(RIFLE_SLOT));
 
 	bool can_repair_outfit = false;
+	bool can_repair_helmet = false;
+	bool can_repair_helmet2 = false;
 	bool can_repair_knife = false;
 	bool can_repair_wpn1 = false;
 	bool can_repair_wpn2 = false;
 
 	bool outfit_use_filter = false;
+	bool helmet_use_filter = false;
+	bool helmet2_use_filter = false;
 
 	if (item_in_outfit_slot && pFilter)
 		outfit_use_filter = item_in_outfit_slot->m_bUseFilter && item_in_outfit_slot->m_fFilterCondition <= 0.99f && item_in_outfit_slot->IsNecessaryItem(pFilter->cNameSect().c_str(), item_in_outfit_slot->m_SuitableFilters);
+	if (item_in_helmet_slot && pFilter)
+		helmet_use_filter = item_in_helmet_slot->m_bUseFilter && item_in_helmet_slot->m_fFilterCondition <= 0.99f && item_in_helmet_slot->IsNecessaryItem(pFilter->cNameSect().c_str(), item_in_helmet_slot->m_SuitableFilters);
+	if (item_in_helmet2_slot && pFilter)
+		helmet2_use_filter = item_in_helmet2_slot->m_bUseFilter && item_in_helmet2_slot->m_fFilterCondition <= 0.99f && item_in_helmet2_slot->IsNecessaryItem(pFilter->cNameSect().c_str(), item_in_helmet2_slot->m_SuitableFilters);
 
 	if (item_in_outfit_slot && pRepairKit)
 		can_repair_outfit = item_in_outfit_slot->GetCondition() < 0.9f && item_in_outfit_slot->GetCondition() >= 0.4f && item_in_outfit_slot->IsNecessaryItem(pRepairKit->cNameSect().c_str(), item_in_outfit_slot->m_SuitableRepairKits);
+	if (item_in_helmet_slot && pRepairKit)
+		can_repair_helmet = item_in_helmet_slot->GetCondition() < 0.9f && item_in_helmet_slot->GetCondition() >= 0.4f && item_in_helmet_slot->IsNecessaryItem(pRepairKit->cNameSect().c_str(), item_in_helmet_slot->m_SuitableRepairKits);
+	if (item_in_helmet2_slot && pRepairKit)
+		can_repair_helmet2 = item_in_helmet2_slot->GetCondition() < 0.9f && item_in_helmet2_slot->GetCondition() >= 0.4f && item_in_helmet2_slot->IsNecessaryItem(pRepairKit->cNameSect().c_str(), item_in_helmet2_slot->m_SuitableRepairKits);
 	if (item_in_knife_slot && pRepairKit)
 		can_repair_knife = item_in_knife_slot->GetCondition() < 0.9f && item_in_knife_slot->GetCondition() >= 0.4f && item_in_knife_slot->IsNecessaryItem(pRepairKit->cNameSect().c_str(), item_in_knife_slot->m_SuitableRepairKits);
 	if (item_in_wpn1_slot && pRepairKit)
@@ -502,6 +554,48 @@ void CUICarBodyWnd::PropertiesBoxForUsing(PIItem item, bool& b_show)
 			}
 
 			m_pUIPropertiesBox->AddItem(str.c_str(), (void*)item_in_outfit_slot, REPAIR_KIT_OUTFIT, repair_hint.c_str());
+			b_show = true;
+		}
+
+		if (item_in_helmet_slot && can_repair_helmet)
+		{
+			shared_str str = CStringTable().translate("st_repair");
+			str.printf("%s %s", str.c_str(), item_in_helmet_slot->m_name.c_str());
+
+			shared_str repair_hint{};
+
+			if (!item_in_helmet_slot->m_ItemsForRepair.empty())
+			{
+				repair_hint = CStringTable().translate("st_materials_for_repair");
+
+				for (int i = 0; i < item_in_helmet_slot->m_ItemsForRepair.size(); i++)
+				{
+					repair_hint.printf("%s\\n%s: x%s;\\n", repair_hint.c_str(), CStringTable().translate(item_in_helmet_slot->m_ItemsForRepairNames[i]).c_str(), std::to_string(item_in_helmet_slot->m_ItemsForRepair[i].second));
+				}
+			}
+
+			m_pUIPropertiesBox->AddItem(str.c_str(), (void*)item_in_helmet_slot, REPAIR_KIT_HELMET, repair_hint.c_str());
+			b_show = true;
+		}
+
+		if (item_in_helmet2_slot && can_repair_helmet2)
+		{
+			shared_str str = CStringTable().translate("st_repair");
+			str.printf("%s %s", str.c_str(), item_in_helmet2_slot->m_name.c_str());
+
+			shared_str repair_hint{};
+
+			if (!item_in_helmet2_slot->m_ItemsForRepair.empty())
+			{
+				repair_hint = CStringTable().translate("st_materials_for_repair");
+
+				for (int i = 0; i < item_in_helmet2_slot->m_ItemsForRepair.size(); i++)
+				{
+					repair_hint.printf("%s\\n%s: x%s;\\n", repair_hint.c_str(), CStringTable().translate(item_in_helmet2_slot->m_ItemsForRepairNames[i]).c_str(), std::to_string(item_in_helmet2_slot->m_ItemsForRepair[i].second));
+				}
+			}
+
+			m_pUIPropertiesBox->AddItem(str.c_str(), (void*)item_in_helmet2_slot, REPAIR_KIT_SECOND_HELMET, repair_hint.c_str());
 			b_show = true;
 		}
 
@@ -578,6 +672,23 @@ void CUICarBodyWnd::PropertiesBoxForUsing(PIItem item, bool& b_show)
 			m_pUIPropertiesBox->AddItem(str.c_str(), (void*)item_in_outfit_slot, FILTER_CHANGE_OUTFIT);
 			b_show = true;
 		}
+
+		if (item_in_helmet_slot && helmet_use_filter)
+		{
+			shared_str str = CStringTable().translate("st_change_filter");
+			str.printf("%s %s", str.c_str(), item_in_helmet_slot->m_name.c_str());
+			m_pUIPropertiesBox->AddItem(str.c_str(), (void*)item_in_helmet_slot, FILTER_CHANGE_HELMET);
+			b_show = true;
+		}
+
+		if (item_in_helmet2_slot && helmet2_use_filter)
+		{
+			shared_str str = CStringTable().translate("st_change_filter");
+			str.printf("%s %s", str.c_str(), item_in_helmet2_slot->m_name.c_str());
+			m_pUIPropertiesBox->AddItem(str.c_str(), (void*)item_in_helmet2_slot, FILTER_CHANGE_HELMET);
+			b_show = true;
+		}
+
 		return;
 	}
 	if (pMedkit || pAntirad)

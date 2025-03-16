@@ -83,7 +83,7 @@ CTorch::~CTorch(void)
 	m_sounds.DestroySound	(m_NightVisionBrokenSnd);  */
 }
 
-void CTorch::OnMoveToSlot()
+void CTorch::OnMoveToSlot(EItemPlace prev)
 {
 	CInventoryOwner* owner = smart_cast<CInventoryOwner*>(H_Parent());
 	if (owner && !owner->attached(this))

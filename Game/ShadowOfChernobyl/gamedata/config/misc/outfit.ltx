@@ -1121,3 +1121,50 @@ telepatic_immunity			= 0.00
 chemical_burn_immunity		= 0.00
 explosion_immunity			= 0.00
 fire_wound_immunity			= 0.00
+
+;---------------------------------------------------------------------------------------------
+;		˜‹…Œ›
+;---------------------------------------------------------------------------------------------
+
+[helmet]
+GroupControlSection	= spawn_group
+discovery_dependency =
+;$spawn 			= "outfit\helmet"
+$prefetch 		= 32
+class			= E_HLMET
+cform           	= skeleton
+visual          	= equipments\novice_suit
+slot			= 13
+default_to_ruck		= false
+sprint_allowed		= true
+control_inertion_factor	= 1.0
+inv_name             	= st_helmet
+inv_name_short       	= st_helmet
+description				= st_helmet_descr
+inv_weight           	= 4.0
+inv_grid_width       	= 2
+inv_grid_height      	= 3
+inv_grid_x           	= 14
+inv_grid_y           	= 16
+upgr_icon_x			= 200
+upgr_icon_y			= 0
+upgr_icon_width		= 100
+upgr_icon_height   	= 100
+cost			= 1000
+
+burn_protection 		= 0.0
+shock_protection 		= 0.0
+chemical_burn_protection 	= 0.0
+radiation_protection 		= 0.0
+telepatic_protection 		= 0.0
+strike_protection 		= 0.0
+explosion_protection 		= 0.0
+wound_protection		= 0.0
+fire_wound_protection		= 0.0
+hit_fraction_actor		= 1.0
+
+filter_degradation_speed = 0.005
+max_filter_condition = 1.0
+
+immunities_sect 			= sect_helm_immunities
+bones_koeff_protection		= kurtka_mask_damage

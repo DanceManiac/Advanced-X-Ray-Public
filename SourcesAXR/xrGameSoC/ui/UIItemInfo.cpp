@@ -12,6 +12,7 @@
 #include "../Inventory_Item.h"
 #include "../PhysicsShellHolder.h"
 #include "../CustomOutfit.h"
+#include "../ActorHelmet.h"
 #include "../Weapon.h"
 #include "../WeaponMagazinedWGrenade.h"
 #include "../WeaponKnife.h"
@@ -408,11 +409,18 @@ void CUIItemInfo::TryAddArtefactInfo(CInventoryItem& pInvItem)
 void CUIItemInfo::TryAddOutfitInfo(CInventoryItem& pInvItem, CInventoryItem* pCompareItem)
 {
 	CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(&pInvItem);
+	CHelmet* helmet = smart_cast<CHelmet*>(&pInvItem);
 
 	if (outfit && UIOutfitItem)
 	{
 		CCustomOutfit* comp_outfit = smart_cast<CCustomOutfit*>(pCompareItem);
 		UIOutfitItem->SetInfo(outfit, comp_outfit);
+		UIDesc->AddWindow(UIOutfitItem, false);
+	}
+	if (helmet && UIOutfitItem)
+	{
+		CHelmet* comp_helmet = smart_cast<CHelmet*>(pCompareItem);
+		UIOutfitItem->SetInfo(helmet, comp_helmet);
 		UIDesc->AddWindow(UIOutfitItem, false);
 	}
 }

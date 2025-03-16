@@ -10,6 +10,8 @@ bool	m_bKnifeSlotEnabled = false;
 bool	m_bBinocularSlotEnabled = false;
 bool	m_bTorchSlotEnabled = false;
 bool	m_bBackpackSlotEnabled = false;
+bool	m_bHelmetSlotEnabled = false;
+bool	m_bSecondHelmetSlotEnabled = false;
 bool	m_bDosimeterSlotEnabled = false;
 bool	m_bPantsSlotEnabled = false;
 bool	m_bPdaSlotEnabled = false;
@@ -84,6 +86,8 @@ namespace GameConstants
 		m_bBinocularSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_binocular_slot", false);
 		m_bTorchSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_torch_slot", false);
 		m_bBackpackSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_backpack_slot", false);
+		m_bHelmetSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_helmet_slot", false);
+		m_bSecondHelmetSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_second_helmet_slot", false);
 		m_bDosimeterSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_dosimeter_slot", false);
 		m_bPantsSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_pants_slot", false);
 		m_bPdaSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_pda_slot", false);
@@ -178,6 +182,16 @@ namespace GameConstants
 	bool GetBackpackSlotEnabled()
 	{
 		return m_bBackpackSlotEnabled;
+	}
+
+	bool GetHelmetSlotEnabled()
+	{
+		return m_bHelmetSlotEnabled;
+	}
+
+	bool GetSecondHelmetSlotEnabled()
+	{
+		return m_bSecondHelmetSlotEnabled;
 	}
 
 	bool GetDosimeterSlotEnabled()

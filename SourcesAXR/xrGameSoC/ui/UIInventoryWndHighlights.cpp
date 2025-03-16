@@ -7,6 +7,7 @@
 #include "../CustomBackpack.h"
 #include "../AnomalyDetector.h"
 #include "../CustomOutfit.h"
+#include "../ActorHelmet.h"
 #include "../GrenadeLauncher.h"
 #include "../LaserDesignator.h"
 #include "../PDA.h"
@@ -72,6 +73,18 @@ void CUIInventoryWnd::InitHighlights(CUIXml& uiXml)
 	{
 		if ((m_PdaSlotHighlight = UIHelper::CreateStatic(uiXml, "pda_slot_highlight", this)))
 			m_PdaSlotHighlight->Show(false);
+	}
+
+	if (GameConstants::GetHelmetSlotEnabled())
+	{
+		if ((m_HelmetSlotHighlight = UIHelper::CreateStatic(uiXml, "helmet_slot_highlight", this)))
+			m_HelmetSlotHighlight->Show(false);
+	}
+
+	if (GameConstants::GetSecondHelmetSlotEnabled())
+	{
+		if ((m_SecondHelmetSlotHighlight = UIHelper::CreateStatic(uiXml, "second_helmet_slot_highlight", this)))
+			m_SecondHelmetSlotHighlight->Show(false);
 	}
 
 	Fvector2 pos;
@@ -158,6 +171,18 @@ void CUIInventoryWnd::clear_highlight_lists()
 			m_PdaSlotHighlight->Show(false);
 	}
 
+	if (GameConstants::GetHelmetSlotEnabled())
+	{
+		if (m_HelmetSlotHighlight)
+			m_HelmetSlotHighlight->Show(false);
+	}
+
+	if (GameConstants::GetSecondHelmetSlotEnabled())
+	{
+		if (m_SecondHelmetSlotHighlight)
+			m_SecondHelmetSlotHighlight->Show(false);
+	}
+
 	//for (u8 i = 0; i < 4; i++)
 	//	m_QuickSlotsHighlight[i]->Show(false);
 	for (u8 i = 0; i < GameConstants::GetArtefactsCount(); i++)
@@ -188,6 +213,7 @@ void CUIInventoryWnd::highlight_item_slot(CUICellItem* cell_item)
 	CWeaponBinoculars* binoculars = smart_cast<CWeaponBinoculars*>(item);
 	CTorch* torch = smart_cast<CTorch*>(item);
 	CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(item);
+	CHelmet* helmet = smart_cast<CHelmet*>(item);
 	CPda* pda = smart_cast<CPda*>(item);
 	CWeaponPistol* pistol = smart_cast<CWeaponPistol*>(item);
 
@@ -307,6 +333,30 @@ void CUIInventoryWnd::highlight_item_slot(CUICellItem* cell_item)
 		if (pda)
 		{
 			m_PdaSlotHighlight->Show(true);
+			return;
+		}
+	}
+
+	if (GameConstants::GetHelmetSlotEnabled())
+	{
+		if (helmet)
+		{
+			if (m_HelmetSlotHighlight)
+			{
+				m_HelmetSlotHighlight->Show(true);
+			}
+			return;
+		}
+	}
+
+	if (GameConstants::GetSecondHelmetSlotEnabled())
+	{
+		if (helmet)
+		{
+			if (m_SecondHelmetSlotHighlight)
+			{
+				m_SecondHelmetSlotHighlight->Show(true);
+			}
 			return;
 		}
 	}

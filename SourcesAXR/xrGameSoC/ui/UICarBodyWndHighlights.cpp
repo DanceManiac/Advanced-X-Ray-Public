@@ -8,6 +8,7 @@
 #include "../CustomBackpack.h"
 #include "../AnomalyDetector.h"
 #include "../CustomOutfit.h"
+#include "../ActorHelmet.h"
 #include "../GrenadeLauncher.h"
 #include "../LaserDesignator.h"
 #include "../PDA.h"
