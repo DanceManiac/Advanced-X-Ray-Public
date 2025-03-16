@@ -39,5 +39,7 @@ protected:
 	ESoundTypes		m_eSoundAddCartridge;
 	ESoundTypes		m_eSoundClose_2;
 
+	bool			m_bOnlyTriStateWithScope;
+
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };

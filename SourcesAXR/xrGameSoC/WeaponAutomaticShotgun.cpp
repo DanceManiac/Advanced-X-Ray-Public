@@ -11,6 +11,8 @@ CWeaponAutomaticShotgun::CWeaponAutomaticShotgun()
 {
 	m_eSoundClose_2			= ESoundTypes(SOUND_TYPE_WEAPON_SHOOTING);
 	m_eSoundAddCartridge	= ESoundTypes(SOUND_TYPE_WEAPON_SHOOTING);
+
+	m_bOnlyTriStateWithScope = false;
 }
 
 CWeaponAutomaticShotgun::~CWeaponAutomaticShotgun()
@@ -48,6 +50,7 @@ void CWeaponAutomaticShotgun::Load(LPCSTR section)
 	};
 
 	m_bIsBoltRiffle = READ_IF_EXISTS(pSettings, r_bool, section, "is_bolt_rifle", false);
+	m_bOnlyTriStateWithScope = READ_IF_EXISTS(pSettings, r_bool, section, "only_tri_state_with_scope", false);
 }
 
 bool CWeaponAutomaticShotgun::Action(s32 cmd, u32 flags)
@@ -67,7 +70,7 @@ bool CWeaponAutomaticShotgun::Action(s32 cmd, u32 flags)
 
 void CWeaponAutomaticShotgun::OnAnimationEnd(u32 state) 
 {
-	if (!m_bTriStateReload || (m_bIsBoltRiffle && !iAmmoElapsed) || state != eReload)
+	if (!m_bTriStateReload || (m_bIsBoltRiffle && !(IsScopeAttached() && m_bOnlyTriStateWithScope) && !iAmmoElapsed) || state != eReload)
 		return inherited::OnAnimationEnd(state);
 
 	switch(m_sub_state)
@@ -98,7 +101,7 @@ void CWeaponAutomaticShotgun::OnAnimationEnd(u32 state)
 
 void CWeaponAutomaticShotgun::Reload() 
 {
-	if (!m_bTriStateReload || (m_bIsBoltRiffle && !iAmmoElapsed))
+	if (!m_bTriStateReload || (m_bIsBoltRiffle && !(IsScopeAttached() && m_bOnlyTriStateWithScope) && !iAmmoElapsed))
 	{
 		inherited::Reload();
 	}
@@ -120,7 +123,7 @@ void CWeaponAutomaticShotgun::TriStateReload()
 
 void CWeaponAutomaticShotgun::OnStateSwitch(u32 S, u32 oldState)
 {
-	if (!m_bTriStateReload || (m_bIsBoltRiffle && !iAmmoElapsed) || S != eReload) {
+	if (!m_bTriStateReload || (m_bIsBoltRiffle && !(IsScopeAttached() && m_bOnlyTriStateWithScope) && !iAmmoElapsed) || S != eReload) {
 		inherited::OnStateSwitch(S, oldState);
 		return;
 	}
