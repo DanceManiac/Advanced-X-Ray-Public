@@ -945,6 +945,9 @@ void CWeapon::Load		(LPCSTR section)
 	ProcessBlendCamParams(READ_IF_EXISTS(pSettings, r_string, m_hud_sect, "blend_aim_start",	nullptr),	m_BlendAimStartCam);
 	ProcessBlendCamParams(READ_IF_EXISTS(pSettings, r_string, m_hud_sect, "blend_aim_end",		nullptr),	m_BlendAimEndCam);
 	ProcessBlendCamParams(READ_IF_EXISTS(pSettings, r_string, m_hud_sect, "blend_aim_idle",		nullptr),	m_BlendAimIdleCam);
+	ProcessBlendCamParams(READ_IF_EXISTS(pSettings, r_string, m_hud_sect, "blend_aim_start_g",	nullptr),	m_BlendAimStartGL_Cam);
+	ProcessBlendCamParams(READ_IF_EXISTS(pSettings, r_string, m_hud_sect, "blend_aim_end_g",	nullptr),	m_BlendAimEndGL_Cam);
+	ProcessBlendCamParams(READ_IF_EXISTS(pSettings, r_string, m_hud_sect, "blend_aim_idle_g",	nullptr),	m_BlendAimIdleGL_Cam);
 	ProcessBlendCamParams(READ_IF_EXISTS(pSettings, r_string, m_hud_sect, "blend_fakeshot",		nullptr),	m_BlendFakeShootCam);
 }
 
@@ -1665,13 +1668,26 @@ void CWeapon::UpdateCL		()
 
 	if(m_zoom_params.m_pVision)
 		m_zoom_params.m_pVision->Update();
-
-	if (m_BlendAimIdleCam.name.size() && !g_player_hud->IsBlendAnmActive(m_BlendAimStartCam.name.c_str()) && !g_player_hud->IsBlendAnmActive(m_BlendAimIdleCam.name.c_str()) && GetHUDmode() &&  IsZoomed())
+	
+	if (IsGrenadeMode())
 	{
-		if (m_BlendAimStartCam.name.size())
-			g_player_hud->StopBlendAnm(m_BlendAimStartCam.name.c_str());
+		if (m_BlendAimIdleGL_Cam.name.size() && !g_player_hud->IsBlendAnmActive(m_BlendAimStartGL_Cam.name.c_str()) && !g_player_hud->IsBlendAnmActive(m_BlendAimIdleGL_Cam.name.c_str()) && GetHUDmode() && IsZoomed())
+		{
+			if (m_BlendAimStartGL_Cam.name.size())
+				g_player_hud->StopBlendAnm(m_BlendAimStartGL_Cam.name.c_str());
 
-		g_player_hud->PlayBlendAnm(m_BlendAimIdleCam.name.c_str(), 2, m_BlendAimIdleCam.speed, m_BlendAimIdleCam.power, true, false);
+			g_player_hud->PlayBlendAnm(m_BlendAimIdleGL_Cam.name.c_str(), 2, m_BlendAimIdleGL_Cam.speed, m_BlendAimIdleGL_Cam.power, true, false);
+		}
+	}
+	else
+	{
+		if (m_BlendAimIdleCam.name.size() && !g_player_hud->IsBlendAnmActive(m_BlendAimStartCam.name.c_str()) && !g_player_hud->IsBlendAnmActive(m_BlendAimIdleCam.name.c_str()) && GetHUDmode() && IsZoomed())
+		{
+			if (m_BlendAimStartCam.name.size())
+				g_player_hud->StopBlendAnm(m_BlendAimStartCam.name.c_str());
+
+			g_player_hud->PlayBlendAnm(m_BlendAimIdleCam.name.c_str(), 2, m_BlendAimIdleCam.speed, m_BlendAimIdleCam.power, true, false);
+		}
 	}
 
 	if (H_Parent() == Level().CurrentEntity())
@@ -2725,8 +2741,16 @@ void CWeapon::OnZoomIn()
 		GamePersistent().SetPickableEffectorDOF(true);
 		UpdateAimOffsets();
 
-		if (m_BlendAimStartCam.name.size())
-			g_player_hud->PlayBlendAnm(m_BlendAimStartCam.name.c_str(), 2, m_BlendAimStartCam.speed, m_BlendAimStartCam.power, false, false);
+		if (IsGrenadeMode())
+		{
+			if (m_BlendAimStartGL_Cam.name.size())
+				g_player_hud->PlayBlendAnm(m_BlendAimStartGL_Cam.name.c_str(), 2, m_BlendAimStartGL_Cam.speed, m_BlendAimStartGL_Cam.power, false, false);
+		}
+		else
+		{
+			if (m_BlendAimStartCam.name.size())
+				g_player_hud->PlayBlendAnm(m_BlendAimStartCam.name.c_str(), 2, m_BlendAimStartCam.speed, m_BlendAimStartCam.power, false, false);
+		}
 	}
 
 	if (m_zoom_params.m_sUseBinocularVision.size() && IsScopeAttached() && NULL == m_zoom_params.m_pVision)
@@ -2777,12 +2801,25 @@ void CWeapon::OnZoomOut()
 		GamePersistent().SetPickableEffectorDOF(false);
 		UpdateAimOffsets();
 
-		if (m_BlendAimEndCam.name.size())
+		if (IsGrenadeMode())
 		{
-			if (m_BlendAimIdleCam.name.size())
-				g_player_hud->StopBlendAnm(m_BlendAimIdleCam.name.c_str());
+			if (m_BlendAimEndGL_Cam.name.size())
+			{
+				if (m_BlendAimIdleGL_Cam.name.size())
+					g_player_hud->StopBlendAnm(m_BlendAimIdleGL_Cam.name.c_str());
 
-			g_player_hud->PlayBlendAnm(m_BlendAimEndCam.name.c_str(), 2, m_BlendAimEndCam.speed, m_BlendAimEndCam.power, false, false);
+				g_player_hud->PlayBlendAnm(m_BlendAimEndGL_Cam.name.c_str(), 2, m_BlendAimEndGL_Cam.speed, m_BlendAimEndGL_Cam.power, false, false);
+			}
+		}
+		else
+		{
+			if (m_BlendAimEndCam.name.size())
+			{
+				if (m_BlendAimIdleCam.name.size())
+					g_player_hud->StopBlendAnm(m_BlendAimIdleCam.name.c_str());
+
+				g_player_hud->PlayBlendAnm(m_BlendAimEndCam.name.c_str(), 2, m_BlendAimEndCam.speed, m_BlendAimEndCam.power, false, false);
+			}
 		}
 	}
 
