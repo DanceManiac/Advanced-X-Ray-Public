@@ -72,6 +72,8 @@ void CMissile::Load(LPCSTR section)
 
 	m_sounds.LoadSound(section, "snd_draw", "m_sndDraw", false, SOUND_TYPE_ITEM_HIDING);
 	m_sounds.LoadSound(section, "snd_holster", "m_sndHolster", false, SOUND_TYPE_ITEM_HIDING);
+	m_sounds.LoadSound(section, "snd_throw_start", "m_sndThrowStart", false, SOUND_TYPE_WEAPON_RECHARGING);
+	m_sounds.LoadSound(section, "snd_throw", "m_sndThrow", false, SOUND_TYPE_WEAPON_RECHARGING);
 
 	m_fMinForce			= pSettings->r_float(section,"force_min");
 	m_fConstForce		= pSettings->r_float(section,"force_const");
@@ -352,6 +354,9 @@ void CMissile::State(u32 state)
 
 			PlayHUDMotion		("anm_throw_begin", TRUE, this, GetState());
 
+			if (m_sounds.FindSoundItem("m_sndThrowStart", false))
+				PlaySound		("m_sndThrowStart", C);
+
 			if (g_actor->IsDetectorActive())
 				det->PlayDetectorAnimation(true, eDetAction, "anm_wpn_missile_throw_begin");
 
@@ -368,6 +373,9 @@ void CMissile::State(u32 state)
 			SetPending			(TRUE);
 			m_throw				= false;
 			PlayHUDMotion		("anm_throw", TRUE, this, GetState());
+
+			if (m_sounds.FindSoundItem("m_sndThrow", false))
+				PlaySound		("m_sndThrow", C);
 
 			if (g_actor->IsDetectorActive())
 				det->PlayDetectorAnimation(true, eDetAction, "anm_wpn_missile_throw");

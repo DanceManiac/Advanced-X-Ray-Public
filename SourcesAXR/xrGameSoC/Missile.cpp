@@ -71,6 +71,8 @@ void CMissile::Load(LPCSTR section)
 
 	m_sounds.LoadSound	(section, "snd_draw", "m_sndDraw", false, SOUND_TYPE_ITEM_HIDING);
 	m_sounds.LoadSound	(section, "snd_holster", "m_sndHolster", false, SOUND_TYPE_ITEM_HIDING);
+	m_sounds.LoadSound	(section, "snd_throw_start", "m_sndThrowStart", false, SOUND_TYPE_WEAPON_RECHARGING);
+	m_sounds.LoadSound	(section, "snd_throw", "m_sndThrow", false, SOUND_TYPE_WEAPON_RECHARGING);
 
 	m_fMinForce			= pSettings->r_float(section,"force_min");
 	m_fConstForce		= pSettings->r_float(section,"force_const");
@@ -322,6 +324,10 @@ void CMissile::State(u32 state)
 				m_throw = true;
 
 			PlayHUDMotionIfExists({ "anm_throw_begin", "anim_throw_begin" }, FALSE, state);
+
+			if (m_sounds.FindSoundItem("m_sndThrowStart", false))
+				PlaySound("m_sndThrowStart", C);
+
 		} break;
 	case eReady:
 		{
@@ -332,6 +338,10 @@ void CMissile::State(u32 state)
 			SetPending			(TRUE);
 			m_throw				= false;
 			PlayHUDMotionIfExists({ "anm_throw", "anim_throw_act" }, FALSE, state);
+
+			if (m_sounds.FindSoundItem("m_sndThrow", false))
+				PlaySound		("m_sndThrow", C);
+
 		} break;
 	case eThrowEnd:
 		{
