@@ -330,6 +330,7 @@ public:
 	virtual							u32 active_phase		()											= 0;
 	virtual void					RenderToTarget			(RRT target)								= 0;
 
+	virtual bool					isActorShadowEnabled	()											= 0;
 
 	ViewPort	currentViewPort;
 	ViewPort	firstViewPort;

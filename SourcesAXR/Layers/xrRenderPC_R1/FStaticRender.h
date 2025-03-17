@@ -222,6 +222,8 @@ public:
 	virtual u32						active_phase() { return phase; };
 	void							RenderToTarget(RRT target);
 
+	virtual bool					isActorShadowEnabled	() override { return ps_actor_shadow_flags.test(RFLAG_ACTOR_SHADOW); }
+
 	// Constructor/destructor/loader
 	CRender							();
 	virtual ~CRender				();
