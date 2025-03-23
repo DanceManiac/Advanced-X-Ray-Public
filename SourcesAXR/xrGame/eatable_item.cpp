@@ -214,7 +214,14 @@ void CEatableItem::StartAnimation()
 		strconcat(sizeof(anim_name), anim_name, "anm_use", (m_iPortionsNum == 1) ? "_last" : "");
 
 		LPCSTR attach_visual = READ_IF_EXISTS(pSettings, r_string, cur_section, "item_visual", nullptr);
-		float anim_speed = READ_IF_EXISTS(pSettings, r_float, cur_section, "anim_speed", 1.0f);
+		
+		// - cari0us - ВАЖНО !!! Названия аргументов и прочих штук в данном случае не должны начинаться с "anim_", 
+		// иначе движок может воспринимать их как анимацию по какой-то причине; Потому переименовал в "use_anm_speed_k"
+		float anim_speed = 1.0f;
+		if (pSettings->line_exist(cur_section, "anim_speed"))
+			anim_speed = pSettings->r_float(cur_section, "anim_speed");	// желательно избавиться в будущем
+		else
+			anim_speed = READ_IF_EXISTS(pSettings, r_float, cur_section, "use_anm_speed_k", 1.0f);
 
 		if (pSettings->line_exist(cur_section, anim_name))
 		{
