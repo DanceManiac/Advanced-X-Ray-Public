@@ -462,10 +462,18 @@ protected:
 	bool					m_bIsRevolver;
 	bool					m_bIsBoltRiffle;
 
+	shared_str				ppeWpnExplosion;
+	ref_sound				sndWpnExplosion;
+	bool					m_bWpnExplosion;
+	bool					m_bWpnDestroyAfterExplode;
+	float					m_fWpnExplodeChance;
+
 public:
 	//загружаемые параметры
 	Fvector					vLoadedFirePoint	;
 	Fvector					vLoadedFirePoint2	;
+
+	virtual void			WpnExplosion();
 
 private:
 	firedeps				m_current_firedeps;

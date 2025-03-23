@@ -31,6 +31,9 @@
 #include "../xrEngine/x_ray.h"
 #include "../xrEngine/LightAnimLibrary.h"
 #include "../xrEngine/GameMtlLib.h"
+#include "PostprocessAnimator.h"
+#include "../xrEngine/CameraBase.h"
+#include "CharacterPhysicsSupport.h"
 #include "AdvancedXrayGameConstants.h"
 
 constexpr auto WEAPON_REMOVE_TIME = 60000;
@@ -136,6 +139,10 @@ CWeapon::CWeapon()
 
 	m_bIsRevolver			= false;
 	m_bIsBoltRiffle			= false;
+
+	m_bWpnExplosion			= false;
+	m_bWpnDestroyAfterExplode = false;
+	m_fWpnExplodeChance		= 0.5f;
 }
 
 const shared_str CWeapon::GetScopeName() const
@@ -947,6 +954,12 @@ void CWeapon::Load		(LPCSTR section)
 			}
 		}
 	}
+
+	m_bWpnExplosion				= READ_IF_EXISTS(pSettings, r_bool, section, "enable_weapon_explosion", false);
+	m_bWpnDestroyAfterExplode	= READ_IF_EXISTS(pSettings, r_bool, section, "enable_weapon_destroying", false);
+	m_fWpnExplodeChance			= READ_IF_EXISTS(pSettings, r_float, section, "weapon_explode_chance", 0.5f);
+	sndWpnExplosion.create		(READ_IF_EXISTS(pSettings, r_string, section, "snd_explosion", "weapons\\f1_explode"), st_Effect, sg_SourceType);
+	ppeWpnExplosion				= READ_IF_EXISTS(pSettings, r_string, section, "ppe_explosion", "snd_shock.ppe");
 
 	ProcessBlendCamParams(READ_IF_EXISTS(pSettings, r_string, m_hud_sect, "blend_aim_start",	nullptr),	m_BlendAimStartCam);
 	ProcessBlendCamParams(READ_IF_EXISTS(pSettings, r_string, m_hud_sect, "blend_aim_end",		nullptr),	m_BlendAimEndCam);
@@ -2219,6 +2232,13 @@ BOOL CWeapon::CheckForMisfire	()
 	if (OnClient())
 		return FALSE;
 
+	if (m_bWpnExplosion && (GetCondition() < 0.2f) && (::Random.randF(0.0f, 1.0f) < m_fWpnExplodeChance))
+	{
+		WpnExplosion();
+
+		return FALSE;
+	}
+
 	float rnd = ::Random.randF(0.f,1.f);
 	float mp = GetConditionMisfireProbability();
 	mp += m_fOverheatingMisfire * m_fWeaponOverheating;
@@ -2229,7 +2249,7 @@ BOOL CWeapon::CheckForMisfire	()
 
 		bMisfire = true;
 		SwitchState(eMisfire);		
-		
+
 		return TRUE;
 	}
 	else
@@ -4554,4 +4574,56 @@ bool CWeapon::WeaponSoundExist(LPCSTR section, LPCSTR sound_name, bool log) cons
 		Msg("~ [WARNING] ------ Sound [%s] does not exist in [%s]", sound_name, section);
 #endif
 	return false;
+}
+
+void CWeapon::WpnExplosion()
+{
+	// Если актор - обладатель оружия
+	CActor* pActor = smart_cast<CActor*>(H_Parent());
+	if (!pActor) return;
+
+	// Проигрываем партиклы
+	CParticlesObject* Particles;
+	Particles = CParticlesObject::Create(*m_sSmokeParticles, TRUE);
+	Particles->play_at_pos(Position());
+
+	// Проигрываем звук
+	if (sndWpnExplosion._feedback())
+		sndWpnExplosion.stop();
+ 
+	sndWpnExplosion.play(this, sm_2D);
+ 
+	// Проигрываем .ppe
+	auto ActorPPE = xr_new<CPostprocessAnimator>(3871, false);
+	ActorPPE->Load(*ppeWpnExplosion);
+	pActor->Cameras().AddPPEffector(ActorPPE);
+
+	// развернуть камеру
+	if (pActor->cam_Active()) {
+		pActor->cam_Active()->Move(Random.randI(2) ? kRIGHT : kLEFT, Random.randF(0.1f, 0.8f));
+		pActor->cam_Active()->Move(Random.randI(2) ? kUP : kDOWN, Random.randF(0.1f, 0.8f));
+	}
+
+	// Нанести хит
+	NET_Packet			l_P;
+	SHit				HS;
+
+	HS.GenHeader		(GE_HIT, pActor->ID());
+	HS.whoID			= (ID());
+	HS.weaponID			= (ID());
+	HS.dir				= (Fvector().set(0.f,1.f,0.f));
+	HS.power			= (1.0f);
+	HS.boneID			= (smart_cast<IKinematics*>(pActor->Visual())->LL_GetBoneRoot());
+	HS.p_in_bone_space	= (Fvector().set(0.f,0.f,0.f));
+	HS.impulse			= (80 * pActor->character_physics_support()->get_movement()->GetMass());
+	HS.hit_type			= ( ALife::eHitTypeStrike);	// eHitTypeExplosion ?
+	HS.Write_Packet		(l_P);
+	u_EventSend			(l_P);	
+
+	// Роняем оружие
+	pActor->g_PerformDrop();
+ 
+	// Уничтожаем оружие
+	if (m_bWpnDestroyAfterExplode)
+		DestroyObject();
 }
