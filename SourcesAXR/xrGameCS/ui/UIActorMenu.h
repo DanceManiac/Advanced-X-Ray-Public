@@ -1,5 +1,7 @@
 #pragma once
 
+#include "script_export_space.h"
+
 #include "UIDialogWnd.h"
 #include "UIWndCallback.h"
 #include "../../XrServerEntitiesCS/inventory_space.h"

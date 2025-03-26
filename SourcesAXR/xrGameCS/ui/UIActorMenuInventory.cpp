@@ -1,3 +1,4 @@
+#include "pch_script.h"
 #include "stdafx.h"
 #include "UIActorMenu.h"
 #include "../inventory.h"
@@ -49,6 +50,9 @@
 #include "../Actor.h"
 #include "AdvancedXrayGameConstants.h"
 
+using namespace luabind;
+#include "../ai_space.h"
+#include "../../xrServerEntitiesCS/script_engine.h"
 
 void move_item_from_to(u16 from_id, u16 to_id, u16 what_id);
 
@@ -1337,6 +1341,7 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 		can_repair_wpn2 = item_in_wpn2_slot->GetCondition() < 0.9f && item_in_wpn2_slot->GetCondition() >= 0.4f && item_in_wpn2_slot->IsNecessaryItem(pRepairKit->cNameSect().c_str(), item_in_wpn2_slot->m_SuitableRepairKits);
 
 	LPCSTR act_str = NULL;
+	CGameObject* GO = smart_cast<CGameObject*>(item);
 
 	if (!item->Useful() || (pFilter && !pFilter->UseAllowed()))
 		return;
@@ -1590,6 +1595,36 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 		m_UIPropertiesBox->AddItem( act_str,  NULL, INVENTORY_EAT_ACTION );
 		b_show			= true;
 	}
+	
+	auto CustomEatAction = [&](const char* use_action_name, enum EUIMessages message)
+		{
+			LPCSTR functor_name = READ_IF_EXISTS(pSettings, r_string, GO->cNameSect(), use_action_name, 0);
+			if (functor_name)
+			{
+				luabind::functor<LPCSTR> funct1;
+				if (ai().script_engine().functor(functor_name, funct1))
+				{
+					act_str = funct1(GO->lua_game_object());
+					if (act_str)
+					{
+						m_UIPropertiesBox->AddItem(act_str, NULL, message);
+						b_show = true;
+					}
+				}
+			}
+		};
+
+	//Custom Use actions
+	CustomEatAction("use1_functor", INVENTORY_EAT2_ACTION);
+	CustomEatAction("use2_functor", INVENTORY_EAT3_ACTION);
+	CustomEatAction("use3_functor", INVENTORY_EAT4_ACTION);
+	CustomEatAction("use4_functor", INVENTORY_EAT5_ACTION);
+	CustomEatAction("use5_functor", INVENTORY_EAT6_ACTION);
+	CustomEatAction("use6_functor", INVENTORY_EAT7_ACTION);
+	CustomEatAction("use7_functor", INVENTORY_EAT8_ACTION);
+	CustomEatAction("use8_functor", INVENTORY_EAT9_ACTION);
+	CustomEatAction("use9_functor", INVENTORY_EAT10_ACTION);
+	CustomEatAction("use10_functor", INVENTORY_EAT11_ACTION);
 }
 
 void CUIActorMenu::PropertiesBoxForPlaying(PIItem item, bool& b_show)
@@ -1640,6 +1675,24 @@ void CUIActorMenu::ProcessPropertiesBoxClicked( CUIWindow* w, void* d )
 	}
 	CWeapon* weapon = smart_cast<CWeapon*>( item );
 
+	auto CustomEatAction = [&](const char* use_action_name)
+		{
+			CGameObject* GO = smart_cast<CGameObject*>(item);
+			LPCSTR functor_name = READ_IF_EXISTS(pSettings, r_string, GO->cNameSect(), use_action_name, 0);
+			if (functor_name)
+			{
+				luabind::functor<bool> funct1;
+				if (ai().script_engine().functor(functor_name, funct1))
+				{
+					if (funct1(GO->lua_game_object()))
+					{
+						HUD().GetUI()->UIGame()->ActorMenu().SetCurrentConsumable(cell_item);
+						TryUseItem(cell_item);
+					}
+				}
+			}
+		};
+
 	switch ( m_UIPropertiesBox->GetClickedItem()->GetTAG() )
 	{
 	case INVENTORY_TO_SLOT_ACTION:	ToSlot( cell_item, true  );		break;
@@ -1651,6 +1704,26 @@ void CUIActorMenu::ProcessPropertiesBoxClicked( CUIWindow* w, void* d )
 			TryUseItem(cell_item);
 			break;
 		}
+	case INVENTORY_EAT2_ACTION:
+		{ CustomEatAction("use1_action_functor"); break; }
+	case INVENTORY_EAT3_ACTION:
+		{ CustomEatAction("use2_action_functor"); break; }
+	case INVENTORY_EAT4_ACTION:
+		{ CustomEatAction("use3_action_functor"); break; }
+	case INVENTORY_EAT5_ACTION:
+		{ CustomEatAction("use4_action_functor"); break; }
+	case INVENTORY_EAT6_ACTION:
+		{ CustomEatAction("use5_action_functor"); break; }
+	case INVENTORY_EAT7_ACTION:
+		{ CustomEatAction("use6_action_functor"); break; }
+	case INVENTORY_EAT8_ACTION:
+		{ CustomEatAction("use7_action_functor"); break; }
+	case INVENTORY_EAT9_ACTION:
+		{ CustomEatAction("use8_action_functor"); break; }
+	case INVENTORY_EAT10_ACTION:
+		{ CustomEatAction("use9_action_functor"); break; }
+	case INVENTORY_EAT11_ACTION:
+		{ CustomEatAction("use10_action_functor"); break; }
 	case INVENTORY_DROP_ACTION:
 		{
 			void* dd = m_UIPropertiesBox->GetClickedItem()->GetData();
