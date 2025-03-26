@@ -88,6 +88,7 @@ void CMissile::Load(LPCSTR section)
 	m_ef_weapon_type	= READ_IF_EXISTS(pSettings,r_u32,section,"ef_weapon_type",u32(-1));
 
 	m_bIsContactGrenade = READ_IF_EXISTS(pSettings, r_bool, section, "is_contact_grenade", false);
+	m_safe_dist_to_explode = READ_IF_EXISTS(pSettings, r_float, section, "safe_dist_to_explode", 0);
 }
 
 BOOL CMissile::net_Spawn(CSE_Abstract* DC) 
@@ -440,7 +441,7 @@ void CMissile::OnAnimationEnd(u32 state)
 		{
 			setVisible(TRUE);
 
-			if (!isHUDAnimationExist("anm_throw_quick") && m_bQuickThrowActive)
+			if (m_bQuickThrowActive && !isHUDAnimationExist("anm_throw_quick"))
 				SwitchState(eThrowStart);
 			else
 				SwitchState(eIdle);
@@ -496,7 +497,7 @@ void CMissile::UpdateXForm	()
 		if(!E)				return	;
 
 		const CInventoryOwner	*parent = smart_cast<const CInventoryOwner*>(E);
-		if (parent && parent->use_simplified_visual())
+		if (!parent || parent && parent->use_simplified_visual())
 			return;
 
 		if (parent->attached(this))
@@ -584,9 +585,8 @@ void CMissile::Throw()
 	
 	m_fake_missile->m_throw_direction	= m_throw_direction;
 	m_fake_missile->m_throw_matrix		= m_throw_matrix;
-//.	m_fake_missile->m_throw				= true;
-//.	Msg("fm %d",m_fake_missile->ID());
-		
+	m_fake_missile->m_pOwner			= smart_cast<CGameObject*>(H_Parent());
+
 	CInventoryOwner						*inventory_owner = smart_cast<CInventoryOwner*>(H_Parent());
 	VERIFY								(inventory_owner);
 	if (inventory_owner->use_default_throw_force())
@@ -619,11 +619,11 @@ void CMissile::OnEvent(NET_Packet& P, u16 type)
 		} 
 		case GE_OWNERSHIP_REJECT : {
 			P.r_u16			(id);
-			bool IsFakeMissile = false;
+			//bool IsFakeMissile = false;
 			if (m_fake_missile && (id == m_fake_missile->ID()))
 			{
 				m_fake_missile	= NULL;
-				IsFakeMissile = true;
+				//IsFakeMissile = true;
 			}
 
 			CMissile		*missile = smart_cast<CMissile*>(Level().Objects.net_Find(id));
@@ -632,8 +632,8 @@ void CMissile::OnEvent(NET_Packet& P, u16 type)
 				break;
 			}
 			missile->H_SetParent(0,!P.r_eof() && P.r_u8());
-			if (IsFakeMissile && OnClient()) 
-				missile->set_destroy_time(m_dwDestroyTimeMax);
+			//if (IsFakeMissile && OnClient()) 
+			//	missile->set_destroy_time(m_dwDestroyTimeMax);
 			break;
 		}
 	}
@@ -851,9 +851,8 @@ void CMissile::ExitContactCallback(bool& do_colide, bool bo1, dContact& c, SGame
 	if(gd1&&gd2&&(CPhysicsShellHolder*)gd1->callback_data==gd2->ph_ref_object)	
 		do_colide=false;
 
-	SGameMtl* material = 0;
+	SGameMtl* material;
 	CMissile* l_this = gd1 ? smart_cast<CMissile*>(gd1->ph_ref_object) : NULL;
-	Fvector vUp;
 
 	if (!l_this)
 	{
@@ -867,15 +866,30 @@ void CMissile::ExitContactCallback(bool& do_colide, bool bo1, dContact& c, SGame
 	VERIFY(material);
 
 	if (material->Flags.is(SGameMtl::flPassable)) return;
+	
+	if (/*l_this && */ l_this->m_bIsContactGrenade)
+	{
+		Fvector l_pos;
+		l_pos.set(l_this->Position());
+		bool safe_to_explode = true;
+		float dist = l_this->m_pOwner->Position().distance_to(l_pos);
+		if (dist < l_this->m_safe_dist_to_explode)
+		{
+			safe_to_explode = false;
+		}
 
-	if (!l_this || !l_this->m_bIsContactGrenade) return;
-
-	CGameObject* l_pOwner = gd1 ? smart_cast<CGameObject*>(gd1->ph_ref_object) : NULL;
-
-	if (!l_pOwner || l_pOwner == (CGameObject*)l_this) l_pOwner = gd2 ? smart_cast<CGameObject*>(gd2->ph_ref_object) : NULL;
-
-	if (!l_pOwner || l_pOwner != l_this->m_pOwner)
-		l_this->set_destroy_time(5);
+		if (do_colide)
+		{
+			if (safe_to_explode)
+			{
+				l_this->set_destroy_time(10);
+			}
+			else
+			{
+				l_this->set_destroy_time(l_this->m_dwDestroyTimeMax);
+			}
+		}
+	}
 }
 
 bool CMissile::GetBriefInfo(II_BriefInfo& info)
