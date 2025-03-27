@@ -109,7 +109,10 @@ const shared_str CParticlesObject::Name()
 //----------------------------------------------------
 void CParticlesObject::Play(bool bHudMode)
 {
-	IParticleCustom* V			= smart_cast<IParticleCustom*>(renderable.visual); VERIFY(V);
+	IParticleCustom* V			= smart_cast<IParticleCustom*>(renderable.visual);
+
+	R_ASSERT					(V, "Attempt to play a null IParticleCustom!");
+
 	V->SetHudMode				(bHudMode);
 	V->Play						();
 	dwLastTime					= Device.dwTimeGlobal-33ul;
@@ -120,7 +123,10 @@ void CParticlesObject::Play(bool bHudMode)
 
 void CParticlesObject::play_at_pos(const Fvector& pos, BOOL xform)
 {
-	IParticleCustom* V			= smart_cast<IParticleCustom*>(renderable.visual); VERIFY(V);
+	IParticleCustom* V			= smart_cast<IParticleCustom*>(renderable.visual);
+
+	R_ASSERT					(V, "Attempt to play a null IParticleCustom!");
+
 	Fmatrix m; m.translate		(pos); 
 	V->UpdateParent				(m, m_zero_vel,xform);
 	V->Play						();
@@ -132,7 +138,16 @@ void CParticlesObject::play_at_pos(const Fvector& pos, BOOL xform)
 
 void CParticlesObject::Stop		(BOOL bDefferedStop)
 {
-	IParticleCustom* V			= smart_cast<IParticleCustom*>(renderable.visual); VERIFY(V);
+	IParticleCustom* V			= smart_cast<IParticleCustom*>(renderable.visual);
+
+	if (!V)
+	{
+#ifdef DEBUG
+		Msg("[CParticlesObject::Stop]: Attempt to stop a null IParticleCustom! The function has been canceled.");
+#endif
+		return;
+	}
+
 	V->Stop						(bDefferedStop);
 	m_bStopping					= true;
 }
