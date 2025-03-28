@@ -135,10 +135,6 @@ CWeapon::CWeapon(LPCSTR name)
 
 	m_bBlockSilencerWithGL	= false;
 
-	m_fWeaponOverheating	= 0.0f;
-	m_fWeaponOverheatingInc = 0.0f;
-	m_fWeaponOverheatingDec = 0.0f;
-
 	m_fOverheatingSubRpm	= 0.0f;
 	m_fOverheatingMisfire	= 0.0f;
 	m_fOverheatingCond		= 0.0f;
@@ -404,10 +400,12 @@ void CWeapon::UpdateFireDependencies_internal()
 			Fvector& fp				= vLoadedFirePoint;
 			Fvector& fp2			= vLoadedFirePoint2;
 			Fvector& sp				= vLoadedShellPoint;
+			Fvector& osp			= vLoadedOverheatingSmokePoint;
 
 			parent.transform_tiny	(m_current_firedeps.vLastFP,fp);
 			parent.transform_tiny	(m_current_firedeps.vLastFP2,fp2);
 			parent.transform_tiny	(m_current_firedeps.vLastSP,sp);
+			parent.transform_tiny	(m_current_firedeps.vLastOSP, osp);
 			
 			m_current_firedeps.vLastFD.set	(0.f,0.f,1.f);
 			parent.transform_dir	(m_current_firedeps.vLastFD);
@@ -1437,6 +1435,35 @@ void CWeapon::shedule_Update	(u32 dT)
 
 	// Inherited
 	inherited::shedule_Update	(dT);
+
+	if (H_Parent() == Level().CurrentEntity())
+	{
+		if (CActor* pA = smart_cast<CActor*>(H_Parent()))
+		{
+			if (!fis_zero(m_fWeaponOverheating))
+			{
+				m_fWeaponOverheating -= m_fWeaponOverheatingDec;
+				clamp(m_fWeaponOverheating, 0.0f, 1.0f);
+
+				if (this == pA->inventory().ActiveItem() && m_fWeaponOverheating >= 0.5f)
+				{
+					Fvector vel{};
+					PHGetLinearVell(vel);
+					StartOverheatingParticles(get_LastOSP(), vel);
+				}
+				else
+					StopOverheatingParticles();
+			}
+			else
+			{
+				if (this == pA->inventory().ActiveItem())
+					StopOverheatingParticles();
+			}
+
+			if (this == pA->inventory().ActiveItem())
+				g_pGamePersistent->devices_shader_data.cur_weapon_overheating = m_fWeaponOverheating;
+		}
+	}
 }
 
 void CWeapon::OnH_B_Independent	(bool just_before_destroy)
@@ -1603,29 +1630,6 @@ void CWeapon::UpdateCL		()
 				g_player_hud->StopBlendAnm(m_BlendAimStartCam.name.c_str());
 
 			g_player_hud->PlayBlendAnm(m_BlendAimIdleCam.name.c_str(), 2, m_BlendAimIdleCam.speed, m_BlendAimIdleCam.power, true, false);
-		}
-	}
-
-	if (H_Parent() == Level().CurrentEntity())
-	{
-		if (CActor* pA = smart_cast<CActor*>(H_Parent()); this == pA->inventory().ActiveItem())
-		{
-			if (!fis_zero(m_fWeaponOverheating))
-			{
-				m_fWeaponOverheating -= m_fWeaponOverheatingDec;
-				clamp(m_fWeaponOverheating, 0.0f, 1.0f);
-
-				if (m_fWeaponOverheating >= 0.5f)
-				{
-					Fvector vel{};
-					PHGetLinearVell(vel);
-					StartOverheatingParticles(get_LastFP(), vel);
-				}
-			}
-			else
-				StopOverheatingParticles();
-
-			g_pGamePersistent->devices_shader_data.cur_weapon_overheating = m_fWeaponOverheating;
 		}
 	}
 }

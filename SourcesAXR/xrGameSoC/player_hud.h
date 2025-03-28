@@ -181,7 +181,7 @@ struct script_layer
 
 struct hud_item_measures
 {
-	enum{e_fire_point=(1<<0), e_fire_point2=(1<<1), e_shell_point=(1<<2), e_16x9_mode_now=(1<<3)};
+	enum{e_fire_point=(1<<0), e_fire_point2=(1<<1), e_shell_point=(1<<2), e_overheating_smoke_point=(1<<3), e_16x9_mode_now=(1<<4)};
 	void							merge_measures_params();
 	Flags8							m_prop_flags;
 
@@ -196,6 +196,8 @@ struct hud_item_measures
 	Fvector							m_fire_point2_offset;
 	u16								m_shell_bone;
 	Fvector							m_shell_point_offset;
+	u16								m_overheating_smoke_bone;
+	Fvector							m_overheating_smoke_offset;
 
 	Fvector							m_hands_attach[2];//pos,rot
 

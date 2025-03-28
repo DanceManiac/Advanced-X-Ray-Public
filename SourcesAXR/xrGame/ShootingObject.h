@@ -169,6 +169,10 @@ protected:
 			void			StartOverheatingParticles(const Fvector& play_pos, const Fvector& parent_vel);
 			void			StopOverheatingParticles();
 
+			void			StartOverheatingAfterShootParticles();
+			void			StopOverheatingAfterShootParticles();
+			void			UpdateOverheatingAfterShootParticles();
+
 	//партиклы полосы от пули
 			void			StartShotParticles	();
 
@@ -179,6 +183,7 @@ protected:
 	shared_str				m_sShellParticles;
 public:
 	Fvector					vLoadedShellPoint;
+	Fvector					vLoadedOverheatingSmokePoint;
 	float					m_fPredBulletTime;
 	float					m_fTimeToAim;
 	BOOL					m_bUseAimBullet;
@@ -187,12 +192,16 @@ protected:
 	shared_str				m_sFlameParticlesCurrent;
 	//для выстрела 1м и 2м видом стрельбы
 	shared_str				m_sFlameParticles;
-	// Перегрев
-	shared_str				m_sOverheatingParticles;
+	// Имена партиклов перегрева
+	shared_str				m_sOverheatingFlameParticles;
+	shared_str				m_sOverheatingSmokeParticles;
+	shared_str				m_sOverheatingSmokeParticles_2;
 
-	//объект партиклов огня
+	//объекты партиклов огня и перегрева
 	CParticlesObject*		m_pFlameParticles;
-	CParticlesObject*		m_pOverheatingParticles;
+	CParticlesObject*		m_pOverheatingFlameParticles;
+	CParticlesObject*		m_pOverheatingSmokeParticles;
+	CParticlesObject*		m_pOverheatingSmokeParticles_2;
 
 	//имя пратиклов для дыма
 	shared_str				m_sSmokeParticlesCurrent;
@@ -200,6 +209,8 @@ protected:
 	
 	//имя партиклов следа от пули
 	shared_str				m_sShotParticles;
+
+	float					m_fWeaponOverheating, m_fWeaponOverheatingInc, m_fWeaponOverheatingDec;
 public:
 	virtual void				DumpActiveParams		(shared_str const & section_name, CInifile & dst_ini) const;
 };

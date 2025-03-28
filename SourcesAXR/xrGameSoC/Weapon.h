@@ -457,7 +457,6 @@ protected:
 
 	bool					m_bBlockSilencerWithGL;
 
-	float					m_fWeaponOverheating, m_fWeaponOverheatingInc, m_fWeaponOverheatingDec;
 	float					m_fOverheatingSubRpm, m_fOverheatingMisfire, m_fOverheatingCond;
 
 	bool					m_bIsRevolver;
@@ -531,6 +530,7 @@ public:
 	IC		const Fvector&	get_LastFP2				()			{ UpdateFireDependencies(); return m_current_firedeps.vLastFP2;	}
 	IC		const Fvector&	get_LastFD				()			{ UpdateFireDependencies(); return m_current_firedeps.vLastFD;	}
 	IC		const Fvector&	get_LastSP				()			{ UpdateFireDependencies(); return m_current_firedeps.vLastSP;	}
+	IC		const Fvector&	get_LastOSP				()			{ UpdateFireDependencies(); return m_current_firedeps.vLastOSP;	}
 
 	virtual const Fvector&	get_CurrentFirePoint	()			{ return get_LastFP();				}
 	virtual const Fvector&	get_CurrentFirePoint2	()			{ return get_LastFP2();				}

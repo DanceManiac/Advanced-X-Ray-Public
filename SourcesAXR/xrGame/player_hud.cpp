@@ -238,6 +238,15 @@ void attachable_hud_item::setup_firedeps(firedeps& fd)
 		fd.vLastSP.add(Device.vCameraPosition);
 		VERIFY(_valid(fd.vLastSP));
 	}
+
+	if (m_measures.m_prop_flags.test(hud_item_measures::e_overheating_smoke_point))
+	{
+		Fmatrix& fire_mat			= m_model->LL_GetTransform(m_measures.m_overheating_smoke_bone);
+		fire_mat.transform_tiny		(fd.vLastOSP, m_measures.m_overheating_smoke_offset);
+		m_item_transform.transform_tiny(fd.vLastOSP);
+		fd.vLastOSP.add(Device.vCameraPosition);
+		VERIFY(_valid(fd.vLastOSP));
+	}
 }
 
 bool  attachable_hud_item::need_renderable()
@@ -280,31 +289,50 @@ void hud_item_measures::load(const shared_str& sect_name, IKinematics* K)
 
 	shared_str					 bone_name;
 	m_prop_flags.set			 (e_fire_point,pSettings->line_exist(sect_name,"fire_bone"));
+	
 	if(m_prop_flags.test(e_fire_point))
 	{
 		bone_name				= pSettings->r_string(sect_name, "fire_bone");
 		m_fire_bone				= K->LL_BoneID(bone_name);
 		m_fire_point_offset		= pSettings->r_fvector3(sect_name, "fire_point");
-	}else
+	}
+	else
 		m_fire_point_offset.set(0,0,0);
 
 	m_prop_flags.set			 (e_fire_point2,pSettings->line_exist(sect_name,"fire_bone2"));
+	
 	if(m_prop_flags.test(e_fire_point2))
 	{
 		bone_name				= pSettings->r_string(sect_name, "fire_bone2");
 		m_fire_bone2			= K->LL_BoneID(bone_name);
 		m_fire_point2_offset	= pSettings->r_fvector3(sect_name, "fire_point2");
-	}else
+	}
+	else
 		m_fire_point2_offset.set(0,0,0);
 
 	m_prop_flags.set			 (e_shell_point,pSettings->line_exist(sect_name,"shell_bone"));
+	
 	if(m_prop_flags.test(e_shell_point))
 	{
 		bone_name				= pSettings->r_string(sect_name, "shell_bone");
 		m_shell_bone			= K->LL_BoneID(bone_name);
 		m_shell_point_offset	= pSettings->r_fvector3(sect_name, "shell_point");
-	}else
+	}
+	else
 		m_shell_point_offset.set(0,0,0);
+
+	LPCSTR overheating_bone_var = pSettings->line_exist(sect_name, "overheating_smoke_bone") ? "overheating_smoke_bone" : "fire_bone";
+	m_prop_flags.set			 (e_overheating_smoke_point, pSettings->line_exist(sect_name, overheating_bone_var));
+	
+	if(m_prop_flags.test(e_overheating_smoke_point))
+	{
+		bone_name				= pSettings->r_string(sect_name, overheating_bone_var);
+		m_overheating_smoke_bone = K->LL_BoneID(bone_name);
+		R_ASSERT4				(m_overheating_smoke_bone != BI_NONE, "!![%s] bone [%s] not found in weapon [%s]", bone_name.c_str(), sect_name.c_str());
+		m_overheating_smoke_offset = pSettings->r_fvector3(sect_name, overheating_bone_var);
+	}
+	else
+		m_overheating_smoke_offset.set(0.f, 0.f, 0.f);
 
 	m_hands_offset[0][0].set	(0,0,0);
 	m_hands_offset[1][0].set	(0,0,0);
@@ -342,6 +370,7 @@ void hud_item_measures::load(const shared_str& sect_name, IKinematics* K)
 	R_ASSERT2(pSettings->line_exist(sect_name,"fire_point")==pSettings->line_exist(sect_name,"fire_bone"),		sect_name.c_str());
 	R_ASSERT2(pSettings->line_exist(sect_name,"fire_point2")==pSettings->line_exist(sect_name,"fire_bone2"),	sect_name.c_str());
 	R_ASSERT2(pSettings->line_exist(sect_name,"shell_point")==pSettings->line_exist(sect_name,"shell_bone"),	sect_name.c_str());
+	R_ASSERT2(pSettings->line_exist(sect_name,"overheating_smoke_point") == pSettings->line_exist(sect_name,"overheating_smoke_bone"), sect_name.c_str());
 
 	m_prop_flags.set(e_16x9_mode_now,is_16x9);
 
