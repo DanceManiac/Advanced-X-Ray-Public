@@ -1,5 +1,5 @@
-#include "pch_script.h"
 #include "stdafx.h"
+#include "pch_script.h"
 #include "UIActorMenu.h"
 #include "../inventory.h"
 #include "../inventoryOwner.h"
@@ -50,9 +50,13 @@
 #include "../Actor.h"
 #include "AdvancedXrayGameConstants.h"
 
-using namespace luabind;
 #include "../ai_space.h"
-#include "../../xrServerEntitiesCS/script_engine.h"
+#include "script_engine.h"
+#include "script_game_object.h"
+#include "script_export_space.h"
+#include "script_storage.h"
+
+using namespace luabind;
 
 void move_item_from_to(u16 from_id, u16 to_id, u16 what_id);
 

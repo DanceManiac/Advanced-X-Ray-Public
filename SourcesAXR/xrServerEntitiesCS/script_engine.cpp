@@ -11,6 +11,7 @@
 #include "ai_space.h"
 #include "object_factory.h"
 #include "script_process.h"
+#include "script_storage.h"
 
 #ifdef USE_DEBUGGER
 #	ifndef USE_LUA_STUDIO
