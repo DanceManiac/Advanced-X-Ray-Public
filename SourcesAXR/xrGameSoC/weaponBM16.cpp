@@ -18,9 +18,10 @@ void CWeaponBM16::Load	(LPCSTR section)
 
 void CWeaponBM16::PlayReloadSound()
 {
-	bool b_both = HaveCartridgeInInventory(2);
+	bool b_single_bullet = ((m_magazine.size() == 1 || !HaveCartridgeInInventory(2)) &&
+		(m_set_next_ammoType_on_reload == u32(-1) || m_ammoType == m_set_next_ammoType_on_reload));
 
-	if (m_magazine.size() == 1 || !b_both)
+	if (b_single_bullet)
 		PlaySound("sndReload1", get_LastFP());
 	else
 		PlaySound("sndReload", get_LastFP());
@@ -110,8 +111,12 @@ void CWeaponBM16::PlayAnimBore()
 
 void CWeaponBM16::PlayAnimReload()
 {
-	VERIFY(GetState() == eReload);
-	if (m_magazine.size() == 1 || !HaveCartridgeInInventory(2))
+	bool b_single_bullet = ((m_magazine.size() == 1 || !HaveCartridgeInInventory(2)) &&
+		(m_set_next_ammoType_on_reload == u32(-1) || m_ammoType == m_set_next_ammoType_on_reload));
+
+	VERIFY(GetState()==eReload);
+
+	if (b_single_bullet)
 		PlayHUDMotionIfExists({"anim_reload_1", "anm_reload_1"}, TRUE, GetState());
 	else
 		PlayHUDMotionIfExists({"anim_reload", "anm_reload_2"}, TRUE, GetState());
