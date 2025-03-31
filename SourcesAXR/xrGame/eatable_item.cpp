@@ -40,6 +40,7 @@ CEatableItem::CEatableItem()
 	m_iPortionsNum			= 1;
 	use_cam_effector		= nullptr;
 	anim_sect				= nullptr;
+	anim_sect_exo			= nullptr;
 	m_bHasAnimation			= false;
 	m_bUnlimited			= false;
 	m_physic_item			= 0;
@@ -76,6 +77,7 @@ void CEatableItem::Load(LPCSTR section)
 	m_bHasAnimation				= READ_IF_EXISTS(pSettings, r_bool, section, "has_anim", false);
 	m_bUnlimited				= READ_IF_EXISTS(pSettings, r_bool, section, "unlimited_usage", false);
 	anim_sect					= READ_IF_EXISTS(pSettings, r_string, section, "hud_section", nullptr);
+	anim_sect_exo				= READ_IF_EXISTS(pSettings, r_string, section, "hud_section_exo", nullptr);
 	m_fEffectorIntensity		= READ_IF_EXISTS(pSettings, r_float, section, "cam_effector_intensity", 1.0f);
 	use_cam_effector			= READ_IF_EXISTS(pSettings, r_string, section, "use_cam_effector", nullptr);
 
@@ -193,8 +195,12 @@ void CEatableItem::StartAnimation()
 	m_bActivated = true;
 
 	CEffectorCam* effector = Actor()->Cameras().GetCamEffector((ECamEffectorType)effUseItem);
+	CCustomOutfit* cur_outfit = Actor()->GetOutfit();
 
-	bool m_bSingleHanded = READ_IF_EXISTS(pSettings, r_bool, anim_sect, "single_handed_anim", false);
+	bool has_lss = (cur_outfit && cur_outfit->m_bHasLSS);
+	LPCSTR cur_section = (anim_sect_exo && pSettings->section_exist(anim_sect_exo) && has_lss) ? anim_sect_exo : anim_sect;
+
+	bool m_bSingleHanded = READ_IF_EXISTS(pSettings, r_bool, cur_section, "single_handed_anim", false);
 	int m_iAnimHandsCnt = m_bSingleHanded ? 1 : 2;
 
 	m_bItmStartAnim = false;
@@ -202,31 +208,29 @@ void CEatableItem::StartAnimation()
 	g_actor_allow_ladder = false;
 	Actor()->m_bActionAnimInProcess = true;
 
-	CCustomOutfit* cur_outfit = Actor()->GetOutfit();
-
-	if (pSettings->line_exist(anim_sect, "anm_use"))
+	if (pSettings->line_exist(cur_section, "anm_use"))
 	{
 		string128 anim_name{};
-		strconcat(sizeof(anim_name), anim_name, "anm_use", (cur_outfit && cur_outfit->m_bHasLSS) ? "_exo" : (m_iPortionsNum == 1) ? "_last" : "");
+		strconcat(sizeof(anim_name), anim_name, "anm_use", (m_iPortionsNum == 1) ? "_last" : "");
 
-		LPCSTR attach_visual = READ_IF_EXISTS(pSettings, r_string, anim_sect, (cur_outfit && cur_outfit->m_bHasLSS) ? "item_visual_exo" : "item_visual", nullptr);
-		float anim_speed = READ_IF_EXISTS(pSettings, r_float, anim_sect, "anim_speed", 1.0f);
+		LPCSTR attach_visual = READ_IF_EXISTS(pSettings, r_string, cur_section, "item_visual", nullptr);
+		float anim_speed = READ_IF_EXISTS(pSettings, r_float, cur_section, "anim_speed", 1.0f);
 
-		if (pSettings->line_exist(anim_sect, anim_name))
+		if (pSettings->line_exist(cur_section, anim_name))
 		{
-			g_player_hud->script_anim_play(m_iAnimHandsCnt, anim_sect, anim_name, false, anim_speed, attach_visual);
-			m_iAnimLength = Device.dwTimeGlobal + g_player_hud->motion_length_script(anim_sect, anim_name, anim_speed);
+			g_player_hud->script_anim_play(m_iAnimHandsCnt, cur_section, anim_name, false, anim_speed, attach_visual);
+			m_iAnimLength = Device.dwTimeGlobal + g_player_hud->motion_length_script(cur_section, anim_name, anim_speed);
 		}
 		else
 		{
-			g_player_hud->script_anim_play(m_iAnimHandsCnt, anim_sect, "anm_use", false, anim_speed, attach_visual);
-			m_iAnimLength = Device.dwTimeGlobal + g_player_hud->motion_length_script(anim_sect, "anm_use", anim_speed);
+			g_player_hud->script_anim_play(m_iAnimHandsCnt, cur_section, "anm_use", false, anim_speed, attach_visual);
+			m_iAnimLength = Device.dwTimeGlobal + g_player_hud->motion_length_script(cur_section, "anm_use", anim_speed);
 		}
 
-		if (pSettings->line_exist(anim_sect, "hud_fov"))
+		if (pSettings->line_exist(cur_section, "hud_fov"))
 		{
 			last_hud_fov = psHUD_FOV_def;
-			psHUD_FOV_def = pSettings->r_float(anim_sect, "hud_fov");
+			psHUD_FOV_def = pSettings->r_float(cur_section, "hud_fov");
 		}
 
 		ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_FocusDoF();
@@ -236,7 +240,7 @@ void CEatableItem::StartAnimation()
 	if (!effector && use_cam_effector != nullptr)
 		AddEffector(Actor(), effUseItem, use_cam_effector, m_fEffectorIntensity);
 
-	if (pSettings->line_exist(anim_sect, "snd_using"))
+	if (pSettings->line_exist(cur_section, "snd_using"))
 	{
 		if (m_using_sound._feedback())
 			m_using_sound.stop();
@@ -244,12 +248,12 @@ void CEatableItem::StartAnimation()
 		string128 snd_var_name{};
 		shared_str snd_name{};
 
-		strconcat(sizeof(snd_var_name), snd_var_name, "snd_using", (cur_outfit && cur_outfit->m_bHasLSS) ? "_exo" : (m_iPortionsNum == 1) ? "_last" : "");
+		strconcat(sizeof(snd_var_name), snd_var_name, "snd_using", (m_iPortionsNum == 1) ? "_last" : "");
 
-		if (pSettings->line_exist(anim_sect, snd_var_name))
-			snd_name = pSettings->r_string(anim_sect, snd_var_name);
+		if (pSettings->line_exist(cur_section, snd_var_name))
+			snd_name = pSettings->r_string(cur_section, snd_var_name);
 		else
-			snd_name = pSettings->r_string(anim_sect, "snd_using");
+			snd_name = pSettings->r_string(cur_section, "snd_using");
 
 		m_using_sound.create(snd_name.c_str(), st_Effect, sg_SourceType);
 		m_using_sound.play(NULL, sm_2D);
@@ -262,6 +266,11 @@ void CEatableItem::UpdateUseAnim(CActor* actor)
 
 	CCustomDetector* pDet = smart_cast<CCustomDetector*>(actor->inventory().ItemFromSlot(DETECTOR_SLOT));
 	CEffectorCam* effector = actor->Cameras().GetCamEffector((ECamEffectorType)effUseItem);
+	CCustomOutfit* cur_outfit = Actor()->GetOutfit();
+
+	bool has_lss = (cur_outfit && cur_outfit->m_bHasLSS);
+	LPCSTR cur_section = (anim_sect_exo && pSettings->section_exist(anim_sect_exo) && has_lss) ? anim_sect_exo : anim_sect;
+
 	bool IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
 
 	if (!Actor()->inventory_disabled() && m_bItmStartAnim)
@@ -274,7 +283,7 @@ void CEatableItem::UpdateUseAnim(CActor* actor)
 	{
 		m_using_sound.stop();
 
-		if (pSettings->line_exist(anim_sect, "hud_fov") && last_hud_fov > 0.0f)
+		if (pSettings->line_exist(cur_section, "hud_fov") && last_hud_fov > 0.0f)
 			psHUD_FOV_def = last_hud_fov;
 	}
 
@@ -293,7 +302,7 @@ void CEatableItem::UpdateUseAnim(CActor* actor)
 			g_actor_allow_ladder = true;
 			actor->m_bActionAnimInProcess = false;
 
-			if (pSettings->line_exist(anim_sect, "hud_fov") && last_hud_fov > 0.0f)
+			if (pSettings->line_exist(cur_section, "hud_fov") && last_hud_fov > 0.0f)
 				psHUD_FOV_def = last_hud_fov;
 
 			if (effector)
