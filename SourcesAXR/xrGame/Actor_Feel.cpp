@@ -76,17 +76,17 @@ ICF static BOOL info_trace_callback(collide::rq_result& result, LPVOID params)
 	BOOL& bOverlaped	= *(BOOL*)params;
 	if(result.O)
 	{
-		if (Level().CurrentEntity()==result.O)
+		if (Level().CurrentEntity() == result.O)
 		{ //ignore self-actor
 			return			TRUE;
-		}else
+		}
+		else
 		{ //check obstacle flag
 			if(result.O->spatial.type&STYPE_OBSTACLE)
 				bOverlaped			= TRUE;
-
-			return			TRUE;
 		}
-	}else
+	}
+	else
 	{
 		//получить треугольник и узнать его материал
 		CDB::TRI* T		= Level().ObjectSpace.GetStaticTris()+result.element;

@@ -86,19 +86,20 @@ void CActor::PickupModeOff()
 ICF static BOOL info_trace_callback(collide::rq_result& result, LPVOID params)
 {
 	BOOL& bOverlaped	= *(BOOL*)params;
-	if(result.O){
-		if (Level().CurrentEntity()!=result.O){	
-//			bOverlaped		= TRUE;
-			return			TRUE;//FALSE;
-		}else{
+	
+	if(result.O)
+	{
+		if (Level().CurrentEntity() == result.O)
 			return			TRUE;
-		}
-	}else{
+	}
+	else
+	{
 		//получить треугольник и узнать его материал
 		CDB::TRI* T		= Level().ObjectSpace.GetStaticTris()+result.element;
 		if (GMLib.GetMaterialByIdx(T->material)->Flags.is(SGameMtl::flPassable)) 
 			return TRUE;
-	}	
+	}
+
 	bOverlaped			= TRUE;
 	return				FALSE;
 }
