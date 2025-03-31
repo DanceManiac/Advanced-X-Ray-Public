@@ -560,7 +560,7 @@ player_hud::player_hud()
 
 	m_current_motion_def	= nullptr;
 	
-	if (pSettings->section_exist("hud_movement_layers"))
+	if (pAdvancedSettings->section_exist("hud_movement_layers"))
 	{
 		m_movement_layers.reserve(move_anms_end);
 
