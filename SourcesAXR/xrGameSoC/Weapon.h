@@ -14,7 +14,6 @@
 #include "ui\UIWindow.h"
 #include "xrServer_Objects_ALife_Items.h"
 #include "WeaponAttaches.h"
-#include "ui_base.h"
 
 #include "ui_base.h"
 

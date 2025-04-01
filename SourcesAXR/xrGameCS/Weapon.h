@@ -14,7 +14,6 @@
 
 #include "CameraRecoil.h"
 #include "WeaponAttaches.h"
-#include "ui_base.h"
 
 #include "ui_base.h"
 
