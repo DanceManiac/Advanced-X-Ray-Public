@@ -684,6 +684,50 @@ void CKinematicsAnimated::Load(const char* N, IReader *data, u32 dwFlags)
     m_Partition			= NULL;
 	Update_LastTime 	= 0;
 
+	const auto loadOMF = [&](LPCSTR _path)
+	{
+		string_path	fn;
+
+		if (!FS.exist(fn, "$level$", _path))
+		{
+			if (!FS.exist(fn, "$game_meshes$", _path))
+			{
+				FS_FileSet fset;
+				FS.file_list(fset, "$game_meshes$", FS_ListFiles, _path);
+
+				if (strstr(Core.Params, "-mfs_nfmc"))
+				{
+					FS.file_list(fset, "$game_meshes$", FS_ListFiles, _path); // FS_FileSet is actually a set )
+				}
+
+	#ifdef _EDITOR
+				Msg("!Can't find motion file '%s'.", _path);
+				return;
+	#else
+				Debug.fatal(DEBUG_INFO, "Can't find motion file '%s'.", _path);
+	#endif
+			}
+		}
+		// Check compatibility
+		m_Motions.push_back(SMotionsSlot());
+		bool create_res = true;
+
+		if (!g_pMotionsContainer->has(_path)) //optimize fs operations
+		{
+			IReader* MS = FS.r_open(fn);
+			create_res = m_Motions.back().motions.create(_path, MS, bones);
+			FS.r_close(MS);
+		}
+
+		if (create_res)
+			m_Motions.back().motions.create(_path, NULL, bones);
+		else
+		{
+			m_Motions.pop_back();
+			Msg("! error in model [%s]. Unable to load motion file '%s'.", N, _path);
+		}
+	};
+
 	// Load animation
     if (data->find_chunk(OGF_S_MOTION_REFS))
     {
@@ -696,46 +740,26 @@ void CKinematicsAnimated::Load(const char* N, IReader *data, u32 dwFlags)
         for (u32 k=0; k<set_cnt; ++k)
         {
         	_GetItem	(items_nm,k,nm);
-            xr_strcat		(nm,".omf");
-            string_path	fn;
-            if (!FS.exist(fn, "$level$", nm))
-            {
-                if (!FS.exist(fn, "$game_meshes$", nm))
-                {
-					FS_FileSet fset;
-					FS.file_list(fset, "$game_meshes$", FS_ListFiles, nm);
 
-					if (strstr(Core.Params, "-mfs_nfmc"))
-					{
-						FS.file_list(fset, "$game_meshes$", FS_ListFiles, nm); // FS_FileSet is actually a set )
-					}
-
-#ifdef _EDITOR
-                    Msg			("!Can't find motion file '%s'.",nm);
-                    return;
-#else
-                    Debug.fatal	(DEBUG_INFO,"Can't find motion file '%s'.",nm);
-#endif
-                }
-            }
-            // Check compatibility
-            m_Motions.push_back				(SMotionsSlot());
-            bool create_res = true;
-            if( !g_pMotionsContainer->has(nm) ) //optimize fs operations
+			if (strstr(nm, "\\*.omf"))
 			{
-				IReader* MS						= FS.r_open(fn);
-				create_res = m_Motions.back().motions.create	(nm,MS,bones);
-				FS.r_close						(MS);
+				FS_FileSet fset;
+				FS.file_list(fset, "$game_meshes$", FS_ListFiles, nm);
+				FS.file_list(fset, "$level$", FS_ListFiles, nm);
+
+				m_Motions.reserve(fset.size() - 1);
+
+				for (FS_FileSet::iterator it = fset.begin(); it != fset.end(); it++)
+					loadOMF((*it).name.c_str());
+
+				continue;
 			}
-            if(create_res)
-				m_Motions.back().motions.create	(nm,NULL,bones);
-            else{
-            	m_Motions.pop_back	();
-                Msg					("! error in model [%s]. Unable to load motion file '%s'.", N, nm);
-                }
+
+            xr_strcat		(nm,".omf");
+			loadOMF			(nm);
     	}
-    }else
-    if (data->find_chunk(OGF_S_MOTION_REFS2))
+    }
+	else if (data->find_chunk(OGF_S_MOTION_REFS2))
     {
 		u32 set_cnt		= data->r_u32();
 		m_Motions.reserve(set_cnt);
@@ -743,45 +767,26 @@ void CKinematicsAnimated::Load(const char* N, IReader *data, u32 dwFlags)
         for (u32 k=0; k<set_cnt; ++k)
         {
 			data->r_stringZ	(nm,sizeof(nm));
-            xr_strcat			(nm,".omf");
-            string_path	fn;
-            if (!FS.exist(fn, "$level$", nm))
-            {
-                if (!FS.exist(fn, "$game_meshes$", nm))
-                {
-					FS_FileSet fset;
-					FS.file_list(fset, "$game_meshes$", FS_ListFiles, nm);
 
-					if (strstr(Core.Params, "-mfs_nfmc"))
-					{
-						FS.file_list(fset, "$game_meshes$", FS_ListFiles, nm); // FS_FileSet is actually a set )
-					}
-
-#ifdef _EDITOR
-                    Msg			("!Can't find motion file '%s'.",nm);
-                    return;
-#else
-                    Debug.fatal	(DEBUG_INFO,"Can't find motion file '%s'.",nm);
-#endif
-                }
-            }
-            // Check compatibility
-            m_Motions.push_back				(SMotionsSlot());
-            bool create_res = true;
-            if( !g_pMotionsContainer->has(nm) ) //optimize fs operations
+			if (strstr(nm, "\\*.omf"))
 			{
-				IReader* MS						= FS.r_open(fn);
-				create_res = m_Motions.back().motions.create	(nm,MS,bones);
-				FS.r_close						(MS);
+				FS_FileSet fset;
+				FS.file_list(fset, "$game_meshes$", FS_ListFiles, nm);
+				FS.file_list(fset, "$level$", FS_ListFiles, nm);
+
+				m_Motions.reserve(fset.size() - 1);
+
+				for (FS_FileSet::iterator it = fset.begin(); it != fset.end(); it++)
+					loadOMF((*it).name.c_str());
+
+				continue;
 			}
-            if(create_res)
-				m_Motions.back().motions.create	(nm,NULL,bones);
-            else{
-            	m_Motions.pop_back	();
-                Msg					("! error in model [%s]. Unable to load motion file '%s'.", N, nm);
-                }
+
+            xr_strcat			(nm,".omf");
+			loadOMF				(nm);
     	}
-    }else    
+    }
+	else    
 	{
 		string_path	nm;
 		strconcat			(sizeof(nm),nm,N,".ogf");
