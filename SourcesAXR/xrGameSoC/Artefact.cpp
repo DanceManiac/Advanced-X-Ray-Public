@@ -338,6 +338,7 @@ void CArtefact::save(NET_Packet &packet)
 	save_data(m_fJumpSpeed, packet);
 	save_data(m_fWalkAccel, packet);
 	save_data(m_iAfRank, packet);
+	save_data(m_bInContainer, packet);
 }
 
 void CArtefact::load(IReader &packet)
@@ -363,6 +364,7 @@ void CArtefact::load(IReader &packet)
 	load_data(m_fJumpSpeed, packet);
 	load_data(m_fWalkAccel, packet);
 	load_data(m_iAfRank, packet);
+	load_data(m_bInContainer, packet);
 }
 
 

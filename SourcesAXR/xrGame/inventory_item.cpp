@@ -531,16 +531,16 @@ void CInventoryItem::save(NET_Packet &packet)
 	packet.w_float			(m_fCurrentChargeLevel);
 //--	save_data				(m_upgrades, packet);
 
-	if (object().H_Parent()) {
-		packet.w_u8			(0);
-		return;
-	}
-
 	CArtefact* artefact = smart_cast<CArtefact*>(this);
 
 	if (artefact && artefact->IsInContainer())
 	{
 		packet.w_u8(0);
+		return;
+	}
+
+	if (object().H_Parent()) {
+		packet.w_u8			(0);
 		return;
 	}
 
