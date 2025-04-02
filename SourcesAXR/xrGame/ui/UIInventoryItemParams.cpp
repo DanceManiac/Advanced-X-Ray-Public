@@ -222,7 +222,7 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 	bool ShowChargeArtDet = GameConstants::GetArtDetectorUseBattery();
 	bool ShowChargeAnomDet = GameConstants::GetAnoDetectorUseBattery();
 	
-	if (ShowChargeTorch && pTorch || ShowChargeArtDet && pDet /*|| ShowChargeAnomDet && pAnomDet*/ || pBattery)
+	if (ShowChargeTorch && pTorch || ShowChargeArtDet && pDet || ShowChargeAnomDet && pAnomDet || pBattery)
 	{
 		if (pBattery)
 			val = pBattery->GetCurrentChargeLevel() <= 0 ? 0.f : pBattery->GetCurrentChargeLevel() * 100.f;
