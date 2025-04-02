@@ -206,6 +206,33 @@ int compare_naturally(const void* a_ptr, const void* b_ptr)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+static bool stristr(const xr_string& str, const char* search)
+{
+	if (search[0] == '\0')
+		return true;
+
+	const char* s = str.c_str();
+	const char* p = search;
+
+	for (; *s != '\0'; s++)
+	{
+		if (tolower(*s) == tolower(*p))
+		{
+			const char* s2 = s + 1;
+			const char* p2 = p + 1;
+			while (*s2 != '\0' && *p2 != '\0' && tolower(*s2) == tolower(*p2))
+			{
+				s2++;
+				p2++;
+			}
+
+			if (*p2 == '\0')
+				return true;
+		}
+	}
+	return false;
+}
+
 bool editTexture(const char* label, shared_str& texName)
 {
 	char tex[100];
@@ -230,6 +257,10 @@ bool editTexture(const char* label, shared_str& texName)
 		_splitpath(tex, nullptr, dir, fn, nullptr);
 		strconcat(sizeof(fn), fn, fn, ".dds");
 		static xr_map<xr_string, xr_vector<xr_string>> dirs;
+		static char searchStr[128] = "";
+
+		ImGui::InputText(toUtf8(CStringTable().translate("st_spawner_search").c_str()).c_str(), searchStr, IM_ARRAYSIZE(searchStr));
+
 		auto filtered = dirs[dir];
 		if (filtered.empty()) {
 			xr_vector<LPSTR>* files = FS.file_list_open("$game_textures$", dir, FS_ListFiles);
@@ -244,25 +275,39 @@ bool editTexture(const char* label, shared_str& texName)
 			}
 			FS.file_list_close(files);
 		}
+
+		xr_vector<xr_string> displayList;
+		for (const auto& name : filtered) {
+			if (searchStr[0] == '\0' || stristr(name, searchStr)) {
+				displayList.push_back(name);
+			}
+		}
+
 		int cur = -1;
-		for (size_t i = 0; i != filtered.size(); i++)
-			if (filtered[i] == fn) {
-				cur = i;
+		for (size_t i = 0; i < displayList.size(); i++)
+			if (displayList[i] == fn) {
+				cur = (int)i;
 				break;
 			}
+
 		if (ImGui_ListBox("", &cur,
 			[](void* data, int idx, const char** out_text) -> bool {
 				xr_vector<xr_string>* textures = (xr_vector<xr_string>*)data;
+				if (idx < 0 || idx >= (int)textures->size()) return false;
 				*out_text = (*textures)[idx].c_str();
 				return true;
 			},
-			&filtered, filtered.size(), ImVec2(-1.0f, -20.0f))) {
-			string_path newFn;
-			_splitpath(filtered[cur].c_str(), nullptr, nullptr, newFn, nullptr);
-			strconcat(100, tex, dir, newFn);
-			texName = tex;
-			changed = true;
+			&displayList, (int)displayList.size(), ImVec2(-1.0f, -20.0f)))
+		{
+			if (cur >= 0 && cur < (int)displayList.size()) {
+				string_path newFn;
+				_splitpath(displayList[cur].c_str(), nullptr, nullptr, newFn, nullptr);
+				strconcat(100, tex, dir, newFn);
+				texName = tex;
+				changed = true;
+			}
 		}
+
 		if (ImGui::Button(toUtf8(CStringTable().translate("st_weather_editor_btn_ok").c_str()).c_str(), ImVec2(120, 0))) {
 			ImGui::CloseCurrentPopup();
 		}
