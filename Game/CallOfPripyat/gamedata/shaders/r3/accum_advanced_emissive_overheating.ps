@@ -15,17 +15,22 @@ uniform float4 weapon_params; // x - overheating, yzq - null
 float4 main( p_flat I ) : SV_Target
 {
 	// diffuse
-	float3 D = tbase(I.tcdh); // IN: rgb.a
-	D	= SRGBToLinear(D);
+	float3 baseColor = tbase(I.tcdh); // IN: rgb.a
+	baseColor	= SRGBToLinear(baseColor);
+	
+	float h = I.position.w; // Гемисфера
+    float ms = 0; // Статический свет (если нужно - I.tcdh.a)
+	
+	float3 litDiffuse = baseColor * (h + ms); // Диффуз с учетом света
 	
 	float4 lightmapChannels = s_lightmap.Sample(smp_base, I.tcdh).rgba;
 	float brightness = smoothstep(0.5, 1.0, weapon_params.x) * lightmapChannels.w;
 	
 	float3 glowColor = lightmapChannels.xyz;
 	
-	float4 color = float4(D.rgb, 1);
+	//float4 color = float4(baseColor.rgb, 1);
 
-    float3 finalColor = (D.rgb + glowColor) * brightness;
+    float3 finalColor = (litDiffuse + glowColor) * brightness;
 
-    return float4(finalColor, brightness);
+    return float4(finalColor, 0.0);
 }
