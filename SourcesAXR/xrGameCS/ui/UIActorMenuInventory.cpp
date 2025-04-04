@@ -1890,6 +1890,9 @@ void CUIActorMenu::ProcessPropertiesBoxClicked( CUIWindow* w, void* d )
 
 			af_container->PutArtefactToContainer(*artefact);
 
+			if (m_currMenuMode == mmDeadBodySearch)
+				RemoveItemFromList(m_pDeadBodyBagList, item);
+
 			artefact->DestroyObject();
 
 			break;
