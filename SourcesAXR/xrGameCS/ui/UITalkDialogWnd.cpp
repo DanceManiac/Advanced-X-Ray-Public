@@ -5,9 +5,15 @@
 #include "UIXmlInit.h"
 #include "UIScrollView.h"
 #include "UI3tButton.h"
-#include "../UI.h"
+#include "UIInventoryUtilities.h"
 #include "UITalkWnd.h"
 #include "UIHelper.h"
+
+#include "../UI.h"
+#include "../game_news.h"
+#include "../level.h"
+#include "../actor.h"
+#include "../alife_registry_wrappers.h"
 #include "dinput.h"
 
 #define				TALK_XML				"talk.xml"
@@ -46,23 +52,23 @@ void CUITalkDialogWnd::InitTalkDialogWnd()
 	AttachChild					(&UIOurIcon);
 	AttachChild					(&UIOthersIcon);
 
-	// Фрейм с нащими фразами
+	// Р¤СЂРµР№Рј СЃ РЅР°С‰РёРјРё С„СЂР°Р·Р°РјРё
 	AttachChild					(&UIDialogFrameBottom);
 	CUIXmlInit::InitStatic		(*m_uiXml, "frame_bottom", 0, &UIDialogFrameBottom);
 
-	//основной фрейм диалога
+	//РѕСЃРЅРѕРІРЅРѕР№ С„СЂРµР№Рј РґРёР°Р»РѕРіР°
 	AttachChild					(&UIDialogFrameTop);
 	CUIXmlInit::InitStatic		(*m_uiXml, "frame_top", 0, &UIDialogFrameTop);
 
 
-	//Ответы
+	//РћС‚РІРµС‚С‹
 	UIAnswersList				= xr_new<CUIScrollView>();
 	UIAnswersList->SetAutoDelete(true);
 	UIDialogFrameTop.AttachChild(UIAnswersList);
 	CUIXmlInit::InitScrollView	(*m_uiXml, "answers_list", 0, UIAnswersList);
 	UIAnswersList->SetWindowName("---UIAnswersList");
 
-	//Вопросы
+	//Р’РѕРїСЂРѕСЃС‹
 	UIQuestionsList				= xr_new<CUIScrollView>();
 	UIQuestionsList->SetAutoDelete(true);
 	UIDialogFrameBottom.AttachChild(UIQuestionsList);
@@ -70,7 +76,7 @@ void CUITalkDialogWnd::InitTalkDialogWnd()
 	UIQuestionsList->SetWindowName("---UIQuestionsList");
 
 
-	//кнопка перехода в режим торговли
+	//РєРЅРѕРїРєР° РїРµСЂРµС…РѕРґР° РІ СЂРµР¶РёРј С‚РѕСЂРіРѕРІР»Рё
 	AttachChild					(&UIToTradeButton);
 	CUIXmlInit::Init3tButtonEx	(*m_uiXml, "button", 0, &UIToTradeButton);
 	UIToTradeButton.SetWindowName("trade_btn");
@@ -83,10 +89,10 @@ void CUITalkDialogWnd::InitTalkDialogWnd()
 	m_btn_pos[1]				= UIToExitButton.GetWndPos();
 	m_btn_pos[2].x				= (m_btn_pos[0].x+m_btn_pos[1].x)/2.0f;
 	m_btn_pos[2].y				= m_btn_pos[0].y;
-	// шрифт для индикации имени персонажа в окне разговора
+	// С€СЂРёС„С‚ РґР»СЏ РёРЅРґРёРєР°С†РёРё РёРјРµРЅРё РїРµСЂСЃРѕРЅР°Р¶Р° РІ РѕРєРЅРµ СЂР°Р·РіРѕРІРѕСЂР°
 	CUIXmlInit::InitFont		(*m_uiXml, "font", 0, m_iNameTextColor, m_pNameTextFont);
 
-	CGameFont * pFont			= NULL;
+	CGameFont * pFont			= nullptr;
 	CUIXmlInit::InitFont		(*m_uiXml, "font", 1, m_uOurReplicsColor, pFont);
 
 
@@ -98,8 +104,6 @@ void CUITalkDialogWnd::InitTalkDialogWnd()
 	AddCallback					("upgrade_btn",BUTTON_CLICKED,CUIWndCallback::void_function(this, &CUITalkDialogWnd::OnUpgradeClicked));
 	AddCallback					("exit_btn",BUTTON_CLICKED,CUIWndCallback::void_function(this, &CUITalkDialogWnd::OnExitClicked));
 }
-
-#include "UIInventoryUtilities.h"
 	
 void CUITalkDialogWnd::Show()
 {
@@ -158,8 +162,8 @@ void CUITalkDialogWnd::SetTradeMode()
 	OnTradeClicked( &UIToTradeButton, 0 );
 }
 
-//пересылаем сообщение родительскому окну для обработки
-//и фильтруем если оно пришло от нашего дочернего окна
+//РїРµСЂРµСЃС‹Р»Р°РµРј СЃРѕРѕР±С‰РµРЅРёРµ СЂРѕРґРёС‚РµР»СЊСЃРєРѕРјСѓ РѕРєРЅСѓ РґР»СЏ РѕР±СЂР°Р±РѕС‚РєРё
+//Рё С„РёР»СЊС‚СЂСѓРµРј РµСЃР»Рё РѕРЅРѕ РїСЂРёС€Р»Рѕ РѕС‚ РЅР°С€РµРіРѕ РґРѕС‡РµСЂРЅРµРіРѕ РѕРєРЅР°
 void CUITalkDialogWnd::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 {
 	CUIWndCallback::OnEvent(pWnd, msg, pData);
@@ -176,8 +180,7 @@ void CUITalkDialogWnd::ClearQuestions()
 	UIQuestionsList->Clear();
 }
 
-
-void CUITalkDialogWnd::AddQuestion(LPCSTR str, LPCSTR value, int number, bool b_finalizer)
+void CUITalkDialogWnd::AddQuestion(LPCSTR str, LPCSTR value, int number, SPhraseInfo phInfo)
 {
 	CUIQuestionItem* itm			= xr_new<CUIQuestionItem>(m_uiXml,"question_item");
 	itm->Init						(value, str);
@@ -195,7 +198,7 @@ void CUITalkDialogWnd::AddQuestion(LPCSTR str, LPCSTR value, int number, bool b_
 	if (number < 10)
 		itm->m_text->SetAccelerator(DIK_ESCAPE + number, 0);
 	
-	if (b_finalizer)
+	if (phInfo.bFinalizer)
 	{
 		itm->m_text->SetAccelerator(kQUIT, 2);
 		itm->m_text->SetAccelerator(kUSE, 3);
@@ -205,11 +208,6 @@ void CUITalkDialogWnd::AddQuestion(LPCSTR str, LPCSTR value, int number, bool b_
 	UIQuestionsList->AddWindow		(itm, true);
 	Register						(itm);
 }
-
-#include "../game_news.h"
-#include "../level.h"
-#include "../actor.h"
-#include "../alife_registry_wrappers.h"
 
 void CUITalkDialogWnd::AddAnswer(LPCSTR SpeakerName, LPCSTR str, bool bActor)
 {
