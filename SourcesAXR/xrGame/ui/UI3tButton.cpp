@@ -8,27 +8,33 @@ CUI3tButton::CUI3tButton()
 	m_bTextureEnable				= false;
 	m_bUseTextColor[S_Disabled]		= true;
 	m_bUseTextColor[S_Highlighted]	= false;
-	m_bUseTextColor[S_Touched]		= false;	
+	m_bUseTextColor[S_Touched]		= false;
 
 	m_dwTextColor[S_Enabled] 		= 0xFFFFFFFF;
 	m_dwTextColor[S_Disabled] 		= 0xFFAAAAAA;
 	m_dwTextColor[S_Highlighted]	= 0xFFFFFFFF;
 	m_dwTextColor[S_Touched] 		= 0xFFFFFFFF;
 
-	m_background		= NULL;
-	m_back_frameline	= NULL;
-	m_frameline_mode	= false;
+	m_background					= nullptr;
+	m_back_frameline				= nullptr;
+	m_frameline_mode				= false;
+	m_BtnStatic						= nullptr;
 }
 
 
 CUI3tButton::~CUI3tButton()
 {
+	if (m_BtnStatic)
+	{
+		DetachChild(m_BtnStatic);
+		xr_delete(m_BtnStatic);
+	}
 }
 
 void CUI3tButton::OnClick()
 {
-    CUIButton::OnClick	();
-    PlaySoundT			();
+	CUIButton::OnClick	();
+	PlaySoundT			();
 }
 
 bool CUI3tButton::OnMouseDown(int mouse_btn)
@@ -60,13 +66,13 @@ void CUI3tButton::InitSoundT(LPCSTR sound_file)
 void CUI3tButton::PlaySoundT()
 {
 	if (m_sound_t._handle())
-        m_sound_t.play(NULL, sm_2D);
+		m_sound_t.play(nullptr, sm_2D);
 }
 
 void CUI3tButton::PlaySoundH()
 {
 	if (m_sound_h._handle())
-		m_sound_h.play(NULL, sm_2D);
+		m_sound_h.play(nullptr, sm_2D);
 }
 void CUI3tButton::InitButton(Fvector2 pos, Fvector2 size)
 {
@@ -92,8 +98,8 @@ void CUI3tButton::InitButton(Fvector2 pos, Fvector2 size)
 		m_background->SetWndPos			(Fvector2().set(0,0));
 		m_background->SetWndSize		(size);
 	}
-    CUIButton::SetWndPos			(pos);
-    CUIButton::SetWndSize			(size);
+	CUIButton::SetWndPos			(pos);
+	CUIButton::SetWndSize			(size);
 }
 
 void CUI3tButton::SetWidth(float width)
@@ -259,4 +265,16 @@ void CUI3tButton::Update()
 	}
 
 	TextItemControl()->SetTextColor		(textColor);
+}
+
+void CUI3tButton::AddStatic()
+{
+	if (!m_BtnStatic)
+	{
+		m_BtnStatic = xr_new<CUIStatic>();
+		m_BtnStatic->SetWndSize(Fvector2().set(-(GetWidth() / 2.f), 0.f));
+		m_BtnStatic->SetWndPos(Fvector2().set(80.f, 10.f));
+		m_BtnStatic->TextItemControl()->SetTextComplexMode(true);
+		AttachChild(m_BtnStatic);
+	}
 }
