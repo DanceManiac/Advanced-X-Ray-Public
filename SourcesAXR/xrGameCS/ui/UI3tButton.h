@@ -51,7 +51,7 @@ public:
 	IC void			SetCheck					(bool ch)
 	{
 		m_eButtonState = ch ? BUTTON_PUSHED : BUTTON_NORMAL;
-		SeveBackUpValue();
+		SaveBackUpValue();
 	}*/
 	
 	// behavior

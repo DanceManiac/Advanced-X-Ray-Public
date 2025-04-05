@@ -1,5 +1,5 @@
-// UICheckButton.cpp: класс кнопки, имеющей 2 состояния:
-// с галочкой и без
+// UICheckButton.cpp: РєР»Р°СЃСЃ РєРЅРѕРїРєРё, РёРјРµСЋС‰РµР№ 2 СЃРѕСЃС‚РѕСЏРЅРёСЏ:
+// СЃ РіР°Р»РѕС‡РєРѕР№ Рё Р±РµР·
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
@@ -11,7 +11,7 @@ CUICheckButton::CUICheckButton(void)
 {	
 	SetTextAlignment(CGameFont::alLeft);
 	m_bCheckMode = true;
-	m_pDependControl = NULL;
+	m_pDependControl = nullptr;
 }
 
 CUICheckButton::~CUICheckButton(void)
@@ -56,7 +56,7 @@ void CUICheckButton::InitTexture()
 	CUI3tButton::SetTextX(r.width());	
 }
 
-void CUICheckButton::SeveBackUpValue()
+void CUICheckButton::SaveBackUpValue()
 {
 	b_backup_val = GetCheck();
 }

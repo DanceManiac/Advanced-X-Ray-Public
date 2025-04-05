@@ -19,7 +19,7 @@ public:
 	virtual void	SetCurrentValue			();
 	virtual void	SaveValue				();
 	virtual bool	IsChanged				();
-	virtual void 	SeveBackUpValue			();
+	virtual void 	SaveBackUpValue			();
 	virtual void 	Undo					();
 
 	virtual void 	OnFocusReceive		();
@@ -34,7 +34,7 @@ public:
 
 			void	set_hint_wnd			(UIHint* hint_wnd);
 
-	//состояние кнопки
+	//СЃРѕСЃС‚РѕСЏРЅРёРµ РєРЅРѕРїРєРё
 	IC	bool	GetCheck()
 	{
 		return m_eButtonState == BUTTON_PUSHED;
@@ -42,7 +42,7 @@ public:
 	IC	void	SetCheck(bool ch)
 	{
 		m_eButtonState = ch ? BUTTON_PUSHED : BUTTON_NORMAL;
-		SeveBackUpValue();
+		SaveBackUpValue();
 	}
 
 	void SetDependControl(CUIWindow* pWnd);

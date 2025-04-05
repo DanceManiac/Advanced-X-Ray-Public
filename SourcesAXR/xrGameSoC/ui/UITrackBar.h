@@ -18,7 +18,7 @@ public:
 	virtual void 	SetCurrentValue			();
 	virtual void 	SaveValue				();
 	virtual bool 	IsChanged				();
-	virtual void 	SeveBackUpValue			();
+	virtual void 	SaveBackUpValue			();
 	virtual void 	Undo					();
 	virtual void	Draw					();
 	virtual void	Update					();
@@ -62,7 +62,7 @@ protected:
 			void 	UpdatePosRelativeToMouse();
 			void	OnValueChanged			();
 
-    CUI3tButton*		m_pSlider;
+	CUI3tButton*		m_pSlider;
 	CUIFrameLineWnd*	m_pFrameLine;
 	CUIFrameLineWnd*	m_pFrameLine_d;
 	bool				m_b_invert{ false };
@@ -71,7 +71,7 @@ protected:
 	bool				m_b_is_bool{ false };
 
 	bool				m_b_mouse_capturer{ false };
-    bool 				m_b_bound_already_set{ false };
+	bool 				m_b_bound_already_set{ false };
 
 
 	union{

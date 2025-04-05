@@ -53,14 +53,14 @@ void CUIOptionsManager::SendMessage2Group(const char* group, const char* message
 		(*it).second[i]->OnMessage(message);
 }
 
-void CUIOptionsManager::SeveBackupValues(const char* group)
+void CUIOptionsManager::SaveBackUpValues(const char* group)
 {
 	groups_it it = m_groups.find(group);
 
 	R_ASSERT3(m_groups.end() != it, "invalid group name",group);
 
 	for (u32 i = 0; i < (*it).second.size(); i++){
-		(*it).second[i]->SeveBackUpValue();
+		(*it).second[i]->SaveBackUpValue();
 	}
 }
 
@@ -71,7 +71,7 @@ void CUIOptionsManager::SetCurrentValues(const char* group){
 
 	for (u32 i = 0; i < (*it).second.size(); i++){
 		(*it).second[i]->SetCurrentValue();
-//.		(*it).second[i]->SeveBackUpValue();
+//.		(*it).second[i]->SaveBackUpValue();
 	}
 }
 
@@ -82,7 +82,7 @@ void CUIOptionsManager::SaveValues(const char* group){
 
 	for (u32 i = 0; i < (*it).second.size(); i++){
 		if ((*it).second[i]->IsChanged())
-            (*it).second[i]->SaveValue();
+			(*it).second[i]->SaveValue();
 	}
 }
 
@@ -105,7 +105,7 @@ void CUIOptionsManager::UndoGroup(const char* group){
 
 	for (u32 i = 0; i < (*it).second.size(); i++){
 		if ((*it).second[i]->IsChanged())
-            (*it).second[i]->Undo();
+			(*it).second[i]->Undo();
 	}
 }
 
@@ -124,7 +124,7 @@ void CUIOptionsManager::DoVidRestart(){
 }
 
 void CUIOptionsManager::DoSndRestart(){
-    m_b_snd_restart = true;
+	m_b_snd_restart = true;
 }
 
 

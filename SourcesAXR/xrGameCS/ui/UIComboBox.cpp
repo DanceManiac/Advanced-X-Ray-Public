@@ -78,7 +78,7 @@ void CUIComboBox::Init(float x, float y, float width, float height)
 #include "uilistboxitem.h"
 CUIListBoxItem* CUIComboBox::AddItem_(LPCSTR str, int _data)
 {
-    R_ASSERT2			(m_bInited, "Can't add item to ComboBox before Initialization");
+	R_ASSERT2			(m_bInited, "Can't add item to ComboBox before Initialization");
 	CUIListBoxItem* itm = m_list_box.AddItem(str);
 	itm->SetData		((void*)(__int64)_data);
 	return				itm;
@@ -98,7 +98,7 @@ void CUIComboBox::OnListItemSelect()
 	if(bk_itoken_id!=m_itoken_id)
 	{
 		SaveValue		();
-		GetMessageTarget()->SendMessage(this, LIST_ITEM_SELECT, NULL);
+		GetMessageTarget()->SendMessage(this, LIST_ITEM_SELECT, nullptr);
 	}
 }
 
@@ -176,7 +176,7 @@ void CUIComboBox::OnBtnClicked()
 
 void CUIComboBox::ShowList(bool bShow)
 {
-    if (bShow)
+	if (bShow)
 	{
 		SetHeight				(m_text.GetHeight() + m_list_box.GetHeight());
 
@@ -223,15 +223,15 @@ void CUIComboBox::OnFocusLost()
 {
 	CUIWindow::OnFocusLost();
 	if (m_bIsEnabled)
-        SetState(S_Enabled);
+		SetState(S_Enabled);
 
 }
 
 void CUIComboBox::OnFocusReceive()
 {
 	CUIWindow::OnFocusReceive();
-    if (m_bIsEnabled)
-        SetState(S_Highlighted);
+	if (m_bIsEnabled)
+		SetState(S_Highlighted);
 }
 
 bool CUIComboBox::OnMouseAction(float x, float y, EUIMessages mouse_action){
@@ -245,7 +245,7 @@ bool CUIComboBox::OnMouseAction(float x, float y, EUIMessages mouse_action){
 
 			if (  (!bCursorOverScb) &&  mouse_action == WINDOW_LBUTTON_DOWN)
 			{
-                ShowList(false);
+				ShowList(false);
 				return true;
 			}
 			break;
@@ -260,7 +260,7 @@ bool CUIComboBox::OnMouseAction(float x, float y, EUIMessages mouse_action){
 	}	
 	 
 
-        return false;
+		return false;
 }
 
 void CUIComboBox::SetState(UIState state)
@@ -283,7 +283,7 @@ void CUIComboBox::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 	}
 }
 
-void CUIComboBox::SeveBackUpValue()
+void CUIComboBox::SaveBackUpValue()
 {
 	m_backup_itoken_id = m_itoken_id;
 }

@@ -7,7 +7,7 @@ class CUIOptionsManager{
 public:	
 		CUIOptionsManager					();
 
-	void SeveBackupValues					(const shared_str& group);
+	void SaveBackUpValues					(const shared_str& group);
 	void SetCurrentValues					(const shared_str& group);
 	void SaveValues							(const shared_str& group);
 	bool IsGroupChanged						(const shared_str& group);
@@ -29,7 +29,7 @@ protected:
 
 	typedef	shared_str									group_name;
 	typedef xr_vector<CUIOptionsItem*>					items_list;
-    typedef xr_map<group_name, items_list>				groups;
+	typedef xr_map<group_name, items_list>				groups;
 	typedef xr_map<group_name, items_list>::iterator	groups_it;
 
 	groups	m_groups;
