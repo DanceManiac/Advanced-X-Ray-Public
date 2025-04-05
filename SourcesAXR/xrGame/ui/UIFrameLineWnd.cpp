@@ -3,7 +3,7 @@
 #include "UITextureMaster.h"
 
 CUIFrameLineWnd::CUIFrameLineWnd()
-:bHorizontal(true),
+:m_bHorizontal(true),
 m_bTextureVisible(false)
 {
 	m_texture_color				= color_argb(255,255,255,255);
@@ -20,7 +20,7 @@ void CUIFrameLineWnd::InitFrameLineWnd(Fvector2 pos, Fvector2 size, bool horizon
 	inherited::SetWndPos		(pos);
 	inherited::SetWndSize		(size);
 	
-	bHorizontal					= horizontal;
+	m_bHorizontal					= horizontal;
 }
 
 void CUIFrameLineWnd::InitTexture(LPCSTR texture, LPCSTR sh_name)
@@ -31,7 +31,7 @@ void CUIFrameLineWnd::InitTexture(LPCSTR texture, LPCSTR sh_name)
 	CUITextureMaster::InitTexture(strconcat(sizeof(buf), buf, texture,"_back"),	sh_name, m_shader, m_tex_rect[flBack]);
 	CUITextureMaster::InitTexture(strconcat(sizeof(buf), buf, texture,"_b"),	sh_name, m_shader, m_tex_rect[flFirst]);
 	CUITextureMaster::InitTexture(strconcat(sizeof(buf), buf, texture,"_e"),	sh_name, m_shader, m_tex_rect[flSecond]);
-	if(bHorizontal)
+	if(m_bHorizontal)
 	{
 		R_ASSERT2(fsimilar(m_tex_rect[flFirst].height(), m_tex_rect[flSecond].height()), texture );
 		R_ASSERT2(fsimilar(m_tex_rect[flFirst].height(), m_tex_rect[flBack].height()),texture );
@@ -86,7 +86,7 @@ void CUIFrameLineWnd::DrawElements()
 	
 	float back_len				= 0.0f;
 	u32 prim_count				= 6*2; //first&second 
-	if(bHorizontal)
+	if(m_bHorizontal)
 	{
 		back_len				= rect.width()-m_tex_rect[flFirst].width()-m_tex_rect[flSecond].width();
 		if(back_len<0.0f)
@@ -138,21 +138,21 @@ bool  CUIFrameLineWnd::inc_pos(Frect& rect, int counter, int i, Fvector2& LTp, F
 		RBp.y			+= m_tex_rect[i].height();
 	}else //i==flBack
 	{
-		if(	(bHorizontal && rect.lt.x + m_tex_rect[flSecond].width()+EPS_L >= rect.rb.x)|| 
-			(!bHorizontal && rect.lt.y + m_tex_rect[flSecond].height()+EPS_L >= rect.rb.y) )
+		if(	(m_bHorizontal && rect.lt.x + m_tex_rect[flSecond].width()+EPS_L >= rect.rb.x)|| 
+			(!m_bHorizontal && rect.lt.y + m_tex_rect[flSecond].height()+EPS_L >= rect.rb.y) )
 			return false;
 
 		LTt				= m_tex_rect[i].lt;
 		LTp				= rect.lt; 
 
-		bool b_draw_reminder = (bHorizontal) ?	(rect.lt.x+m_tex_rect[flBack].width() > rect.rb.x-m_tex_rect[flSecond].width()) :
+		bool b_draw_reminder = (m_bHorizontal) ?	(rect.lt.x+m_tex_rect[flBack].width() > rect.rb.x-m_tex_rect[flSecond].width()) :
 												(rect.lt.y+m_tex_rect[flBack].height() > rect.rb.y-m_tex_rect[flSecond].height());
 		if(b_draw_reminder)
 		{ //draw reminder
-			float rem_len	= (bHorizontal) ?	rect.rb.x-m_tex_rect[flSecond].width()-rect.lt.x : 
+			float rem_len	= (m_bHorizontal) ?	rect.rb.x-m_tex_rect[flSecond].width()-rect.lt.x : 
 												rect.rb.y-m_tex_rect[flSecond].height()-rect.lt.y;
 
-			if(bHorizontal)
+			if(m_bHorizontal)
 			{
 				RBt.y			= m_tex_rect[i].rb.y;
 				RBt.x			= m_tex_rect[i].lt.x + rem_len;
@@ -180,12 +180,12 @@ bool  CUIFrameLineWnd::inc_pos(Frect& rect, int counter, int i, Fvector2& LTp, F
 	}
 
 	//stretch always
-	if(bHorizontal)
+	if(m_bHorizontal)
 		RBp.y			= rect.rb.y;
 	else
 		RBp.x			= rect.rb.x;
 
-	if(bHorizontal) rect.lt.x = RBp.x;
+	if(m_bHorizontal) rect.lt.x = RBp.x;
 	else			rect.lt.y = RBp.y;
 	return			true;
 }

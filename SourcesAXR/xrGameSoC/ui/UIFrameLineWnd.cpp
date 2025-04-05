@@ -2,7 +2,7 @@
 #include "UIFrameLineWnd.h"
 
 CUIFrameLineWnd::CUIFrameLineWnd()
-	:	bHorizontal(true),
+	:	m_bHorizontal(true),
 		m_bTextureAvailable(false),
 		m_bStretchTexture(false)
 {
@@ -18,12 +18,12 @@ void CUIFrameLineWnd::InitFrameLineWnd(LPCSTR base_name, Fvector2 pos, Fvector2 
 
 void CUIFrameLineWnd::SetWndPos(const Fvector2& pos)
 {
-	InitFrameLineWnd(pos,GetWndSize(),bHorizontal);
+	InitFrameLineWnd(pos,GetWndSize(),m_bHorizontal);
 }
 
 void CUIFrameLineWnd::SetWndSize(const Fvector2& size)
 {
-	InitFrameLineWnd(GetWndPos(),size,bHorizontal);
+	InitFrameLineWnd(GetWndPos(),size,m_bHorizontal);
 }
 
 void CUIFrameLineWnd::InitFrameLineWnd(Fvector2 pos, Fvector2 size, bool horizontal)
@@ -34,7 +34,7 @@ void CUIFrameLineWnd::InitFrameLineWnd(Fvector2 pos, Fvector2 size, bool horizon
 	UIFrameLine.set_parent_wnd_size(size);
 	UIFrameLine.bStretchTexture = m_bStretchTexture;
 
-	bHorizontal = horizontal;
+	m_bHorizontal = horizontal;
 
 	Frect			rect;
 	GetAbsoluteRect	(rect);
@@ -75,14 +75,14 @@ void CUIFrameLineWnd::Draw()
 void CUIFrameLineWnd::SetWidth(float width)
 {
 	inherited::SetWidth(width);
-	if (bHorizontal)
+	if (m_bHorizontal)
 		UIFrameLine.SetSize(width);
 }
 
 void CUIFrameLineWnd::SetHeight(float height)
 {
 	inherited::SetHeight(height);
-	if (!bHorizontal)
+	if (!m_bHorizontal)
 		UIFrameLine.SetSize(height);
 }
 

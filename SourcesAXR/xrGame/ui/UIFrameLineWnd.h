@@ -15,12 +15,12 @@ public:
 			float GetTextureHeight	() const						{return m_tex_rect[0].height();}
 			float GetTextureWidth	() const						{return m_tex_rect[0].width();}
 			void SetTextureColor	(u32 cl)						{m_texture_color=cl;}
-			bool IsHorizontal		()								{return bHorizontal;}
-			void SetHorizontal		(bool horiz)					{bHorizontal = horiz;}
+			bool IsHorizontal		()								{return m_bHorizontal;}
+			void SetHorizontal		(bool horiz)					{ m_bHorizontal = horiz;}
 
 			pcstr GetDebugType		() override						{return "CUIFrameLineWnd";}
 protected:
-	bool			bHorizontal;
+	bool			m_bHorizontal;
 			bool					inc_pos(Frect& rect, int counter, int i, Fvector2& LTp, Fvector2& RBp, Fvector2& LTt, Fvector2& RBt);
 	enum{
 		flFirst = 0,	// Left or top
