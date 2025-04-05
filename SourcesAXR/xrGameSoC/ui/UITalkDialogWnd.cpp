@@ -160,22 +160,51 @@ void CUITalkDialogWnd::AddQuestion(LPCSTR str, LPCSTR value, int number, SPhrase
 	itm->Init						(value, str);
 
 	++number; // zero-based index
+	float x_offset = 0.f;
+
 	string16 buff;
 	xr_sprintf(buff, "%d.", number);
 	if (itm->m_num_text)
 		itm->m_num_text->SetText(buff);
 
 	if (number > 9)
-		itm->m_text->SetTextX(itm->m_fOffset);
+		x_offset += itm->m_fOffset;
 
 	if (number < 10)
-		itm->m_text->SetAccelerator(DIK_ESCAPE + number, 0);
+		itm->m_text_btn->SetAccelerator(DIK_ESCAPE + number, 0);
 
 	if (phInfo.bFinalizer)
 	{
-		itm->m_text->SetAccelerator(kQUIT, 2);
-		itm->m_text->SetAccelerator(kUSE, 3);
+		itm->m_text_btn->SetAccelerator(kQUIT, 2);
+		itm->m_text_btn->SetAccelerator(kUSE, 3);
 	}
+	if (&phInfo.sIconName && phInfo.sIconName.size() > 1)
+	{
+		Fvector2 icon_size = itm->m_icon_size;
+		itm->m_text_btn->AddStatic();
+		CUIStatic* pBtnStatic = itm->m_text_btn->GetBtnStatic();
+		pBtnStatic->SetWndPos(0.f, 0.f);
+		if (!phInfo.bUseIconLtx)
+		{
+			pBtnStatic->InitTextureEx(phInfo.sIconName.c_str(), "hud\\default");
+		}
+		else
+		{
+			pBtnStatic->InitTexture(EQUIPMENT_ICONS);
+			pBtnStatic->GetUIStaticItem().SetShader(InventoryUtilities::GetEquipmentIconsShader());
+			float x = float(pSettings->r_u32(phInfo.sIconName, "inv_grid_x") * UI().inv_grid_kx());
+			float y = float(pSettings->r_u32(phInfo.sIconName, "inv_grid_y") * UI().inv_grid_kx());
+			float width = float(pSettings->r_u32(phInfo.sIconName, "inv_grid_width") * UI().inv_grid_kx());
+			float height = float(pSettings->r_u32(phInfo.sIconName, "inv_grid_height") * UI().inv_grid_kx());
+
+			pBtnStatic->GetUIStaticItem().SetOriginalRect(x, y, width, height);
+			icon_size.x *= width / UI().inv_grid_kx();
+		}
+		x_offset += icon_size.x + itm->m_fOffsetAfterIcon;
+		pBtnStatic->SetWndSize(icon_size);
+		pBtnStatic->SetStretchTexture(true);
+	}
+	itm->m_text_btn->SetTextX(x_offset);
 
 	itm->SetWindowName				("question_item");
 	UIQuestionsList->AddWindow		(itm, true);
@@ -241,24 +270,28 @@ void CUIQuestionItem::SendMessage				(CUIWindow* pWnd, s16 msg, void* pData)
 
 CUIQuestionItem::CUIQuestionItem			(CUIXml* xml_doc, LPCSTR path)
 {
-	m_text							= xr_new<CUI3tButton>();
-	m_text->SetAutoDelete			(true);
-	AttachChild						(m_text);
+	m_text_btn						= xr_new<CUI3tButton>();
+	m_text_btn->SetAutoDelete		(true);
+	AttachChild						(m_text_btn);
 
 	string512						str;
 	CUIXmlInit						xml_init;
 
-	strcpy							(str,path);
+	xr_strcpy						(str,path);
 	xml_init.InitWindow				(*xml_doc, str, 0, this);
 
 	m_min_height					= xml_doc->ReadAttribFlt(path,0,"min_height",15.0f);
 
+	m_icon_size.x					= xml_doc->ReadAttribFlt(path, 0, "icon_width", 15.0f);
+	m_icon_size.y					= xml_doc->ReadAttribFlt(path, 0, "icon_height", 15.0f);
+	m_fOffsetAfterIcon				= xml_doc->ReadAttribFlt(path, 0, "text_offset_after_icon", 3.0f);
+
 	strconcat						(sizeof(str),str,path,":content_text");
-	xml_init.Init3tButton			(*xml_doc, str, 0, m_text);
+	xml_init.Init3tButton			(*xml_doc, str, 0, m_text_btn);
 	m_fOffset = xml_doc->ReadAttribFlt(str, 0, "offset", 0);
 
-	Register						(m_text);
-	m_text->SetWindowName			("text_button");
+	Register						(m_text_btn);
+	m_text_btn->SetWindowName		("text_button");
 	AddCallback						("text_button",BUTTON_CLICKED,CUIWndCallback::void_function(this, &CUIQuestionItem::OnTextClicked));
 
 	strconcat						(sizeof(str), str, path, ":num_text");
@@ -267,11 +300,11 @@ CUIQuestionItem::CUIQuestionItem			(CUIXml* xml_doc, LPCSTR path)
 
 void CUIQuestionItem::Init			(LPCSTR val, LPCSTR text)
 {
-	m_s_value						= val;
-	m_text->SetText					(text);
-	m_text->AdjustHeightToText		();
-	float new_h						= _max(m_min_height, m_text->GetWndPos().y+m_text->GetHeight());
-	SetHeight						(new_h);
+	m_s_value							= val;
+	m_text_btn->SetText					(text);
+	m_text_btn->AdjustHeightToText		();
+	float new_h							= _max(m_min_height, m_text_btn->GetWndPos().y + m_text_btn->GetHeight());
+	SetHeight							(new_h);
 }
 
 void	CUIQuestionItem::OnTextClicked(CUIWindow* w, void*)
@@ -290,7 +323,7 @@ CUIAnswerItem::CUIAnswerItem			(CUIXml* xml_doc, LPCSTR path)
 	string512						str;
 	CUIXmlInit						xml_init;
 
-	strcpy							(str,path);
+	xr_strcpy						(str,path);
 	xml_init.InitWindow				(*xml_doc, str, 0, this);
 
 	m_min_height					= xml_doc->ReadAttribFlt(path,0,"min_height",15.0f);

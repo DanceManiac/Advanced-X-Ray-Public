@@ -125,6 +125,8 @@ void CUITalkWnd::UpdateQuestions()
 
 			SPhraseInfo phInfo;
 			phInfo.bFinalizer = (phrase_dialog->GetPhrase("0"))->IsFinalizer();
+			phInfo.bUseIconLtx = (phrase_dialog->GetPhrase("0"))->GetIconUsingLTX();
+			phInfo.sIconName = (phrase_dialog->GetPhrase("0"))->GetIconName();
 
 			AddQuestion(phrase_dialog->DialogCaption(), phrase_dialog->GetDialogID(), i, phInfo);
 		}
@@ -150,6 +152,9 @@ void CUITalkWnd::UpdateQuestions()
 					CPhrase* phrase = *it;
 					SPhraseInfo phInfo;
 					phInfo.bFinalizer = phrase->IsFinalizer();
+					phInfo.bUseIconLtx = phrase->GetIconUsingLTX();
+					phInfo.sIconName = phrase->GetIconName();
+
 					AddQuestion(m_pCurrentDialog->GetPhraseText(phrase->GetID() ), phrase->GetID(), number, phInfo);
 				}
 			}
@@ -346,11 +351,6 @@ void CUITalkWnd::SwitchToTrade()
 			pGameSP->StartTrade(m_pOurInvOwner, m_pOthersInvOwner);
 		}
 	}
-}
-
-bool CUITalkWnd::IR_OnKeyboardPress(int dik)
-{
-	return inherited::IR_OnKeyboardPress(dik);
 }
 
 bool CUITalkWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)

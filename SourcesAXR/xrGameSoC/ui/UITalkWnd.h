@@ -30,27 +30,28 @@ public:
 						CUITalkWnd();
 	virtual				~CUITalkWnd();
 
-	virtual void		Init();
+	IC		bool		playing_sound			()		 { return !!m_sound._feedback(); }
+	IC	CInventoryOwner*OthersInvOwner			() const { return m_pOthersInvOwner;	 };
+	virtual void		Init					();
 
-	virtual bool		StopAnyMove					(){return true;}
-	virtual void		SendMessage					(CUIWindow* pWnd, s16 msg, void* pData = nullptr);
+	virtual bool		StopAnyMove				(){return true;}
+	virtual void		SendMessage				(CUIWindow* pWnd, s16 msg, void* pData = nullptr);
 
-	virtual void		Draw();
-	virtual void		Update();
+	virtual void		Draw					();
+	virtual void		Update					();
 		
-	virtual void		Show();
-	virtual void		Hide();
+	virtual void		Show					();
+	virtual void		Hide					();
 	
-	void				Stop();					//deffered
+	void				Stop					();					//deffered
 	void				StopTalk				();
 
-	void				UpdateQuestions();
-	void				NeedUpdateQuestions();
+	void				UpdateQuestions			();
+	void				NeedUpdateQuestions		();
 	//инициализации начального диалога собеседника
-	void				InitOthersStartDialog();
-	virtual bool		IR_OnKeyboardPress(int dik);
-	virtual bool		OnKeyboardAction(int dik, EUIMessages keyboard_action);
-	void				SwitchToTrade();
+	void				InitOthersStartDialog	();
+	virtual bool		OnKeyboardAction		(int dik, EUIMessages keyboard_action);
+	void				SwitchToTrade			();
 	void				AddIconedMessage(LPCSTR text, LPCSTR texture_name, Frect texture_rect, LPCSTR templ_name);
 
 protected:

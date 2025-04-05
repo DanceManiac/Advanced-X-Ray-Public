@@ -43,7 +43,7 @@
 	<answers_list x="20" y="46" width="557" height="377" right_ident="0" always_show_scroll="0"/>
 
 
-	<question_item x="15" y="2" width="557" height="20" min_height="13">
+	<question_item x="15" y="2" width="557" height="20" min_height="13" icon_width="15" icon_height="17" text_offset_after_icon="3">
 		<num_text x="0" y="2" width="8" height="20">
 			<text font="letterica18" color="ui_2"/>
 		</num_text>

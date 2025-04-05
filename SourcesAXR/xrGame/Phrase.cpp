@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////
 // Phrase.cpp
-// класс, описывающий фразу (элемент диалога)
+// РєР»Р°СЃСЃ, РѕРїРёСЃС‹РІР°СЋС‰РёР№ С„СЂР°Р·Сѓ (СЌР»РµРјРµРЅС‚ РґРёР°Р»РѕРіР°)
 ///////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
@@ -10,8 +10,7 @@
 #include "gameobject.h"
 #include "script_game_object.h"
 
-CPhrase::CPhrase()
-:m_b_finalizer(false),m_ID(""),m_iGoodwillLevel(0)
+CPhrase::CPhrase() : m_b_finalizer(false), m_ID(""), m_iGoodwillLevel(0)
 {
 }
 
@@ -24,7 +23,7 @@ LPCSTR CPhrase::GetText()	const
 	return m_text.c_str();
 }
 
-LPCSTR CPhrase::GetScriptText()	const			
+LPCSTR CPhrase::GetScriptText()	const
 {
 	return m_script_text_val.c_str();
 }
@@ -32,7 +31,7 @@ LPCSTR CPhrase::GetScriptText()	const
 bool	CPhrase::IsDummy()		const
 {
 	//	if( (xr_strlen(GetText()) == 0) && (xr_strlen( GetScriptText() ) == 0) )
-	if( (m_text.size() == 0) && (m_script_text_val.size() == 0) && (m_script_text_id.size() == 0) )
+	if ((m_text.size() == 0) && (m_script_text_val.size() == 0) && (m_script_text_id.size() == 0))
 	{
 		return true;
 	}

@@ -6,7 +6,7 @@
 #include "ai_space.h"
 #include "script_engine.h"
 #include "script_game_object.h"
-#include "actor.h"
+#include "Actor.h"
 
 SPhraseDialogData::SPhraseDialogData ()
 {
@@ -167,7 +167,7 @@ CPhrase* CPhraseDialog::GetPhrase(const shared_str& phrase_id)
 {
 	CPhraseGraph::CVertex* phrase_vertex = data()->m_PhraseGraph.vertex(phrase_id);
 	THROW(phrase_vertex);
-	
+
 	return phrase_vertex->data();
 }
 
@@ -309,11 +309,15 @@ void CPhraseDialog::AddPhrase	(CUIXml* pXml, XML_NODE* phrase_node, const shared
 	LPCSTR sText		= pXml->Read		(phrase_node, "text", 0, "");
 	int		gw			= pXml->ReadInt		(phrase_node, "goodwill", 0, -10000);
 	CPhrase* ph			= AddPhrase			(sText, phrase_id, prev_phrase_id, gw);
-	if(!ph)				return;
+	if (!ph)
+		return;
 	
 	int fin					= pXml->ReadInt		(phrase_node, "is_final", 0, 0);
 	ph->SetFinalizer		(fin==1);
 	ph->m_script_text_id	= pXml->Read		(phrase_node, "script_text", 0, "");
+
+	ph->SetIconName			(pXml->Read(phrase_node, "icon_name", 0, ""));
+	ph->SetIconUsingLTX		(pXml->ReadAttribInt(phrase_node, "icon_name", 0, "ltx", 0) == 1);
 	
 	ph->GetScriptHelper()->Load				(pXml, phrase_node);
 
@@ -329,7 +333,7 @@ void CPhraseDialog::AddPhrase	(CUIXml* pXml, XML_NODE* phrase_node, const shared
 }
 
 bool  CPhraseDialog::Precondition(const CGameObject* pSpeaker1, const CGameObject* pSpeaker2)
-{	
+{
 	return data()->m_ScriptDialogHelper.Precondition(pSpeaker1, pSpeaker2, m_DialogId.c_str(), "", "");
 }
 

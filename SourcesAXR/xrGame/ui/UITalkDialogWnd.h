@@ -87,7 +87,9 @@ class CUIQuestionItem :public CUIWindow, public CUIWndCallback
 	float			m_min_height;
 public:
 	CUITextWnd*		m_num_text;
-	CUI3tButton*	m_text;
+	CUI3tButton*	m_text_btn;
+	Fvector2		m_icon_size;
+	float			m_fOffsetAfterIcon;
 	shared_str		m_s_value;
 	float			m_fOffset;
 					CUIQuestionItem			(CUIXml* xml_doc, LPCSTR path);

@@ -19,7 +19,7 @@
   <answers_list	  x="296" y="63" width="437" height="423" always_show_scroll="1"/>
   <questions_list x="296" y="542" width="437" height="166" always_show_scroll="0"/>
 
-  <question_item x="0" y="0" width="439" height="20" min_height="13">
+  <question_item x="0" y="0" width="439" height="20" min_height="13" icon_width="15" icon_height="17" text_offset_after_icon="3">
 
     <num_text x="0" y="3" width="8" height="20">
       <text font="letterica18" color="ui_2"/>

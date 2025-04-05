@@ -21,11 +21,6 @@
 
 #include "../Include/xrRender/UIShader.h"
 
-#define BUY_MENU_TEXTURE "ui\\ui_mp_buy_menu"
-#define CHAR_ICONS		 "ui\\ui_icons_npc"
-#define MAP_ICONS		 "ui\\ui_icons_map"
-#define MP_CHAR_ICONS	 "ui\\ui_models_multiplayer"
-
 const LPCSTR relationsLtxSection	= "game_relations";
 const LPCSTR ratingField			= "rating_names";
 const LPCSTR reputationgField		= "reputation_names";
@@ -116,7 +111,7 @@ bool InventoryUtilities::GreaterRoomInRuck(PIItem item1, PIItem item2)
 
 		return				false;
 	}
-   	return					false;
+	return					false;
 }
 
 bool InventoryUtilities::FreeRoom_inBelt	(TIItemContainer& item_list, PIItem _item, int width, int height)
@@ -142,8 +137,8 @@ bool InventoryUtilities::FreeRoom_inBelt	(TIItemContainer& item_list, PIItem _it
 	{
 		PIItem pItem = *it;
 		Ivector2 iWH = pItem->GetInvGridRect().rb;
-		//проверить можно ли разместить элемент,
-		//проверяем последовательно каждую клеточку
+		//РїСЂРѕРІРµСЂРёС‚СЊ РјРѕР¶РЅРѕ Р»Рё СЂР°Р·РјРµСЃС‚РёС‚СЊ СЌР»РµРјРµРЅС‚,
+		//РїСЂРѕРІРµСЂСЏРµРј РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕ РєР°Р¶РґСѓСЋ РєР»РµС‚РѕС‡РєСѓ
 		found_place = false;
 	
 		for(i=0; (i<height - iWH.y +1) && !found_place; ++i)
@@ -171,7 +166,7 @@ bool InventoryUtilities::FreeRoom_inBelt	(TIItemContainer& item_list, PIItem _it
 			}
 		}
 
-		//разместить элемент на найденном месте
+		//СЂР°Р·РјРµСЃС‚РёС‚СЊ СЌР»РµРјРµРЅС‚ РЅР° РЅР°Р№РґРµРЅРЅРѕРј РјРµСЃС‚Рµ
 		if(found_place)
 		{
 			for(k=0; k<iWH.y; ++k)
@@ -187,7 +182,7 @@ bool InventoryUtilities::FreeRoom_inBelt	(TIItemContainer& item_list, PIItem _it
 	// remove
 	item_list.erase	(std::remove(item_list.begin(),item_list.end(),_item),item_list.end());
 
-	//для какого-то элемента места не нашлось
+	//РґР»СЏ РєР°РєРѕРіРѕ-С‚Рѕ СЌР»РµРјРµРЅС‚Р° РјРµСЃС‚Р° РЅРµ РЅР°С€Р»РѕСЃСЊ
 	if(!found_place) return false;
 
 	return true;
@@ -209,7 +204,7 @@ const ui_shader& InventoryUtilities::GetEquipmentIconsShader()
 	if(!g_EquipmentIconsShader)
 	{
 		g_EquipmentIconsShader = xr_new<ui_shader>();
-		(*g_EquipmentIconsShader)->create("hud\\default", "ui\\ui_icon_equipment");
+		(*g_EquipmentIconsShader)->create("hud\\default", EQUIPMENT_ICONS);
 	}
 
 	return *g_EquipmentIconsShader;
@@ -419,7 +414,7 @@ void InventoryUtilities::UpdateWeightStr(CUITextWnd &wnd, CUITextWnd &wnd_max, C
 
 void InventoryUtilities::UpdateCapacityStr(CUITextWnd& wnd, CUITextWnd& wnd_max, CInventoryOwner* pInvOwner)
 {
- 	R_ASSERT		(pInvOwner);
+	R_ASSERT		(pInvOwner);
 	string128		buf;
 
 	CActor* Actor = smart_cast<CActor*>(pInvOwner);
@@ -549,8 +544,8 @@ LPCSTR InventoryUtilities::GetGoodwillAsText(CHARACTER_GOODWILL goodwill)
 
 
 //////////////////////////////////////////////////////////////////////////
-// специальная функция для передачи info_portions при нажатии кнопок UI 
-// (для tutorial)
+// СЃРїРµС†РёР°Р»СЊРЅР°СЏ С„СѓРЅРєС†РёСЏ РґР»СЏ РїРµСЂРµРґР°С‡Рё info_portions РїСЂРё РЅР°Р¶Р°С‚РёРё РєРЅРѕРїРѕРє UI 
+// (РґР»СЏ tutorial)
 void InventoryUtilities::SendInfoToActor(LPCSTR info_id)
 {
 	if (GameID() != eGameIDSingle) return;
