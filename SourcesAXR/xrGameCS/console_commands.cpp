@@ -2245,7 +2245,7 @@ struct CCC_ReloadSystemLtx : public IConsole_Command
 		string_path fname;
 		FS.update_path(fname, "$game_config$", "system.ltx");
 		CInifile::Destroy(pSettings);
-		pSettings = new CInifile(fname, TRUE);
+		pSettings = xr_new<CInifile>(fname, TRUE);
 		CHECK_OR_EXIT(0 != pSettings->section_count(), make_string("Cannot find file %s.\nReinstalling application may fix this problem.", fname));
 		Msg("system.ltx was reloaded.");
 	}
@@ -2263,7 +2263,7 @@ struct CCC_ReloadAdvancedXRayCfg : public IConsole_Command
 		string_path fname;
 		FS.update_path(fname, "$game_config$", "AdvancedXRay.ltx");
 		CInifile::Destroy(pAdvancedSettings);
-		pAdvancedSettings = new CInifile(fname, TRUE);
+		pAdvancedSettings = xr_new<CInifile>(fname, TRUE);
 		CHECK_OR_EXIT(0 != pAdvancedSettings->section_count(), make_string("Cannot find file %s.\nReinstalling application may fix this problem.", fname));
 		GameConstants::LoadConstants();
 		Msg("AdvancedXRay.ltx was reloaded.");
