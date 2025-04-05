@@ -338,7 +338,9 @@ bool CUIXmlInit::InitText(CUIXml& xml_doc, LPCSTR path, int index, CUILines* pLi
 	else if (0 == xr_strcmp(al, "t"))
 		pLines->SetVTextAlignment(valTop);
 
-	pLines->SetTextComplexMode(xml_doc.ReadAttribInt(path, index, "complex_mode",0)?true:false);
+	bool bComplexMode = (xml_doc.ReadAttribInt(path, index, "complex_mode", 0) == 1);
+	if (bComplexMode)
+		pLines->SetTextComplexMode(true);
 
 	// Text coordinates
 	float text_x		= xml_doc.ReadAttribFlt(path, index, "x", 0);
