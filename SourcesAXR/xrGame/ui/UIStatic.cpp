@@ -18,7 +18,7 @@ bool is_in2(const Frect& b1, const Frect& b2);
 
 void lanim_cont::set_defaults()
 {
-	m_lanim					= NULL;	
+	m_lanim					= nullptr;	
 	m_lanim_start_time		= -1.0f;
 	m_lanim_delay_time		= 0.0f;
 	m_lanimFlags.zero		();
@@ -35,7 +35,7 @@ m_bStretchTexture(false),
 m_bHeading(false),
 m_bConstHeading(false),
 m_fHeading(0.0f),
-m_pTextControl(NULL)
+m_pTextControl(nullptr)
 {
 	m_TextureOffset.set		(0.0f,0.0f);
 	m_BaseTextureOffset.set	(0.0f,0.0f);
@@ -52,7 +52,7 @@ void CUIStatic::SetXformLightAnim(LPCSTR lanim, bool bCyclic)
 	if(lanim && lanim[0]!=0)
 		m_lanim_xform.m_lanim			= LALib.FindItem(lanim);
 	else
-		m_lanim_xform.m_lanim			= NULL;
+		m_lanim_xform.m_lanim			= nullptr;
 	
 	m_lanim_xform.m_lanimFlags.zero		();
 
@@ -72,6 +72,13 @@ void CUIStatic::CreateShader(const char* tex, const char* sh)
 
 void CUIStatic::InitTextureEx(LPCSTR tex_name, LPCSTR sh_name)
 {
+	if (!tex_name || !xr_strlen(tex_name))
+	{
+		m_bTextureEnable = false;
+
+		return;
+	}
+
 	LPCSTR res_shname = UIRender->UpdateShaderName(tex_name, sh_name);
 	CUITextureMaster::InitTexture	(tex_name, &m_UIStaticItem, res_shname);
 

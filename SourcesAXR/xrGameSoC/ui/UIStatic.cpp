@@ -29,7 +29,7 @@ bool is_in2(const Frect & b1, const Frect & b2);
 //(1<<4) registered !!!
 void lanim_cont::set_defaults()
 {
-	m_lanim					= NULL;	
+	m_lanim					= nullptr;	
 	m_lanim_start_time		= -1.0f;
 	m_lanim_delay_time		= 0.0f;
 	m_lanimFlags.zero		();
@@ -50,7 +50,7 @@ CUIStatic::CUIStatic()
 	m_BaseTextureOffset.set	(0.0f,0.0f);
 	m_TextOffset.set		(0.0f,0.0f);
 	
-	m_pMask					= NULL;
+	m_pMask					= nullptr;
 	m_ClipRect.set			(-1,-1,-1,-1);
 
 	m_bCursorOverWindow		= false;
@@ -60,7 +60,7 @@ CUIStatic::CUIStatic()
 	m_lanim_clr.set_defaults	();
 	m_lanim_xform.set_defaults	();
 
-	m_pLines				= NULL;
+	m_pLines				= nullptr;
 	m_bEnableTextHighlighting = false;
 }
 
@@ -74,7 +74,7 @@ void CUIStatic::SetXformLightAnim(LPCSTR lanim, bool bCyclic)
 	if(lanim && lanim[0]!=0)
 		m_lanim_xform.m_lanim	= LALib.FindItem(lanim);
 	else
-		m_lanim_xform.m_lanim	= NULL;
+		m_lanim_xform.m_lanim	= nullptr;
 	
 	m_lanim_xform.m_lanimFlags.zero		();
 
@@ -87,7 +87,7 @@ void CUIStatic::SetClrLightAnim(LPCSTR lanim, bool bCyclic, bool bOnlyAlpha, boo
 	if(lanim && lanim[0]!=0)
 		m_lanim_clr.m_lanim	= LALib.FindItem(lanim);
 	else
-		m_lanim_clr.m_lanim	= NULL;
+		m_lanim_clr.m_lanim	= nullptr;
 	
 	m_lanim_clr.m_lanimFlags.zero		();
 
@@ -103,13 +103,13 @@ void CUIStatic::SetClrLightAnim(LPCSTR lanim, u8 const& flags, float delay)
 		m_lanim_clr.m_lanim = LALib.FindItem(lanim);
 	else
 	{
-		m_lanim_clr.m_lanim = NULL;
+		m_lanim_clr.m_lanim = nullptr;
 		return;
 	}
 
 	m_lanim_clr.m_lanim_delay_time = delay;
 	m_lanim_clr.m_lanimFlags.assign(flags);
-	R_ASSERT((m_lanim_clr.m_lanim == NULL) || m_lanim_clr.m_lanimFlags.test(LA_TEXTCOLOR | LA_TEXTURECOLOR));
+	R_ASSERT((m_lanim_clr.m_lanim == nullptr) || m_lanim_clr.m_lanimFlags.test(LA_TEXTCOLOR | LA_TEXTURECOLOR));
 }
 
 void CUIStatic::InitTexture(LPCSTR texture){
@@ -130,6 +130,12 @@ u32 CUIStatic::GetTextureColor() const{
 
 void CUIStatic::InitTextureEx(LPCSTR tex_name, LPCSTR sh_name)
 {
+	if (!tex_name || !xr_strlen(tex_name))
+	{
+		m_bTextureEnable = false;
+
+		return;
+	}
 
 	/*
 	string_path buff;
@@ -399,7 +405,7 @@ void CUIStatic::TextureClipper(float offset_x, float offset_y, Frect* pClipRect,
 {
 	Frect parent_rect;
 	
-	if(pClipRect == NULL)
+	if(pClipRect == nullptr)
 		if(GetParent())
 			GetParent()->GetAbsoluteRect(parent_rect);
 		else
@@ -412,7 +418,7 @@ void CUIStatic::TextureClipper(float offset_x, float offset_y, Frect* pClipRect,
 	Frect			out_rect;
 
 
-	//ïðîâåðèòü ïîïàäàåò ëè èçîáðàæåíèå â îêíî
+	//Ð¿Ñ€Ð¾Ð²ÐµÑ€Ð¸Ñ‚ÑŒ Ð¿Ð¾Ð¿Ð°Ð´Ð°ÐµÑ‚ Ð»Ð¸ Ð¸Ð·Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸Ðµ Ð² Ð¾ÐºÐ½Ð¾
 	if(rect.left>parent_rect.right || rect.right<parent_rect.left ||
 		rect.top>parent_rect.bottom ||  rect.bottom<parent_rect.top)
 	{
@@ -427,9 +433,9 @@ void CUIStatic::TextureClipper(float offset_x, float offset_y, Frect* pClipRect,
 	out_x = rect.left;
 	out_y = rect.top;
 
-	// out_rect - ïðÿìîóãîëüíàÿ îáëàñòü â êîòîðóþ áóäåò âûâîäèòüñÿ
-	// èçîáðàæåíèå, âû÷èñëÿåòñÿ ñ ó÷åòîì ïîëîæåíèÿ îòíîñèòåëüíî ðîäèòåëüñêîãî
-	// îêíà, à òàêæå ðàçìåðîâ ïðÿìîóãîëüíèêà íà òåêñòóðå ñ èçîáðàæåíèåì.
+	// out_rect - Ð¿Ñ€ÑÐ¼Ð¾ÑƒÐ³Ð¾Ð»ÑŒÐ½Ð°Ñ Ð¾Ð±Ð»Ð°ÑÑ‚ÑŒ Ð² ÐºÐ¾Ñ‚Ð¾Ñ€ÑƒÑŽ Ð±ÑƒÐ´ÐµÑ‚ Ð²Ñ‹Ð²Ð¾Ð´Ð¸Ñ‚ÑŒÑÑ
+	// Ð¸Ð·Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸Ðµ, Ð²Ñ‹Ñ‡Ð¸ÑÐ»ÑÐµÑ‚ÑÑ Ñ ÑƒÑ‡ÐµÑ‚Ð¾Ð¼ Ð¿Ð¾Ð»Ð¾Ð¶ÐµÐ½Ð¸Ñ Ð¾Ñ‚Ð½Ð¾ÑÐ¸Ñ‚ÐµÐ»ÑŒÐ½Ð¾ Ñ€Ð¾Ð´Ð¸Ñ‚ÐµÐ»ÑŒÑÐºÐ¾Ð³Ð¾
+	// Ð¾ÐºÐ½Ð°, Ð° Ñ‚Ð°ÐºÐ¶Ðµ Ñ€Ð°Ð·Ð¼ÐµÑ€Ð¾Ð² Ð¿Ñ€ÑÐ¼Ð¾ÑƒÐ³Ð¾Ð»ÑŒÐ½Ð¸ÐºÐ° Ð½Ð° Ñ‚ÐµÐºÑÑ‚ÑƒÑ€Ðµ Ñ Ð¸Ð·Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸ÐµÐ¼.
 
 	out_rect.intersection(parent_rect,rect);
 	out_rect.left	-= out_x;
@@ -645,7 +651,7 @@ void CUIStatic::OnFocusReceive()
 {
 	inherited::OnFocusReceive();
 	if (GetMessageTarget())
-        GetMessageTarget()->SendMessage(this, STATIC_FOCUS_RECEIVED, NULL);
+        GetMessageTarget()->SendMessage(this, STATIC_FOCUS_RECEIVED, nullptr);
 }
 
 void CUIStatic::OnFocusLost()
@@ -653,7 +659,7 @@ void CUIStatic::OnFocusLost()
 
 	inherited::OnFocusLost();
 	if (GetMessageTarget())
-		GetMessageTarget()->SendMessage(this, STATIC_FOCUS_LOST, NULL);
+		GetMessageTarget()->SendMessage(this, STATIC_FOCUS_LOST, nullptr);
 
 	if (g_statHint->Owner() == this)
 		g_statHint->Discard();
