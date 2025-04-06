@@ -387,6 +387,7 @@ protected:
 	CInventoryOwner*		m_pPersonWeLookingAt;
 	CHolderCustom*			m_pVehicleWeLookingAt;
 	CGameObject*			m_pObjectWeLookingAt;
+	CGameObject*			m_pObjectToTake;
 	CInventoryBox*			m_pInvBoxWeLookingAt;
 
 	// Tip for action for object we're looking at
@@ -730,7 +731,12 @@ public:
 			void				SwitchTorch						();
 			void				CleanMask						();
 			void				QuickKick						();
+			void				TakeItemAnimCheck				(bool use_pickup_anim);
+			void				TakeItemAnim					(bool use_pickup_anim);
+			void				UpdateUseAnim					();
+
 			bool				IsReloadingWeapon				();
+
 #ifdef DEBUG
 			void				NoClipFly						(int cmd);
 #endif //DEBUG
@@ -883,10 +889,15 @@ protected:
 	bool					m_bMaskClear;
 	bool					m_bQuickKickActivated;
 	bool					m_bQuickKick;
+	bool					m_bTakeItemActivated;
+	bool					m_bItemTaked;
+	bool					m_bUsePickupAnim;
 	int						m_iNVGAnimLength;
 	int						m_iActionTiming;
 	int						m_iMaskAnimLength;
 	int						m_iQuickKickAnimLength;
+	int						m_iTakeAnimLength;
+
 	float					m_fInventoryCapacity;
 	float					m_fInventoryFullness;
 	float					m_fInventoryFullnessCtrl; // Для контроля эвента. Иначе эвент отправляется пачкой и дропает больше, чем нужно.

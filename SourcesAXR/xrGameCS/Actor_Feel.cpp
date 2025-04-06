@@ -24,8 +24,19 @@
 #include "AdvancedXrayGameConstants.h"
 #include "script_engine.h"
 #include "ai_space.h"
+#include "player_hud.h"
+#include "../xrPhysics/ElevatorState.h"
+#include "CustomDetector.h"
+#include "UIGameCustom.h"
+#include "HudManager.h"
+#include "ui\UIActorMenu.h"
 
 #define PICKUP_INFO_COLOR 0xFFDDDDDD
+
+extern bool g_block_all_except_movement;
+
+std::atomic<bool> isHidingInProgressInv(false);
+std::atomic<bool> TakeItemAnimNeeded(false);
 
 void CActor::feel_touch_new				(CObject* O)
 {
@@ -173,10 +184,16 @@ void CActor::PickupModeUpdate()
 #endif
 		}
 
-		NET_Packet		P;
-		u_EventGen		(P,GE_OWNERSHIP_TAKE, ID());
-		P.w_u16			(m_pObjectWeLookingAt->ID());
-		u_EventSend		(P);
+		auto CurMenuMode = HUD().GetUI()->UIGame()->ActorMenu().GetMenuMode();
+		const bool use_pickup_anim = (Position().distance_to(m_pObjectWeLookingAt->Position()) > 0.2f)
+			&& CurMenuMode != mmDeadBodySearch
+			&& CurMenuMode != mmCarTrunk
+			&& !Actor()->m_bActionAnimInProcess
+			&& pAdvancedSettings->line_exist("actions_animations", "take_item_section");
+
+		m_pObjectToTake = m_pObjectWeLookingAt;
+
+		TakeItemAnimCheck(use_pickup_anim);
 	}
 
 	if (eacFirstEye != cam_active)
@@ -197,7 +214,8 @@ void CActor::PickupModeUpdate()
 BOOL	g_b_COD_PickUpMode = TRUE;
 void	CActor::PickupModeUpdate_COD	()
 {
-	if (Level().CurrentViewEntity() != this || !g_b_COD_PickUpMode) return;
+	if (Level().CurrentViewEntity() != this || !g_b_COD_PickUpMode)
+		return;
 		
 	if (!g_Alive() || eacFirstEye != cam_active) 
 	{
@@ -302,7 +320,16 @@ void	CActor::PickupModeUpdate_COD	()
 			pUsableObject->use(this);
 
 		//подбирание объекта
-		Game().SendPickUpEvent(ID(), pNearestItem->object().ID());
+		auto CurMenuMode = HUD().GetUI()->UIGame()->ActorMenu().GetMenuMode();
+		const bool use_pickup_anim = (Position().distance_to(pNearestItem->cast_game_object()->Position()) > 0.2f)
+			&& CurMenuMode != mmDeadBodySearch
+			&& CurMenuMode != mmCarTrunk
+			&& !Actor()->m_bActionAnimInProcess
+			&& pAdvancedSettings->line_exist("actions_animations", "take_item_section");
+
+		m_pObjectToTake = pNearestItem->cast_game_object();
+
+		TakeItemAnimCheck(use_pickup_anim);
 		
 		PickupModeOff();
 	}
@@ -381,3 +408,143 @@ void CActor::Feel_Grenade_Update( float rad )
 	HUD().Update_GrenadeView( pos_actor );
 }
 
+void CActor::TakeItemAnimCheck(bool use_pickup_anim)
+{
+	if (m_bActionAnimInProcess)
+		return;
+
+	m_bUsePickupAnim = use_pickup_anim;
+
+	if (isHidingInProgressInv.load())
+		return;
+
+	CCustomDetector* pDet = smart_cast<CCustomDetector*>(inventory().ItemFromSlot(DETECTOR_SLOT));
+
+	if (!pDet || pDet->IsHidden())
+	{
+		TakeItemAnim(use_pickup_anim);
+		return;
+	}
+	else
+	{
+		if (!use_pickup_anim)
+		{
+			TakeItemAnim(use_pickup_anim);
+			return;
+		}
+	}
+
+	isHidingInProgressInv.store(true);
+
+	std::thread hidingThread([&, pDet]
+		{
+			while (pDet && !pDet->IsHidden())
+				pDet->HideDetector(true);
+
+			isHidingInProgressInv.store(false);
+			TakeItemAnimNeeded.store(true);
+		});
+
+	hidingThread.detach();
+}
+
+void CActor::TakeItemAnim(bool use_pickup_anim)
+{
+	if (use_pickup_anim && !m_pObjectToTake)
+		return;
+
+	LPCSTR anim_sect = READ_IF_EXISTS(pAdvancedSettings, r_string, "actions_animations", "take_item_section", nullptr);
+
+	if (!anim_sect || !use_pickup_anim)
+	{
+		Game().SendPickUpEvent(ID(), m_pObjectToTake->ID());
+		return;
+	}
+
+	CWeapon* Wpn = smart_cast<CWeapon*>(inventory().ActiveItem());
+
+	if (Wpn && !(Wpn->GetState() == CWeapon::eIdle))
+		return;
+
+	m_bTakeItemActivated = true;
+
+	int anim_timer = READ_IF_EXISTS(pSettings, r_u32, anim_sect, "anim_timing", 0);
+
+	g_block_all_except_movement = true;
+	g_actor_allow_ladder = false;
+
+	LPCSTR use_cam_effector = READ_IF_EXISTS(pSettings, r_string, anim_sect, !Wpn ? "anim_camera_effector" : "anim_camera_effector_weapon", nullptr);
+	float effector_intensity = READ_IF_EXISTS(pSettings, r_float, anim_sect, "cam_effector_intensity", 1.0f);
+	float anim_speed = READ_IF_EXISTS(pSettings, r_float, anim_sect, "anim_speed", 1.0f);
+
+	if (pSettings->line_exist(anim_sect, "anm_use"))
+	{
+		bool auto_attach_enabled = READ_IF_EXISTS(pSettings, r_bool, anim_sect, "auto_attach_enabled", false);
+
+		g_player_hud->script_anim_play(!inventory().GetActiveSlot() ? 2 : 1, anim_sect, !Wpn ? "anm_use" : "anm_use_weapon", true, anim_speed, auto_attach_enabled ? m_pObjectToTake->cNameVisual().c_str() : nullptr);
+
+		if (use_cam_effector)
+			g_player_hud->PlayBlendAnm(use_cam_effector, 0, anim_speed, effector_intensity, false);
+
+		m_iTakeAnimLength = Device.dwTimeGlobal + g_player_hud->motion_length_script(anim_sect, !Wpn ? "anm_use" : "anm_use_weapon", anim_speed);
+	}
+
+	if (pSettings->line_exist(anim_sect, "snd_using"))
+	{
+		if (m_action_anim_sound._feedback())
+			m_action_anim_sound.stop();
+
+		shared_str snd_name = pSettings->r_string(anim_sect, "snd_using");
+		m_action_anim_sound.create(snd_name.c_str(), st_Effect, sg_SourceType);
+		m_action_anim_sound.play(NULL, sm_2D);
+	}
+
+	m_iActionTiming = Device.dwTimeGlobal + anim_timer;
+
+	m_bItemTaked = false;
+	m_bActionAnimInProcess = true;
+}
+
+void CActor::UpdateUseAnim()
+{
+	if (TakeItemAnimNeeded.load())
+	{
+		TakeItemAnim(m_bUsePickupAnim);
+		TakeItemAnimNeeded.store(false);
+	}
+
+	if (!m_bTakeItemActivated)
+		return;
+
+	if (!m_bActionAnimInProcess)
+		return;
+
+	bool IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
+
+	if ((m_iActionTiming <= Device.dwTimeGlobal && !m_bItemTaked) && IsActorAlive)
+	{
+		m_iActionTiming = Device.dwTimeGlobal;
+
+		bool vis_status = READ_IF_EXISTS(pSettings, r_bool, m_pObjectToTake->cNameSect(), "visible_with_take_anim", true);
+
+		g_player_hud->SetScriptItemVisible(vis_status);
+		Game().SendPickUpEvent(ID(), m_pObjectToTake->ID());
+
+		m_bItemTaked = true;
+		m_pObjectToTake = nullptr;
+	}
+
+	if (m_bTakeItemActivated)
+	{
+		if ((m_iTakeAnimLength <= Device.dwTimeGlobal) || !IsActorAlive)
+		{
+			m_iTakeAnimLength = Device.dwTimeGlobal;
+			m_iActionTiming = Device.dwTimeGlobal;
+			m_action_anim_sound.stop();
+			g_block_all_except_movement = false;
+			g_actor_allow_ladder = true;
+			m_bActionAnimInProcess = false;
+			m_bTakeItemActivated = false;
+		}
+	}
+}

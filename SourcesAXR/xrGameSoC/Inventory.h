@@ -69,7 +69,6 @@ public:
 	void					ActivateNextItemInActiveSlot();
 	bool					Action				(s32 cmd, u32 flags);
 	void					Update				();
-	void					UpdateUseAnim		(CActor* actor);
 	// Ищет на поясе аналогичный IItem
 	PIItem					Same				(const PIItem pIItem, bool bSearchRuck) const;
 	// Ищет на поясе IItem для указанного слота
@@ -114,22 +113,9 @@ public:
 
 	void					ChooseItmAnimOrNot	(PIItem pIItem);
 	bool					ItmHasAnim			(PIItem pIItem);
-	void					TakeItemAnimCheck	(CGameObject* GameObj, CObject* Obj, bool use_pickup_anim);
-	void					TakeItemAnim		(CGameObject* GameObj, CObject* Obj, bool use_pickup_anim);
 	TIItemContainer			m_all;
 	TIItemContainer			m_ruck, m_belt;
 	TISlotArr				m_slots;
-
-	bool					m_bTakeItemActivated;
-	bool					m_bItemTaked;
-	bool					m_bUsePickupAnim;
-	int						m_iTakeAnimLength;
-	int						m_iActionTiming;
-
-	CGameObject*			GameObject;
-	CObject*				Object;
-
-	ref_sound				m_action_anim_sound;
 
 	//возвращает все кроме PDA в слоте и болта
 	void				AddAvailableItems			(TIItemContainer& items_container, bool for_trade) const;

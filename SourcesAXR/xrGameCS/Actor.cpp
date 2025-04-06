@@ -244,10 +244,13 @@ CActor::CActor() : CEntityAlive(),current_ik_cam_shift(0)
 	m_bMaskClear			= false;
 	m_bQuickKickActivated	= false;
 	m_bQuickKick			= false;
+	m_bTakeItemActivated	= false;
+	m_bItemTaked			= false;
 	m_iNVGAnimLength		= 0;
 	m_iActionTiming			= 0;
 	m_iMaskAnimLength		= 0;
 	m_iQuickKickAnimLength	= 0;
+	m_iTakeAnimLength		= 0;
 
 	ActorSkills				= nullptr;
 	TimerManager			= nullptr;
@@ -1273,7 +1276,7 @@ void CActor::shedule_Update	(u32 DT)
 					}
 					else
 					{
-						bool attach = !m_bQuickKickActivated;
+						bool attach = !m_bQuickKickActivated && !m_bTakeItemActivated;
 
 						if (attach)
 							g_player_hud->attach_item(pHudItem);
@@ -1590,6 +1593,9 @@ void CActor::shedule_Update	(u32 DT)
 
 		if (m_bQuickKickActivated)
 			UpdateQuickKickAnim();
+
+		if (m_bTakeItemActivated)
+			UpdateUseAnim();
 	}
 
 	if (g_pGamePersistent->Environment().CurrentEnv->m_fAirTemperature < -10.0f && g_Alive())
@@ -1614,8 +1620,6 @@ void CActor::shedule_Update	(u32 DT)
 			timing = Device.dwTimeGlobal + ::Random.randI(2500 - stamina, 5000 - stamina);
 		}
 	}
-
-	inventory().UpdateUseAnim(this);
 
 	if (TimerManager)
 	{
