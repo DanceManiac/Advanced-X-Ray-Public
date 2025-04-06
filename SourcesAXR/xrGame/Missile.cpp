@@ -359,7 +359,7 @@ void CMissile::State(u32 state)
 				PlaySound		("m_sndThrowStart", C);
 
 			if (g_actor->IsDetectorActive())
-				det->PlayDetectorAnimation(true, eDetAction, "anm_wpn_missile_throw_begin");
+				det->PlayDetectorAnimation(true, eDetAction, "anm_missile_throw_begin");
 
 		} break;
 	case eReady:
@@ -367,7 +367,7 @@ void CMissile::State(u32 state)
 			PlayHUDMotion		("anm_throw_idle", TRUE, this, GetState());
 
 			if (g_actor->IsDetectorActive())
-				det->PlayDetectorAnimation(true, eDetAction, "anm_wpn_missile_throw_idle");
+				det->PlayDetectorAnimation(true, eDetAction, "anm_missile_throw_idle");
 		} break;
 	case eThrow:
 		{
@@ -379,7 +379,7 @@ void CMissile::State(u32 state)
 				PlaySound		("m_sndThrow", C);
 
 			if (g_actor->IsDetectorActive())
-				det->PlayDetectorAnimation(true, eDetAction, "anm_wpn_missile_throw");
+				det->PlayDetectorAnimation(true, eDetAction, "anm_missile_throw_end");
 		} break;
 	case eThrowEnd:
 		{
@@ -391,9 +391,6 @@ void CMissile::State(u32 state)
 			}
 
 			SwitchState			(eShowing);
-
-			if (g_actor->IsDetectorActive())
-				det->PlayDetectorAnimation(true, eDetAction, "anm_wpn_missile_throw_end");
 		} break;
 	case eThrowQuick:
 		{	  
@@ -904,6 +901,7 @@ void CMissile::PlayAnimDeviceSwitch()
 {
 	CActor* actor = Actor();
 	CTorch* torch = smart_cast<CTorch*>(actor->inventory().ItemFromSlot(TORCH_SLOT));
+	CCustomDetector* det = smart_cast<CCustomDetector*>(g_actor->inventory().ItemFromSlot(DETECTOR_SLOT));
 
 	if (!actor->GetNightVision())
 		actor->SetNightVision(xr_new<CNightVisionEffector>(actor->cNameSect()));
@@ -924,6 +922,9 @@ void CMissile::PlayAnimDeviceSwitch()
 		}
 		else
 			PlayHUDMotionNew(guns_device_switch_anm, true, GetState());
+
+		if (g_actor->IsDetectorActive())
+			det->PlayDetectorAnimation(true, eDetAction, guns_device_switch_anm);
 	}
 	else
 	{

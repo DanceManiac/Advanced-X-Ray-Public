@@ -163,6 +163,7 @@ void CWeaponKnife::PlayAnimDeviceSwitch()
 {
 	CActor* actor = Actor();
 	CTorch* torch = smart_cast<CTorch*>(actor->inventory().ItemFromSlot(TORCH_SLOT));
+	CCustomDetector* det = smart_cast<CCustomDetector*>(g_actor->inventory().ItemFromSlot(DETECTOR_SLOT));
 
 	if (!actor->GetNightVision())
 		actor->SetNightVision(xr_new<CNightVisionEffector>(actor->cNameSect()));
@@ -183,6 +184,9 @@ void CWeaponKnife::PlayAnimDeviceSwitch()
 		}
 		else
 			PlayHUDMotionNew(guns_device_switch_anm, true, GetState());
+
+		if (g_actor->IsDetectorActive())
+			det->PlayDetectorAnimation(true, eDetAction, guns_device_switch_anm);
 	}
 	else
 	{
@@ -397,7 +401,7 @@ void CWeaponKnife::switch2_Attacking	(u32 state)
 		PlaySound("m_sndShot", get_LastFP());
 
 		if (g_actor->IsDetectorActive())
-			det->PlayDetectorAnimation(true, eDetAction, "anm_wpn_knife_kick_1");
+			det->PlayDetectorAnimation(true, eDetAction, "anm_knife_kick_1");
 	}
 	else //eFire2
 	{
@@ -409,7 +413,7 @@ void CWeaponKnife::switch2_Attacking	(u32 state)
 			PlaySound("m_sndShot", get_LastFP());
 
 		if (g_actor->IsDetectorActive())
-			det->PlayDetectorAnimation(true, eDetAction, "anm_wpn_knife_kick_2");
+			det->PlayDetectorAnimation(true, eDetAction, "anm_knife_kick_2");
 	}
 
 	SetPending			(TRUE);

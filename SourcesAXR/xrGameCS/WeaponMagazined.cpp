@@ -1261,7 +1261,7 @@ void CWeaponMagazined::PlayAnimFireMode()
 	auto det = smart_cast<CCustomDetector*>(g_actor->inventory().ItemFromSlot(DETECTOR_SLOT));
 
 	if (auto det = smart_cast<CCustomDetector*>(g_actor->inventory().ItemFromSlot(DETECTOR_SLOT)); g_actor->IsDetectorActive())
-		det->PlayDetectorAnimation(true, eDetAction, "anm_wpn_firemode");
+		det->PlayDetectorAnimation(true, eDetAction, "anm_firemode");
 
 	string_path guns_firemode_anm{};
 
@@ -2142,7 +2142,7 @@ void CWeaponMagazined::PlayAnimAim()
 	if (IsRotatingToZoom())
 	{
 		if (g_actor->IsDetectorActive())
-			det->PlayDetectorAnimation(true, eDetAction, "anm_wpn_idle_aim_start");
+			det->PlayDetectorAnimation(true, eDetAction, "anm_idle_aim_start");
 
 		string32 guns_aim_start_anm;
 		strconcat(sizeof(guns_aim_start_anm), guns_aim_start_anm, "anm_idle_aim_start", (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
@@ -2178,14 +2178,15 @@ void CWeaponMagazined::PlayAnimAim()
 		}
 	}
 
-	if (g_actor->IsDetectorActive())
-		det->PlayDetectorAnimation(true, eDetAction, "anm_wpn_idle_aim");
-
 	if (const char* guns_aim_anm = GetAnimAimName())
 	{
 		if (isHUDAnimationExist(guns_aim_anm))
 		{
 			PlayHUDMotionNew(guns_aim_anm, true, GetState());
+
+			if (g_actor->IsDetectorActive())
+				det->PlayDetectorAnimation(true, eDetAction, GenerateAimAnimName("anm_idle_aim_moving"));
+
 			return;
 		}
 		else if (guns_aim_anm && strstr(guns_aim_anm, "_jammed"))
@@ -2197,6 +2198,10 @@ void CWeaponMagazined::PlayAnimAim()
 			if (isHUDAnimationExist(new_guns_aim_anm))
 			{
 				PlayHUDMotionNew(new_guns_aim_anm, true, GetState());
+
+				if (g_actor->IsDetectorActive())
+					det->PlayDetectorAnimation(true, eDetAction, GenerateAimAnimName("anm_idle_aim_moving"));
+
 				return;
 			}
 		}
@@ -2209,6 +2214,10 @@ void CWeaponMagazined::PlayAnimAim()
 			if (isHUDAnimationExist(new_guns_aim_anm))
 			{
 				PlayHUDMotionNew(new_guns_aim_anm, true, GetState());
+
+				if (g_actor->IsDetectorActive())
+					det->PlayDetectorAnimation(true, eDetAction, GenerateAimAnimName("anm_idle_aim_moving"));
+
 				return;
 			}
 		}
@@ -2220,12 +2229,15 @@ void CWeaponMagazined::PlayAnimAim()
 		PlayHUDMotion("anm_idle_aim_jammed", true, nullptr, GetState());
 	else
 		PlayHUDMotion("anm_idle_aim", TRUE, NULL, GetState());
+
+	if (g_actor->IsDetectorActive())
+		det->PlayDetectorAnimation(true, eDetAction, GenerateAimAnimName("anm_idle_aim"));
 }
 
 bool CWeaponMagazined::PlayAnimAimEnd()
 {
 	if (auto det = smart_cast<CCustomDetector*>(g_actor->inventory().ItemFromSlot(DETECTOR_SLOT)); g_actor->IsDetectorActive())
-		det->PlayDetectorAnimation(true, eDetAction, "anm_wpn_idle_aim_end");
+		det->PlayDetectorAnimation(true, eDetAction, "anm_idle_aim_end");
 
 	string32 guns_aim_end_anm;
 	strconcat(sizeof(guns_aim_end_anm), guns_aim_end_anm, "anm_idle_aim_end", (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
@@ -2297,7 +2309,7 @@ void CWeaponMagazined::PlayAnimShoot()
 		return;
 
 	string256 guns_det_shoot_anm{};
-	strconcat(sizeof(guns_det_shoot_anm), guns_det_shoot_anm, "anm_wpn_shoot", (IsZoomed() && !IsRotatingToZoom()) ? "_aim" : "");
+	strconcat(sizeof(guns_det_shoot_anm), guns_det_shoot_anm, "anm_shoot", (IsZoomed() && !IsRotatingToZoom()) ? "_aim" : "");
 
 	if (auto det = smart_cast<CCustomDetector*>(g_actor->inventory().ItemFromSlot(DETECTOR_SLOT)); g_actor->IsDetectorActive())
 		det->PlayDetectorAnimation(true, eDetAction, guns_det_shoot_anm);
@@ -2319,7 +2331,7 @@ void CWeaponMagazined::PlayAnimFakeShoot()
 		return;
 
 	string256 guns_det_shoot_anm{};
-	strconcat(sizeof(guns_det_shoot_anm), guns_det_shoot_anm, "anm_wpn_fakeshoot", (IsZoomed() && !IsRotatingToZoom()) ? "_aim" : "");
+	strconcat(sizeof(guns_det_shoot_anm), guns_det_shoot_anm, "anm_fakeshoot", (IsZoomed() && !IsRotatingToZoom()) ? "_aim" : "");
 
 	if (auto det = smart_cast<CCustomDetector*>(g_actor->inventory().ItemFromSlot(DETECTOR_SLOT)); g_actor->IsDetectorActive())
 		det->PlayDetectorAnimation(true, eDetAction, guns_det_shoot_anm);
@@ -2359,6 +2371,7 @@ void CWeaponMagazined::PlayAnimDeviceSwitch()
 {
 	CActor* actor = Actor();
 	CTorch* torch = smart_cast<CTorch*>(Actor()->inventory().ItemFromSlot(TORCH_SLOT));
+	CCustomDetector* det = smart_cast<CCustomDetector*>(g_actor->inventory().ItemFromSlot(DETECTOR_SLOT));
 
 	if (!actor->GetNightVision())
 		actor->SetNightVision(xr_new<CNightVisionEffector>(actor->cNameSect()));
@@ -2367,8 +2380,9 @@ void CWeaponMagazined::PlayAnimDeviceSwitch()
 
 	PlaySound(HeadLampSwitch && torch ? (!torch->IsSwitchedOn() ? "sndHeadlampOn" : "sndHeadlampOff") : NightVisionSwitch && nvg ? (!nvg->IsActive() ? "sndNvOn" : "sndNvOff") : CleanMaskAction ? "sndCleanMask" : "", get_LastFP());
 
-	string128 guns_device_switch_anm{};
+	string128 guns_device_switch_anm{}, guns_device_switch_det_anm{};
 	strconcat(sizeof(guns_device_switch_anm), guns_device_switch_anm, HeadLampSwitch && torch ? (!torch->IsSwitchedOn() ? "anm_headlamp_on" : "anm_headlamp_off") : NightVisionSwitch && nvg ? (!nvg->IsActive() ? "anm_nv_on" : "anm_nv_off") : CleanMaskAction ? "anm_clean_mask" : "", IsMisfire() ? "_jammed" : IsEmptyMagazine() ? "_empty" : "", IsGrenadeLauncherAttached() ? (!IsGrenadeMode() ? "_w_gl" : "_g") : "");
+	strconcat(sizeof(guns_device_switch_det_anm), guns_device_switch_det_anm, HeadLampSwitch && torch ? (!torch->IsSwitchedOn() ? "anm_headlamp_on" : "anm_headlamp_off") : NightVisionSwitch && nvg ? (!nvg->IsActive() ? "anm_nv_on" : "anm_nv_off") : CleanMaskAction ? "anm_clean_mask" : "", "");
 
 	if (isHUDAnimationExist(guns_device_switch_anm))
 	{
@@ -2421,7 +2435,11 @@ void CWeaponMagazined::PlayAnimDeviceSwitch()
 	{
 		DeviceUpdate();
 		SwitchState(eIdle);
+		return;
 	}
+
+	if (g_actor->IsDetectorActive())
+		det->PlayDetectorAnimation(true, eDetAction, guns_device_switch_det_anm);
 }
 
 void CWeaponMagazined::OnZoomIn			()

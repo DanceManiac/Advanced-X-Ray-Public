@@ -4,6 +4,7 @@
 #include "Inventory.h"
 #include "ActorNightVision.h"
 #include "Torch.h"
+#include "CustomDetector.h"
 
 CWeaponBM16::~CWeaponBM16()
 {
@@ -433,6 +434,7 @@ void CWeaponBM16::PlayAnimDeviceSwitch()
 {
 	CActor* actor = Actor();
 	CTorch* torch = smart_cast<CTorch*>(Actor()->inventory().ItemFromSlot(TORCH_SLOT));
+	CCustomDetector* det = smart_cast<CCustomDetector*>(g_actor->inventory().ItemFromSlot(DETECTOR_SLOT));
 
 	if (!actor->GetNightVision())
 		actor->SetNightVision(xr_new<CNightVisionEffector>(actor->cNameSect()));
@@ -441,8 +443,9 @@ void CWeaponBM16::PlayAnimDeviceSwitch()
 
 	PlaySound(HeadLampSwitch && torch ? (!torch->IsSwitchedOn() ? "sndHeadlampOn" : "sndHeadlampOff") : NightVisionSwitch && nvg ? (!nvg->IsActive() ? "sndNvOn" : "sndNvOff") : CleanMaskAction ? "sndCleanMask" : "", get_LastFP());
 
-	string128 guns_device_switch_anm{};
+	string128 guns_device_switch_anm{}, guns_device_switch_det_anm{};
 	strconcat(sizeof(guns_device_switch_anm), guns_device_switch_anm, HeadLampSwitch && torch ? (!torch->IsSwitchedOn() ? "anm_headlamp_on" : "anm_headlamp_off") : NightVisionSwitch && nvg ? (!nvg->IsActive() ? "anm_nv_on" : "anm_nv_off") : CleanMaskAction ? "anm_clean_mask" : "", IsMisfire() ? "_jammed_" : "_", std::to_string(m_magazine.size()).c_str());
+	strconcat(sizeof(guns_device_switch_det_anm), guns_device_switch_det_anm, HeadLampSwitch && torch ? (!torch->IsSwitchedOn() ? "anm_headlamp_on" : "anm_headlamp_off") : NightVisionSwitch && nvg ? (!nvg->IsActive() ? "anm_nv_on" : "anm_nv_off") : CleanMaskAction ? "anm_clean_mask" : "", "");
 
 	if (isHUDAnimationExist(guns_device_switch_anm))
 	{
@@ -474,5 +477,9 @@ void CWeaponBM16::PlayAnimDeviceSwitch()
 	{
 		DeviceUpdate();
 		SwitchState(eIdle);
+		return;
 	}
+
+	if (g_actor->IsDetectorActive())
+		det->PlayDetectorAnimation(true, eDetAction, guns_device_switch_det_anm);
 }

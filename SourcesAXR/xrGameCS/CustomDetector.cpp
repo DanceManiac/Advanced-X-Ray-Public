@@ -35,8 +35,8 @@ bool CCustomDetector::CheckCompatibilityInt(CHudItem* itm, u16* slot_to_activate
 	u32 slot = iitm.GetSlot();
 	bool bres = (slot == PISTOL_SLOT || slot == KNIFE_SLOT || slot == BOLT_SLOT);
 
-	if (m_bDetActionsEnabled)
-		bres = bres || (slot == GRENADE_SLOT);
+	//if (m_bDetActionsEnabled)
+	//	bres = bres || (slot == GRENADE_SLOT);
 
 	if (!bres && slot_to_activate)
 	{
