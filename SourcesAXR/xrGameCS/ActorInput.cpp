@@ -254,8 +254,11 @@ void CActor::IR_OnKeyboardPress(int cmd)
 			if (hud_adj_mode)
 				return;
 
-			if (auto Wpn = smart_cast<CHudItem*>(inventory().ActiveItem()); Wpn && !Wpn->IsPending() && (Wpn->isHUDAnimationExist("anm_headlamp_on") || Wpn->isHUDAnimationExist("anm_headlamp_off")))
+			if (auto Wpn = smart_cast<CHudItem*>(inventory().ActiveItem()); Wpn && (Wpn->isHUDAnimationExist("anm_nv_on") || Wpn->isHUDAnimationExist("anm_nv_off")))
 			{
+				if (Wpn->IsPending())
+					break;
+
 				auto helmet = smart_cast<CHelmet*>(inventory().ItemFromSlot(HELMET_SLOT));
 				auto helmet2 = smart_cast<CHelmet*>(inventory().ItemFromSlot(SECOND_HELMET_SLOT));
 				auto outfit = smart_cast<CCustomOutfit*>(inventory().ItemFromSlot(OUTFIT_SLOT));
@@ -274,9 +277,9 @@ void CActor::IR_OnKeyboardPress(int cmd)
 			if (hud_adj_mode)
 				return;
 
-			if (auto Wpn = smart_cast<CHudItem*>(inventory().ActiveItem()); Wpn && !Wpn->IsPending() && (Wpn->isHUDAnimationExist("anm_nv_on") || Wpn->isHUDAnimationExist("anm_nv_off")))
+			if (auto Wpn = smart_cast<CHudItem*>(inventory().ActiveItem()); Wpn && (Wpn->isHUDAnimationExist("anm_headlamp_on") || Wpn->isHUDAnimationExist("anm_headlamp_off")))
 			{
-				if (smart_cast<CTorch*>(inventory().ItemFromSlot(TORCH_SLOT)))
+				if (smart_cast<CTorch*>(inventory().ItemFromSlot(TORCH_SLOT)) && !Wpn->IsPending())
 				{
 					Wpn->HeadLampSwitch = true;
 					Wpn->SwitchState(CHUDState::EHudStates::eDeviceSwitch);
@@ -290,8 +293,11 @@ void CActor::IR_OnKeyboardPress(int cmd)
 			if (hud_adj_mode)
 				return;
 
-			if (auto Wpn = smart_cast<CHudItem*>(inventory().ActiveItem()); Wpn && !Wpn->IsPending() && Wpn->isHUDAnimationExist("anm_clean_mask"))
+			if (auto Wpn = smart_cast<CHudItem*>(inventory().ActiveItem()); Wpn && Wpn->isHUDAnimationExist("anm_clean_mask"))
 			{
+				if (Wpn->IsPending())
+					break;
+
 				auto helmet = smart_cast<CHelmet*>(inventory().ItemFromSlot(HELMET_SLOT));
 				auto helmet2 = smart_cast<CHelmet*>(inventory().ItemFromSlot(SECOND_HELMET_SLOT));
 				auto outfit = smart_cast<CCustomOutfit*>(inventory().ItemFromSlot(OUTFIT_SLOT));
