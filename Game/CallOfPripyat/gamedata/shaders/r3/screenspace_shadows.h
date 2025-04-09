@@ -11,7 +11,7 @@ uniform float4 ssfx_sss; // Dir Len, Omni Len, Grass Shadows, -
 #include "screenspace_common.h"
 #include "settings_screenspace_SSS.h"
 
-Texture2D 	s_hud_mask;
+Texture2D 	s_ssfx_hud_mask;
 
 float SSFX_ScreenSpaceShadows(float4 P, float3 N, float2 tc, float HudMask, uint iSample)
 {

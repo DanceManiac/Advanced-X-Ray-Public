@@ -342,7 +342,7 @@ void CBlender_ssfx_sss::Compile(CBlender_Compile& C)
 		C.r_Pass("stub_screen_space", "ssfx_sss", FALSE, FALSE, FALSE);
 
 		C.r_dx10Texture("s_position", r2_RT_P);
-		C.r_dx10Texture("s_hud_mask", r2_RT_ssfx_hud);
+		C.r_dx10Texture("s_ssfx_hud_mask", r2_RT_ssfx_hud);
 		C.r_dx10Texture("sss_image", r2_RT_ssfx_sss);
 
 		C.r_dx10Texture("s_prev_pos", r2_RT_ssfx_prevPos);
@@ -401,7 +401,7 @@ void CBlender_ssfx_sss_ext::Compile(CBlender_Compile& C)
 		C.r_Pass("stub_screen_space", "ssfx_sss_ext", FALSE, FALSE, FALSE);
 
 		C.r_dx10Texture("s_position", r2_RT_P);
-		C.r_dx10Texture("s_hud_mask", r2_RT_ssfx_hud);
+		C.r_dx10Texture("s_ssfx_hud_mask", r2_RT_ssfx_hud);
 		C.r_dx10Texture("sss_image", r2_RT_ssfx_sss_ext);
 
 		C.r_dx10Texture("s_prev_pos", r2_RT_ssfx_prevPos);
@@ -417,7 +417,7 @@ void CBlender_ssfx_sss_ext::Compile(CBlender_Compile& C)
 		C.r_Pass("stub_screen_space", "ssfx_sss_ext", FALSE, FALSE, FALSE);
 
 		C.r_dx10Texture("s_position", r2_RT_P);
-		C.r_dx10Texture("s_hud_mask", r2_RT_ssfx_hud);
+		C.r_dx10Texture("s_ssfx_hud_mask", r2_RT_ssfx_hud);
 		C.r_dx10Texture("sss_image", r2_RT_ssfx_sss_ext2);
 
 		C.r_dx10Texture("s_prev_pos", r2_RT_ssfx_prevPos);

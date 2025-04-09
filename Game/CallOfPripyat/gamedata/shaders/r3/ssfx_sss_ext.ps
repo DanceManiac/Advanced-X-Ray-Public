@@ -37,8 +37,8 @@ float4 main(p_screen I) : SV_Target
 		float4 Pos = s_position.Load( int3( Pos2D, 0 ), 0 );
 	#endif
 
-		// The s_hud_mask is declared on "screenspace_shadows.h"
-		float3 HUD_mask = s_hud_mask.Sample(smp_nofilter, tc);
+		// The s_ssfx_hud_mask is declared on "screenspace_shadows.h"
+		float3 HUD_mask = s_ssfx_hud_mask.Sample(smp_nofilter, tc);
 
 		// Reconstruct Position, Normal and Material
 		float3 P 	= float3( Pos.z * ( Pos2D * pos_decompression_params.zw - pos_decompression_params.xy ), Pos.z );
