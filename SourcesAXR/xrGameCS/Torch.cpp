@@ -553,7 +553,6 @@ void CTorch::UpdateCL()
 			{
 				light_render->set_position	(M.c);
 				light_render->set_rotation	(M.k,M.i);
-				light_render->set_hud_mode	(true); // Enable HUD flag to player headlamp
 
 				Fvector offset				= M.c; 
 				offset.mad					(M.i,OMNI_OFFSET.x);
@@ -577,7 +576,6 @@ void CTorch::UpdateCL()
 			{
 				m_switched_on			= false;
 				light_render->set_active(false);
-				light_render->set_hud_mode(false);
 				light_omni->set_active(false);
 				glow_render->set_active	(false);
 			}

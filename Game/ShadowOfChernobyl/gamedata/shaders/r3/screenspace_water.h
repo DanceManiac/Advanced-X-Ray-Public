@@ -1,7 +1,7 @@
 /**
- * @ Version: SCREEN SPACE SHADERS - UPDATE 21
+ * @ Version: SCREEN SPACE SHADERS - UPDATE 12.6
  * @ Description: Water implementation
- * @ Modified time: 2024-06-14 08:39
+ * @ Modified time: 2022-11-26 02:05
  * @ Author: https://www.moddb.com/members/ascii1457
  * @ Mod: https://www.moddb.com/mods/stalker-anomaly/addons/screen-space-shaders
  */
@@ -40,13 +40,13 @@ float3 SSFX_ssr_water_ray(float3 ray_start_vs, float3 ray_dir_vs, float noise, u
 	[unroll (q_steps[G_SSR_QUALITY].x)]
 	for (int st = 1; st <= q_steps[G_SSR_QUALITY].x; st++)
 	{
+		// Ray out of screen...
+		if (ssr_ray.r_pos.y < 0.0f || ssr_ray.r_pos.y > 1.0f)
+			return 0;
+
 		// Horizontal stretch to avoid borders
 		float2 hor = ssr_ray.r_pos.x > 0.5f ? float2(1.0f, -0.1) : float2(-0.1, 1.0f);
 		ssr_ray.r_step.x = ori_x * lerp(hor.x, hor.y, saturate(ssr_ray.r_pos.x * 2.0f));
-
-		// Ray out of screen...
-		if (!SSFX_is_valid_uv(ssr_ray.r_pos.xy))
-			return 0;
 
 		// Ray intersect check ( x = difference | y = depth sample )
 		float2 ray_check = SSFX_ray_intersect(ssr_ray, iSample);

@@ -387,16 +387,8 @@ CRenderTarget::CRenderTarget		()
 	// Anomaly lut
 	b_lut					= xr_new<CBlender_lut>				();
 	// Screen Space Shaders Stuff
-	b_ssfx_rain				= xr_new<CBlender_ssfx_rain>		();
-	b_ssfx_water_blur		= xr_new<CBlender_ssfx_water_blur>	();
-	b_ssfx_bloom			= xr_new<CBlender_ssfx_bloom_build>	();
-	b_ssfx_bloom_lens		= xr_new<CBlender_ssfx_bloom_lens>	();
-	b_ssfx_bloom_downsample = xr_new<CBlender_ssfx_bloom_downsample>();
-	b_ssfx_bloom_upsample	= xr_new<CBlender_ssfx_bloom_upsample>();
-	b_ssfx_sss_ext			= xr_new<CBlender_ssfx_sss_ext>		(); // SSS
-	b_ssfx_sss				= xr_new<CBlender_ssfx_sss>			(); // SSS
-	b_ssfx_ssr				= xr_new<CBlender_ssfx_ssr>			(); // SSR
-	b_ssfx_volumetric_blur	= xr_new<CBlender_ssfx_volumetric_blur>(); // Volumetric Blur
+	b_ssfx_ssr				= xr_new<CBlender_ssfx_ssr>			(); // [Ascii1457] SSS new Phase
+	b_ssfx_volumetric_blur	= xr_new<CBlender_ssfx_volumetric_blur>(); // [Ascii1457] SSS new Phase
 	b_ssfx_ao				= xr_new<CBlender_ssfx_ao>			(); // AO
 
 	// HDAO
@@ -536,46 +528,17 @@ CRenderTarget::CRenderTarget		()
 		rt_pp_bloom.create(r2_RT_pp_bloom, vp_params_main_secondary, D3DFMT_A8R8G8B8);
 
 		// Screen Space Shaders Stuff
-		rt_ssfx.create(r2_RT_ssfx, vp_params_main_secondary, D3DFMT_A8R8G8B8); // Temp RT
+		rt_ssfx.create(r2_RT_ssfx, vp_params_main_secondary, D3DFMT_A8R8G8B8); // Generic RT
 		rt_ssfx_temp.create(r2_RT_ssfx_temp, vp_params_main_secondary, D3DFMT_A8R8G8B8); // Temp RT
-		rt_ssfx_temp2.create(r2_RT_ssfx_temp2, vp_params_main_secondary, D3DFMT_A8R8G8B8); // Temp RT
+		rt_ssfx_temp2.create(r2_RT_ssfx_temp2, vp_params_main_secondary, D3DFMT_A8R8G8B8); // Temp RT 8B
 		rt_ssfx_temp3.create(r2_RT_ssfx_temp3, vp_params_main_secondary, D3DFMT_A8R8G8B8); // Temp RT
-		rt_ssfx_accum.create(r2_RT_ssfx_accum, vp_params_main_secondary, D3DFMT_A16B16G16R16F, SampleCount); // Volumetric Acc
+		rt_ssfx_accum.create(r2_RT_ssfx_accum, vp_params_main_secondary, D3DFMT_A16B16G16R16F, SampleCount); // Temp RT 16B
+		rt_ssfx_hud.create(r2_RT_ssfx_hud, vp_params_main_secondary, D3DFMT_L8); // Temp RT 8B
+		rt_flares.create(r2_RT_flares, vp_params_main_secondary, D3DFMT_A8R8G8B8);
 		rt_ssfx_ao.create(r2_RT_ssfx_ao, vp_params_main_secondary, D3DFMT_A8R8G8B8); // AO Acc
 		rt_ssfx_il.create(r2_RT_ssfx_il, vp_params_main_secondary, D3DFMT_A8R8G8B8); // IL Acc
-
-		if (RImplementation.o.ssfx_sss)
-		{
-			rt_ssfx_sss.create(r2_RT_ssfx_sss, vp_params_main_secondary, D3DFMT_A8R8G8B8); // SSS Acc
-			rt_ssfx_sss_ext.create(r2_RT_ssfx_sss_ext, vp_params_main_secondary, D3DFMT_A8R8G8B8); // SSS EXT Acc
-			rt_ssfx_sss_ext2.create(r2_RT_ssfx_sss_ext2, vp_params_main_secondary, D3DFMT_A8R8G8B8); // SSS EXT Acc
-			rt_ssfx_sss_tmp.create(r2_RT_ssfx_sss_tmp, vp_params_main_secondary, D3DFMT_A8R8G8B8); // SSS EXT Acc
-		}
-
-		if (RImplementation.o.ssfx_bloom)
-		{
-			rt_ssfx_bloom1.create(r2_RT_ssfx_bloom1, RtCreationParams(u32(w / 2), u32(h / 2), MAIN_VIEWPORT), D3DFMT_A16B16G16R16F); // Bloom
-			rt_ssfx_bloom_emissive.create(r2_RT_ssfx_bloom_emissive, vp_params_main_secondary, D3DFMT_A8R8G8B8, SampleCount); // Emissive
-			rt_ssfx_bloom_lens.create(r2_RT_ssfx_bloom_lens, RtCreationParams(u32(w / 4), u32(h / 4), MAIN_VIEWPORT), D3DFMT_A8R8G8B8); // Lens
-			rt_ssfx_bloom_tmp2.create(r2_RT_ssfx_bloom_tmp2, RtCreationParams(u32(w / 2), u32(h / 2), MAIN_VIEWPORT), D3DFMT_A16B16G16R16F); // Bloom / 2
-			rt_ssfx_bloom_tmp4.create(r2_RT_ssfx_bloom_tmp4, RtCreationParams(u32(w / 4), u32(h / 4), MAIN_VIEWPORT), D3DFMT_A16B16G16R16F); // Bloom / 4
-			rt_ssfx_bloom_tmp8.create(r2_RT_ssfx_bloom_tmp8, RtCreationParams(u32(w / 8), u32(h / 8), MAIN_VIEWPORT), D3DFMT_A16B16G16R16F); // Bloom / 8
-			rt_ssfx_bloom_tmp16.create(r2_RT_ssfx_bloom_tmp16, RtCreationParams(u32(w / 16), u32(h / 16), MAIN_VIEWPORT), D3DFMT_A16B16G16R16F); // Bloom / 16
-			rt_ssfx_bloom_tmp32.create(r2_RT_ssfx_bloom_tmp32, RtCreationParams(u32(w / 32), u32(h / 32), MAIN_VIEWPORT), D3DFMT_A16B16G16R16F); // Bloom / 32
-			rt_ssfx_bloom_tmp64.create(r2_RT_ssfx_bloom_tmp64, RtCreationParams(u32(w / 64), u32(h / 64), MAIN_VIEWPORT), D3DFMT_A16B16G16R16F); // Bloom / 64
-			rt_ssfx_bloom_tmp32_2.create(r2_RT_ssfx_bloom_tmp32_2, RtCreationParams(u32(w / 32), u32(h / 32), MAIN_VIEWPORT), D3DFMT_A16B16G16R16F); // Bloom / 32
-			rt_ssfx_bloom_tmp16_2.create(r2_RT_ssfx_bloom_tmp16_2, RtCreationParams(u32(w / 16), u32(h / 16), MAIN_VIEWPORT), D3DFMT_A16B16G16R16F); // Bloom / 16
-			rt_ssfx_bloom_tmp8_2.create(r2_RT_ssfx_bloom_tmp8_2, RtCreationParams(u32(w / 8), u32(h / 8), MAIN_VIEWPORT), D3DFMT_A16B16G16R16F); // Bloom / 8
-			rt_ssfx_bloom_tmp4_2.create(r2_RT_ssfx_bloom_tmp4_2, RtCreationParams(u32(w / 4), u32(h / 4), MAIN_VIEWPORT), D3DFMT_A16B16G16R16F); // Bloom / 4
-		}
-
-		rt_ssfx_volumetric.create(r2_RT_ssfx_volumetric, RtCreationParams(u32(w / 8), u32(h / 8), MAIN_VIEWPORT), D3DFMT_A16B16G16R16F); // Volumetric
-		rt_ssfx_volumetric_tmp.create(r2_RT_ssfx_volumetric_tmp, RtCreationParams(u32(w / 8), u32(h / 8), MAIN_VIEWPORT), D3DFMT_A16B16G16R16F); // Volumetric
-		rt_ssfx_rain.create(r2_RT_ssfx_rain, RtCreationParams(u32(w / 8), u32(h / 8), MAIN_VIEWPORT), D3DFMT_A8R8G8B8); // Rain refraction buffer
-		rt_ssfx_water_waves.create(r2_RT_ssfx_water_waves, RtCreationParams(u32(512), (u32(512)), MAIN_VIEWPORT), D3DFMT_A8R8G8B8);
 		rt_ssfx_prevPos.create(r2_RT_ssfx_prevPos, vp_params_main_secondary, D3DFMT_A16B16G16R16F, SampleCount);
-		rt_ssfx_hud.create(r2_RT_ssfx_hud, vp_params_main_secondary, D3DFMT_A16B16G16R16F); // HUD mask & Velocity buffer
-		rt_flares.create(r2_RT_flares, vp_params_main_secondary, D3DFMT_A8R8G8B8);
+		rt_ssfx_water_waves.create(r2_RT_blur_8, RtCreationParams(u32(512), (u32(512)), MAIN_VIEWPORT), D3DFMT_A8R8G8B8);
 	}
 
 	s_sunshafts.create(b_sunshafts, "r2\\sunshafts");
@@ -589,22 +552,10 @@ CRenderTarget::CRenderTarget		()
     g_fxaa.create(FVF::F_V, RCache.Vertex.Buffer(), RCache.QuadIB);
 
 	// Screen Space Shaders Stuff
-	s_ssfx_rain.create(b_ssfx_rain, "ssfx_rain"); // SSS Rain
-	s_ssfx_bloom.create(b_ssfx_bloom, "ssfx_bloom"); // SSS Bloom
-	s_ssfx_bloom_lens.create(b_ssfx_bloom_lens, "ssfx_bloom_flares"); // SSS Bloom Lens flare
-	s_ssfx_bloom_downsample.create(b_ssfx_bloom_downsample, "ssfx_bloom_downsample"); // SSS Bloom
-	s_ssfx_bloom_upsample.create(b_ssfx_bloom_upsample, "ssfx_bloom_upsample"); // SSS Bloom
-	s_ssfx_sss_ext.create(b_ssfx_sss_ext, "ssfx_sss_ext"); // SSS Extended
-	s_ssfx_sss.create(b_ssfx_sss, "ssfx_sss"); // SSS
-	s_ssfx_ssr.create(b_ssfx_ssr, "ssfx_ssr"); // SSR
-	s_ssfx_volumetric_blur.create(b_ssfx_volumetric_blur, "ssfx_volumetric_blur"); // Volumetric Blur
+	s_ssfx_ssr.create(b_ssfx_ssr, "r2\\ssfx_ssr"); // SSR
+	s_ssfx_volumetric_blur.create(b_ssfx_volumetric_blur, "r2\\ssfx_volumetric_blur"); // Volumetric Blur
+	s_ssfx_dumb.create("ssfx_dumb"); // Dumb shader
 	s_ssfx_ao.create(b_ssfx_ao, "ssfx_ao"); // SSR
-	string32 cskin_buffer;
-	for (int skin_num = 0; skin_num < 5; skin_num++)
-	{
-		sprintf(cskin_buffer, "ssfx_hud_skin%i", skin_num);
-		s_ssfx_hud[skin_num].create(cskin_buffer);
-	}
 
 	//DLAA
 	s_dlaa.create("effects_dlaa");
@@ -1298,17 +1249,9 @@ CRenderTarget::~CRenderTarget	()
 	xr_delete					(b_film_grain			); //Film Grain
 	xr_delete					(b_cut					); //STCoP Engine
 	xr_delete					(b_lut					); // Anomaly lut
-	xr_delete					(b_ssfx_ssr				); // SSR Phase
-	xr_delete					(b_ssfx_volumetric_blur	); // Volumetric Phase
+	xr_delete					(b_ssfx_ssr				); // [Ascii1457] SSS new Phase
+	xr_delete					(b_ssfx_volumetric_blur	); // [Ascii1457] SSS new Phase
 	xr_delete					(b_ssfx_ao				); // AO Phase
-	xr_delete					(b_ssfx_rain			); // SSS Rain
-	xr_delete					(b_ssfx_water_blur		); // SSS Water Blur
-	xr_delete					(b_ssfx_bloom			); // SSS Bloom
-	xr_delete					(b_ssfx_bloom_lens		); // SSS Bloom Lens
-	xr_delete					(b_ssfx_bloom_downsample); // SSS Bloom Blur
-	xr_delete					(b_ssfx_bloom_upsample	); // SSS Bloom Blur
-	xr_delete					(b_ssfx_sss_ext			); // SSS Phase Ext
-	xr_delete					(b_ssfx_sss				); // SSS Phase
 
    if( RImplementation.o.dx10_msaa )
    {

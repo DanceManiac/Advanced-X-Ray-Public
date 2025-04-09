@@ -107,18 +107,6 @@ void R_dsgraph_structure::r_dsgraph_insert_dynamic	(dxRender_Visual *pVisual, Fv
 			N->second.pVisual			= pVisual;
 			N->second.Matrix			= *RI.val_pTransform;
 			N->second.se				= sh;
-
-#if RENDER==R_R4
-			if (RImplementation.o.ssfx_core && !sh->passes[0]->ps->hud_disabled)
-			{
-				HUDMask_Node* N2		= HUDMask.insert_anyway(distSQ);
-				N2->second.ssa			= SSA;
-				N2->second.pObject		= RI.val_pObject;
-				N2->second.pVisual		= pVisual;
-				N2->second.Matrix		= *RI.val_pTransform;
-				N2->second.se			= sh;
-			}
-#endif
 		}
 #if RENDER!=R_R1
 		if (sh->flags.bEmissive) 
@@ -324,7 +312,6 @@ void R_dsgraph_structure::r_dsgraph_insert_static	(dxRender_Visual *pVisual)
 
 	// Water rendering
 
-#if RENDER==R_R4
 	if (sh->flags.isWater)
 	{
 		mapWater_Node* N = mapWater.insert_anyway(distSQ);
@@ -335,7 +322,6 @@ void R_dsgraph_structure::r_dsgraph_insert_static	(dxRender_Visual *pVisual)
 		N->second.se = sh;
 		return;
 	}
-#endif
 
 	// strict-sorting selection
 	if (sh->flags.bStrictB2F) {

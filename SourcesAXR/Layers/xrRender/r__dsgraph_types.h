@@ -17,9 +17,8 @@ namespace	R_dsgraph
 	struct _MatrixItem	{
 		float				ssa;
 		IRenderable*		pObject;
-		dxRender_Visual*	pVisual;
+		dxRender_Visual*		pVisual;
 		Fmatrix				Matrix;				// matrix (copy)
-		mutable Fmatrix		PrevMatrix;
 	};
 
 	struct _MatrixItemS	: public _MatrixItem

@@ -604,22 +604,6 @@
 			<options_item entry="r4_ss_puddles" group="mm_opt_video_adv" depend="restart"/>
         </check_sss_puddles>
 		
-		<cap_sss_bloom x="70" y="3" width="135" height="24" hint = "ui_mm_sss_bloom_hint">
-            <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_sss_bloom</text>
-        </cap_sss_bloom>
-        <check_sss_bloom x="217" y="0" width="44" height="29">
-	        <texture>ui_inGame2_checkbox</texture>
-			<options_item entry="r4_ss_bloom" group="mm_opt_video_adv" depend="restart"/>
-        </check_sss_bloom>
-		
-		<cap_sss_bloom_mask_dirt x="70" y="3" width="135" height="24" hint = "ui_mm_sss_bloom_mask_dirt_hint">
-            <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_sss_bloom_mask_dirt</text>
-        </cap_sss_bloom_mask_dirt>
-        <check_sss_bloom_mask_dirt x="217" y="0" width="44" height="29">
-	        <texture>ui_inGame2_checkbox</texture>
-			<options_item entry="r4_ss_bloom_mask_dirt" group="mm_opt_video_adv" depend="restart"/>
-        </check_sss_bloom_mask_dirt>
-		
 		<cap_enchanted_shaders x="70" y="3" width="135" height="24" hint = "ui_mm_enchanted_shaders_hint">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_enchanted_shaders</text>
         </cap_enchanted_shaders>

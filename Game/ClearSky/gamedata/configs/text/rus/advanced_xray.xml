@@ -180,9 +180,6 @@
 	<string id="ssdo">
 		<text>SSDO</text>
 	</string>
-	<string id="ssdo_sss">
-		<text>SSDO [SSS 21]</text>
-	</string>
 	<string id="ui_mm_snd_delay">
 		<text>Задержка звуков вдалеке</text>
 	</string>
@@ -671,18 +668,6 @@
 	</string>
 	<string id="ui_mm_sss_puddles_hint">
 		<text>Эта опция позволяет включить или отключить эффект динамических луж из Screen Space Shaders во время дождя.\n \n %c[pda_yellow] • Нагрузка: Средняя</text>
-	</string>
-	<string id="ui_mm_sss_bloom">
-		<text>SSS: Блум</text>
-	</string>
-	<string id="ui_mm_sss_bloom_hint">
-		<text>Данная опция включает эффект блума из Screen Space Shaders Update 22. Это визуальный эффект, который имитирует рассеивание света за пределами ярких объектов на экране. Это часто используется для создания более реалистичного освещения или для художественного эффекта.\n \n %c[pda_green] • Нагрузка: Низкая</text>
-	</string>
-	<string id="ui_mm_sss_bloom_mask_dirt">
-		<text>SSS: Маска грязи блума</text>
-	</string>
-	<string id="ui_mm_sss_bloom_mask_dirt_hint">
-		<text>Данная опция включает текстурный слой, который добавляет "загрязнения" или "пыль" к эффекту блума. Это создает более реалистичный или атмосферный вид. Этот эффект будет применяться только при надетом шлеме и влюченной опции динамического худа шлемов.\n \n %c[pda_green] • Нагрузка: Низкая</text>
 	</string>
 	<string id="ui_mm_enchanted_shaders">
 		<text>Enchanted Shaders</text>

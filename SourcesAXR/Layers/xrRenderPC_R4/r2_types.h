@@ -36,38 +36,16 @@
 #define		r2_RT_smaa_edgetex  "$user$smaa_edgetex"
 #define		r2_RT_smaa_blendtex "$user$smaa_blendtex"
 
-#define		r2_RT_ssfx				"$user$ssfx" // SSS Temp1
-#define		r2_RT_ssfx_temp			"$user$ssfx_temp" // SSS Temp2
-#define		r2_RT_ssfx_temp2		"$user$ssfx_temp2" // SSS Temp3
-#define		r2_RT_ssfx_temp3		"$user$ssfx_temp3"
-#define		r2_RT_ssfx_accum		"$user$ssfx_accum" // SSS Volumetric
-#define		r2_RT_ssfx_hud			"$user$ssfx_hud" // HUD & Velocity Buffer
+#define		r2_RT_ssfx			"$user$ssfx"			// [Ascii1457] SSS new Phase
+#define		r2_RT_ssfx_temp		"$user$ssfx_temp"		// [Ascii1457] SSS new Phase
+#define		r2_RT_ssfx_temp2	"$user$ssfx_temp2"		// [ SSS ] Full res - D3DFMT_A8B8G8R8F
+#define		r2_RT_ssfx_temp3	"$user$ssfx_temp3"		// SSS Temp3
+#define		r2_RT_ssfx_accum	"$user$ssfx_accum"		// [ SSS ] Full res - D3DFMT_A16B16G16R16F
+#define		r2_RT_ssfx_hud		"$user$ssfx_hud"		// ...
+#define		r2_RT_ssfx_ao		"$user$ssfx_ao"			// AO Acc
+#define		r2_RT_ssfx_il		"$user$ssfx_il"			// IL Acc
+#define		r2_RT_ssfx_prevPos	"$user$ssfx_prev_p"		// Prev Position
 #define		r2_RT_ssfx_water_waves	"$user$ssfx_water_waves"
-#define		r2_RT_ssfx_ao			"$user$ssfx_ao" // AO Acc
-#define		r2_RT_ssfx_il			"$user$ssfx_il" // IL Acc
-#define		r2_RT_ssfx_prevPos		"$user$ssfx_prev_p" // Prev Position
-#define		r2_RT_ssfx_sss			"$user$ssfx_sss" // SSS Acc
-#define		r2_RT_ssfx_sss_ext		"$user$ssfx_sss_ext" // SSS Acc
-#define		r2_RT_ssfx_sss_ext2		"$user$ssfx_sss_ext2" // SSS Acc
-#define		r2_RT_ssfx_sss_tmp		"$user$ssfx_sss_tmp" // SSS Acc
-#define		r2_RT_ssfx_bloom1		"$user$ssfx_bloom1" // Bloom
-#define		r2_RT_ssfx_bloom_emissive	"$user$ssfx_bloom_emissive" // Bloom
-#define		r2_RT_ssfx_bloom_lens	"$user$ssfx_bloom_lens" // Bloom
-#define		r2_RT_ssfx_rain			"$user$ssfx_rain" // Rain refraction buffer
-#define		r2_RT_ssfx_volumetric	"$user$ssfx_volumetric" // Volumetric
-#define		r2_RT_ssfx_volumetric_tmp	"$user$ssfx_volumetric_tmp" // Volumetric
-
-#define		r2_RT_ssfx_bloom_tmp2	"$user$ssfx_bloom_tmp2" // Bloom
-#define		r2_RT_ssfx_bloom_tmp4	"$user$ssfx_bloom_tmp4" // Bloom
-#define		r2_RT_ssfx_bloom_tmp8	"$user$ssfx_bloom_tmp8" // Bloom
-#define		r2_RT_ssfx_bloom_tmp16	"$user$ssfx_bloom_tmp16" // Bloom
-#define		r2_RT_ssfx_bloom_tmp32	"$user$ssfx_bloom_tmp32" // Bloom
-#define		r2_RT_ssfx_bloom_tmp64	"$user$ssfx_bloom_tmp64" // Bloom
-
-#define		r2_RT_ssfx_bloom_tmp32_2	"$user$ssfx_bloom_tmp32_2" // Bloom
-#define		r2_RT_ssfx_bloom_tmp16_2	"$user$ssfx_bloom_tmp16_2" // Bloom
-#define		r2_RT_ssfx_bloom_tmp8_2		"$user$ssfx_bloom_tmp8_2" // Bloom
-#define		r2_RT_ssfx_bloom_tmp4_2		"$user$ssfx_bloom_tmp4_2" // Bloom
 
 #define		r2_RT_bloom1		"$user$bloom1"			// ---
 #define		r2_RT_bloom2		"$user$bloom2"			// ---

@@ -5,11 +5,6 @@
 // Check Screen Space Shaders modules & addons
 #include "check_screenspace.h"
 
-#ifdef SSFX_SSS
-	int sss_id;
-	Texture2D s_ssfx_sss;
-#endif
-
 //////////////////////////////////////////////////////////////////////////////////////////
 // This is the basic primitive used by convex, volumetric lights
 // for example spot-lights, one face of the omni lights, etc.
@@ -86,16 +81,6 @@ float4 main(p_volume I, float4 pos2d : SV_Position ) : SV_Target
 				lightmap = s_lmap.Sample( smp_rtlinear, PS.xy / PS.w );        //
 			#endif
 	#endif
-
-#ifdef SSFX_SSS
-	if (sss_id > -1)
-	{
-		float2 offset = (sss_id < 4 ? float2(0,0) : float2(0.5f,0));
-
-		float4 SSS_Sample = s_ssfx_sss.Sample( smp_rtlinear, tcProj * float2(0.5f, 1.0f) + offset ); // (sss_id < 3 ? float2(0,0) : float2(0.5f,0))
-		s *= SSS_Sample[sss_id % 4];
-	}
-#endif
 
 #if defined(ENCHANTED_SHADERS_ENABLED) && defined(SSFX_FLORAFIX)
 		return  float4(SRGBToLinear(Ldynamic_color.rgb * lightmap.rgb * s.xxx),1) * light;

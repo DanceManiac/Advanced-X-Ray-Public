@@ -105,11 +105,6 @@ void CRenderTarget::accum_point		(light* L)
 		RCache.set_c					("Ldynamic_color",	L_clr.x,L_clr.y,L_clr.z,L_spec);
 		RCache.set_c					("m_texgen",		m_Texgen);
 
-		if (Render->currentViewPort == MAIN_VIEWPORT)
-			RCache.set_c("sss_id", L->sss_id);
-		else
-			RCache.set_c("sss_id", -1);
-
 		// Fetch4 : enable
 //		if (RImplementation.o.HW_smap_FETCH4)	{
 			//. we hacked the shader to force smap on S0

@@ -218,22 +218,10 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	ctl			= xml:InitCheck					("video_adv:check_sss_wind",		_st)
 	handler.m_preconditions[ctl]		= get_screen_space_shaders_status
 	
---SSS Puddles
+--SSS Wind
 	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
 	xml:InitStatic								("video_adv:cap_sss_puddles",		_st)
 	ctl			= xml:InitCheck					("video_adv:check_sss_puddles",		_st)
-	handler.m_preconditions[ctl]		= get_screen_space_shaders_status
-	
---SSS Bloom
-	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
-	xml:InitStatic								("video_adv:cap_sss_bloom",			_st)
-	ctl			= xml:InitCheck					("video_adv:check_sss_bloom",		_st)
-	handler.m_preconditions[ctl]		= get_screen_space_shaders_status
-	
---SSS Bloom Mask Dirt
-	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
-	xml:InitStatic								("video_adv:cap_sss_bloom_mask_dirt", _st)
-	ctl			= xml:InitCheck					("video_adv:check_sss_bloom_mask_dirt", _st)
 	handler.m_preconditions[ctl]		= get_screen_space_shaders_status
 
 --Enchanted Shaders

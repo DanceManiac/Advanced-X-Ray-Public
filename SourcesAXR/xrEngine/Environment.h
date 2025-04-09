@@ -193,9 +193,6 @@ public:
 	float m_fTreeAmplitudeIntensity;
 #endif
 
-	float				bloom_threshold;
-	float				bloom_exposure;
-	float				bloom_sky_intensity;
 
 //	int					lens_flare_id;
 //	int					tb_id;

@@ -1,7 +1,7 @@
-/**
- * @ Version: SCREEN SPACE SHADERS - UPDATE 21
+/*
+ * @ Version: SCREEN SPACE SHADERS - UPDATE 18
  * @ Description: Rain patch normal
- * @ Modified time: 2024-05-08 11:02
+ * @ Modified time: 2023-10-09 07:25
  * @ Author: https://www.moddb.com/members/ascii1457
  * @ Mod: https://www.moddb.com/mods/stalker-anomaly/addons/screen-space-shaders
  */
@@ -15,10 +15,8 @@
 uniform float4 ssfx_wetsurfaces_1; // Ripples [ Size, Speed, Min Speed, Int ]
 uniform float4 ssfx_wetsurfaces_2; // FallWater [ Size, Speed, Min Speed, Int ]
 
-Texture2D 	s_ssfx_hud_mask;
 Texture2D	s_water;
 Texture2D	s_waterFall;
-
 float4 RainFallof;
 
 float3	GetWaterFall( Texture2D s_texture, float2 tc)
@@ -38,6 +36,7 @@ float3	GetWaterFall( Texture2D s_texture, float2 tc)
 	// Column ID to add a random offset and adjust horizontal offset
 	half col_id = ceil(tc_ori.x * col_num);
 
+
 	// Random Y-Offset for each column
 	float col_offset = hash22(float2(col_id, 1.0));
 
@@ -45,7 +44,7 @@ float3	GetWaterFall( Texture2D s_texture, float2 tc)
 	col_offset = (col_offset < ssfx_wetsurfaces_2.z ? col_offset * 3.0f : col_offset);
 
 	// Animate
-	col_offset += timers.x * col_offset * rain_params.x * ssfx_wetsurfaces_2.y;
+	col_offset += timers.x * col_offset * ssfx_wetsurfaces_2.y;
 
 	// Add wabbly
 	//col_tc.x += sin((tc_ori.y + col_offset) * 20) * 0.5f + 0.5f;
@@ -57,10 +56,11 @@ float3	GetWaterFall( Texture2D s_texture, float2 tc)
 	water.xyz = water.xzy * 2.0f - 1.0f;
 
 	// Intensity
-	water.xyz *= ssfx_wetsurfaces_2.w;
+	water.xyz *= ssfx_wetsurfaces_2.w * clamp(rain_params.x, 0.1f, 1.f);
 
 	return water.xyz;
 }
+
 
 #ifndef ISAMPLE
 #define ISAMPLE 0
@@ -84,7 +84,6 @@ float4 main ( float2 tc : TEXCOORD0, float2 tcJ : TEXCOORD1, float4	Color	: COLO
 	float3 _N = normalize(gbd.N.xyz);
 	float3 _D = gbd.C;
 	float _M = gbd.mtl;
-
 	float4 PS = mul( m_shadow,  _P );
 	float3 WorldP = mul( m_sunmask, _P );
 	float3 WorldN = mul( m_sunmask, _N.xyz );
@@ -125,7 +124,7 @@ float4 main ( float2 tc : TEXCOORD0, float2 tcJ : TEXCOORD1, float4	Color	: COLO
 	water += waterFallZ.zxy * weights.z;
 
 	// HUD attenuations ( Remove Terrain & Flora )
-	float HUD_Attenuation = s_ssfx_hud_mask.Sample(smp_nofilter, tc).r * !is_flora;
+	float HUD_Attenuation = smoothstep( 1.0f, 1.3f, p_len + (is_terrain * 1.3f) ) * !is_flora;
 
 	// Apply attenuations
 	water *= HUD_Attenuation * saturate(RainInt) * Cover;
@@ -135,7 +134,6 @@ float4 main ( float2 tc : TEXCOORD0, float2 tcJ : TEXCOORD1, float4	Color	: COLO
 
 	// Add water normal
 	_N = normalize(_N + water.xyz);
-
 
 	// [ GLOSS ] ------------------------------------------
 	float Gloss = (0.15f + saturate(RainInt) * 0.05) * Wetness; // Wetness

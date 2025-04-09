@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../xrRender/ColorMapManager.h"
-#include "../xrRender/light_db.h"
 
 class light;
 
@@ -74,14 +73,6 @@ public:
     IBlender*                   b_hdao_msaa_cs;
 
 	// [SSS Stuff]
-	IBlender*					b_ssfx_rain;
-	IBlender*					b_ssfx_water_blur;
-	IBlender*					b_ssfx_bloom_downsample;
-	IBlender*					b_ssfx_bloom_upsample;
-	IBlender*					b_ssfx_bloom;
-	IBlender*					b_ssfx_bloom_lens;
-	IBlender*					b_ssfx_sss_ext;
-	IBlender*					b_ssfx_sss;
 	IBlender*					b_ssfx_ssr;
 	IBlender*					b_ssfx_volumetric_blur;
 	IBlender*					b_ssfx_ao;
@@ -151,36 +142,16 @@ public:
 	ref_rt						rt_ssfx_temp3;
 	ref_rt						rt_ssfx_accum;
 	ref_rt						rt_ssfx_hud;
-	ref_rt						rt_ssfx_ssr;
-	ref_rt						rt_ssfx_water_waves;
+	ref_shader					s_ssfx_dumb;
 	ref_rt						rt_ssfx_ao;
 	ref_rt						rt_ssfx_il;
-	ref_rt						rt_ssfx_sss;
-	ref_rt						rt_ssfx_sss_ext;
-	ref_rt						rt_ssfx_sss_ext2;
-	ref_rt						rt_ssfx_sss_tmp;
-	ref_rt						rt_ssfx_bloom1;
-	ref_rt						rt_ssfx_bloom_emissive;
-	ref_rt						rt_ssfx_bloom_lens;
-	ref_rt						rt_ssfx_rain;
-	ref_rt						rt_ssfx_volumetric;
-	ref_rt						rt_ssfx_volumetric_tmp;
-	ref_rt						rt_ssfx_bloom_tmp2;
-	ref_rt						rt_ssfx_bloom_tmp4;
-	ref_rt						rt_ssfx_bloom_tmp8;
-	ref_rt						rt_ssfx_bloom_tmp16;
-	ref_rt						rt_ssfx_bloom_tmp32;
-	ref_rt						rt_ssfx_bloom_tmp64;
-	ref_rt						rt_ssfx_bloom_tmp32_2;
-	ref_rt						rt_ssfx_bloom_tmp16_2;
-	ref_rt						rt_ssfx_bloom_tmp8_2;
-	ref_rt						rt_ssfx_bloom_tmp4_2;
 	ref_rt						rt_ssfx_prevPos;
+	ref_rt						rt_ssfx_water_waves;
 
-	Fmatrix						Matrix_previous, Matrix_current;
-	Fmatrix						Matrix_HUD_previous, Matrix_HUD_current;
-	Fvector3					Position_previous;
-	bool						RVelocity;
+	Fmatrix Matrix_previous, Matrix_current;
+	Fmatrix Matrix_HUD_previous, Matrix_HUD_current;
+	Fvector3 Position_previous;
+	//bool RVelocity;
 
 	//	Igor: for async screenshots
 	ID3DTexture2D*			t_ss_async;				//32bit		(r,g,b,a) is situated in the system memory
@@ -286,27 +257,17 @@ private:
 	ref_shader              s_accum_direct_volumetric_msaa[8];
 	ref_shader					s_accum_mask_msaa[8];
 	ref_shader					s_accum_direct_msaa[8];
-    ref_shader					s_mark_msaa_edges;
+   ref_shader					s_mark_msaa_edges;
 	ref_shader					s_accum_point_msaa[8]	;
 	ref_shader					s_accum_spot_msaa[8]	;
 	ref_shader					s_accum_reflected_msaa[8];
 	ref_shader					s_accum_volume_msaa[8];
 
-public:
 	// Screen Space Shaders Stuff
-	ref_shader					s_ssfx_ao;
-	ref_shader					s_ssfx_hud[5];
 	ref_shader					s_ssfx_ssr;
 	ref_shader					s_ssfx_volumetric_blur;
-	ref_shader					s_ssfx_rain;
-	ref_shader					s_ssfx_bloom;
-	ref_shader					s_ssfx_bloom_lens;
-	ref_shader					s_ssfx_bloom_upsample;
-	ref_shader					s_ssfx_bloom_downsample;
-	ref_shader					s_ssfx_sss_ext;
-	ref_shader					s_ssfx_sss;
+	ref_shader					s_ssfx_ao;
 
-private:
 	ref_geom						g_accum_point	;
 	ref_geom						g_accum_spot	;
 	ref_geom						g_accum_omnipart;
@@ -386,7 +347,6 @@ private:
 
 	//	Igor: used for volumetric lights
 	bool						m_bHasActiveVolumetric;
-	bool						m_bHasActiveVolumetric_spot;
 public:
 								CRenderTarget			();
 								~CRenderTarget			();
@@ -453,15 +413,11 @@ public:
 	void 						PhaseRainDrops			();
 	void						shadow_direct			(light* L, u32 dls_phase);
 	void						SwitchViewPort			(ViewPort vp);
-	void						phase_ssfx_rain			(); // Bloom PP
-	void						phase_ssfx_bloom		(); // Bloom PP
-	void						phase_ssfx_sss			(); // SSS
-	void						phase_ssfx_sss_ext		(light_Package& LP); // SSS Spot lights
 	void						phase_ssfx_ssr			(); // SSR Phase
 	void						phase_ssfx_volumetric_blur(); // Volumetric Blur
-	void						phase_ssfx_water_waves	(); // Water Waves
 	void						phase_ssfx_ao			(); // AO
 	void						phase_ssfx_il			(); // IL
+	void						phase_ssfx_water_waves	(); // Water Waves
 	void						set_viewport_size		(ID3DDeviceContext* dev, float w, float h);
 
 	//	Generates min/max sm

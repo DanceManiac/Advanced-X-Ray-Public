@@ -1,46 +1,26 @@
 /**
- * @ Version: SCREEN SPACE SHADERS - UPDATE 22
+ * @ Version: SCREEN SPACE SHADERS - UPDATE 11.3
  * @ Description: SSS implementation
- * @ Modified time: 2024-11-25 02:19
+ * @ Modified time: 2023-12-11 08:23
  * @ Author: https://www.moddb.com/members/ascii1457
  * @ Mod: https://www.moddb.com/mods/stalker-anomaly/addons/screen-space-shaders
  */
 
-uniform float4 ssfx_sss; // Dir Len, Omni Len, Grass Shadows, -
-
 #include "screenspace_common.h"
 #include "settings_screenspace_SSS.h"
 
-Texture2D 	s_ssfx_hud_mask;
-
-float SSFX_ScreenSpaceShadows(float4 P, float3 N, float2 tc, float HudMask, uint iSample)
+float SSFX_ScreenSpaceShadows_Far(float4 P, float2 tc, uint iSample)
 {
-	// Weapon Mask
-	bool IsHUD = HudMask <= 0;
+	if ( abs(P.w - MAT_FLORA) > 0.03f )
+		return 1;
 
-	float pLen = length(P.xyz);
+	// Light vector
+	float3 L_dir = mul(m_V, float4(-normalize(L_sun_dir_w), 0)).xyz;
 
-	// Distance Factor
-	float DFactor = saturate((pLen - 80) * 0.01f);
+	RayTrace sss_ray = SSFX_ray_init(P.xyz, L_dir, 2.5, 2, 1);
 
-	// Adjust Settings for weapons and scene.
-	float ray_detail	= lerp(G_SSS_DETAIL, 0.05f, pLen * 0.02f);
-	float ray_thick		= lerp(0.2f, 10, DFactor);
-	float ray_len		= lerp(1.0, 20, DFactor);
-
-	ray_len *= saturate(P.z); // Limit the ray_len to avoid issues when surfaces are extremely close
-
-	if (IsHUD)
-	{
-		ray_detail = 0;
-		ray_len = G_SSS_WEAPON_LENGTH;
-		ray_thick = 1.0f;
-	}
-
-	RayTrace sss_ray = SSFX_ray_init(P, -L_sun_dir_e, ray_len * ssfx_sss.x, SSFX_SSS_DIR_QUALITY, hash12(tc * 100 + timers.xx * 100));
-
-	[unroll (SSFX_SSS_DIR_QUALITY)]
-	for (int i = 0; i < SSFX_SSS_DIR_QUALITY; i++)
+	[unroll (2)]
+	for (int i = 0; i < 2; i++)
 	{
 		// Break the march if ray go out of screen...
 		if (!SSFX_is_valid_uv(sss_ray.r_pos))
@@ -53,67 +33,67 @@ float SSFX_ScreenSpaceShadows(float4 P, float3 N, float2 tc, float HudMask, uint
 		float diff = depth_ray.x;
 		
 		// No Sky
-		if (depth_ray.y <= SKY_EPS)
-			return 1;
-
-		// Disable weapons at some point to avoid wrong shadows on the ground
-		if (!IsHUD)
-			diff *= depth_ray.y >= 1.0f;
+		diff *= depth_ray.y > SKY_EPS;
 
 		// Negative: Ray is closer to the camera ( not occluded )
 		// Positive: Ray is beyond the depth sample ( occluded )
-		if (diff > ray_detail && diff < ray_thick)
-			return saturate(1.0f - G_SSS_INTENSITY);
+		if (diff > 0 && diff < 3)
+		{
+			return 0;
+		}
 
-		// Step the ray + Noise
-		sss_ray.r_pos += sss_ray.r_step * (1.0f + hash12((tc * 100) + timers.xx * 100));
+		// Step the ray
+		sss_ray.r_pos += sss_ray.r_step;
 	}
 
-	// None
 	return 1;
 }
 
-
-
-float SSFX_ScreenSpaceShadows_Point(float4 P, float2 tc, float3 LightPos, float HudMask, uint iSample)
+float SSFX_ScreenSpaceShadows(float4 P, float2 tc, uint iSample)
 {
 	// Light vector
-	float3 L_dir = -normalize(P.xyz - LightPos);
+	float3 L_dir = mul(m_V, float4(-normalize(L_sun_dir_w), 0)).xyz;
 
 	// Material conditions...
-	bool mat_flora = abs(P.w - MAT_FLORA) <= 0.04f;
+	bool mat_flora = abs(P.w - MAT_FLORA) <= 0.02f;
+	bool mat_terrain = abs(P.w - 0.95f) <= 0.02f;
 
-	// Weapon Mask
-	bool IsHUD = HudMask <= 0;
+	// Weapons mask. Depth below or equal to 1.2
+	bool weapon_mask = P.z >= 1.2f;
 
+	// Weapon Factor.
+	float pLen = length(P.z);
+	float wpn_f = smoothstep(G_SSDO_WEAPON_LENGTH * 0.75f, G_SSDO_WEAPON_LENGTH, pLen);
+
+	//wpn_f = saturate(wpn_f + mat_terrain);
+	
 	// Adjust Settings for weapons and scene.
-	float ray_detail	= G_SSS_DETAIL;
-	float ray_thick		= 0.2f;
-	float ray_len		= 0.5f;
+	float ray_hardness	= lerp(10.0f * G_SSDO_WEAPON_HARDNESS, 15.0f * G_SSDO_SCENARY_HARDNESS, wpn_f);
+	float ray_detail	= clamp(pLen * 0.003f, G_SSS_DETAILS, 10);
+	float ray_thick		= (0.3f - wpn_f * 0.23f) + (pLen * 0.001f * wpn_f);
+	float ray_len		= lerp(G_SSDO_WEAPON_SHADOW_LENGTH, G_SSDO_SCENARY_SHADOW_LENGTH, wpn_f);
 
-	// Grass overwrite.
-	if (IsHUD)
+	// Grass overwrite. ( Sadly some weapons use MAT_FLORA, let's remove low depth values from the overwrite )
+	if (mat_flora && weapon_mask)
 	{
-		ray_thick = 1.0f;
-		ray_len = 0.06f;
-	}
-	else
-	{
-		if (mat_flora)
-		{
-			ray_thick = 10.0f;
-			ray_len = 0.5f;
-		}
+		ray_hardness = G_SSDO_GRASS_HARDNESS * 5.0f;
+		ray_len = G_SSDO_GRASS_SHADOW_LENGTH;
 	}
 
-	RayTrace sss_ray = SSFX_ray_init(P, L_dir, ray_len * ssfx_sss.y, SSFX_SSS_OMNI_QUALITY, hash12(tc * 100 + timers.xx * 100));
+	if (ray_hardness <= 0)
+		return 1.0f;
 
-	[unroll (SSFX_SSS_OMNI_QUALITY)]
-	for (int i = 0; i < SSFX_SSS_OMNI_QUALITY; i++)
+	RayTrace sss_ray = SSFX_ray_init(P, L_dir, ray_len, G_SSS_STEPS, SSFX_noise(tc));
+
+	float fade_len = 1.0f + sss_ray.r_step;
+	float shadow = 0;
+
+	[unroll (G_SSS_STEPS)]
+	for (int i = 0; i < G_SSS_STEPS; i++)
 	{
 		// Break the march if ray go out of screen...
 		if (!SSFX_is_valid_uv(sss_ray.r_pos))
-			return 1;
+			break;
 
 		// Sample current ray pos ( x = difference | y = sample depth | z = current ray len )
 		float3 depth_ray = SSFX_ray_intersect(sss_ray, iSample);
@@ -122,21 +102,23 @@ float SSFX_ScreenSpaceShadows_Point(float4 P, float2 tc, float3 LightPos, float 
 		float diff = depth_ray.x;
 		
 		// No Sky
-		if (depth_ray.y <= SKY_EPS)
-			return 1;
+		diff *= depth_ray.y > SKY_EPS;
 
 		// Disable weapons at some point to avoid wrong shadows on the ground
-		if (!IsHUD)
+		if (weapon_mask)
 			diff *= depth_ray.y >= 1.0f;
 
 		// Negative: Ray is closer to the camera ( not occluded )
 		// Positive: Ray is beyond the depth sample ( occluded )
 		if (diff > ray_detail && diff < ray_thick)
-			return 1.0f - saturate(G_SSS_INTENSITY - smoothstep( SSFX_SSS_OMNI_QUALITY * 0.5f, SSFX_SSS_OMNI_QUALITY + 1, i));
+		{
+			shadow += (fade_len - depth_ray.z) * (1.0f - smoothstep( G_SSS_STEPS * G_SSS_FORCE_FADE, G_SSS_STEPS + 1, i));
+		}
 
 		// Step the ray
-		sss_ray.r_pos += sss_ray.r_step * (1.0f + hash12((tc * 100) + timers.xx * 100));
+		sss_ray.r_pos += sss_ray.r_step;
 	}
 
-	return 1;
+	// Calc shadow and return.
+	return 1.0f - saturate(shadow * (1.0f / G_SSS_STEPS) * ray_hardness) * G_SSS_INTENSITY;
 }

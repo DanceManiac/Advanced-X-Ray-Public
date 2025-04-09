@@ -39,7 +39,6 @@ cbuffer	static_globals
 	uniform float4		L_ambient;		// L_ambient.w = skynbox-lerp-factor
 	uniform float3		L_sun_color;
 	uniform float3		L_sun_dir_w;
-	uniform float3		L_sun_dir_e;
 	uniform float4		L_hemi_color;
 	uniform float4 		Ldynamic_dir;
 	uniform float4 		Ldynamic_pos;

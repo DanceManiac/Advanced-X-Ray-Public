@@ -20,10 +20,6 @@ uniform float4 fakescope_params3;
 	#include "screenspace_lut.h"
 #endif
 
-#ifdef SSFX_BLOOM
-	Texture2D s_ssfx_bloom;
-#endif
-
 //////////////////////////////////////////////////////////////////////////////////////////
 #ifndef USE_MSAA
 Texture2D 			s_distort;
@@ -88,11 +84,7 @@ c2_out main( v2p_aa_AA I )
 
 	float3 img = s_image.Load(int3(center.xy * screen_res.xy, 0),0);
 
-#ifdef SSFX_BLOOM
-	float4 bloom = s_ssfx_bloom.Sample(smp_rtlinear, center);
-#else
-	float4 bloom = s_bloom.Sample(smp_rtlinear, center);
-#endif
+	float4 bloom = s_bloom.Sample(smp_rtlinear,center);
 
 	if (!isSecondVPActive())
 		img = mblur( center, ( gbd ).P, img.rgb);
@@ -121,7 +113,7 @@ c2_out main( v2p_aa_AA I )
 	#endif
 	// --------------------------------------
 #endif
-
+	
 #ifdef SSFX_DEBAND
 	#ifdef SSFX_FOG
 		float Debanding = depth <= SKY_EPS ? 1.0 : fogresult;

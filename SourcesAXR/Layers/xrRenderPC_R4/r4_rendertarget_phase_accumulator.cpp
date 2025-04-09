@@ -62,40 +62,24 @@ void	CRenderTarget::phase_accumulator()
 
 void	CRenderTarget::phase_vol_accumulator()
 {
-	if (RImplementation.o.ssfx_volumetric)
+	if (!m_bHasActiveVolumetric)
 	{
-		// SSS does not require the stencil. ( This also fix the MSAA bug )
-		if (!m_bHasActiveVolumetric)
-		{
-			m_bHasActiveVolumetric = true;
-
-			FLOAT ColorRGBA[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-			HW.pContext->ClearRenderTargetView(rt_Generic_2->pRT, ColorRGBA);
-		}
-
-		u_setrt(rt_Generic_2, NULL, NULL, NULL);
+		m_bHasActiveVolumetric = true;
+		if( !RImplementation.o.dx10_msaa )
+			u_setrt								(rt_Generic_2, NULL, NULL, RImplementation.o.ssfx_volumetric ? NULL : HW.pBaseZB);
+		else
+			u_setrt								(rt_Generic_2, NULL, NULL, RImplementation.o.ssfx_volumetric ? NULL : HW.pBaseZB);
+		//u32		clr4clearVol				= color_rgba(0,0,0,0);	// 0x00
+		//CHK_DX	(HW.pDevice->Clear			( 0L, NULL, D3DCLEAR_TARGET, clr4clearVol, 1.0f, 0L));
+		FLOAT ColorRGBA[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+		HW.pContext->ClearRenderTargetView( rt_Generic_2->pRT, ColorRGBA);
 	}
 	else
 	{
-		if (!m_bHasActiveVolumetric)
-		{
-			m_bHasActiveVolumetric = true;
-			if (!RImplementation.o.dx10_msaa)
-				u_setrt(rt_Generic_2, NULL, NULL, HW.pBaseZB);
-			else
-				u_setrt(rt_Generic_2, NULL, NULL, RImplementation.Target->rt_MSAADepth->pZRT);
-			//u32		clr4clearVol				= color_rgba(0,0,0,0);	// 0x00
-			//CHK_DX	(HW.pDevice->Clear			( 0L, NULL, D3DCLEAR_TARGET, clr4clearVol, 1.0f, 0L));
-			FLOAT ColorRGBA[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-			HW.pContext->ClearRenderTargetView(rt_Generic_2->pRT, ColorRGBA);
-		}
+		if( !RImplementation.o.dx10_msaa )
+			u_setrt								(rt_Generic_2, NULL, NULL, RImplementation.o.ssfx_volumetric ? NULL : HW.pBaseZB);
 		else
-		{
-			if (!RImplementation.o.dx10_msaa)
-				u_setrt(rt_Generic_2, NULL, NULL, HW.pBaseZB);
-			else
-				u_setrt(rt_Generic_2, NULL, NULL, RImplementation.Target->rt_MSAADepth->pZRT);
-		}
+			u_setrt								(rt_Generic_2, NULL, NULL, RImplementation.o.ssfx_volumetric ? NULL : HW.pBaseZB);
 	}
 
 	RCache.set_Stencil							(FALSE);

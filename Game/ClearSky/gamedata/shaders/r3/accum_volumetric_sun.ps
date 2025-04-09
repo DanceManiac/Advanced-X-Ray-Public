@@ -31,6 +31,8 @@
 float4 volume_range; //	x - near plane, y - far plane
 float4 sun_shafts_intensity;
 
+uniform float4 ssfx_volumetric;
+
 #ifdef MSAA_OPTIMIZATION
 float4 	main (v2p_volume  I, uint iSample : SV_SAMPLEINDEX  ) : SV_Target
 #else
@@ -45,6 +47,10 @@ float4 	main (v2p_volume  I) : SV_Target
 	float4	pos2d = I.hpos;
 	
 	float ResScale = 1.0f;
+
+#ifdef SSFX_SHADOWS
+	ResScale = ssfx_volumetric.w;
+#endif
 
 	pos2d *= ResScale;
 	
@@ -73,7 +79,11 @@ float4 	main (v2p_volume  I) : SV_Target
 	// https://www.moddb.com/mods/stalker-anomaly/addons/screen-space-shaders/
 
 	// Volumetric offset when used with SSS extended shadows.
+#ifdef SSFX_SHADOWS
+	current.z += 0.001f * (1.0 + ssfx_volumetric.w * saturate(P.z * 0.1f) * 0.1f);
+#else
 	current.z += 0.001f;
+#endif
 
 	// Fade Weapon
 	density *= saturate(depth * 0.8f);

@@ -34,8 +34,6 @@ void	CBlender_accum_direct::Compile(CBlender_Compile& C)
 		C.r_dx10Texture		("s_lmap",			r2_sunmask);
 		C.r_dx10Texture		("s_smap",			r2_RT_smap_depth);
 		C.r_dx10Texture		("s_smap_minmax",	r2_RT_smap_depth_minmax);
-		C.r_dx10Texture		("s_ssfx_hud_mask",	r2_RT_ssfx_hud);
-		C.r_dx10Texture		("s_ssfx_sss",		r2_RT_ssfx_sss);
 
 		C.r_dx10Sampler		("smp_nofilter");
 		C.r_dx10Sampler		("smp_material");
@@ -71,8 +69,6 @@ void	CBlender_accum_direct::Compile(CBlender_Compile& C)
 		C.r_dx10Texture		("s_accumulator",	r2_RT_accum);
 		C.r_dx10Texture		("s_lmap",			r2_sunmask);
 		C.r_dx10Texture		("s_smap",			r2_RT_smap_depth);
-		C.r_dx10Texture		("s_ssfx_hud_mask",	r2_RT_ssfx_hud);
-		C.r_dx10Texture		("s_ssfx_sss",		r2_RT_ssfx_sss);
 
 		C.r_dx10Sampler		("smp_nofilter");
 		C.r_dx10Sampler		("smp_material");
@@ -123,7 +119,6 @@ void	CBlender_accum_direct::Compile(CBlender_Compile& C)
 		C.r_dx10Texture		("s_lmap",			r2_sunmask);
 		C.r_dx10Texture		("s_smap",			r2_RT_smap_depth);
 		C.r_dx10Texture		("s_smap_minmax",	r2_RT_smap_depth_minmax);
-		C.r_dx10Texture		("s_ssfx_hud_mask",	r2_RT_ssfx_hud);
 
 		C.r_dx10Sampler		("smp_nofilter");
 		C.r_dx10Sampler		("smp_material");
@@ -209,8 +204,6 @@ void	CBlender_accum_direct_msaa::Compile(CBlender_Compile& C)
 		C.r_dx10Texture		("s_accumulator",	r2_RT_accum);
 		C.r_dx10Texture		("s_lmap",			r2_sunmask);
 		C.r_dx10Texture		("s_smap",			r2_RT_smap_depth);
-		C.r_dx10Texture		("s_ssfx_hud_mask",	r2_RT_ssfx_hud);
-		C.r_dx10Texture		("s_ssfx_sss",		r2_RT_ssfx_sss);
 
 		C.r_dx10Sampler		("smp_nofilter");
 		C.r_dx10Sampler		("smp_material");
@@ -246,8 +239,6 @@ void	CBlender_accum_direct_msaa::Compile(CBlender_Compile& C)
 		C.r_dx10Texture		("s_accumulator",	r2_RT_accum);
 		C.r_dx10Texture		("s_lmap",			r2_sunmask);
 		C.r_dx10Texture		("s_smap",			r2_RT_smap_depth);
-		C.r_dx10Texture		("s_ssfx_hud_mask",	r2_RT_ssfx_hud);
-		C.r_dx10Texture		("s_ssfx_sss",		r2_RT_ssfx_sss);
 
 		C.r_dx10Sampler		("smp_nofilter");
 		C.r_dx10Sampler		("smp_material");
@@ -299,7 +290,6 @@ void	CBlender_accum_direct_msaa::Compile(CBlender_Compile& C)
 		C.r_dx10Texture		("s_lmap",			r2_sunmask);
 		C.r_dx10Texture		("s_smap",			r2_RT_smap_depth);
 		C.r_dx10Texture		("s_smap_minmax",	r2_RT_smap_depth_minmax);
-		C.r_dx10Texture		("s_ssfx_hud_mask",	r2_RT_ssfx_hud);
 
 		C.r_dx10Sampler		("smp_nofilter");
 		C.r_dx10Sampler		("smp_material");

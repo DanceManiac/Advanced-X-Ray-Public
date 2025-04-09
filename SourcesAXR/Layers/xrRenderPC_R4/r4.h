@@ -62,7 +62,6 @@ public:
 		u32		ssao_ultra			: 1;
 		u32		hbao_vectorized		: 1;
 		u32		ssao_ssdo			: 1;
-		u32		ssao_ssdo_sss		: 1;
 
 		u32		smapsize			: 16;
 		u32		depth16				: 1;
@@ -120,8 +119,6 @@ public:
 	  u32		dx11_ss_lut				: 1;
 	  u32		dx11_ss_wind			: 1;
 	  u32		dx11_ss_puddles			: 1;
-	  u32		dx11_ss_bloom			: 1;
-	  u32		dx11_ss_bloom_mask_dirt : 1;
 
 	  u32		dx11_enable_tessellation : 1;
 
@@ -140,9 +137,6 @@ public:
 		u32		ssfx_volumetric		: 1;
 		u32		ssfx_ao				: 1;
 		u32		ssfx_il				: 1;
-		u32		ssfx_bloom			: 1;
-		u32		ssfx_sss			: 1;
-
 	}			o;
 	struct		_stats		{
 		u32		l_total,	l_visible;

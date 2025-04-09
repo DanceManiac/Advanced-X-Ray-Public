@@ -350,10 +350,6 @@ CEnvDescriptor::CEnvDescriptor	(shared_str const& identifier) : m_identifier(ide
 	env_ambient			= nullptr;
 
 	m_sWeatherType		= nullptr;
-
-	bloom_threshold		= 3.5f;
-	bloom_exposure		= 3.f;
-	bloom_sky_intensity = 0.6f;
 }
 
 #define	C_CHECK(C)	if (C.x<0 || C.x>2 || C.y<0 || C.y>2 || C.z<0 || C.z>2)	{ Msg("! Invalid '%s' in env-section '%s'",#C,m_identifier.c_str());}
@@ -454,10 +450,6 @@ void CEnvDescriptor::load	(CEnvironment& environment, CInifile& config, bool isW
 	m_cSwingDesc[1].rot1 = config.line_exist(m_identifier.c_str(), "swing_fast_rot1") ? config.r_float(m_identifier.c_str(), "swing_fast_rot1") : pAdvancedSettings->r_float("details_params", "swing_fast_rot1");
 	m_cSwingDesc[1].rot2 = config.line_exist(m_identifier.c_str(), "swing_fast_rot2") ? config.r_float(m_identifier.c_str(), "swing_fast_rot2") : pAdvancedSettings->r_float("details_params", "swing_fast_rot2");
 	m_cSwingDesc[1].speed = config.line_exist(m_identifier.c_str(), "swing_fast_speed") ? config.r_float(m_identifier.c_str(), "swing_fast_speed") : pAdvancedSettings->r_float("details_params", "swing_fast_speed");
-
-	bloom_threshold		= config.line_exist(m_identifier.c_str(), "bloom_threshold") ? config.r_float(m_identifier.c_str(), "bloom_threshold") : 3.5f;
-	bloom_exposure		= config.line_exist(m_identifier.c_str(), "bloom_exposure") ? config.r_float(m_identifier.c_str(), "bloom_exposure") : 3.0f;
-	bloom_sky_intensity = config.line_exist(m_identifier.c_str(), "bloom_sky_intensity") ? config.r_float(m_identifier.c_str(), "bloom_sky_intensity") : 0.6f;
 
 	C_CHECK					(clouds_color);
 	C_CHECK					(sky_color	);
@@ -584,10 +576,6 @@ void CEnvDescriptor::load_shoc(float exec_tm, LPCSTR S, CEnvironment& environmen
 	m_cSwingDesc[1].rot1 = pSettings->line_exist(m_identifier.c_str(), "swing_fast_rot1") ? pSettings->r_float(m_identifier.c_str(), "swing_fast_rot1") : pAdvancedSettings->r_float("details_params", "swing_fast_rot1");
 	m_cSwingDesc[1].rot2 = pSettings->line_exist(m_identifier.c_str(), "swing_fast_rot2") ? pSettings->r_float(m_identifier.c_str(), "swing_fast_rot2") : pAdvancedSettings->r_float("details_params", "swing_fast_rot2");
 	m_cSwingDesc[1].speed = pSettings->line_exist(m_identifier.c_str(), "swing_fast_speed") ? pSettings->r_float(m_identifier.c_str(), "swing_fast_speed") : pAdvancedSettings->r_float("details_params", "swing_fast_speed");
-
-	bloom_threshold		= pSettings->line_exist(m_identifier.c_str(), "bloom_threshold") ? pSettings->r_float(m_identifier.c_str(), "bloom_threshold") : 3.5f;
-	bloom_exposure		= pSettings->line_exist(m_identifier.c_str(), "bloom_exposure") ? pSettings->r_float(m_identifier.c_str(), "bloom_exposure") : 3.0f;
-	bloom_sky_intensity = pSettings->line_exist(m_identifier.c_str(), "bloom_sky_intensity") ? pSettings->r_float(m_identifier.c_str(), "bloom_sky_intensity") : 0.6f;
 
 	C_CHECK(clouds_color);
 	C_CHECK(sky_color);
@@ -788,10 +776,6 @@ void CEnvDescriptorMixer::lerp	(CEnvironment* , CEnvDescriptor& A, CEnvDescripto
 	m_fAirTemperature = fi * A.m_fAirTemperature + f * B.m_fAirTemperature;
 
 	color_grading.lerp(A.color_grading, B.color_grading, f);
-
-	bloom_threshold		= fi * A.bloom_threshold + f * B.bloom_threshold;
-	bloom_exposure		= fi * A.bloom_exposure + f * B.bloom_exposure;
-	bloom_sky_intensity = fi * A.bloom_sky_intensity + f * B.bloom_sky_intensity;
 
 	// colors
 //.	sky_color.lerp			(A.sky_color,B.sky_color,f).add(Mdf.sky_color).mul(modif_power);

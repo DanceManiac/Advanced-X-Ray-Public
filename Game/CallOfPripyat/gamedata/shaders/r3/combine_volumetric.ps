@@ -41,10 +41,10 @@ _out main( _input I )
 
 #ifndef USE_MSAA
 #	ifdef ENCHANTED_SHADERS_ENABLED 
-		color = s_vollight.SampleLevel( smp_linear, I.tc0.xy, 0);
+		color = s_vollight.SampleLevel( smp_linear, I.tc0.xy / ssfx_volumetric.w, 0);
 		// Read Depth
 #	else
-		color = s_vollight.SampleLevel( smp_linear, I.tc0.xy, 0);
+		color = s_vollight.SampleLevel( smp_linear, I.tc0.xy / ssfx_volumetric.w, 0);
 		//color = s_vollight.Load(int3(I.tc0.xy*pos_decompression_params2.xy, 0));
 #	endif
 		float _depth = s_position.Sample(smp_nofilter, I.tc0.xy).z;
@@ -52,17 +52,17 @@ _out main( _input I )
 	float2 tc = I.tc0.xy * screen_res.xy;
 	
 #	ifdef ENCHANTED_SHADERS_ENABLED 
-		color = s_vollight.Load(int3(tc, 0), 0);
+		color = s_vollight.Load(int3(tc / ssfx_volumetric.w, 0), 0);
 #	else
-		color = s_vollight.Load(int3(tc, 0), 0);
+		color = s_vollight.Load(int3(tc / ssfx_volumetric.w, 0), 0);
 #	endif
 
 	[unroll] for(int iSample = 1; iSample < MSAA_SAMPLES; ++iSample)
 	{
 #ifdef ENCHANTED_SHADERS_ENABLED 
-		color	+= s_vollight.Load(int3(tc, 0), iSample);
+		color	+= s_vollight.Load(int3(tc / ssfx_volumetric.w, 0), iSample);
 #else
-		color	+= s_vollight.Load(int3(tc, 0), iSample);
+		color	+= s_vollight.Load(int3(tc / ssfx_volumetric.w, 0), iSample);
 #endif
 	}
 	color /= MSAA_SAMPLES;

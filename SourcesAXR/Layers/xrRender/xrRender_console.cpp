@@ -72,7 +72,6 @@ xr_token							qssao_mode_token						[ ]={
 	{ "hdao",						2											},
 	{ "hbao",						3											},
 	{ "ssdo",						4											},
-	{ "ssdo_sss",					5											},
 	{ 0,							0											}
 };
 
@@ -431,7 +430,6 @@ extern ENGINE_API Fvector4 ps_ssfx_blood_decals;
 extern ENGINE_API Fvector4 ps_ssfx_rain_1;
 extern ENGINE_API Fvector4 ps_ssfx_rain_2;
 extern ENGINE_API Fvector4 ps_ssfx_rain_3;
-extern ENGINE_API Fvector4 ps_ssfx_rain_drops_setup;
 extern ENGINE_API Fvector4 ps_ssfx_florafixes_1;
 extern ENGINE_API Fvector4 ps_ssfx_florafixes_2;
 extern ENGINE_API Fvector4 ps_ssfx_wetsurfaces_1;
@@ -451,24 +449,12 @@ extern ENGINE_API Fvector4 ps_ssfx_ssr ;					// Res, Blur, Temp, Noise
 extern ENGINE_API Fvector4 ps_ssfx_ssr_2 ;					// Quality, Fade, Int, Wpn Int
 extern ENGINE_API Fvector4 ps_ssfx_terrain_offset;
 extern ENGINE_API int ps_ssfx_il_quality;
-extern ENGINE_API float ps_ssfx_hud_hemi;					// HUD Hemi Offset
 extern ENGINE_API Fvector4 ps_ssfx_il;						// Res, Int, Vibrance, Blur
-extern ENGINE_API Fvector4 ps_ssfx_il_setup1;				// Distance, HUD, Flora, -
+extern ENGINE_API Fvector4 ps_ssfx_il_setup1;
 extern ENGINE_API int ps_ssfx_ao_quality;
 extern ENGINE_API Fvector4 ps_ssfx_ao;
 extern ENGINE_API Fvector4 ps_ssfx_ao_setup1;
 extern ENGINE_API Fvector3 ps_ssfx_water_parallax_quality;
-extern ENGINE_API int ps_ssfx_pom_refine;
-extern ENGINE_API Fvector4 ps_ssfx_pom;						// Samples , Range, Height, AO
-extern ENGINE_API int ps_ssfx_terrain_grass_align;			// Grass align
-extern ENGINE_API float ps_ssfx_terrain_grass_slope;		// Grass slope limit // Recommended 0.3f
-extern ENGINE_API Fvector4 ps_ssfx_terrain_pom;				// Samples, Range, Height, Water Limit
-extern ENGINE_API int ps_ssfx_terrain_pom_refine;
-extern ENGINE_API int ps_ssfx_bloom_from_weather;
-extern ENGINE_API Fvector4 ps_ssfx_bloom_1;					// Threshold, Exposure, -, Sky
-extern ENGINE_API Fvector4 ps_ssfx_bloom_2;					// Blur Radius, Vibrance, Lens, Dirt
-extern ENGINE_API Fvector4 ps_ssfx_sss_quality;				// Dir Samples, Omni Samples, Dir Enable, Omni Enable
-extern ENGINE_API Fvector4 ps_ssfx_sss;						// Dir Len, Omni Len, Grass shadows, -
 
 int ps_r4_ss_grass_collision = ps_r4_shaders_flags.test(R4FLAG_SSS_ADDON) ? 1 : 0;
 int ps_r4_pseudo_pbr = 0;
@@ -667,7 +653,6 @@ public:
 				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_HBAO, 0);
 				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_HDAO, 0);
 				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_SSDO, 0);
-				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_SSDO_SSS, 0);
 				break;
 			}
 			case 1:
@@ -680,7 +665,6 @@ public:
 				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_HDAO, 0);
 				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_HALF_DATA, 0);
 				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_SSDO, 0);
-				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_SSDO_SSS, 0);
 				break;
 			}
 			case 2:
@@ -694,7 +678,6 @@ public:
 				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_OPT_DATA, 0);
 				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_HALF_DATA, 0);
 				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_SSDO, 0);
-				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_SSDO_SSS, 0);
 				break;
 			}
 			case 3:
@@ -707,7 +690,6 @@ public:
 				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_HDAO, 0);
 				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_OPT_DATA, 1);
 				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_SSDO, 0);
-				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_SSDO_SSS, 0);
 				break;
 			}
 			case 4:
@@ -720,20 +702,6 @@ public:
 				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_HDAO, 0);
 				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_OPT_DATA, 1);
 				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_SSDO, 1);
-				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_SSDO_SSS, 0);
-				break;
-			}
-			case 5:
-			{
-				if (ps_r_ssao == 0)
-				{
-					ps_r_ssao = 1;
-				}
-				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_HBAO, 0);
-				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_HDAO, 0);
-				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_OPT_DATA, 1);
-				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_SSDO, 0);
-				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_SSDO_SSS, 1);
 				break;
 			}
 		}
@@ -1294,7 +1262,6 @@ void		xrRender_initconsole	()
 	CMD3(CCC_Mask,		"r2_ssao_hbao",					&ps_r2_ls_flags_ext,		R2FLAGEXT_SSAO_HBAO);//Need restart
 	CMD3(CCC_Mask,		"r2_ssao_hdao",					&ps_r2_ls_flags_ext,		R2FLAGEXT_SSAO_HDAO);//Need restart
 	CMD3(CCC_Mask,		"r2_ssao_ssdo",					&ps_r2_ls_flags_ext,		R2FLAGEXT_SSAO_SSDO);//Need restart
-	CMD3(CCC_Mask,		"r2_ssao_ssdo_sss",				&ps_r2_ls_flags_ext,		R2FLAGEXT_SSAO_SSDO_SSS);//Need restart
 	CMD3(CCC_Mask,		"r4_enable_tessellation",		&ps_r2_ls_flags_ext,		R2FLAGEXT_ENABLE_TESSELLATION);//Need restart
 	CMD3(CCC_Mask,		"r4_wireframe",					&ps_r2_ls_flags_ext,		R2FLAGEXT_WIREFRAME);//Need restart
 	CMD3(CCC_Mask,		"r2_steep_parallax",			&ps_r2_ls_flags,			R2FLAG_STEEP_PARALLAX);
@@ -1406,8 +1373,6 @@ void		xrRender_initconsole	()
 	CMD3(CCC_Mask,			"r4_ss_lut",					&ps_r4_shaders_flags,		R4FLAG_SS_LUT); //Need restart
 	CMD3(CCC_Mask,			"r4_ss_wind",					&ps_r4_shaders_flags,		R4FLAG_SS_WIND); //Need restart
 	CMD3(CCC_Mask,			"r4_ss_puddles",				&ps_r4_shaders_flags,		R4FLAG_SS_PUDDLES); //Need restart
-	CMD3(CCC_Mask,			"r4_ss_bloom",					&ps_r4_shaders_flags,		R4FLAG_SS_BLOOM); //Need restart
-	CMD3(CCC_Mask,			"r4_ss_bloom_mask_dirt",		&ps_r4_shaders_flags,		R4FLAG_SS_BLOOM_MASK_DIRT); //Need restart
 	CMD3(CCC_Shader_Preset, "shaders_preset",				&ps_ShaderPreset,			qshader_preset_token);
 
 	CMD4(CCC_Vector4,		"ssfx_wpn_dof_1",				&ps_ssfx_wpn_dof_1,			tw2_min, tw2_max);
@@ -1442,7 +1407,6 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Vector4,		"ssfx_ssr",						&ps_ssfx_ssr,				Fvector4().set(1, 0, 0, 0), Fvector4().set(2, 1, 1, 1));
 	CMD4(CCC_Vector4,		"ssfx_ssr_2",					&ps_ssfx_ssr_2,				Fvector4().set(0, 0, 0, 0), Fvector4().set(2, 2, 2, 2));
 	CMD4(CCC_Vector4,		"ssfx_terrain_offset",			&ps_ssfx_terrain_offset,	Fvector4().set(-1, -1, -1, -1), Fvector4().set(1, 1, 1, 1));
-	CMD4(CCC_Float,			"ssfx_hud_hemi",				&ps_ssfx_hud_hemi,			0.0f, 1.0f);
 	CMD4(CCC_Integer,		"ssfx_il_quality",				&ps_ssfx_il_quality,		16, 64);
 	CMD4(CCC_Vector4,		"ssfx_il",						&ps_ssfx_il,				Fvector4().set(0, 0, 0, 0), Fvector4().set(8, 10, 3, 6));
 	CMD4(CCC_Vector4,		"ssfx_il_setup1",				&ps_ssfx_il_setup1,			Fvector4().set(0, 0, 0, 0), Fvector4().set(300, 1, 1, 1));
@@ -1450,18 +1414,6 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Vector4,		"ssfx_ao",						&ps_ssfx_ao,				Fvector4().set(0, 0, 0, 0), Fvector4().set(8, 10, 1, 10));
 	CMD4(CCC_Vector4,		"ssfx_ao_setup1",				&ps_ssfx_ao_setup1,			Fvector4().set(0, 0, 0, 0), Fvector4().set(300, 1, 1, 1));
 	CMD4(CCC_Vector3,		"ssfx_water_parallax",			&ps_ssfx_water_parallax_quality, Fvector3().set(0.0f, 0.0f, 0.0f), Fvector3().set(3.0f, 2.0f, 1.0f));
-	CMD4(CCC_Integer,		"ssfx_pom_refine",				&ps_ssfx_pom_refine,		0, 1);
-	CMD4(CCC_Vector4,		"ssfx_pom",						&ps_ssfx_pom,				Fvector4().set(0, 0, 0, 0), Fvector4().set(36, 60, 1, 1));
-	CMD4(CCC_Integer,		"ssfx_terrain_pom_refine",		&ps_ssfx_terrain_pom_refine, 0, 1);
-	CMD4(CCC_Integer,		"ssfx_terrain_grass_align",		&ps_ssfx_terrain_grass_align, 0, 1);
-	CMD4(CCC_Float,			"ssfx_terrain_grass_slope",		&ps_ssfx_terrain_grass_slope, 0, 1);
-	CMD4(CCC_Vector4,		"ssfx_terrain_pom",				&ps_ssfx_terrain_pom,		Fvector4().set(0, 0, 0, 0), Fvector4().set(36, 60, 1, 2));
-	CMD4(CCC_Integer,		"ssfx_bloom_from_weather",		&ps_ssfx_bloom_from_weather, 0, 1);
-	CMD4(CCC_Vector4,		"ssfx_bloom_1",					&ps_ssfx_bloom_1,			Fvector4().set(1, 1, 0, 0), Fvector4().set(10, 100, 100, 10));
-	CMD4(CCC_Vector4,		"ssfx_bloom_2",					&ps_ssfx_bloom_2,			Fvector4().set(1, 0, 0, 0), Fvector4().set(5, 10, 10, 10));
-	CMD4(CCC_Vector4,		"ssfx_sss_quality",				&ps_ssfx_sss_quality,		Fvector4().set(1, 1, 0, 0), Fvector4().set(24, 12, 1, 1));
-	CMD4(CCC_Vector4,		"ssfx_sss",						&ps_ssfx_sss,				Fvector4().set(0, 0, 0, 0), Fvector4().set(3, 3, 1, 1));
-	CMD4(CCC_Vector4,		"ssfx_rain_drops_setup",		&ps_ssfx_rain_drops_setup,	Fvector4().set(1000, 10, 0, 0), Fvector4().set(5000, 30, 0, 0));
 
 	CMD4(CCC_Integer,		"r4_ss_grass_collision",		&ps_r4_ss_grass_collision,	0, 1); //Screen Space Grass Shaders Collision
 	CMD4(CCC_Integer,		"r4_es_pseudo_pbr",				&ps_r4_pseudo_pbr,			0, 1); //Enchanted Shaders Pseudo PBR

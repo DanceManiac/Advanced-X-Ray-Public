@@ -6,8 +6,6 @@
 #include "../xrRender/QueryHelper.h"
 #include "../../xrEngine/x_ray.h"
 
-extern ENGINE_API Fvector4 ps_ssfx_sss_quality;
-
 IC	bool	pred_sp_sort(ISpatial*	_1, ISpatial* _2)
 {
 	float	d1		= _1->spatial.sphere.P.distance_to_sqr(Device.vCameraPosition);
@@ -383,17 +381,6 @@ void CRender::Render		()
 	r_pmask										(true,false);	// disable priority "1"
 	Device.Statistic->RenderCALC.End			();
 
-	if (RImplementation.o.ssfx_core)
-	{
-		// HUD Masking rendering
-		FLOAT ColorRGBA[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
-		HW.pContext->ClearRenderTargetView(Target->rt_ssfx_hud->pRT, ColorRGBA);
-		Target->u_setrt(Target->rt_ssfx_hud, NULL, NULL, HW.pBaseZB);
-		r_dsgraph_render_hud(true);
-		// Reset Depth
-		HW.pContext->ClearDepthStencilView(HW.pBaseZB, D3D_CLEAR_DEPTH, 1.0f, 0);
-	}
-
 	BOOL	split_the_scene_to_minimize_wait		= FALSE;
 	if (ps_r2_ls_flags.test(R2FLAG_EXP_SPLIT_SCENE))	split_the_scene_to_minimize_wait=TRUE;
 
@@ -518,59 +505,6 @@ void CRender::Render		()
 		render_rain();
 	}
 
-	{
-		// Save previus and current matrices
-		{
-			static Fmatrix mm_saved_viewproj;
-
-			if (currentViewPort == MAIN_VIEWPORT)
-			{
-				Fmatrix m_invview;
-				m_invview.invert(Device.mView);
-				Target->Matrix_previous.mul(mm_saved_viewproj, m_invview);
-				Target->Matrix_current.set(Device.mProject);
-				mm_saved_viewproj.set(Device.mFullTransform);
-			}
-		}
-
-		if (RImplementation.o.ssfx_sss && currentViewPort == MAIN_VIEWPORT)
-		{
-			static bool sss_rendered, sss_extended_rendered;
-
-			// SSS Shadows
-			if (ps_ssfx_sss_quality.z > 0)
-			{
-				Target->phase_ssfx_sss();
-				sss_rendered = true;
-			}
-			else
-			{
-				if (sss_rendered) // Clear buffer
-				{
-					sss_rendered = false;
-					FLOAT ColorRGBA[4] = { 1,1,1,1 };
-					HW.pContext->ClearRenderTargetView(Target->rt_ssfx_sss->pRT, ColorRGBA);
-				}
-			}
-
-			if (ps_ssfx_sss_quality.w > 0)
-			{
-				// Extra lights
-				Target->phase_ssfx_sss_ext(Lights.package[RImplementation.getVP()]);
-				sss_extended_rendered = true;
-			}
-			else
-			{
-				if (sss_extended_rendered) // Clear buffer
-				{
-					sss_extended_rendered = false;
-					FLOAT ColorRGBA[4] = { 1,1,1,1 };
-					HW.pContext->ClearRenderTargetView(Target->rt_ssfx_sss_tmp->pRT, ColorRGBA);
-				}
-			}
-		}
-	}
-
 	// Directional light - fucking sun
 	if (bSUN)	
 	{
@@ -601,16 +535,7 @@ void CRender::Render		()
 		//RCache.set_Stencil				(TRUE,D3DCMP_ALWAYS,0x00,0xff,0xff,D3DSTENCILOP_KEEP,D3DSTENCILOP_REPLACE,D3DSTENCILOP_KEEP);
 		RCache.set_CullMode					(CULL_CCW);
 		RCache.set_ColorWriteEnable			();
-		RImplementation.r_dsgraph_render_emissive(RImplementation.o.ssfx_bloom ? false : true);
-	}
-
-	if (RImplementation.o.ssfx_bloom)
-	{
-		// Render Emissive on `rt_ssfx_bloom_emissive`
-		FLOAT ColorRGBA[4] = { 0,0,0,0 };
-		HW.pContext->ClearRenderTargetView(Target->rt_ssfx_bloom_emissive->pRT, ColorRGBA);
-		Target->u_setrt(Target->rt_ssfx_bloom_emissive, NULL, NULL, !RImplementation.o.dx10_msaa ? HW.pBaseZB : Target->rt_MSAADepth->pZRT);
-		RImplementation.r_dsgraph_render_emissive(true, true);
+		RImplementation.r_dsgraph_render_emissive();
 	}
 
 	// Lighting, non dependant on OCCQ

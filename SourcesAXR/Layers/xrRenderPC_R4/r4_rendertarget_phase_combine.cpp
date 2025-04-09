@@ -7,7 +7,6 @@
 #define STENCIL_CULL 0
 
 ENGINE_API extern int ps_r__ShaderNVG;
-extern ENGINE_API Fvector4 ps_ssfx_ao;
 extern ENGINE_API Fvector4 ps_ssfx_il;
 
 bool sort_function(Fvector4 i, Fvector4 j)
@@ -96,11 +95,13 @@ void	CRenderTarget::phase_combine	()
 	Fvector2 m_blur_scale;
 	{
 		static Fmatrix m_saved_viewproj;
+
 		if (Render->currentViewPort == MAIN_VIEWPORT)
 		{
 			static Fvector3 saved_position;
 			Position_previous.set(saved_position);
 			saved_position.set(Device.vCameraPosition);
+
 			Fmatrix m_invview;
 			m_invview.invert(Device.mView);
 			Matrix_previous.mul(m_saved_viewproj, m_invview);
@@ -110,6 +111,7 @@ void	CRenderTarget::phase_combine	()
 		float scale = ps_r2_mblur / 2.f;
 		m_blur_scale.set(scale, -scale).div(12.f);
 	}
+
 	{
 		// Disable when rendering SecondViewport
 		if (Render->currentViewPort == MAIN_VIEWPORT)
@@ -119,11 +121,11 @@ void	CRenderTarget::phase_combine	()
 			HW.pContext->ClearRenderTargetView(rt_ssfx_temp->pRT, ColorRGBA);
 			HW.pContext->ClearRenderTargetView(rt_ssfx_temp2->pRT, ColorRGBA);
 
-			if (RImplementation.o.ssfx_ao && RImplementation.o.ssao_ssdo_sss && ps_ssfx_ao.y > 0)
+			/*if (RImplementation.o.ssfx_ao && ps_ssfx_ao.y > 0)
 			{
 				ssfx_PrevPos_Requiered = true;
 				phase_ssfx_ao(); // [SSFX] - New AO Phase
-			} 
+			} */
 
 			if (RImplementation.o.ssfx_il && ps_ssfx_il.y > 0)
 			{
@@ -372,16 +374,8 @@ void	CRenderTarget::phase_combine	()
 
 	//	Igor: for volumetric lights
 	//	combine light volume here
-	if (RImplementation.o.ssfx_volumetric)
-	{
-		if (m_bHasActiveVolumetric || m_bHasActiveVolumetric_spot)
-			phase_combine_volumetric();
-	}
-	else
-	{
-		if (m_bHasActiveVolumetric)
-			phase_combine_volumetric();
-	}
+	if (m_bHasActiveVolumetric)
+		phase_combine_volumetric();
 
 	// Perform blooming filter and distortion if needed
 	RCache.set_Stencil	(FALSE);
@@ -484,13 +478,7 @@ void	CRenderTarget::phase_combine	()
 			phase_blur();
 
 		//Compute bloom (new)
-		if (RImplementation.o.ssfx_bloom && RImplementation.o.dx11_ss_bloom)
-		{
-			if (Render->currentViewPort == MAIN_VIEWPORT)
-				phase_ssfx_bloom();
-			else
-				HW.pContext->ClearRenderTargetView(rt_ssfx_bloom1->pRT, ColorRGBA);
-		}
+		//phase_pp_bloom();
 
 		// Anomaly lut
 		if (ps_r4_shaders_flags.test(R4FLAG_SS_LUT))

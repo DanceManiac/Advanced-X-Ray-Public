@@ -6,6 +6,7 @@
 
 #define G_SSR_WATER_SKY_REFLECTION		1.0f	// Sky reflection factor. ( 1.0f = 100% )
 #define G_SSR_WATER_MAP_REFLECTION		1.0f	// Objects reflection factor. ( 1.0f = 100% )
+
 #define G_SSR_WATER_TEX_DISTORTION		0.2f	// Water texture distortion.
 #define G_SSR_WATER_TURBIDITY			3.0f	// Turbidity factor. ( 0.0f = Clear water )
 

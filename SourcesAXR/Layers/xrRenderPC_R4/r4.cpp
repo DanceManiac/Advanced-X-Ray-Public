@@ -20,12 +20,7 @@ CRender RImplementation;
 extern ENGINE_API bool ps_enchanted_shaders;
 extern ENGINE_API int ps_ssfx_il_quality;
 extern ENGINE_API int ps_ssfx_ao_quality;
-extern ENGINE_API int ps_ssfx_il_quality;
 extern ENGINE_API Fvector3 ps_ssfx_water_parallax_quality;
-extern ENGINE_API int ps_ssfx_ao_quality;
-extern ENGINE_API int ps_ssfx_terrain_pom_refine;
-extern ENGINE_API int ps_ssfx_pom_refine;
-extern ENGINE_API Fvector4 ps_ssfx_sss_quality;
 
 //////////////////////////////////////////////////////////////////////////
 class CGlow				: public IRender_Glow
@@ -297,9 +292,8 @@ void					CRender::create					()
 	o.ssao_opt_data		= ps_r2_ls_flags_ext.test(R2FLAGEXT_SSAO_OPT_DATA) && (ps_r_ssao != 0);
 	o.ssao_half_data	= ps_r2_ls_flags_ext.test(R2FLAGEXT_SSAO_HALF_DATA) && o.ssao_opt_data && (ps_r_ssao != 0);
 	o.ssao_hdao			= ps_r2_ls_flags_ext.test(R2FLAGEXT_SSAO_HDAO) && (ps_r_ssao != 0);
-	o.ssao_hbao			= !o.ssao_hdao && !o.ssao_ssdo && !o.ssao_ssdo_sss && ps_r2_ls_flags_ext.test(R2FLAGEXT_SSAO_HBAO) && (ps_r_ssao != 0);
-	o.ssao_ssdo			= !o.ssao_hdao && !o.ssao_hbao && !o.ssao_ssdo_sss && ps_r2_ls_flags_ext.test(R2FLAGEXT_SSAO_SSDO) && (ps_r_ssao != 0);
-	o.ssao_ssdo_sss		= !o.ssao_hdao && !o.ssao_hbao && !o.ssao_ssdo && ps_r2_ls_flags_ext.test(R2FLAGEXT_SSAO_SSDO_SSS) && (ps_r_ssao != 0);
+	o.ssao_hbao			= !o.ssao_hdao && ps_r2_ls_flags_ext.test(R2FLAGEXT_SSAO_HBAO) && (ps_r_ssao != 0);
+	o.ssao_ssdo			= !o.ssao_hdao && !o.ssao_hbao && ps_r2_ls_flags_ext.test(R2FLAGEXT_SSAO_SSDO) && (ps_r_ssao != 0);
 
 	//	TODO: fix hbao shader to allow to perform per-subsample effect!
 	o.hbao_vectorized = false;
@@ -371,8 +365,6 @@ void					CRender::create					()
 	o.dx11_ss_lut				= ps_r4_shaders_flags.test(R4FLAG_SS_LUT);
 	o.dx11_ss_wind				= ps_r4_shaders_flags.test(R4FLAG_SS_WIND);
 	o.dx11_ss_puddles			= ps_r4_shaders_flags.test(R4FLAG_SS_PUDDLES);
-	o.dx11_ss_bloom				= ps_r4_shaders_flags.test(R4FLAG_SS_BLOOM);
-	o.dx11_ss_bloom_mask_dirt	= ps_r4_shaders_flags.test(R4FLAG_SS_BLOOM_MASK_DIRT);
 
 	o.dx11_enable_tessellation = HW.FeatureLevel>=D3D_FEATURE_LEVEL_11_0 && ps_r2_ls_flags_ext.test(R2FLAGEXT_ENABLE_TESSELLATION);
 
@@ -417,10 +409,8 @@ void					CRender::create					()
 	o.ssfx_volumetric = FS.exist(fn, "$game_shaders$", "r3\\ssfx_volumetric_blur", ".ps") ? 1 : 0;
 	o.ssfx_ao = FS.exist(fn, "$game_shaders$", "r3\\ssfx_ao", ".ps") ? 1 : 0;
 	o.ssfx_il = FS.exist(fn, "$game_shaders$", "r3\\ssfx_il", ".ps") ? 1 : 0;
-	o.ssfx_sss = FS.exist(fn, "$game_shaders$", "r3\\ssfx_sss", ".ps") ? 1 : 0;
-	o.ssfx_bloom = FS.exist(fn, "$game_shaders$", "r3\\ssfx_bloom", ".ps") ? 1 : 0;
 
-	Msg("- Supports SSS UPDATE 22");
+	Msg("- Supports SSS UPDATE 21");
 	Msg("- SSS CORE INSTALLED %i", o.ssfx_core);
 	Msg("- SSS HUD RAINDROPS SHADER INSTALLED %i", o.ssfx_hud_raindrops);
 	Msg("- SSS RAIN SHADER INSTALLED %i", o.ssfx_rain);
@@ -431,8 +421,6 @@ void					CRender::create					()
 	Msg("- SSS VOLUMETRIC SHADER INSTALLED %i", o.ssfx_volumetric);
 	Msg("- SSS AO SHADER INSTALLED %i", o.ssfx_ao);
 	Msg("- SSS IL SHADER INSTALLED %i", o.ssfx_il);
-	Msg("- SSS SSS SHADER INSTALLED %i", o.ssfx_sss);
-	Msg("- SSS BLOOM SHADER INSTALLED %i", o.ssfx_bloom);
 
 	// constants
 	dxRenderDeviceRender::Instance().Resources->RegisterConstantSetup	("parallax",	&binder_parallax);
@@ -1056,10 +1044,6 @@ HRESULT	CRender::shader_compile			(
 	// Ascii's Screen Space Shaders - SSS preprocessor stuff
 	char							c_inter_grass	[32];
 	char							c_rain_quality	[32];
-	char							c_ssfx_sss_dir_quality[32];
-	char							c_ssfx_sss_omni_quality[32];
-	char							c_ssfx_terrain_pom_refine[32];
-	char							c_ssfx_pom_refine[32];
 	char							c_ssfx_il		[32];
 	char							c_ssfx_ao		[32];
 	char							c_ssfx_water_parallax[32];
@@ -1758,60 +1742,6 @@ HRESULT	CRender::shader_compile			(
 		sh_name[len] = '0';
 		++len;
 	}
-
-	if (o.dx11_sss_addon_enabled && o.ssao_ssdo_sss)
-	{
-		defines[def_it].Name = "SSFX_AO";
-		defines[def_it].Definition = "1";
-		def_it++;
-		sh_name[len] = '0' + char(o.ssao_ssdo_sss); ++len;
-	}
-	else
-	{
-		sh_name[len] = '0';
-		++len;
-	}
-
-	if (o.dx11_sss_addon_enabled && o.dx11_ss_bloom)
-	{
-		defines[def_it].Name = "SSFX_BLOOM";
-		defines[def_it].Definition = "1";
-		def_it++;
-		sh_name[len] = '0' + char(o.dx11_ss_bloom); ++len;
-	}
-	else
-	{
-		sh_name[len] = '0';
-		++len;
-	}
-
-	xr_sprintf(c_ssfx_pom_refine, "%d", u8(_min(_max(ps_ssfx_pom_refine, 0), 1)));
-	defines[def_it].Name = "SSFX_POM_REFINE";
-	defines[def_it].Definition = c_ssfx_pom_refine;
-	def_it++;
-	xr_strcat(sh_name, c_ssfx_pom_refine);
-	len += xr_strlen(c_ssfx_pom_refine);
-
-	xr_sprintf(c_ssfx_terrain_pom_refine, "%d", u8(_min(_max(ps_ssfx_terrain_pom_refine, 0), 1)));
-	defines[def_it].Name = "SSFX_TERRA_POM_REFINE";
-	defines[def_it].Definition = c_ssfx_terrain_pom_refine;
-	def_it++;
-	xr_strcat(sh_name, c_ssfx_terrain_pom_refine);
-	len += xr_strlen(c_ssfx_terrain_pom_refine);
-
-	xr_sprintf(c_ssfx_sss_dir_quality, "%d", u8(_min(_max((int)ps_ssfx_sss_quality.x, 1), 24)));
-	defines[def_it].Name = "SSFX_SSS_DIR_QUALITY";
-	defines[def_it].Definition = c_ssfx_sss_dir_quality;
-	def_it++;
-	xr_strcat(sh_name, c_ssfx_sss_dir_quality);
-	len += xr_strlen(c_ssfx_sss_dir_quality);
-
-	xr_sprintf(c_ssfx_sss_omni_quality, "%d", u8(_min(_max((int)ps_ssfx_sss_quality.y, 1), 12)));
-	defines[def_it].Name = "SSFX_SSS_OMNI_QUALITY";
-	defines[def_it].Definition = c_ssfx_sss_omni_quality;
-	def_it++;
-	xr_strcat(sh_name, c_ssfx_sss_omni_quality);
-	len += xr_strlen(c_ssfx_sss_omni_quality);
 
 	defines[def_it].Name = "SSFX_MODEXE";
 	defines[def_it].Definition = "1";

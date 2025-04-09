@@ -187,18 +187,6 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	ctl = xml:InitCheck("video_adv:check_sss_puddles", _st)
 	table.insert(handler.m_preconditions, {func=get_screen_space_shaders_status, control=_st})
 	
---SSS Bloom
-	_st = xml:InitStatic("video_adv:templ_item", nil)
-	xml:InitStatic("video_adv:cap_sss_bloom", _st)
-	ctl = xml:InitCheck("video_adv:check_sss_bloom", _st)
-	table.insert(handler.m_preconditions, {func=get_screen_space_shaders_status, control=_st})
-	
---SSS Bloom Mask Dirt
-	_st = xml:InitStatic("video_adv:templ_item", nil)
-	xml:InitStatic("video_adv:cap_sss_bloom_mask_dirt", _st)
-	ctl = xml:InitCheck("video_adv:check_sss_bloom_mask_dirt", _st)
-	table.insert(handler.m_preconditions, {func=get_screen_space_shaders_status, control=_st})
-	
 --Enchanted Shaders
 	_st = xml:InitStatic("video_adv:templ_item", nil)
 	xml:InitStatic("video_adv:cap_enchanted_shaders", _st)

@@ -2,7 +2,7 @@
 #define LAYERS_XRRENDER_LIGHT_H_INCLUDED
 
 #include "../../xrcdb/ispatial.h"
-#include "../../xrEngine/IGame_Persistent.h"
+
 #if (RENDER==R_R2) || (RENDER==R_R4)
 #	include "light_package.h"
 #	include "light_smapvis.h"
@@ -35,14 +35,6 @@ public:
 	vis_data		hom			;
 	u32				frame_render;
 	u8              vp_render	;
-
-	int				omnipart_num;
-	int				sss_id;
-	int				sss_refresh;
-	s8				sss_priority;
-	light*			omipart_parent;
-	float			distance;
-	float			distance_lpos;
 
 	float			m_volumetric_quality;
 	float			m_volumetric_intensity;

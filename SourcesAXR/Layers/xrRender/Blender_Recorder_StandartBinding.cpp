@@ -583,19 +583,10 @@ extern ENGINE_API Fvector4 ps_ssfx_lut;
 extern ENGINE_API Fvector4 ps_ssfx_wind_grass;
 extern ENGINE_API Fvector4 ps_ssfx_wind_trees;
 
-extern ENGINE_API float ps_ssfx_hud_hemi;
 extern ENGINE_API Fvector4 ps_ssfx_il;
 extern ENGINE_API Fvector4 ps_ssfx_il_setup1;
-extern ENGINE_API Fvector4 ps_ssfx_ao;
-extern ENGINE_API Fvector4 ps_ssfx_ao_setup1;
+
 extern ENGINE_API Fvector3 ps_ssfx_water_parallax_quality;
-
-extern ENGINE_API Fvector4 ps_ssfx_pom;
-extern ENGINE_API Fvector4 ps_ssfx_terrain_pom;
-
-extern ENGINE_API int ps_ssfx_bloom_from_weather;
-extern ENGINE_API Fvector4 ps_ssfx_bloom_1;
-extern ENGINE_API Fvector4 ps_ssfx_bloom_2;
 
 static class ssfx_wpn_dof_1 : public R_constant_setup
 {
@@ -819,85 +810,6 @@ static class ssfx_water_parallax : public R_constant_setup
 	}
 }    ssfx_water_parallax;
 
-static class ssfx_ao : public R_constant_setup
-{
-	virtual void setup(R_constant* C)
-	{
-		RCache.set_c(C, ps_ssfx_ao);
-	}
-}    ssfx_ao;
-
-static class ssfx_ao_setup1 : public R_constant_setup
-{
-	virtual void setup(R_constant* C)
-	{
-		RCache.set_c(C, ps_ssfx_ao_setup1);
-	}
-}    ssfx_ao_setup1;
-
-static class ssfx_hud_hemi : public R_constant_setup
-{
-	virtual void setup(R_constant* C)
-	{
-		RCache.set_c(C, ps_ssfx_hud_hemi, 0, 0, 0);
-	}
-}    ssfx_hud_hemi;
-
-static class ssfx_bloom_1 : public R_constant_setup
-{
-	virtual void setup(R_constant* C)
-	{
-		Fvector4 BloomSetup = { 0,0,0,0 };
-
-		if (ps_ssfx_bloom_from_weather)
-		{
-			BloomSetup.x = g_pGamePersistent->Environment().CurrentEnv->bloom_threshold;
-			BloomSetup.y = g_pGamePersistent->Environment().CurrentEnv->bloom_exposure;
-			BloomSetup.w = g_pGamePersistent->Environment().CurrentEnv->bloom_sky_intensity;
-		}
-		else
-		{
-			BloomSetup.x = ps_ssfx_bloom_1.x;
-			BloomSetup.y = ps_ssfx_bloom_1.y;
-			BloomSetup.w = ps_ssfx_bloom_1.w;
-		}
-
-		RCache.set_c(C, BloomSetup);
-	}
-}    ssfx_bloom_1;
-
-static class ssfx_bloom_2 : public R_constant_setup
-{
-	virtual void setup(R_constant* C)
-	{
-		RCache.set_c(C, ps_ssfx_bloom_2);
-	}
-}    ssfx_bloom_2;
-
-static class ssfx_terrain_pom : public R_constant_setup
-{
-	virtual void setup(R_constant* C)
-	{
-		RCache.set_c(C, ps_ssfx_terrain_pom);
-	}
-}    ssfx_terrain_pom;
-
-static class ssfx_pom : public R_constant_setup
-{
-	virtual void setup(R_constant* C)
-	{
-		RCache.set_c(C, ps_ssfx_pom);
-	}
-}    ssfx_pom;
-
-static class ssfx_issvp : public R_constant_setup
-{
-	virtual void setup(R_constant* C)
-	{
-		RCache.set_c(C, Render->currentViewPort != MAIN_VIEWPORT, 0, 0, 0);
-	}
-}    ssfx_issvp;
-
 static class aref_params : public R_constant_setup
 {
 	virtual void setup(R_constant* C)
@@ -1024,18 +936,9 @@ void	CBlender_Compile::SetMapping	()
 	r_Constant				("ssfx_wsetup_grass",	&ssfx_wind_grass);
 	r_Constant				("ssfx_wsetup_trees",	&ssfx_wind_trees);
 	r_Constant				("ssfx_lut",			&ssfx_lut);
-	r_Constant				("ssfx_issvp",			&ssfx_issvp);
-	r_Constant				("ssfx_hud_hemi",		&ssfx_hud_hemi);
 	r_Constant				("ssfx_il_setup",		&ssfx_il);
 	r_Constant				("ssfx_il_setup2",		&ssfx_il_setup1);
-	r_Constant				("ssfx_ao_setup",		&ssfx_ao);
-	r_Constant				("ssfx_ao_setup2",		&ssfx_ao_setup1);
 	r_Constant				("ssfx_water_parallax",	&ssfx_water_parallax);
-	r_Constant				("ssfx_pom",			&ssfx_pom);
-	r_Constant				("ssfx_terrain_pom",	&ssfx_terrain_pom);
-	r_Constant				("ssfx_bloom_1",		&ssfx_bloom_1);
-	r_Constant				("ssfx_bloom_2",		&ssfx_bloom_2);
-
 	//Reflections distance
 	r_Constant				("reflections_distance", &cl_refl_dist);
 	//AO Debug
