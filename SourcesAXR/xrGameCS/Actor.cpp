@@ -2819,9 +2819,13 @@ void CActor::StartNVGAnimation()
 {
 	CWeapon* Wpn = smart_cast<CWeapon*>(inventory().ActiveItem());
 	CHelmet* pHelmet = smart_cast<CHelmet*>(inventory().ItemFromSlot(HELMET_SLOT));
+	CHelmet* pHelmet2 = smart_cast<CHelmet*>(inventory().ItemFromSlot(SECOND_HELMET_SLOT));
 	CCustomOutfit* pOutfit = smart_cast<CCustomOutfit*>(inventory().ItemFromSlot(OUTFIT_SLOT));
 
 	if (Wpn && Wpn->IsZoomed())
+		return;
+
+	if (!(pHelmet && pHelmet->m_NightVisionSect.size()) && !(pHelmet2 && pHelmet2->m_NightVisionSect.size()) && !(pOutfit && pOutfit->m_NightVisionSect.size()))
 		return;
 
 	LPCSTR anim_sect = READ_IF_EXISTS(pAdvancedSettings, r_string, "actions_animations", "switch_nightvision_section", nullptr);
@@ -2831,9 +2835,6 @@ void CActor::StartNVGAnimation()
 		SwitchNightVision(!m_bNightVisionOn);
 		return;
 	}
-
-	if (!(pHelmet && pHelmet->m_NightVisionSect.size()) && !(pOutfit && pOutfit->m_NightVisionSect.size()))
-		return;
 
 	if (Wpn && !(Wpn->GetState() == CWeapon::eIdle))
 		return;
@@ -2938,9 +2939,10 @@ void CActor::CleanMask()
 
 	CWeapon* Wpn = smart_cast<CWeapon*>(inventory().ActiveItem());
 	CHelmet* pHelmet = smart_cast<CHelmet*>(inventory().ItemFromSlot(HELMET_SLOT));
+	CHelmet* pHelmet2 = smart_cast<CHelmet*>(inventory().ItemFromSlot(SECOND_HELMET_SLOT));
 	CCustomOutfit* pOutfit = smart_cast<CCustomOutfit*>(inventory().ItemFromSlot(OUTFIT_SLOT));
 
-	if (!(pHelmet && pHelmet->m_b_HasGlass) && !(pOutfit && pOutfit->m_b_HasGlass))
+	if (!(pHelmet && pHelmet->m_b_HasGlass) && !(pHelmet2 && pHelmet2->m_b_HasGlass) && !(pOutfit && pOutfit->m_b_HasGlass))
 		return;
 
 	if (Wpn && (!(Wpn->GetState() == CWeapon::eIdle) || Wpn->IsZoomed()))
@@ -3114,6 +3116,8 @@ void CActor::SwitchNightVision(bool vision_on, bool use_sounds, bool send_event)
 	bool bIsActiveNow = m_night_vision->IsActive();
 
 	CHelmet* pHelmet = smart_cast<CHelmet*>(inventory().ItemFromSlot(HELMET_SLOT));
+	CHelmet* pHelmet2 = smart_cast<CHelmet*>(inventory().ItemFromSlot(SECOND_HELMET_SLOT));
+
 	if (pHelmet && pHelmet->m_NightVisionSect.size())
 	{
 		if (m_bNightVisionAllow)
@@ -3121,6 +3125,25 @@ void CActor::SwitchNightVision(bool vision_on, bool use_sounds, bool send_event)
 			if (m_bNightVisionOn && !bIsActiveNow)
 			{
 				m_night_vision->Start(pHelmet->m_NightVisionSect, this, use_sounds);
+
+				if (ps_r__ShaderNVG)
+					g_pGamePersistent->devices_shader_data.nightvision_lum_factor = pHelmet->m_fNightVisionLumFactor;
+			}
+		}
+		else
+		{
+			m_night_vision->OnDisabled(this, use_sounds);
+			m_bNightVisionOn = false;
+			g_pGamePersistent->devices_shader_data.nightvision_lum_factor = 0.0f;
+		}
+	}
+	else if (pHelmet2 && pHelmet2->m_NightVisionSect.size())
+	{
+		if (m_bNightVisionAllow)
+		{
+			if (m_bNightVisionOn && !bIsActiveNow)
+			{
+				m_night_vision->Start(pHelmet2->m_NightVisionSect, this, use_sounds);
 
 				if (ps_r__ShaderNVG)
 					g_pGamePersistent->devices_shader_data.nightvision_lum_factor = pHelmet->m_fNightVisionLumFactor;
