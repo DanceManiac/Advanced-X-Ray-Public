@@ -13,7 +13,6 @@ ISheduled::ISheduled	()
 #endif
 }
 
-extern		BOOL		g_bSheduleInProgress;
 ISheduled::~ISheduled	()
 {
 	VERIFY2				(

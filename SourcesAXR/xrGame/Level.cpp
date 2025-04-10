@@ -784,6 +784,10 @@ void test_precise_path	();
 extern	Flags32	dbg_net_Draw_Flags;
 #endif
 
+// Immediately stop the current GC iteration. Can be used to avoid unintentional CPU load,
+// since we anyway have one full script_gc() above each frame
+void CLevel::stop_gc() { lua_gc(ai().script_engine().lua(), LUA_GCSTOP, 0); }
+
 extern void draw_wnds_rects();
 
 void CLevel::OnRender()

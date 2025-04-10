@@ -394,6 +394,8 @@ public:
 			virtual void	OnSessionTerminate		(LPCSTR reason);
 			void			OnDestroyObject			(std::uint16_t id) override;
 
+			void			stop_gc					() override;
+
 			file_transfer::client_site*					m_file_transfer;
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION

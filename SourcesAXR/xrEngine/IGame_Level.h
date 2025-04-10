@@ -124,6 +124,7 @@ public:
 	virtual void				SetEnvironmentTimeFactor	(const float fTimeFactor) = 0;
 	virtual u64					GetEnvironmentGameTime		() const = 0;
 	virtual void				OnDestroyObject				(std::uint16_t id) = 0;
+	virtual void				stop_gc						() = 0;
 };
 
 //-----------------------------------------------------------------------------------------------------------

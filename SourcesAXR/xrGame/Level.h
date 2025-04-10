@@ -407,7 +407,8 @@ public:
 	
 	void			init_compression			();
 	void			deinit_compression			();
-			
+	
+	void			stop_gc						() override;
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };

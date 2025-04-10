@@ -368,6 +368,8 @@ public:
 	virtual void			OnSessionTerminate			(LPCSTR reason);
 			void			OnDestroyObject				(std::uint16_t id) override;
 
+			void			stop_gc						() override;
+
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };
 add_to_type_list(CLevel)
