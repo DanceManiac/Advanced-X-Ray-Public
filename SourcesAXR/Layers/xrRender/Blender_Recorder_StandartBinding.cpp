@@ -592,6 +592,9 @@ extern ENGINE_API int ps_ssfx_bloom_from_weather;
 extern ENGINE_API Fvector4 ps_ssfx_bloom_1;
 extern ENGINE_API Fvector4 ps_ssfx_bloom_2;
 
+extern ENGINE_API Fvector4 ps_ssfx_pom;
+extern ENGINE_API Fvector4 ps_ssfx_terrain_pom;
+
 static class ssfx_wpn_dof_1 : public R_constant_setup
 {
 	virtual void setup(R_constant * C)
@@ -853,6 +856,30 @@ static class ssfx_bloom_2 : public R_constant_setup
 	}
 }    ssfx_bloom_2;
 
+static class ssfx_terrain_pom : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_ssfx_terrain_pom);
+	}
+}    ssfx_terrain_pom;
+
+static class ssfx_pom : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_ssfx_pom);
+	}
+}    ssfx_pom;
+
+static class ssfx_issvp : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, Render->currentViewPort != MAIN_VIEWPORT, 0, 0, 0);
+	}
+}    ssfx_issvp;
+
 // Standart constant-binding
 void	CBlender_Compile::SetMapping	()
 {
@@ -976,6 +1003,10 @@ void	CBlender_Compile::SetMapping	()
 	r_Constant				("ssfx_water_parallax",	&ssfx_water_parallax);
 	r_Constant				("ssfx_bloom_1",		&ssfx_bloom_1);
 	r_Constant				("ssfx_bloom_2",		&ssfx_bloom_2);
+	r_Constant				("ssfx_issvp",			&ssfx_issvp);
+	r_Constant				("ssfx_pom",			&ssfx_pom);
+	r_Constant				("ssfx_terrain_pom",	&ssfx_terrain_pom);
+
 	//Reflections distance
 	r_Constant				("reflections_distance", &cl_refl_dist);
 	//AO Debug

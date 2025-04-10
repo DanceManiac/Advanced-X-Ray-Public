@@ -20,6 +20,8 @@ CRender RImplementation;
 extern ENGINE_API bool ps_enchanted_shaders;
 extern ENGINE_API int ps_ssfx_il_quality;
 extern ENGINE_API int ps_ssfx_ao_quality;
+extern ENGINE_API int ps_ssfx_terrain_pom_refine;
+extern ENGINE_API int ps_ssfx_pom_refine;
 extern ENGINE_API Fvector3 ps_ssfx_water_parallax_quality;
 
 //////////////////////////////////////////////////////////////////////////
@@ -1051,6 +1053,8 @@ HRESULT	CRender::shader_compile			(
 	char							c_ssfx_il		[32];
 	char							c_ssfx_ao		[32];
 	char							c_ssfx_water_parallax[32];
+	char							c_ssfx_terrain_pom_refine[32];
+	char							c_ssfx_pom_refine[32];
 
 	char	sh_name[MAX_PATH] = "";
 	
@@ -1759,6 +1763,20 @@ HRESULT	CRender::shader_compile			(
 		sh_name[len] = '0';
 		++len;
 	}
+
+	xr_sprintf(c_ssfx_pom_refine, "%d", u8(_min(_max(ps_ssfx_pom_refine, 0), 1)));
+	defines[def_it].Name = "SSFX_POM_REFINE";
+	defines[def_it].Definition = c_ssfx_pom_refine;
+	def_it++;
+	xr_strcat(sh_name, c_ssfx_pom_refine);
+	len += xr_strlen(c_ssfx_pom_refine);
+
+	xr_sprintf(c_ssfx_terrain_pom_refine, "%d", u8(_min(_max(ps_ssfx_terrain_pom_refine, 0), 1)));
+	defines[def_it].Name = "SSFX_TERRA_POM_REFINE";
+	defines[def_it].Definition = c_ssfx_terrain_pom_refine;
+	def_it++;
+	xr_strcat(sh_name, c_ssfx_terrain_pom_refine);
+	len += xr_strlen(c_ssfx_terrain_pom_refine);
 
 	defines[def_it].Name = "SSFX_MODEXE";
 	defines[def_it].Definition = "1";

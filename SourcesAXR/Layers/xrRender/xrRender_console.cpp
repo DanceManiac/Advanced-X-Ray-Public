@@ -460,6 +460,10 @@ extern ENGINE_API float ps_ssfx_terrain_grass_slope;		// Grass slope limit // Re
 extern ENGINE_API int ps_ssfx_bloom_from_weather;
 extern ENGINE_API Fvector4 ps_ssfx_bloom_1;					// Threshold, Exposure, -, Sky
 extern ENGINE_API Fvector4 ps_ssfx_bloom_2;					// Blur Radius, Vibrance, Lens, Dirt
+extern ENGINE_API int ps_ssfx_pom_refine;
+extern ENGINE_API Fvector4 ps_ssfx_pom;						// Samples , Range, Height, AO
+extern ENGINE_API Fvector4 ps_ssfx_terrain_pom;				// Samples, Range, Height, Water Limit
+extern ENGINE_API int ps_ssfx_terrain_pom_refine;
 
 int ps_r4_ss_grass_collision = ps_r4_shaders_flags.test(R4FLAG_SSS_ADDON) ? 1 : 0;
 int ps_r4_pseudo_pbr = 0;
@@ -1426,6 +1430,10 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Integer,		"ssfx_bloom_from_weather",		&ps_ssfx_bloom_from_weather, 0, 1);
 	CMD4(CCC_Vector4,		"ssfx_bloom_1",					&ps_ssfx_bloom_1,			Fvector4().set(1, 1, 0, 0), Fvector4().set(10, 100, 100, 10));
 	CMD4(CCC_Vector4,		"ssfx_bloom_2",					&ps_ssfx_bloom_2,			Fvector4().set(1, 0, 0, 0), Fvector4().set(5, 10, 10, 10));
+	CMD4(CCC_Integer,		"ssfx_pom_refine",				&ps_ssfx_pom_refine,		0, 1);
+	CMD4(CCC_Vector4,		"ssfx_pom",						&ps_ssfx_pom,				Fvector4().set(0, 0, 0, 0), Fvector4().set(36, 60, 1, 1));
+	CMD4(CCC_Integer,		"ssfx_terrain_pom_refine",		&ps_ssfx_terrain_pom_refine, 0, 1);
+	CMD4(CCC_Vector4,		"ssfx_terrain_pom",				&ps_ssfx_terrain_pom,		Fvector4().set(0, 0, 0, 0), Fvector4().set(36, 60, 1, 2));
 
 	CMD4(CCC_Integer,		"r4_ss_grass_collision",		&ps_r4_ss_grass_collision,	0, 1); //Screen Space Grass Shaders Collision
 	CMD4(CCC_Integer,		"r4_es_pseudo_pbr",				&ps_r4_pseudo_pbr,			0, 1); //Enchanted Shaders Pseudo PBR

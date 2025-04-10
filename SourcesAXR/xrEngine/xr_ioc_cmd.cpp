@@ -566,6 +566,10 @@ ENGINE_API float ps_ssfx_terrain_grass_slope = 1.0f; // Grass slope limit // Rec
 ENGINE_API int ps_ssfx_bloom_from_weather = 0;
 ENGINE_API Fvector4 ps_ssfx_bloom_1 = { 3.5f, 3.0f, 0.0f, 0.6f }; // Threshold, Exposure, -, Sky
 ENGINE_API Fvector4 ps_ssfx_bloom_2 = { 3.0f, 1.5f, 1.5f, 1.0f }; // Blur Radius, Vibrance, Lens, Dirt
+ENGINE_API int ps_ssfx_pom_refine = 0;
+ENGINE_API Fvector4 ps_ssfx_pom = { 16, 12, 0.035f, 0.4f };  // Samples , Range, Height, AO
+ENGINE_API Fvector4 ps_ssfx_terrain_pom = { 12, 20, 0.04f, 1.0f }; // Samples, Range, Height, Water Limit
+ENGINE_API int ps_ssfx_terrain_pom_refine = 0;
 
 ENGINE_API float ps_r3_dyn_wet_surf_near = 10.f; // 10.0f
 ENGINE_API float ps_r3_dyn_wet_surf_far = 100.f; // 30.0f
