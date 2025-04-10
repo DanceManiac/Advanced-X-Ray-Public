@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //	Module 		: DynamicHudGlass.cpp
 //	Created 	: 12.05.2021
-//  Modified 	: 11.07.2021
+//  Modified 	: 10.04.2025
 //	Author		: Dance Maniac (M.F.S. Team)
 //	Description : Dynamic HUD glass functions and variables
 ////////////////////////////////////////////////////////////////////////////
@@ -25,20 +25,19 @@ namespace DynamicHudGlass
 		CHelmet* helmet2 = smart_cast<CHelmet*>(Actor()->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
 		CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(Actor()->inventory().ItemFromSlot(OUTFIT_SLOT));
 
+		HudGlassElement = 0;
+		NightVisionType = 0;
+		DynamicHudGlassEnabled = false;
+
 		if (helmet)
 		{
 			float condition = helmet->GetCondition();
-			HudGlassElement = 0;
 			bool HelmetHasGlass = helmet->m_b_HasGlass;
-			NightVisionType = helmet->m_NightVisionType;
 
 			if (HelmetHasGlass)
 			{
 				DynamicHudGlassEnabled = true;
-			}
-			else
-			{
-				DynamicHudGlassEnabled = false;
+				NightVisionType = helmet->m_NightVisionType;
 			}
 
 			if (condition < 0.85)
@@ -55,21 +54,16 @@ namespace DynamicHudGlass
 					HudGlassElement = 5;
 			}
 		}
-		else
+
 		if (helmet2)
 		{
 			float condition = helmet2->GetCondition();
-			HudGlassElement = 0;
 			bool HelmetHasGlass = helmet2->m_b_HasGlass;
-			NightVisionType = helmet2->m_NightVisionType;
 
 			if (HelmetHasGlass)
 			{
 				DynamicHudGlassEnabled = true;
-			}
-			else
-			{
-				DynamicHudGlassEnabled = false;
+				NightVisionType = helmet2->m_NightVisionType;
 			}
 
 			if (condition < 0.85)
@@ -86,21 +80,16 @@ namespace DynamicHudGlass
 					HudGlassElement = 5;
 			}
 		}
-		else
-		if (outfit)
+
+		if (outfit && !NightVisionType)
 		{
 			float condition = outfit->GetCondition();
 			bool OutfitHasGlass = outfit->m_b_HasGlass;
-			HudGlassElement = 0;
-			NightVisionType = outfit->m_NightVisionType;
 
 			if (OutfitHasGlass)
 			{
 				DynamicHudGlassEnabled = true;
-			}
-			else
-			{
-				DynamicHudGlassEnabled = false;
+				NightVisionType = outfit->m_NightVisionType;
 			}
 
 			if (condition < 0.85)
@@ -116,12 +105,6 @@ namespace DynamicHudGlass
 				else
 					HudGlassElement = 5;
 			}
-		}
-		else
-		{
-			HudGlassElement = 0;
-			NightVisionType = 0;
-			DynamicHudGlassEnabled = false;
 		}
 	}
 }
