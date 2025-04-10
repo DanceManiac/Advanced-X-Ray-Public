@@ -132,3 +132,240 @@ void	CBlender_postprocess_msaa::Compile			(CBlender_Compile& C)
 	}
 }
 
+CBlender_ssfx_bloom_build::CBlender_ssfx_bloom_build() { description.CLS = 0; }
+
+CBlender_ssfx_bloom_build::~CBlender_ssfx_bloom_build()
+{
+}
+
+void CBlender_ssfx_bloom_build::Compile(CBlender_Compile& C)
+{
+	IBlender::Compile(C);
+
+	switch (C.iElement)
+	{
+	case 0: // Bloom Build
+	{
+		C.r_Pass("stub_screen_space", "ssfx_bloom", FALSE, FALSE, FALSE);
+
+		C.r_dx10Texture("s_position", r2_RT_P);
+		C.r_dx10Texture("s_scene", r2_RT_blur_2);
+		C.r_dx10Texture("s_emissive", r2_RT_ssfx_bloom_emissive);
+
+		C.r_dx10Sampler("smp_linear");
+		C.r_dx10Sampler("smp_rtlinear");
+		C.r_dx10Sampler("smp_nofilter");
+
+		C.r_End();
+		break;
+	}
+
+	case 1: // Combine ( Finish )
+		C.r_Pass("stub_screen_space", "ssfx_bloom_combine", FALSE, FALSE, FALSE);
+
+		C.r_dx10Texture("s_bloom", r2_RT_ssfx_bloom_tmp2);
+		C.r_dx10Texture("s_emissive", r2_RT_ssfx_bloom_emissive);
+
+		C.r_dx10Texture("s_ssfx_lensdirt", "shaders\\lens_dirt");
+		C.r_dx10Texture("s_starburst", "shaders\\starburst");
+		C.r_dx10Texture("s_bloom_lens", r2_RT_ssfx_bloom_lens);
+		C.r_dx10Texture("s_lenscolors", "shaders\\lens_colors");
+
+
+
+		C.r_dx10Sampler("smp_point");
+		C.r_dx10Sampler("smp_linear");
+		C.r_dx10Sampler("smp_rtlinear");
+		C.r_dx10Sampler("smp_nofilter");
+
+		C.r_End();
+		break;
+	}
+}
+
+CBlender_ssfx_bloom_lens::CBlender_ssfx_bloom_lens() { description.CLS = 0; }
+
+CBlender_ssfx_bloom_lens::~CBlender_ssfx_bloom_lens()
+{
+}
+
+void CBlender_ssfx_bloom_lens::Compile(CBlender_Compile& C)
+{
+	IBlender::Compile(C);
+
+	switch (C.iElement)
+	{
+	case 0: // Lens Build
+		C.r_Pass("stub_screen_space", "ssfx_bloom_flares", FALSE, FALSE, FALSE);
+
+		C.r_dx10Texture("s_emissive", r2_RT_ssfx_bloom_emissive);
+		C.r_dx10Texture("s_lenscolors", "shaders\\lens_colors");
+
+		C.r_dx10Sampler("smp_linear");
+		C.r_dx10Sampler("smp_rtlinear");
+		C.r_dx10Sampler("smp_nofilter");
+
+		C.r_End();
+		break;
+
+	case 1: // Flares Blur
+		C.r_Pass("stub_screen_space", "ssfx_bloom_upsample", FALSE, FALSE, FALSE);
+
+		C.r_dx10Texture("s_bloom", r2_RT_ssfx_bloom_tmp4);
+		C.r_dx10Texture("s_downsample", r2_RT_ssfx_bloom_tmp4);
+
+		C.r_dx10Sampler("smp_linear");
+		C.r_dx10Sampler("smp_rtlinear");
+		C.r_dx10Sampler("smp_nofilter");
+
+		C.r_End();
+		break;
+
+	case 2: // Flares Blur
+		C.r_Pass("stub_screen_space", "ssfx_bloom_upsample", FALSE, FALSE, FALSE);
+
+		C.r_dx10Texture("s_bloom", r2_RT_ssfx_bloom_tmp4_2);
+		C.r_dx10Texture("s_downsample", r2_RT_ssfx_bloom_tmp4_2);
+
+		C.r_dx10Sampler("smp_linear");
+		C.r_dx10Sampler("smp_rtlinear");
+		C.r_dx10Sampler("smp_nofilter");
+
+		C.r_End();
+		break;
+	}
+}
+
+
+CBlender_ssfx_bloom_downsample::CBlender_ssfx_bloom_downsample() { description.CLS = 0; }
+
+CBlender_ssfx_bloom_downsample::~CBlender_ssfx_bloom_downsample()
+{
+}
+
+void CBlender_ssfx_bloom_downsample::Compile(CBlender_Compile& C)
+{
+	IBlender::Compile(C);
+
+	switch (C.iElement)
+	{
+	case 0:
+		C.r_Pass("stub_screen_space", "ssfx_bloom_downsample", FALSE, FALSE, FALSE);
+
+		C.r_dx10Texture("s_bloom", r2_RT_ssfx_bloom1);
+		C.r_dx10Sampler("smp_linear");
+		C.r_dx10Sampler("smp_rtlinear");
+		C.r_dx10Sampler("smp_nofilter");
+		C.r_End();
+		break;
+	case 1:
+		C.r_Pass("stub_screen_space", "ssfx_bloom_downsample", FALSE, FALSE, FALSE);
+
+		C.r_dx10Texture("s_bloom", r2_RT_ssfx_bloom_tmp2);
+		C.r_dx10Sampler("smp_linear");
+		C.r_dx10Sampler("smp_rtlinear");
+		C.r_dx10Sampler("smp_nofilter");
+		C.r_End();
+		break;
+
+	case 2:
+		C.r_Pass("stub_screen_space", "ssfx_bloom_downsample", FALSE, FALSE, FALSE);
+
+		C.r_dx10Texture("s_bloom", r2_RT_ssfx_bloom_tmp4);
+		C.r_dx10Sampler("smp_linear");
+		C.r_dx10Sampler("smp_rtlinear");
+		C.r_End();
+		break;
+	case 3:
+		C.r_Pass("stub_screen_space", "ssfx_bloom_downsample", FALSE, FALSE, FALSE);
+
+		C.r_dx10Texture("s_bloom", r2_RT_ssfx_bloom_tmp8);
+		C.r_dx10Sampler("smp_linear");
+		C.r_dx10Sampler("smp_rtlinear");
+		C.r_End();
+		break;
+
+	case 4:
+		C.r_Pass("stub_screen_space", "ssfx_bloom_downsample", FALSE, FALSE, FALSE);
+
+		C.r_dx10Texture("s_bloom", r2_RT_ssfx_bloom_tmp16);
+		C.r_dx10Sampler("smp_linear");
+		C.r_dx10Sampler("smp_rtlinear");
+		C.r_End();
+		break;
+
+	case 5:
+		C.r_Pass("stub_screen_space", "ssfx_bloom_downsample", FALSE, FALSE, FALSE);
+
+		C.r_dx10Texture("s_bloom", r2_RT_ssfx_bloom_tmp32);
+		C.r_dx10Sampler("smp_linear");
+		C.r_dx10Sampler("smp_rtlinear");
+		C.r_End();
+		break;
+	}
+}
+
+
+CBlender_ssfx_bloom_upsample::CBlender_ssfx_bloom_upsample() { description.CLS = 0; }
+
+CBlender_ssfx_bloom_upsample::~CBlender_ssfx_bloom_upsample()
+{
+}
+
+void CBlender_ssfx_bloom_upsample::Compile(CBlender_Compile& C)
+{
+	IBlender::Compile(C);
+
+	switch (C.iElement)
+	{
+	case 0:
+		C.r_Pass("stub_screen_space", "ssfx_bloom_upsample", FALSE, FALSE, FALSE);
+
+		C.r_dx10Texture("s_downsample", r2_RT_ssfx_bloom_tmp64);
+		C.r_dx10Texture("s_bloom", r2_RT_ssfx_bloom_tmp64);
+		C.r_dx10Sampler("smp_linear");
+		C.r_dx10Sampler("smp_rtlinear");
+		C.r_End();
+		break;
+
+	case 1:
+		C.r_Pass("stub_screen_space", "ssfx_bloom_upsample", FALSE, FALSE, FALSE);
+
+		C.r_dx10Texture("s_downsample", r2_RT_ssfx_bloom_tmp32);
+		C.r_dx10Texture("s_bloom", r2_RT_ssfx_bloom_tmp32_2);
+		C.r_dx10Sampler("smp_linear");
+		C.r_dx10Sampler("smp_rtlinear");
+		C.r_End();
+		break;
+
+	case 2:
+		C.r_Pass("stub_screen_space", "ssfx_bloom_upsample", FALSE, FALSE, FALSE);
+
+		C.r_dx10Texture("s_downsample", r2_RT_ssfx_bloom_tmp16);
+		C.r_dx10Texture("s_bloom", r2_RT_ssfx_bloom_tmp16_2);
+		C.r_dx10Sampler("smp_linear");
+		C.r_dx10Sampler("smp_rtlinear");
+		C.r_End();
+		break;
+
+	case 3:
+		C.r_Pass("stub_screen_space", "ssfx_bloom_upsample", FALSE, FALSE, FALSE);
+
+		C.r_dx10Texture("s_downsample", r2_RT_ssfx_bloom_tmp8);
+		C.r_dx10Texture("s_bloom", r2_RT_ssfx_bloom_tmp8_2);
+		C.r_dx10Sampler("smp_linear");
+		C.r_dx10Sampler("smp_rtlinear");
+		C.r_End();
+		break;
+
+	case 4:
+		C.r_Pass("stub_screen_space", "ssfx_bloom_upsample", FALSE, FALSE, FALSE);
+
+		C.r_dx10Texture("s_downsample", r2_RT_ssfx_bloom_tmp4);
+		C.r_dx10Texture("s_bloom", r2_RT_ssfx_bloom_tmp4_2);
+		C.r_dx10Sampler("smp_linear");
+		C.r_dx10Sampler("smp_rtlinear");
+		C.r_End();
+		break;
+	}
+}

@@ -478,7 +478,13 @@ void	CRenderTarget::phase_combine	()
 			phase_blur();
 
 		//Compute bloom (new)
-		//phase_pp_bloom();
+		if (RImplementation.o.ssfx_bloom && RImplementation.o.dx11_ss_bloom)
+		{
+			if (Render->currentViewPort == MAIN_VIEWPORT)
+				phase_ssfx_bloom();
+			else
+				HW.pContext->ClearRenderTargetView(rt_ssfx_bloom1->pRT, ColorRGBA);
+		}
 
 		// Anomaly lut
 		if (ps_r4_shaders_flags.test(R4FLAG_SS_LUT))

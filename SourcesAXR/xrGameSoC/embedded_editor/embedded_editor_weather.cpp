@@ -164,6 +164,9 @@ void saveWeather(shared_str name, const xr_vector<CEnvDescriptor*>& env, bool so
 		f.w_float(el->m_identifier.c_str(), "dof_sky", el->dof_sky);
 		f.w_float(el->m_identifier.c_str(), "air_temperature", el->m_fAirTemperature);
 		f.w_string(el->m_identifier.c_str(), "weather_type", el->m_sWeatherType.c_str());
+		f.w_float(el->m_identifier.c_str(), "bloom_threshold", el->bloom_threshold);
+		f.w_float(el->m_identifier.c_str(), "bloom_exposure", el->bloom_exposure);
+		f.w_float(el->m_identifier.c_str(), "bloom_sky_intensity", el->bloom_sky_intensity);
 	}
 	
 	string_path fileName;
@@ -665,6 +668,17 @@ void ShowWeatherEditor(bool& show)
 		if (ImGui::ColorEdit4("color_grading", (float*)&cur->color_grading))
 			changed = true;
 	}
+
+	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_bloom_options").c_str()).c_str());
+
+	if (ImGui::SliderFloat("bloom_threshold", &cur->bloom_threshold, 0.0f, 10.0f))
+		changed = true;
+
+	if (ImGui::SliderFloat("bloom_exposure", &cur->bloom_exposure, 0.0f, 10.0f))
+		changed = true;
+
+	if (ImGui::SliderFloat("bloom_sky_intensity", &cur->bloom_sky_intensity, 0.0f, 1.0f))
+		changed = true;
 
 	if (bDofWeather)
 	{

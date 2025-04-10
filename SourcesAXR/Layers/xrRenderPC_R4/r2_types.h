@@ -47,6 +47,20 @@
 #define		r2_RT_ssfx_prevPos	"$user$ssfx_prev_p"		// Prev Position
 #define		r2_RT_ssfx_water_waves	"$user$ssfx_water_waves"
 
+#define		r2_RT_ssfx_bloom1			"$user$ssfx_bloom1" // Bloom
+#define		r2_RT_ssfx_bloom_emissive	"$user$ssfx_bloom_emissive" // Bloom
+#define		r2_RT_ssfx_bloom_lens		"$user$ssfx_bloom_lens" // Bloom
+#define		r2_RT_ssfx_bloom_tmp2		"$user$ssfx_bloom_tmp2" // Bloom
+#define		r2_RT_ssfx_bloom_tmp4		"$user$ssfx_bloom_tmp4" // Bloom
+#define		r2_RT_ssfx_bloom_tmp8		"$user$ssfx_bloom_tmp8" // Bloom
+#define		r2_RT_ssfx_bloom_tmp16		"$user$ssfx_bloom_tmp16" // Bloom
+#define		r2_RT_ssfx_bloom_tmp32		"$user$ssfx_bloom_tmp32" // Bloom
+#define		r2_RT_ssfx_bloom_tmp64		"$user$ssfx_bloom_tmp64" // Bloom
+#define		r2_RT_ssfx_bloom_tmp32_2	"$user$ssfx_bloom_tmp32_2" // Bloom
+#define		r2_RT_ssfx_bloom_tmp16_2	"$user$ssfx_bloom_tmp16_2" // Bloom
+#define		r2_RT_ssfx_bloom_tmp8_2		"$user$ssfx_bloom_tmp8_2" // Bloom
+#define		r2_RT_ssfx_bloom_tmp4_2		"$user$ssfx_bloom_tmp4_2" // Bloom
+
 #define		r2_RT_bloom1		"$user$bloom1"			// ---
 #define		r2_RT_bloom2		"$user$bloom2"			// ---
 

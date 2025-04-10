@@ -365,6 +365,8 @@ void					CRender::create					()
 	o.dx11_ss_lut				= ps_r4_shaders_flags.test(R4FLAG_SS_LUT);
 	o.dx11_ss_wind				= ps_r4_shaders_flags.test(R4FLAG_SS_WIND);
 	o.dx11_ss_puddles			= ps_r4_shaders_flags.test(R4FLAG_SS_PUDDLES);
+	o.dx11_ss_bloom				= ps_r4_shaders_flags.test(R4FLAG_SS_BLOOM);
+	o.dx11_ss_bloom_mask_dirt	= ps_r4_shaders_flags.test(R4FLAG_SS_BLOOM_MASK_DIRT);
 
 	o.dx11_enable_tessellation = HW.FeatureLevel>=D3D_FEATURE_LEVEL_11_0 && ps_r2_ls_flags_ext.test(R2FLAGEXT_ENABLE_TESSELLATION);
 
@@ -409,8 +411,9 @@ void					CRender::create					()
 	o.ssfx_volumetric = FS.exist(fn, "$game_shaders$", "r3\\ssfx_volumetric_blur", ".ps") ? 1 : 0;
 	o.ssfx_ao = FS.exist(fn, "$game_shaders$", "r3\\ssfx_ao", ".ps") ? 1 : 0;
 	o.ssfx_il = FS.exist(fn, "$game_shaders$", "r3\\ssfx_il", ".ps") ? 1 : 0;
+	o.ssfx_bloom = FS.exist(fn, "$game_shaders$", "r3\\ssfx_bloom", ".ps") ? 1 : 0;
 
-	Msg("- Supports SSS UPDATE 21");
+	Msg("- Supports SSS UPDATE 22");
 	Msg("- SSS CORE INSTALLED %i", o.ssfx_core);
 	Msg("- SSS HUD RAINDROPS SHADER INSTALLED %i", o.ssfx_hud_raindrops);
 	Msg("- SSS RAIN SHADER INSTALLED %i", o.ssfx_rain);
@@ -421,6 +424,7 @@ void					CRender::create					()
 	Msg("- SSS VOLUMETRIC SHADER INSTALLED %i", o.ssfx_volumetric);
 	Msg("- SSS AO SHADER INSTALLED %i", o.ssfx_ao);
 	Msg("- SSS IL SHADER INSTALLED %i", o.ssfx_il);
+	Msg("- SSS BLOOM SHADER INSTALLED %i", o.ssfx_bloom);
 
 	// constants
 	dxRenderDeviceRender::Instance().Resources->RegisterConstantSetup	("parallax",	&binder_parallax);
@@ -1736,6 +1740,19 @@ HRESULT	CRender::shader_compile			(
 		def_it++;
 		xr_strcat(sh_name, c_ssfx_water_parallax);
 		len += xr_strlen(c_ssfx_water_parallax);
+	}
+	else
+	{
+		sh_name[len] = '0';
+		++len;
+	}
+
+	if (o.dx11_sss_addon_enabled && o.dx11_ss_bloom)
+	{
+		defines[def_it].Name = "SSFX_BLOOM";
+		defines[def_it].Definition = "1";
+		def_it++;
+		sh_name[len] = '0' + char(o.dx11_ss_bloom); ++len;
 	}
 	else
 	{

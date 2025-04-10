@@ -563,6 +563,9 @@ ENGINE_API Fvector4 ps_ssfx_ao_setup1 = { 150.0, 1.0, 1.0, 0.0 }; // Distance, H
 ENGINE_API Fvector3 ps_ssfx_water_parallax_quality = { 2.0f, 0.5f, 0.05f }; // Water parallax: Quality, Distortion, Parallax Height
 ENGINE_API int ps_ssfx_terrain_grass_align = 0; // Grass align
 ENGINE_API float ps_ssfx_terrain_grass_slope = 1.0f; // Grass slope limit // Recommended 0.3f
+ENGINE_API int ps_ssfx_bloom_from_weather = 0;
+ENGINE_API Fvector4 ps_ssfx_bloom_1 = { 3.5f, 3.0f, 0.0f, 0.6f }; // Threshold, Exposure, -, Sky
+ENGINE_API Fvector4 ps_ssfx_bloom_2 = { 3.0f, 1.5f, 1.5f, 1.0f }; // Blur Radius, Vibrance, Lens, Dirt
 
 ENGINE_API float ps_r3_dyn_wet_surf_near = 10.f; // 10.0f
 ENGINE_API float ps_r3_dyn_wet_surf_far = 100.f; // 30.0f

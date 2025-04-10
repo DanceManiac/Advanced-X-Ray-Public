@@ -325,7 +325,9 @@ enum
 	R4FLAG_SS_LUT				= (1 << 9),
 	R4FLAG_SS_WIND				= (1 << 10),
 	R4FLAG_SS_PUDDLES			= (1 << 11),
-	R4FLAG_ES_ACES_TONEMAPPING  = (1 << 12),
+	R4FLAG_SS_BLOOM				= (1 << 12),
+	R4FLAG_SS_BLOOM_MASK_DIRT	= (1 << 13),
+	R4FLAG_ES_ACES_TONEMAPPING  = (1 << 14),
 };
 
 extern ECORE_API Flags32		ps_r__common_flags;

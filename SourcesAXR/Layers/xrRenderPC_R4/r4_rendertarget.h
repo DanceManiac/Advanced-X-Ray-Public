@@ -76,6 +76,10 @@ public:
 	IBlender*					b_ssfx_ssr;
 	IBlender*					b_ssfx_volumetric_blur;
 	IBlender*					b_ssfx_ao;
+	IBlender*					b_ssfx_bloom_downsample;
+	IBlender*					b_ssfx_bloom_upsample;
+	IBlender*					b_ssfx_bloom;
+	IBlender*					b_ssfx_bloom_lens;
 
 #ifdef DEBUG
 	struct		dbg_line_t		{
@@ -147,6 +151,19 @@ public:
 	ref_rt						rt_ssfx_il;
 	ref_rt						rt_ssfx_prevPos;
 	ref_rt						rt_ssfx_water_waves;
+	ref_rt						rt_ssfx_bloom1;
+	ref_rt						rt_ssfx_bloom_emissive;
+	ref_rt						rt_ssfx_bloom_lens;
+	ref_rt						rt_ssfx_bloom_tmp2;
+	ref_rt						rt_ssfx_bloom_tmp4;
+	ref_rt						rt_ssfx_bloom_tmp8;
+	ref_rt						rt_ssfx_bloom_tmp16;
+	ref_rt						rt_ssfx_bloom_tmp32;
+	ref_rt						rt_ssfx_bloom_tmp64;
+	ref_rt						rt_ssfx_bloom_tmp32_2;
+	ref_rt						rt_ssfx_bloom_tmp16_2;
+	ref_rt						rt_ssfx_bloom_tmp8_2;
+	ref_rt						rt_ssfx_bloom_tmp4_2;
 
 	Fmatrix Matrix_previous, Matrix_current;
 	Fmatrix Matrix_HUD_previous, Matrix_HUD_current;
@@ -294,6 +311,11 @@ private:
 	ref_shader				s_bloom;
 	ref_shader				s_bloom_msaa;
 	float					f_bloom_factor;
+
+	ref_shader				s_ssfx_bloom;
+	ref_shader				s_ssfx_bloom_lens;
+	ref_shader				s_ssfx_bloom_upsample;
+	ref_shader				s_ssfx_bloom_downsample;
 
 	// Luminance
 	ref_shader				s_luminance;
@@ -449,6 +471,7 @@ public:
 	//	Igor: for volumetric lights
 	void						accum_volumetric		(light* L);
 	void						phase_bloom				();
+	void						phase_ssfx_bloom		();
 	void						phase_luminance			();
 	void						phase_combine			();
 	void						phase_combine_volumetric();

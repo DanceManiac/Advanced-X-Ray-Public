@@ -119,6 +119,8 @@ public:
 	  u32		dx11_ss_lut				: 1;
 	  u32		dx11_ss_wind			: 1;
 	  u32		dx11_ss_puddles			: 1;
+	  u32		dx11_ss_bloom			: 1;
+	  u32		dx11_ss_bloom_mask_dirt : 1;
 
 	  u32		dx11_enable_tessellation : 1;
 
@@ -137,7 +139,8 @@ public:
 		u32		ssfx_volumetric		: 1;
 		u32		ssfx_ao				: 1;
 		u32		ssfx_il				: 1;
-	}			o;
+		u32		ssfx_bloom			: 1;
+	} o;
 	struct		_stats		{
 		u32		l_total,	l_visible;
 		u32		l_shadowed,	l_unshadowed;

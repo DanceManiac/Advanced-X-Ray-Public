@@ -639,12 +639,14 @@ void	R_dsgraph_structure::r_dsgraph_render_hud_sorted()
 
 //////////////////////////////////////////////////////////////////////////
 // strict-sorted render
-void	R_dsgraph_structure::r_dsgraph_render_emissive	()
+void	R_dsgraph_structure::r_dsgraph_render_emissive	(bool clear)
 {
 #if	RENDER!=R_R1
 	// Sorted (back to front)
 	mapEmissive.traverse_left_right(sorted_L1);
-	mapEmissive.clear		();
+	
+	if (clear)
+		mapEmissive.clear();
 
 	//	HACK: Calculate this only once
 
@@ -654,7 +656,9 @@ void	R_dsgraph_structure::r_dsgraph_render_emissive	()
 
 		// Sorted (back to front)
 		mapHUDEmissive.traverse_left_right(sorted_L1);
-		mapHUDEmissive.clear();
+		
+		if (clear)
+			mapHUDEmissive.clear();
 	}
 #endif
 }

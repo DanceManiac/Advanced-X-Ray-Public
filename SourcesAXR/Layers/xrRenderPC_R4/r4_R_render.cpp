@@ -535,7 +535,16 @@ void CRender::Render		()
 		//RCache.set_Stencil				(TRUE,D3DCMP_ALWAYS,0x00,0xff,0xff,D3DSTENCILOP_KEEP,D3DSTENCILOP_REPLACE,D3DSTENCILOP_KEEP);
 		RCache.set_CullMode					(CULL_CCW);
 		RCache.set_ColorWriteEnable			();
-		RImplementation.r_dsgraph_render_emissive();
+		RImplementation.r_dsgraph_render_emissive(RImplementation.o.ssfx_bloom ? false : true);
+
+		if (RImplementation.o.ssfx_bloom)
+		{
+			// Render Emissive on `rt_ssfx_bloom_emissive`
+			FLOAT ColorRGBA[4] = { 0,0,0,0 };
+			HW.pContext->ClearRenderTargetView(Target->rt_ssfx_bloom_emissive->pRT, ColorRGBA);
+			Target->u_setrt(Target->rt_ssfx_bloom_emissive, NULL, NULL, !RImplementation.o.dx10_msaa ? HW.pBaseZB : Target->rt_MSAADepth->pZRT);
+			RImplementation.r_dsgraph_render_emissive(true);
+		}
 	}
 
 	// Lighting, non dependant on OCCQ

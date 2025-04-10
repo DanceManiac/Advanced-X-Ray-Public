@@ -588,6 +588,10 @@ extern ENGINE_API Fvector4 ps_ssfx_il_setup1;
 
 extern ENGINE_API Fvector3 ps_ssfx_water_parallax_quality;
 
+extern ENGINE_API int ps_ssfx_bloom_from_weather;
+extern ENGINE_API Fvector4 ps_ssfx_bloom_1;
+extern ENGINE_API Fvector4 ps_ssfx_bloom_2;
+
 static class ssfx_wpn_dof_1 : public R_constant_setup
 {
 	virtual void setup(R_constant * C)
@@ -818,6 +822,37 @@ static class aref_params : public R_constant_setup
 	}
 }    aref_params;
 
+static class ssfx_bloom_1 : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		Fvector4 BloomSetup = { 0,0,0,0 };
+
+		if (ps_ssfx_bloom_from_weather)
+		{
+			BloomSetup.x = g_pGamePersistent->Environment().CurrentEnv->bloom_threshold;
+			BloomSetup.y = g_pGamePersistent->Environment().CurrentEnv->bloom_exposure;
+			BloomSetup.w = g_pGamePersistent->Environment().CurrentEnv->bloom_sky_intensity;
+		}
+		else
+		{
+			BloomSetup.x = ps_ssfx_bloom_1.x;
+			BloomSetup.y = ps_ssfx_bloom_1.y;
+			BloomSetup.w = ps_ssfx_bloom_1.w;
+		}
+
+		RCache.set_c(C, BloomSetup);
+	}
+}    ssfx_bloom_1;
+
+static class ssfx_bloom_2 : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_ssfx_bloom_2);
+	}
+}    ssfx_bloom_2;
+
 // Standart constant-binding
 void	CBlender_Compile::SetMapping	()
 {
@@ -939,6 +974,8 @@ void	CBlender_Compile::SetMapping	()
 	r_Constant				("ssfx_il_setup",		&ssfx_il);
 	r_Constant				("ssfx_il_setup2",		&ssfx_il_setup1);
 	r_Constant				("ssfx_water_parallax",	&ssfx_water_parallax);
+	r_Constant				("ssfx_bloom_1",		&ssfx_bloom_1);
+	r_Constant				("ssfx_bloom_2",		&ssfx_bloom_2);
 	//Reflections distance
 	r_Constant				("reflections_distance", &cl_refl_dist);
 	//AO Debug
