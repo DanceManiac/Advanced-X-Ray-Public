@@ -4,14 +4,14 @@ class CSE_Abstract;
 class CPhysicItem;
 class NET_Packet;
 class CInventoryItem;
+struct attachable_hud_item;
+class motion_marks;
 class CMotionDef;
 
 #include "actor_defs.h"
 #include "inventory_space.h"
 #include "hudsound.h"
 
-struct attachable_hud_item;
-class motion_marks;
 
 class CHUDState
 {
@@ -123,6 +123,8 @@ public:
 	virtual bool				IsMagazineEmpty		() { return false; }
 	virtual bool				IsGrenadeMode		() const { return false; }
 	virtual bool				NeedBlendAnm		();
+	
+	virtual bool				IsZoomed			() const { return false; }
 
 	virtual void				PlayAnimIdleMoving	();
 	virtual void				PlayAnimIdleMovingSlow();
@@ -208,17 +210,103 @@ public:
 	virtual CHudItem*			cast_hud_item			()				{ return this; }
 
 	float						GetHudFov				();
+	
+	bool						m_bSprintType;
+	bool						HeadLampSwitch{}, NightVisionSwitch{}, CleanMaskAction{}, LaserSwitchAction{}, FlashlightSwitchAction{};
 
-	bool  m_nearwall_enabled;
-	bool  m_bSprintType;
+
+	// Добавляем эффект тряски HUD-a при стрельбе
+	void AddHUDShootingEffect	();
+
+	// Сбрасываем эффект тряски HUD-a при стрельбе
+	ICF void ResetShootingEffect(bool bNoBackw = false)
+	{
+		//--> Силу сдвига в нули
+		if (bNoBackw != true)
+		{
+			m_fShootingCurPowerBACKW = 0.0f;
+		}
+		m_fShootingCurPowerLRUD = 0.0f;
+
+		//--> Факторы сдвига ствола к границам в "нейтральное" положение - по середине от всех краёв
+		m_fShootingFactorLR = 0.5f;
+		m_fShootingFactorUD = 0.5f;
+	}
+
+	// Получить коэфицент силы тряски HUD-a при стрельбе
+	float GetShootingEffectKoef	();
+	void merge_measures_params();
+
+protected:
+    // Параметры эффекта стрельбы
+	float m_fShootingFactorLR;		// Фактор текущего горизонтального сдвига худа при стрельбе, от края до края [0; +1]
+	float m_fShootingFactorUD;		// Фактор текущего вертикального сдвига худа при стрельбе, от края до края [0; +1]
+	float m_fShootingCurPowerBACKW;	// Фактор текущей силы сдвига худа в сторону лица при стрельбе [0; +1]
+	float m_fShootingCurPowerLRUD;	// Фактор текущей силы сдвига худа в бока при стрельбе [0; +1]
+
+
+private:
+	bool  m_nearwall_enabled{};
 	float m_hud_fov_add_mod{};
+	float m_nearwall_target_hud_fov{}, m_nearwall_target_aim_hud_fov{};
+	float m_nearwall_dist_max{}, m_nearwall_dist_min{};
 	float m_nearwall_last_hud_fov{};
-	float m_nearwall_dist_max{};
-	float m_nearwall_dist_min{};
-	float m_nearwall_target_hud_fov{};
 	float m_nearwall_speed_mod{};
 	float m_base_fov{};
 
-	bool HeadLampSwitch{}, NightVisionSwitch{}, CleanMaskAction{}, LaserSwitchAction{}, FlashlightSwitchAction{};
+	Fvector	m_strafe_offset[3][2]{},
+			m_lookout_offset[3][2]{}, 
+			m_jump_offset[3][2]{}, 
+			m_fall_offset[2][2]{}, 
+			m_landing_offset[2][2]{}, 
+			m_move_offset[3]{}, 
+			m_walk_offset[3]{};
+			
+	Fvector	current_difference[2]{}, 
+			current_strafe[2]{}, 
+			current_lookout[2]{}, 
+			current_jump[2]{}, 
+			current_move[2]{}, 
+			current_walk[2]{}, 
+			current_shooting[2]{};
+
+	struct inertion_params
+	{
+		float m_pitch_offset_r;
+		float m_pitch_offset_n;
+		float m_pitch_offset_d;
+		float m_pitch_low_limit;
+		// отклонение модели от "курса" из за инерции во время движения
+		float m_origin_offset;
+		// отклонение модели от "курса" из за инерции во время движения с прицеливанием
+		float m_origin_offset_aim;
+		// скорость возврата худ модели в нужное положение
+		float m_tendto_speed;
+		// скорость возврата худ модели в нужное положение во время прицеливания
+		float m_tendto_speed_aim;
+	} inertion_data{}; //--#SM+#--
+
+	Fvector inert_st_last_dir{};
+	void UpdateInertion(Fmatrix& trans);
+	
+	struct shooting_params
+	{
+		Fvector4 m_shot_max_offset_LRUD;     // Границы сдвига в бок при выстреле от бедра (-x, +x, +y, -y) 
+		Fvector4 m_shot_max_offset_LRUD_aim; // Границы сдвига в бок при выстреле в зуме (-x, +x, +y, -y) 
+		Fvector2 m_shot_max_rot_UD;          // Границы поворота по вертикали при выстреле от бедра (при смещении вверх \ вниз) 
+		Fvector2 m_shot_max_rot_UD_aim;      // Границы поворота по вертикали при выстреле в зуме (при смещении вверх \ вниз) 
+		float m_shot_offset_BACKW;           // Расстояние сдвига назад при выстреле от бедра [>= 0.0f]
+		float m_shot_offset_BACKW_aim;       // Расстояние сдвига назад при выстреле в зуме [>= 0.0f]
+		Fvector2 m_shot_offsets_strafe;      // Фактор изменения наклона (стрейфа) ствола при выстреле (мин.\макс. от бедра) vec2[0.f - 1.f]
+		Fvector2 m_shot_offsets_strafe_aim;  // Фактор изменения наклона (стрейфа) ствола при выстреле (мин.\макс. в зуме) vec2[0.f - 1.f]
+		Fvector2 m_shot_diff_per_shot;       // Фактор того, насколько большой может быть разница между текущей и новой позицией на каждый выстрел (от бедра \ в зуме) [0.f - 1.f]
+		Fvector2 m_shot_power_per_shot;      // Фактор того, насколько сильнее мы приближаемся к границам сдвига и наклона с каждым выстрелом (от бедра \ в зуме) [0.f - 1.f]
+		Fvector2 m_ret_time;                 // Максимально возможное время стабилизации ствола в исходное положение после анимации стрельбы (от бедра / в зуме) [секунд][>= 0.0f] - не влияет на стрейф
+		Fvector2 m_ret_time_fire;            // Максимально возможное время стабилизации ствола в исходное положение во время анимации стрельбы (от бедра / в зуме) [секунд][>= 0.0f] - не влияет на стрейф
+		float m_ret_time_backw_koef;         // Коэфицент времени стабилизации для сдвига назад [>= 0.0f]
+	};
+	shooting_params m_shooting_params; //--#SM+#--
+
+	bool bReloadShooting; //--#SM+#--
 };
 

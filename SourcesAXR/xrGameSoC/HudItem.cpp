@@ -14,9 +14,13 @@
 #include "ui_base.h"
 #include "HUDManager.h"
 #include "Weapon.h"
+#include "PDA.h"
+#include <array>
 
 #include "script_callback_ex.h"
 #include "script_game_object.h"
+#include "../xrCore/_vector3d_ext.h"
+#include "../xrCore/vector.h"
 
 ENGINE_API extern float psHUD_FOV_def;
 
@@ -63,14 +67,108 @@ void CHudItem::Load(LPCSTR section)
 
 	if (m_nearwall_enabled)
 	{
-		m_nearwall_target_hud_fov= READ_IF_EXISTS(pSettings, r_float, section, "nearwall_target_hud_fov", 0.27f);
 		m_nearwall_dist_min		= READ_IF_EXISTS(pSettings, r_float, section, "nearwall_dist_min", 0.5f);
 		m_nearwall_dist_max		= READ_IF_EXISTS(pSettings, r_float, section, "nearwall_dist_max", 1.f);
+		m_nearwall_target_hud_fov= READ_IF_EXISTS(pSettings, r_float, section, "nearwall_target_hud_fov", 0.27f);
+		m_nearwall_target_aim_hud_fov = READ_IF_EXISTS(pSettings, r_float, section, "nearwall_target_aim_hud_fov", m_nearwall_target_hud_fov);
 		m_nearwall_speed_mod	= READ_IF_EXISTS(pSettings, r_float, section, "nearwall_speed_mod", 10.f);
 	}
 	
 	m_base_fov					= READ_IF_EXISTS(pSettings, r_float, section, "hud_fov", 0.0f);
 	m_nearwall_last_hud_fov		= m_base_fov > 0.0f ? m_base_fov : psHUD_FOV_def;
+
+	////////////////////////////////////////////
+	m_strafe_offset[0][0] = READ_IF_EXISTS(pSettings, r_fvector3, section, "strafe_hud_offset_pos", (Fvector{0.025f, 0.f, 0.f}));
+	m_strafe_offset[1][0] = READ_IF_EXISTS(pSettings, r_fvector3, section, "strafe_hud_offset_rot", (Fvector{0.f, 0.f, 5.5f}));
+
+	m_strafe_offset[0][1] = READ_IF_EXISTS(pSettings, r_fvector3, section, "strafe_aim_hud_offset_pos", (Fvector{0.f, 0.f, 0.f}));
+	m_strafe_offset[1][1] = READ_IF_EXISTS(pSettings, r_fvector3, section, "strafe_aim_hud_offset_rot", (Fvector{0.f, 0.f, 3.5f}));
+
+	m_strafe_offset[2][0].set(READ_IF_EXISTS(pSettings, r_bool, section, "strafe_enabled", true), READ_IF_EXISTS(pSettings, r_float, section, "strafe_transition_time", 0.25f), 0.f);
+	m_strafe_offset[2][1].set(READ_IF_EXISTS(pSettings, r_bool, section, "strafe_aim_enabled", true), READ_IF_EXISTS(pSettings, r_float, section, "strafe_aim_transition_time", 0.15f), 0.f);
+
+	////////////////////////////////////////////
+	////////////////////////////////////////////
+	m_lookout_offset[0][0] = READ_IF_EXISTS(pSettings, r_fvector3, section, "lookout_hud_offset_pos", (Fvector{0.045f, 0.f, 0.f}));
+	m_lookout_offset[1][0] = READ_IF_EXISTS(pSettings, r_fvector3, section, "lookout_hud_offset_rot", (Fvector{0.f, 0.f, 10.f}));
+
+	m_lookout_offset[0][1] = READ_IF_EXISTS(pSettings, r_fvector3, section, "lookout_aim_hud_offset_pos", (Fvector{0.f, 0.f, 0.f}));
+	m_lookout_offset[1][1] = READ_IF_EXISTS(pSettings, r_fvector3, section, "lookout_aim_hud_offset_rot", (Fvector{0.f, 0.f, 15.f}));
+
+	m_lookout_offset[2][0].set(READ_IF_EXISTS(pSettings, r_bool, section, "lookout_enabled", true), READ_IF_EXISTS(pSettings, r_float, section, "lookout_transition_time", 0.25f), 0.f);
+	m_lookout_offset[2][1].set(READ_IF_EXISTS(pSettings, r_bool, section, "lookout_aim_enabled", true), READ_IF_EXISTS(pSettings, r_float, section, "lookout_aim_transition_time", 0.15f), 0.f);
+	////////////////////////////////////////////
+	////////////////////////////////////////////
+	m_jump_offset[0][0] = READ_IF_EXISTS(pSettings, r_fvector3, section, "jump_hud_offset_pos", (Fvector{0.f, 0.05f, 0.03f}));
+	m_jump_offset[1][0] = READ_IF_EXISTS(pSettings, r_fvector3, section, "jump_hud_offset_rot", (Fvector{0.f, -10.f, -10.f}));
+
+	m_jump_offset[0][1] = READ_IF_EXISTS(pSettings, r_fvector3, section, "jump_aim_hud_offset_pos", (Fvector{0.f, 0.03f, 0.01f}));
+	m_jump_offset[1][1] = READ_IF_EXISTS(pSettings, r_fvector3, section, "jump_aim_hud_offset_rot", (Fvector{0.f, 2.5f, -3.f}));
+
+	m_jump_offset[2][0].set(READ_IF_EXISTS(pSettings, r_bool, section, "jump_enabled", true), READ_IF_EXISTS(pSettings, r_float, section, "jump_transition_time", 0.35f), 0.f);
+	m_jump_offset[2][1].set(READ_IF_EXISTS(pSettings, r_bool, section, "jump_aim_enabled", true), READ_IF_EXISTS(pSettings, r_float, section, "jump_aim_transition_time", 0.4f), 0.f);
+	////////////////////////////////////////////
+	////////////////////////////////////////////
+	m_fall_offset[0][0] = READ_IF_EXISTS(pSettings, r_fvector3, section, "fall_hud_offset_pos", (Fvector{0.f, -0.05f, 0.06f}));
+	m_fall_offset[1][0] = READ_IF_EXISTS(pSettings, r_fvector3, section, "fall_hud_offset_rot", (Fvector{0.f, 5.f, 0.f}));
+
+	m_fall_offset[0][1] = READ_IF_EXISTS(pSettings, r_fvector3, section, "fall_aim_hud_offset_pos", (Fvector{0.f, 0.03f, -0.01f}));
+	m_fall_offset[1][1] = READ_IF_EXISTS(pSettings, r_fvector3, section, "fall_aim_hud_offset_rot", (Fvector{0.f, -2.5f, 3.f}));
+	////////////////////////////////////////////
+	////////////////////////////////////////////
+	m_landing_offset[0][0] = READ_IF_EXISTS(pSettings, r_fvector3, section, "landing_hud_offset_pos", (Fvector{0.f, -0.2f, 0.03f}));
+	m_landing_offset[1][0] = READ_IF_EXISTS(pSettings, r_fvector3, section, "landing_hud_offset_rot", (Fvector{0.f, -5.f, 10.f}));
+
+	m_landing_offset[0][1] = READ_IF_EXISTS(pSettings, r_fvector3, section, "landing_aim_hud_offset_pos", (Fvector{0.f, -0.1f, 0.02f}));
+	m_landing_offset[1][1] = READ_IF_EXISTS(pSettings, r_fvector3, section, "landing_aim_hud_offset_rot", (Fvector{0.f, -2.5f, 5.f}));
+	////////////////////////////////////////////
+	////////////////////////////////////////////
+	m_move_offset[0] = READ_IF_EXISTS(pSettings, r_fvector3, section, "stay_hud_offset_pos", (Fvector{0.f, -0.03f, 0.f}));
+	m_move_offset[1] = READ_IF_EXISTS(pSettings, r_fvector3, section, "stay_hud_offset_rot", (Fvector{0.f, 0.5f, -3.f}));
+	m_move_offset[2].set(READ_IF_EXISTS(pSettings, r_bool, section, "move_enabled", true), READ_IF_EXISTS(pSettings, r_float, section, "move_transition_time", 0.25f), 0.f);
+	////////////////////////////////////////////
+	////////////////////////////////////////////
+	m_walk_offset[0] = READ_IF_EXISTS(pSettings, r_fvector3, section, "walk_hud_offset_pos", (Fvector{-0.02f, -0.02f, -0.03f}));
+	m_walk_offset[1] = READ_IF_EXISTS(pSettings, r_fvector3, section, "walk_hud_offset_rot", (Fvector{0.f, 0.05f, -1.f}));
+	m_walk_offset[2].set(READ_IF_EXISTS(pSettings, r_bool, section, "walk_enabled", true), READ_IF_EXISTS(pSettings, r_float, section, "walk_transition_time", 0.25f), 0.f);
+
+	//Загрузка параметров инерции --#SM+# Begin--
+	constexpr float PITCH_OFFSET_R = 0.0f; // Насколько сильно ствол смещается вбок (влево) при вертикальных поворотах камеры
+	constexpr float PITCH_OFFSET_N = 0.0f; // Насколько сильно ствол поднимается\опускается при вертикальных поворотах камеры
+	constexpr float PITCH_OFFSET_D = 0.02f; // Насколько сильно ствол приближается\отдаляется при вертикальных поворотах камеры
+	float PITCH_LOW_LIMIT = -PI; // Минимальное значение pitch при использовании совместно с PITCH_OFFSET_N
+	constexpr float ORIGIN_OFFSET = -0.03f; // Фактор влияния инерции на положение ствола (чем меньше, тем масштабней инерция)
+	constexpr float ORIGIN_OFFSET_AIM = -0.02f; // (Для прицеливания)
+	constexpr float TENDTO_SPEED = 5.f; // Скорость нормализации положения ствола
+	constexpr float TENDTO_SPEED_AIM = 10.f; // (Для прицеливания)
+
+	inertion_data.m_pitch_offset_r = READ_IF_EXISTS(pSettings, r_float, m_hud_sect, "pitch_offset_right", PITCH_OFFSET_R);
+	inertion_data.m_pitch_offset_n = READ_IF_EXISTS(pSettings, r_float, m_hud_sect, "pitch_offset_up", PITCH_OFFSET_N);
+	inertion_data.m_pitch_offset_d = READ_IF_EXISTS(pSettings, r_float, m_hud_sect, "pitch_offset_forward", PITCH_OFFSET_D);
+	inertion_data.m_pitch_low_limit = READ_IF_EXISTS(pSettings, r_float, m_hud_sect, "pitch_offset_up_low_limit", PITCH_LOW_LIMIT);
+
+	inertion_data.m_origin_offset = READ_IF_EXISTS(pSettings, r_float, m_hud_sect, "inertion_origin_offset", ORIGIN_OFFSET);
+	inertion_data.m_origin_offset_aim = READ_IF_EXISTS(pSettings, r_float, m_hud_sect, "inertion_zoom_origin_offset", ORIGIN_OFFSET_AIM);
+	inertion_data.m_tendto_speed = READ_IF_EXISTS(pSettings, r_float, m_hud_sect, "inertion_tendto_speed", TENDTO_SPEED);
+	inertion_data.m_tendto_speed_aim = READ_IF_EXISTS(pSettings, r_float, m_hud_sect, "inertion_zoom_tendto_speed", TENDTO_SPEED_AIM);
+
+	// Загрузка параметров смещения при стрельбе
+	m_shooting_params.m_shot_max_offset_LRUD = READ_IF_EXISTS(pSettings, r_fvector4, m_hud_sect, "shooting_max_LRUD", Fvector4().set(0, 0, 0, 0));
+	m_shooting_params.m_shot_max_offset_LRUD_aim = READ_IF_EXISTS(pSettings, r_fvector4, m_hud_sect, "shooting_max_LRUD_aim", Fvector4().set(0, 0, 0, 0));
+	m_shooting_params.m_shot_max_rot_UD = READ_IF_EXISTS(pSettings, r_fvector2, m_hud_sect, "shooting_max_UD_rot", Fvector2().set(0, 0));
+	m_shooting_params.m_shot_max_rot_UD_aim = READ_IF_EXISTS(pSettings, r_fvector2, m_hud_sect, "shooting_max_UD_rot_aim", Fvector2().set(0, 0));
+	m_shooting_params.m_shot_offset_BACKW = READ_IF_EXISTS(pSettings, r_float, m_hud_sect, "shooting_backward_offset", 0.0f);
+	m_shooting_params.m_shot_offset_BACKW_aim = READ_IF_EXISTS(pSettings, r_float, m_hud_sect, "shooting_backward_offset_aim", 0.0f);
+	m_shooting_params.m_shot_offsets_strafe = READ_IF_EXISTS(pSettings, r_fvector2, m_hud_sect, "shooting_strafe_offsets", Fvector2().set(0, 0));
+	m_shooting_params.m_shot_offsets_strafe_aim = READ_IF_EXISTS(pSettings, r_fvector2, m_hud_sect, "shooting_strafe_offsets_aim", Fvector2().set(0, 0));
+	m_shooting_params.m_shot_diff_per_shot = READ_IF_EXISTS(pSettings, r_fvector2, m_hud_sect, "shooting_diff_per_shot", Fvector2().set(0, 0));
+	m_shooting_params.m_shot_power_per_shot = READ_IF_EXISTS(pSettings, r_fvector2, m_hud_sect, "shooting_power_per_shot", Fvector2().set(0, 0));
+	m_shooting_params.m_ret_time = READ_IF_EXISTS(pSettings, r_fvector2, m_hud_sect, "shooting_ret_time", Fvector2().set(1.0f, 1.0f));
+	m_shooting_params.m_ret_time_fire = READ_IF_EXISTS(pSettings, r_fvector2, m_hud_sect, "shooting_ret_time_fire", Fvector2().set(1000.0f, 1000.0f));
+	m_shooting_params.m_ret_time_backw_koef = READ_IF_EXISTS(pSettings, r_float, m_hud_sect, "shooting_ret_time_backw_k", 1.0f);
+
+	bReloadShooting = READ_IF_EXISTS(pSettings, r_bool, m_hud_sect, "use_new_shooting_params", false);
+	//--#SM+# End--
 
 	m_bBoreEnabled				= READ_IF_EXISTS(pSettings, r_bool, section, "enable_bore_state", true);
 
@@ -274,11 +372,6 @@ void CHudItem::SendHiddenItem()
 		P.w_u8					(u8(eHiding));
 		object().u_EventSend	(P, net_flags(TRUE, TRUE, FALSE, TRUE));
 	}
-}
-
-
-void CHudItem::UpdateHudAdditional(Fmatrix& hud_trans)
-{
 }
 
 void CHudItem::UpdateCL()
@@ -770,6 +863,604 @@ void CHudItem::ReplaceHudSection(LPCSTR hud_section)
 		m_hud_sect = hud_section;
 }
 
+void CHudItem::UpdateInertion(Fmatrix& trans)
+{
+    if (HudInertionEnabled() && HudInertionAllowed())
+    {
+        Fmatrix xform;
+        Fvector& origin = trans.c;
+        xform = trans;
+
+        // calc difference
+        Fvector diff_dir;
+        diff_dir.sub(xform.k, inert_st_last_dir);
+
+        // clamp by PI_DIV_2
+        Fvector last;
+        last.normalize_safe(inert_st_last_dir);
+        const float dot = last.dotproduct(xform.k);
+        if (dot < EPS)
+        {
+            Fvector v0;
+            v0.crossproduct(inert_st_last_dir, xform.k);
+            inert_st_last_dir.crossproduct(xform.k, v0);
+            diff_dir.sub(xform.k, inert_st_last_dir);
+        }
+
+        // tend to forward
+        float _tendto_speed, _origin_offset;
+        if (GetCurrentHudOffsetIdx() > 0)
+        { // Худ в режиме "Прицеливание"
+            float factor = GetInertionFactor();
+            _tendto_speed = inertion_data.m_tendto_speed_aim - (inertion_data.m_tendto_speed_aim - inertion_data.m_tendto_speed) * factor;
+            _origin_offset = inertion_data.m_origin_offset_aim - (inertion_data.m_origin_offset_aim - inertion_data.m_origin_offset) * factor;
+        }
+        else
+        { // Худ в режиме "От бедра"
+            _tendto_speed = inertion_data.m_tendto_speed;
+            _origin_offset = inertion_data.m_origin_offset;
+        }
+
+        // Фактор силы инерции
+        const float power_factor = GetInertionPowerFactor();
+        _tendto_speed *= power_factor;
+        _origin_offset *= power_factor;
+
+        inert_st_last_dir.mad(diff_dir, _tendto_speed * Device.fTimeDelta);
+        origin.mad(diff_dir, -_origin_offset); // Инвертировал
+
+        // pitch compensation
+        float pitch = angle_normalize_signed(xform.k.getP());
+
+        pitch *= GetInertionFactor();
+
+        // Отдаление\приближение
+        origin.mad(xform.k, -pitch * inertion_data.m_pitch_offset_d);
+
+        // Сдвиг в противоположную часть экрана
+        origin.mad(xform.i, -pitch * inertion_data.m_pitch_offset_r);
+
+        // Подьём\опускание
+        clamp(pitch, inertion_data.m_pitch_low_limit, PI);
+        origin.mad(xform.j, -pitch * inertion_data.m_pitch_offset_n);
+    }
+}
+
+// Обновление координат текущего худа
+void CHudItem::UpdateHudAdditional(Fmatrix& trans)
+{
+    UpdateInertion(trans);
+
+	CWeapon* wpn = smart_cast<CWeapon*>(this);
+	CPda* pda = smart_cast<CPda*>(this);
+
+    Fvector summary_offset{}, summary_rotate{};
+
+    attachable_hud_item* hi = HudItemData();
+    u8 idx = (pda && pda->Is3DPDA()) ? (pda->m_bZoomed ? 1 : 0) : GetCurrentHudOffsetIdx();
+    const bool b_aiming = idx != 0;
+    Fvector zr_offs = hi->m_measures.m_hands_offset[0][idx];
+    Fvector zr_rot = hi->m_measures.m_hands_offset[1][idx];
+
+    //============= Поворот ствола во время аима =============//
+    if (wpn)
+	{
+        const float factor = Device.fTimeDelta / wpn->m_zoom_params.m_fZoomRotateTime;
+
+        // I AM DEAD - Dirty hack from delayed exit from aim
+        if (IsZoomed())
+			wpn->m_zoom_params.m_fZoomRotationFactor += factor * 2.f;
+        else
+			wpn->m_zoom_params.m_fZoomRotationFactor -= factor * 2.f;
+
+        clamp(wpn->m_zoom_params.m_fZoomRotationFactor, 0.f, 1.f);
+
+        if (!zr_offs.similar(current_difference[0], EPS))
+            current_difference[0].lerp(current_difference[0], zr_offs, factor * 2.f);
+
+        if (!zr_rot.similar(current_difference[1], EPS))
+            current_difference[1].lerp(current_difference[1], zr_rot, factor * 2.f);
+
+        summary_offset.add(current_difference[0]);
+    }
+	else if (pda && pda->Is3DPDA())
+	{
+		const float factor = Device.fTimeDelta / .25f;
+
+		// I AM DEAD - Dirty hack from delayed exit from aim
+		if (IsZoomed())
+			pda->m_fZoomfactor += factor;
+		else
+			pda->m_fZoomfactor -= factor;
+
+		clamp(pda->m_fZoomfactor, 0.f, 1.f);
+
+		if (!zr_offs.similar(current_difference[0], EPS))
+			current_difference[0].lerp(current_difference[0], zr_offs, factor);
+
+		if (!zr_rot.similar(current_difference[1], EPS))
+			current_difference[1].lerp(current_difference[1], zr_rot, factor);
+
+		summary_offset.add(current_difference[0]);
+
+	}
+    //====================================================//
+
+    auto pActor = smart_cast<const CActor*>(object().H_Parent());
+    const u32 iMovingState = pActor->MovingState();
+    idx = b_aiming ? 1ui8 : 0ui8;
+
+    //============= Боковой стрейф с оружием =============//
+    {
+        const bool bEnabled = m_strafe_offset[2][idx].x;
+        if (bEnabled)
+        {
+            float fStrafeMaxTime = m_strafe_offset[2][idx].y; // Макс. время в секундах, за которое произойдет смещение худа при стрейфах
+
+            if (fStrafeMaxTime <= EPS)
+                fStrafeMaxTime = 0.01f;
+
+            const float fStepPerUpd = Device.fTimeDelta / fStrafeMaxTime; // Величина изменение фактора смещения худа при стрейфах
+
+            Fvector current_moving_offs{}, current_moving_rot{};
+
+            if (iMovingState & mcLStrafe) // Двигаемся влево
+            {
+                current_moving_offs.set(-m_strafe_offset[0][idx]);
+                current_moving_rot.set(-m_strafe_offset[1][idx]);
+            }
+            else if (iMovingState & mcRStrafe) // Двигаемся вправо
+            {
+                current_moving_offs.set(m_strafe_offset[0][idx]);
+                current_moving_rot.set(m_strafe_offset[1][idx]);
+            }
+            else // Двигаемся в любом другом направлении
+            {
+                current_moving_offs.set(Fvector{});
+                current_moving_rot.set(Fvector{});
+            }
+
+            current_moving_rot.mul(-PI / 180.f); // Преобразуем углы в радианы
+
+            if (!current_moving_offs.similar(current_strafe[0], EPS))
+                current_strafe[0].lerp(current_strafe[0], current_moving_offs, fStepPerUpd);
+
+            if (!current_moving_rot.similar(current_strafe[1], EPS))
+                current_strafe[1].lerp(current_strafe[1], current_moving_rot, fStepPerUpd);
+
+            summary_offset.add(current_strafe[0]);
+            summary_rotate.add(current_strafe[1]);
+        }
+    }
+
+    //=============== Эффекты прыжка ===============//
+    {
+        const bool bEnabled = m_jump_offset[2][idx].x;
+        if (bEnabled)
+        {
+            float fJumpMaxTime = m_jump_offset[2][idx].y; // Макс. время в секундах, за которое произойдет смещение худа при прыжке
+
+            if (fJumpMaxTime <= EPS)
+                fJumpMaxTime = 0.01f;
+
+            const float fStepPerUpd = Device.fTimeDelta / fJumpMaxTime; // Величина изменение фактора смещения худа при прыжке
+
+            Fvector current_jump_offs{}, current_jump_rot{};
+
+            if (iMovingState & mcJump) // Прыжок
+            {
+                current_jump_offs.set(m_jump_offset[0][idx]);
+                current_jump_rot.set(m_jump_offset[1][idx]);
+            }
+            else if (iMovingState & mcFall) // Полет
+            {
+                current_jump_offs.set(m_fall_offset[0][idx]);
+                current_jump_rot.set(m_fall_offset[1][idx]);
+            }
+            else if (iMovingState & mcLanding || iMovingState & mcLanding2) // Полет
+            {
+                current_jump_offs.set(m_landing_offset[0][idx]);
+                current_jump_rot.set(m_landing_offset[1][idx]);
+            }
+            else
+            {
+                current_jump_offs.set(Fvector{});
+                current_jump_rot.set(Fvector{});
+            }
+
+			float koef = iMovingState & mcLanding2 ? 1.3 : 1.0;
+            current_jump_offs.mul(koef);
+            current_jump_rot.mul(koef);
+            current_jump_rot.mul(-PI / 180.f); // Преобразуем углы в радианы
+
+            if (!current_jump_offs.similar(current_jump[0], EPS))
+                current_jump[0].lerp(current_jump[0], current_jump_offs, fStepPerUpd);
+
+            if (!current_jump_rot.similar(current_jump[1], EPS))
+                current_jump[1].lerp(current_jump[1], current_jump_rot, fStepPerUpd);
+
+            summary_offset.add(current_jump[0]);
+            summary_rotate.add(current_jump[1]);
+        }
+    }
+
+    //=============== Эффекты наклонов ===================//
+    {
+        const bool bEnabled = m_lookout_offset[2][idx].x;
+        if (bEnabled)
+        {
+            float fLookoutMaxTime = m_lookout_offset[2][idx].y; // Макс. время в секундах, за которое мы наклонимся из центрального положения
+            if (fLookoutMaxTime <= EPS)
+                fLookoutMaxTime = 0.01f;
+
+            const float fStepPerUpd = Device.fTimeDelta / fLookoutMaxTime; // Величина изменение фактора поворота
+
+            float koef{1.f};
+            if ((iMovingState & mcCrouch) && (iMovingState & mcAccel))
+                koef = 0.5; // во сколько раз менять амплитуду при полном присяде
+            else if (iMovingState & mcCrouch)
+                koef = 0.75; // во сколько раз менять амплитуду при присяде
+
+            Fvector current_lookout_offs{}, current_lookout_rot{};
+
+            if ((iMovingState & mcLLookout) && !(iMovingState & mcRLookout)) // Выглядываем влево
+            {
+                current_lookout_offs.set(-m_lookout_offset[0][idx]);
+                current_lookout_rot.set(-m_lookout_offset[1][idx]);
+            }
+            else if ((iMovingState & mcRLookout) && !(iMovingState & mcLLookout)) // Выглядываем вправо
+            {
+                current_lookout_offs.set(m_lookout_offset[0][idx]);
+                current_lookout_rot.set(m_lookout_offset[1][idx]);
+            }
+            else
+            {
+                current_lookout_offs.set(Fvector{});
+                current_lookout_rot.set(Fvector{});
+            }
+
+            current_lookout_offs.mul(koef);
+            current_lookout_rot.mul(koef);
+            current_lookout_rot.mul(-PI / 180.f); // Преобразуем углы в радианы
+
+            if (!current_lookout_offs.similar(current_lookout[0], EPS))
+                current_lookout[0].lerp(current_lookout[0], current_lookout_offs, fStepPerUpd);
+
+            if (!current_lookout_rot.similar(current_lookout[1], EPS))
+                current_lookout[1].lerp(current_lookout[1], current_lookout_rot, fStepPerUpd);
+
+            summary_offset.add(current_lookout[0]);
+            summary_rotate.add(current_lookout[1]);
+        }
+    }
+
+    //=============== Эффекты стойки ===================//
+    {
+        const bool bEnabled = m_move_offset[2].x;
+        if (bEnabled)
+        {
+            float fMoveMaxTime = m_move_offset[2].y; // Макс. время в секундах, за которое мы наклонимся из центрального положения
+            if (fMoveMaxTime <= EPS)
+                fMoveMaxTime = 0.01f;
+
+            const float fStepPerUpd = Device.fTimeDelta / fMoveMaxTime; // Величина изменение фактора поворота
+
+            float koef{};
+            if ((iMovingState & mcCrouch) && (iMovingState & mcAccel))
+                koef = 1.0; // во сколько раз менять амплитуду при полном присяде
+            else if (iMovingState & mcCrouch)
+                koef = 0.5; // во сколько раз менять амплитуду при присяде
+
+            Fvector current_move_offs{}, current_move_rot{};
+
+            if (iMovingState & mcCrouch) // Выглядываем влево
+            {
+                current_move_offs.set(m_move_offset[0]);
+                current_move_rot.set(m_move_offset[1]);
+            }
+            else
+            {
+                current_move_offs.set(Fvector{});
+                current_move_rot.set(Fvector{});
+            }
+
+            auto missile = smart_cast<CMissile*>(this);
+
+            current_move_offs.mul(koef);
+            current_move_rot.mul(koef);
+            current_move_offs.mul(!IsZoomed());
+            current_move_rot.mul(!IsZoomed());
+            current_move_offs.mul(!pda && !missile);
+            current_move_rot.mul(!pda && !missile);
+            current_move_rot.mul(-PI / 180.f); // Преобразуем углы в радианы
+
+            if (!current_move_offs.similar(current_move[0], EPS))
+                current_move[0].lerp(current_move[0], current_move_offs, fStepPerUpd);
+
+            if (!current_move_rot.similar(current_move[1], EPS))
+                current_move[1].lerp(current_move[1], current_move_rot, fStepPerUpd);
+
+            summary_offset.add(current_move[0]);
+            summary_rotate.add(current_move[1]);
+        }
+    }
+
+    //=============== Эффекты ходьбы ===================//
+    {
+        const bool bEnabled = m_walk_offset[2].x;
+        if (bEnabled)
+        {
+            float fWalkMaxTime = m_walk_offset[2].y; // Макс. время в секундах, за которое мы наклонимся из центрального положения
+            if (fWalkMaxTime <= EPS)
+                fWalkMaxTime = 0.01f;
+
+            const float fStepPerUpd = Device.fTimeDelta / fWalkMaxTime; // Величина изменение фактора поворота
+
+            float koef{1.f};
+            if ((iMovingState & mcCrouch) && (iMovingState & mcAccel))
+                koef = 0.5; // во сколько раз менять амплитуду при полном присяде
+            else if (iMovingState & mcCrouch)
+                koef = 0.7; // во сколько раз менять амплитуду при присяде
+
+            Fvector current_walk_offs{}, current_walk_rot{};
+
+            if (iMovingState & mcFwd)
+            {
+                current_walk_offs.set(m_walk_offset[0]);
+                current_walk_rot.set(m_walk_offset[1]);
+            }
+            else if (iMovingState & mcBack)
+            {
+                current_walk_offs.set(m_walk_offset[0].x, m_walk_offset[0].y, -m_walk_offset[0].z);
+                current_walk_rot.set(m_walk_offset[1]);
+            }
+            else
+            {
+                current_walk_offs.set(Fvector{});
+                current_walk_rot.set(Fvector{});
+            }
+
+            auto pda = smart_cast<CPda*>(this);
+            auto missile = smart_cast<CMissile*>(this);
+
+            current_walk_offs.mul(koef);
+            current_walk_rot.mul(koef);
+            current_walk_offs.mul(!IsZoomed());
+            current_walk_rot.mul(!IsZoomed());
+            current_walk_offs.mul(!pda && !missile);
+            current_walk_rot.mul(!pda && !missile);
+            current_walk_rot.mul(-PI / 180.f); // Преобразуем углы в радианы
+
+            if (!current_walk_offs.similar(current_walk[0], EPS))
+                current_walk[0].lerp(current_walk[0], current_walk_offs, fStepPerUpd);
+
+            if (!current_walk_rot.similar(current_walk[1], EPS))
+                current_walk[1].lerp(current_walk[1], current_walk_rot, fStepPerUpd);
+
+            summary_offset.add(current_walk[0]);
+            summary_rotate.add(current_walk[1]);
+        }
+    }
+
+    //=============== Эффекты тряски от стрельбы ===================//
+	if (bReloadShooting && wpn)
+	{
+		// Параметры сдвига
+		//--> Длительность (== скорость) затухания эффекта ...
+		float fShootingStabilizeTime = (GetState() == wpn->eFire ?
+			//--> ... во время анимации стрельбы
+			lerp(m_shooting_params.m_ret_time_fire[0], //--> от бедра
+				m_shooting_params.m_ret_time_fire[1], //--> в зуме
+				wpn->m_zoom_params.m_fZoomRotationFactor) :
+			//--> ... после анимации стрельбы
+			lerp(m_shooting_params.m_ret_time[0], //--> от бедра
+				m_shooting_params.m_ret_time[1], //--> в зуме
+				wpn->m_zoom_params.m_fZoomRotationFactor));
+
+		if (fShootingStabilizeTime <= EPS)
+			fShootingStabilizeTime = 0.01f;
+
+		const float fStepPerUpd = Device.fTimeDelta / (fShootingStabilizeTime * 0.25); // Величина изменение фактора поворота
+
+		//--> Сдвиг по Z
+		float fShootingBackwOffset = lerp(
+			m_shooting_params.m_shot_offset_BACKW, //--> от бедра
+			m_shooting_params.m_shot_offset_BACKW_aim, //--> в зуме
+			wpn->m_zoom_params.m_fZoomRotationFactor);
+
+		//--> Сдвиг по X, Y
+		Fvector4 vShOffsets; // 0 = -X, 1 = +X, 2 = +Y, 3 = -Y
+		vShOffsets[0] = lerp(
+			m_shooting_params.m_shot_max_offset_LRUD[0], //--> от бедра
+			m_shooting_params.m_shot_max_offset_LRUD_aim[0], //--> в зуме
+			wpn->m_zoom_params.m_fZoomRotationFactor);
+		vShOffsets[1] = lerp(
+			m_shooting_params.m_shot_max_offset_LRUD[1], //--> от бедра
+			m_shooting_params.m_shot_max_offset_LRUD_aim[1], //--> в зуме
+			wpn->m_zoom_params.m_fZoomRotationFactor);
+		vShOffsets[2] = lerp(
+			m_shooting_params.m_shot_max_offset_LRUD[2], //--> от бедра
+			m_shooting_params.m_shot_max_offset_LRUD_aim[2], //--> в зуме
+			wpn->m_zoom_params.m_fZoomRotationFactor);
+		vShOffsets[3] = lerp(
+			m_shooting_params.m_shot_max_offset_LRUD[3], //--> от бедра
+			m_shooting_params.m_shot_max_offset_LRUD_aim[3], //--> в зуме
+			wpn->m_zoom_params.m_fZoomRotationFactor);
+
+		//--> Поворот по оси X
+		Fvector4 vShRotX; // 0 = При смещении вверх, 1 = при смещении вниз
+		vShRotX[0] = lerp(
+			m_shooting_params.m_shot_max_rot_UD[0], //--> от бедра
+			m_shooting_params.m_shot_max_rot_UD_aim[0], //--> в зуме
+			wpn->m_zoom_params.m_fZoomRotationFactor);
+		vShRotX[1] = lerp(
+			m_shooting_params.m_shot_max_rot_UD[1], //--> от бедра
+			m_shooting_params.m_shot_max_rot_UD_aim[1], //--> в зуме
+			wpn->m_zoom_params.m_fZoomRotationFactor);
+
+		// Применяем сдвиг от стрельбы к HUD-у
+		{
+			Fvector shoot_offs, shoot_rot;
+
+			//--> Рассчитываем основу сдвига
+			shoot_offs = {
+				//--> Горизонтальный сдвиг
+				lerp(vShOffsets[0], vShOffsets[1], m_fShootingFactorLR) * m_fShootingCurPowerLRUD,
+				//--> Вертикальный сдвиг
+				lerp(vShOffsets[2], vShOffsets[3], m_fShootingFactorUD) * m_fShootingCurPowerLRUD,
+				//--> Глубинный сдвиг
+				-1.f * fShootingBackwOffset * m_fShootingCurPowerBACKW
+			};
+			shoot_rot = {
+				//--> Поворот по вертикали
+				lerp(vShRotX[0], vShRotX[1], m_fShootingFactorUD) * m_fShootingCurPowerLRUD,
+				0.0f,
+				0.0f
+			};
+			shoot_rot.mul(-PI / 180.f);
+
+			//--> Модифицируем её коэфицентом силы сдвига
+			float fShootingKoef = GetShootingEffectKoef();
+			shoot_offs.mul(fShootingKoef);
+			shoot_rot.mul(fShootingKoef);
+
+			if (!shoot_offs.similar(current_shooting[0], EPS))
+				current_shooting[0].lerp(current_shooting[0], shoot_offs, fStepPerUpd);
+
+			if (!shoot_rot.similar(current_shooting[1], EPS))
+				current_shooting[1].lerp(current_shooting[1], shoot_rot, fStepPerUpd);
+
+			//--> Применяем к HUD-у
+			//summary_offset.add(shoot_offs);
+			//summary_rotate.add(shoot_rot);
+			summary_offset.add(current_shooting[0]);
+			summary_rotate.add(current_shooting[1]);
+		}
+
+		// Плавное затухание сдвига от стрельбы
+		//--> Глубинный сдвиг
+		float fBackwStabilizeTimeKoef = m_shooting_params.m_ret_time_backw_koef;
+		m_fShootingCurPowerBACKW -= Device.fTimeDelta / (fShootingStabilizeTime * fBackwStabilizeTimeKoef * 0.25);
+		clamp(m_fShootingCurPowerBACKW, 0.0f, 1.0f);
+
+		//--> Боковой сдвиг
+		m_fShootingCurPowerLRUD -= Device.fTimeDelta / fShootingStabilizeTime * 0.25;
+		if (m_fShootingCurPowerLRUD <= 0.0f)
+		{
+			ResetShootingEffect(true);
+		}
+	}
+
+    //================ Применение эффектов ===============//
+    {
+        // поворот с сохранением смещения by Zander
+        Fvector _angle{}, _pos{trans.c};
+        trans.getHPB(_angle);
+        _angle.add(-summary_rotate);
+
+        // Msg("##[%s] summary_rotate: [%f,%f,%f]", __FUNCTION__, summary_rotate.x, summary_rotate.y, summary_rotate.z);
+        trans.setHPB(_angle.x, _angle.y, _angle.z);
+        trans.c = _pos;
+
+        Fmatrix hud_rotation;
+        hud_rotation.identity();
+
+        //================ Прицеливание ===============//
+        hud_rotation.rotateX(current_difference[1].x);
+
+        Fmatrix hud_rotation_part;
+        hud_rotation_part.identity();
+        hud_rotation_part.rotateY(current_difference[1].y);
+        hud_rotation.mulA_43(hud_rotation_part);
+
+        hud_rotation_part.identity();
+        hud_rotation_part.rotateZ(current_difference[1].z);
+        hud_rotation.mulA_43(hud_rotation_part);
+
+        //Msg("--[%s] summary_offset: [%f,%f,%f]", __FUNCTION__, summary_offset.x, summary_offset.y, summary_offset.z);
+
+        hud_rotation.translate_over(summary_offset);
+        trans.mulB_43(hud_rotation);
+    }
+    //====================================================//
+}
+// Добавить HUD-эффект сдвига оружия от выстрела
+void CHudItem::AddHUDShootingEffect()
+{
+	CWeapon* wpn = smart_cast<CWeapon*>(this);
+	if (!wpn || IsHidden() || ParentIsActor() == false)
+		return;
+
+	attachable_hud_item* hi = HudItemData();
+	if (hi == nullptr)
+		return;
+
+	// Отдача назад всегда максимальная на каждом выстреле
+	m_fShootingCurPowerBACKW = 1.0f;
+
+	// Отдача в бока становится сильнее при длительной стрельбе
+	//--> Регулируем плавность перемещения оружия по экрану, ограничивая макс. сдвиг на каждый выстрел
+	float fLRUDDiffPerShot = lerp(m_shooting_params.m_shot_diff_per_shot[0],
+		m_shooting_params.m_shot_diff_per_shot[1], wpn->m_zoom_params.m_fZoomRotationFactor);
+	clamp(fLRUDDiffPerShot, 0.0f, 1.0f);
+
+	m_fShootingFactorLR += ::Random.randF(-fLRUDDiffPerShot, fLRUDDiffPerShot); //--> m_fShootingFactorLR будет 0.5f на момент начала стрельбы
+	clamp(m_fShootingFactorLR, 0.0f, 1.0f);
+
+	m_fShootingFactorUD += ::Random.randF(-fLRUDDiffPerShot, fLRUDDiffPerShot); //--> m_fShootingFactorUD будет 0.5f на момент начала стрельбы
+	clamp(m_fShootingFactorUD, 0.0f, 1.0f);
+
+	//--> С каждым выстрелом разрешаем оружию всё ближе приближаться к текущим границам сдвига
+	m_fShootingCurPowerLRUD += lerp(m_shooting_params.m_shot_power_per_shot[0],
+		m_shooting_params.m_shot_power_per_shot[1], wpn->m_zoom_params.m_fZoomRotationFactor);
+	clamp(m_fShootingCurPowerLRUD, 0.0f, 1.0f);
+
+	// Наклон ствола от стрельбы (стрейф)
+	float fShotStrafeMin = lerp(m_shooting_params.m_shot_offsets_strafe[0],
+		m_shooting_params.m_shot_offsets_strafe_aim[0], wpn->m_zoom_params.m_fZoomRotationFactor);
+	float fShotStrafeMax = lerp(m_shooting_params.m_shot_offsets_strafe[1],
+		m_shooting_params.m_shot_offsets_strafe_aim[1], wpn->m_zoom_params.m_fZoomRotationFactor);
+
+	float fLRShotStrafeDir = (::Random.randF(-1.0f, 1.0f) >= 0.0f ? 1.0f : -1.0f);
+	float fStrafeVal = (::Random.randF(fShotStrafeMin, fShotStrafeMax) * fLRShotStrafeDir);
+	float fStrafePwr = clampr(m_fShootingCurPowerLRUD * 2.0f, 0.0f, 1.0f);
+
+	current_shooting[0].mul(fStrafeVal * GetShootingEffectKoef() * fStrafePwr * 4.0f);
+	current_shooting[1].mul(fStrafeVal * GetShootingEffectKoef() * fStrafePwr * 4.0f);
+}
+
+// Получить коэфицент силы тряски HUD-a при стрельбе
+float CHudItem::GetShootingEffectKoef()
+{
+	float fShakeKoef = 1.0f;
+
+	//--> Глушитель
+	//fShakeKoef *= cur_silencer_koef.shooting_shake;
+
+	return fShakeKoef;
+}
+
+void CHudItem::merge_measures_params()
+{
+	// Смещение от стрельбы
+	if (bReloadShooting) //-> хз зачем	
+	{
+		m_shooting_params.m_shot_max_offset_LRUD = m_shooting_params.m_shot_max_offset_LRUD;
+		m_shooting_params.m_shot_max_offset_LRUD_aim = m_shooting_params.m_shot_max_offset_LRUD_aim;
+		m_shooting_params.m_shot_max_rot_UD = m_shooting_params.m_shot_max_rot_UD;
+		m_shooting_params.m_shot_max_rot_UD_aim = m_shooting_params.m_shot_max_rot_UD_aim;
+		m_shooting_params.m_shot_offset_BACKW = m_shooting_params.m_shot_offset_BACKW;
+		m_shooting_params.m_shot_offset_BACKW_aim = m_shooting_params.m_shot_offset_BACKW_aim;
+		m_shooting_params.m_shot_offsets_strafe = m_shooting_params.m_shot_offsets_strafe;
+		m_shooting_params.m_shot_offsets_strafe_aim = m_shooting_params.m_shot_offsets_strafe_aim;
+		m_shooting_params.m_shot_diff_per_shot = m_shooting_params.m_shot_diff_per_shot;
+		m_shooting_params.m_shot_power_per_shot = m_shooting_params.m_shot_power_per_shot;
+		m_shooting_params.m_ret_time = m_shooting_params.m_ret_time;
+		m_shooting_params.m_ret_time_fire = m_shooting_params.m_ret_time_fire;
+		m_shooting_params.m_ret_time_backw_koef = m_shooting_params.m_ret_time_backw_koef;
+	}
+}
+
 float CHudItem::GetHudFov()
 {
 	if (m_nearwall_enabled && ParentIsActor() && Level().CurrentViewEntity() == object().H_Parent())
@@ -778,18 +1469,18 @@ float CHudItem::GetHudFov()
 		float dist = RQ.range;
 
 		clamp(dist, m_nearwall_dist_min, m_nearwall_dist_max);
-		float fDistanceMod = ((dist - m_nearwall_dist_min) / (m_nearwall_dist_max - m_nearwall_dist_min)); // 0.f ... 1.f
+		const float fDistanceMod = ((dist - m_nearwall_dist_min) / (m_nearwall_dist_max - m_nearwall_dist_min)); // 0.f ... 1.f
 
 		float fBaseFov{ psHUD_FOV_def };
 
 		fBaseFov = (m_base_fov > 0.0f ? m_base_fov : psHUD_FOV_def);
-
 		clamp(fBaseFov, 0.0f, FLT_MAX);
 
 		float src = m_nearwall_speed_mod * Device.fTimeDelta;
 		clamp(src, 0.f, 1.f);
 
-		float fTrgFov = m_nearwall_target_hud_fov + fDistanceMod * (fBaseFov - m_nearwall_target_hud_fov);
+		const float fTrgFov = (IsZoomed() ? m_nearwall_target_aim_hud_fov : m_nearwall_target_hud_fov) + 
+			fDistanceMod * (fBaseFov - (IsZoomed() ? m_nearwall_target_aim_hud_fov : m_nearwall_target_hud_fov));
 		m_nearwall_last_hud_fov = m_nearwall_last_hud_fov * (1 - src) + fTrgFov * src;
 	}
 

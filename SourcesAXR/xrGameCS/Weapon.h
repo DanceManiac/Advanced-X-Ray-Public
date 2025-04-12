@@ -310,7 +310,7 @@ protected:
 	RStringVec		m_defShownBones;
 	RStringVec		m_defHiddenBones;
 
-protected:
+public:
 
 	struct SZoomParams
 	{
@@ -351,7 +351,7 @@ public:
 	virtual	void			ZoomDec				();
 	virtual void			OnZoomIn			();
 	virtual void			OnZoomOut			();
-	IC		bool			IsZoomed			()	const		{return m_zoom_params.m_bIsZoomModeNow;};
+			bool			IsZoomed			()	const override	{return m_zoom_params.m_bIsZoomModeNow;};
 	CUIWindow*				ZoomTexture			();	
 
 			bool			IsPartlyReloading	();
@@ -455,64 +455,18 @@ public:
 	virtual void			WpnExplosion();
 
 private:
-	firedeps				m_current_firedeps;
+	firedeps				m_current_firedeps{};
 
 protected:
 	virtual void			UpdateFireDependencies_internal	();
 	virtual void            UpdatePosition          (const Fmatrix& transform);
 	virtual void			UpdateXForm				();
 
-    // Параметры эффекта стрельбы
-	float					m_fShootingFactorLR;		// Фактор текущего горизонтального сдвига худа при стрельбе, от края до края [0; +1]
-	float					m_fShootingFactorUD;		// Фактор текущего вертикального сдвига худа при стрельбе, от края до края [0; +1]
-	float					m_fShootingCurPowerBACKW;	// Фактор текущей силы сдвига худа в сторону лица при стрельбе [0; +1]
-	float					m_fShootingCurPowerLRUD;	// Фактор текущей силы сдвига худа в бока при стрельбе [0; +1]
-
-private:
-	float	m_fLR_MovingFactor{},		// Фактор бокового наклона худа при ходьбе [-1; +1]
-			m_fLR_CameraFactor{},		// Фактор бокового наклона худа при движении камеры [-1; +1]
-			m_fLR_InertiaFactor{},		// Фактор горизонтальной инерции худа при движении камеры [-1; +1]
-			m_fUD_InertiaFactor{},		// Фактор вертикальной инерции худа при движении камеры [-1; +1]
-			m_fLookout_MovingFactor{},
-			m_fJump_MovingFactor{},
-			m_fFall_MovingFactor{},
-			m_fWalkEffectSetFactor{},
-			m_fWalkMaxTime{},
-			m_fWalkEffectSideTimer{},
-			m_fWalkEffectRestoreFactor{};
-
-	Fvector m_strafe_offset[4][2]{}, 	//pos,rot,data1,data2/ normal,aim-GL --#SM+#--
-			m_lookout_offset[3][2]{}, 
-			m_jump_offset[3][2]{},
-			m_fall_offset[3][2]{},
-			m_walk_effect[2]{};
-
-protected:
-	virtual void			UpdateHudAdditional		(Fmatrix&);
+	//u8						GetCurrentHudOffsetIdx	() const override;
 	IC		void			UpdateFireDependencies	()			{ if (m_dwFP_Frame==Device.dwFrame) return; UpdateFireDependencies_internal(); };
 
 	virtual void			LoadFireParams		(LPCSTR section);
 public:	
-	// Добавляем эффект тряски HUD-a при стрельбе
-	void					AddHUDShootingEffect	();
-
-	// Сбрасываем эффект тряски HUD-a при стрельбе
-	ICF void ResetShootingEffect(bool bNoBackw = false)
-	{
-		//--> Силу сдвига в нули
-		if (bNoBackw != true)
-		{
-			m_fShootingCurPowerBACKW = 0.0f;
-		}
-		m_fShootingCurPowerLRUD = 0.0f;
-
-		//--> Факторы сдвига ствола к границам в "нейтральное" положение - по середине от всех краёв
-		m_fShootingFactorLR = 0.5f;
-		m_fShootingFactorUD = 0.5f;
-	}
-
-	// Получить коэфицент силы тряски HUD-a при стрельбе
-	float GetShootingEffectKoef();
 
 	IC		const Fvector&	get_LastFP				()			{ UpdateFireDependencies(); return m_current_firedeps.vLastFP;	}
 	IC		const Fvector&	get_LastFP2				()			{ UpdateFireDependencies(); return m_current_firedeps.vLastFP2;	}

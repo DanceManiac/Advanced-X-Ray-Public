@@ -1174,6 +1174,7 @@ void CWeaponMagazined::OnAnimationEnd(u32 state)
 			break;
 		}
 	}
+	inherited::OnAnimationEnd(state);
 }
 
 void CWeaponMagazined::switch2_Idle	()
@@ -1345,7 +1346,9 @@ void CWeaponMagazined::switch2_Fire	()
 	CInventoryOwner* io		= smart_cast<CInventoryOwner*>(H_Parent());
 	CInventoryItem* ii		= smart_cast<CInventoryItem*>(this);
 #ifdef DEBUG
-	VERIFY2					(io,make_string("no inventory owner, item %s",*cName()));
+	if (!io)
+		return;
+	//VERIFY2					(io,make_string("no inventory owner, item %s",*cName()));
 
 	if (ii != io->inventory().ActiveItem())
 		Msg					("! not an active item, item %s, owner %s, active item %s",*cName(),*H_Parent()->cName(),io->inventory().ActiveItem() ? *io->inventory().ActiveItem()->object().cName() : "no_active_item");
@@ -1478,11 +1481,6 @@ void CWeaponMagazined::switch2_Hidden()
 
 	signal_HideComplete		();
 	RemoveShotEffector		();
-
-	if (pSettings->line_exist(m_item_sect, "hud_fov"))
-		m_nearwall_last_hud_fov = m_base_fov;
-	else
-		m_nearwall_last_hud_fov = psHUD_FOV_def;
 }
 void CWeaponMagazined::switch2_Showing()
 {

@@ -66,6 +66,8 @@ public:
 	virtual void save(NET_Packet& output_packet) override;
 	virtual void load(IReader& input_packet) override;
 
+	float m_fZoomfactor;
+
 private:
 	void UpdateActiveContacts();
 
@@ -79,7 +81,6 @@ private:
 	bool m_bTurnedOff;
 	bool this_is_3d_pda{};
 	shared_str m_functor_str;
-	float m_fZoomfactor;
 	float m_fDisplayBrightnessPowerSaving;
 	float m_fPowerSavingCharge;
 	bool bButtonL;
@@ -88,10 +89,6 @@ private:
 	u16 joystick;
 	float m_screen_on_delay, m_screen_off_delay;
 	float target_screen_switch;
-	float m_fLR_CameraFactor;
-	float m_fLR_MovingFactor;
-	float m_fLR_InertiaFactor;
-	float m_fUD_InertiaFactor;
 	bool hasEnoughBatteryPower() { return (!IsUsingCondition() || (IsUsingCondition() && GetCondition() > m_fLowestBatteryCharge)); }
 	static void _BCL JoystickCallback(CBoneInstance* B);
 	bool m_bNoticedEmptyBattery;
@@ -122,7 +119,6 @@ public:
 
 	virtual void OnStateSwitch(u32 S, u32 oldState);
 	virtual void OnAnimationEnd(u32 state) override;
-	virtual void UpdateHudAdditional(Fmatrix& trans) override;
 	virtual void OnMoveToRuck(EItemPlace prev) override;
 	virtual void UpdateCL() override;
 	virtual void UpdateXForm() override;
