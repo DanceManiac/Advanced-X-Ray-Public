@@ -1448,28 +1448,17 @@ bool CUIXmlInit::InitTrackBar(CUIXml& xml_doc, LPCSTR path, int index, CUITrackB
 	const float step			= xml_doc.ReadAttribFlt(path, index, "step", 0.1f);
 	pWnd->SetStep		(step);
 	
-	bool is_float = !is_integer;
-	if (is_float)
-	{
-		float fmin = xml_doc.ReadAttribFlt(path, index, "min", 0.0f);
-		float fmax = xml_doc.ReadAttribFlt(path, index, "max", 0.0f);
 
-		if (fmin != fmax)
-		{
-			pWnd->SetOptFBounds(fmin, fmax);
-			pWnd->SetBoundReady(true);
-		}
+	if (xml_doc.HasNodeAttribute(path, index, "min"))
+	{
+		const float min_xml = xml_doc.ReadAttribFlt(path, index, "min", 0.0f);
+		pWnd->SetMin(min_xml);
 	}
-	else
-	{
-		int imin = xml_doc.ReadAttribInt(path, index, "min", 0);
-		int imax = xml_doc.ReadAttribInt(path, index, "max", 0);
 
-		if (imin != imax)
-		{
-			pWnd->SetOptIBounds(imin, imax);
-			pWnd->SetBoundReady(true);
-		}
+	if (xml_doc.HasNodeAttribute(path, index, "max"))
+	{
+		const float max_xml = xml_doc.ReadAttribFlt(path, index, "max", 0.0f);
+		pWnd->SetMax(max_xml);
 	}
 
 	string512 buf;

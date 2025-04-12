@@ -150,6 +150,7 @@ void CUITrackBar::SetCurrentValue()
 		GetOptIntegerValue(m_i_val, m_i_min, m_i_max);
     }
 
+	UpdateMinMax		();
 	UpdatePos			();
 }
 
@@ -181,8 +182,30 @@ float CUITrackBar::GetTrackValue() const
 		return float(m_i_val);
 }
 
+void CUITrackBar::UpdateMinMax()
+{
+	if (m_b_is_float)
+	{
+		if (m_b_min_xml_set && m_f_min_xml > m_f_min)
+			m_f_min = m_f_min_xml;
+
+		if (m_b_max_xml_set && m_f_max_xml < m_f_max)
+			m_f_max = m_f_max_xml;
+	}
+	else
+	{
+		if (m_b_min_xml_set && m_f_min_xml > static_cast<float>(m_i_min))
+			m_i_min = iFloor(m_f_min_xml);
+
+		if (m_b_max_xml_set && m_f_max_xml < static_cast<float>(m_i_max))
+			m_i_max = iFloor(m_f_max_xml);
+	}
+}
+
 void CUITrackBar::SetTrackValue(float v)
 {
+	UpdateMinMax();
+
 	const float max = (m_b_is_float) ? m_f_max : static_cast<float>(m_i_max);
 	const float min = (m_b_is_float) ? m_f_min : static_cast<float>(m_i_min);
 
@@ -395,24 +418,4 @@ void CUITrackBar::SetCheck(bool b)
 {
 	VERIFY(!m_b_is_float);
 	m_i_val = (b)?m_i_max:m_i_min;
-}
-
-void CUITrackBar::SetOptIBounds(int imin, int imax)
-{
-	m_i_min = imin;
-	m_i_max = imax;
-	if (m_i_val<m_i_min || m_i_val>m_i_max)
-	{
-		clamp(m_i_val, m_i_min, m_i_max);
-	}
-}
-
-void CUITrackBar::SetOptFBounds(float fmin, float fmax)
-{
-	m_f_min = fmin;
-	m_f_max = fmax;
-	if (m_f_val<m_f_min || m_f_val>m_f_max)
-	{
-		clamp(m_f_val, m_f_min, m_f_max);
-	}
 }

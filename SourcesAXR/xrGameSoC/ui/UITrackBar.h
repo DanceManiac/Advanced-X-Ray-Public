@@ -35,15 +35,24 @@ public:
 			void	SetFloat				(bool b_float){m_b_is_float=b_float; if (b_float) {m_b_is_token = false; m_b_is_bool = false;} };
 			void	SetToken				(bool b_token){m_b_is_token= b_token; if (b_token) {m_b_is_float = false; m_b_is_bool = false;} };
 			void	SetBool					(bool b_bool){m_b_is_bool= b_bool; if (b_bool) {m_b_is_token = false; m_b_is_float = false;} };
-			void	SetBoundReady			(bool b_ready) {m_b_bound_already_set = b_ready;};
 			float	GetTrackValue			() const;
+			void SetMin(float v)
+			{
+				m_b_min_xml_set = true;
+				m_f_min_xml = v;
+			}
+			void SetMax(float v)
+			{
+				m_b_max_xml_set = true;
+				m_f_max_xml = v;
+			}
 			void	SetTrackValue			(float v);
 			bool	GetCheck				();
 			void	SetCheck				(bool b);
 			int		GetIValue				(){return m_i_val;}
 			float	GetFValue				(){return m_f_val;}
-			void	SetOptIBounds			(int imin, int imax);
-			void	SetOptFBounds			(float fmin, float fmax);
+			void	SetOptIBounds			(float imin, float imax) { SetMin(imin); SetMax(imax); };
+			void	SetOptFBounds			(float fmin, float fmax) { SetMin(fmin); SetMax(fmax); };
 
 			pcstr	GetDebugType			() override { return "CUITrackBar"; }
 
@@ -61,6 +70,7 @@ protected:
 			void 	UpdatePos				();
 			void 	UpdatePosRelativeToMouse();
 			void	OnValueChanged			();
+			void	UpdateMinMax			();
 
     CUI3tButton*		m_pSlider;
 	CUIFrameLineWnd*	m_pFrameLine;
@@ -71,7 +81,12 @@ protected:
 	bool				m_b_is_bool{ false };
 
 	bool				m_b_mouse_capturer{ false };
-    bool 				m_b_bound_already_set{ false };
+
+	float				m_f_max_xml = 0.f;
+	float				m_f_min_xml = 0.f;
+
+	bool				m_b_max_xml_set{};
+	bool				m_b_min_xml_set{};
 
 
 	union{
