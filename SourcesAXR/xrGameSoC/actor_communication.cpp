@@ -256,8 +256,9 @@ void CActor::NewPdaContact		(CInventoryOwner* pInvOwner)
 {	
 	if(!IsGameTypeSingle()) return;
 
-	bool b_alive = !!(smart_cast<CEntityAlive*>(pInvOwner))->g_Alive();
-	HUD().GetUI()->UIMainIngameWnd->AnimateContacts(b_alive);
+	CEntityAlive* pEntity = smart_cast<CEntityAlive*>(pInvOwner);
+	bool bContactSound = pEntity && !!pEntity->g_Alive() && !!pEntity->cast_base_monster();
+	HUD().GetUI()->UIMainIngameWnd->AnimateContacts(bContactSound);
 
 	Level().MapManager().AddRelationLocation		( pInvOwner );
 
