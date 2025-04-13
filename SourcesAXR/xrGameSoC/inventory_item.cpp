@@ -96,6 +96,7 @@ CInventoryItem::CInventoryItem()
 	m_flags.set					(FCanTake,TRUE);
 	m_flags.set					(FCanTrade,TRUE);
 	m_flags.set					(FUsingCondition,FALSE);
+	m_flags.set			(FIsDropInProcess,FALSE);
 	m_fCondition				= 1.0f;
 	m_fCurrentChargeLevel		= 1.0f;
 	m_fUnchargeSpeed			= 0.0f;
@@ -370,6 +371,7 @@ void CInventoryItem::OnH_B_Independent(bool just_before_destroy)
 {
 	UpdateXForm();
 	m_eItemPlace = eItemPlaceUndefined ;
+	SetItemDropNowFlag(FALSE);
 }
 
 void CInventoryItem::OnH_A_Independent()

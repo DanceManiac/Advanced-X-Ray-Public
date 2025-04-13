@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //	Module 		: Battery.cpp
 //	Created 	: 07.04.2021
-//  Modified 	: 01.07.2024
+//  Modified 	: 12.04.2025
 //	Author		: Dance Maniac (M.F.S. Team)
 //	Description : Torch battery
 ////////////////////////////////////////////////////////////////////////////
@@ -42,30 +42,60 @@ BOOL CBattery::net_Spawn(CSE_Abstract* DC)
 	return TRUE;
 };
 
-bool CBattery::Useful() const
+void CBattery::OnH_A_Independent()
 {
-	if (!inherited::Useful()) return false;
+	if (!inherited::Useful() && this->m_bCanUse)
+	{
+		if (Local() && OnServer())
+			DestroyObject();
+	}
+}
 
-	//проверить не все ли еще съедено
-	if (m_iPortionsNum == 0) return false;
+void CBattery::OnH_B_Independent(bool just_before_destroy)
+{
+	if (!inherited::Useful())
+	{
+		setVisible(FALSE);
+		setEnabled(FALSE);
 
+		if (m_physic_item)
+			m_physic_item->m_ready_to_destroy = true;
+	}
+
+	inherited::OnH_B_Independent(just_before_destroy);
+}
+
+bool CBattery::CanRechargeDevice() const
+{
 	CTorch* flashlight = smart_cast<CTorch*>(Actor()->inventory().ItemFromSlot(TORCH_SLOT));
 	CCustomDetector* artifact_detector = smart_cast<CCustomDetector*>(Actor()->inventory().ItemFromSlot(DETECTOR_SLOT));
 	CDetectorAnomaly* anomaly_detector = smart_cast<CDetectorAnomaly*>(Actor()->inventory().ItemFromSlot(DOSIMETER_SLOT));
 
-	if (flashlight || artifact_detector || anomaly_detector)
-	{
-		if (flashlight && flashlight->GetChargeLevel() <= 0.99f && flashlight->IsNecessaryItem(this->cNameSect().c_str(), flashlight->m_SuitableBatteries))
-			return true;
-		else if (artifact_detector && artifact_detector->GetChargeLevel() <= 0.99f && artifact_detector->IsNecessaryItem(this->cNameSect().c_str(), artifact_detector->m_SuitableBatteries))
-			return true;
-		else if (anomaly_detector && anomaly_detector->GetChargeLevel() <= 0.99f && anomaly_detector->IsNecessaryItem(this->cNameSect().c_str(), anomaly_detector->m_SuitableBatteries))
-			return true;
-		else
-			return false;
-	}
-	else
+	if (flashlight && flashlight->GetChargeLevel() <= 0.99f && flashlight->IsNecessaryItem(this->cNameSect().c_str(), flashlight->m_SuitableBatteries))
+		return true;
+
+	if (artifact_detector && artifact_detector->GetChargeLevel() <= 0.99f && artifact_detector->IsNecessaryItem(this->cNameSect().c_str(), artifact_detector->m_SuitableBatteries))
+		return true;
+
+	if (anomaly_detector && anomaly_detector->GetChargeLevel() <= 0.99f && anomaly_detector->IsNecessaryItem(this->cNameSect().c_str(), anomaly_detector->m_SuitableBatteries))
+		return true;
+
+	return false;
+}
+
+bool CBattery::Useful() const
+{
+	if (!inherited::Useful())
 		return false;
+
+	//проверить не все ли еще съедено
+	if (m_iPortionsNum == 0)
+		return false;
+
+	if (!IsItemDropNowFlag())
+		return CanRechargeDevice();
+
+	return m_iPortionsNum > 0;
 }
 
 bool CBattery::UseBy(CEntityAlive* entity_alive)

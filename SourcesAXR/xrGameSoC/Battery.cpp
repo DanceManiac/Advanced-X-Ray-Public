@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //	Module 		: Battery.cpp
 //	Created 	: 07.04.2021
-//  Modified 	: 01.07.2024
+//  Modified 	: 12.04.2025
 //	Author		: Dance Maniac (M.F.S. Team)
 //	Description : Torch battery
 ////////////////////////////////////////////////////////////////////////////
@@ -42,13 +42,28 @@ BOOL CBattery::net_Spawn(CSE_Abstract* DC)
 	return TRUE;
 };
 
-bool CBattery::Useful() const
+void CBattery::OnH_A_Independent()
 {
-	if (!inherited::Useful()) return false;
+	if (!inherited::Useful() && this->m_bCanUse)
+	{
+		if (Local() && OnServer())
+			DestroyObject();
+	}
+}
 
-	//проверить не все ли еще съедено
-	if (m_iPortionsNum == 0) return false;
+void CBattery::OnH_B_Independent(bool just_before_destroy)
+{
+	if (!inherited::Useful())
+	{
+		setVisible(FALSE);
+		setEnabled(FALSE);
+	}
 
+	inherited::OnH_B_Independent(just_before_destroy);
+}
+
+bool CBattery::CanRechargeDevice() const
+{
 	CTorch* flashlight = smart_cast<CTorch*>(Actor()->inventory().ItemFromSlot(TORCH_SLOT));
 	CDetectorAnomaly* detector = nullptr;
 
@@ -83,7 +98,23 @@ bool CBattery::Useful() const
 		else
 			return false;
 	}
+
 	return false;
+}
+
+bool CBattery::Useful() const
+{
+	if (!inherited::Useful())
+		return false;
+
+	//проверить не все ли еще съедено
+	if (m_iPortionsNum == 0)
+		return false;
+
+	if (!IsItemDropNowFlag())
+		return CanRechargeDevice();
+
+	return m_iPortionsNum > 0;
 }
 
 bool CBattery::UseBy(CEntityAlive* entity_alive)

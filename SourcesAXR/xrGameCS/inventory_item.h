@@ -85,6 +85,7 @@ protected:
 								FInInterpolate		=(1<<10),
 								FIsQuestItem		=(1<<11),
 								FIsHelperItem		=(1<<12),
+								FIsDropInProcess	=(1<<13),
 	};
 
 	Flags16						m_flags;
@@ -140,6 +141,9 @@ public:
 
 			BOOL				GetDropManual		() const	{ return m_flags.test(FdropManual);}
 			void				SetDropManual		(BOOL val);
+
+			BOOL				IsItemDropNowFlag	() const	{ return m_flags.test(FIsDropInProcess);}
+			void				SetItemDropNowFlag	(BOOL value) { m_flags.set(FIsDropInProcess, value); }
 
 			BOOL				IsInvalid			() const;
 

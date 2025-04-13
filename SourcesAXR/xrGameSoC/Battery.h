@@ -17,6 +17,8 @@ public:
 	virtual bool			Useful() const;
 
 	virtual BOOL			net_Spawn(CSE_Abstract* DC);
+	virtual void			OnH_B_Independent(bool just_before_destroy);
+	virtual void			OnH_A_Independent();
 
 	virtual	bool			UseBy(CEntityAlive* npc);
 	virtual	bool			Empty() { return m_iPortionsNum == 0; };
@@ -27,6 +29,7 @@ public:
 			void			ChargeTorch(CTorch* flashlight);
 			//void			ChargeDetector(CCustomDetector* detector);
 			void			ChargeAnomalyDetector(CDetectorAnomaly* detector);
+			bool			CanRechargeDevice() const;
 
 	virtual CBattery* cast_battery() { return this; }
 protected:

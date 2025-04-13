@@ -354,7 +354,7 @@ bool CInventory::DropItem(CGameObject *pObj, bool just_before_destroy)
 		Msg("! CInventory::Drop item not found in inventory!!!");
 
 	pIItem->m_pInventory = NULL;
-
+	pIItem->SetItemDropNowFlag(TRUE);
 
 	m_pOwner->OnItemDrop	(smart_cast<CInventoryItem*>(pObj));
 
