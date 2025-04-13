@@ -481,6 +481,12 @@ bool CInifile::save_as	(LPCSTR new_fname)
 
 BOOL	CInifile::section_exist( LPCSTR S )const
 {
+	if (!S)
+	{
+		Msg("! [CInifile::section_exist]: Empty section value! Return FALSE!");
+		return FALSE;
+	}
+
 	RootCIt I = std::lower_bound(DATA.begin(), DATA.end(), S, sect_pred);
 	return (I!=DATA.end() && xr_strcmp(*(*I)->Name,S)==0);
 }
