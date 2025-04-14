@@ -101,10 +101,15 @@ void CUIGameCustom::OnFrame()
 	std::sort(	it, it_e, predicate_sort_stat );
 
 	
-	while(!m_custom_statics.empty() && !m_custom_statics.back()->IsActual())
+	for (auto it = m_custom_statics.begin(); it != m_custom_statics.end(); )
 	{
-		delete_data					(m_custom_statics.back());
-		m_custom_statics.pop_back	();
+		if (!(*it)->IsActual())
+		{
+			delete_data(*it);
+			it = m_custom_statics.erase(it);
+		}
+		else
+			++it;
 	}
 	
 	if(g_b_ClearGameCaptions)
