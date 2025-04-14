@@ -140,6 +140,7 @@ CWeapon::CWeapon(LPCSTR name)
 
 	m_bIsRevolver			= false;
 	m_bIsBoltRiffle			= false;
+	m_bUseRG6_AddCartridgeAlt = false;
 
 	m_bWpnExplosion			= false;
 	m_bWpnDestroyAfterExplode = false;

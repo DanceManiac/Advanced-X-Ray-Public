@@ -46,6 +46,8 @@ void CWeaponRG6::Load(LPCSTR section)
 {
 	inheritedRL::Load(section);
 	inheritedSG::Load(section);
+
+	m_bUseRG6_AddCartridgeAlt = READ_IF_EXISTS(pSettings, r_bool, section, "use_add_cartridge_alt", false);
 }
 #include "inventory.h"
 #include "inventoryOwner.h"
@@ -187,4 +189,19 @@ void CWeaponRG6::OnEvent(NET_Packet& P, u16 type)
 			inheritedRL::DetachRocket	(id, bLaunch);
 		} break;
 	}
+}
+
+void CWeaponRG6::PlayAnimAddOneCartridgeWeapon()
+{
+	VERIFY(GetState() == eReload);
+
+	if (m_bUseRG6_AddCartridgeAlt)
+	{
+		string128 reload_anim{};
+		strconcat(sizeof(reload_anim), reload_anim, "anm_add_cartridge_", std::to_string(iAmmoElapsed + 1).c_str());
+
+		PlayHUDMotionIfExists({ reload_anim, "anm_add_cartridge" }, true, GetState());
+	}
+	else
+		inheritedSG::PlayAnimAddOneCartridgeWeapon();
 }

@@ -15,6 +15,9 @@ public:
 	virtual BOOL	net_Spawn				(CSE_Abstract* DC);
 	virtual void	Load					(LPCSTR section);
 	virtual void	OnEvent					(NET_Packet& P, u16 type);
+
+	virtual void	PlayAnimAddOneCartridgeWeapon();
+
 protected:
 	virtual void	FireStart				();
 	virtual u8		AddCartridge			(u8 cnt);
