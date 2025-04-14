@@ -233,9 +233,9 @@ void CWeaponShotgun::PlayAnimCloseWeapon()
 	VERIFY(GetState()==eReload);
 
 	if (iAmmoElapsed == 0)
-		PlayHUDMotionIfExists({ "anm_close_weapon_empty", "anm_close_empty", "anm_close" }, true, GetState());
+		PlayHUDMotionIfExists({ "anm_close_weapon_empty", "anm_close_empty", "anm_close_weapon", "anm_close" }, true, GetState());
 	else
-		PlayHUDMotion("anm_close_weapon", FALSE, this, GetState());
+		PlayHUDMotionIfExists({ "anm_close_weapon", "anm_close" }, true, GetState());
 }
 
 void CWeaponShotgun::PlayAnimAim()

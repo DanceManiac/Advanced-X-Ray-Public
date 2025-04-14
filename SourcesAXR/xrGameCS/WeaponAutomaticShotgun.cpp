@@ -204,7 +204,7 @@ void CWeaponAutomaticShotgun::PlayAnimOpenWeapon()
 	else if (iAmmoElapsed == 0)
 		PlayHUDMotionIfExists({ "anm_open_empty", "anm_open_weapon", "anm_open" }, false, GetState());
 	else
-		PlayHUDMotion("anm_open",FALSE,this,GetState());
+		PlayHUDMotionIfExists({ "anm_open_weapon", "anm_open" }, true, GetState());
 }
 void CWeaponAutomaticShotgun::PlayAnimAddOneCartridgeWeapon()
 {
@@ -220,9 +220,9 @@ void CWeaponAutomaticShotgun::PlayAnimCloseWeapon()
 	VERIFY(GetState()==eReload);
 	
 	if (iAmmoElapsed == 0)
-		PlayHUDMotionIfExists({ "anm_close_empty", "anm_close" }, true, GetState());
+		PlayHUDMotionIfExists({ "anm_close_weapon_empty", "anm_close_empty", "anm_close_weapon", "anm_close" }, true, GetState());
 	else
-		PlayHUDMotion("anm_close", FALSE, this, GetState());
+		PlayHUDMotionIfExists({ "anm_close_weapon", "anm_close" }, true, GetState());
 }
 
 bool CWeaponAutomaticShotgun::HaveCartridgeInInventory(u8 cnt)
