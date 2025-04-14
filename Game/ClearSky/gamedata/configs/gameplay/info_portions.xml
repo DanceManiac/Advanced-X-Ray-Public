@@ -120,5 +120,9 @@
 	<info_portion id="sim_capture_enemy_base_bandit_done"></info_portion>
 	<info_portion id="sim_capture_enemy_base_freedom_done"></info_portion>
 	<info_portion id="sim_capture_enemy_base_dolg_done"></info_portion>
+	
+	<info_portion id="sleep_active"></info_portion>
+	<info_portion id="actor_is_sleeping"></info_portion>
+	<info_portion id="tutorial_sleep"></info_portion>
  
 </game_information_portions>
