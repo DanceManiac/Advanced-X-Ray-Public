@@ -213,7 +213,32 @@ void CRenderDevice::PreCache	(u32 amount, bool b_draw_loadscreen, bool b_wait_us
 	}
 }
 
-ENGINE_API xr_list<LOADING_EVENT>			g_loading_events;
+void CRenderDevice::CalcFrameStats()
+{
+	auto& stats = *Statistic;
+	stats.RenderTOTAL.FrameEnd();
+
+	// calc FPS & TPS
+	if (fTimeDelta <= EPS_S)
+		goto out;
+
+	const float fps = 1.f / fTimeDelta;
+	constexpr float fOne = 0.3f;
+	constexpr float fInv = 1.f - fOne;
+	stats.fFPS = fInv * stats.fFPS + fOne * fps;
+
+	if (stats.RenderTOTAL.result > EPS_S)
+	{
+		const u32 renderedPolys = m_pRender->GetCacheStatPolys();
+		stats.fTPS = fInv * stats.fTPS + fOne * float(renderedPolys) / (stats.RenderTOTAL.result * 1000.f);
+		stats.fRFPS = fInv * stats.fRFPS + fOne * 1000.f / stats.RenderTOTAL.result;
+	}
+
+out:
+	stats.RenderTOTAL.FrameStart();
+}
+
+ENGINE_API xr_list<LOADING_EVENT> g_loading_events;
 
 void ImGui_NewFrame()
 {
@@ -301,8 +326,11 @@ void CRenderDevice::on_idle		()
 
 	const u64 frameStartTime = TimerGlobal.GetElapsed_ms();
 
-	if (psDeviceFlags.test(rsStatistic))	g_bEnableStatGather	= TRUE;
-	else									g_bEnableStatGather	= FALSE;
+	if (psDeviceFlags.test(rsStatistic))
+		g_bEnableStatGather	= TRUE;
+	else
+		g_bEnableStatGather	= FALSE;
+
 	if(g_loading_events.size())
 	{
 		if( g_loading_events.front()() )
@@ -345,6 +373,9 @@ void CRenderDevice::on_idle		()
 		Render->lastViewPort = MAIN_VIEWPORT;
 	}
 
+	bool calc = g_bEnableStatGather;
+
+	g_bEnableStatGather = true;
 	Statistic->RenderTOTAL_Real.FrameStart();
 	Statistic->RenderTOTAL_Real.Begin();
 
@@ -412,6 +443,8 @@ void CRenderDevice::on_idle		()
 			{
 
 				seqRender.Process(rp_Render);
+				CalcFrameStats();
+
 				if ((psDeviceFlags.test(rsCameraPos) || psDeviceFlags.test(rsStatistic) || Statistic->errors.size()) && (Render->currentViewPort == MAIN_VIEWPORT || debugSecondVP))
 					Statistic->Show();
 				// TEST!!!
@@ -434,9 +467,13 @@ void CRenderDevice::on_idle		()
 	mView_saved = mainVPViewSaved;
 	mProject_saved = mainVPProjectSaved;
 
+	g_bEnableStatGather = true;
+
 	Statistic->RenderTOTAL_Real.End();
 	Statistic->RenderTOTAL_Real.FrameEnd();
 	Statistic->RenderTOTAL.accum = Statistic->RenderTOTAL_Real.accum;
+
+	g_bEnableStatGather = calc;
 
 	Render->viewPortsThisFrame.clear();
 

@@ -304,6 +304,9 @@ public:
 			seqParallel.erase	(I);
 	}
 
+private:
+			void				CalcFrameStats		();
+
 public:
 			void xr_stdcall		on_idle				();
 			bool xr_stdcall		on_message			(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT &result);
