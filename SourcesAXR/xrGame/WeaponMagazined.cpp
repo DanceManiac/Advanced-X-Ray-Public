@@ -1003,7 +1003,7 @@ void CWeaponMagazined::state_Fire(float dt)
 		UpdateSounds			();
 	}
 
-	if(fShotTimeCounter<0 || !iAmmoElapsed)
+	if(fShotTimeCounter<0 || !(iAmmoElapsed && m_bLastShotRPM))
 	{
 /*
 		if(bDebug && H_Parent() && (H_Parent()->ID() != Actor()->ID()))

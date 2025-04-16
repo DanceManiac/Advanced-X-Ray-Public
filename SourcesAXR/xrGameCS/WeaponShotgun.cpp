@@ -13,6 +13,7 @@ CWeaponShotgun::CWeaponShotgun()
 	m_eSoundAddCartridge	= ESoundTypes(SOUND_TYPE_WEAPON_SHOOTING);
 
 	m_bOnlyTriStateWithScope = false;
+	m_bLastShotRPM			= true;
 }
 
 CWeaponShotgun::~CWeaponShotgun()

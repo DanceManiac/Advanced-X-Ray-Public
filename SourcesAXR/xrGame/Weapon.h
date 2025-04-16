@@ -446,6 +446,7 @@ protected:
 
 	bool					m_bIsRevolver;
 	bool					m_bIsBoltRiffle;
+	bool					m_bLastShotRPM;
 	bool					m_bUseRG6_AddCartridgeAlt;
 
 	shared_str				ppeWpnExplosion;
