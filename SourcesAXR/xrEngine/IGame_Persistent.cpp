@@ -28,6 +28,8 @@ bool IGame_Persistent::IsMainMenuActive()
 
 IGame_Persistent::IGame_Persistent	()
 {
+    ZoneScoped;
+
 	RDEVICE.seqAppStart.Add			(this);
 	RDEVICE.seqAppEnd.Add			(this);
 	RDEVICE.seqFrame.Add			(this,REG_PRIORITY_HIGH+1);
@@ -58,6 +60,8 @@ IGame_Persistent::IGame_Persistent	()
 
 IGame_Persistent::~IGame_Persistent	()
 {
+    ZoneScoped;
+
 	xr_delete(PerlinNoise1D);
 	RDEVICE.seqFrame.Remove			(this);
 	RDEVICE.seqAppStart.Remove		(this);
@@ -80,6 +84,8 @@ void IGame_Persistent::OnAppDeactivate		()
 
 void IGame_Persistent::OnAppStart	()
 {
+    ZoneScoped;
+
 #ifndef _EDITOR
 	Environment().load				();
 #endif    
@@ -87,6 +93,8 @@ void IGame_Persistent::OnAppStart	()
 
 void IGame_Persistent::OnAppEnd		()
 {
+    ZoneScoped;
+
 #ifndef _EDITOR
 	Environment().unload			 ();
 #endif    
@@ -100,6 +108,8 @@ void IGame_Persistent::OnAppEnd		()
 
 void IGame_Persistent::PreStart		(LPCSTR op)
 {
+    ZoneScoped;
+
 	string256						prev_type;
 	params							new_game_params;
 	xr_strcpy							(prev_type,m_game_params.m_game_type);
@@ -112,6 +122,8 @@ void IGame_Persistent::PreStart		(LPCSTR op)
 }
 void IGame_Persistent::Start		(LPCSTR op)
 {
+    ZoneScoped;
+
 	string256						prev_type;
 	xr_strcpy							(prev_type,m_game_params.m_game_type);
 	m_game_params.parse_cmd_line	(op);
@@ -132,6 +144,8 @@ void IGame_Persistent::Start		(LPCSTR op)
 
 void IGame_Persistent::Disconnect	()
 {
+    ZoneScoped;
+
 #ifndef _EDITOR
 	// clear "need to play" particles
 	destroy_particles					(true);
@@ -144,6 +158,8 @@ void IGame_Persistent::Disconnect	()
 
 void IGame_Persistent::OnGameStart()
 {
+    ZoneScoped;
+
 #ifndef _EDITOR
 	SetLoadStageTitle("st_prefetching_objects");
 	LoadTitle();
@@ -165,6 +181,8 @@ IC bool IGame_Persistent::SceneRenderingBlocked()
 #ifndef _EDITOR
 void IGame_Persistent::Prefetch()
 {
+    ZoneScoped;
+
 	prefetching_in_progress = true;
 
 	// prefetch game objects & models
@@ -191,6 +209,8 @@ void IGame_Persistent::Prefetch()
 
 void IGame_Persistent::OnGameEnd	()
 {
+    ZoneScoped;
+
 #ifndef _EDITOR
 	ObjectPool.clear					();
 	Render->models_Clear				(TRUE);
@@ -199,6 +219,8 @@ void IGame_Persistent::OnGameEnd	()
 
 void IGame_Persistent::OnFrame		()
 {
+    ZoneScoped;
+
 #ifndef _EDITOR
 
     if (pEnvironment && (!Device.Paused() || Device.dwPrecacheFrame))
@@ -239,6 +261,8 @@ void IGame_Persistent::OnFrame		()
 
 void IGame_Persistent::destroy_particles		(const bool &all_particles)
 {
+    ZoneScoped;
+
 #ifndef _EDITOR
 	ps_needtoplay.clear				();
 
@@ -286,6 +310,8 @@ void IGame_Persistent::OnAssetsChanged()
 
 void IGame_Persistent::GrassBendersUpdate(u16 id, u8& data_idx, u32& data_frame, Fvector& position, float init_radius, float init_str, bool CheckDistance)
 {
+    ZoneScoped;
+
     // Interactive grass disabled
     if (ps_ssfx_grass_interactive.y < 1)
         return;
@@ -359,6 +385,8 @@ void IGame_Persistent::GrassBendersUpdate(u16 id, u8& data_idx, u32& data_frame,
 
 void IGame_Persistent::GrassBendersAddExplosion(u16 id, Fvector position, Fvector3 dir, float fade, float speed, float intensity, float radius)
 {
+    ZoneScoped;
+
     if (ps_ssfx_grass_interactive.y < 1)
         return;
 
@@ -377,6 +405,8 @@ void IGame_Persistent::GrassBendersAddExplosion(u16 id, Fvector position, Fvecto
 
 void IGame_Persistent::GrassBendersAddShot(u16 id, Fvector position, Fvector3 dir, float fade, float speed, float intensity, float radius)
 {
+    ZoneScoped;
+
     // Is disabled?
     if (ps_ssfx_grass_interactive.y < 1 || intensity <= 0.0f)
         return;
@@ -417,6 +447,8 @@ void IGame_Persistent::GrassBendersAddShot(u16 id, Fvector position, Fvector3 di
 
 void IGame_Persistent::GrassBendersUpdateAnimations()
 {
+    ZoneScoped;
+
     for (int idx = 1; idx < ps_ssfx_grass_interactive.y + 1; idx++)
     {
         if (grass_shader_data.id[idx] != 0)
@@ -539,6 +571,8 @@ void IGame_Persistent::GrassBendersRemoveByIndex(u8& idx)
 
 void IGame_Persistent::GrassBendersRemoveById(u16 id)
 {
+    ZoneScoped;
+
     // Search by Object ID ( Used when removing benders CPHMovementControl::DestroyCharacter() )
     for (int i = 1; i < ps_ssfx_grass_interactive.y + 1; i++)
         if (grass_shader_data.id[i] == id)
@@ -547,6 +581,8 @@ void IGame_Persistent::GrassBendersRemoveById(u16 id)
 
 void IGame_Persistent::GrassBendersReset(u8 idx)
 {
+    ZoneScoped;
+
     // Reset Everything
     GrassBendersSet(idx, 0, Fvector3().set(0, 0, 0), Fvector3().set(0, -99, 0), 0, 0, 0, 0, BENDER_ANIM_DEFAULT, true);
     grass_shader_data.str_target[idx] = 0;
@@ -554,6 +590,8 @@ void IGame_Persistent::GrassBendersReset(u8 idx)
 
 void IGame_Persistent::GrassBendersSet(u8 idx, u16 id, Fvector position, Fvector3 dir, float fade, float speed, float intensity, float radius, GrassBenders_Anim anim, bool resetTime)
 {
+    ZoneScoped;
+
     // Set values
     grass_shader_data.anim[idx] = anim;
     grass_shader_data.pos[idx] = position;
@@ -587,6 +625,8 @@ bool IGame_Persistent::IsActorInHideout() const
 
 void IGame_Persistent::UpdateHudRaindrops() const
 {
+    ZoneScoped;
+
     const struct // Настройки
     {
         float density = ps_ssfx_hud_drops_1_cfg.x; // Quantity of drops
@@ -642,6 +682,8 @@ void IGame_Persistent::UpdateHudRaindrops() const
 
 void IGame_Persistent::UpdateRainGloss() const
 {
+    ZoneScoped;
+
     const struct // Настройки
     {
         bool auto_gloss{ !fis_zero(ps_ssfx_lightsetup_1.z) }; // Automatic adjustment of gloss based on wetness.
@@ -677,6 +719,8 @@ void IGame_Persistent::UpdateRainGloss() const
 
 float IGame_Persistent::GrassBenderToValue(float& current, float go_to, float intensity, bool use_easing)
 {
+    ZoneScoped;
+
     float diff = abs(current - go_to);
 
     float r_value = Device.fTimeDelta * intensity * (use_easing ? std::min(0.5f, diff) : 1.0f);

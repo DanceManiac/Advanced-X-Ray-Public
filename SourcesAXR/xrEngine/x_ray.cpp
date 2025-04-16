@@ -199,6 +199,8 @@ void InitConfig(T& config, pcstr name, bool fatal = true,
 
 void InitSettings()
 {
+	ZoneScoped;
+
 	xr_auth_strings_t tmp_ignore_pathes, tmp_check_pathes;
 	fill_auth_check_params(tmp_ignore_pathes, tmp_check_pathes);
 
@@ -241,6 +243,8 @@ void InitSettings()
 }
 void InitConsole	()
 {
+	ZoneScoped;
+
 	Console						= xr_new<CConsole>	();
 	Console->Initialize			( );
 
@@ -280,6 +284,8 @@ void destroySound	()
 
 void destroySettings()
 {
+	ZoneScoped;
+
 	CInifile** s				= (CInifile**)(&pSettings);
 	xr_delete(*s);
 	CInifile** sa = (CInifile**)(&pSettingsAuth);
@@ -289,6 +295,8 @@ void destroySettings()
 
 void destroyConsole	()
 {
+	ZoneScoped;
+
 	Console->Execute			("cfg_save");
 	Console->Destroy			();
 	xr_delete					(Console);
@@ -302,6 +310,8 @@ void destroyEngine	()
 
 void execUserScript				( )
 {
+	ZoneScoped;
+
 	if (xrGameManager::GetGame() == EGame::SHOC)
 	{
 		string_path fname;
@@ -340,7 +350,10 @@ void Startup()
 	g_SpatialSpace				= xr_new<ISpatial_DB>	();
 	g_SpatialSpacePhysic		= xr_new<ISpatial_DB>	();
 	
-	g_discord.Initialize();
+	{
+		ZoneScopedN("Init Discord");
+		g_discord.Initialize();
+	}
 
 	// Destroy LOGO
 	DestroyWindow				(logoWindow);
@@ -1066,7 +1079,6 @@ CApplication::~CApplication()
 	Engine.Event.Handler_Detach	(eStart,this);
 	Engine.Event.Handler_Detach	(eQuit,this);
 	Engine.Event.Handler_Detach	(eStartMPDemo,this);
-	
 }
 
 extern CRenderDevice Device;

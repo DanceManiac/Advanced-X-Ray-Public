@@ -342,6 +342,8 @@ void CResourceManager::DeferredUpload()
 {
 	if (!RDEVICE.b_is_Ready) return;
 
+	ZoneScoped;
+
 	Msg("CResourceManager::DeferredUpload [%s] -> START, size = [%u]", ps_mt_texture_load ? "MT" : "NO MT", m_textures.size());
 
 	// “еперь многопоточна€ загрузка текстур даЄт очень существенный прирост скорости, проверено.
@@ -357,6 +359,9 @@ void CResourceManager::DeferredUpload()
 void	CResourceManager::DeferredUnload	()
 {
 	if (!RDEVICE.b_is_Ready)				return;
+
+	ZoneScoped;
+
 	for (map_TextureIt t=m_textures.begin(); t!=m_textures.end(); t++)
 		t->second->Unload();
 }

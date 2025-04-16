@@ -16,6 +16,7 @@
 
 void CLevel::ClientReceive()
 {
+	ZoneScoped;
 
 	Demo_StartFrame();
 

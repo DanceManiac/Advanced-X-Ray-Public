@@ -309,6 +309,8 @@ void __stdcall i_section_t1	()
 
 u32 occRasterizer::rasterize	(occTri* T)
 {
+	ZoneScoped;
+
 	// Order the vertices by Y
 	currentTri			= T;
 	dwPixels			= 0;

@@ -26,6 +26,8 @@ void CRenderDevice::_Destroy	(BOOL bKeepTextures)
 void CRenderDevice::Destroy	(void) {
 	if (!b_is_Ready)			return;
 
+	ZoneScoped;
+
 	Log("Destroying Direct3D...");
 
 	ShowCursor	(TRUE);
@@ -63,6 +65,8 @@ void CRenderDevice::Destroy	(void) {
 extern BOOL bNeed_re_create_env;
 void CRenderDevice::Reset		(bool precache)
 {
+	ZoneScoped;
+
 	u32 dwWidth_before		= dwWidth;
 	u32 dwHeight_before		= dwHeight;
 

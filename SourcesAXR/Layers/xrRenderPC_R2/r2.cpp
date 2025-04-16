@@ -385,6 +385,8 @@ void CRender::OnFrame()
 }*/
 void CRender::OnFrame()
 {
+	ZoneScoped;
+
 	Models->DeleteQueue			();
 	if (ps_r2_ls_flags.test(R2FLAG_EXP_MT_CALC))
 	{

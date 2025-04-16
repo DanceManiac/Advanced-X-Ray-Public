@@ -30,6 +30,8 @@ void fix_texture_thm_name(LPSTR fn)
 
 void CTextureDescrMngr::LoadLTX()
 {
+	ZoneScoped;
+
 	string_path				fname;
 	FS.update_path			(fname,"$game_textures$","textures.ltx");
 
@@ -111,6 +113,8 @@ void CTextureDescrMngr::LoadLTX()
 
 void CTextureDescrMngr::LoadTHM(LPCSTR initial)
 {
+	ZoneScoped;
+
 	FS_FileSet				flist;
 	FS.file_list			(flist, initial, FS_ListFiles, "*.thm");
 #ifdef DEBUG
@@ -185,6 +189,8 @@ void CTextureDescrMngr::LoadTHM(LPCSTR initial)
 
 void CTextureDescrMngr::LoadTHM()
 {
+	ZoneScoped;
+
 	FS_FileSet				flist;
 	FS.file_list			(flist,"$game_textures$",FS_ListFiles,"*.thm");
 	Msg						("count of .thm files=%d", flist.size());
@@ -256,6 +262,8 @@ void CTextureDescrMngr::LoadTHM()
 
 void CTextureDescrMngr::Load()
 {
+	ZoneScoped;
+
 #ifdef DEBUG
 	CTimer					TT;
 	TT.Start				();
@@ -291,6 +299,8 @@ void CTextureDescrMngr::UnLoad()
 
 CTextureDescrMngr::~CTextureDescrMngr()
 {
+	ZoneScoped;
+
 	map_CS::iterator I = m_detail_scalers.begin();
 	map_CS::iterator E = m_detail_scalers.end();
 

@@ -740,6 +740,8 @@ if(!psNET_direct_connect)
 
 void IPureClient::Disconnect()
 {
+	ZoneScoped;
+
 	if( NET )	NET->Close(0);
 
     // Clean up Host _list_

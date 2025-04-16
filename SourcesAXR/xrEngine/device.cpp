@@ -58,6 +58,8 @@ static INT64 g_TicksPerSecond = 0;
 
 BOOL CRenderDevice::Begin	()
 {
+	ZoneScoped;
+
 	switch (m_pRender->GetDeviceState())
 	{
 	case IRenderDeviceRender::dsOK:
@@ -92,6 +94,8 @@ void CRenderDevice::Clear	()
 
 void CRenderDevice::End		(void)
 {
+	ZoneScoped;
+
 #ifdef INGAME_EDITOR
 	bool							load_finished = false;
 #endif // #ifdef INGAME_EDITOR
@@ -242,6 +246,8 @@ ENGINE_API xr_list<LOADING_EVENT> g_loading_events;
 
 void ImGui_NewFrame()
 {
+	ZoneScoped;
+
 	ImGuiIO& io = ImGui::GetIO();
 
 	// Setup display size (every frame to accommodate for window resizing)
@@ -441,8 +447,11 @@ void CRenderDevice::on_idle		()
 
 			if (Begin())
 			{
+				{
+					ZoneScopedN("Render process");
+					seqRender.Process(rp_Render);
+				}
 
-				seqRender.Process(rp_Render);
 				CalcFrameStats();
 
 				if ((psDeviceFlags.test(rsCameraPos) || psDeviceFlags.test(rsStatistic) || Statistic->errors.size()) && (Render->currentViewPort == MAIN_VIEWPORT || debugSecondVP))
@@ -529,6 +538,8 @@ void CRenderDevice::message_loop()
 
 void CRenderDevice::Run			()
 {
+	ZoneScoped;
+
 //	DUMP_PHASE;
 	g_bLoaded		= FALSE;
 	Log				("Starting engine...");
@@ -575,6 +586,8 @@ u32 app_inactive_time_start = 0;
 
 void CRenderDevice::FrameMove()
 {
+	ZoneScoped;
+
 	dwFrame			++;
 
 	Core.dwFrame = dwFrame;
@@ -703,6 +716,8 @@ BOOL CRenderDevice::Paused()
 
 void CRenderDevice::OnWM_Activate(WPARAM wParam, LPARAM lParam)
 {
+	ZoneScoped;
+
 	const u16 fActive						= LOWORD(wParam);
 	const BOOL fMinimized					= (BOOL) HIWORD(wParam);
 	const BOOL bActive					= ((fActive!=WA_INACTIVE) && (!fMinimized))?TRUE:FALSE;

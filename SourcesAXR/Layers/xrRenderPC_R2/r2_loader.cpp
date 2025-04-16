@@ -20,6 +20,8 @@ CPuddles *Puddles;
 
 void CRender::level_Load(IReader* fs)
 {
+	ZoneScoped;
+
 	R_ASSERT						(0!=g_pGameLevel);
 	R_ASSERT						(!b_loaded);
 
@@ -32,6 +34,8 @@ void CRender::level_Load(IReader* fs)
 	g_pGamePersistent->SetLoadStageTitle("st_loading_shaders");
 	g_pGamePersistent->LoadTitle		();
 	{
+		ZoneScopedN("Load shaders");
+
 		chunk = fs->open_chunk		(fsL_SHADERS);
 		R_ASSERT2					(chunk,"Level doesn't builded correctly.");
 		u32 count = chunk->r_u32	();
@@ -154,6 +158,8 @@ void CRender::level_Load(IReader* fs)
 
 void CRender::level_Unload()
 {
+	ZoneScoped;
+
 	if (0==g_pGameLevel)		return;
 	if (!b_loaded)				return;
 
@@ -243,6 +249,8 @@ void CRender::level_Unload()
 
 void CRender::LoadBuffers		(CStreamReader *base_fs,	BOOL _alternative)
 {
+	ZoneScoped;
+
 	R_ASSERT2					(base_fs,"Could not load geometry. File not found.");
 	dxRenderDeviceRender::Instance().Resources->Evict		();
 	u32	dwUsage					= D3DUSAGE_WRITEONLY;
@@ -253,6 +261,8 @@ void CRender::LoadBuffers		(CStreamReader *base_fs,	BOOL _alternative)
 
 	// Vertex buffers
 	{
+		ZoneScopedN("Load Vertex Buffers");
+
 		// Use DX9-style declarators
 		CStreamReader			*fs	= base_fs->open_chunk(fsL_VB);
 		R_ASSERT2				(fs,"Could not load geometry. File 'level.geom?' corrupted.");
@@ -293,6 +303,8 @@ void CRender::LoadBuffers		(CStreamReader *base_fs,	BOOL _alternative)
 
 	// Index buffers
 	{
+		ZoneScopedN("Load Index Buffers");
+
 		CStreamReader			*fs	= base_fs->open_chunk(fsL_IB);
 		u32 count				= fs->r_u32();
 		_IB.resize				(count);
@@ -318,6 +330,8 @@ void CRender::LoadBuffers		(CStreamReader *base_fs,	BOOL _alternative)
 
 void CRender::LoadVisuals(IReader *fs)
 {
+	ZoneScoped;
+
 	IReader*		chunk	= 0;
 	u32			index	= 0;
 	dxRender_Visual*		V		= 0;
@@ -337,6 +351,8 @@ void CRender::LoadVisuals(IReader *fs)
 
 void CRender::LoadLights(IReader *fs)
 {
+	ZoneScoped;
+
 	// lights
 	Lights.Load	(fs);
 	Lights.LoadHemi();
@@ -351,6 +367,8 @@ struct b_portal
 
 void CRender::LoadSectors(IReader* fs)
 {
+	ZoneScoped;
+
 	// allocate memory for portals
 	u32 size = fs->find_chunk(fsL_PORTALS); 
 	R_ASSERT(0==size%sizeof(b_portal));
@@ -366,6 +384,8 @@ void CRender::LoadSectors(IReader* fs)
 		IReader* P = S->open_chunk(i);
 		if (0==P) break;
 
+		ZoneScopedN("Load sector");
+
 		CSector* __S		= xr_new<CSector> ();
 		__S->load			(*P);
 		Sectors.push_back	(__S);
@@ -377,6 +397,8 @@ void CRender::LoadSectors(IReader* fs)
 	// load portals
 	if (count) 
 	{
+		ZoneScopedN("Load portals");
+
 		bool do_rebuild = true;
 		const bool use_cache = !strstr(Core.Params, "-no_cdb_cache");
 		const bool checkCrc32 = !strstr(Core.Params, "-skip_cdb_cache_crc32_check");
@@ -409,6 +431,8 @@ void CRender::LoadSectors(IReader* fs)
 		fs->find_chunk	(fsL_PORTALS);
 		for (i=0; i<count; i++)
 		{
+			ZoneScopedN("Build portal from chunk");
+
 			b_portal	P;
 			fs->r		(&P,sizeof(P));
 			CPortal*	__P	= (CPortal*)Portals[i];
@@ -452,6 +476,8 @@ void CRender::LoadSectors(IReader* fs)
 
 void CRender::LoadSWIs(CStreamReader* base_fs)
 {
+	ZoneScoped;
+
 	// allocate memory for portals
 	if (base_fs->find_chunk(fsL_SWIS)){
 		CStreamReader		*fs	= base_fs->open_chunk(fsL_SWIS);

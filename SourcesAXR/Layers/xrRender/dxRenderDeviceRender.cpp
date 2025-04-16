@@ -445,6 +445,8 @@ bool dxRenderDeviceRender::HWSupportsShaderYUV2RGB()
 
 void  dxRenderDeviceRender::OnAssetsChanged()
 {
+	ZoneScoped;
+
 	Resources->m_textures_description.UnLoad();
 	Resources->m_textures_description.Load();
 }

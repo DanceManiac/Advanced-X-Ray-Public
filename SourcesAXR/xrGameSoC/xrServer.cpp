@@ -190,6 +190,8 @@ INT g_sv_SendUpdate = 0;
 
 void xrServer::Update	()
 {
+	ZoneScoped;
+
 	NET_Packet		Packet;
 
 	VERIFY						(verify_entities());
@@ -241,6 +243,8 @@ void xrServer::Update	()
 
 void xrServer::SendUpdatesToAll()
 {
+	ZoneScoped;
+
 	m_iCurUpdatePacket = 0;
 	NET_Packet* pCurUpdatePacket = &(m_aUpdatePackets[0]);
 	pCurUpdatePacket->B.count = 0;
@@ -858,6 +862,8 @@ void xrServer::create_direct_client()
 
 void xrServer::ProceedDelayedPackets()
 {
+	ZoneScoped;
+
 	DelayedPackestCS.Enter();
 	while (!m_aDelayedPackets.empty())
 	{
@@ -887,6 +893,8 @@ u8	g_sv_maxPingWarningsCount	= 5;
 
 void xrServer::PerformCheckClientsForMaxPing()
 {
+	ZoneScoped;
+
 	auto Update = [&](IClient* client)
 	{ 
 		xrClientData*	Client		= (xrClientData*) client;

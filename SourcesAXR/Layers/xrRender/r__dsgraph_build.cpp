@@ -41,6 +41,8 @@ ICF    float    CalcHudSSA(float& distSQ, Fvector& C, dxRender_Visual* V)
 
 void R_dsgraph_structure::r_dsgraph_insert_dynamic	(dxRender_Visual *pVisual, Fvector& Center)
 {
+	ZoneScoped;
+
 	CRender&	RI			=	RImplementation;
 
 	if (pVisual->vis.marker	==	RI.marker)	return	;
@@ -277,6 +279,8 @@ void R_dsgraph_structure::r_dsgraph_insert_dynamic	(dxRender_Visual *pVisual, Fv
 
 void R_dsgraph_structure::r_dsgraph_insert_static	(dxRender_Visual *pVisual)
 {
+	ZoneScoped;
+
 	CRender&	RI				=	RImplementation;
 
 	if (pVisual->vis.marker		==	RI.marker)	return	;
@@ -726,6 +730,8 @@ bool InFieldOfView(vis_data& vis, float dist, float max_dist = 50.f)
 
 void CRender::add_leafs_Dynamic(dxRender_Visual* pVisual, bool ignore)
 {
+	ZoneScoped;
+
 	if (!pVisual)				return;
 
 	if (!pVisual->_ignore_optimization && !IsValuableToRender(pVisual, false, phase == 1, *val_pTransform, ignore))
@@ -799,6 +805,8 @@ void CRender::add_leafs_Dynamic(dxRender_Visual* pVisual, bool ignore)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void CRender::add_leafs_Static(dxRender_Visual *pVisual)
 {
+	ZoneScoped;
+
 	// Check frustum visibility and calculate distance to visual's center
 	EFC_Visible	VIS;
 	vis_data& vis = pVisual->vis;
@@ -1002,6 +1010,8 @@ BOOL CRender::add_Dynamic(dxRender_Visual *pVisual, u32 planes)
 
 void CRender::add_Static(dxRender_Visual* pVisual, u32 planes)
 {
+	ZoneScoped;
+
 	if (!pVisual->_ignore_optimization && !IsValuableToRender(pVisual, true, phase == 1, *val_pTransform))
 		return;
 

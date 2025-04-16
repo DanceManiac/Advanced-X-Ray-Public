@@ -26,6 +26,8 @@ void  CSoundRender_CoreA::_restart()
 
 void CSoundRender_CoreA::_initialize(int stage)
 {
+	ZoneScoped;
+
 	if(stage==0)
 	{
 		pDeviceList					= xr_new<ALDeviceList>();

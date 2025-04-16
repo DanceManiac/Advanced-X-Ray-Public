@@ -31,6 +31,8 @@ extern char g_application_path[256];
 
 void xrCore::_initialize	(LPCSTR _ApplicationName, LogCallback cb, BOOL init_fs, LPCSTR fs_fname)
 {
+	ZoneScoped;
+
 	xr_strcpy					(ApplicationName,_ApplicationName);
 	if (0==init_counter) {
 		// Init COM so we can use CoCreateInstance
@@ -126,6 +128,8 @@ void xrCore::_destroy		()
 {
 	--init_counter;
 	if (0==init_counter){
+		ZoneScoped;
+
 		FS._destroy			();
 		EFS._destroy		();
 		xr_delete			(xr_FS);

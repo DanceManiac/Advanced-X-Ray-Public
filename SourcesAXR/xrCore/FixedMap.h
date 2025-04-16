@@ -73,6 +73,8 @@ private:
 
     void resize()
     {
+        ZoneScoped;
+
         size_t newLimit;
 
         if constexpr (TGrowMultiplier > 1)
@@ -234,6 +236,8 @@ public:
 
     value_type* insert(const K& key)
     {
+        ZoneScoped;
+
         if (!pool)
             return add(key);
 
@@ -274,6 +278,8 @@ public:
 
     value_type* insert_anyway(const K& key)
     {
+        ZoneScoped;
+
         if (!pool)
             return add(key);
 
@@ -359,18 +365,24 @@ public:
 
     void traverse_left_right(callback CB)
     {
+        ZoneScoped;
+
         if (pool)
             recurse_left_right(nodes, CB);
     }
 
     void traverse_right_left(callback CB)
     {
+        ZoneScoped;
+
         if (pool)
             recurse_right_left(nodes, CB);
     }
 
     void traverse_any(callback CB)
     {
+        ZoneScoped;
+
         value_type* _end = end();
         for (value_type* cur = begin(); cur != _end; ++cur)
             CB(*cur);
@@ -378,30 +390,40 @@ public:
 
     void get_left_right(xr_vector<T, xr_allocator<T>>& D)
     {
+        ZoneScoped;
+
         if (pool)
             get_left_right(nodes, D);
     }
 
     void get_left_right_p(xr_vector<value_type*, xr_allocator<value_type*>>& D)
     {
+        ZoneScoped;
+
         if (pool)
             get_left_right_p(nodes, D);
     }
 
     void get_right_left(xr_vector<T, xr_allocator<T>>& D)
     {
+        ZoneScoped;
+
         if (pool)
             get_right_left(nodes, D);
     }
 
     void get_right_left_p(xr_vector<value_type*, xr_allocator<value_type*>>& D)
     {
+        ZoneScoped;
+
         if (pool)
             get_right_left_p(nodes, D);
     }
 
     void get_any_p(xr_vector<value_type*, xr_allocator<value_type*>>& D)
     {
+        ZoneScoped;
+
         if (empty())
             return;
         D.resize(size());

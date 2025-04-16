@@ -108,6 +108,8 @@ CUIMainIngameWnd::~CUIMainIngameWnd()
 
 void CUIMainIngameWnd::Init()
 {
+	ZoneScoped;
+
 	CUIXml						uiXml;
 	uiXml.Load					(CONFIG_PATH, UI_PATH, MAININGAME_XML);
 	
@@ -345,6 +347,8 @@ void CUIMainIngameWnd::Init()
 float UIStaticDiskIO_start_time = 0.0f;
 void CUIMainIngameWnd::Draw()
 {
+	ZoneScoped;
+
 	// show IO icon
 	bool IOActive	= (FS.dwOpenCounter>0);
 	if	(IOActive)	UIStaticDiskIO_start_time = Device.fTimeGlobal;
@@ -432,6 +436,8 @@ void CUIMainIngameWnd::SetAmmoIcon (const shared_str& sect_name)
 
 void CUIMainIngameWnd::Update()
 {
+	ZoneScoped;
+
 	if (m_pMPChatWnd)
 		m_pMPChatWnd->Update();
 	if (m_pMPLogWnd)
@@ -763,6 +769,8 @@ void CUIMainIngameWnd::SetFlashIconState_(EFlashingIcons type, bool enable)
 
 void CUIMainIngameWnd::InitFlashingIcons(CUIXml* node)
 {
+	ZoneScoped;
+
 	const char * const flashingIconNodeName = "flashing_icon";
 	int staticsCount = node->GetNodesNum("", 0, flashingIconNodeName);
 
@@ -870,11 +878,15 @@ void CUIMainIngameWnd::UpdateActiveItemInfo()
 
 void CUIMainIngameWnd::OnConnected()
 {
+	ZoneScoped;
+
 	UIZoneMap->SetupCurrentMap		();
 }
 
 void CUIMainIngameWnd::reset_ui()
 {
+	ZoneScoped;
+
 	m_pActor						= NULL;
 	m_pWeapon						= NULL;
 	m_pGrenade						= NULL;

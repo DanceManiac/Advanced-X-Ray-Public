@@ -16,6 +16,8 @@
 
 BOOL CLevel::Load_GameSpecific_Before()
 {
+	ZoneScoped;
+
 	// AI space
 	g_pGamePersistent->SetLoadStageTitle("st_loading_ai_objects");
 	g_pGamePersistent->LoadTitle		();
@@ -35,11 +37,15 @@ BOOL CLevel::Load_GameSpecific_Before()
 
 BOOL CLevel::Load_GameSpecific_After()
 {
+	ZoneScoped;
+
 	R_ASSERT(m_StaticParticles.empty());
 	// loading static particles
 	string_path		fn_game;
 	if (FS.exist(fn_game, "$level$", "level.ps_static")) 
 	{
+		ZoneScopedN("Load static particles");
+
 		IReader *F = FS.r_open	(fn_game);
 		CParticlesObject* pStaticParticles;
 		u32				chunk = 0;
@@ -100,6 +106,8 @@ BOOL CLevel::Load_GameSpecific_After()
 
 		// loading random (around player) sounds
 		if (pSettings->section_exist("sounds_random")){ 
+			ZoneScopedN("Load random sounds");
+
 			CInifile::Sect& S		= pSettings->r_section("sounds_random");
 			Sounds_Random.reserve	(S.Data.size());
 			for (CInifile::SectCIt I=S.Data.begin(); S.Data.end()!=I; ++I) 
@@ -113,6 +121,8 @@ BOOL CLevel::Load_GameSpecific_After()
 
 		if ( FS.exist(fn_game, "$level$", "level.fog_vol")) 
 		{
+			ZoneScopedN("Load fog volume");
+
 			IReader *F				= FS.r_open	(fn_game);
 			u16 version				= F->r_u16();
 			if(version == 2)
@@ -192,6 +202,8 @@ bool CLevel::Load_GameSpecific_CFORM_Deserialize(IReader& reader)
 
 void CLevel::Load_GameSpecific_CFORM	( CDB::TRI* tris, u32 count )
 {
+	ZoneScoped;
+
 	typedef xr_vector<translation_pair>	ID_INDEX_PAIRS;
 	ID_INDEX_PAIRS						translator;
 	translator.reserve					(GMLib.CountMaterial());

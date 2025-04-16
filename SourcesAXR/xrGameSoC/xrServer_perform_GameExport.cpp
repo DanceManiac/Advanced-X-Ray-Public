@@ -4,6 +4,8 @@
 
 void xrServer::Perform_game_export	()
 {
+	ZoneScoped;
+
 	if (GetClientsCount() == 0)
 		return;
 

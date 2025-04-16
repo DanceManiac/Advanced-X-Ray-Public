@@ -79,6 +79,8 @@ public:
 
 void COLLIDER::frustum_query(const MODEL *m_def, const CFrustum& F)
 {
+	ZoneScoped;
+
 	m_def->syncronize		();
 
 	// Get nodes

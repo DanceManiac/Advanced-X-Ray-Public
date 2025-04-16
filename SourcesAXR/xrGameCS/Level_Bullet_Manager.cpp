@@ -129,6 +129,8 @@ CBulletManager::~CBulletManager()
 
 void CBulletManager::Load		()
 {
+	ZoneScoped;
+
 	char const * bullet_manager_sect = "bullet_manager";
 	if (!IsGameTypeSingle())
 	{
@@ -234,6 +236,8 @@ SBullet& CBulletManager::AddBullet(const Fvector& position,
 
 void CBulletManager::UpdateWorkload()
 {
+	ZoneScoped;
+
 //	VERIFY						( m_thread_id == GetCurrentThreadId() );
 
 	rq_storage.r_clear			();
@@ -928,6 +932,8 @@ float SqrDistancePointToSegment(const Fvector& pt, const Fvector& orig, const Fv
 
 void CBulletManager::Render	()
 {
+	ZoneScoped;
+
 #ifdef DEBUG
 	if (g_bDrawBulletHit && !m_bullet_points.empty()) {
 		VERIFY							(!(m_bullet_points.size() % 2));
@@ -1036,6 +1042,8 @@ void CBulletManager::CommitRenderSet		()	// @ the end of frame
 }
 void CBulletManager::CommitEvents			()	// @ the start of frame
 {
+	ZoneScoped;
+
 	if (m_Events.size() > 1000)
 		Msg			("! too many bullets during single frame: %d", m_Events.size());
 

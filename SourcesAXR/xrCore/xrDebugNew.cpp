@@ -767,6 +767,8 @@ LONG WINAPI UnhandledFilter	(_EXCEPTION_POINTERS *pExceptionInfo)
 
     void	xrDebug::_initialize		(const bool &dedicated)
     {
+		ZoneScoped;
+
 		static bool is_dedicated		= dedicated;
 
 		*g_bug_report_file				= 0;

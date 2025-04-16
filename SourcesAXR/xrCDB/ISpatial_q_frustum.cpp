@@ -53,6 +53,8 @@ public:
 
 void	ISpatial_DB::q_frustum		(xr_vector<ISpatial*>& R, u32 _o, u32 _mask, const CFrustum& _frustum)	
 {
+	ZoneScoped;
+
 	cs.Enter			();
 	q_result			= &R;
 	q_result->clear_not_free();

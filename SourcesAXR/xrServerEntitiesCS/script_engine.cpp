@@ -277,6 +277,8 @@ extern void export_classes(lua_State *L);
 
 void CScriptEngine::init				()
 {
+	ZoneScoped;
+
 #ifdef USE_LUA_STUDIO
 	bool lua_studio_connected = !!m_lua_studio_world;
 	if (lua_studio_connected)

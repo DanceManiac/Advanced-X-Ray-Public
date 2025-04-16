@@ -88,6 +88,8 @@ void CDetailManager::SSwingValue::lerp(const SSwingValue& A, const SSwingValue& 
 
 CDetailManager::CDetailManager	()
 {
+	ZoneScoped;
+
 	dtFS 		= 0;
 	dtSlots		= 0;
 	soft_Geom	= 0;
@@ -146,6 +148,8 @@ CDetailManager::CDetailManager	()
 
 CDetailManager::~CDetailManager	()
 {
+	ZoneScoped;
+
 	if (dtFS)
 	{
 		FS.r_close(dtFS);
@@ -183,6 +187,8 @@ void dump	(CDetailManager::vis_list& lst)
 */
 void CDetailManager::Load		()
 {
+	ZoneScoped;
+
 	// Open file stream
 	if (!FS.exist("$level$","level.details"))
 	{
@@ -244,6 +250,8 @@ void CDetailManager::Load		()
 #endif
 void CDetailManager::Unload		()
 {
+	ZoneScoped;
+
 	if (UseVS())	hw_Unload	();
 	else			soft_Unload	();
 
@@ -264,6 +272,8 @@ extern int ps_no_scale_on_fade;
 
 void CDetailManager::UpdateVisibleM()
 {
+	ZoneScoped;
+
 	// Clean up
 	for (auto& vec : m_visibles)
 		for (auto& vis : vec)
@@ -425,6 +435,8 @@ void CDetailManager::Render	()
 	//if (g_pGamePersistent && g_pGamePersistent->m_pMainMenu && g_pGamePersistent->m_pMainMenu->IsActive())
 	//	return;
 
+	ZoneScoped;
+
 	// MT wait
 	if (ps_r2_ls_flags.test((u32)R2FLAG_EXP_MT_DETAILS) && async_started && !m_bCubemapScreenshotInProcess && !Device.m_SecondViewport.IsSVPFrame())
 		WaitAsync();
@@ -495,7 +507,7 @@ void __stdcall CDetailManager::MT_CALC()
 	//if (g_pGamePersistent && g_pGamePersistent->m_pMainMenu && g_pGamePersistent->m_pMainMenu->IsActive())
 	//	return;
 
-
+	ZoneScoped;
 
 	std::lock_guard<xrCriticalSection> lock(MT);
 

@@ -334,6 +334,8 @@ void CUIGameCustom::UnLoad()
 
 void CUIGameCustom::Load()
 {
+	ZoneScoped;
+
 	if(g_pGameLevel)
 	{
 		R_ASSERT				(NULL==m_msgs_xml);

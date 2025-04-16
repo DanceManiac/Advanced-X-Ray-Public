@@ -45,6 +45,7 @@ void CRenderTarget::DoAsyncScreenshot()
 float	hclip(float v, float dim)		{ return 2.f*v/dim - 1.f; }
 void	CRenderTarget::phase_combine	()
 {
+	ZoneScoped;
 	PIX_EVENT(phase_combine);
 
 	bool ssfx_PrevPos_Requiered = false;
@@ -790,6 +791,7 @@ void CRenderTarget::phase_wallmarks		()
 
 void CRenderTarget::phase_combine_volumetric()
 {
+	ZoneScoped;
 	PIX_EVENT(phase_combine_volumetric);
 	u32			Offset					= 0;
 	//Fvector2	p0,p1;

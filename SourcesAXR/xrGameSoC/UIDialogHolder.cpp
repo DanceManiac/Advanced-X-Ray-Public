@@ -159,6 +159,8 @@ void CDialogHolder::RemoveDialogToRender(CUIWindow* pDialog)
 
 void CDialogHolder::DoRenderDialogs()
 {
+	ZoneScoped;
+
 	xr_vector<dlgItem>::iterator it = m_dialogsToRender.begin();
 	for(; it!=m_dialogsToRender.end();++it){
 		if( (*it).enabled && (*it).wnd->IsShown() )
@@ -238,6 +240,8 @@ void CDialogHolder::StopDialog(CUIDialogWnd* pDialog)
 
 void CDialogHolder::OnFrame	()
 {
+	ZoneScoped;
+
 	xr_vector<dlgItem>::iterator it = m_dialogsToRender.begin();
 	for(; it!=m_dialogsToRender.end();++it)
 		if((*it).enabled && (*it).wnd->IsEnabled())

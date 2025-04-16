@@ -17,6 +17,8 @@ void InitHudSoundSettings()
 void HUD_SOUND_ITEM::LoadSound(	LPCSTR section, LPCSTR line, 
 							HUD_SOUND_ITEM& hud_snd, int type)
 {
+	ZoneScoped;
+
 	hud_snd.m_activeSnd		= NULL;
 	hud_snd.sounds.clear	();
 
@@ -40,6 +42,8 @@ void  HUD_SOUND_ITEM::LoadSound(LPCSTR section,
 								float* delay, 
 								float* freq)
 {
+	ZoneScoped;
+
 	LPCSTR str = pSettings->r_string(section, line);
 	string256 buf_str;
 
@@ -86,6 +90,8 @@ void  HUD_SOUND_ITEM::LoadSound(LPCSTR section,
 
 void HUD_SOUND_ITEM::DestroySound(HUD_SOUND_ITEM& hud_snd)
 {
+	ZoneScoped;
+
 	xr_vector<SSnd>::iterator it = hud_snd.sounds.begin();
 	for(;it!=hud_snd.sounds.end();++it)
 		(*it).snd.destroy();
@@ -166,6 +172,8 @@ void HUD_SOUND_ITEM::StopSound(HUD_SOUND_ITEM& hud_snd)
 //----------------------------------------------------------
 HUD_SOUND_COLLECTION::~HUD_SOUND_COLLECTION()
 {
+	ZoneScoped;
+
 	xr_vector<HUD_SOUND_ITEM>::iterator it		= m_sound_items.begin();
 	xr_vector<HUD_SOUND_ITEM>::iterator it_e	= m_sound_items.end();
 
@@ -239,6 +247,8 @@ void HUD_SOUND_COLLECTION::LoadSound(	LPCSTR section,
 										bool exclusive,
 										int type)
 {
+	ZoneScoped;
+
 	R_ASSERT					(NULL==FindSoundItem(alias, false));
 	m_sound_items.resize		(m_sound_items.size()+1);
 	HUD_SOUND_ITEM& snd_item	= m_sound_items.back();
@@ -256,6 +266,8 @@ sndShot is played, it will play all the sound items with the same alias.
 //----------------------------------------------------------
 HUD_SOUND_COLLECTION_LAYERED::~HUD_SOUND_COLLECTION_LAYERED()
 {
+	ZoneScoped;
+
 	xr_vector<HUD_SOUND_COLLECTION>::iterator it = m_sound_items.begin();
 	xr_vector<HUD_SOUND_COLLECTION>::iterator it_e = m_sound_items.end();
 
@@ -339,6 +351,8 @@ HUD_SOUND_ITEM* HUD_SOUND_COLLECTION_LAYERED::FindSoundItem(LPCSTR alias, bool b
 
 void HUD_SOUND_COLLECTION_LAYERED::LoadSound(LPCSTR section, LPCSTR line, LPCSTR alias, bool exclusive, int type)
 {
+	ZoneScoped;
+
 	if (!pSettings->line_exist(section, line))
 		return;
 
@@ -390,6 +404,8 @@ void HUD_SOUND_COLLECTION_LAYERED::LoadSound(LPCSTR section, LPCSTR line, LPCSTR
 void HUD_SOUND_COLLECTION_LAYERED::LoadSound(CInifile const* ini, LPCSTR section, LPCSTR line, LPCSTR alias,
 	bool exclusive, int type)
 {
+	ZoneScoped;
+
 	if (!ini->line_exist(section, line))
 		return;
 

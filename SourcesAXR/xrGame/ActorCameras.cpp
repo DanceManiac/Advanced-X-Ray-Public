@@ -293,6 +293,8 @@ void CActor::cam_Update(float dt, float fFOV)
 	if (m_holder)
 		return;
 
+	ZoneScoped;
+
 	// HUD FOV Update
 	if (this == Level().CurrentControlEntity())
 	{

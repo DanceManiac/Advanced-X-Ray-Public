@@ -65,6 +65,8 @@ void dxRainRender::Copy(IRainRender &_in)
 
 void dxRainRender::Render(CEffect_Rain &owner)
 {
+	ZoneScoped;
+
 	float	factor				= g_pGamePersistent->Environment().CurrentEnv->rain_density;
 
 	if (factor<EPS_L)

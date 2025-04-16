@@ -22,6 +22,8 @@ CGameMtlLibrary::	CGameMtlLibrary		()
 
 void SGameMtl::Load(IReader& fs)
 {
+    ZoneScoped;
+
 	R_ASSERT(fs.find_chunk(GAMEMTL_CHUNK_MAIN));
 	ID						= fs.r_u32();
     fs.r_stringZ			(m_Name);

@@ -24,6 +24,8 @@ inline u32 calc_cursor(const float& fTimeStarted, float& fTime, const float& fTi
 
 void CSoundRender_Emitter::update(float dt)
 {
+	ZoneScoped;
+
 	float fTime			= SoundRender->fTimer_Value;
 	float fDeltaTime	= SoundRender->fTimer_Delta;
 

@@ -161,6 +161,8 @@ CHUDManager::~CHUDManager()
 //--------------------------------------------------------------------
 void CHUDManager::OnFrame()
 {
+	ZoneScoped;
+
 	if (!psHUD_Flags.is(HUD_DRAW_RT2))	
 		return;
 
@@ -178,6 +180,8 @@ ENGINE_API extern float psHUD_FOV;
 
 void CHUDManager::Render_First()
 {
+	ZoneScoped;
+
 	if (!psHUD_Flags.is(HUD_WEAPON|HUD_WEAPON_RT|HUD_WEAPON_RT2|HUD_DRAW_RT2))return;
 	if (0==pUIGame)					return;
 	CObject*	O					= g_pGameLevel->CurrentViewEntity();
@@ -212,6 +216,8 @@ bool need_render_hud()
 
 void CHUDManager::Render_Last()
 {
+	ZoneScoped;
+
 	if (0==pUIGame)
 		return;
 
@@ -254,6 +260,8 @@ extern ENGINE_API BOOL bShowPauseString;
 //отрисовка элементов интерфейса
 void  CHUDManager::RenderUI()
 {
+	ZoneScoped;
+
 	if (!psHUD_Flags.is(HUD_DRAW_RT2))	
 		return;
 
@@ -346,6 +354,8 @@ extern CUIXml*			pWpnScopeXml;
 
 void CHUDManager::Load()
 {
+	ZoneScoped;
+
 	if (!pUIGame)
 	{
 		pUIGame				= Game().createGameUI();
@@ -357,6 +367,8 @@ void CHUDManager::Load()
 
 void CHUDManager::OnScreenResolutionChanged()
 {
+	ZoneScoped;
+
 	pUIGame->HideShownDialogs			();
 
 	xr_delete							(pWpnScopeXml);
@@ -377,6 +389,8 @@ void CHUDManager::OnScreenResolutionChanged()
 
 void CHUDManager::OnDisconnected()
 {
+	ZoneScoped;
+
 	b_online				= false;
 	if(pUIGame)
 		Device.seqFrame.Remove	(pUIGame);
@@ -384,6 +398,8 @@ void CHUDManager::OnDisconnected()
 
 void CHUDManager::OnConnected()
 {
+	ZoneScoped;
+
 	if(b_online)			return;
 	b_online				= true;
 	if(pUIGame)
@@ -392,6 +408,8 @@ void CHUDManager::OnConnected()
 
 void CHUDManager::net_Relcase( CObject* obj )
 {
+	ZoneScoped;
+
 	HitMarker.net_Relcase		( obj );
 	
 	VERIFY						( m_pHUDTarget );

@@ -19,6 +19,8 @@ extern	BOOL g_bLoaded;
 
 IGame_Level::IGame_Level	()
 {
+	ZoneScoped;
+
 	m_pCameras					= xr_new<CCameraManager>(true);
 	g_pGameLevel				= this;
 	pLevel						= NULL;
@@ -34,6 +36,8 @@ IGame_Level::IGame_Level	()
 
 IGame_Level::~IGame_Level	()
 {
+	ZoneScoped;
+
 	if(strstr(Core.Params,"-nes_texture_storing") )
 		//Device.Resources->StoreNecessaryTextures();
 		Device.m_pRender->ResourcesStoreNecessaryTextures();
@@ -61,6 +65,8 @@ IGame_Level::~IGame_Level	()
 
 void IGame_Level::net_Stop			()
 {
+	ZoneScoped;
+
 	for (int i=0; i<6; i++)
 		Objects.Update			(false);
 	// Destroy all objects
@@ -93,6 +99,8 @@ static bool deserialize_callback(IReader& reader)
 
 BOOL IGame_Level::Load			(u32 dwNum) 
 {
+	ZoneScoped;
+
 	// Initialize level data
 	pApp->Level_Set				( dwNum );
 	string_path					temp;
@@ -157,6 +165,8 @@ void	IGame_Level::OnRender		( )
 {
 //	if (_abs(Device.fTimeDelta)<EPS_S) return;
 
+	ZoneScoped;
+
 	#ifdef _GPA_ENABLED	
 		TAL_ID rtID = TAL_MakeID( 1 , Core.dwFrame , 0);	
 		TAL_CreateID( rtID );
@@ -184,6 +194,8 @@ void	IGame_Level::OnFrame		( )
 {
 	// Log				("- level:on-frame: ",u32(Device.dwFrame));
 //	if (_abs(Device.fTimeDelta)<EPS_S) return;
+
+	ZoneScoped;
 
 	// Update all objects
 	VERIFY						(bReady);
@@ -308,6 +320,8 @@ void	IGame_Level::SoundEvent_Register	( ref_sound_data_ptr S, float range )
 
 void	IGame_Level::SoundEvent_Dispatch	( )
 {
+	ZoneScoped;
+
 	while	(!snd_Events.empty())	{
 		_esound_delegate&	D	= snd_Events.back	();
 		VERIFY				(D.dest && D.source);

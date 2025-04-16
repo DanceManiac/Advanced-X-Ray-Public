@@ -192,6 +192,8 @@ void ELightAnimLibrary::OnDestroy()
 
 void ELightAnimLibrary::Unload()
 {
+    ZoneScoped;
+
 	for (LAItemIt it=Items.begin(); it!=Items.end(); it++)
     	xr_delete(*it);
     Items.clear();
@@ -199,6 +201,8 @@ void ELightAnimLibrary::Unload()
 
 __declspec(dllexport) void ELightAnimLibrary::Load()
 {
+    ZoneScoped;
+
 	string_path fn;
     FS.update_path(fn,_game_data_,"lanims.xr");
 	IReader* fs=FS.r_open(fn);
@@ -230,6 +234,8 @@ __declspec(dllexport) void ELightAnimLibrary::Load()
 
 void ELightAnimLibrary::Save()
 {
+    ZoneScoped;
+
 	CMemoryWriter F;
     F.open_chunk	(CHUNK_VERSION);
     F.w_u16			(LANIM_VERSION);

@@ -89,6 +89,8 @@ CLevel::CLevel():IPureClient	(Device.GetTimerGlobal())
 	,DemoCS(MUTEX_PROFILE_ID(DemoCS))
 #endif // PROFILE_CRITICAL_SECTIONS
 {
+	ZoneScoped;
+
 	g_bDebugEvents				= strstr(Core.Params,"-debug_ge")?TRUE:FALSE;
 
 	Server						= NULL;
@@ -207,6 +209,8 @@ extern CAI_Space *g_ai_space;
 
 CLevel::~CLevel()
 {
+	ZoneScoped;
+
 	xr_delete					(g_player_hud);
 //	g_pGameLevel		= NULL;
 	Msg							("- Destroying level");
@@ -350,6 +354,8 @@ BOOL		g_bDebugEvents = FALSE	;
 
 void CLevel::cl_Process_Event				(u16 dest, u16 type, NET_Packet& P)
 {
+	ZoneScoped;
+
 	//			Msg				("--- event[%d] for [%d]",type,dest);
 	CObject*	 O	= Objects.net_Find	(dest);
 	if (0==O)		{
@@ -399,6 +405,8 @@ void CLevel::cl_Process_Event				(u16 dest, u16 type, NET_Packet& P)
 
 void CLevel::ProcessGameEvents		()
 {
+	ZoneScoped;
+
 	// Game events
 	{
 		NET_Packet			P;
@@ -459,6 +467,8 @@ struct debug_memory_guard {
 
 void CLevel::OnFrame	()
 {
+	ZoneScoped;
+
 #ifdef DEBUG_MEMORY_MANAGER
 	debug_memory_guard					__guard__;
 #endif // DEBUG_MEMORY_MANAGER
@@ -605,6 +615,7 @@ void CLevel::OnFrame	()
 int		psLUA_GCSTEP					= 10			;
 void	CLevel::script_gc				()
 {
+	ZoneScoped;
 	lua_gc	(ai().script_engine().lua(), LUA_GCSTEP, psLUA_GCSTEP);
 }
 
@@ -626,6 +637,8 @@ extern void draw_wnds_rects();
 
 void CLevel::OnRender()
 {
+	ZoneScoped;
+
 	// PDA
 	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
 	if (game && pGameSP && pGameSP->PdaMenu)
@@ -819,6 +832,8 @@ void CLevel::OnRender()
 
 void CLevel::OnEvent(EVENT E, u64 P1, u64 /**P2/**/)
 {
+	ZoneScoped;
+
 	if (E==eEntitySpawn)	{
 		char	Name[128];	Name[0]=0;
 		sscanf	(LPCSTR(P1),"%s", Name);
@@ -880,6 +895,8 @@ void	CLevel::RemoveObject_From_4CrPr		(CGameObject* pObj)
 
 void CLevel::make_NetCorrectionPrediction	()
 {
+	ZoneScoped;
+
 	m_bNeed_CrPr	= false;
 	m_bIn_CrPr		= true;
 	u64 NumPhSteps = ph_world->m_steps_num;

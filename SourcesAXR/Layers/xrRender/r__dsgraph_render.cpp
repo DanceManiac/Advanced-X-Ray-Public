@@ -293,6 +293,8 @@ void R_dsgraph_structure::r_dsgraph_render_graph	(u32	_priority, bool _clear)
 	{
 		RCache.set_xform_world			(Fidentity);
 
+		ZoneScopedN("dsgraph_render_static");
+
 		// Render several passes
 		for ( u32 iPass = 0; iPass<SHADER_PASSES_MAX; ++iPass)
 		{
@@ -389,6 +391,9 @@ void R_dsgraph_structure::r_dsgraph_render_graph	(u32	_priority, bool _clear)
 	// Perform sorting based on ScreenSpaceArea
 	// Sorting by SSA and changes minimizations
 	// Render several passes
+
+	ZoneScopedN("dsgraph_render_dynamic");
+
 	for ( u32 iPass = 0; iPass<SHADER_PASSES_MAX; ++iPass)
 	{
 		//mapMatrixVS&	vs				= mapMatrix	[_priority];
@@ -544,7 +549,7 @@ void R_dsgraph_structure::r_dsgraph_render_sorted_ui()
 
 void R_dsgraph_structure::r_dsgraph_render_hud(bool NoPS)
 {	
-	
+	ZoneScoped;
 	//PIX_EVENT(r_dsgraph_render_hud);
 
 	if(!mapHUD.empty())
@@ -576,6 +581,8 @@ void R_dsgraph_structure::r_dsgraph_render_hud(bool NoPS)
 
 void R_dsgraph_structure::r_dsgraph_render_hud_ui()
 {
+	ZoneScoped;
+
 	VERIFY(g_hud && g_hud->RenderActiveItemUIQuery());
 
 	hud_transform_helper helper;
@@ -642,6 +649,8 @@ void	R_dsgraph_structure::r_dsgraph_render_hud_sorted()
 void	R_dsgraph_structure::r_dsgraph_render_emissive	(bool clear)
 {
 #if	RENDER!=R_R1
+	ZoneScoped;
+
 	// Sorted (back to front)
 	mapEmissive.traverse_left_right(sorted_L1);
 	
@@ -674,6 +683,8 @@ void R_dsgraph_structure::r_dsgraph_render_water()
 void	R_dsgraph_structure::r_dsgraph_render_wmarks	()
 {
 #if	RENDER!=R_R1
+	ZoneScoped;
+
 	// Sorted (back to front)
 	mapWmark.traverse_left_right(sorted_L1);
 	mapWmark.clear		();
@@ -684,6 +695,8 @@ void	R_dsgraph_structure::r_dsgraph_render_wmarks	()
 // strict-sorted render
 void	R_dsgraph_structure::r_dsgraph_render_distort	()
 {
+	ZoneScoped;
+
 	// Sorted (back to front)
 	mapDistort.traverse_right_left(sorted_L1);
 	mapDistort.clear		();

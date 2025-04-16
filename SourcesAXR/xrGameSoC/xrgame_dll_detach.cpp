@@ -45,6 +45,8 @@ extern void InitHudSoundSettings					();
 #include "../xrEngine/IGame_Persistent.h"
 void init_game_globals()
 {
+	ZoneScoped;
+
 	CreateUIGeom									();
 
 	CInfoPortion::InitInternal						();
@@ -66,6 +68,8 @@ extern void destroy_lua_wpn_params	();
 
 void clean_game_globals()
 {
+	ZoneScoped;
+
 	destroy_lua_wpn_params							();
 	// destroy ai space
 	xr_delete										(g_ai_space);

@@ -66,6 +66,9 @@ void CRenderDevice::ConnectToRender()
 void CRenderDevice::Create	() 
 {
 	if (b_is_Ready)		return;		// prevent double call
+
+	ZoneScoped;
+
 	Statistic			= xr_new<CStats>();
 
 #ifdef	DEBUG

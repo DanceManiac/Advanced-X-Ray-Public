@@ -29,6 +29,7 @@ CUIZoneMap::~CUIZoneMap()
 
 void CUIZoneMap::Init()
 {
+	ZoneScoped;
 
 	CUIXml uiXml;
 	uiXml.Load						(CONFIG_PATH, UI_PATH, "zone_map.xml");

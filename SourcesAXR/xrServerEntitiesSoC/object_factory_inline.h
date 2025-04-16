@@ -126,6 +126,8 @@ IC	void CObjectFactory::actualize										() const
 	if (m_actual)
 		return;
 
+	ZoneScoped;
+
 	m_actual			= true;
 	std::sort			(m_clsids.begin(),m_clsids.end(),CObjectItemPredicate());
 }

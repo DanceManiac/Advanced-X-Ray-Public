@@ -169,6 +169,8 @@ void CHUDManager::Load()
 //--------------------------------------------------------------------
 void CHUDManager::OnFrame()
 {
+	ZoneScoped;
+
 	if ( !m_Renderable )
 	{
 		return;
@@ -200,6 +202,8 @@ bool need_render_hud()
 
 void CHUDManager::Render_First()
 {
+	ZoneScoped;
+
 	if ( !m_Renderable )
 	{
 		return;
@@ -224,6 +228,8 @@ void CHUDManager::Render_First()
 
 void CHUDManager::Render_Last()
 {
+	ZoneScoped;
+
 	if (!psHUD_Flags.is(HUD_WEAPON|HUD_WEAPON_RT))return;
 	if (0==pUI)						return;
 	CObject*	O					= g_pGameLevel->CurrentViewEntity();
@@ -283,6 +289,8 @@ extern ENGINE_API BOOL bShowPauseString;
 #include "string_table.h"
 void  CHUDManager::RenderUI()
 {
+	ZoneScoped;
+
 	if ( !m_Renderable )
 	{
 		return;
@@ -350,6 +358,8 @@ void CHUDManager::SetHitmarkType		(LPCSTR tex_name)
 #include "ui\UIMainInGameWnd.h"
 void CHUDManager::OnScreenResolutionChanged()
 {
+	ZoneScoped;
+
 	xr_delete							(pUI->UIMainIngameWnd);
 
 	pUI->UIMainIngameWnd				= xr_new<CUIMainIngameWnd>	();
@@ -362,6 +372,8 @@ void CHUDManager::OnScreenResolutionChanged()
 
 void CHUDManager::OnDisconnected()
 {
+	ZoneScoped;
+
 //.	if(!b_online)			return;
 	b_online				= false;
 	if(pUI)
@@ -370,6 +382,8 @@ void CHUDManager::OnDisconnected()
 
 void CHUDManager::OnConnected()
 {
+	ZoneScoped;
+
 	if(b_online)			return;
 	b_online				= true;
 	if(pUI){
@@ -379,6 +393,8 @@ void CHUDManager::OnConnected()
 
 void CHUDManager::net_Relcase	(CObject *object)
 {
+	ZoneScoped;
+
 	VERIFY						(m_pHUDTarget);
 	m_pHUDTarget->net_Relcase	(object);
 }

@@ -173,6 +173,8 @@ void CHUDManager::Load()
 //--------------------------------------------------------------------
 void CHUDManager::OnFrame()
 {
+	ZoneScoped;
+
 	if ( !m_Renderable )
 	{
 		return;
@@ -188,6 +190,8 @@ ENGINE_API extern float psHUD_FOV;
 
 void CHUDManager::Render_First()
 {
+	ZoneScoped;
+
 	if ( !m_Renderable )
 	{
 		return;
@@ -210,6 +214,8 @@ void CHUDManager::Render_First()
 
 void CHUDManager::Render_Last()
 {
+	ZoneScoped;
+
 	if ( !m_Renderable )
 	{
 		return;
@@ -273,6 +279,8 @@ extern ENGINE_API BOOL bShowPauseString;
 #include "string_table.h"
 void  CHUDManager::RenderUI()
 {
+	ZoneScoped;
+
 	if ( !m_Renderable )
 	{
 		return;
@@ -367,6 +375,8 @@ extern CUIXml*			pWpnScopeXml;
 
 void CHUDManager::OnScreenResolutionChanged()
 {
+	ZoneScoped;
+
 	if(pUI->UIGame())
 		pUI->UIGame()->HideShownDialogs	();
 
@@ -391,6 +401,8 @@ void CHUDManager::OnScreenResolutionChanged()
 
 void CHUDManager::OnDisconnected()
 {
+	ZoneScoped;
+
 	b_online				= false;
 	if(pUI)
 		Device.seqFrame.Remove	(pUI);
@@ -398,6 +410,8 @@ void CHUDManager::OnDisconnected()
 
 void CHUDManager::OnConnected()
 {
+	ZoneScoped;
+
 	if(b_online)			return;
 	b_online				= true;
 	if(pUI){
@@ -407,6 +421,8 @@ void CHUDManager::OnConnected()
 
 void CHUDManager::net_Relcase( CObject* obj )
 {
+	ZoneScoped;
+
 	HitMarker.net_Relcase		( obj );
 	
 	VERIFY						( m_pHUDTarget );

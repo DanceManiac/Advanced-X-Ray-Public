@@ -1784,6 +1784,8 @@ void PATurbulence::Execute(ParticleEffect *effect, const float dt, float& tm_max
 	TAL_AddRelationThis(TAL_RELATION_IS_CHILD_OF, rtID);
 #endif // _GPA_ENABLED
 
+	ZoneScoped;
+
 	pVector pV;
 	pVector vX;
 	pVector vY;

@@ -181,6 +181,8 @@ CInifile::CInifile(LPCSTR szFileName,
 
 CInifile::~CInifile( )
 {
+	ZoneScoped;
+
 	if (!m_flags.test(eReadOnly) && m_flags.test(eSaveAtEnd)) 
 	{
 		if (!save_as())
@@ -223,6 +225,8 @@ void	CInifile::Load(IReader* F, LPCSTR path
                                 #endif
                                     )
 {
+	ZoneScoped;
+
 	R_ASSERT(F);
 	Sect		*Current = 0;
 	string4096	str;

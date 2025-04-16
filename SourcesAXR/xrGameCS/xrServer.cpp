@@ -220,6 +220,8 @@ INT g_sv_SendUpdate = 0;
 
 void xrServer::Update	()
 {
+	ZoneScoped;
+
 	if (Level().IsDemoPlayStarted() || Level().IsDemoPlayFinished())
 		return;								//diabling server when demo is playing
 
@@ -405,6 +407,8 @@ void xrServer::SendUpdatePacketsToClient(ClientID clientId)
 
 void xrServer::SendUpdatesToAll()
 {
+	ZoneScoped;
+
 	if (IsGameTypeSingle())
 		return;
 	
@@ -1029,6 +1033,8 @@ void xrServer::create_direct_client()
 
 void xrServer::ProceedDelayedPackets()
 {
+	ZoneScoped;
+
 	DelayedPackestCS.Enter();
 	while (!m_aDelayedPackets.empty())
 	{
@@ -1058,6 +1064,8 @@ u8	g_sv_maxPingWarningsCount	= 5;
 
 void xrServer::PerformCheckClientsForMaxPing()
 {
+	ZoneScoped;
+
 	struct MaxPingClientDisconnector
 	{
 		xrServer* m_owner;

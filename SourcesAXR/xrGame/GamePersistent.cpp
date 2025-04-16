@@ -60,6 +60,8 @@
 
 CGamePersistent::CGamePersistent(void)
 {
+	ZoneScoped;
+
 	m_bPickableDOF				= false;
 	m_game_params.m_e_game_type	= eGameIDNoGame;
 	ambient_effect_next_time	= 0;
@@ -115,6 +117,8 @@ CGamePersistent::CGamePersistent(void)
 
 CGamePersistent::~CGamePersistent(void)
 {	
+	ZoneScoped;
+
 	FS.r_close					(pDemoFile);
 	Device.seqFrame.Remove		(this);
 	Engine.Event.Handler_Detach	(eDemoStart,this);
@@ -155,6 +159,8 @@ extern void init_game_globals	();
 
 void CGamePersistent::OnAppStart()
 {
+	ZoneScoped;
+
 	// load game materials
 	GMLib.Load					();
 	init_game_globals			();
@@ -284,6 +290,8 @@ void CGamePersistent::OnGameEnd	()
 
 void CGamePersistent::WeathersUpdate()
 {
+	ZoneScoped;
+
 	if (g_pGameLevel)
 	{
 		CActor* actor				= smart_cast<CActor*>(Level().CurrentViewEntity());
@@ -557,6 +565,8 @@ extern CUISequencer * g_tutorial2;
 
 void CGamePersistent::OnFrame	()
 {
+	ZoneScoped;
+
 	if (Device.dwPrecacheFrame==5 && m_intro_event.empty())
 	{
 		SetLoadStageTitle();
@@ -714,6 +724,8 @@ void CGamePersistent::OnFrame	()
 
 void CGamePersistent::OnEvent(EVENT E, u64 P1, u64 P2)
 {
+	ZoneScoped;
+
 	if(E==eQuickLoad)
 	{
 		if (Device.Paused())

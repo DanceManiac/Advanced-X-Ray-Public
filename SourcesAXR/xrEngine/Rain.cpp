@@ -106,6 +106,8 @@ void CEffect_Rain::Prepare(Fvector2& offset, Fvector3& axis, float W_Velocity, f
 // Born
 void CEffect_Rain::Born(Item& dest, const float radius, const float speed)
 {
+	ZoneScoped;
+
 	// Prepare correct angle and distance to hit the player
 	Fvector Rain_Axis = { 0, -1, 0 };
 	Fvector2 Rain_Offset;
@@ -144,6 +146,8 @@ void CEffect_Rain::Born(Item& dest, const float radius, const float speed)
 
 BOOL CEffect_Rain::RayPick(const Fvector& s, const Fvector& d, float& range, collide::rq_target tgt)
 {
+	ZoneScoped;
+
 	BOOL bRes 			= TRUE;
 #ifdef _EDITOR
     Tools->RayPick		(s,d,range);
@@ -172,6 +176,8 @@ void CEffect_Rain::RenewItem(Item& dest, float height, BOOL bHit)
 
 void	CEffect_Rain::OnFrame	()
 {
+	ZoneScoped;
+
 #ifndef _EDITOR
 	if (!g_pGameLevel)			return;
 #endif

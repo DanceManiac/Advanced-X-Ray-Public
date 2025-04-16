@@ -86,6 +86,8 @@ namespace CPU
 //------------------------------------------------------------------------------------
 void _initialize_cpu(void)
 {
+	ZoneScoped;
+
 	shared_str vendor = "Unknown";
 
 	if (CPU::Info.isAmd)

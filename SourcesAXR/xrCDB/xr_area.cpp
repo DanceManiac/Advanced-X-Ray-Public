@@ -52,6 +52,8 @@ CObjectSpace::~CObjectSpace	( )
 //----------------------------------------------------------------------
 int CObjectSpace::GetNearest		( xr_vector<ISpatial*>& q_spatial, xr_vector<CObject*>&	q_nearest, const Fvector &point, float range, CObject* ignore_object )
 {
+	ZoneScoped;
+
 	q_spatial.clear_not_free		( );
 	// Query objects
 	q_nearest.clear_not_free		( );
@@ -122,6 +124,8 @@ void CObjectSpace::Load(IReader* F,
 	CDB::serialize_callback serialize_callback,
 	CDB::deserialize_callback deserialize_callback)
 {
+	ZoneScoped;
+
 	hdrCFORM					H;
 	F->r						(&H,sizeof(hdrCFORM));
 	Fvector*	verts			= (Fvector*)F->pointer();
@@ -136,6 +140,8 @@ void CObjectSpace::Create(Fvector* verts, CDB::TRI* tris, const hdrCFORM& H,
 	CDB::serialize_callback serialize_callback,
 	CDB::deserialize_callback deserialize_callback)
 {
+	ZoneScoped;
+
 	R_ASSERT							(CFORM_CURRENT_VERSION==H.version);
 
 	string_path fName;

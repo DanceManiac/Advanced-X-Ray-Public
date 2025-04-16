@@ -73,6 +73,8 @@ CMainMenu*	MainMenu()	{return (CMainMenu*)g_pGamePersistent->m_pMainMenu; };
 
 CMainMenu::CMainMenu	()
 {
+	ZoneScoped;
+
 	m_Flags.zero					();
 	m_startDialog					= NULL;
 	m_screenshotFrame				= u32(-1);
@@ -137,6 +139,8 @@ CMainMenu::CMainMenu	()
 
 CMainMenu::~CMainMenu	()
 {
+	ZoneScoped;
+
 	ReportTxrsForPrefetching		();
 	Device.seqFrame.Remove			(this);
 	xr_delete						(g_btnHint);
@@ -404,6 +408,8 @@ bool CMainMenu::OnRenderPPUI_query()
 extern void draw_wnds_rects();
 void CMainMenu::OnRender	()
 {
+	ZoneScoped;
+
 	if(m_Flags.test(flGameSaveScreenshot))
 		return;
 
@@ -467,6 +473,8 @@ void CMainMenu::StartStopMenu(CUIDialogWnd* pDialog, bool bDoHideIndicators)
 //pureFrame
 void CMainMenu::OnFrame()
 {
+	ZoneScoped;
+
 	if (m_Flags.test(flNeedChangeCapture))
 	{
 		m_Flags.set					(flNeedChangeCapture,FALSE);

@@ -616,6 +616,8 @@ void CRender::Render3DStatic()
 
 void CRender::render_forward				()
 {
+	ZoneScoped;
+
 	VERIFY	(0==mapDistort.size());
 	RImplementation.o.distortion				= RImplementation.o.distortion_enabled;	// enable distorion
 

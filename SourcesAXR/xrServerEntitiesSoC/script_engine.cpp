@@ -160,6 +160,8 @@ void CScriptEngine::setup_auto_load		()
 
 void CScriptEngine::init				()
 {
+	ZoneScoped;
+
 	CScriptStorage::reinit				();
 
 	luabind::open						(lua());

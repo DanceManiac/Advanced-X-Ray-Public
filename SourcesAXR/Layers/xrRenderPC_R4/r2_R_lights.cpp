@@ -27,6 +27,8 @@ bool check_grass_shadow(light* L, CFrustum VB)
 
 void	CRender::render_lights	(light_Package& LP)
 {
+	ZoneScoped;
+
 	// Проверка на расстояние и нахождение света за спиной камеры
 	auto isLightVisible = [&](light* L) -> bool {
 		Fvector toLight;

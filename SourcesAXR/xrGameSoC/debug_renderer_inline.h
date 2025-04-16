@@ -10,6 +10,7 @@
 
 IC	void CDebugRenderer::render			()
 {
+	ZoneScoped;
 	DRender->Render();
 }
 

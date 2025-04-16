@@ -196,6 +196,8 @@ CLocatorAPI::~CLocatorAPI()
 
 void CLocatorAPI::Register		(LPCSTR name, u32 vfs, u32 crc, u32 ptr, u32 size_real, u32 size_compressed, u32 modif)
 {
+	ZoneScoped;
+
 	//Msg("Register[%d] [%s]",vfs,name);
 	string256			temp_file_name;
 	xr_strcpy			(temp_file_name,sizeof(temp_file_name),name);
@@ -311,6 +313,8 @@ IReader* open_chunk(void* ptr, u32 ID, pcstr archiveName, u32 archiveSize, bool 
 
 void CLocatorAPI::LoadArchive(archive& A, LPCSTR entrypoint)
 {
+	ZoneScoped;
+
 	// Create base path
 	string_path					fs_entry_point;
 	bool shouldDecrypt			= false;
@@ -420,6 +424,8 @@ void CLocatorAPI::archive::close()
 
 void CLocatorAPI::ProcessArchive(LPCSTR _path)
 {
+	ZoneScoped;
+
 	// find existing archive
 	shared_str path				= _path;
 
@@ -496,6 +502,8 @@ bool CLocatorAPI::load_all_unloaded_archives()
 
 void CLocatorAPI::ProcessOne(LPCSTR path, void* _F)
 {
+	ZoneScoped;
+
 	_finddata_t& F	= *((_finddata_t*)_F);
 
 	string_path		N;
@@ -555,6 +563,8 @@ bool ignore_path(const char* _path){
 
 bool CLocatorAPI::Recurse(LPCSTR path)
 {
+	ZoneScoped;
+
     _finddata_t		sFile;
     intptr_t		hFile;
 
@@ -696,6 +706,8 @@ IReader *CLocatorAPI::setup_fs_ltx	(LPCSTR fs_name)
 
 void CLocatorAPI::_initialize	(u32 flags, LPCSTR target_folder, LPCSTR fs_name)
 {
+	ZoneScoped;
+
 	char _delimiter = '|'; //','
 	if (m_Flags.is(flReady))return;
 	CTimer t;
@@ -720,9 +732,11 @@ void CLocatorAPI::_initialize	(u32 flags, LPCSTR target_folder, LPCSTR fs_name)
 	if (m_Flags.is(flTargetFolderOnly))
 	{
 		append_path		("$target_folder$",target_folder,0,TRUE);
-	}else
+	}
+	else
 	{
-	IReader			*pFSltx = setup_fs_ltx(fs_name);
+		ZoneScopedN("Process FS ltx");
+		IReader			*pFSltx = setup_fs_ltx(fs_name);
 /*
 		LPCSTR fs_ltx	= (fs_name&&fs_name[0])?fs_name:FSLTX;
 		F				= r_open(fs_ltx); 
@@ -757,6 +771,8 @@ void CLocatorAPI::_initialize	(u32 flags, LPCSTR target_folder, LPCSTR fs_name)
 
 		while(!pFSltx->eof())
 		{
+			ZoneScopedN("Read string");
+
 			pFSltx->r_string			(buf,sizeof(buf));
 			if(buf[0]==';')		continue;
 
@@ -841,6 +857,8 @@ void CLocatorAPI::_initialize	(u32 flags, LPCSTR target_folder, LPCSTR fs_name)
 
 void CLocatorAPI::_destroy		()
 {
+	ZoneScoped;
+
 	CloseLog		();
 
 	for				(files_it I=m_files.begin(); I!=m_files.end(); I++)

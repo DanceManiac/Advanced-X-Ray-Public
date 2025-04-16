@@ -126,6 +126,8 @@ void CParticleEffect::UpdateParent(const Fmatrix& m, const Fvector& velocity, BO
 
 void CParticleEffect::OnFrame(u32 frame_dt)
 {
+	ZoneScoped;
+
 	if (m_Def && m_RT_Flags.is(flRT_Playing))
 	{
 		m_MemDT			+= frame_dt;
@@ -271,6 +273,8 @@ void CParticleEffect::OnDeviceDestroy()
 //----------------------------------------------------
 IC void FillSprite_fpu	(FVF::LIT*& pv, const Fvector& T, const Fvector& R, const Fvector& pos, const Fvector2& lt, const Fvector2& rb, float r1, float r2, u32 clr, float angle)
 {
+	ZoneScoped;
+
 	float sa	= _sin(angle);  
 	float ca	= _cos(angle);  
 	
@@ -304,6 +308,8 @@ IC void FillSprite_fpu	(FVF::LIT*& pv, const Fvector& T, const Fvector& R, const
 
 IC void FillSprite	(FVF::LIT*& pv, const Fvector& T, const Fvector& R, const Fvector& pos, const Fvector2& lt, const Fvector2& rb, float r1, float r2, u32 clr, float sina , float cosa )
 {
+	ZoneScoped;
+
 	__m128 Vr, Vt, _T , _R , _pos , _zz , _sa , _ca , a , b , c , d;
 
 	_sa = _mm_set1_ps( sina );

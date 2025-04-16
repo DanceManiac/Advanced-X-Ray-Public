@@ -185,6 +185,8 @@ void InitLog()
 
 void CreateLog			(BOOL nl)
 {
+	ZoneScoped;
+
     no_log				= nl;
 	strconcat			(sizeof(log_file_name),log_file_name,Core.ApplicationName,"_",Core.UserName,".log");
 	if (FS.path_exist("$logs$"))
@@ -201,6 +203,8 @@ void CreateLog			(BOOL nl)
 
 void CloseLog(void)
 {
+	ZoneScoped;
+
 	FlushLog		();
  	LogFile->clear	();
 	xr_delete		(LogFile);

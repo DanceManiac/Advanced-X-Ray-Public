@@ -57,6 +57,8 @@ xrMemory::xrMemory()
 
 void	xrMemory::_initialize	(BOOL bDebug)
 {
+	ZoneScoped;
+
 #ifdef DEBUG_MEMORY_MANAGER
 	debug_mode				= bDebug;
 	debug_info_update		= 0;
@@ -115,6 +117,8 @@ void	xrMemory::_initialize	(BOOL bDebug)
 
 void	xrMemory::_destroy()
 {
+	ZoneScoped;
+
 #ifdef DEBUG_MEMORY_MANAGER
 	mem_alloc_gather_stats		(false);
 	mem_alloc_show_stats		();

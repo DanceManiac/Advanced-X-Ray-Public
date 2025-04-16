@@ -38,6 +38,8 @@ CAI_Space::CAI_Space				()
 
 void CAI_Space::init				()
 {
+	ZoneScoped;
+
 	VERIFY					(!m_ef_storage);
 	m_ef_storage			= xr_new<CEF_Storage>();
 
@@ -68,6 +70,8 @@ void CAI_Space::init				()
 
 CAI_Space::~CAI_Space				()
 {
+	ZoneScoped;
+
 	unload					();
 	
 	xr_delete				(m_patrol_path_storage);
@@ -91,6 +95,8 @@ CAI_Space::~CAI_Space				()
 
 void CAI_Space::load				(LPCSTR level_name)
 {
+	ZoneScoped;
+
 #ifdef PRIQUEL
 	VERIFY					(m_game_graph);
 #endif // PRIQUEL
@@ -142,6 +148,8 @@ void CAI_Space::load				(LPCSTR level_name)
 
 void CAI_Space::unload				(bool reload)
 {
+	ZoneScoped;
+
 	script_engine().unload	();
 	xr_delete				(m_graph_engine);
 	xr_delete				(m_level_graph);
@@ -191,6 +199,8 @@ void CAI_Space::validate			(const u32 level_id) const
 
 void CAI_Space::patrol_path_storage_raw	(IReader &stream)
 {
+	ZoneScoped;
+
 	xr_delete						(m_patrol_path_storage);
 	m_patrol_path_storage			= xr_new<CPatrolPathStorage>();
 	m_patrol_path_storage->load_raw	(get_level_graph(),get_cross_table(),get_game_graph(),stream);
@@ -198,6 +208,8 @@ void CAI_Space::patrol_path_storage_raw	(IReader &stream)
 
 void CAI_Space::patrol_path_storage		(IReader &stream)
 {
+	ZoneScoped;
+
 	xr_delete						(m_patrol_path_storage);
 	m_patrol_path_storage			= xr_new<CPatrolPathStorage>();
 	m_patrol_path_storage->load		(stream);

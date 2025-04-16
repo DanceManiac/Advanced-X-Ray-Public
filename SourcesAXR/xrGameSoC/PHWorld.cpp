@@ -21,6 +21,7 @@
 BOOL g_bDebugDumpPhysicsStep				=					0;
 
 void CPHMesh ::Create(dSpaceID space, dWorldID world){
+	ZoneScoped;
 	Geom = dCreateTriList(space, 0, 0);
 	
 }
@@ -29,7 +30,7 @@ void CPHMesh ::Create(dSpaceID space, dWorldID world){
 ////////////////////////////////////////////////////////////////////////////
 
 void CPHMesh ::Destroy(){
-	
+	ZoneScoped;
 	dGeomDestroy(Geom);
 	dTriListClass=-1;
 
@@ -168,6 +169,8 @@ void CPHWorld::SetGravity(float g)
 
 void CPHWorld::OnFrame()
 {
+	ZoneScoped;
+
 	// Msg									("------------- physics: %d / %d",u32(Device.dwFrame),u32(m_steps_num));
 	//просчитать полет пуль
 	/*

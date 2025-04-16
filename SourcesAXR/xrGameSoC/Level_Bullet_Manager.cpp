@@ -106,6 +106,8 @@ CBulletManager::~CBulletManager()
 
 void CBulletManager::Load		()
 {
+	ZoneScoped;
+
 	m_fTracerWidth			= pSettings->r_float(BULLET_MANAGER_SECTION, "tracer_width");
 	m_fTracerLengthMax		= pSettings->r_float(BULLET_MANAGER_SECTION, "tracer_length_max");
 	m_fTracerLengthMin		= pSettings->r_float(BULLET_MANAGER_SECTION, "tracer_length_min");
@@ -193,6 +195,8 @@ SBullet& CBulletManager::AddBullet(const Fvector& position,
 
 void CBulletManager::UpdateWorkload()
 {
+	ZoneScoped;
+
 	m_Lock.Enter		()	;
 	u32 delta_time		=	Device.dwTimeDelta + m_dwTimeRemainder;
 	u32 step_num		=	delta_time/m_dwStepTime;
@@ -342,6 +346,8 @@ float SqrDistancePointToSegment(const Fvector& pt, const Fvector& orig, const Fv
 
 void CBulletManager::Render	()
 {
+	ZoneScoped;
+
 #ifdef DEBUG
 	//0-рикошет
 	//1-застрявание пули в материале
@@ -438,6 +444,8 @@ void CBulletManager::CommitRenderSet		()	// @ the end of frame
 }
 void CBulletManager::CommitEvents			()	// @ the start of frame
 {
+	ZoneScoped;
+
 	for (u32 _it=0; _it<m_Events.size(); _it++)	{
 		_event&		E	= m_Events[_it];
 		switch (E.Type)

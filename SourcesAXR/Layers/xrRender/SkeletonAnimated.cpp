@@ -540,6 +540,9 @@ void CKinematicsAnimated::UpdateTracks	()
 {
 	_DBG_SINGLE_USE_MARKER;
 	if (Update_LastTime==RDEVICE.dwTimeGlobal) return;
+
+	ZoneScoped;
+
 	u32 DT	= RDEVICE.dwTimeGlobal-Update_LastTime;
 	if (DT>66) DT=66;
 	float dt = float(DT)/1000.f;

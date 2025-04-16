@@ -203,6 +203,8 @@ void CEnvAmbient::load(
 		const shared_str& sect
 	)
 {
+	ZoneScoped;
+
 	m_ambients_config_filename = ambients_config.fname();
 	m_load_section		= sect;
 	string_path			tmp;
@@ -238,6 +240,8 @@ void CEnvAmbient::load(
 
 void CEnvAmbient::load_shoc(const shared_str& sect)
 {
+	ZoneScoped;
+
 	m_section = sect;
 	string_path tmp;
 
@@ -359,6 +363,8 @@ CEnvDescriptor::CEnvDescriptor	(shared_str const& identifier) : m_identifier(ide
 #define	C_CHECK(C)	if (C.x<0 || C.x>2 || C.y<0 || C.y>2 || C.z<0 || C.z>2)	{ Msg("! Invalid '%s' in env-section '%s'",#C,m_identifier.c_str());}
 void CEnvDescriptor::load	(CEnvironment& environment, CInifile& config, bool isWFX)
 {
+	ZoneScoped;
+
 	Ivector3 tm				={0,0,0};
 	sscanf					(m_identifier.c_str(),"%d:%d:%d",&tm.x,&tm.y,&tm.z);
 	R_ASSERT3				((tm.x>=0)&&(tm.x<24)&&(tm.y>=0)&&(tm.y<60)&&(tm.z>=0)&&(tm.z<60),"Incorrect weather time",m_identifier.c_str());
@@ -480,6 +486,8 @@ void CEnvDescriptor::load_shoc(CEnvironment& environment, LPCSTR exec_tm, LPCSTR
 
 void CEnvDescriptor::load_shoc(float exec_tm, LPCSTR S, CEnvironment& environment)
 {
+	ZoneScoped;
+
 	m_identifier					= S;
 	exec_time						= exec_tm;
 	exec_time_loaded				= exec_time;
@@ -905,6 +913,8 @@ CEnvAmbient* CEnvironment::AppendEnvAmb		(const shared_str& sect)
 
 void	CEnvironment::mods_load			()
 {
+	ZoneScoped;
+
 	Modifiers.clear_and_free			();
 	string_path							path;
 	if (FS.exist(path,"$level$","level.env_mod"))	
@@ -941,6 +951,8 @@ void	CEnvironment::mods_unload		()
 
 void    CEnvironment::load_level_specific_ambients ()
 {
+	ZoneScoped;
+
 	const shared_str level_name = g_pGameLevel->name();
 
 	string_path path;
@@ -995,6 +1007,8 @@ void CEnvironment::load_weathers		()
 {
 	if (!WeatherCycles.empty())
 		return;
+
+	ZoneScoped;
 
 	if (FS.path_exist("$game_weathers$"))
 	{
@@ -1060,6 +1074,8 @@ void CEnvironment::load_weather_effects	()
 {
 	if (!WeatherFXs.empty())
 		return;
+
+	ZoneScoped;
 
 	if (!used_soc_weather)
 	{
@@ -1144,6 +1160,8 @@ void CEnvironment::load_weather_effects	()
 
 void CEnvironment::load		()
 {
+	ZoneScoped;
+
 	if (!CurrentEnv)
 		create_mixer		();
 
@@ -1159,6 +1177,8 @@ void CEnvironment::load		()
 
 void CEnvironment::unload	()
 {
+	ZoneScoped;
+
 	EnvsMapIt _I,_E;
 	// clear weathers
 	_I		= WeatherCycles.begin();

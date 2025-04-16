@@ -20,6 +20,8 @@ extern	void	GetPlayerName_FromRegistry	(char* name, u32 const name_size);
 
 BOOL CLevel::net_Start	( LPCSTR op_server, LPCSTR op_client )
 {
+	ZoneScoped;
+
 	net_start_result_total				= TRUE;
 
 	pApp->LoadBegin				();
@@ -105,6 +107,8 @@ shared_str level_version(const shared_str &server_options);
 shared_str level_name(const shared_str &server_options);
 bool CLevel::net_start1				()
 {
+	ZoneScoped;
+
 	// Start client and server if need it
 	if (m_caServerOptions.size())
 	{
@@ -148,6 +152,8 @@ bool CLevel::net_start1				()
 
 bool CLevel::net_start2				()
 {
+	ZoneScoped;
+
 	if (net_start_result_total && m_caServerOptions.size())
 	{
 		GameDescriptionData game_descr;
@@ -167,6 +173,9 @@ bool CLevel::net_start2				()
 bool CLevel::net_start3				()
 {
 	if(!net_start_result_total) return true;
+
+	ZoneScoped;
+
 	//add server port if don't have one in options
 	if (!strstr(m_caClientOptions.c_str(), "port=") && Server)
 	{
@@ -212,6 +221,8 @@ bool CLevel::net_start4				()
 {
 	if(!net_start_result_total) return true;
 
+	ZoneScoped;
+
 	g_loading_events.pop_front();
 
 	g_loading_events.push_front	(LOADING_EVENT(this,&CLevel::net_start_client6));
@@ -228,6 +239,8 @@ bool CLevel::net_start5				()
 {
 	if (net_start_result_total)
 	{
+		ZoneScoped;
+
 		NET_Packet		NP;
 		NP.w_begin		(M_CLIENTREADY);
 		Send			(NP,net_flags(TRUE,TRUE));
@@ -242,6 +255,8 @@ bool CLevel::net_start5				()
 #include "hudmanager.h"
 bool CLevel::net_start6				()
 {
+	ZoneScoped;
+
 	//init bullet manager
 	BulletManager().Clear		();
 	BulletManager().Load		();
@@ -324,6 +339,8 @@ bool CLevel::net_start6				()
 
 void CLevel::InitializeClientGame	(NET_Packet& P)
 {
+	ZoneScoped;
+
 	string256 game_type_name;
 	P.r_stringZ(game_type_name);
 	if(game && !xr_strcmp(game_type_name, game->type_name()) )

@@ -191,6 +191,8 @@ void CGameTaskManager::SetTaskState(const TASK_ID& id, u16 objective_num, ETaskS
 
 void CGameTaskManager::UpdateTasks						()
 {
+	ZoneScoped;
+
 	u32					task_count = GameTasks().size();
 	if(0==task_count)	return;
 

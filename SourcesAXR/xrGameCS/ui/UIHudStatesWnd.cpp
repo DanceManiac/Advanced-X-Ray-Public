@@ -51,6 +51,8 @@ void CUIHudStatesWnd::reset_ui()
 
 void CUIHudStatesWnd::InitFromXml( CUIXml& xml, LPCSTR path )
 {
+	ZoneScoped;
+
 	CUIXmlInit::InitWindow( xml, path, 0, this );
 	XML_NODE* stored_root = xml.GetLocalRoot();
 	

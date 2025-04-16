@@ -231,6 +231,8 @@ shared_str CEffect_Thunderbolt::AppendDef_shoc(CEnvironment& environment, CInifi
 
 BOOL CEffect_Thunderbolt::RayPick(const Fvector& s, const Fvector& d, float& dist)
 {
+    ZoneScoped;
+
 	BOOL bRes 	= TRUE;
 #ifdef _EDITOR
     bRes 				= Tools->RayPick	(s,d,dist,0,0);
@@ -253,6 +255,8 @@ BOOL CEffect_Thunderbolt::RayPick(const Fvector& s, const Fvector& d, float& dis
 
 void CEffect_Thunderbolt::Bolt(shared_str id, float period, float lt)
 {
+    ZoneScoped;
+
 	VERIFY					(id.size());
 	state 		            = stWorking;
 	life_time	            = lt+Random.randF(-lt*0.5f,lt*0.5f);
@@ -301,6 +305,8 @@ void CEffect_Thunderbolt::Bolt(shared_str id, float period, float lt)
 
 void CEffect_Thunderbolt::OnFrame(shared_str id, float period, float duration)
 {
+    ZoneScoped;
+
 	BOOL enabled			= !!(id.size());
 	if (bEnabled!=enabled){
     	bEnabled			= enabled;

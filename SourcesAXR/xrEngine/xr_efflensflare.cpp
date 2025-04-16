@@ -264,6 +264,9 @@ void CLensFlare::OnFrame(shared_str id)
 #ifndef _EDITOR
 	if (!g_pGameLevel)			return;
 #endif
+
+	ZoneScoped;
+
 	dwFrame			= Device.dwFrame;
 
 	R_ASSERT		( _valid(g_pGamePersistent->Environment().CurrentEnv->sun_dir) );

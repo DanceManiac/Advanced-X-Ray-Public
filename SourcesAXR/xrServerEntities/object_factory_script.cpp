@@ -15,6 +15,8 @@
 
 void CObjectFactory::register_script_class	(LPCSTR client_class, LPCSTR server_class, LPCSTR clsid, LPCSTR script_clsid)
 {
+	ZoneScoped;
+
 #ifndef NO_XR_GAME
 	luabind::object				client;
 	if (!ai().script_engine().function_object(client_class,client,LUA_TUSERDATA)) {
@@ -42,6 +44,8 @@ void CObjectFactory::register_script_class	(LPCSTR client_class, LPCSTR server_c
 
 void CObjectFactory::register_script_class			(LPCSTR unknown_class, LPCSTR clsid, LPCSTR script_clsid)
 {
+	ZoneScoped;
+
 	luabind::object				creator;
 	if (!ai().script_engine().function_object(unknown_class,creator,LUA_TUSERDATA)) {
 		ai().script_engine().script_log	(eLuaMessageTypeError,"Cannot register class %s",unknown_class);
@@ -70,6 +74,8 @@ struct CInternal{};
 
 void CObjectFactory::register_script	() const
 {
+	ZoneScoped;
+
 	actualize					();
 
 	luabind::class_<CInternal>	instance("clsid");

@@ -54,6 +54,8 @@ void CTheoraSurface::Play(BOOL _looped, u32 _time)
 
 BOOL CTheoraSurface::Update(u32 _time)
 {
+	ZoneScoped;
+
 	VERIFY				(Valid());
 	BOOL redraw			= FALSE;
 	

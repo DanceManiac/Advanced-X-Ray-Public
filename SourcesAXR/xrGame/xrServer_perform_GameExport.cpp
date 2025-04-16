@@ -4,6 +4,8 @@
 
 void xrServer::Perform_game_export	()
 {
+	ZoneScoped;
+
 	struct NetExportToClientFunctor
 	{
 		xrServer* server_ptr;

@@ -19,6 +19,8 @@ CSoundRender_Emitter*	CSoundRender_Core::i_play(ref_sound* S, BOOL _loop, float 
 
 void CSoundRender_Core::update	( const Fvector& P, const Fvector& D, const Fvector& N )
 {
+	ZoneScoped;
+
 	if (0 == bReady)	return;
 	bLocked = true;
 	Timer.time_factor(psSoundTimeFactor); //--#SM+#--

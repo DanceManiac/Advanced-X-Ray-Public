@@ -25,6 +25,8 @@ extern	void msCreate		(LPCSTR name);
 
 void CEngine::Initialize	(void)
 {
+	ZoneScoped;
+
 	// Other stuff
 	Engine.Sheduler.Initialize			( );
 	// 
@@ -37,6 +39,8 @@ typedef void __cdecl ttapi_Done_func(void);
 
 void CEngine::Destroy	()
 {
+	ZoneScoped;
+
 	Engine.Sheduler.Destroy				( );
 #ifdef DEBUG_MEMORY_MANAGER
 	extern void	dbg_dump_leaks_prepare	( );

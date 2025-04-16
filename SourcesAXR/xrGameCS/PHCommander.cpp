@@ -71,6 +71,8 @@ void CPHCommander::clear	()
 
 void CPHCommander::update	()
 {
+	ZoneScoped;
+
 	for(u32 i=0; i<m_calls.size(); i++)
 	{
 		try

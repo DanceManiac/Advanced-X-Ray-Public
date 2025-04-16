@@ -189,6 +189,8 @@ void CEngineAPI::CreateRendererList()
 	if (!vid_quality_token.empty())
 		return;
 
+	ZoneScoped;
+
 	xr_vector<xr_token> modes;
 
 	// try to initialize R1
