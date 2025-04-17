@@ -203,6 +203,7 @@
 #	define XRCORE_API __declspec(dllexport)
 #else
 #	define XRCORE_API __declspec(dllimport)
+#	define TRACY_IMPORTS
 #endif
 
 #include <tracy/Tracy.hpp>
