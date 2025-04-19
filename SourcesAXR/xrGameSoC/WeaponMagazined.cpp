@@ -928,17 +928,21 @@ void CWeaponMagazined::state_Fire	(float dt)
 	{
 		m_vStartPos = p1;
 		m_vStartDir = d;
-	};
+	}
 		
 	VERIFY(!m_magazine.empty());
 //	Msg("%d && %d && (%d || %d) && (%d || %d)", !m_magazine.empty(), fTime<=0, IsWorking(), m_bFireSingleShot, m_iQueueSize < 0, m_iShotNum < m_iQueueSize);
 	while (!m_magazine.empty() && fTime <= 0 && (IsWorking() || m_bFireSingleShot) && (m_iQueueSize < 0 || m_iShotNum < m_iQueueSize))
 	{
 		m_bFireSingleShot = false;
+		
+		//Alundaio: Use fModeShotTime instead of fOneShotTime if current fire mode is 2-shot burst
+		//Alundaio: Cycle down RPM after two shots; used for Abakan/AN-94
+		bool b_mod_shot_time = (GetCurrentFireMode() == 3 || GetCurrentFireMode() == 2 || (bCycleDown == true && m_iShotNum < 1));
 
-		VERIFY(fTimeToFire>0.f);
-		fTime			+=	fTimeToFire;
-		fTime			+= (fTimeToFire * (m_fOverheatingSubRpm / 100.f)) * m_fWeaponOverheating;
+		VERIFY			(fTimeToFire>0.f);
+		fTime			+=	b_mod_shot_time ? fModeShotTime : fTimeToFire;
+		fTime			+= ((b_mod_shot_time ? fModeShotTime : fTimeToFire) * (m_fOverheatingSubRpm / 100.f)) * m_fWeaponOverheating;
 
 		++m_iShotNum;
 		

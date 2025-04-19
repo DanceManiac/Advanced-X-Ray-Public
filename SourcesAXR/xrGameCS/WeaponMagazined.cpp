@@ -943,6 +943,9 @@ void CWeaponMagazined::state_Fire(float dt)
 				Log("next_state", GetNextState());
 				Log("item_sect", cNameSect().c_str());
 				Log("H_Parent", H_Parent()->cNameSect().c_str());
+				StopShooting();
+				return;
+				//Alundaio: This is not supposed to happen but it does. GSC was aware but why no return here? Known to cause crash on game load if npc immediatly enters combat.
 		}
 
 		CEntity* E = smart_cast<CEntity*>(H_Parent());
@@ -955,25 +958,28 @@ void CWeaponMagazined::state_Fire(float dt)
 		{
 			m_vStartPos = p1;
 			m_vStartDir = d;
-		};
+		}
 		
 		VERIFY(!m_magazine.empty());
 
 		while (!m_magazine.empty() && fShotTimeCounter < 0 && (IsWorking() || m_bFireSingleShot) && (m_iQueueSize < 0 || m_iShotNum < m_iQueueSize))
 		{
+			m_bFireSingleShot		= false;
+
+			//Alundaio: Use fModeShotTime instead of fOneShotTime if current fire mode is 2-shot burst
+			//Alundaio: Cycle down RPM after two shots; used for Abakan/AN-94
+			bool b_mod_shot_time = (GetCurrentFireMode() == 3 || GetCurrentFireMode() == 2 || (bCycleDown == true && m_iShotNum < 1));
+
+			fShotTimeCounter		+=	b_mod_shot_time ? fModeShotTime : fOneShotTime;
+			fShotTimeCounter		+= ((b_mod_shot_time ? fModeShotTime : fOneShotTime) * (m_fOverheatingSubRpm / 100.f)) * m_fWeaponOverheating;
+
+			++m_iShotNum;
+			
 			if(CheckForMisfire())
 			{
 				StopShooting();
 				return;
 			}
-
-			m_bFireSingleShot		= false;
-
-			fShotTimeCounter		+=	fOneShotTime;
-			fShotTimeCounter		+= (fOneShotTime * (m_fOverheatingSubRpm / 100.f)) * m_fWeaponOverheating;
-
-			++m_iShotNum;
-			
 			OnShot					();
 
 			if (m_iShotNum>m_iBaseDispersionedBulletsCount)
