@@ -197,15 +197,29 @@ CInifile::~CInifile( )
 
 static void	insert_item(CInifile::Sect *tgt, const CInifile::Item& I)
 {
-	CInifile::SectIt_	sect_it		= std::lower_bound(tgt->Data.begin(),tgt->Data.end(),*I.first,item_pred);
+	auto sect_it		= std::lower_bound(tgt->Data.begin(),tgt->Data.end(),*I.first,item_pred);
 	if (sect_it!=tgt->Data.end() && sect_it->first.equal(I.first))
 	{ 
 		sect_it->second	= I.second;
 //#ifdef DEBUG
 //		sect_it->comment= I.comment;
 //#endif
-	}else{
-		tgt->Data.insert	(sect_it,I);
+	
+	
+		auto found = std::find_if(tgt->Ordered_Data.begin(), tgt->Ordered_Data.end(), [&]( const auto& it )
+			{return xr_strcmp( *it.first, *I.first ) == 0;});
+		if ( found != tgt->Ordered_Data.end() )
+		{
+			found->second  = I.second;
+#ifdef DEBUG
+			found->comment = I.comment;
+#endif
+		}
+	}
+	else
+	{
+		tgt->Data.insert( sect_it, I );
+		tgt->Ordered_Data.push_back( I );
 	}
 }
 
@@ -228,7 +242,7 @@ void	CInifile::Load(IReader* F, LPCSTR path
 	ZoneScoped;
 
 	R_ASSERT(F);
-	Sect		*Current = 0;
+	Sect		*Current = nullptr;
 	string4096	str;
 	string4096	str2;
 	
@@ -929,10 +943,46 @@ void	CInifile::remove_line	( LPCSTR S, LPCSTR L )
 		SectIt_ A = std::lower_bound(data.Data.begin(),data.Data.end(),L,item_pred);
     	R_ASSERT(A!=data.Data.end() && xr_strcmp(*A->first,L)==0);
         data.Data.erase(A);
+		auto found = std::find_if(data.Ordered_Data.begin(), data.Ordered_Data.end(), [&]( const auto& it )
+			{return xr_strcmp( *it.first, L ) == 0;});
+		R_ASSERT( found != data.Ordered_Data.end() && xr_strcmp( *found->first, L ) == 0 );
+		data.Ordered_Data.erase( found );
     }
 }
 
 void CInifile::set_readonly(bool b)
 {
 	m_flags.set(eReadOnly, b);
+}
+
+#include <sstream>
+
+std::string CInifile::get_as_string()
+{
+	std::stringstream str;
+
+	bool first_sect = true;
+	for ( const auto& r_it : DATA ) 
+	{
+	    if ( !first_sect ) str << "\r\n";
+	    first_sect = false;
+		str << "[" << r_it->Name.c_str() << "]\r\n";
+		for (const auto& I : r_it->Ordered_Data)
+		{
+			if ( I.first.c_str() ) {
+				if ( I.second.c_str() ) {
+					string512 val;
+					_decorate( val, I.second.c_str() );
+					_TrimRight(val);
+					// only name and value
+					str << I.first.c_str() << " = " << val << "\r\n";
+				} else {
+					// only name
+					str << I.first.c_str() << " =\r\n";
+				}
+			}
+		}
+	}
+
+	return str.str();
 }

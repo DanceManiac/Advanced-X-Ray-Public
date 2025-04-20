@@ -30,6 +30,7 @@ public:
     struct XRCORE_API	Sect {
 		shared_str		Name;
 		Items			Data;
+		xr_vector<Item> Ordered_Data;
 
 		BOOL			line_exist	(LPCSTR L, LPCSTR* val=0);
 	};
@@ -74,6 +75,7 @@ public:
 
 	virtual 	~CInifile		( );
     bool		save_as         ( LPCSTR new_fname = nullptr );
+	std::string	get_as_string();
 	void		save_as			(IWriter& writer, bool bcheck=false)const;
 	void		set_override_names(BOOL b){m_flags.set(eOverrideNames,b);}
 	void		save_at_end		(BOOL b){m_flags.set(eSaveAtEnd,b);}
