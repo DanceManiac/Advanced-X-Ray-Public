@@ -8,6 +8,8 @@
         TRACY_ENABLE;
         TRACY_NO_FRAME_IMAGE;
         TRACY_ON_DEMAND; --> 
+		<!-- comment to disable
+		PROTECT_CBT -->
         %(PreprocessorDefinitions)
       </PreprocessorDefinitions>
     </ClCompile>

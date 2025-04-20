@@ -8,6 +8,11 @@
 #include "xrCore.h"
 #include "../xrGameSpy/xrGameSpy_MainDefs.h"
 
+#ifdef PROTECT_CBT
+#include "AccessMFS.h"
+#include "Shellapi.h"
+#endif
+
 #pragma comment(lib,"winmm.lib")
 
 #ifdef DEBUG
@@ -17,6 +22,10 @@
 XRCORE_API		xrCore	Core;
 XRCORE_API		u32		build_id;
 XRCORE_API		LPCSTR	build_date;
+
+#ifdef PROTECT_CBT
+XRCORE_API		std::string	authorizedID;
+#endif
 
 namespace CPU
 {
@@ -109,6 +118,32 @@ void xrCore::_initialize	(LPCSTR _ApplicationName, LogCallback cb, BOOL init_fs,
         Msg("'%s %s' build %d, ver. %s, M.F.S. Team %s\n", "Advanced X-Ray", GAME_PLATFORM, build_id, GAME_VERSION, build_date);
         Msg("M.F.S. Team VK: https://vk.com/mfs_studio");
 		Msg("M.F.S. Team Discord: https://discord.gg/AFPqkfBfQs \n");
+
+#ifdef PROTECT_CBT
+		UserAccessData loadedData;
+
+		if (GetAccessData(loadedData, true))
+		{
+			authorizedID = loadedData.userId;
+
+			Msg("\nUser Name: %s", loadedData.username.c_str());
+			Msg("User Discord ID: %s\n", authorizedID.c_str());
+
+			const std::vector<std::string> sUserKeys = loadedData.userKeys;
+
+			if (!(GetAccessKeys() == sUserKeys))
+				CHECK_OR_EXIT(0, "You have been denied access to this Advanced X-Ray Engine build due to the launch of a leaked build!");
+
+			if (!CheckDiscordRoles(authorizedID, loadedData.requiredRoles))
+			{
+				ShellExecute(0, "open", "https://discord.gg/AFPqkfBfQs", NULL, NULL, SW_HIDE);
+				CHECK_OR_EXIT(0, "This Advanced X-Ray Engine build is only available for testers. Check the discord channel.");
+			}
+		}
+		else
+			CHECK_OR_EXIT(0, "You have been denied access to this Advanced X-Ray Engine build! You may not be logged in or have received a leaked build.");
+#endif
+
         EFS._initialize();
 #ifdef DEBUG
 #ifndef _EDITOR
