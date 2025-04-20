@@ -5,6 +5,7 @@
 #include "../ui_base.h"
 #include "../UICursor.h"
 #include "../../xrEngine/xr_input.h"
+#include "../AdvancedXrayGameConstants.h"
 
 #include <imgui.h>
 
@@ -137,9 +138,12 @@ void CUIScrollView::Update				()
 	if(m_flags.test	(eNeedRecalc) )
 		RecalcSize			();
 
-	const Fvector2 w_pos = { m_pad->GetWndPos().x, m_targetScrollPosition * 0.3 + m_pad->GetWndPos().y * 0.7 };
-	m_pad->SetWndPos(w_pos);
-
+	if (GameConstants::GetSmoothScrollEnabled())
+	{
+		const Fvector2 w_pos = { m_pad->GetWndPos().x, m_targetScrollPosition * 0.25 + m_pad->GetWndPos().y * 0.75 };
+		m_pad->SetWndPos(w_pos);
+	}
+	
 	inherited::Update();
 }
 
@@ -189,13 +193,16 @@ void CUIScrollView::RecalcSize			()
 
 
 	if(m_flags.test(eInverseDir) )
-		m_targetScrollPosition = GetHeight() - m_pad->GetHeight();
-
+	{
+		if (GameConstants::GetSmoothScrollEnabled())
+			m_targetScrollPosition = GetHeight() - m_pad->GetHeight();
+		else
+			m_pad->SetWndPos(Fvector2().set(m_pad->GetWndPos().x, GetHeight() - m_pad->GetHeight()));
+	}
+	UpdateScroll();
 
 	m_flags.set					(eNeedRecalc,FALSE);
 	//m_visible_rgn.set			(-1,-1);
-
-	UpdateScroll				();
 }
 
 void CUIScrollView::UpdateScroll		()
@@ -264,10 +271,16 @@ bool CUIScrollView::NeedShowScrollBar(){
 void CUIScrollView::OnScrollV			(CUIWindow*, void*)
 {
 	int s_pos					= m_VScrollBar->GetScrollPos();
-	//Fvector2 w_pos				= m_pad->GetWndPos();
-	//m_pad->SetWndPos			(Fvector2().set(w_pos.x,float(-s_pos)));
-	m_targetScrollPosition = -static_cast<float>(s_pos);
-	//m_visible_rgn.set			(-1,-1);
+	if (GameConstants::GetSmoothScrollEnabled())
+	{
+		m_targetScrollPosition		= -static_cast<float>(s_pos);
+	}
+	else
+	{
+		Fvector2 w_pos				= m_pad->GetWndPos();
+		m_pad->SetWndPos			(Fvector2().set(w_pos.x,float(-s_pos)));
+		//m_visible_rgn.set			(-1,-1);
+	}
 }
 
 bool CUIScrollView::OnMouseAction(float x, float y, EUIMessages mouse_action)
@@ -320,8 +333,8 @@ int CUIScrollView::GetCurrentScrollPos()
 
 void CUIScrollView::SetScrollPos(int value)
 {
-	//if(m_flags.test	(eNeedRecalc) )
-		//RecalcSize			();
+	if(m_flags.test	(eNeedRecalc) )
+		RecalcSize			();
 
 	clamp(value,GetMinScrollPos(),GetMaxScrollPos());
 	m_VScrollBar->SetScrollPos(value);

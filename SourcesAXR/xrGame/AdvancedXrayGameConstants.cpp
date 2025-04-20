@@ -56,6 +56,7 @@ bool	m_bShowSaveName = false;
 bool	m_bLimitedInvBoxes = false;
 bool	m_bGlobalAchEnabled = false;
 BOOL	m_b_animated_backpack = 0;
+bool	m_b_smooth_scroll = false;
 int		m_iArtefactsCount = 5;
 int		m_i_CMD_Count = 1;
 int		m_B_CMD_Count = 1;
@@ -135,6 +136,7 @@ namespace GameConstants
 		m_bFogInfluenceVolumetricLight = READ_IF_EXISTS(pAdvancedSettings, r_bool, "environment", "fog_infl_volumetric_light", false);
 		m_bLimitedInvBoxes = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "enable_limited_inv_boxes", false);
 		m_bGlobalAchEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "enable_global_achievements", false);
+		m_b_smooth_scroll = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "enable_smooth_scrolling", false);
 
 		Msg("# Advanced X-Ray GameConstants are loaded");
 	}
@@ -450,5 +452,10 @@ namespace GameConstants
 	shared_str GetMoonPhasesMode()
 	{
 		return m_sMoonPhasesMode;
+	}
+
+	bool GetSmoothScrollEnabled()
+	{
+		return m_b_smooth_scroll;
 	}
 }
