@@ -42,22 +42,11 @@ bool r_line(CScriptIniFile *self, LPCSTR S, int L,	luabind::internal_string &N, 
 	return			(true);
 }
 
-#pragma warning(push)
-#pragma warning(disable:4238)
 CScriptIniFile *create_ini_file	(LPCSTR ini_string)
 {
-	return			(
-		(CScriptIniFile*)
-		xr_new<CInifile>(
-			&IReader			(
-				(void*)ini_string,
-				xr_strlen(ini_string)
-			),
-			FS.get_path("$game_config$")->m_Path
-		)
-	);
+	IReader r((void*)ini_string, xr_strlen(ini_string));
+	return xr_new<CScriptIniFile>(&r, FS.get_path("$game_config$")->m_Path);
 }
-#pragma warning(pop)
 
 //Alundaio: The extended ability to reload system ini after application launch
 CScriptIniFile* reload_system_ini()
@@ -112,6 +101,8 @@ void CScriptIniFile::script_register(lua_State *L)
 			.def("section_count",	&CScriptIniFile::section_count)
 			.def("section_for_each", (void (*)(CScriptIniFile*, const luabind::functor<void>&)) &section_for_each)
 			.def("set_readonly",	&CScriptIniFile::set_readonly)
+			.def("readonly",		&CScriptIniFile::set_readonly)	// הכÿ סמגלוסעטלמסעט
+			.def("get_as_string",	&CScriptIniFile::get_as_string)
 			//Alundaio: END
 			.def("fname",			&CScriptIniFile::fname			)
 			.def("section_exist",	&CScriptIniFile::section_exist	)
@@ -127,9 +118,11 @@ void CScriptIniFile::script_register(lua_State *L)
 			.def("r_float",			&CScriptIniFile::r_float)
 			.def("r_vector",		&CScriptIniFile::r_fvector3)
 			.def("section_for_each", (void (*)(CScriptIniFile*, const luabind::functor<void>&)) & section_for_each)
-			.def("set_readonly", &CScriptIniFile::set_readonly)
 			.def("r_line",			&::r_line, out_value<4>() + out_value<5>()),
 
+		//Alundaio: extend
+		def("reload_system_ini", &reload_system_ini),
+		//Alundaio:: END
 		def("system_ini",			&get_system_ini),
 #ifdef XRGAME_EXPORTS
 		def("game_ini",				&get_game_ini),

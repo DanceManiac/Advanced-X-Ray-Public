@@ -101,6 +101,8 @@ void CScriptIniFile::script_register(lua_State *L)
 			.def("section_count",	&CScriptIniFile::section_count)
 			.def("section_for_each", (void (*)(CScriptIniFile*, const luabind::functor<void>&)) &section_for_each)
 			.def("set_readonly",	&CScriptIniFile::set_readonly)
+			.def("readonly",		&CScriptIniFile::set_readonly)	// הכÿ סמגלוסעטלמסעט
+			.def("get_as_string",	&CScriptIniFile::get_as_string)
 			//Alundaio: END
 			.def("fname",			&CScriptIniFile::fname			)
 			.def("section_exist",	&CScriptIniFile::section_exist	)

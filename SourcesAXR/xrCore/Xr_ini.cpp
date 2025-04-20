@@ -198,23 +198,16 @@ CInifile::~CInifile( )
 static void	insert_item(CInifile::Sect *tgt, const CInifile::Item& I)
 {
 	auto sect_it		= std::lower_bound(tgt->Data.begin(),tgt->Data.end(),*I.first,item_pred);
+	
 	if (sect_it!=tgt->Data.end() && sect_it->first.equal(I.first))
 	{ 
 		sect_it->second	= I.second;
-//#ifdef DEBUG
-//		sect_it->comment= I.comment;
-//#endif
-	
 	
 		auto found = std::find_if(tgt->Ordered_Data.begin(), tgt->Ordered_Data.end(), [&]( const auto& it )
 			{return xr_strcmp( *it.first, *I.first ) == 0;});
+		
 		if ( found != tgt->Ordered_Data.end() )
-		{
 			found->second  = I.second;
-#ifdef DEBUG
-			found->comment = I.comment;
-#endif
-		}
 	}
 	else
 	{
@@ -778,7 +771,7 @@ void CInifile::w_string( LPCSTR S, LPCSTR L, LPCSTR V, LPCSTR comment)
 	R_ASSERT			(!m_flags.test(eReadOnly));
 
 	// section
-	string256			sect;
+	char				sect[ 256 ];
 	_parse				(sect,S);
 	_strlwr				(sect);
 	
@@ -792,37 +785,18 @@ void CInifile::w_string( LPCSTR S, LPCSTR L, LPCSTR V, LPCSTR comment)
 	}
 
 	// parse line/value
-	string4096			line;
+	char				line[256];
 	_parse				(line,L);
-	string4096			value;	
+	char				value[256];
 	_parse				(value,V);
 
 	// duplicate & insert
-	Item	I;
-	Sect&	data	= r_section	(sect);
-	I.first			= (line[0]?line:0);
-	I.second		= (value[0]?value:0);
+	Item I;
+	I.first				= line[ 0 ] ? line : 0;
+	I.second			= value[ 0 ] ? value : 0;
 
-//#ifdef DEBUG
-//	I.comment		= (comment?comment:0);
-//#endif
-	SectIt_	it		= std::lower_bound(data.Data.begin(),data.Data.end(),*I.first,item_pred);
-
-    if (it != data.Data.end()) 
-	{
-	    // Check for "first" matching
-    	if (0==xr_strcmp(*it->first, *I.first)) 
-		{
-			BOOL b = m_flags.test(eOverrideNames);
-			R_ASSERT2(b,make_string("name[%s] already exist in section[%s]",line,sect).c_str());
-            *it  = I;
-		} else 
-		{
-			data.Data.insert(it,I);
-        }
-    } else {
-		data.Data.insert(it,I);
-    }
+	Sect* data			= &r_section( sect );
+	insert_item			( data, I );
 }
 void	CInifile::w_u8			( LPCSTR S, LPCSTR L, u8				V, LPCSTR comment )
 {
@@ -931,7 +905,7 @@ void	CInifile::w_fvector4	( LPCSTR S, LPCSTR L, const Fvector4&	V, LPCSTR commen
 
 void	CInifile::w_bool		( LPCSTR S, LPCSTR L, BOOL				V, LPCSTR comment )
 {
-	w_string	(S,L,V?"on":"off",comment);
+	w_string	(S,L,V?"true":"false",comment);
 }
 
 void	CInifile::remove_line	( LPCSTR S, LPCSTR L )
