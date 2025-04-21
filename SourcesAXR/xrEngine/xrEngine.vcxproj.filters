@@ -253,6 +253,9 @@
     <Filter Include="CPU">
       <UniqueIdentifier>{04312686-2922-46ff-a327-588c5977ea5a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Discord">
+      <UniqueIdentifier>{d94a7cd0-97d8-41a9-957b-e0222a4cd3e3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="_d3d_extensions.h">
@@ -612,9 +615,6 @@
     <ClInclude Include="xrSASH.h">
       <Filter>OpenAutomate</Filter>
     </ClInclude>
-    <ClInclude Include="DiscordRichPresense.h">
-      <Filter>General</Filter>
-    </ClInclude>
     <ClInclude Include="ShadersExternalData.h">
       <Filter>Game API\Objects</Filter>
     </ClInclude>
@@ -623,6 +623,12 @@
     </ClInclude>
     <ClInclude Include="ILoadingScreen.h">
       <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="DiscordRichPresense.h">
+      <Filter>Discord</Filter>
+    </ClInclude>
+    <ClInclude Include="xrDiscordManager.h">
+      <Filter>Discord</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -969,7 +975,10 @@
       <Filter>OpenAutomate</Filter>
     </ClCompile>
     <ClCompile Include="DiscordRichPresense.cpp">
-      <Filter>General</Filter>
+      <Filter>Discord</Filter>
+    </ClCompile>
+    <ClCompile Include="xrDiscordManager.cpp">
+      <Filter>Discord</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

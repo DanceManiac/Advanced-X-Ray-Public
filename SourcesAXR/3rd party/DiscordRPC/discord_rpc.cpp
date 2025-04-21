@@ -15,6 +15,8 @@
 #include <thread>
 #endif
 
+#include "../../xrEngine/xrDiscordManager.h"
+
 constexpr size_t MaxMessageSize{16 * 1024};
 constexpr size_t MessageQueueSize{8};
 constexpr size_t JoinQueueSize{8};
@@ -276,6 +278,7 @@ extern "C" DISCORD_EXPORT void Discord_Initialize(const char* applicationId,
 {
     IoThread = new (std::nothrow) IoThreadHolder();
     if (IoThread == nullptr) {
+        xr_discord_manager.OnFailConnect();
         return;
     }
 
@@ -318,6 +321,10 @@ extern "C" DISCORD_EXPORT void Discord_Initialize(const char* applicationId,
         if (userId && username) {
             StringCopy(connectedUser.userId, userId);
             StringCopy(connectedUser.username, username);
+
+            std::string userid(connectedUser.userId);
+            xr_discord_manager.OnConnect(userid);
+
             auto discriminator = GetStrMember(user, "discriminator");
             if (discriminator) {
                 StringCopy(connectedUser.discriminator, discriminator);

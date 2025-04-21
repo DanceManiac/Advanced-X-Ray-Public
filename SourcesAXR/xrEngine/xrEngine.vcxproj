@@ -616,7 +616,7 @@
       <OmitFramePointers>true</OmitFramePointers>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rd party/imgui;../../sdk/include/;../../sdk/include/directx;$(SolutionDir)3rd party/tracy/public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)3rd party/DiscordRPC;$(SolutionDir)3rd party/imgui;../../sdk/include/;../../sdk/include/directx;$(SolutionDir)3rd party/tracy/public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;WIN32;_WINDOWS;ENGINE_BUILD;_SECURE_SCL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <ExceptionHandling>
@@ -781,6 +781,7 @@
     <ClInclude Include="tntQAVI.h" />
     <ClInclude Include="vis_common.h" />
     <ClInclude Include="WaveForm.h" />
+    <ClInclude Include="xrDiscordManager.h" />
     <ClInclude Include="xrHemisphere.h" />
     <ClInclude Include="xrImage_Resampler.h" />
     <ClInclude Include="xrLevel.h" />
@@ -942,6 +943,7 @@
     <ClCompile Include="Text_Console_WndProc.cpp" />
     <ClCompile Include="thunderbolt.cpp" />
     <ClCompile Include="tntQAVI.cpp" />
+    <ClCompile Include="xrDiscordManager.cpp" />
     <ClCompile Include="xrHemisphere.cpp" />
     <ClCompile Include="xrImage_Resampler.cpp" />
     <ClCompile Include="xrSASH.cpp" />
