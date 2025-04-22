@@ -11,6 +11,7 @@
 #ifdef PROTECT_CBT
 #include "AccessMFS.h"
 #include "Shellapi.h"
+#include <filesystem>
 #endif
 
 #pragma comment(lib,"winmm.lib")
@@ -122,7 +123,9 @@ void xrCore::_initialize	(LPCSTR _ApplicationName, LogCallback cb, BOOL init_fs,
 #ifdef PROTECT_CBT
 		UserAccessData loadedData;
 
-		if (GetAccessData(loadedData, true))
+		std::filesystem::path app_data = FS.get_path("$app_data_root$")->m_Path;
+
+		if (GetAccessData(loadedData, app_data))
 		{
 			authorizedID = loadedData.userId;
 

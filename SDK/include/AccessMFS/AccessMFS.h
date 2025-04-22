@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <string>
 #include <vector>
+#include <filesystem>
 
 struct UserAccessData
 {
@@ -14,9 +15,9 @@ struct UserAccessData
 
 uint64_t CalculateChecksum(const BYTE* data, size_t size);
 
-bool WriteAccessData(const UserAccessData& data);
-bool GetAccessData(UserAccessData& outData, bool mode = false);
-bool AccessDataExists(bool mode = false);
+bool WriteAccessData(const UserAccessData& data, std::filesystem::path base_path);
+bool GetAccessData(UserAccessData& outData, std::filesystem::path base_path);
+bool AccessDataExists(std::filesystem::path base_path);
 
 static size_t WriteCallback(void* contents, size_t size, size_t nmemb, std::string* output);
 std::vector<std::string> ExtractRoles(const std::string& json_response);
