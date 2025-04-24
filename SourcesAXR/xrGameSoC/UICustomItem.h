@@ -15,6 +15,7 @@ protected:
 		flValidOriginalRect		=(1<<1),
 		flValidHeadingPivot		=(1<<2),
 		flFixedLTWhileHeading	=(1<<3),
+		flNoShaderCache			=(1<<4),
 	};
 	//прямоугольник(в пикселях) 
 	//геом. регион  на который натягикается текстура с текстурными координатами iOriginalRect

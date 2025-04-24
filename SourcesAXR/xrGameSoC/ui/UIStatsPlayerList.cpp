@@ -30,9 +30,7 @@ CUIStatsPlayerList::CUIStatsPlayerList()
 
 CUIStatsPlayerList::~CUIStatsPlayerList()
 {
-	CUIStatsIcon::FreeTexInfo();
 }
-
 
 void CUIStatsPlayerList::AddField(const char* name, float width)
 {

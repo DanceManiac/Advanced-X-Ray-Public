@@ -105,6 +105,8 @@ public:
 			void			SetVTextAlignment		(EVTextAlignment al);
 			EVTextAlignment	GetVTextAlignment		() const;
 
+			void			SetNoShaderCache		(bool v) { m_UIStaticItem.SetNoShaderCache(v); }
+
 	// text additional
 			void	SetTextComplexMode			(bool md);
 			bool	GetTextComplexMode			();

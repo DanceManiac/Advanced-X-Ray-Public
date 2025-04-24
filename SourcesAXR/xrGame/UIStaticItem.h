@@ -16,6 +16,7 @@ public:
 		flValidTextureRect		=(1<<1),
 		flValidHeadingPivot		=(1<<2),
 		flFixedLTWhileHeading	=(1<<3),
+		flNoShaderCache			=(1<<4),
 	};
 
 	Frect			TextureRect;
@@ -51,6 +52,8 @@ public:
 	IC void			SetSize					(const Fvector2& sz)								{vSize.set(sz); uFlags.set(flValidSize, TRUE); }
 	void			SetTextureRect			(const Frect& r)									{TextureRect = r; uFlags.set(flValidTextureRect,TRUE);}
 	const Frect&	GetTextureRect			() const											{return TextureRect;};
+	
+	void			SetNoShaderCache		(const bool v)										{uFlags.set(flNoShaderCache, v);}
 
 	IC Fvector2		GetSize					() {return vSize;}
 	

@@ -744,9 +744,6 @@ void game_cl_mp::OnPlayerKilled			(NET_Packet& P)
 	KMS.m_killer.m_name = NULL;
 	KMS.m_killer.m_color = color_rgba(255,255,255,255);
 
-	KMS.m_initiator.m_shader->destroy();;
-	KMS.m_ext_info.m_shader->destroy();;
-
 	switch (KillType)
 	{
 		//-----------------------------------------------------------

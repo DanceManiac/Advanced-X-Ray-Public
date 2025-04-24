@@ -53,19 +53,6 @@ void CUIStatsIcon::InitTexInfo(){
 	m_tex_info[DEATH][0].rect.y2 = m_tex_info[DEATH][0].rect.y1 + 30;	
 }
 
-void CUIStatsIcon::FreeTexInfo(){
-		// ranks
-	for (int i = RANK_0; i <= RANK_4; i++)
-	{
-		m_tex_info[i][0].sh->destroy();
-		m_tex_info[i][1].sh->destroy();
-	}
-	m_tex_info[ARTEFACT][0].sh->destroy();
-	m_tex_info[ARTEFACT][1].sh->destroy();
-	m_tex_info[DEATH][0].sh->destroy();	
-	m_tex_info[DEATH][1].sh->destroy();	
-}
-
 void CUIStatsIcon::SetText(LPCSTR str){
 	if (0 == str[0])
 	{

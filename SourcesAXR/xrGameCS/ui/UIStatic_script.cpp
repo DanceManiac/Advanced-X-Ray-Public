@@ -57,6 +57,8 @@ void CUIStatic::script_register(lua_State *L)
 
 		.def("SetHint",					&CUIStatic::SetHint) //MNP
 
+		.def("SetNoShaderCache",		&CUIStatic::SetNoShaderCache)
+
 		.def("SetTextAlign",			&CUIStatic::SetTextAlign_script)
 		.def("GetTextAlign",			&CUIStatic::GetTextAlign_script)
 

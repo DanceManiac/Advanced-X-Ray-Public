@@ -40,6 +40,7 @@ void CUIStatic::script_register(lua_State *L)
 		.def("SetColorA",			&CUIStatic_SetColorA)
 		.def("SetTextureRect",		&CUIStatic::SetTextureRect_script)
 		.def("SetHint",				&CUIStatic::SetHint) //MNP
+		.def("SetNoShaderCache",	&CUIStatic::SetNoShaderCache)
 		.def("SetStretchTexture",	&CUIStatic::SetStretchTexture)
 		.def("GetTextureRect",		&CUIStatic::GetTextureRect_script),
 

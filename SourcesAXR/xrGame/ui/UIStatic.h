@@ -69,6 +69,8 @@ public:
 			void			SetTextY				(float y)					{TextItemControl()->m_TextOffset.y = y;}
 			float			GetTextY				()							{return TextItemControl()->m_TextOffset.y;}
 
+			void			SetNoShaderCache	(bool v)						{m_UIStaticItem.SetNoShaderCache(v);}
+
 
 	// own
 			void			SetXformLightAnim		(LPCSTR lanim, bool bCyclic);

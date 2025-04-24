@@ -1,8 +1,8 @@
-#ifndef	dxUIShader_included
-#define	dxUIShader_included
 #pragma once
 
 #include "..\..\Include\xrRender\UIShader.h"
+
+extern string_unordered_map<std::string, ref_shader> g_UIShadersCache;
 
 class dxUIShader : public IUIShader
 {
@@ -13,9 +13,9 @@ class dxUIShader : public IUIShader
 public:
 	virtual		~dxUIShader(){;}
 	virtual void Copy(IUIShader &_in);
-	virtual void create(LPCSTR sh, LPCSTR tex=0);
+	virtual void create(LPCSTR sh, LPCSTR tex = 0, bool no_cache = false);
 	virtual bool inited() {return hShader;}
-	virtual void destroy();
+	//virtual void destroy();
 	virtual LPCSTR GetTexName() { return dbg_tex; }
 	virtual LPCSTR GetShaderName() { return dbg_shader; }
 private:
@@ -23,5 +23,3 @@ private:
 	LPCSTR			dbg_shader{};
 	LPCSTR			dbg_tex{};
 };
-
-#endif	//	dxUIShader_included

@@ -12,7 +12,6 @@ UITeamPanels::UITeamPanels()
 
 UITeamPanels::~UITeamPanels()
 {
-	CUIStatsIcon::FreeTexInfo();
 }
 
 #define TEAM_NODE_NAME "team"
