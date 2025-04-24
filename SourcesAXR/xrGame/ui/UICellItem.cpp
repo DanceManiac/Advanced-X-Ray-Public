@@ -59,8 +59,15 @@ CUICellItem::~CUICellItem()
 
 void CUICellItem::init()
 {
-	CUIXml	uiXml;
-	uiXml.Load( CONFIG_PATH, UI_PATH, "actor_menu_item.xml" );
+	static CUIXml uiXml;
+	static bool is_xml_ready = false;
+
+	if (!is_xml_ready)
+	{
+		bool xml_result		= uiXml.Load(CONFIG_PATH, UI_PATH, "actor_menu_item.xml");
+		R_ASSERT3			(xml_result, "file parsing error ", uiXml.m_xml_file_name);
+		is_xml_ready		= true;
+	}
 		
 	if (m_text				= UIHelper::CreateStatic(uiXml, "cell_item_text", this, false))
 		m_text->Show		( false );
