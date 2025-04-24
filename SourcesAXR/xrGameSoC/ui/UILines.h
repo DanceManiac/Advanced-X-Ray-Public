@@ -12,9 +12,8 @@
 #include "../UI.h"
 #include "uiabstract.h"
 
-class CUILines : public IUITextControl,
-				 public CUISimpleWindow,
-				 public CDeviceResetNotifier {
+class CUILines : public IUITextControl, public CUISimpleWindow
+{
 	 friend class CUICustomEdit;
 	 friend class CUICDkey;
 public:

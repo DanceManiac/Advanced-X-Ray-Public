@@ -3,7 +3,7 @@
 #include "UILine.h"
 #include "uiabstract.h"
 
-class CUILines : public CDeviceResetNotifier 
+class CUILines 
 {
 	 friend class CUICustomEdit;
 	 friend class CUICDkey;
