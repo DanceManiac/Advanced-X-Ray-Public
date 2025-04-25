@@ -141,6 +141,8 @@ CWeapon::CWeapon()
 	m_bWpnExplosion			= false;
 	m_bWpnDestroyAfterExplode = false;
 	m_fWpnExplodeChance		= 0.0f;
+
+	m_bIndoorSoundsEnabled	= false;
 }
 
 const shared_str CWeapon::GetScopeName() const
@@ -666,6 +668,8 @@ void CWeapon::Load		(LPCSTR section)
 	m_fOverheatingSubRpm	= READ_IF_EXISTS(pSettings, r_float, section, "overheating_rpm_factor", 0.0f);
 	m_fOverheatingMisfire	= READ_IF_EXISTS(pSettings, r_float, section, "overheating_misfire_factor", 0.0f);
 	m_fOverheatingCond		= READ_IF_EXISTS(pSettings, r_float, section, "overheating_condition_factor", 0.0f);
+
+	m_bIndoorSoundsEnabled	= READ_IF_EXISTS(pSettings, r_bool, section, "indoor_sounds_enabled", false);
 
 	string256						temp;
 	for (int i=egdNovice; i<egdCount; ++i) 

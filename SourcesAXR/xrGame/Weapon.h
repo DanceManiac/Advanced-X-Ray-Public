@@ -448,6 +448,7 @@ protected:
 	bool					m_bIsBoltRiffle;
 	bool					m_bLastShotRPM;
 	bool					m_bUseRG6_AddCartridgeAlt;
+	bool					m_bIndoorSoundsEnabled;
 
 	shared_str				ppeWpnExplosion;
 	ref_sound				sndWpnExplosion;

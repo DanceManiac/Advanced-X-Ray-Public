@@ -111,20 +111,30 @@ void CWeaponMagazined::Load	(LPCSTR section)
 	if (WeaponSoundExist(section, "snd_shoot_actor", true))
 	{
 		m_sounds.LoadSound(section, "snd_shoot_actor", "sndShotActor", false, m_eSoundShot);
-
-		if (WeaponSoundExist(section, "snd_shoot_last_actor", true))
-			m_sounds.LoadSound(section, "snd_shoot_last_actor", "sndShotActorLast", false, m_eSoundShot);
-
-		if (WeaponSoundExist(section, "snd_silncer_shoot_last_actor", true))
-			m_sounds.LoadSound(section, "snd_silncer_shoot_last_actor", "sndSilencerShotActorLast", false, m_eSoundShot);
+		m_sounds.LoadSound(section, "snd_shoot_last_actor", "sndShotActorLast", false, m_eSoundShot);
+		m_sounds.LoadSound(section, "snd_silncer_shoot_actor", "sndSilencerShotActor", false, m_eSoundShot);
+		m_sounds.LoadSound(section, "snd_silncer_shoot_last_actor", "sndSilencerShotActorLast", false, m_eSoundShot);
 	}
 	//-Alundaio
 
-	if (WeaponSoundExist(section, "snd_shoot_last", true))
-		m_sounds.LoadSound(section, "snd_shoot_last", "sndShotLast", false, m_eSoundShot);
+	m_sounds.LoadSound(section, "snd_shoot_last", "sndShotLast", false, m_eSoundShot);
+	m_sounds.LoadSound(section, "snd_silncer_shoot_last", "sndSilencerShotLast", false, m_eSoundShot);
 
-	if (WeaponSoundExist(section, "snd_silncer_shoot_last", true))
-		m_sounds.LoadSound(section, "snd_silncer_shoot_last", "sndSilencerShotLast", false, m_eSoundShot);
+	if (m_bIndoorSoundsEnabled)
+	{
+		m_sounds.LoadSound(section, "snd_shoot_indoor", "sndShotIndoor", false, m_eSoundShot);
+		m_sounds.LoadSound(section, "snd_shoot_last_indoor", "sndShotLastIndoor", false, m_eSoundShot);
+		m_sounds.LoadSound(section, "snd_silncer_shoot_indoor", "sndSilencerShotIndoor", false, m_eSoundShot);
+		m_sounds.LoadSound(section, "snd_silncer_shoot_last_indoor", "sndSilencerShotLastIndoor", false, m_eSoundShot);
+
+		if (WeaponSoundExist(section, "snd_shoot_actor", true))
+		{
+			m_sounds.LoadSound(section, "snd_shoot_actor_indoor", "sndShotActorIndoor", false, m_eSoundShot);
+			m_sounds.LoadSound(section, "snd_shoot_last_actor_indoor", "sndShotActorLastIndoor", false, m_eSoundShot);
+			m_sounds.LoadSound(section, "snd_silncer_shoot_actor_indoor", "sndSilencerShotActorIndoor", false, m_eSoundShot);
+			m_sounds.LoadSound(section, "snd_silncer_shoot_last_actor_indoor", "sndSilencerShotActorLastIndoor", false, m_eSoundShot);
+		}
+	}
 
 	m_sSndShotCurrent = IsSilencerAttached() ? "sndSilencerShot" : "sndShot";
 
@@ -1071,6 +1081,18 @@ void CWeaponMagazined::OnShot()
 	if (m_sounds.FindSoundItem("sndPumpGun", false))
 		PlaySound("sndPumpGun", get_LastFP());
 
+	CGameObject* object = smart_cast<CGameObject*>(H_Parent());
+	if (object)
+		object->callback(GameObject::eOnWeaponFired)(object->lua_game_object(), this->lua_game_object(), iAmmoElapsed);
+
+	// Ёффект сдвига (отдача)
+	AddHUDShootingEffect();
+
+	bool bIndoor = false;
+
+	if (m_bIndoorSoundsEnabled && g_pGamePersistent)
+		bIndoor = g_pGamePersistent->IsActorInHideout();
+
 	if (ParentIsActor())
 	{
 		luabind::functor<void> funct;
@@ -1096,43 +1118,81 @@ void CWeaponMagazined::OnShot()
 		}
 
 		string128 sndName;
-		strconcat(sizeof(sndName), sndName, m_sSndShotCurrent.c_str(), "Actor", (iAmmoElapsed == 1) ? "Last" : "");
+		strconcat(sizeof(sndName), sndName, m_sSndShotCurrent.c_str(), "Actor", (iAmmoElapsed == 1) ? "Last" : "", bIndoor ? "Indoor" : "");
+		
 		if (m_sounds.FindSoundItem(sndName, false))
 		{
 			m_sounds.PlaySound(sndName, get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
 			return;
 		}
-		else if (strstr(sndName, "Last"))
-		{
-			char newSndName[256];
-			strcpy(newSndName, sndName);
-			newSndName[strlen(sndName) - strlen("Last")] = '\0';
 
-			if (m_sounds.FindSoundItem(newSndName, false))
+		if (char* indoorPos = strstr(sndName, "Indoor"))
+		{
+			string128 noIndoor{};
+			strncpy(noIndoor, sndName, indoorPos - sndName);
+			strcat(noIndoor, indoorPos + strlen("Indoor"));
+
+			if (m_sounds.FindSoundItem(noIndoor, false))
 			{
-				m_sounds.PlaySound(newSndName, get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
+				m_sounds.PlaySound(noIndoor, get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
+				return;
+			}
+		}
+
+		if (char* lastPos = strstr(sndName, "Last"))
+		{
+			string128 noLast{};
+			strncpy(noLast, sndName, lastPos - sndName);
+			strcat(noLast, lastPos + strlen("Last"));
+
+			if (m_sounds.FindSoundItem(noLast, false))
+			{
+				m_sounds.PlaySound(noLast, get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
 				return;
 			}
 		}
 	}
 
 	string128 sndName;
-	strconcat(sizeof(sndName), sndName, m_sSndShotCurrent.c_str(), (iAmmoElapsed == 1) ? "Last" : "");
+	strconcat(sizeof(sndName), sndName, m_sSndShotCurrent.c_str(), (iAmmoElapsed == 1) ? "Last" : "", bIndoor ? "Indoor" : "");
 
 	if (m_sounds.FindSoundItem(sndName, false))
+	{
 		m_sounds.PlaySound(sndName, get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
-	else
-		m_sounds.PlaySound(m_sSndShotCurrent.c_str(), get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
+		return;
+	}
+
+	if (char* indoorPos = strstr(sndName, "Indoor"))
+	{
+		string128 noIndoor{};
+		strncpy(noIndoor, sndName, indoorPos - sndName);
+		strcat(noIndoor, indoorPos + strlen("Indoor"));
+
+		if (m_sounds.FindSoundItem(noIndoor, false))
+		{
+			m_sounds.PlaySound(noIndoor, get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
+			return;
+		}
+	}
+
+	if (char* lastPos = strstr(sndName, "Last"))
+	{
+		string128 noLast{};
+		strncpy(noLast, sndName, lastPos - sndName);
+		strcat(noLast, lastPos + strlen("Last"));
+
+		if (m_sounds.FindSoundItem(noLast, false))
+		{
+			m_sounds.PlaySound(noLast, get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
+			return;
+		}
+	}
+
+	m_sounds.PlaySound(m_sSndShotCurrent.c_str(), get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
 
 	// Ёхо выстрела
 	if (IsSilencerAttached() == false)
 	{
-		bool bIndoor = false;
-		if (H_Parent() != nullptr)
-		{
-			bIndoor = H_Parent()->renderable_ROS()->get_luminocity_hemi() < WEAPON_INDOOR_HEMI_FACTOR;
-		}
-
 		if (bIndoor && m_sounds.FindSoundItem("sndReflect", false))
 		{
 			if (IsHudModeNow())
@@ -1143,13 +1203,6 @@ void CWeaponMagazined::OnShot()
 			HUD_SOUND_ITEM::SetHudSndGlobalVolumeFactor(1.0f);
 		}
 	}
-
-	CGameObject* object = smart_cast<CGameObject*>(H_Parent());
-	if (object)
-		object->callback(GameObject::eOnWeaponFired)(object->lua_game_object(), this->lua_game_object(), iAmmoElapsed);
-
-	// Ёффект сдвига (отдача)
-	AddHUDShootingEffect();
 }
 
 

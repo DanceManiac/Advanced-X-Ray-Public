@@ -45,6 +45,8 @@ void CWeaponMagazinedWGrenade::Load	(LPCSTR section)
 	m_sounds.LoadSound(section,"snd_reload_grenade"	, "sndReloadG"	, true, m_eSoundReload);
 	m_sounds.LoadSound(section,"snd_switch"			, "sndSwitch"		, true, m_eSoundReload);
 	
+	if (m_bIndoorSoundsEnabled)
+		m_sounds.LoadSound(section, "snd_shoot_grenade_indoor", "sndShotG_Indoor", false, m_eSoundShot);
 
 	m_sFlameParticles2 = pSettings->r_string(section, "grenade_flame_particles");
 
@@ -159,7 +161,27 @@ void CWeaponMagazinedWGrenade::OnShot		()
 	{
 		PlayAnimShoot		();
 
-		PlaySound("sndShotG", get_LastFP());
+		bool bIndoor = false;
+
+		if (m_bIndoorSoundsEnabled && g_pGamePersistent)
+			bIndoor = g_pGamePersistent->IsActorInHideout();
+
+		string128 sndName;
+		strconcat(sizeof(sndName), sndName, "sndShotG", bIndoor ? "_Indoor" : "");
+
+		if (m_sounds.FindSoundItem(sndName, false))
+			m_sounds.PlaySound(sndName, get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
+		else if (strstr(sndName, "_Indoor"))
+		{
+			char newSndName[256];
+			strcpy(newSndName, sndName);
+			newSndName[strlen(sndName) - strlen("Indoor")] = '\0';
+
+			if (m_sounds.FindSoundItem(newSndName, false))
+				m_sounds.PlaySound(newSndName, get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
+		}
+		else
+			PlaySound("sndShotG", get_LastFP());
 
 		AddShotEffector		();
 		StartFlameParticles2();
@@ -322,7 +344,27 @@ void CWeaponMagazinedWGrenade::OnEvent(NET_Packet& P, u16 type)
 				{
 					PlayAnimShoot		();
 
-					PlaySound("sndShotG", get_LastFP());
+					bool bIndoor = false;
+
+					if (m_bIndoorSoundsEnabled && g_pGamePersistent)
+						bIndoor = g_pGamePersistent->IsActorInHideout();
+
+					string128 sndName;
+					strconcat(sizeof(sndName), sndName, "sndShotG", bIndoor ? "_Indoor" : "");
+
+					if (m_sounds.FindSoundItem(sndName, false))
+						m_sounds.PlaySound(sndName, get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
+					else if (strstr(sndName, "_Indoor"))
+					{
+						char newSndName[256];
+						strcpy(newSndName, sndName);
+						newSndName[strlen(sndName) - strlen("_Indoor")] = '\0';
+
+						if (m_sounds.FindSoundItem(newSndName, false))
+							m_sounds.PlaySound(newSndName, get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
+					}
+					else
+						m_sounds.PlaySound("sndShotG", get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
 
 					AddShotEffector		();
 					StartFlameParticles2();
