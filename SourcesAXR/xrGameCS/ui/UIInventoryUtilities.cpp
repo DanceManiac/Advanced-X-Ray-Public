@@ -22,11 +22,6 @@
 
 #include "../Include/xrRender/UIShader.h"
 
-#define BUY_MENU_TEXTURE "ui\\ui_mp_buy_menu"
-#define CHAR_ICONS		 "ui\\ui_icons_npc"
-#define MAP_ICONS		 "ui\\ui_icons_map"
-#define MP_CHAR_ICONS	 "ui\\ui_models_multiplayer"
-
 const LPCSTR relationsLtxSection	= "game_relations";
 const LPCSTR ratingField			= "rating_names";
 const LPCSTR reputationgField		= "reputation_names";
@@ -105,7 +100,7 @@ bool InventoryUtilities::GreaterRoomInRuck(PIItem item1, PIItem item2)
 
 		return				false;
 	}
-   	return					false;
+	return					false;
 }
 
 bool InventoryUtilities::FreeRoom_inBelt	(TIItemContainer& item_list, PIItem _item, int width, int height)
@@ -198,7 +193,7 @@ const ui_shader& InventoryUtilities::GetEquipmentIconsShader()
 	if(!g_EquipmentIconsShader)
 	{
 		g_EquipmentIconsShader = xr_new<ui_shader>();
-		(*g_EquipmentIconsShader)->create("hud\\default", "ui\\ui_icon_equipment");
+		(*g_EquipmentIconsShader)->create("hud\\default", EQUIPMENT_ICONS);
 	}
 
 	return *g_EquipmentIconsShader;
@@ -376,7 +371,7 @@ void InventoryUtilities::UpdateWeightStr(CUIStatic &wnd, CUIStatic &wnd_max, CIn
 
 void InventoryUtilities::UpdateCapacityStr(CUIStatic& wnd, CUIStatic& wnd_max, CInventoryOwner* pInvOwner)
 {
- 	R_ASSERT		(pInvOwner);
+	R_ASSERT		(pInvOwner);
 	string128		buf;
 
 	CActor* Actor = smart_cast<CActor*>(pInvOwner);

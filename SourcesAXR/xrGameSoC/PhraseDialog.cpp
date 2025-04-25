@@ -21,6 +21,7 @@ SPhraseDialogData::~SPhraseDialogData ()
 
 CPhraseDialog::CPhraseDialog()
 {
+	m_SaidPhraseID		= "";
 	m_bFinished			= false;
 	m_pSpeakerFirst		= NULL;
 	m_pSpeakerSecond	= NULL;
@@ -52,7 +53,7 @@ void CPhraseDialog::Init(CPhraseDialogManager* speaker_first,
 }
 
 //обнуляем все связи
-void CPhraseDialog::Reset ()	
+void CPhraseDialog::Reset ()
 {
 }
 
@@ -102,7 +103,7 @@ bool CPhraseDialog::SayPhrase (DIALOG_SHARED_PTR& phrase_dialog, const shared_st
 	//вызвать скриптовую присоединенную функцию 
 	//активируется после сказанной фразы
 	//первый параметр - тот кто говорит фразу, второй - тот кто слушает
-	last_phrase->GetScriptHelper()->Action(pSpeakerGO1, pSpeakerGO2, *phrase_dialog->m_DialogId, phrase_id.c_str() );
+	last_phrase->GetScriptHelper()->Action(pSpeakerGO1, pSpeakerGO2, *phrase_dialog->m_DialogId, phrase_id.c_str());
 
 	//больше нет фраз, чтоб говорить
 	phrase_dialog->m_PhraseVector.clear();
@@ -125,15 +126,18 @@ bool CPhraseDialog::SayPhrase (DIALOG_SHARED_PTR& phrase_dialog, const shared_st
 			{
 				phrase_dialog->m_PhraseVector.push_back(next_phrase_vertex->data());
 #ifdef DEBUG
-				if(psAI_Flags.test(aiDialogs)){
+				if(psAI_Flags.test(aiDialogs))
+				{
 					LPCSTR phrase_text = next_phrase_vertex->data()->GetText();
 					shared_str id = next_phrase_vertex->data()->GetID();
-					Msg("----added phrase text [%s]phrase_id=[%s] id=[%s] to dialog [%s]",phrase_text, phrase_id.c_str(), id.c_str(), *phrase_dialog->m_DialogId);
+					Msg("----added phrase text [%s] phrase_id=[%s] id=[%s] to dialog [%s]", phrase_text, phrase_id.c_str(), id.c_str(), phrase_dialog->m_DialogId.c_str());
 				}
 #endif
 			}
 
 		}
+
+		R_ASSERT2	(!phrase_dialog->m_PhraseVector.empty(),make_string("No available phrase to say, dialog[%s]",*phrase_dialog->m_DialogId));
 
 		if (phrase_dialog->m_PhraseVector.empty())
 		{
@@ -169,29 +173,30 @@ CPhrase* CPhraseDialog::GetPhrase(const shared_str& phrase_id)
 
 LPCSTR CPhraseDialog::GetPhraseText	(const shared_str& phrase_id, bool current_speaking)
 {
-	CPhrase* ph = GetPhrase(phrase_id);
+	//CPhraseGraph::CVertex* phrase_vertex = data()->m_PhraseGraph.vertex(phrase_id);
+	//THROW(phrase_vertex);
+	//CPhrase*	ph = phrase_vertex->data();
+	CPhrase*	ph = GetPhrase(phrase_id);
 
-	CGameObject* pSpeakerGO1 = (current_speaking) ? smart_cast<CGameObject*>(FirstSpeaker()) : NULL;
-	CGameObject* pSpeakerGO2 = (current_speaking) ? smart_cast<CGameObject*>(SecondSpeaker()) : NULL;
-	CGameObject* pSpeakerGO = NULL;
-
-	if (smart_cast<CActor*>(pSpeakerGO1))
+	CGameObject*	pSpeakerGO1 = (current_speaking)?smart_cast<CGameObject*>(FirstSpeaker()):NULL;
+	CGameObject*	pSpeakerGO2 = (current_speaking)?smart_cast<CGameObject*>(SecondSpeaker()):NULL;
+	CGameObject*	pSpeakerGO  = NULL;
+	
+	if( smart_cast<CActor*>(pSpeakerGO1) )
 	{
 		pSpeakerGO = pSpeakerGO2;
-	}
-	else
+	}else
 		pSpeakerGO = pSpeakerGO1;
 
-	if (ph->m_script_text_id.length() > 0)
+	if(ph->m_script_text_id.length() > 0 )
 	{
 		luabind::functor<LPCSTR>	lua_function;
-		bool functor_exists = ai().script_engine().functor(ph->m_script_text_id.c_str(), lua_function);
+		bool functor_exists		= ai().script_engine().functor(ph->m_script_text_id.c_str() ,lua_function);
 		THROW3(functor_exists, "Cannot find function", ph->m_script_text_id.c_str());
 
-		ph->m_script_text_val = lua_function((pSpeakerGO) ? pSpeakerGO->lua_game_object() : NULL, m_DialogId.c_str(), phrase_id.c_str());
-		return ph->m_script_text_val.c_str();
-	}
-	else
+		ph->m_script_text_val = lua_function	((pSpeakerGO)?pSpeakerGO->lua_game_object():NULL, m_DialogId.c_str(), phrase_id.c_str());
+		return ph->m_script_text_val.c_str		();
+	}else
 		return ph->GetScriptHelper()->GetScriptText(ph->GetText(), pSpeakerGO1, pSpeakerGO2, m_DialogId.c_str(), phrase_id.c_str());
 }
 
@@ -288,7 +293,7 @@ CPhrase* CPhraseDialog::AddPhrase	(LPCSTR text, const shared_str& phrase_id, con
 		phrase->SetID				(phrase_id);
 
 		phrase->SetText				(text);
-		phrase->m_iGoodwillLevel	= goodwil_level;
+		phrase->SetGoodwillLevel	(goodwil_level);
 
 		data()->m_PhraseGraph.add_vertex	(phrase, phrase_id);
 	}
@@ -305,13 +310,17 @@ void CPhraseDialog::AddPhrase	(CUIXml* pXml, XML_NODE* phrase_node, const shared
 	LPCSTR sText		= pXml->Read		(phrase_node, "text", 0, "");
 	int		gw			= pXml->ReadInt		(phrase_node, "goodwill", 0, -10000);
 	CPhrase* ph			= AddPhrase			(sText, phrase_id, prev_phrase_id, gw);
-	if(!ph)				return;
+	if (!ph)
+		return;
+	
+	int fin					= pXml->ReadInt		(phrase_node, "is_final", 0, 0);
+	ph->SetFinalizer		(fin==1);
+	ph->m_script_text_id	= pXml->Read		(phrase_node, "script_text", 0, "");
 
-	int fin = pXml->ReadInt(phrase_node, "is_final", 0, 0);
-	ph->SetFinalizer(fin == 1);
-	ph->m_script_text_id = pXml->Read(phrase_node, "script_text", 0, "");
-
-	ph->GetScriptHelper()->Load					(pXml, phrase_node);
+	ph->SetIconName			(pXml->Read(phrase_node, "icon_name", 0, ""));
+	ph->SetIconUsingLTX		(pXml->ReadAttribInt(phrase_node, "icon_name", 0, "ltx", 0) == 1);
+	
+	ph->GetScriptHelper()->Load				(pXml, phrase_node);
 
 	//фразы которые собеседник может говорить после этой
 	int next_num = pXml->GetNodesNum(phrase_node, "next");
@@ -320,8 +329,6 @@ void CPhraseDialog::AddPhrase	(CUIXml* pXml, XML_NODE* phrase_node, const shared
 		LPCSTR next_phrase_id_str		= pXml->Read(phrase_node, "next", i, "");
 		XML_NODE* next_phrase_node		= pXml->NavigateToNodeWithAttribute("phrase", "id", next_phrase_id_str);
 		R_ASSERT2						(next_phrase_node, make_string("Can`t find next phrase with id: [%s]! Phrase text: [%s]. Phrase dialog: [%s].", next_phrase_id_str, sText, m_DialogId.c_str()));
-//.		int next_phrase_id				= atoi(next_phrase_id_str);
-
 		AddPhrase						(pXml, next_phrase_node, next_phrase_id_str, phrase_id);
 	}
 }

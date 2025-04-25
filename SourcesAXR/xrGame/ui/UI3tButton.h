@@ -1,5 +1,6 @@
 #pragma once
 #include "UIButton.h"
+#include "UIStatic.h"
 #include "UI_IB_Static.h"
 
 class CUI3tButton : public CUIButton 
@@ -18,8 +19,8 @@ public:
 
 //.			void 	SetTextColor				(u32 color);
 	virtual void 	SetTextureOffset			(float x, float y);
-	virtual void 	SetTextureOffset			(Fvector2 offset);
 	virtual void 	SetBaseTextureOffset		(float x, float y);
+	virtual void 	SetTextureOffset			(Fvector2 offset);
 	virtual void 	SetBaseTextureOffset		(Fvector2 offset);
 	virtual void 	SetWidth					(float width);
 	virtual void 	SetHeight					(float height);
@@ -33,18 +34,20 @@ public:
 	virtual void	DrawTexture					();
 	virtual void	Update						();
 	virtual void 	Draw						();
+	virtual void	AddStatic					();
+	CUIStatic*		GetBtnStatic				() { return m_BtnStatic; }
 	
 	virtual bool 	OnMouseDown					(int mouse_btn);
 
 			pcstr	GetDebugType				() override { return "CUI3tButton"; }
 
-	void			SetStateTextColor				(u32 color, IBState state){m_dwTextColor[state] = color; m_bUseTextColor[state] = true;}
+	void			SetStateTextColor			(u32 color, IBState state) {m_dwTextColor[state] = color; m_bUseTextColor[state] = true;}
 	u32				m_dwTextColor[4];
 	bool			m_bUseTextColor[4]; // note: 0 index will be ignored
 
 
 	bool					m_frameline_mode;
-	bool					vertical;
+	bool					m_bVertical;
 	CUI_IB_Static*			m_background;
 	CUI_IB_FrameLineWnd*	m_back_frameline;
 private:	
@@ -52,6 +55,7 @@ private:
 			void		PlaySoundT					();
 
 	ref_sound			m_sound_h;
-	ref_sound			m_sound_t;	
+	ref_sound			m_sound_t;
+	CUIStatic*			m_BtnStatic;
 
 }; // class CUI3tButton

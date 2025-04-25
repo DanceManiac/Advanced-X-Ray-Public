@@ -46,7 +46,7 @@ void CUITrackBar::OnValueChanged()
 bool CUITrackBar::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {
 	CUIWindow::OnMouseAction(x, y, mouse_action);
-	if (m_pFrameLine->CursorOverWindow()) // хватать можно тока за саму полоску
+	if (m_pFrameLine->CursorOverWindow()) // С…РІР°С‚Р°С‚СЊ РјРѕР¶РЅРѕ С‚РѕРєР° Р·Р° СЃР°РјСѓ РїРѕР»РѕСЃРєСѓ
 	{
 		if (mouse_action == WINDOW_LBUTTON_DOWN)
 			m_b_mouse_capturer = true;
@@ -94,7 +94,7 @@ void CUITrackBar::InitTrackBar(Fvector2 pos, Fvector2 size)
 
 	strconcat			(sizeof(buf),buf, m_slider_texture,"_e");
 	item_width			= CUITextureMaster::GetTextureWidth(buf);
-    item_height			= CUITextureMaster::GetTextureHeight(buf);
+	item_height			= CUITextureMaster::GetTextureHeight(buf);
 
 	item_width			*= UI().get_current_kx();
 
@@ -123,9 +123,9 @@ void CUITrackBar::SetCurrentValue()
 {
 	//CUIOptionsItem::SetCurrentValue();
 	if(m_b_is_float)
-    {
+	{
 		GetOptFloatValue(m_f_val, m_f_min, m_f_max);
-    }
+	}
 	else if (m_b_is_token)
 	{
 		const xr_string val = GetOptTokenValue();
@@ -151,9 +151,9 @@ void CUITrackBar::SetCurrentValue()
 		m_i_val = GetOptBoolValue() ? 1 : 0;
 	}
 	else
-    {
+	{
 		GetOptIntegerValue(m_i_val, m_i_min, m_i_max);
-    }
+	}
 
 	UpdateMinMax		();
 	UpdatePos			();
@@ -250,7 +250,7 @@ void CUITrackBar::SetStep(float step)
 		m_i_step	= iFloor(step);
 }
 
-void CUITrackBar::SeveBackUpValue()
+void CUITrackBar::SaveBackUpValue()
 {
 	if(m_b_is_float)
 		m_f_back_up		= m_f_val;
@@ -381,7 +381,7 @@ void CUITrackBar::UpdatePos()
 			if (GetInvert())
 				f = m_f_max - f;
 			
-			const LPCSTR cur_val = m_static_format == NULL ? "%.1f" : m_static_format.c_str();
+			const LPCSTR cur_val = m_static_format == nullptr ? "%.1f" : m_static_format.c_str();
 			xr_sprintf(buff, cur_val, f);
 		}
 		else
@@ -391,7 +391,7 @@ void CUITrackBar::UpdatePos()
 			if (GetInvert())
 				i = m_i_max - i;
 				
-			const LPCSTR cur_val = m_static_format == NULL ? "%d" : m_static_format.c_str();
+			const LPCSTR cur_val = m_static_format == nullptr ? "%d" : m_static_format.c_str();
 			xr_sprintf(buff, cur_val, i);
 		}
 		m_static->SetTextST(buff);

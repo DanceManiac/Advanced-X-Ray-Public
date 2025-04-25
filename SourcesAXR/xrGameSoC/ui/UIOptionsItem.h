@@ -13,7 +13,7 @@ protected:
 	virtual void			SaveValue			();
 
 	virtual bool			IsChanged			()			=0;
-	virtual void			SeveBackUpValue		()	{};
+	virtual void			SaveBackUpValue		()	{};
 	virtual void			Undo				()				{SetCurrentValue();};
 			
 			void			SendMessage2Group	(const char* group, const char* message);

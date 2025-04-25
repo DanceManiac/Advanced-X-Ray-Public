@@ -9,6 +9,7 @@
 
 #pragma once
 #include "UIButton.h"
+#include "UIStatic.h"
 #include "UI_IB_Static.h"
 
 class CUI3tButton : public CUIButton 
@@ -50,16 +51,18 @@ public:
 	IC void			SetCheck					(bool ch)
 	{
 		m_eButtonState = ch ? BUTTON_PUSHED : BUTTON_NORMAL;
-		SeveBackUpValue();
+		SaveBackUpValue();
 	}*/
 	
 	// behavior
 	virtual void	DrawTexture					();
 	virtual void	Update						();
 	virtual void 	Draw						();
+	virtual void	AddStatic					();
+	CUIStatic*		GetBtnStatic				() { return m_BtnStatic; }
 	
 	//virtual void Enable(bool bEnable);	
-	virtual bool 	OnMouseAction						(float x, float y, EUIMessages mouse_action);
+	virtual bool 	OnMouseAction				(float x, float y, EUIMessages mouse_action);
 	virtual bool 	OnMouseDown					(int mouse_btn);
 			void 	SetCheckMode				(bool mode) {m_bCheckMode = mode;}
 
@@ -77,7 +80,8 @@ private:
 			void		PlaySoundT					();
 
 	ref_sound			m_sound_h;
-	ref_sound			m_sound_t;	
+	ref_sound			m_sound_t;
+	CUIStatic*			m_BtnStatic;
 
 }; // class CUI3tButton
 

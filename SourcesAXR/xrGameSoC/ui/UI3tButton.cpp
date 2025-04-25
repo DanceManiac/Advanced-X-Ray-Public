@@ -11,32 +11,40 @@
 #include "UI3tButton.h"
 #include "UIXmlInit.h"
 
-CUI3tButton::CUI3tButton(){
-	m_bTextureEnable	= false;
-	m_bUseTextColor[D]	= true;
-	m_bUseTextColor[H]	= false;
-	m_bUseTextColor[T]	= false;	
+CUI3tButton::CUI3tButton()
+{
+	m_bTextureEnable				= false;
+	m_bUseTextColor[D]				= true;
+	m_bUseTextColor[H]				= false;
+	m_bUseTextColor[T]				= false;
 
-	m_dwTextColor[E] 	= 0xFFFFFFFF;
-	m_dwTextColor[D] 	= 0xFFAAAAAA;
-	m_dwTextColor[H] 	= 0xFFFFFFFF;
-	m_dwTextColor[T] 	= 0xFFFFFFFF;
+	m_dwTextColor[E] 				= 0xFFFFFFFF;
+	m_dwTextColor[D] 				= 0xFFAAAAAA;
+	m_dwTextColor[H] 				= 0xFFFFFFFF;
+	m_dwTextColor[T] 				= 0xFFFFFFFF;
 
-	AttachChild			(&m_background);
-	AttachChild			(&m_hint);
+	AttachChild						(&m_background);
+	AttachChild						(&m_hint);
 
-	m_bEnableTextHighlighting = false;
-	m_bCheckMode		= false;
-	SetPushOffset		(Fvector2().set(0.0f,0.0f) );
+	m_bEnableTextHighlighting		= false;
+	m_bCheckMode					= false;
+	m_BtnStatic						= nullptr;
+	SetPushOffset					(Fvector2().set(0.0f,0.0f));
 }
 
 CUI3tButton::~CUI3tButton()
-{}
+{
+	if (m_BtnStatic)
+	{
+		DetachChild(m_BtnStatic);
+		xr_delete(m_BtnStatic);
+	}
+}
 
 void CUI3tButton::OnClick()
 {
-    CUIButton::OnClick	();
-    PlaySoundT			();
+	CUIButton::OnClick	();
+	PlaySoundT			();
 }
 
 bool CUI3tButton::OnMouseAction(float x, float y, EUIMessages mouse_action)
@@ -58,7 +66,7 @@ bool CUI3tButton::OnMouseDown(int mouse_btn)
 			else
 				m_eButtonState = BUTTON_NORMAL;
 		}
-		GetMessageTarget()->SendMessage(this, BUTTON_CLICKED, NULL);
+		GetMessageTarget()->SendMessage(this, BUTTON_CLICKED, nullptr);
 		return true;
 	}
 	else
@@ -91,19 +99,19 @@ void CUI3tButton::InitSoundT(LPCSTR sound_file)
 void CUI3tButton::PlaySoundT()
 {
 	if (m_sound_t._handle())
-        m_sound_t.play(NULL, sm_2D);
+		m_sound_t.play(nullptr, sm_2D);
 }
 
 void CUI3tButton::PlaySoundH()
 {
 	if (m_sound_h._handle())
-		m_sound_h.play(NULL, sm_2D);
+		m_sound_h.play(nullptr, sm_2D);
 }
 
 void CUI3tButton::InitButton(float x, float y, float width, float height)
 {
 	m_background.Init			(0, 0, width, height);
-    CUIButton::Init				(x, y, width, height);
+	CUIButton::Init				(x, y, width, height);
 }
 
 void CUI3tButton::SetWidth(float width)
@@ -158,7 +166,7 @@ void CUI3tButton::InitTexture(LPCSTR tex_enabled,
 
 void CUI3tButton::SetTextColor(u32 color)
 {
-    m_dwTextColor[E] = color;
+	m_dwTextColor[E] = color;
 }
 
 void CUI3tButton::SetTextColorD(u32 color)
@@ -212,7 +220,7 @@ void CUI3tButton::Update()
 	if(m_bTextureEnable)
 	{
 		if (!m_bIsEnabled){
-            m_background.SetState(S_Disabled);
+			m_background.SetState(S_Disabled);
 		}
 		else if (CUIButton::BUTTON_PUSHED == m_eButtonState){
 			m_background.SetState(S_Touched);
@@ -251,4 +259,15 @@ void CUI3tButton::Update()
 
 	CUIStatic::SetTextColor		(textColor);
 	m_hint.SetTextColor			(hintColor);
+}
+
+void CUI3tButton::AddStatic()
+{
+	if (!m_BtnStatic)
+	{
+		m_BtnStatic = xr_new<CUIStatic>();
+		m_BtnStatic->Init(-(GetWidth() / 2.f), 0.f, 80.f, 10.f);
+		m_BtnStatic->SetTextComplexMode(true);
+		AttachChild(m_BtnStatic);
+	}
 }

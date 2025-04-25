@@ -278,7 +278,7 @@ void ShowSpawner(bool& show)
 
 			if (m_bHasIcon)
 			{
-				const auto surfaceParams = ::Render->getSurface("ui\\ui_icon_equipment");
+				const auto surfaceParams = ::Render->getSurface(EQUIPMENT_ICONS);
 
 				float x = pSettings->r_float(m_sSelectedSection, "inv_grid_x") * UI().inv_grid_kx();
 				float y = pSettings->r_float(m_sSelectedSection, "inv_grid_y") * UI().inv_grid_kx();

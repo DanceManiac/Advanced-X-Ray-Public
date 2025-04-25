@@ -29,7 +29,7 @@ bool is_in2(const Frect & b1, const Frect & b2);
 //(1<<4) registered !!!
 void lanim_cont::set_defaults()
 {
-	m_lanim					= NULL;	
+	m_lanim					= nullptr;	
 	m_lanim_start_time		= -1.0f;
 	m_lanim_delay_time		= 0.0f;
 	m_lanimFlags.zero		();
@@ -59,7 +59,7 @@ CUIStatic:: CUIStatic()
 	m_lanim_clr.set_defaults	();
 	m_lanim_xform.set_defaults	();
 
-	m_pLines				= NULL;
+	m_pLines				= nullptr;
 	m_bEnableTextHighlighting = false;
 }
 
@@ -73,7 +73,7 @@ void CUIStatic::SetXformLightAnim(LPCSTR lanim, bool bCyclic)
 	if(lanim && lanim[0]!=0)
 		m_lanim_xform.m_lanim			= LALib.FindItem(lanim);
 	else
-		m_lanim_xform.m_lanim			= NULL;
+		m_lanim_xform.m_lanim			= nullptr;
 	
 	m_lanim_xform.m_lanimFlags.zero		();
 
@@ -86,7 +86,7 @@ void CUIStatic::SetClrLightAnim(LPCSTR lanim, bool bCyclic, bool bOnlyAlpha, boo
 	if(lanim && lanim[0]!=0)
 		m_lanim_clr.m_lanim	= LALib.FindItem(lanim);
 	else
-		m_lanim_clr.m_lanim	= NULL;
+		m_lanim_clr.m_lanim	= nullptr;
 	
 	m_lanim_clr.m_lanimFlags.zero		();
 
@@ -102,13 +102,13 @@ void CUIStatic::SetClrLightAnim(LPCSTR lanim, u8 const& flags, float delay)
 		m_lanim_clr.m_lanim = LALib.FindItem(lanim);
 	else
 	{
-		m_lanim_clr.m_lanim = NULL;
+		m_lanim_clr.m_lanim = nullptr;
 		return;
 	}
 
 	m_lanim_clr.m_lanim_delay_time = delay;
 	m_lanim_clr.m_lanimFlags.assign(flags);
-	R_ASSERT((m_lanim_clr.m_lanim == NULL) || m_lanim_clr.m_lanimFlags.test(LA_TEXTCOLOR | LA_TEXTURECOLOR));
+	R_ASSERT((m_lanim_clr.m_lanim == nullptr) || m_lanim_clr.m_lanimFlags.test(LA_TEXTCOLOR | LA_TEXTURECOLOR));
 }
 
 void CUIStatic::InitTexture(LPCSTR texture){
@@ -129,6 +129,12 @@ u32 CUIStatic::GetTextureColor() const{
 
 void CUIStatic::InitTextureEx(LPCSTR tex_name, LPCSTR sh_name)
 {
+	if (!tex_name || !xr_strlen(tex_name))
+	{
+		m_bTextureEnable = false;
+
+		return;
+	}
 
 	/*
 	string_path buff;
@@ -388,7 +394,7 @@ void CUIStatic::TextureClipper(float offset_x, float offset_y, Frect* pClipRect,
 {
 	Frect parent_rect;
 	
-	if(pClipRect == NULL)
+	if(pClipRect == nullptr)
 		if(GetParent())
 			GetParent()->GetAbsoluteRect(parent_rect);
 		else
@@ -602,7 +608,7 @@ void CUIStatic::OnFocusReceive()
 {
 	inherited::OnFocusReceive();
 	if (GetMessageTarget())
-        GetMessageTarget()->SendMessage(this, STATIC_FOCUS_RECEIVED, NULL);
+        GetMessageTarget()->SendMessage(this, STATIC_FOCUS_RECEIVED, nullptr);
 }
 
 void CUIStatic::FillDebugInfo()
@@ -629,7 +635,7 @@ void CUIStatic::OnFocusLost()
 
 	inherited::OnFocusLost();
 	if (GetMessageTarget())
-		GetMessageTarget()->SendMessage(this, STATIC_FOCUS_LOST, NULL);
+		GetMessageTarget()->SendMessage(this, STATIC_FOCUS_LOST, nullptr);
 
 	if (g_statHint->Owner() == this)
 		g_statHint->Discard();

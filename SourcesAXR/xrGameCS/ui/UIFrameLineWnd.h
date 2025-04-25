@@ -28,7 +28,7 @@ public:
 
 			pcstr GetDebugType		() override { return "CUIFrameLineWnd"; }
 protected:
-	bool			bHorizontal;
+	bool			m_bHorizontal;
 	bool			m_bTextureAvailable;
 	CUIFrameLine	UIFrameLine;	
 	bool			m_bStretchTexture;

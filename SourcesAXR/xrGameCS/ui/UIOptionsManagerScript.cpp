@@ -9,7 +9,7 @@ void CUIOptionsManagerScript::SetCurrentValues(const char* group){
 }
 
 void CUIOptionsManagerScript::SaveBackupValues(const char* group){
-	CUIOptionsItem::GetOptionsManager()->SeveBackupValues(group);
+	CUIOptionsItem::GetOptionsManager()->SaveBackUpValues(group);
 }
 
 void CUIOptionsManagerScript::SaveValues(const char* group){
