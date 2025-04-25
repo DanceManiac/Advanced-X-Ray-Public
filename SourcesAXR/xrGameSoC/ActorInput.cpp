@@ -155,7 +155,7 @@ void CActor::IR_OnKeyboardPress(int cmd)
 			if (hud_adj_mode)
 				return;
 
-			if (auto Wpn = smart_cast<CHudItem*>(inventory().ActiveItem()); Wpn && (Wpn->isHUDAnimationExist("anm_nv_on") || Wpn->isHUDAnimationExist("anm_nv_off")))
+			if (auto Wpn = smart_cast<CHudItem*>(inventory().ActiveItem()); Wpn && (Wpn->isHUDAnimationExist("anm_nv_on", true) || Wpn->isHUDAnimationExist("anm_nv_off", true)))
 			{
 				if (Wpn->IsPending())
 					break;
@@ -183,7 +183,7 @@ void CActor::IR_OnKeyboardPress(int cmd)
 
 			CTorch* pTorch = smart_cast<CTorch*>(inventory().ItemFromSlot(TORCH_SLOT));
 			
-			if (auto Wpn = smart_cast<CHudItem*>(inventory().ActiveItem()); Wpn && (Wpn->isHUDAnimationExist("anm_headlamp_on") || Wpn->isHUDAnimationExist("anm_headlamp_off")))
+			if (auto Wpn = smart_cast<CHudItem*>(inventory().ActiveItem()); Wpn && (Wpn->isHUDAnimationExist("anm_headlamp_on", true) || Wpn->isHUDAnimationExist("anm_headlamp_off", true)))
 			{
 				if (pTorch && !Wpn->IsPending())
 				{
@@ -202,7 +202,7 @@ void CActor::IR_OnKeyboardPress(int cmd)
 			if (hud_adj_mode)
 				return;
 
-			if (auto Wpn = smart_cast<CHudItem*>(inventory().ActiveItem()); Wpn && Wpn->isHUDAnimationExist("anm_clean_mask"))
+			if (auto Wpn = smart_cast<CHudItem*>(inventory().ActiveItem()); Wpn && Wpn->isHUDAnimationExist("anm_clean_mask", true))
 			{
 				if (Wpn->IsPending())
 					break;

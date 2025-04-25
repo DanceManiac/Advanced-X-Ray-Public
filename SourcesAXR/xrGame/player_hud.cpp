@@ -30,17 +30,28 @@ float CalculateMotionStartSeconds(float fStartFromTime, float fMotionLength)
 	}
 }
 
-player_hud_motion* player_hud_motion_container::find_motion(const shared_str& name)
+player_hud_motion* player_hud_motion_container::find_motion(const shared_str& name, bool withSuffix)
 {
-	xr_vector<player_hud_motion>::iterator it	= m_anims.begin();
-	xr_vector<player_hud_motion>::iterator it_e = m_anims.end();
-	for(;it!=it_e;++it)
+	if (!withSuffix)
 	{
-		const shared_str& s = (true)?(*it).m_alias_name:(*it).m_base_name;
-		if( s == name)
-			return &(*it);
+		for (auto& motion : m_anims)
+		{
+			const shared_str& s = motion.m_alias_name;
+			if (s == name)
+				return &motion;
+		}
 	}
-	return NULL;
+	else
+	{
+		for (auto& motion : m_anims)
+		{
+			const shared_str& s = motion.m_alias_name;
+			if (strstr(s.c_str(), name.c_str()) == s.c_str())
+				return &motion;
+		}
+	}
+
+	return nullptr;
 }
 
 void player_hud_motion_container::load(IKinematicsAnimated* model, const shared_str& sect)

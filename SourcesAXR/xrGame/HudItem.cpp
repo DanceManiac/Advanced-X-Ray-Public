@@ -503,7 +503,7 @@ u32 CHudItem::PlayHUDMotionNew(const shared_str& M, const bool bMixIn, const u32
 }
 
 //AVO: check if animation exists
-bool CHudItem::isHUDAnimationExist(LPCSTR anim_name)
+bool CHudItem::isHUDAnimationExist(LPCSTR anim_name, bool withSuffix)
 {
 	if (HudItemData()) // First person
 	{
@@ -512,17 +512,22 @@ bool CHudItem::isHUDAnimationExist(LPCSTR anim_name)
 		u16 attach_place_idx = pSettings->r_u16(HudItemData()->m_sect_name, "attach_place_idx");
 		xr_sprintf(anim_name_r, "%s%s", anim_name, (attach_place_idx == 1 && is_16x9) ? "_16x9" : "");
 		xr_sprintf(anim_name_def, "%s", anim_name);
-		player_hud_motion* anm = HudItemData()->m_hand_motions.find_motion(anim_name_r);
-		player_hud_motion* anm_def = HudItemData()->m_hand_motions.find_motion(anim_name_def);
+		player_hud_motion* anm = HudItemData()->m_hand_motions.find_motion(anim_name_r, withSuffix);
+		player_hud_motion* anm_def = HudItemData()->m_hand_motions.find_motion(anim_name_def, withSuffix);
+		
 		if (anm || anm_def)
 			return true;
 	}
 	else // Third person
+	{
 		if (g_player_hud->motion_length(anim_name, HudSection(), m_current_motion_def) > 100)
 			return true;
+	}
+
 #ifdef DEBUG
 	Msg("~ [WARNING] [%s]: Animation [%s] does not exist in [%s]", __FUNCTION__, anim_name, HudSection().c_str());
 #endif
+
 	return false;
 }
 

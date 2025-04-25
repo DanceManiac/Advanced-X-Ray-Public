@@ -148,7 +148,7 @@ public:
 	u32							PlayHUDMotionNew		(const shared_str& M, const bool bMixIn, const u32 state, const bool randomAnim = true, float speed = 1.f);
 	u32							PlayHUDMotionIfExists	(std::initializer_list<const char*>, const bool bMixIn, const u32 state, const bool randomAnim = true, float speed = 1.f);
 	u32							PlayHUDMotion_noCB		(const shared_str& M, const bool bMixIn, const bool randomAnim = true, float speed = 1.f);
-	bool						isHUDAnimationExist		(LPCSTR anim_name);
+	bool						isHUDAnimationExist		(LPCSTR anim_name, bool withSuffix = false);
 	void						StopCurrentAnimWithoutCallback();
 	virtual void				UpdateAddonsTransform	(bool for_hud) {};
 

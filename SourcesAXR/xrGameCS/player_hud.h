@@ -39,7 +39,7 @@ struct player_hud_motion
 struct player_hud_motion_container
 {
 	xr_vector<player_hud_motion>	m_anims;
-	player_hud_motion*				find_motion(const shared_str& name);
+	player_hud_motion*				find_motion(const shared_str& name, bool withSuffix = false);
 	void		load				(IKinematicsAnimated* model, const shared_str& sect);
 };
 
