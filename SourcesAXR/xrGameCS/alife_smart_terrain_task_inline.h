@@ -52,6 +52,8 @@ IC	const u32 &CALifeSmartTerrainTask::patrol_point_index		() const
 
 IC	const CPatrolPoint &CALifeSmartTerrainTask::patrol_point	() const
 {
-	VERIFY					(m_patrol_point);
+#ifdef DEBUG
+	R_ASSERT2				(!m_patrol_point, make_string("[CALifeSmartTerrainTask::patrol_point]: m_patrol_point is nullptr! In path: [%s]", m_patrol_path_name.c_str()));
+#endif
 	return					(*m_patrol_point);
 }
