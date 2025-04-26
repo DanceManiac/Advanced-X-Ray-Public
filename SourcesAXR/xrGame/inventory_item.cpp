@@ -1690,7 +1690,7 @@ float CInventoryItem::GetOccupiedInvSpace()
 			m_fOccupiedInvSpace = cast_physics_shell_holder()->CFORM()->getRadius() * 10.0f;
 	}
 
-	if (GameConstants::GetActorSkillsEnabled() && Actor()->ActorSkills)
+	if (GameConstants::GetActorSkillsEnabled() && Actor() && Actor()->ActorSkills)
 	{
 		if (int packing_skill_lvl = Actor()->ActorSkills->get_packing_skill())
 		{

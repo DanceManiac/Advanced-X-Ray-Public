@@ -1359,7 +1359,7 @@ u16 CInventoryItem::bone_count_to_synchronize	() const
 
 float CInventoryItem::GetOccupiedInvSpace()
 {
-	if (GameConstants::GetActorSkillsEnabled() && Actor()->ActorSkills)
+	if (GameConstants::GetActorSkillsEnabled() && Actor() && Actor()->ActorSkills)
 	{
 		if (int packing_skill_lvl = Actor()->ActorSkills->get_packing_skill())
 		{
