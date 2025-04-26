@@ -110,6 +110,8 @@ public:
 	void							Render			();
 	void							OnFrame			();
 
+	void							InvalidateState	() { state = stIdle; }
+
 	float							GetRainHemi		() { return rain_hemi; }
 };
 

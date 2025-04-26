@@ -239,25 +239,34 @@ void	CEffect_Rain::OnFrame	()
 		switch (state)
 		{
 		case stIdle:
-			if (factor < EPS_L)		return;
-			state = stWorking;
-			snd_Ambient.play(0, sm_Looped);
-			snd_Ambient.set_position(Fvector().set(0, 0, 0));
-			snd_Ambient.set_range(m_fsource_offset, m_fsource_offset*2.f);
-
-			snd_RainOnMask.play(0, sm_Looped);
-			snd_RainOnMask.set_position(Fvector().set(0, 0, 0));
-			snd_RainOnMask.set_range(m_fsource_offset, m_fsource_offset*2.f);
-			break;
-		case stWorking:
-			if (factor < EPS_L)
 			{
-				state = stIdle;
-				snd_Ambient.stop();
-				snd_RainOnMask.stop();
-				return;
-			}
-			break;
+				if (factor < EPS_L)
+				{
+					if (snd_Ambient._feedback())
+						snd_Ambient.stop();
+
+					return;
+				}
+
+				state = stWorking;
+				snd_Ambient.play(0, sm_Looped);
+				snd_Ambient.set_position(Fvector().set(0, 0, 0));
+				snd_Ambient.set_range(m_fsource_offset, m_fsource_offset * 2.f);
+
+				snd_RainOnMask.play(0, sm_Looped);
+				snd_RainOnMask.set_position(Fvector().set(0, 0, 0));
+				snd_RainOnMask.set_range(m_fsource_offset, m_fsource_offset * 2.f);
+			} break;
+		case stWorking:
+			{
+				if (factor < EPS_L)
+				{
+					state = stIdle;
+					snd_Ambient.stop();
+					snd_RainOnMask.stop();
+					return;
+				}
+			} break;
 		}
 
 		// Rain Sound

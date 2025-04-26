@@ -9,6 +9,7 @@
 #include "game_cl_base.h"
 #include "../xrEngine/x_ray.h"
 #include "../xrEngine/gamemtllib.h"
+#include "../xrEngine/Rain.h"
 #include "../xrphysics/PhysicsCommon.h"
 #include "level_sounds.h"
 #include "GamePersistent.h"
@@ -117,6 +118,14 @@ BOOL CLevel::Load_GameSpecific_After()
 			}
 			Sounds_Random_dwNextTime= Device.TimerAsync	()	+ 50000;
 			Sounds_Random_Enabled	= FALSE;
+		}
+
+		if (g_pGamePersistent->pEnvironment)
+		{
+			if (auto rain = g_pGamePersistent->pEnvironment->eff_Rain)
+			{
+				rain->InvalidateState();
+			}
 		}
 
 		if ( FS.exist(fn_game, "$level$", "level.fog_vol")) 

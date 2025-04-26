@@ -10,10 +10,10 @@
 #include "game_cl_base.h"
 #include "../xrEngine/x_ray.h"
 #include "../xrEngine/gamemtllib.h"
+#include "../xrEngine/Rain.h"
 #include "PhysicsCommon.h"
 #include "level_sounds.h"
 #include "GamePersistent.h"
-
 
 BOOL CLevel::Load_GameSpecific_Before()
 {
@@ -95,6 +95,14 @@ BOOL CLevel::Load_GameSpecific_After()
 			Sounds_Random_Enabled	= FALSE;
 		}
 	}	
+
+	if (g_pGamePersistent->pEnvironment)
+	{
+		if (auto rain = g_pGamePersistent->pEnvironment->eff_Rain)
+		{
+			rain->InvalidateState();
+		}
+	}
 
 	{
 		// loading scripts
