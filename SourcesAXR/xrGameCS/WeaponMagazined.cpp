@@ -2191,6 +2191,9 @@ void CWeaponMagazined::PlayAnimReload()
 
 void CWeaponMagazined::PlayAnimAim()
 {
+	if (m_sounds.FindSoundItem("sndSprintStart", false))
+		m_sounds.StopSound("sndSprintIdle");
+
 	auto det = smart_cast<CCustomDetector*>(g_actor->inventory().ItemFromSlot(DETECTOR_SLOT));
 
 	if (IsRotatingToZoom())

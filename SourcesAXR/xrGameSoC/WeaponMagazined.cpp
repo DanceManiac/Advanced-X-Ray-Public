@@ -2103,6 +2103,9 @@ void CWeaponMagazined::PlayAnimReload()
 
 void CWeaponMagazined::PlayAnimAim()
 {
+	if (m_sounds.FindSoundItem("sndSprintStart", false))
+		m_sounds.StopSound("sndSprintIdle");
+
 	if (IsRotatingToZoom())
 	{
 		string32 guns_aim_start_anm;

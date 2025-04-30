@@ -287,9 +287,6 @@ void CHudItem::OnStateSwitch(u32 S, u32 oldState)
 	case eSprintEnd:
 		{
 			PlayAnimSprintEnd();
-
-			if (m_sounds.FindSoundItem("sndSprintIdle", false))
-				m_sounds.StopSound("sndSprintIdle");
 		} break;
 	}
 	//g_player_hud->updateMovementLayerState();
@@ -631,7 +628,10 @@ bool CHudItem::TryPlayAnimIdle()
 				PlayAnimIdleSprint();
 				return true;
 			}
-			else if (m_bSprintType)
+			else if (m_sounds.FindSoundItem("sndSprintStart", false))
+				m_sounds.StopSound("sndSprintIdle");
+
+			if (m_bSprintType)
 			{
 				if ((State & mcClimb))
 					return false;

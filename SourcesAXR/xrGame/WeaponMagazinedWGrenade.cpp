@@ -791,6 +791,9 @@ void CWeaponMagazinedWGrenade::PlayAnimIdle()
 	{
 		if(IsZoomed())
 		{
+			if (m_sounds.FindSoundItem("sndSprintStart", false))
+				m_sounds.StopSound("sndSprintIdle");
+
 			if (IsRotatingToZoom())
 			{
 				string32 guns_aim_start_anm;
@@ -920,6 +923,9 @@ void CWeaponMagazinedWGrenade::PlayAnimIdle()
 				}
 				else if (m_bSprintType)
 				{
+					if (m_sounds.FindSoundItem("sndSprintStart", false))
+						m_sounds.StopSound("sndSprintIdle");
+
 					SwitchState(eSprintEnd);
 					return;
 				}
@@ -937,6 +943,12 @@ void CWeaponMagazinedWGrenade::PlayAnimIdle()
 					else
 						act_state = 3;
 				}
+			}
+
+			if (act_state != 1)
+			{
+				if (m_sounds.FindSoundItem("sndSprintStart", false))
+					m_sounds.StopSound("sndSprintIdle");
 			}
 
 			if (m_bGrenadeMode)
