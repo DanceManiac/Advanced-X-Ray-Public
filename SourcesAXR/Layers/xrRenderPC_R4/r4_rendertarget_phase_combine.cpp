@@ -109,7 +109,7 @@ void	CRenderTarget::phase_combine	()
 			Matrix_current.set(Device.mProject);
 			m_saved_viewproj.set(Device.mFullTransform);
 		}
-		float scale = ps_r2_mblur / 2.f;
+		float scale = (ps_r2_mblur / 2.f) * (BOOL)!m_bCubemapScreenshotInProcess;
 		m_blur_scale.set(scale, -scale).div(12.f);
 	}
 
@@ -433,7 +433,7 @@ void	CRenderTarget::phase_combine	()
 
 	if (!_menu_pp)
 	{
-		if (ps_r_sun_shafts > 0 && (ps_sunshafts_mode == R2SS_SCREEN_SPACE || ps_sunshafts_mode == R2SS_COMBINE_SUNSHAFTS))
+		if (ps_r_sun_shafts > 0 && !m_bCubemapScreenshotInProcess && (ps_sunshafts_mode == R2SS_SCREEN_SPACE || ps_sunshafts_mode == R2SS_COMBINE_SUNSHAFTS))
 			phase_sunshafts();
 	}
 	
