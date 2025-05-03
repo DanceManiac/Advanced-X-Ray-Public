@@ -117,7 +117,11 @@ void CActor::IR_OnKeyboardPress(int cmd)
 	case kJUMP:		
 		{
 			mstate_wishful |= mcJump;
-		}break;
+
+			if (mstate_wishful & mcSprint)
+				mstate_wishful &= ~mcSprint;
+
+		} break;
 	case kSPRINT_TOGGLE:	
 		{
 			CWeapon* W = smart_cast<CWeapon*>(inventory().ActiveItem());
