@@ -42,6 +42,7 @@ protected:
 	ESoundTypes		m_eSoundClose_2;
 
 	bool			m_bOnlyTriStateWithScope;
+	bool			m_bIsCancelReloadNow;
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };

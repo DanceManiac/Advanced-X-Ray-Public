@@ -14,6 +14,7 @@ CWeaponShotgun::CWeaponShotgun(void) : CWeaponCustomPistol("TOZ34")
 	m_eSoundAddCartridge	= ESoundTypes(SOUND_TYPE_WEAPON_SHOOTING);
 
 	m_bOnlyTriStateWithScope = false;
+	m_bIsCancelReloadNow	= false;
 }
 
 CWeaponShotgun::~CWeaponShotgun(void)
@@ -205,6 +206,7 @@ bool CWeaponShotgun::Action			(s32 cmd, u32 flags)
 	{
 		AddCartridge(1);
 		m_sub_state = eSubstateReloadEnd;
+		m_bIsCancelReloadNow = true;
 		return true;
 	}
 	//если оружие чем-то занято, то ничего не делать
@@ -277,17 +279,19 @@ void CWeaponShotgun::TriStateReload()
 
 void CWeaponShotgun::OnStateSwitch(u32 S, u32 oldState)
 {
-	if (!m_bTriStateReload || (m_bIsBoltRiffle && !(IsScopeAttached() && m_bOnlyTriStateWithScope) && !iAmmoElapsed) || S != eReload){
+	if (!m_bIsCancelReloadNow && (!m_bTriStateReload || (m_bIsBoltRiffle && !(IsScopeAttached() && m_bOnlyTriStateWithScope) && !iAmmoElapsed) || S != eReload))
+	{
 		inherited::OnStateSwitch(S, oldState);
 		return;
 	}
 
 	CWeapon::OnStateSwitch(S, oldState);
 
-	if ((m_magazine.size() == (u32)iMagazineSize) && !IsMisfire() || !HaveCartridgeInInventory(1) && !IsMisfire())
+	if ((m_magazine.size() == (u32)iMagazineSize) && !IsMisfire() || !HaveCartridgeInInventory(1) && !IsMisfire() || m_bIsCancelReloadNow)
 	{
 			switch2_EndReload		();
 			m_sub_state = eSubstateReloadEnd;
+			m_bIsCancelReloadNow = false;
 	};
 
 	switch (m_sub_state)

@@ -14,6 +14,7 @@ CWeaponShotgun::CWeaponShotgun()
 
 	m_bOnlyTriStateWithScope = false;
 	m_bLastShotRPM			= true;
+	m_bIsCancelReloadNow	= false;
 }
 
 CWeaponShotgun::~CWeaponShotgun()
@@ -76,6 +77,7 @@ bool CWeaponShotgun::Action			(u16 cmd, u32 flags)
 	{
 		AddCartridge(1);
 		m_sub_state = eSubstateReloadEnd;
+		m_bIsCancelReloadNow = true;
 		return true;
 	}
 	return false;
@@ -136,7 +138,7 @@ void CWeaponShotgun::TriStateReload()
 
 void CWeaponShotgun::OnStateSwitch	(u32 S)
 {
-	if(!m_bTriStateReload || (m_bIsBoltRiffle && !(IsScopeAttached() && m_bOnlyTriStateWithScope) && !iAmmoElapsed) || S != eReload)
+	if(!m_bIsCancelReloadNow && (!m_bTriStateReload || (m_bIsBoltRiffle && !(IsScopeAttached() && m_bOnlyTriStateWithScope) && !iAmmoElapsed) || S != eReload))
 	{
 		inherited::OnStateSwitch(S);
 		return;
@@ -144,10 +146,11 @@ void CWeaponShotgun::OnStateSwitch	(u32 S)
 
 	CWeapon::OnStateSwitch(S);
 
-	if ((m_magazine.size() == (u32)iMagazineSize) && !IsMisfire() || !HaveCartridgeInInventory(1) && !IsMisfire())
+	if ((m_magazine.size() == (u32)iMagazineSize) && !IsMisfire() || !HaveCartridgeInInventory(1) && !IsMisfire() || m_bIsCancelReloadNow)
 	{
 			switch2_EndReload		();
 			m_sub_state = eSubstateReloadEnd;
+			m_bIsCancelReloadNow = false;
 			return;
 	};
 
