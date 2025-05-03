@@ -41,7 +41,6 @@ constexpr auto WEAPON_REMOVE_TIME = 60000;
 constexpr auto ROTATION_TIME = 0.25f;
 
 BOOL	b_toggle_weapon_aim		= FALSE;
-BOOL	b_hud_collision			= FALSE;
 extern CUIXml*	pWpnScopeXml	= NULL;
 
 ENGINE_API extern float psHUD_FOV_def;
@@ -3021,46 +3020,6 @@ void _inertion(float& _val_cur, const float& _val_trgt, const float& _friction)
 float _lerp(const float& _val_a, const float& _val_b, const float& _factor)
 {
 	return (_val_a * (1.0 - _factor)) + (_val_b * _factor);
-}
-
-static BOOL pick_trace_callback(collide::rq_result& result, LPVOID params)
-{
-	collide::rq_result* RQ = (collide::rq_result*)params;
-	if (!result.O)
-	{
-		// получить треугольник и узнать его материал
-		CDB::TRI* T = Level().ObjectSpace.GetStaticTris() + result.element;
-		if (T->material < GMLib.CountMaterial())
-		{
-			if (GMLib.GetMaterialByIdx(T->material)->Flags.is(SGameMtl::flPassable) || GMLib.GetMaterialByIdx(T->material)->Flags.is(SGameMtl::flActorObstacle))
-				return TRUE;
-		}
-	}
-	*RQ = result;
-	return FALSE;
-}
-
-static float GetRayQueryDist()
-{
-	collide::rq_result RQ;
-	g_pGameLevel->ObjectSpace.RayPick(Device.vCameraPosition, Device.vCameraDirection, 3.0f, collide::rqtStatic, RQ, Actor());
-	if (!RQ.O)
-	{
-		CDB::TRI* T = Level().ObjectSpace.GetStaticTris() + RQ.element;
-		if (T->material < GMLib.CountMaterial())
-		{
-			collide::rq_result  RQ2;
-			collide::rq_results RQR;
-			RQ2.range = 3.0f;
-			collide::ray_defs RD(Device.vCameraPosition, Device.vCameraDirection, RQ2.range, CDB::OPT_CULL, collide::rqtStatic);
-			if (Level().ObjectSpace.RayQuery(RQR, RD, pick_trace_callback, &RQ2, NULL, Level().CurrentEntity()))
-			{
-				clamp(RQ2.range, RQ.range, RQ2.range);
-				return RQ2.range;
-			}
-		}
-	}
-	return RQ.range;
 }
 
 void CWeapon::SetAmmoElapsed(int ammo_count)

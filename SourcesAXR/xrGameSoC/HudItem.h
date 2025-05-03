@@ -307,5 +307,7 @@ private:
 	shooting_params m_shooting_params; //--#SM+#--
 
 	bool bReloadShooting; //--#SM+#--
+
+	float m_fHudCollisionFactor{};
 };
 
