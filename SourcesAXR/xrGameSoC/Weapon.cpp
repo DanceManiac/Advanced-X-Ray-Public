@@ -3200,7 +3200,6 @@ const char* CWeapon::GetAnimAimName()
 
 		if (state && state & mcAnyMove)
 		{
-#pragma todo("DANCE MANIAC: Uncomment this for advanced moving anims.")
 			if (IsScopeAttached() && m_bUseScopeAimMoveAnims)
 				return strconcat(sizeof(guns_aim_anm), guns_aim_anm, GenerateAimAnimName("anm_idle_aim_scope_moving"), (IsMisfire()) ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : "");
 			else
