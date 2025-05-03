@@ -113,7 +113,7 @@ void CActor::IR_OnKeyboardPress(int cmd)
 					CEatableItem* pEatable = smart_cast<CEatableItem*>(it);
 					if (!pEatable)
 						continue;
-					if (pEatable->GetPortionsNum() == 1)
+					if (pEatable->m_section_id == item_name && !itm && pEatable->GetPortionsNum() == 1)
 					{
 						itm = pEatable;
 						break;
