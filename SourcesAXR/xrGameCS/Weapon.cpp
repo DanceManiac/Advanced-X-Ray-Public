@@ -3646,7 +3646,9 @@ void CWeapon::UpdateAimOffsets()
 	if (HudFovFromScope && !IsRotatingFromZoom())
 		psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, !m_bAltZoomActive ? "aim_hud_fov" : "aim_alt_hud_fov", GetHudFov());
 
-	if (m_bAltZoomEnabledScope)
+	bool AimOffsetsFromScope = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "cur_scope_aim_offsets", m_bAltZoomEnabledScope);
+
+	if (AimOffsetsFromScope)
 	{
 		attachable_hud_item* hi = HudItemData();
 
@@ -3663,10 +3665,13 @@ void CWeapon::UpdateAimOffsets()
 		strconcat(sizeof(val_name), val_name, "aim_hud_offset_rot", _prefix);
 		hi->m_measures.m_hands_offset[1][1] = READ_IF_EXISTS(pSettings, r_fvector3, cur_scope_sect, val_name, hi->m_measures.m_hands_offset[1][1]);
 
-		strconcat(sizeof(val_name), val_name, "aim_alt_hud_offset_pos", _prefix);
-		hi->m_measures.m_hands_offset[0][3] = READ_IF_EXISTS(pSettings, r_fvector3, cur_scope_sect, val_name, hi->m_measures.m_hands_offset[0][1]);
-		strconcat(sizeof(val_name), val_name, "aim_alt_hud_offset_rot", _prefix);
-		hi->m_measures.m_hands_offset[1][3] = READ_IF_EXISTS(pSettings, r_fvector3, cur_scope_sect, val_name, hi->m_measures.m_hands_offset[1][1]);
+		if (m_bAltZoomEnabledScope)
+		{
+			strconcat(sizeof(val_name), val_name, "aim_alt_hud_offset_pos", _prefix);
+			hi->m_measures.m_hands_offset[0][3] = READ_IF_EXISTS(pSettings, r_fvector3, cur_scope_sect, val_name, hi->m_measures.m_hands_offset[0][1]);
+			strconcat(sizeof(val_name), val_name, "aim_alt_hud_offset_rot", _prefix);
+			hi->m_measures.m_hands_offset[1][3] = READ_IF_EXISTS(pSettings, r_fvector3, cur_scope_sect, val_name, hi->m_measures.m_hands_offset[1][1]);
+		}
 
 		bNeedRestoreOffsets = true;
 	}
