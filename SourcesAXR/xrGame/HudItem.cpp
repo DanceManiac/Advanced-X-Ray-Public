@@ -770,6 +770,14 @@ void CHudItem::PlayAnimSprintEnd()
 {
 	CWeapon* wpn = smart_cast<CWeapon*>(this);
 
+	if (wpn && wpn->IsRotatingFromZoom())
+	{
+		m_bSprintType = false;
+		SwitchState(eIdle);
+
+		return;
+	}
+
 	string_path guns_sprint_end_anm{};
 	strconcat(sizeof(guns_sprint_end_anm), guns_sprint_end_anm, "anm_idle_sprint_end", (wpn && wpn->IsGrenadeLauncherAttached()) ? (wpn && wpn->IsGrenadeMode() ? "_g" : "_w_gl") : "", (IsMisfireNow() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
 
