@@ -1478,17 +1478,27 @@ void CLocatorAPI::file_delete(LPCSTR path, LPCSTR nm)
 
 void CLocatorAPI::file_copy(LPCSTR src, LPCSTR dest)
 {
-	if (exist(src)){
+#ifdef PROTECT_CBT
+	FATAL("This build does not provide for this operation.");
+#else
+	if (exist(src))
+	{
         IReader* S		= r_open(src);
-        if (S){
+        
+		if (S)
+		{
             IWriter* D	= w_open(dest);
-            if (D){
+
+            if (D)
+			{
                 D->w	(S->pointer(),S->length());
                 w_close	(D);
             }
+
             r_close		(S);
         }
 	}
+#endif
 }
 
 void CLocatorAPI::file_rename(LPCSTR src, LPCSTR dest, bool bOwerwrite)
