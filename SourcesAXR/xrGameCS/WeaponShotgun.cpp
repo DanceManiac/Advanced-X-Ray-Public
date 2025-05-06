@@ -194,7 +194,7 @@ void CWeaponShotgun::switch2_AddCartgidge	()
 
 void CWeaponShotgun::switch2_EndReload	()
 {
-	SetPending			(FALSE);
+	SetPending			(TRUE);
 
 	if (!IsMisfire())
 	{
