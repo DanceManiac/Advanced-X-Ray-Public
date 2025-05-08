@@ -604,7 +604,7 @@ void SDrawStaticStruct::SetText(LPCSTR text)
 
 void SDrawStaticStruct::Draw()
 {
-	if(m_static->IsShown())
+	if(m_static && m_static->IsShown())
 		m_static->Draw();
 }
 

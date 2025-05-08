@@ -10,6 +10,7 @@
 #include "Inventory.h"
 #include "UIGameSP.h"
 #include <imgui.h>
+#include "AdvancedXrayGameConstants.h"
 
 dlgItem::dlgItem(CUIWindow* pWnd)
 {
@@ -68,7 +69,7 @@ void CDialogHolder::StartMenu (CUIDialogWnd* pDialog, bool bDoHideIndicators)
 	AddDialogToRender				(pDialog);
 	SetMainInputReceiver			(pDialog, false);
 
-	if(UseIndicators())
+	if(UseIndicators() && !m_input_receivers.empty())
 	{
 		bool b							= !!psHUD_Flags.test(HUD_CROSSHAIR_RT);
 		m_input_receivers.back().m_flags.set(recvItem::eCrosshair, b);
@@ -110,7 +111,7 @@ void CDialogHolder::StopMenu (CUIDialogWnd* pDialog)
 
 	if( MainInputReceiver()==pDialog )
 	{
-		if(UseIndicators())
+		if(UseIndicators() && !m_input_receivers.empty())
 		{
 			bool b					= !!m_input_receivers.back().m_flags.test(recvItem::eCrosshair);
 			psHUD_Flags.set			(HUD_CROSSHAIR_RT, b);
@@ -223,10 +224,7 @@ void CDialogHolder::StartStopMenu(CUIDialogWnd* pDialog, bool bDoHideIndicators)
 
 void CDialogHolder::StartDialog(CUIDialogWnd* pDialog, bool bDoHideIndicators)
 {
-	// cari0us - чтобы отрубить центрирование курсора в принципе, как например нужно мне
-	const bool b_disable_center_cursor_global = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "disable_center_cursor_global", false);
-
-	if (pDialog && (pDialog->NeedCenterCursor() && !b_disable_center_cursor_global))
+	if (pDialog && (pDialog->NeedCenterCursor() && !GameConstants::GetCursorGlobalCenteringDisabled()))
 	{
 		GetUICursor().SetUICursorPosition(Fvector2().set(512.0f, 384.0f));
 	}
@@ -244,15 +242,14 @@ void CDialogHolder::OnFrame	()
 
 	xr_vector<dlgItem>::iterator it = m_dialogsToRender.begin();
 	for(; it!=m_dialogsToRender.end();++it)
-		if((*it).enabled && (*it).wnd->IsEnabled())
+		if((*it).enabled && (*it).wnd && (*it).wnd->IsEnabled())
 			(*it).wnd->Update();
 
 	if (m_dialogsToRender.empty())
 		return;
 
 	std::sort(m_dialogsToRender.begin(), m_dialogsToRender.end());
-
-	while ((m_dialogsToRender.size()) && (!m_dialogsToRender[m_dialogsToRender.size() - 1].enabled))
+	while (!m_dialogsToRender.empty() && (!m_dialogsToRender[m_dialogsToRender.size() - 1].enabled))
 		m_dialogsToRender.pop_back();
 }
 

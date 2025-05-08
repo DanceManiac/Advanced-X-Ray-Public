@@ -92,6 +92,8 @@ bool CUIGameSP::IR_OnKeyboardPress(int dik)
 	if (!EA || !EA->g_Alive() )	return false;
 
 	CActor *pActor = smart_cast<CActor*>(pInvOwner);
+	if( !pActor ) 
+		return false;
 
 	if (pActor && !pActor->g_Alive())
 		return false;

@@ -72,4 +72,5 @@ namespace GameConstants
 	LPCSTR GetArtefactDegradationMode();
 	shared_str GetMoonPhasesMode();
 	bool GetSmoothScrollEnabled();
+	bool GetCursorGlobalCenteringDisabled();
 };

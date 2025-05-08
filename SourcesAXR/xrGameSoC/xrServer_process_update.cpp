@@ -34,7 +34,15 @@ void xrServer::Process_update(NET_Packet& P, ClientID sender)
 			if ((P.r_tell()-_pos) != size)	{
 				string16	tmp;
 				CLSID2TEXT	(E->m_tClassID,tmp);
-				Debug.fatal	(DEBUG_INFO,"Beer from the creator of '%s'",tmp);
+				Debug.fatal	(DEBUG_INFO,
+					"Size from '%s' CSE_* UPDATE_Read does not match size of class's net_Export; initiator: 0x%08x, r_tell() = %d, pos = %d, objectID = %d, size = %d",
+					tmp,
+					CL->ID.value(),
+					P.r_tell(), 
+					_pos,
+					E->ID,
+					size
+				);
 			}
 		}
 		else
@@ -72,7 +80,8 @@ void xrServer::Process_save(NET_Packet& P, ClientID sender)
 		s32				_pos_end	= P.r_tell	();
 		s32				_size		= size;
 		if				(_size != (_pos_end-_pos_start))	{
-			Msg			("! load/save mismatch, object: '%s'",E?E->name_replace():"unknown");
+			Msg("!![%s] load/save mismatch, object: [%s], size: [%d], _pos_end-_pos_start: [%d], ID_to_entity(ID) is [%s]", __FUNCTION__, E ? E->name_replace() : "unknown", _size,
+				_pos_end - _pos_start, E ? "true" : "false");
 			s32			_rollback	= _pos_start+_size;
 			P.r_seek	(_rollback);
 		}
