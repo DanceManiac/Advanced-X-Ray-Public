@@ -403,6 +403,12 @@ public:
 
 	virtual void fill_tips(vecTips& tips, u32 mode)
 	{
+		if (!ai().get_alife())
+		{
+			Msg("! ALife simulator is needed to perform specified command!");
+			return;
+		}
+		
 		for (auto sect : pSettings->sections()) {
 			if (sect->line_exist("class") && sect->line_exist("inv_weight"))
 				tips.push_back(sect->Name.c_str());
