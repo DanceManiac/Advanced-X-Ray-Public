@@ -142,7 +142,7 @@ void CParticleEffect::OnFrame(u32 frame_dt)
 			clamp		(StepCount,0,3);
 		}
 
-		for (; StepCount; StepCount--)
+		for (;StepCount; StepCount--)
 		{
 			if (m_Def->m_Flags.is(CPEDef::dfTimeLimit))
 			{
@@ -164,12 +164,11 @@ void CParticleEffect::OnFrame(u32 frame_dt)
             ParticleManager()->GetParticles(m_HandleEffect,particles,p_cnt);
             
 			// our actions
-			if (m_Def->m_Flags.is(CPEDef::dfFramed | CPEDef::dfAnimated))
-				m_Def->ExecuteAnimate(
-					particles, p_cnt, fDT_STEP);
+			if (m_Def->m_Flags.is(CPEDef::dfFramed|CPEDef::dfAnimated))
+				m_Def->ExecuteAnimate	(particles,p_cnt,fDT_STEP);
+
 			if (m_Def->m_Flags.is(CPEDef::dfCollision))
-				m_Def->ExecuteCollision(
-					particles, p_cnt, fDT_STEP, this, m_CollisionCallback);
+				m_Def->ExecuteCollision	(particles,p_cnt,fDT_STEP,this,m_CollisionCallback);
 
 			//-move action
 			if (p_cnt)	
@@ -180,9 +179,13 @@ void CParticleEffect::OnFrame(u32 frame_dt)
 				{
 					Particle &m 	= particles[i]; 
 					vis.box.modify((Fvector&)m.pos);
-					if (m.size.x>p_size) p_size = m.size.x;
-					if (m.size.y>p_size) p_size = m.size.y;
-					if (m.size.z>p_size) p_size = m.size.z;
+					
+					if (m.size.x>p_size)
+						p_size = m.size.x;
+					if (m.size.y>p_size)
+						p_size = m.size.y;
+					if (m.size.z>p_size)
+						p_size = m.size.z;
 				}
 				vis.box.grow		(p_size);
 				vis.box.getsphere	(vis.sphere.P,vis.sphere.R);
@@ -441,10 +444,10 @@ __forceinline void magnitude_sse( Fvector &vec , float &res )
 	_mm_store_ss( (float*) &res , tv );
 }
 
-void ParticleRenderStream( LPVOID lpvParams )
+void ParticleRenderStream(LPVOID lpvParams)
 {
 	float sina = 0.0f, cosa = 0.0f;
-	float angle = 0.0f;
+	float angle = 0xFFFFFFFF;
 
 	PRS_PARAMS* pParams = (PRS_PARAMS*)lpvParams;
 
@@ -576,10 +579,6 @@ void ParticleRenderStream( LPVOID lpvParams )
 
 void CParticleEffect::Render(float )
 {
-	#ifdef _GPA_ENABLED	
-		TAL_SCOPED_TASK_NAMED( "CParticleEffect::Render()" );
-	#endif // _GPA_ENABLED
-
 	u32			dwOffset,dwCount;
 	// Get a pointer to the particles in gp memory
     PAPI::Particle* particles;
