@@ -102,8 +102,10 @@ void CShootingObject::Load	(LPCSTR section)
 	m_sOverheatingSmokeParticles = READ_IF_EXISTS(pSettings, r_string, section, "overheating_particles", nullptr);
 	m_sOverheatingSmokeParticles_2 = READ_IF_EXISTS(pSettings, r_string, section, "overheating_after_shoot_particles", m_sOverheatingSmokeParticles);
 
+	LPCSTR m_hud_sect = READ_IF_EXISTS(pSettings, r_string, section, "hud", nullptr);
+
 	if (m_sOverheatingSmokeParticles.size())
-		vLoadedOverheatingSmokePoint = READ_IF_EXISTS(pSettings, r_fvector3, section, "overheating_smoke_point", READ_IF_EXISTS(pSettings, r_fvector3, section, "fire_point", Fvector().set(0.0f, 0.0f, 0.0f)));
+		vLoadedOverheatingSmokePoint = READ_IF_EXISTS(pSettings, r_fvector3, section, "overheating_smoke_point", READ_IF_EXISTS(pSettings, r_fvector3, m_hud_sect, "fire_point", Fvector().set(0.0f, 0.0f, 0.0f)));
 }
 
 void CShootingObject::Light_Create		()
