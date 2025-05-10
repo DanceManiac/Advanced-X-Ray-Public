@@ -38,10 +38,6 @@ void dxFontRender::OnRender(CGameFont &owner)
 		owner.uFlags			|= CGameFont::fsValid;
 	}
 
-	bool shadow_enabled = (ps_r__common_flags.test(FFONTS_SHADOW_ENABLED));
-	float shadow_x = m_fonts_shadow_params_x;
-	float shadow_y = m_fonts_shadow_params_y;
-
 	for (u32 i=0; i<owner.strings.size(); ){
 		// calculate first-fit
 		int		count	=	1;
@@ -62,8 +58,8 @@ void dxFontRender::OnRender(CGameFont &owner)
 
 		u32 di = i;
 
-		if (shadow_enabled && !owner.bFontShadowDisabled)
-			RenderFragment(owner, di, true, shadow_x, shadow_y, length, last);
+		if (owner.GetFontShadowEnabled())
+			RenderFragment(owner, di, true, owner.GetFontShadowX(), owner.GetFontShadowY(), length, last);
 
 		RenderFragment(owner, i, false, 0, 0, length, last);
 	}
@@ -122,8 +118,6 @@ void dxFontRender::RenderFragment(CGameFont& owner, u32& i, bool shadow_mode, fl
 				if (shadow_mode)
 				{
 					// color_argb(220, 20, 20, 20)
-					bool black_text_shadow = (ps_r__common_flags.test(FFONTS_SHADOW_W_BLACK_TEXT));
-
 					u32 min_alpha = _min(color_get_A(clr), (u32)220);
 
 					u32 _R = color_get_R(clr);
@@ -133,7 +127,7 @@ void dxFontRender::RenderFragment(CGameFont& owner, u32& i, bool shadow_mode, fl
 					float Y = 0.299f * _R + 0.587f * _G + 0.114f * _B;
 
 					u32 c = Y >= 40 ? 20 : 120;
-					if ( !black_text_shadow && (Y < 40) )
+					if ( !owner.GetFontShadowForBlackText() && (Y < 40) )
 						min_alpha = 0;
 
 					clr2 = clr = color_argb(min_alpha, c, c, c);

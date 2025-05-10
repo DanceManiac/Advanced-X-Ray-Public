@@ -98,10 +98,11 @@ void CFontManager::InitializeFont(CGameFont*& F, LPCSTR section, u32 flags)
 	R_ASSERT(font_tex_name);
 
 	const char* sh_name = READ_IF_EXISTS(pSettings, r_string, section, "shader", "font");
+
 	if(!F)
-        F = xr_new<CGameFont>(sh_name, font_tex_name, flags);
+		F = xr_new<CGameFont>(sh_name, font_tex_name, flags);
 	else
-        F->Initialize(sh_name, font_tex_name);
+		F->Initialize(sh_name, font_tex_name);
 
 	F->m_font_name = section;
 
@@ -117,8 +118,17 @@ void CFontManager::InitializeFont(CGameFont*& F, LPCSTR section, u32 flags)
 		}
 	}
 
-	if (pSettings->line_exist(section, "font_shadow_disabled"))
-		F->SetFontShadowDisabled(pSettings->r_bool(section, "font_shadow_disabled"));
+	if (pSettings->line_exist(section, "font_shadow_enabled"))
+		F->SetFontShadowEnabled(pSettings->r_bool(section, "font_shadow_enabled"));
+		
+	if (pSettings->line_exist(section, "font_shadow_for_black_text"))
+		F->SetFontShadowForBlackText(pSettings->r_bool(section, "font_shadow_for_black_text"));
+		
+	if (pSettings->line_exist(section, "font_shadow_x"))
+		F->SetFontShadowX(pSettings->r_float(section, "font_shadow_x"));
+		
+	if (pSettings->line_exist(section, "font_shadow_y"))
+		F->SetFontShadowY(pSettings->r_float(section, "font_shadow_y"));
 }
 
 CFontManager::~CFontManager()

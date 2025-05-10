@@ -39,7 +39,10 @@ protected:
 	float					fTCHeight;
 	float					fXScale{};
 	float					fYScale{};
-	bool					bFontShadowDisabled{};
+	bool					bFontShadowEnabled{};
+	bool					bFontShadowForBlackText{};
+	float					fXFontShadow{};
+	float					fYFontShadow{};
 	xr_vector<String>		strings;
 
 	IFontRender				*pFontRender;
@@ -125,8 +128,14 @@ public:
 
 	float					GetfXStep() const { return fXStep; }
 
-	void					SetFontShadowDisabled(bool b) { bFontShadowDisabled = b; }
-	bool					GetFontShadowDisabled() const { return bFontShadowDisabled; }
+	void					SetFontShadowEnabled(bool b) { bFontShadowEnabled = b; }
+	bool					GetFontShadowEnabled() const { return bFontShadowEnabled; }
+	void					SetFontShadowForBlackText(bool b) { bFontShadowForBlackText = b; }
+	bool					GetFontShadowForBlackText() const { return bFontShadowForBlackText; }
+	void					SetFontShadowX(float f) { fXFontShadow = f; }
+	float					GetFontShadowX() const { return fXFontShadow; }
+	void					SetFontShadowY(float f) { fYFontShadow = f; }
+	float					GetFontShadowY() const { return fYFontShadow; }
 
 	shared_str				m_font_name;
 	bool					m_bCustom{};

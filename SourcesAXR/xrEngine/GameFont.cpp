@@ -20,6 +20,10 @@ CGameFont::CGameFont(LPCSTR section, u32 flags)
 	fCurrentHeight				= 0.0f;
 	fXStep						= 0.0f;
 	fYStep						= 0.0f;
+	bFontShadowEnabled			= false;
+	bFontShadowForBlackText		= false;
+	fXFontShadow				= 2.0f;
+	fYFontShadow				= 2.0f;
 	uFlags						= flags;
 	nNumChars					= 0x100;
 	TCMap						= NULL;
@@ -39,6 +43,10 @@ CGameFont::CGameFont(LPCSTR shader, LPCSTR texture, u32 flags)
 	fCurrentHeight				= 0.0f;
 	fXStep						= 0.0f;
 	fYStep						= 0.0f;
+	bFontShadowEnabled			= false;
+	bFontShadowForBlackText		= false;
+	fXFontShadow				= 2.0f;
+	fYFontShadow				= 2.0f;
 	uFlags						= flags;
 	nNumChars					= 0x100;
 	TCMap						= NULL;

@@ -83,8 +83,6 @@ extern ECORE_API	int			ps_r1_SoftwareSkinning;	// r1-only
 enum
 {
 	R1FLAG_DLIGHTS				= (1<<0),
-	FFONTS_SHADOW_ENABLED		= (1<<1),
-	FFONTS_SHADOW_W_BLACK_TEXT	= (1<<2),
 };
 
 extern ECORE_API Flags32 ps_r__common_flags;
@@ -194,9 +192,6 @@ extern ECORE_API u32			ps_r_panorama_scr_size;
 extern ECORE_API float			ps_r2_aref_strength;
 extern ECORE_API Fvector4		ps_r4_normal_strength; //x - world, y - hud, z - terrain, w - trees
 extern ECORE_API float			ps_r4_sss_water_waves_koef;
-
-extern ECORE_API float			m_fonts_shadow_params_x;
-extern ECORE_API float			m_fonts_shadow_params_y;
 
 enum
 {
