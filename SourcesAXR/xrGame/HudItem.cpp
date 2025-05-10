@@ -75,7 +75,11 @@ void CHudItem::Load(LPCSTR section)
 		m_nearwall_speed_mod	= READ_IF_EXISTS(pSettings, r_float, section, "nearwall_speed_mod", 10.f);
 	}
 	
-	m_base_fov					= READ_IF_EXISTS(pSettings, r_float, section, "hud_fov", 0.0f);
+	if (pSettings->line_exist(m_hud_sect, "hud_fov"))
+		m_base_fov = READ_IF_EXISTS(pSettings, r_float, m_hud_sect, "hud_fov", 0.0f);
+	else
+		m_base_fov = READ_IF_EXISTS(pSettings, r_float, section, "hud_fov", 0.0f);
+
 	m_nearwall_last_hud_fov		= m_base_fov > 0.0f ? m_base_fov : psHUD_FOV_def;
 
 	////////////////////////////////////////////
@@ -138,7 +142,7 @@ void CHudItem::Load(LPCSTR section)
 	constexpr float PITCH_OFFSET_N = 0.0f; // Насколько сильно ствол поднимается\опускается при вертикальных поворотах камеры
 	constexpr float PITCH_OFFSET_D = 0.02f; // Насколько сильно ствол приближается\отдаляется при вертикальных поворотах камеры
 	float PITCH_LOW_LIMIT = -PI; // Минимальное значение pitch при использовании совместно с PITCH_OFFSET_N
-	constexpr float ORIGIN_OFFSET = -0.03f; // Фактор влияния инерции на положение ствола (чем меньше, тем масштабней инерция)
+	constexpr float ORIGIN_OFFSET = -0.05f; // Фактор влияния инерции на положение ствола (чем меньше, тем масштабней инерция)
 	constexpr float ORIGIN_OFFSET_AIM = -0.02f; // (Для прицеливания)
 	constexpr float TENDTO_SPEED = 5.f; // Скорость нормализации положения ствола
 	constexpr float TENDTO_SPEED_AIM = 10.f; // (Для прицеливания)
@@ -914,7 +918,7 @@ static float GetRayQueryDist()
 
 void CHudItem::UpdateInertion(Fmatrix& trans)
 {
-    if (HudInertionEnabled() && HudInertionAllowed())
+    if (HudInertionEnabled())
     {
         Fmatrix xform;
         Fvector& origin = trans.c;
@@ -937,41 +941,37 @@ void CHudItem::UpdateInertion(Fmatrix& trans)
         }
 
         // tend to forward
-        float _tendto_speed, _origin_offset;
-        if (GetCurrentHudOffsetIdx() > 0)
-        { // Худ в режиме "Прицеливание"
-            float factor = GetInertionFactor();
-            _tendto_speed = inertion_data.m_tendto_speed_aim - (inertion_data.m_tendto_speed_aim - inertion_data.m_tendto_speed) * factor;
-            _origin_offset = inertion_data.m_origin_offset_aim - (inertion_data.m_origin_offset_aim - inertion_data.m_origin_offset) * factor;
-        }
-        else
-        { // Худ в режиме "От бедра"
-            _tendto_speed = inertion_data.m_tendto_speed;
-            _origin_offset = inertion_data.m_origin_offset;
-        }
+        float tendto_speed = GetCurrentHudOffsetIdx() > 0 ? inertion_data.m_tendto_speed_aim : inertion_data.m_tendto_speed;
+        float origin_offset = GetCurrentHudOffsetIdx() > 0 ? inertion_data.m_origin_offset_aim : inertion_data.m_origin_offset;
 
-        // Фактор силы инерции
+
         const float power_factor = GetInertionPowerFactor();
-        _tendto_speed *= power_factor;
-        _origin_offset *= power_factor;
+        tendto_speed *= power_factor;
+        origin_offset *= power_factor;
 
-        inert_st_last_dir.mad(diff_dir, _tendto_speed * Device.fTimeDelta);
-        origin.mad(diff_dir, -_origin_offset); // Инвертировал
+        inert_st_last_dir.mad(diff_dir, tendto_speed * Device.fTimeDelta);
+        origin.mad(diff_dir, origin_offset);
 
         // pitch compensation
         float pitch = angle_normalize_signed(xform.k.getP());
-
         pitch *= GetInertionFactor();
 
+        Fvector current_offset{inertion_data.m_pitch_offset_d, inertion_data.m_pitch_offset_r, inertion_data.m_pitch_offset_n};
+        current_offset.mul(-pitch);
+        current_offset.mul(HudInertionAllowed());
+
+        if (!current_offset.similar(current_pitch_offset, EPS))
+            current_pitch_offset.lerp(current_pitch_offset, current_offset, tendto_speed * Device.fTimeDelta);
+
         // Отдаление\приближение
-        origin.mad(xform.k, -pitch * inertion_data.m_pitch_offset_d);
+        origin.mad(xform.k, current_pitch_offset.x);
 
         // Сдвиг в противоположную часть экрана
-        origin.mad(xform.i, -pitch * inertion_data.m_pitch_offset_r);
+        origin.mad(xform.i, current_pitch_offset.y);
 
         // Подьём\опускание
         clamp(pitch, inertion_data.m_pitch_low_limit, PI);
-        origin.mad(xform.j, -pitch * inertion_data.m_pitch_offset_n);
+        origin.mad(xform.j, current_pitch_offset.z);
     }
 }
 
@@ -1154,7 +1154,7 @@ void CHudItem::UpdateHudAdditional(Fmatrix& trans)
             if (fJumpMaxTime <= EPS)
                 fJumpMaxTime = 0.01f;
 
-            const float fStepPerUpd = Device.fTimeDelta / fJumpMaxTime; // Величина изменение фактора смещения худа при прыжке
+            float fStepPerUpd = Device.fTimeDelta / fJumpMaxTime; // Величина изменение фактора смещения худа при прыжке
 
             Fvector current_jump_offs{}, current_jump_rot{};
 
@@ -1177,6 +1177,7 @@ void CHudItem::UpdateHudAdditional(Fmatrix& trans)
             {
                 current_jump_offs.set(Fvector{});
                 current_jump_rot.set(Fvector{});
+                fStepPerUpd = Device.fTimeDelta / (fJumpMaxTime * 0.5);
             }
 
 			float koef = iMovingState & mcLanding2 ? 1.3 : 1.0;
@@ -1334,12 +1335,12 @@ void CHudItem::UpdateHudAdditional(Fmatrix& trans)
             auto pda = smart_cast<CPda*>(this);
             auto missile = smart_cast<CMissile*>(this);
 
-            current_walk_offs.mul(koef);
-            current_walk_rot.mul(koef);
             current_walk_offs.mul(!IsZoomed());
             current_walk_rot.mul(!IsZoomed());
             current_walk_offs.mul(!pda && !missile);
             current_walk_rot.mul(!pda && !missile);
+            current_walk_offs.mul(koef);
+            current_walk_rot.mul(koef);
             current_walk_rot.mul(-PI / 180.f); // Преобразуем углы в радианы
 
             if (!current_walk_offs.similar(current_walk[0], EPS))

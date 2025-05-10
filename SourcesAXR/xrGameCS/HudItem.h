@@ -287,6 +287,8 @@ private:
 	} inertion_data{}; //--#SM+#--
 
 	Fvector inert_st_last_dir{};
+
+	Fvector current_pitch_offset{};
 	void UpdateInertion(Fmatrix& trans);
 	
 	struct shooting_params
