@@ -2990,7 +2990,11 @@ void CActor::UpdateMaskUseAnim()
 	if ((m_iActionTiming <= Device.dwTimeGlobal && !m_bMaskClear) && g_Alive())
 	{
 		m_iActionTiming = Device.dwTimeGlobal;
-		m_bMaskClear = true;
+
+		CWeapon* Wpn = smart_cast<CWeapon*>(inventory().ActiveItem());
+
+		if (!Wpn || (Wpn && !Wpn->CleanMaskAction))
+			m_bMaskClear = true;
 	}
 
 	if (m_bMaskAnimActivated)
