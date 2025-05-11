@@ -266,6 +266,9 @@ void CWeaponBM16::PlayAnimIdle()
 {
 	if(IsZoomed())
 	{
+		if (m_sounds.FindSoundItem("sndSprintStart", false))
+			m_sounds.StopSound("sndSprintIdle");
+
 		if (IsRotatingToZoom())
 		{
 			string32 guns_aim_start_anm;
@@ -388,6 +391,9 @@ void CWeaponBM16::PlayAnimSprintStart()
 	string_path guns_sprint_start_anm{};
 	strconcat(sizeof(guns_sprint_start_anm), guns_sprint_start_anm, "anm_idle_sprint_start_", std::to_string(m_magazine.size()).c_str(), IsMisfire() ? "_jammed" : "");
 
+	if (m_sounds.FindSoundItem("sndSprintStart", false))
+		m_sounds.PlaySound("sndSprintStart", get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
+
 	if (isHUDAnimationExist(guns_sprint_start_anm))
 		PlayHUDMotionNew(guns_sprint_start_anm, true, GetState());
 	else if (guns_sprint_start_anm && strstr(guns_sprint_start_anm, "_jammed"))
@@ -408,8 +414,19 @@ void CWeaponBM16::PlayAnimSprintStart()
 
 void CWeaponBM16::PlayAnimSprintEnd()
 {
+	if (IsRotatingFromZoom())
+	{
+		m_bSprintType = false;
+		SwitchState(eIdle);
+
+		return;
+	}
+
 	string_path guns_sprint_end_anm{};
 	strconcat(sizeof(guns_sprint_end_anm), guns_sprint_end_anm, "anm_idle_sprint_end_", std::to_string(m_magazine.size()).c_str(), IsMisfire() ? "_jammed" : "");
+
+	if (m_sounds.FindSoundItem("sndSprintEnd", false))
+		m_sounds.PlaySound("sndSprintEnd", get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
 
 	if (isHUDAnimationExist(guns_sprint_end_anm))
 		PlayHUDMotionNew(guns_sprint_end_anm, true, GetState());
