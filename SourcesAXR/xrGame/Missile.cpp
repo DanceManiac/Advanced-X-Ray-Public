@@ -75,6 +75,10 @@ void CMissile::Load(LPCSTR section)
 	m_sounds.LoadSound(section, "snd_throw_start", "m_sndThrowStart", false, SOUND_TYPE_WEAPON_RECHARGING);
 	m_sounds.LoadSound(section, "snd_throw", "m_sndThrow", false, SOUND_TYPE_WEAPON_RECHARGING);
 
+	m_sounds.LoadSound(section, "snd_sprint_start",	"sndSprintStart", true, SOUND_TYPE_ITEM_HIDING);
+	m_sounds.LoadSound(section, "snd_sprint_end",	"sndSprintEnd", true, SOUND_TYPE_ITEM_HIDING);
+	m_sounds.LoadSound(section, "snd_sprint_idle",	"sndSprintIdle", true, SOUND_TYPE_ITEM_HIDING);
+
 	m_fMinForce			= pSettings->r_float(section,"force_min");
 	m_fConstForce		= pSettings->r_float(section,"force_const");
 	m_fMaxForce			= pSettings->r_float(section,"force_max");

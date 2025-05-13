@@ -44,6 +44,10 @@ void CWeaponKnife::Load	(LPCSTR section)
 	m_sounds.LoadSound(section, "snd_shoot2", "m_sndShot2", false, SOUND_TYPE_WEAPON_SHOOTING);
 	m_sounds.LoadSound(section, "snd_draw", "m_sndDraw", false, SOUND_TYPE_ITEM_HIDING);
 	m_sounds.LoadSound(section, "snd_holster", "m_sndHolster", false, SOUND_TYPE_ITEM_HIDING);
+
+	m_sounds.LoadSound(section, "snd_sprint_start",	"sndSprintStart", true, SOUND_TYPE_ITEM_HIDING);
+	m_sounds.LoadSound(section, "snd_sprint_end",	"sndSprintEnd", true, SOUND_TYPE_ITEM_HIDING);
+	m_sounds.LoadSound(section, "snd_sprint_idle",	"sndSprintIdle", true, SOUND_TYPE_ITEM_HIDING);
 	
 	knife_material_idx =  GMLib.GetMaterialIdx(KNIFE_MATERIAL_NAME);
 }

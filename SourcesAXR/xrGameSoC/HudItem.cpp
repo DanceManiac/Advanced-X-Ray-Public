@@ -726,8 +726,8 @@ void CHudItem::PlayAnimSprintStart()
 	string_path guns_sprint_start_anm{};
 	strconcat(sizeof(guns_sprint_start_anm), guns_sprint_start_anm, "anm_idle_sprint_start", (wpn && wpn->IsGrenadeLauncherAttached()) ? (wpn && wpn->IsGrenadeMode() ? "_g" : "_w_gl") : "", (IsMisfireNow() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
 
-	if (wpn && m_sounds.FindSoundItem("sndSprintStart", false))
-		m_sounds.PlaySound("sndSprintStart", wpn->get_LastFP(), wpn->H_Root(), !!GetHUDmode(), false, (u8)-1);
+	if (m_sounds.FindSoundItem("sndSprintStart", false))
+		m_sounds.PlaySound("sndSprintStart", HudItemData()->m_item_transform.c, object().H_Root(), !!GetHUDmode(), false, (u8)-1);
 
 	if (isHUDAnimationExist(guns_sprint_start_anm))
 		PlayHUDMotionNew(guns_sprint_start_anm, true, GetState());
@@ -787,8 +787,8 @@ void CHudItem::PlayAnimSprintEnd()
 	string_path guns_sprint_end_anm{};
 	strconcat(sizeof(guns_sprint_end_anm), guns_sprint_end_anm, "anm_idle_sprint_end", (wpn && wpn->IsGrenadeLauncherAttached()) ? (wpn && wpn->IsGrenadeMode() ? "_g" : "_w_gl") : "", (IsMisfireNow() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
 
-	if (wpn && m_sounds.FindSoundItem("sndSprintEnd", false))
-		m_sounds.PlaySound("sndSprintEnd", wpn->get_LastFP(), wpn->H_Root(), !!GetHUDmode(), false, (u8)-1);
+	if (m_sounds.FindSoundItem("sndSprintEnd", false))
+		m_sounds.PlaySound("sndSprintEnd", HudItemData()->m_item_transform.c, object().H_Root(), !!GetHUDmode(), false, (u8)-1);
 
 	if (isHUDAnimationExist(guns_sprint_end_anm))
 		PlayHUDMotionNew(guns_sprint_end_anm, true, GetState());
