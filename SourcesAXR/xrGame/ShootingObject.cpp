@@ -370,6 +370,29 @@ void CShootingObject::StopOverheatingParticles()
 	m_pOverheatingSmokeParticles = nullptr;
 }
 
+void CShootingObject::UpdateOverheatingParticles()
+{
+	if (!m_sOverheatingSmokeParticles.size())
+		return;
+
+	if (!m_pOverheatingSmokeParticles)
+		return;
+
+	Fmatrix		pos;
+	pos.set(get_ParticlesXFORM());
+	pos.c.set(get_CurrentFirePoint());
+
+	VERIFY(_valid(pos));
+
+	m_pOverheatingSmokeParticles->SetXFORM(pos);
+
+	if (!m_pOverheatingSmokeParticles->IsLooped() && !m_pOverheatingSmokeParticles->IsPlaying() && !m_pOverheatingSmokeParticles->PSI_alive())
+	{
+		m_pOverheatingSmokeParticles->Stop();
+		CParticlesObject::Destroy(m_pOverheatingSmokeParticles);
+	}
+}
+
 void CShootingObject::StartFlameParticles	()
 {
 	if(!m_sFlameParticlesCurrent.size())

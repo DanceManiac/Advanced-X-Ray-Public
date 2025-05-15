@@ -1457,6 +1457,7 @@ void CWeapon::shedule_Update	(u32 dT)
 					Fvector vel{};
 					PHGetLinearVell(vel);
 					StartOverheatingParticles(get_LastOSP(), vel);
+					UpdateOverheatingParticles();
 				}
 				else
 					StopOverheatingParticles();
@@ -1594,6 +1595,7 @@ void CWeapon::UpdateCL		()
 	//нарисовать партиклы
 	UpdateFlameParticles	();
 	UpdateFlameParticles2	();
+	UpdateOverheatingAfterShootParticles();
 
 	if(!IsGameTypeSingle())
 		make_Interpolation		();

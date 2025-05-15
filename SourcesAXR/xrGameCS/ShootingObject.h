@@ -170,6 +170,7 @@ protected:
 
 			void			StartOverheatingParticles(const Fvector& play_pos, const Fvector& parent_vel);
 			void			StopOverheatingParticles();
+			void			UpdateOverheatingParticles();
 
 			void			StartOverheatingAfterShootParticles();
 			void			StopOverheatingAfterShootParticles();
