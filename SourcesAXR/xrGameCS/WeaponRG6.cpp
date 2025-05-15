@@ -137,7 +137,12 @@ void CWeaponRG6::FireStart ()
 			u_EventSend(P);
 		}
 		dropCurrentRocket();
+
+		return;
 	}
+
+	if (eReload != GetState())
+		OnMagazineEmpty();
 }
 
 u8 CWeaponRG6::AddCartridge		(u8 cnt)

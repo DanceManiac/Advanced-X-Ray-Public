@@ -1544,7 +1544,7 @@ void CWeaponMagazined::switch2_Empty()
 	}
 	else
 	{
-		OnEmptyClick();
+		inherited::FireEnd();
 	}
 }
 void CWeaponMagazined::PlayReloadSound()
