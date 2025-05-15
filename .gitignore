@@ -109,3 +109,4 @@ SourcesAXR/xrEngine/xrEngine.vcxproj.user
 packages/
 *.sqlite
 .vs/ProjectSettings.json
+/.vs
