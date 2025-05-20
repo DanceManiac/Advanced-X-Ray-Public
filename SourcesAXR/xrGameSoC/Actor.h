@@ -329,10 +329,6 @@ public:
 	MotionID				m_current_torso;
 	MotionID				m_current_head;
 
-	Fvector3				m_bLegsCollBoxCenter;
-	Fvector3				m_bLegsCollBoxSize;
-	float					m_bLegsCollRayDelta;
-
 	// callback на анимации модели актера
 	void					SetCallbacks		();
 	void					ResetCallbacks		();
@@ -347,7 +343,6 @@ public:
 
 	void					g_SetAnimation		(u32 mstate_rl);
 	void					g_SetSprintAnimation(u32 mstate_rl,MotionID &head,MotionID &torso,MotionID &legs);
-	void					LegsStaticCollisionRay(int move_side);
 	//////////////////////////////////////////////////////////////////////////
 	// HUD
 	//////////////////////////////////////////////////////////////////////////
