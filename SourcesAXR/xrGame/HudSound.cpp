@@ -322,7 +322,7 @@ void HUD_SOUND_COLLECTION_LAYERED::PlaySound(LPCSTR alias, const Fvector& positi
 
 	for (; it != it_e; ++it)
 	{
-		if (it->m_alias == alias)
+		if (xr_strcmp(it->m_alias.c_str(), alias) == 0)
 		{
 			if (!it->IsDistantSound)
 				it->PlaySound(alias, position, parent, hud_mode, looped, index);
