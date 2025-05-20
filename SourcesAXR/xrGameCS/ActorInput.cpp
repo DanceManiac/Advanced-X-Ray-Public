@@ -152,7 +152,13 @@ void CActor::IR_OnKeyboardPress(int cmd)
 		case kUSE_BANDAGE:
 		case kUSE_MEDKIT:
 		{
-			const shared_str& item_name = inventory().item((cmd == kUSE_BANDAGE) ? CLSID_IITEM_BANDAGE : CLSID_IITEM_MEDKIT)->m_section_id;
+			PIItem item = inventory().item((cmd == kUSE_BANDAGE) ? CLSID_IITEM_BANDAGE : CLSID_IITEM_MEDKIT);
+
+			if (!item)
+				break;
+
+			const shared_str& item_name = item->m_section_id;
+
 			if (item_name.size())
 			{
 				CEatableItem* itm = nullptr;
