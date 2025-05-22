@@ -192,13 +192,25 @@ void CParticleManager::Transform(int alist_id, const Fmatrix& full, const Fvecto
 	Fmatrix mT;			mT.translate(full.c);
 
 	// Step through all the actions in the action list.
-	for(PAVecIt it=pa->begin(); it!=pa->end(); it++){
+	for(PAVecIt it=pa->begin(); it!=pa->end(); it++)
+	{
 		if (!(*it))
 			continue;
 
 		BOOL r 			= (*it)->m_Flags.is(ParticleAction::ALLOW_ROTATE);
 		const Fmatrix& _m = r?full:mT;
-		(*it)->Transform(_m);
+
+#pragma todo("Dance Maniac: Temponary hack for a rare crash. Fix this later.")
+		try
+		{
+			(*it)->Transform(_m);
+		}
+		catch (...)
+		{
+			Msg("[CParticleManager::Transform]: Particle action transform failed!");
+			continue;
+		}
+
 		switch((*it)->type)
 		{
 		case PASourceID:
