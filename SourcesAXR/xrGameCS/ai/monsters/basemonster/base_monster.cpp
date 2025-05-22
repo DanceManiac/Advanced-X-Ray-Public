@@ -1036,6 +1036,8 @@ void CBaseMonster::ReloadDamageAndAnimations()
 
 void CBaseMonster::renderable_Render()
 {
+	CObject::renderable_Render();
+
 	Fmatrix m_model_transform = XFORM();
 
 	if (m_fModelScale != 1.0f || m_bModelScaleRandom)
