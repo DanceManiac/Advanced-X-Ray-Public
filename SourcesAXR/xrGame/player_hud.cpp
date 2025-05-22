@@ -409,7 +409,7 @@ void hud_item_measures::load(const shared_str& sect_name, IKinematics* K)
 		xr_strcpy(val_name, "aim_alt_hud_offset_rot");
 	m_hands_offset[1][3]		= READ_IF_EXISTS(pSettings, r_fvector3, sect_name, val_name, m_hands_offset[1][1]);
 
-	if (pSettings->line_exist(sect_name, "hud_collision_enabled"))
+	if (READ_IF_EXISTS(pSettings, r_bool, sect_name, "hud_collision_enabled", false))
 	{
 		strconcat(sizeof(val_name), val_name, "hud_collision_offset_pos", _prefix);
 		m_collision_offset[0] = pSettings->r_fvector3(sect_name, val_name);
