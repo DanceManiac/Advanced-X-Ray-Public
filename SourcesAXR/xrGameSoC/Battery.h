@@ -32,6 +32,4 @@ public:
 			bool			CanRechargeDevice() const;
 
 	virtual CBattery* cast_battery() { return this; }
-protected:
-			int				m_iPortionsNum;
 };

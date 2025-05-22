@@ -31,6 +31,4 @@ public:
 			void			ChargeArtifactDetector(CCustomDetector* artifact_detector);
 			void			ChargeAnomalyDetector(CDetectorAnomaly* anomaly_detector);
 			bool			CanRechargeDevice() const;
-protected:
-			int				m_iPortionsNum;
 };
