@@ -1378,21 +1378,13 @@ bool CActorCondition::ApplyInfluence(const SMedicineInfluenceValues& V, const sh
 {
 	if(m_curr_medicine_influence.InProcess())
 		return false;
-	if (m_object->Local() && m_object == Level().CurrentViewEntity())
-	{
-		if(pSettings->line_exist(sect, "use_sound"))
-		{
-			if(m_use_sound._feedback())
-				m_use_sound.stop		();
-			shared_str snd_name			= pSettings->r_string(sect, "use_sound");
-			m_use_sound.create			(snd_name.c_str(), st_Effect, sg_SourceType);
-			m_use_sound.play			(NULL, sm_2D);
-		}
-	}
+
 	if(V.fTimeTotal<0.0f)
 		return inherited::ApplyInfluence	(V, sect, cur_eatable);
+
 	m_curr_medicine_influence				= V;
 	m_curr_medicine_influence.fTimeCurrent  = m_curr_medicine_influence.fTimeTotal;
+
 	return true;
 }
 

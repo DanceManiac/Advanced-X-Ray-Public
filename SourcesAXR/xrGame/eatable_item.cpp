@@ -348,6 +348,16 @@ bool CEatableItem::UseBy (CEntityAlive* entity_alive)
 	R_ASSERT				(m_pInventory==IO->m_inventory);
 	R_ASSERT				(object().H_Parent()->ID()==entity_alive->ID());
 
+	if (pSettings->line_exist(m_physic_item->cNameSect().c_str(), "use_sound"))
+	{
+		if (m_using_sound._feedback())
+			m_using_sound.stop();
+
+		shared_str snd_name = pSettings->r_string(m_physic_item->cNameSect().c_str(), "use_sound");
+		m_using_sound.create(snd_name.c_str(), st_Effect, sg_SourceType);
+		m_using_sound.play(NULL, sm_2D);
+	}
+
 	entity_alive->conditions().ApplyInfluence(V, m_physic_item->cNameSect(), this);
 
 	for (u8 i = 0; i < (u8)eBoostMaxCount; i++)
