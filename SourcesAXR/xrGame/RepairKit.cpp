@@ -1,7 +1,7 @@
 ﻿////////////////////////////////////////////////////////////////////////////
 //	Module 		: RepairKit.cpp
 //	Created 	: 08.02.2023
-//  Modified 	: 08.02.2023
+//  Modified 	: 23.05.2025
 //	Author		: Dance Maniac (M.F.S. Team)
 //	Description : Repair kit
 ////////////////////////////////////////////////////////////////////////////
@@ -20,6 +20,7 @@ CRepairKit::CRepairKit()
 	m_iPortionsNum = -1;
 	m_iUseFor = 0;
 	m_fRestoreCondition = 0.0f;
+	m_bUnlimited = false;
 	m_physic_item = 0;
 }
 
@@ -33,6 +34,7 @@ void CRepairKit::Load(LPCSTR section)
 
 	m_iPortionsNum = pSettings->r_s32(section, "eat_portions_num");
 	m_fRestoreCondition = READ_IF_EXISTS(pSettings, r_float, section, "restore_condition", 0.5f);
+	m_bUnlimited = READ_IF_EXISTS(pSettings, r_bool, section, "unlimited_usage", false);
 	VERIFY(m_iPortionsNum < 10000);
 }
 
@@ -154,10 +156,13 @@ void CRepairKit::ChangeInOutfit()
 		Actor()->RemoveItemsForRepair(outfit->m_ItemsForRepair);
 		outfit->ChangeCondition(rnd_cond);
 
-		if (m_iPortionsNum > 0)
-			--m_iPortionsNum;
-		else
-			m_iPortionsNum = 0;
+		if (m_iPortionsNum != -1 && !m_bUnlimited)
+		{
+			if (m_iPortionsNum > 0)
+				--m_iPortionsNum;
+			else
+				m_iPortionsNum = 0;
+		}
 	}
 }
 
@@ -180,10 +185,13 @@ void CRepairKit::ChangeInHelmet()
 		Actor()->RemoveItemsForRepair(helmet->m_ItemsForRepair);
 		helmet->ChangeCondition(rnd_cond);
 
-		if (m_iPortionsNum > 0)
-			--m_iPortionsNum;
-		else
-			m_iPortionsNum = 0;
+		if (m_iPortionsNum != -1 && !m_bUnlimited)
+		{
+			if (m_iPortionsNum > 0)
+				--m_iPortionsNum;
+			else
+				m_iPortionsNum = 0;
+		}
 	}
 }
 
@@ -206,10 +214,13 @@ void CRepairKit::ChangeInSecondHelmet()
 		Actor()->RemoveItemsForRepair(helmet->m_ItemsForRepair);
 		helmet->ChangeCondition(rnd_cond);
 
-		if (m_iPortionsNum > 0)
-			--m_iPortionsNum;
-		else
-			m_iPortionsNum = 0;
+		if (m_iPortionsNum != -1 && !m_bUnlimited)
+		{
+			if (m_iPortionsNum > 0)
+				--m_iPortionsNum;
+			else
+				m_iPortionsNum = 0;
+		}
 	}
 }
 
@@ -232,10 +243,13 @@ void CRepairKit::ChangeInKnife()
 		Actor()->RemoveItemsForRepair(knife->m_ItemsForRepair);
 		knife->ChangeCondition(rnd_cond);
 
-		if (m_iPortionsNum > 0)
-			--m_iPortionsNum;
-		else
-			m_iPortionsNum = 0;
+		if (m_iPortionsNum != -1 && !m_bUnlimited)
+		{
+			if (m_iPortionsNum > 0)
+				--m_iPortionsNum;
+			else
+				m_iPortionsNum = 0;
+		}
 	}
 }
 
@@ -258,10 +272,13 @@ void CRepairKit::ChangeInWpn1()
 		Actor()->RemoveItemsForRepair(wpn->m_ItemsForRepair);
 		wpn->ChangeCondition(rnd_cond);
 
-		if (m_iPortionsNum > 0)
-			--m_iPortionsNum;
-		else
-			m_iPortionsNum = 0;
+		if (m_iPortionsNum != -1 && !m_bUnlimited)
+		{
+			if (m_iPortionsNum > 0)
+				--m_iPortionsNum;
+			else
+				m_iPortionsNum = 0;
+		}
 	}
 }
 
@@ -284,10 +301,13 @@ void CRepairKit::ChangeInWpn2()
 		Actor()->RemoveItemsForRepair(wpn->m_ItemsForRepair);
 		wpn->ChangeCondition(rnd_cond);
 
-		if (m_iPortionsNum > 0)
-			--m_iPortionsNum;
-		else
-			m_iPortionsNum = 0;
+		if (m_iPortionsNum != -1 && !m_bUnlimited)
+		{
+			if (m_iPortionsNum > 0)
+				--m_iPortionsNum;
+			else
+				m_iPortionsNum = 0;
+		}
 	}
 }
 
@@ -310,10 +330,13 @@ void CRepairKit::ChangeInWpn3()
 		Actor()->RemoveItemsForRepair(wpn->m_ItemsForRepair);
 		wpn->ChangeCondition(rnd_cond);
 
-		if (m_iPortionsNum > 0)
-			--m_iPortionsNum;
-		else
-			m_iPortionsNum = 0;
+		if (m_iPortionsNum != -1 && !m_bUnlimited)
+		{
+			if (m_iPortionsNum > 0)
+				--m_iPortionsNum;
+			else
+				m_iPortionsNum = 0;
+		}
 	}
 }
 
