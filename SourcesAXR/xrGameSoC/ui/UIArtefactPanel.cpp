@@ -11,6 +11,8 @@ CUIArtefactPanel::CUIArtefactPanel()
 {		
 	m_cell_size.set(UI().inv_grid_kx(), UI().inv_grid_kx());
 	m_fScale = 1.0f;
+	m_bVert = false;
+	m_fIndent = 1.0f;
 }
 
 CUIArtefactPanel::~CUIArtefactPanel()
@@ -23,6 +25,8 @@ void CUIArtefactPanel::InitFromXML	(CUIXml& xml, LPCSTR path, int index)
 	m_cell_size.x				= xml.ReadAttribFlt(path, index, "cell_width", UI().inv_grid_kx());
 	m_cell_size.y				= xml.ReadAttribFlt(path, index, "cell_height", UI().inv_grid_kx());
 	m_fScale					= xml.ReadAttribFlt(path, index, "scale", 1.0f);
+	m_bVert						= xml.ReadAttribInt(path, index, "vert", 0) == 1;
+	m_fIndent					= xml.ReadAttribFlt(path, index, "indent", 1.0f);
 }
 
 void CUIArtefactPanel::InitIcons(const xr_vector<const CArtefact*>& artefacts)
@@ -63,6 +67,11 @@ void CUIArtefactPanel::Draw()
 
 		iHeight = m_fScale * (r.bottom - r.top) * (1 / UI().get_icons_kx());
 		iWidth = _s * m_fScale * (r.right - r.left) * (1 / UI().get_icons_kx());
+
+		if (m_bVert)
+			y = y + m_fIndent + iHeight;
+		else
+			x = x + m_fIndent + iWidth;
 
 		m_si.SetOriginalRect(r.left, r.top, r.width(), r.height());
 		m_si.SetRect(0, 0, iWidth, iHeight);
