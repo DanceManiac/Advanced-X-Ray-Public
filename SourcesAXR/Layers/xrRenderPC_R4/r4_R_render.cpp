@@ -188,7 +188,7 @@ void CRender::render_main(Fmatrix& m_ViewProjection, bool _fportals, bool first_
 					Fvector pos;
 					renderable->renderable.xform.transform_tiny(pos, v_copy.sphere.P);
 
-					if (renderable->renderable.visual->_ignore_optimization && !InFieldOfViewR(v_orig, pos, ps_r__opt_dist))
+					if (!renderable->renderable.visual->_ignore_optimization && !InFieldOfViewR(v_orig, pos, ps_r__opt_dist))
 						continue;
 
 					// Rendering
