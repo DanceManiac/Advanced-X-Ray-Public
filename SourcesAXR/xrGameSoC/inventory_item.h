@@ -71,6 +71,7 @@ protected:
 	Flags16						m_flags;
 	BOOL						m_can_trade;
 	bool						m_bCanUse;
+	bool						m_bCanPickTroughGeom;
 public:
 								CInventoryItem		();
 	virtual						~CInventoryItem		();
@@ -128,6 +129,7 @@ public:
 			BOOL				IsInvalid			() const;
 
 			BOOL				IsQuestItem			()	const	{ return m_flags.test(FIsQuestItem);}
+			bool				CanPickThroughGeom	()	const	{ return m_bCanPickTroughGeom; }
 	virtual	u32					Cost				() const	{ return m_cost; }
 	virtual float				Weight				()	const	{ return m_weight; }
 			void				SetWeight			(float w)	{ m_weight = w; }

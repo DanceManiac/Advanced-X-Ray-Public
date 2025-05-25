@@ -81,53 +81,67 @@ BOOL CActor::feel_touch_on_contact	(CObject *O)
 	return		(FALSE);
 }
 
-ICF static BOOL info_trace_callback(collide::rq_result& result, LPVOID params)
-{
-	BOOL& bOverlaped	= *(BOOL*)params;
-	if(result.O)
-	{
-		if (Level().CurrentEntity() == result.O)
-		{ //ignore self-actor
-			return			TRUE;
-		}
-		else
-		{ //check obstacle flag
-			if(result.O->spatial.type&STYPE_OBSTACLE)
-				bOverlaped			= TRUE;
-		}
-	}
-	else
-	{
-		//получить треугольник и узнать его материал
-		CDB::TRI* T		= Level().ObjectSpace.GetStaticTris()+result.element;
-		if (GMLib.GetMaterialByIdx(T->material)->Flags.is(SGameMtl::flPassable)) 
-			return TRUE;
-	}	
-	bOverlaped			= TRUE;
-	return				FALSE;
-}
-
 BOOL CActor::CanPickItem(const CFrustum& frustum, const Fvector& from, CObject* item)
 {
-	if(!item->getVisible())
+	if (!item->getVisible())
 		return FALSE;
 
-	BOOL	bOverlaped		= FALSE;
-	Fvector dir,to; 
-	item->Center			(to);
-	float range				= dir.sub(to,from).magnitude();
-	if (range>0.25f)
+	struct callback_data
 	{
-		if (frustum.testSphere_dirty(to,item->Radius()))
+		BOOL bOverlaped;
+		CObject* item;
+	} data;
+
+	data.bOverlaped = FALSE;
+	data.item = item;
+
+	Fvector dir, to;
+	item->Center(to);
+	float range = dir.sub(to, from).magnitude();
+
+	if (range > 0.25f)
+	{
+		if (frustum.testSphere_dirty(to, item->Radius()))
 		{
-			dir.div						(range);
-			collide::ray_defs			RD(from, dir, range, CDB::OPT_CULL, collide::rqtBoth);
-			VERIFY						(!fis_zero(RD.dir.square_magnitude()));
-			RQR.r_clear					();
-			Level().ObjectSpace.RayQuery(RQR, RD, info_trace_callback, &bOverlaped, NULL, item);
+			dir.div(range);
+			collide::ray_defs RD(from, dir, range, CDB::OPT_CULL, collide::rqtBoth);
+			VERIFY(!fis_zero(RD.dir.square_magnitude()));
+			RQR.r_clear();
+			Level().ObjectSpace.RayQuery(RQR, RD,
+				[](collide::rq_result& result, LPVOID params) -> BOOL
+				{
+					callback_data* data = (callback_data*)params;
+
+					if (result.O)
+					{
+						if (Level().CurrentEntity() == result.O)
+							return TRUE;
+						else
+						{
+							if (result.O->spatial.type & STYPE_OBSTACLE)
+								data->bOverlaped = TRUE;
+
+							CInventoryItem* inventory_item = smart_cast<CInventoryItem*>(data->item);
+							
+							if (inventory_item && inventory_item->CanPickThroughGeom())
+								return TRUE;
+						}
+					}
+					else
+					{
+						CDB::TRI* T = Level().ObjectSpace.GetStaticTris() + result.element;
+						
+						if (GMLib.GetMaterialByIdx(T->material)->Flags.is(SGameMtl::flPassable))
+							return TRUE;
+					}
+
+					data->bOverlaped = TRUE;
+					return FALSE;
+				},
+				&data, NULL, item);
 		}
 	}
-	return !bOverlaped;
+	return !data.bOverlaped;
 }
 
 #include "ai\monsters\ai_monster_utils.h"
