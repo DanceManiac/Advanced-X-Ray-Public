@@ -393,7 +393,8 @@ void CWeapon::UpdateFireDependencies_internal()
 
 		UpdateXForm			();
 
-		if ( GetHUDmode() )
+#pragma todo("[SoC]: Dance Maniac: Fix this shit later. Grenades in hud mode uncorrect fly.")
+		if ( GetHUDmode() && !IsGrenadeMode() )
 		{
 			HudItemData()->setup_firedeps		(m_current_firedeps);
 			VERIFY(_valid(m_current_firedeps.m_FireParticlesXForm));
