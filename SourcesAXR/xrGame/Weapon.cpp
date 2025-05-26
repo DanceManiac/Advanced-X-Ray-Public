@@ -3535,7 +3535,7 @@ void CWeapon::UpdateAimOffsets()
 
 	static bool bNeedRestoreOffsets = false;
 
-	if (bNeedRestoreOffsets && (!IsScopeAttached() || (!IsZoomed() && !IsRotatingFromZoom()) || !cur_scope_sect.size()))
+	if ((bNeedRestoreOffsets && (!IsScopeAttached() || (!IsZoomed() && !IsRotatingFromZoom())) || !cur_scope_sect.size() || m_bAltZoomEnabled))
 	{
 		attachable_hud_item* hi = HudItemData();
 
@@ -3561,8 +3561,10 @@ void CWeapon::UpdateAimOffsets()
 		hi->m_measures.m_hands_offset[0][2] = pSettings->r_fvector3(m_hud_sect, val_name);
 		strconcat(sizeof(val_name), val_name, "gl_hud_offset_rot", _prefix);
 		hi->m_measures.m_hands_offset[1][2] = pSettings->r_fvector3(m_hud_sect, val_name);
+		
+		if (cur_scope_sect.size())
+			m_bAltZoomEnabledScope = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "enable_alternative_aim", false);
 
-		m_bAltZoomEnabledScope = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "enable_alternative_aim", false);
 		bNeedRestoreOffsets = false;
 
 		return;

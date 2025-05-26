@@ -411,7 +411,7 @@ void CActor::IR_OnKeyboardPress(int cmd)
 		{
 			auto wpn = smart_cast<CWeapon*>(inventory().ActiveItem());
 
-			if (wpn && wpn->IsScopeAttached())
+			if (wpn)
 			{
 				if (!wpn->IsAltAimEnabled())
 					return;
