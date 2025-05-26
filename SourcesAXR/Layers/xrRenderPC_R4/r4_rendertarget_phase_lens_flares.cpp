@@ -44,7 +44,10 @@ void CRenderTarget::render_flare(light* L)
 {
     if (!rt_flares)
         return;
-    //	if (reset_frame==Device.dwFrame || reset_frame==Device.dwFrame - 1)		return;
+
+    if (Render->currentViewPort != MAIN_VIEWPORT)
+        return;
+
     phase_flares();
 
     Fvector vLightDir, vecX, vecY, vecSx, vecSy;
