@@ -193,6 +193,7 @@ extern ECORE_API float			ps_r__opt_dist;
 extern ECORE_API u32			ps_r_panorama_scr_size;
 
 extern ECORE_API float			ps_r2_aref_strength;
+extern ECORE_API float			ps_r4_sss_water_waves_koef;
 
 extern ECORE_API float			m_fonts_shadow_params_x;
 extern ECORE_API float			m_fonts_shadow_params_y;

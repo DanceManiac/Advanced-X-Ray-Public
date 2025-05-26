@@ -243,7 +243,7 @@ class cl_wind_params : public R_constant_setup
 	{
 		Fvector4 result;
 		CEnvDescriptor& E = *g_pGamePersistent->Environment().CurrentEnv;
-		result.set(E.wind_direction, E.wind_velocity, E.m_fTreeAmplitudeIntensity, 0.0f);
+		result.set(E.wind_direction, E.wind_velocity, E.m_fTreeAmplitudeIntensity, ps_r4_sss_water_waves_koef);
 		RCache.set_c(C, result);
 	}
 };

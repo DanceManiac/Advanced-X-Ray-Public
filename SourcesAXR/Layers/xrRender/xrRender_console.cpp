@@ -469,6 +469,7 @@ int ps_r4_ss_grass_collision = ps_r4_shaders_flags.test(R4FLAG_SSS_ADDON) ? 1 : 
 int ps_r4_pseudo_pbr = 0;
 
 float ps_r__opt_dist = 100.f;
+float ps_r4_sss_water_waves_koef = READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "r4_sss_water_waves_koef", 0.2f);
 
 //extern ENGINE_API Fvector4 ps_ssfx_wpn_dof_1;
 //extern ENGINE_API float ps_ssfx_wpn_dof_2;
@@ -1442,6 +1443,7 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Float,			"r__dyn_opt_dist",				&ps_r__opt_dist,			100.0f, 1000.0f);
 	CMD3(CCC_Token,			"r__panorama_scr_size",			&ps_r_panorama_scr_size,	qpanorama_scr_size_token);
 	CMD4(CCC_Float,			"r2_aref_strength",				&ps_r2_aref_strength,		10.0f,	450.f);
+	CMD4(CCC_Float,			"r4_water_waves_koef",			&ps_r4_sss_water_waves_koef,0.0f,	0.5f);
 //	CMD3(CCC_Mask,		"r2_sun_ignore_portals",		&ps_r2_ls_flags,			R2FLAG_SUN_IGNORE_PORTALS);
 }
 

@@ -101,7 +101,7 @@ float4 main( vf I ) : SV_Target
 	// Wind data
 	float r = wind_params.x + 1.57079f;
 	float2 Wind_Dir = float2(cos(r),sin(r));
-	float Wind_Int = saturate(wind_params.y * 0.2f);
+	float Wind_Int = saturate(wind_params.y * wind_params.w);
 
 	// Waves speed
 	float TimeSpeed = clamp(0.97f * Wind_Int, 0.1f, 0.97f);
