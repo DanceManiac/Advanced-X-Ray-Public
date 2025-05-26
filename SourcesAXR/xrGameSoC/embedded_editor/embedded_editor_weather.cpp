@@ -671,7 +671,7 @@ void ShowWeatherEditor(bool& show)
 
 	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_bloom_options").c_str()).c_str());
 
-	if (ImGui::SliderFloat("bloom_threshold", &cur->bloom_threshold, 0.0f, 10.0f))
+	if (ImGui::SliderFloat("bloom_threshold", &cur->bloom_threshold, 0.0f, 2.5f))
 		changed = true;
 
 	if (ImGui::SliderFloat("bloom_exposure", &cur->bloom_exposure, 0.0f, 10.0f))
