@@ -797,7 +797,7 @@ static class ssfx_il : public R_constant_setup
 {
 	virtual void setup(R_constant* C)
 	{
-		RCache.set_c(C, ps_ssfx_il);
+		RCache.set_c(C, (Render->currentViewPort == MAIN_VIEWPORT) ? ps_ssfx_il : Fvector4().set(0.f, 0.f, 0.f, 0.f));
 	}
 }    ssfx_il;
 
