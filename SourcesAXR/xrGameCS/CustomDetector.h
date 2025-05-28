@@ -147,6 +147,7 @@ public:
 	virtual void	OnStateSwitch		(u32 S);
 	virtual void	OnAnimationEnd		(u32 state);
 	virtual	void	UpdateXForm			();
+	virtual bool	ParentIsActor		();
 
 	void			ToggleDetector		(bool bFastMode);
 	void			HideDetector		(bool bFastMode);

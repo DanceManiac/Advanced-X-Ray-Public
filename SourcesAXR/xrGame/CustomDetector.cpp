@@ -172,7 +172,7 @@ void CCustomDetector::DetectorAction(u32 state)
 }
 void CCustomDetector::PlayDetectorAnimation(bool switch_state, u32 state, const char* anm_name)
 {
-	if (!m_bDetActionsEnabled || !smart_cast<CActor*>(H_Parent()))
+	if (!m_bDetActionsEnabled || !ParentIsActor())
 		return;
 
 	if (isHUDAnimationExist(anm_name))
@@ -653,6 +653,20 @@ void CCustomDetector::Recharge(float val)
 	SetChargeLevel(m_fCurrentChargeLevel);
 
 	//Msg("Переданый в детектор заряд: %f", val); //Для Тестов
+}
+
+bool CCustomDetector::ParentIsActor()
+{
+	CObject* O = H_Parent();
+	if (!O)
+		return FALSE;
+
+	CEntityAlive* EA = smart_cast<CEntityAlive*>(O);
+
+	if (!EA)
+		return FALSE;
+
+	return EA->cast_actor() != nullptr;
 }
 
 BOOL CAfList<CObject>::feel_touch_contact	(CObject* O)
