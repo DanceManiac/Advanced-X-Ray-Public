@@ -1376,7 +1376,7 @@ void CInventory::SetSlotsBlocked(u32 mask, bool bBlock)
 		}
 		else
 		{//try to hide active weapon
-			if (!m_slots[ActiveSlot].CanBeActivated() )
+			if (m_slots[ActiveSlot].m_pIItem && !m_slots[ActiveSlot].CanBeActivated() )
 				if (Activate(NO_ACTIVE_SLOT))
 					SetPrevActiveSlot(ActiveSlot);
 		}
