@@ -339,7 +339,7 @@ void CDetectorAnomaly::SetCurrentChargeLevel(float val)
 	float condition = 1.f * m_fCurrentChargeLevel / m_fUnchargeSpeed;
 	SetChargeLevel(condition);
 
-	if (!IsWorking() && m_fCurrentChargeLevel > 0.0f && (m_eItemPlace == eItemPlaceBelt || m_eItemPlace == eItemPlaceRuck))
+	if (!IsWorking() && m_fCurrentChargeLevel > 0.0f && (m_eItemPlace == eItemPlaceBelt || m_eItemPlace == eItemPlaceSlot))
 		TurnOn();
 }
 
@@ -350,7 +350,7 @@ void CDetectorAnomaly::Recharge(float val)
 
 	SetChargeLevel(m_fCurrentChargeLevel);
 
-	if (!IsWorking() && m_fCurrentChargeLevel > 0.0f && (m_eItemPlace == eItemPlaceBelt || m_eItemPlace == eItemPlaceRuck))
+	if (!IsWorking() && m_fCurrentChargeLevel > 0.0f && (m_eItemPlace == eItemPlaceBelt || m_eItemPlace == eItemPlaceSlot))
 		TurnOn();
 }
 
