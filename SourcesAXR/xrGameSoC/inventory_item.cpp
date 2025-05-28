@@ -1243,6 +1243,15 @@ void CInventoryItem::modify_holder_params	(float &range, float &fov) const
 
 bool CInventoryItem::NeedToDestroyObject()	const
 {
+	if (GameID() == eGameIDSingle)
+		return false;
+
+	if (GameID() == eGameIDCaptureTheArtefact)
+		return false;
+
+	if (object().Remote())
+		return false;
+
 	return (TimePassedAfterIndependant() > m_dwItemRemoveTime);
 }
 

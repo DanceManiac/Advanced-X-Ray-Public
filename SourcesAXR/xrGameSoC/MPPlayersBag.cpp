@@ -4,6 +4,7 @@
 #include "Level.h"
 //#include "xrMessages.h"
 #include "game_base_space.h"
+#include "../xrEngine/igame_persistent.h"
 
 #define BAG_REMOVE_TIME		60000
 
@@ -42,6 +43,8 @@ void CMPPlayersBag::OnEvent(NET_Packet& P, u16 type)
 extern INT g_iWeaponRemove;
 bool CMPPlayersBag::NeedToDestroyObject()	const
 {
+	if (GameID() == eGameIDSingle) return false;
+	if (Remote()) return false;
 	if (H_Parent()) return false;
 	if (g_iWeaponRemove == -1) return false;
 	if (g_iWeaponRemove == 0) return true;
