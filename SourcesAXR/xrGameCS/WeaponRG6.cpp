@@ -141,7 +141,7 @@ void CWeaponRG6::FireStart ()
 		return;
 	}
 
-	if (eReload != GetState())
+	if (eReload != GetState() && iAmmoElapsed == 0)
 		OnMagazineEmpty();
 }
 
