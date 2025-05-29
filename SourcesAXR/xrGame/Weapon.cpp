@@ -113,6 +113,7 @@ CWeapon::CWeapon()
 	m_fZoomMinKoeff			= 0.3f;
 
 	bHasBulletsToHide		= false;
+	m_bBulletsVisualization = false;
 	bullet_cnt				= 0;
 
 	m_bUseAimAnmDirDependency = false;
@@ -680,6 +681,8 @@ void CWeapon::Load		(LPCSTR section)
 	m_fOverheatingCond		= READ_IF_EXISTS(pSettings, r_float, section, "overheating_condition_factor", 0.0f);
 
 	m_bIndoorSoundsEnabled	= READ_IF_EXISTS(pSettings, r_bool, section, "indoor_sounds_enabled", false);
+
+	m_bBulletsVisualization = pSettings->line_exist(section, "bullet_bones");
 
 	string256						temp;
 	for (int i=egdNovice; i<egdCount; ++i) 

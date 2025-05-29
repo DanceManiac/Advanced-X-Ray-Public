@@ -84,6 +84,7 @@ public:
 	int						bullet_cnt;
 	int						last_hide_bullet;
 	bool					bHasBulletsToHide;
+	bool					m_bBulletsVisualization;
 
 	xr_vector<WeaponAttach*> m_weapon_attaches;
 

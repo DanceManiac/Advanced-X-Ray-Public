@@ -371,6 +371,9 @@ void CWeaponShotgun::PlayAnimAddOneCartridgeWeapon()
 		PlayHUDMotionIfExists({ "anm_add_cartridge_empty", "anm_add_cartridge", "anim_add_cartridge" }, true, GetState());
 	else
 		PlayHUDMotionIfExists({"anim_add_cartridge", "anm_add_cartridge"}, FALSE, GetState());
+
+	if (m_bBulletsVisualization)
+		HUD_VisualBulletUpdate();
 }
 void CWeaponShotgun::PlayAnimCloseWeapon()
 {
@@ -380,6 +383,9 @@ void CWeaponShotgun::PlayAnimCloseWeapon()
 		PlayHUDMotionIfExists({ "anm_close_weapon_empty", "anm_close_empty", "anm_close_weapon", "anm_close", "anim_close_weapon" }, true, GetState());
 	else
 		PlayHUDMotionIfExists({ "anim_close_weapon", "anm_close_weapon", "anm_close" }, true, GetState());
+
+	if (m_bBulletsVisualization)
+		HUD_VisualBulletUpdate();
 }
 
 void CWeaponShotgun::PlayAnimAim()
