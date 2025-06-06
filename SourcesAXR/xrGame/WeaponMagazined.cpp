@@ -1225,10 +1225,17 @@ void CWeaponMagazined::OnShot()
 void CWeaponMagazined::OnEmptyClick	()
 {
 	if (m_BlendFakeShootCam.name.size())
-		g_player_hud->PlayBlendAnm(m_BlendFakeShootCam.name.c_str(), 2, m_BlendFakeShootCam.speed, m_BlendFakeShootCam.power, false, false);
+	{
+		if (ParentIsActor())
+			g_player_hud->PlayBlendAnm(m_BlendFakeShootCam.name.c_str(), 2, m_BlendFakeShootCam.speed, m_BlendFakeShootCam.power, false, false);
+	}
+	else
+	{
+		PlayAnimFakeShoot();
+		return;
+	}
 
-	PlaySound	("sndEmptyClick",get_LastFP());
-	PlayAnimFakeShoot();
+	PlaySound("sndEmptyClick", get_LastFP());
 }
 
 void CWeaponMagazined::OnAnimationEnd(u32 state) 
@@ -1269,7 +1276,15 @@ void CWeaponMagazined::OnAnimationEnd(u32 state)
 			break;	// End of Hide
 		}
 		case eShowing:	SwitchState(eIdle);		break;	// End of Show
-		case eIdle:		switch2_Idle();			break;  // Keep showing idle
+		case eIdle:
+		{
+			switch2_Idle();
+		} break;  // Keep showing idle
+		case eMagEmpty:
+		{
+			if (ParentIsActor())
+				switch2_Idle();
+		} break;  // Keep showing idle
 		case eUnMisfire:
 		{
 			bMisfire = false;
@@ -1317,7 +1332,9 @@ void CWeaponMagazined::switch2_Idle	()
 	if(m_fOldBulletSpeed != 0.f)
 		SetBulletSpeed(m_fOldBulletSpeed);
 
-	SetPending			(FALSE);
+	if (IsPending())
+		SetPending		(FALSE);
+
 	PlayAnimIdle		();
 }
 
@@ -2401,6 +2418,8 @@ void CWeaponMagazined::PlayAnimFakeShoot()
 	if ((IsRotatingToZoom() && m_zoom_params.m_fZoomRotationFactor != 0.0f) || (IsRotatingFromZoom() && m_zoom_params.m_fZoomRotationFactor != 1.0f))
 		return;
 
+	PlaySound("sndEmptyClick", get_LastFP());
+
 	string256 guns_det_shoot_anm{};
 	strconcat(sizeof(guns_det_shoot_anm), guns_det_shoot_anm, "anm_fakeshoot", (IsZoomed() && !IsRotatingToZoom()) ? "_aim" : "");
 
@@ -2412,6 +2431,7 @@ void CWeaponMagazined::PlayAnimFakeShoot()
 
 	if (isHUDAnimationExist(guns_fakeshoot_anm))
 	{
+		SetPending(TRUE);
 		PlayHUDMotionNew(guns_fakeshoot_anm, true, GetState());
 	}
 	else if (guns_fakeshoot_anm && strstr(guns_fakeshoot_anm, "_jammed"))
@@ -2422,6 +2442,7 @@ void CWeaponMagazined::PlayAnimFakeShoot()
 
 		if (isHUDAnimationExist(new_guns_fakeshoot_anm))
 		{
+			SetPending(TRUE);
 			PlayHUDMotionNew(new_guns_fakeshoot_anm, true, GetState());
 		}
 	}
@@ -2433,6 +2454,7 @@ void CWeaponMagazined::PlayAnimFakeShoot()
 
 		if (isHUDAnimationExist(new_guns_fakeshoot_anm))
 		{
+			SetPending(TRUE);
 			PlayHUDMotionNew(new_guns_fakeshoot_anm, true, GetState());
 		}
 	}
@@ -2517,7 +2539,7 @@ void CWeaponMagazined::OnZoomIn			()
 {
 	inherited::OnZoomIn();
 
-	if(GetState() == eIdle)
+	if(GetState() == eIdle && !IsPending())
 		PlayAnimIdle();
 
 	//Alundaio: callback not sure why vs2013 gives error, it's fine
@@ -2545,16 +2567,16 @@ void CWeaponMagazined::OnZoomIn			()
 }
 void CWeaponMagazined::OnZoomOut		()
 {
-	if(!IsZoomed())	 
+	if(!IsZoomed())
 		return;
 
 	inherited::OnZoomOut	();
 
 
-	if (GetState() == eFire)
+	if (GetState() == eFire && !IsPending())
 		PlayAnimAimEnd		();
 
-	if(GetState()==eIdle)
+	if(GetState() == eIdle && !IsPending())
 		PlayAnimIdle		();
 
 	//Alundaio
