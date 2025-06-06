@@ -117,6 +117,15 @@ void CTextureDescrMngr::LoadTHM(LPCSTR initial)
 
 	FS_FileSet				flist;
 	FS.file_list			(flist, initial, FS_ListFiles, "*.thm");
+
+	if (strstr(Core.Params, "-mfs_nftc"))
+	{
+		if (strcmp(initial, "$game_textures$") == 0)
+		{
+			FS.file_list(flist, "$game_textures_reference$", FS_ListFiles, "*.thm"); // FS_FileSet is actually a set )
+		}
+	}
+
 #ifdef DEBUG
 	Msg						("count of .thm files=%d", flist.size());
 #endif // #ifdef DEBUG
@@ -193,6 +202,15 @@ void CTextureDescrMngr::LoadTHM()
 
 	FS_FileSet				flist;
 	FS.file_list			(flist,"$game_textures$",FS_ListFiles,"*.thm");
+
+	if (strstr(Core.Params, "-mfs_nftc"))
+	{
+		if ((strcmp("$game_textures$", "$game_textures$") == 0) || (strcmp("$level$", "$game_textures$") == 0))
+		{
+			FS.file_list(flist, "$game_textures_reference$", FS_ListFiles, "*.thm"); // FS_FileSet is actually a set )
+		}
+	}
+
 	Msg						("count of .thm files=%d", flist.size());
 	FS_FileSetIt It			= flist.begin();
 	FS_FileSetIt It_e		= flist.end();
