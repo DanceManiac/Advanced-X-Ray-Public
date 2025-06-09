@@ -403,7 +403,7 @@ void CWeaponMagazined::OnMotionMark(u32 state, const motion_marks& M)
 {
 	inherited::OnMotionMark(state, M);
 	
-	if (state == eReload || (xr_strcmp(M.name.c_str(), "shotgun_reload") == 0) && ((iAmmoElapsed + 1) == iMagazineSize))
+	if ((state == eReload && (xr_strcmp(M.name.c_str(), "lmg_reload") == 0)) || ((xr_strcmp(M.name.c_str(), "shotgun_reload") == 0) && ((iAmmoElapsed + 1) == iMagazineSize)))
 	{
 		u8 ammo_type = m_ammoType;
 		int ae = CheckAmmoBeforeReload(ammo_type);
