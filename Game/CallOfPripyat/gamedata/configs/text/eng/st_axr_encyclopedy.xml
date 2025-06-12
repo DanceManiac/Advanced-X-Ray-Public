@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="pda_btn_enc">
+		<text>Encyclopedia</text>
+	</string>
+	<string id="pda_btn_enc_hint">
+		<text>Show encyclopedia</text>
+	</string>
+	<string id="pda_btn_diar">
+		<text>Journal</text>
+	</string>
+	<string id="pda_btn_diar_hint">
+		<text>Show journal</text>
+	</string>
+</string_table>

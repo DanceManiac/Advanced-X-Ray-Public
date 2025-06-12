@@ -90,6 +90,21 @@
 	<string id="st_loading_textures">
 		<text>Loading textures</text>
 	</string>
+	<string id="st_loading_lights">
+		<text>Loading lighting</text>
+	</string>
+	<string id="st_client_connecting_to">
+		<text>CLIENT: Connecting to</text>
+	</string>
+	<string id="st_client_spawning">
+		<text>CLIENT: Spawning</text>
+	</string>
+	<string id="st_client_synchronising">
+		<text>CLIENT: Синхронизация</text>
+	</string>
+	<string id="st_creating_new_game">
+		<text>Creating new game</text>
+	</string>
 	<string id="st_mp_direct_ip">
 		<text>Direct IP</text>
 	</string>
