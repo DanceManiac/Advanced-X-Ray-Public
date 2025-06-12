@@ -147,6 +147,9 @@
 	<string id="kb_turn_engine">
 		<text>Turn on</text>
 	</string>
+	<string id="kb_switch_horn">
+		<text>Horn</text>
+	</string>
 	<string id="kb_up">
 		<text>Up</text>
 	</string>
@@ -203,5 +206,23 @@
 	</string>
 	<string id="speech_menu_personal">
 		<text>Voice messages (2)</text>
+	</string>
+	<string id="kb_laser_on">
+		<text>Laser designator</text>
+	</string>
+	<string id="kb_flashlight_on">
+		<text>Tactical torch</text>
+	</string>
+	<string id="kb_clean_mask">
+		<text>Wipe the mask</text>
+	</string>
+	<string id="kb_wpn_alt_aim">
+		<text>Aim mode</text>
+	</string>
+	<string id="kb_quick_kick">
+		<text>Quick kick</text>
+	</string>
+	<string id="kb_quick_grenade">
+		<text>Quck grenade throw</text>
 	</string>
 </string_table>

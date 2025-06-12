@@ -228,7 +228,7 @@
 	<string id="ui_st_load_game_confirm">
 		<text>Loading game will cause losing non-saved data. Proceed?</text>
 	</string>
-        	<string id="ui_st_invalid_saved_game">
+	<string id="ui_st_invalid_saved_game">
 		<text>Saved game version mismatch or saved game is corrupted</text>
 	</string>
 </string_table>

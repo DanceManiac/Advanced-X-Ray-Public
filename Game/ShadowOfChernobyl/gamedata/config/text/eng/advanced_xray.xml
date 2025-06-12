@@ -133,10 +133,13 @@
 		<text>HUD collision</text>
 	</string>
 	<string id="ui_mm_hud_draw">
-		<text>Показывать интерфейс</text>
+		<text>HUD draw</text>
+	</string>
+	<string id="renderer_r2.5">
+		<text>Enhanced full dynamic lighting</text>
 	</string>
 	<string id="renderer_r4">
-		<text>Ул. полное освещение (DX11)</text>
+		<text>Enhanced full dyn. lighting (DX11)</text>
 	</string>
 	<string id="camera_1">
 		<text>1st person view</text>
@@ -154,7 +157,7 @@
 		<text>Loading stages</text>
 	</string>
 	<string id="st_press_any_key">
-		<text>Нажмите любую клавишу для перехода к игре</text>
+		<text>Press any key to continue</text>
 	</string>
 	<string id="ui_st_keypress_on_start">
 		<text>Keypress to start</text>
@@ -162,8 +165,14 @@
 	<string id="ui_mm_hud_dynamic_effects">
 		<text>HUD dynamic effects</text>
 	</string>
+	<string id="ui_mm_ssao_quality">
+		<text>SSAO quality</text>
+	</string>
+	<string id="ui_mm_ssao">
+		<text>default</text>
+	</string>
 	<string id="ui_mm_ssao_text">
-		<text>Режим SSAO</text>
+		<text>SSAO mode</text>
 	</string>
 	<string id="disabled">
 		<text>Disabled</text>
@@ -209,6 +218,9 @@
 	</string>
 	<string id="st_charge_item">
 		<text>Charge:</text>
+	</string>
+	<string id="st_charge">
+		<text>charge</text>
 	</string>
 	<string id="ui_st_walk_inertion">
 		<text>Walk inertion</text>
@@ -289,7 +301,7 @@
 		<text>Flares rendering</text>
 	</string>
 	<string id="st_opt_always">
-		<text>Всегда</text>
+		<text>Always</text>
 	</string>
 	<string id="st_opt_on_helmet">
 		<text>Depending on the helmet</text>
@@ -337,7 +349,7 @@
 		<text>Advanced crosshair</text>
 	</string>
 	<string id="st_opt_extreme">
-		<text>max high</text>
+		<text>max high/text>
 	</string>
 	<string id="ui_mm_lowland_fog_type">
 		<text>Lowland fog type</text>
@@ -843,6 +855,45 @@
 	<string id="ui_st_animated_backpack">
 		<text>Animated backpack</text>
 	</string>
+	<string id="ui_mm_snd_device">
+		<text>Sound device</text>
+	</string>
+	<string id="ui_mm_soft_particles">
+		<text>Soft particles</text>
+	</string>
+	<string id="ui_mm_soft_water">
+		<text>Soft water</text>
+	</string>
+	<string id="ui_mm_r1_no_detail_textures">
+		<text>Detail textures</text>
+	</string>
+	<string id="ui_mm_r2_detail_bump">
+		<text>Detail bump</text>
+	</string>
+	<string id="ui_mm_r2_steep_parallax">
+		<text>Steep parallax</text>
+	</string>
+	<string id="ui_mm_r2_sun_quality">
+		<text>Sun quality</text>
+	</string>
+	<string id="ui_mm_r3_MSAA">
+		<text>Full screen smoothing</text>
+	</string>
+	<string id="ui_mm_r3_dynamic_wet_surfaces">
+		<text>Wet surfaces</text>
+	</string>
+	<string id="ui_mm_sun_shafts">
+		<text>Sun rays</text>
+	</string>
+	<string id="ui_mm_r3_volumetric_smoke">
+		<text>Volumetric smoke</text>
+	</string>
+	<string id="ui_mm_dof">
+		<text>Depth of field</text>
+	</string>
+	<string id="ui_mm_volumetric_light">
+		<text>Volumetric light</text>
+	</string>
 	<string id="ui_mm_localization">
 		<text>Game language|Язык игры</text>
 	</string>
@@ -878,6 +929,48 @@
 	</string>
 	<string id="ui_inv_frostbite">
 		<text>Frostbite</text>
+	</string>
+	<string id="st_kg">
+		<text>kg</text>
+	</string>
+	<string id="st_move_to_partners_bag">
+		<text>move to body</text>
+	</string>
+	<string id="st_move_to_box">
+		<text>move to box</text>
+	</string>
+	<string id="st_move_all_to_partners_bag">
+		<text>move all to body</text>
+	</string>
+	<string id="st_move_all_to_box">
+		<text>move all to box</text>
+	</string>
+	<string id="st_opt_off">
+		<text>disabled</text>
+	</string>
+	<string id="st_opt_low">
+		<text>low</text>
+	</string>
+	<string id="st_opt_medium">
+		<text>medium</text>
+	</string>
+	<string id="st_opt_high">
+		<text>high</text>
+	</string>
+	<string id="st_opt_ultra">
+		<text>very high</text>
+	</string>
+	<string id="st_line_break">
+		<text>\n </text>
+	</string>
+	<string id="st_bullet_symbol">
+		<text>•</text>
+	</string>
+	<string id="st_ammos">
+		<text>Ammo:\n </text>
+	</string>
+	<string id="st_for_gl">
+		<text>\n For grenade launcher:\n </text>
 	</string>
 	<string id="ui_st_currency">
 		<text>RU</text>
