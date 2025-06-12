@@ -67,7 +67,7 @@
 		<text>CLIENT: Spawning</text>
 	</string>
 	<string id="st_client_synchronising">
-		<text>CLIENT: Synchronizing</text>
+		<text>CLIENT: Synchronising</text>
 	</string>
 	<string id="st_controll">
 		<text>Controls</text>

@@ -100,7 +100,7 @@
 		<text>CLIENT: Spawning</text>
 	</string>
 	<string id="st_client_synchronising">
-		<text>CLIENT: Синхронизация</text>
+		<text>CLIENT: Synchronising</text>
 	</string>
 	<string id="st_creating_new_game">
 		<text>Creating new game</text>

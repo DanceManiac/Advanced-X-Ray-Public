@@ -19,7 +19,7 @@
 		<text>Here, take this bandage.</text>
 	</string>
 	<string id="actor_help_wounded_13">
-		<text>Sorry, I haven't got any. </text>
+		<text>Sorry, I haven't got any.</text>
 	</string>
 	<string id="actor_help_wounded_131">
 		<text>How do you even survive in the Zone? What if you get hurt? You won't even be able to patch yourself up!</text>
@@ -184,7 +184,7 @@
 		<text>I don't know anything else.</text>
 	</string>
 	<string id="dm_occupation_general">
-		<text>What are you doing here? </text>
+		<text>What are you doing here?</text>
 	</string>
 	<string id="dm_occupation_no_more">
 		<text>I've got nothing else to say</text>
@@ -205,7 +205,7 @@
 		<text>Take this medkit.</text>
 	</string>
 	<string id="dm_wounded_sorry">
-		<text>Sorry, I haven't got any. </text>
+		<text>Sorry, I haven't got any.</text>
 	</string>
 	<string id="dm_wounded_thanks">
 		<text>Thanks a lot.</text>
@@ -563,6 +563,9 @@
 	</string>
 	<string id="treasure_dialog_2">
 		<text>Nah, nothing interesting.</text>
+	</string>
+	<string id="treasure_dialog_2_scientist">
+		<text>Nope, nothing interesting.</text>
 	</string>
 	<string id="actor_break_dialog_1">
 		<text>OK, see ya.</text>
