@@ -311,7 +311,7 @@ void CActor::IR_OnKeyboardPress(int cmd)
 						itm = pEatable;
 						break;
 					}
-					if (pEatable->m_section_id == item_name && !itm || pEatable->GetPortionsNum() < itm->GetPortionsNum())
+					if (pEatable->m_section_id == item_name && !itm || itm && (pEatable->GetPortionsNum() < itm->GetPortionsNum()))
 						itm = pEatable;
 				}
 				if (itm)
