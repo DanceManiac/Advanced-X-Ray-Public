@@ -825,6 +825,15 @@ static class aref_params : public R_constant_setup
 	}
 }    aref_params;
 
+static class normal_strength_params : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		//x - world, y - hud, z - terrain, w - trees
+		RCache.set_c(C, ps_r4_normal_strength.x, ps_r4_normal_strength.y, ps_r4_normal_strength.z, ps_r4_normal_strength.w);
+	}
+}    normal_strength_params;
+
 static class ssfx_bloom_1 : public R_constant_setup
 {
 	virtual void setup(R_constant* C)
@@ -1013,6 +1022,8 @@ void	CBlender_Compile::SetMapping	()
 	r_Constant				("debug",				&binder_debug);
 	//Def Aref
 	r_Constant				("aref_params",			&aref_params);
+	//Normal settings
+	r_Constant				("normal_strength_params", &normal_strength_params);
 
 	// detail
 	//if (bDetail	&& detail_scaler)

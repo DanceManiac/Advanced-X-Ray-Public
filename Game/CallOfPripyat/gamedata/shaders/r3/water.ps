@@ -205,7 +205,7 @@ float4 main( vf I ) : SV_Target
 	float water_shadows = saturate(s_accumulator.Load(int3((PosTc + Refraction_UV) * screen_res.xy, 0), 0).r * 2000);
 #endif
 
-	float3	Nw	= mul (float3x3(I.M1, I.M2, I.M3), Navg);
+	float3	Nw	= mul (float3x3(I.M1, I.M2, I.M3), Navg * normal_strength_params.x);
 			Nw	= normalize (Nw);
 	
 	float3 v2point	= normalize (I.v2point_w);

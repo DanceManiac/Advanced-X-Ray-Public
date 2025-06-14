@@ -46,7 +46,7 @@ v2p_bumped 	main 	(v_tree I)
 	// Calculate the 3x3 transform from tangent space to eye-space
 	// TangentToEyeSpace = object2eye * tangent2object
 	//		    = object2eye * transpose(object2tangent) (since the inverse of a rotation is its transpose)
-	float3 N = unpack_bx2(I.Nh);	// just scale (assume normal in the -.5f, .5f)
+	float3 N = unpack_bx2(I.Nh) * normal_strength_params.w;	// just scale (assume normal in the -.5f, .5f)
 	float3 T = unpack_bx2(I.T);		//
 	float3 B = unpack_bx2(I.B);		//  
 	N = normalize(N);

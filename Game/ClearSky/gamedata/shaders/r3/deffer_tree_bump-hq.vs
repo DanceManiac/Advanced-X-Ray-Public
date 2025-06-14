@@ -63,7 +63,7 @@ v2p_bumped 	main 	(v_tree I)
 	// FLORA FIXES & IMPROVEMENTS - SSS Update 14
 	// https://www.moddb.com/mods/stalker-anomaly/addons/screen-space-shaders/
 	// Use real tree Normal, Tangent and Binormal.
-	float3 N 	= unpack_bx4(I.Nh);
+	float3 N 	= unpack_bx4(I.Nh) * normal_strength_params.w;
 	float3 T 	= unpack_bx4(I.T);
 	float3 B 	= unpack_bx4(I.B);
 	float3x3 xform	= mul	((float3x3)m_xform_v, float3x3(

@@ -365,7 +365,7 @@ f_deffer main(p_bumped I)
 // Mix everything  ------------------------------------------------
 
 	// Normal
-	float3 Ne = normalize(mul(float3x3(I.M1, I.M2, I.M3), Sr.normal.rgb + Sg.normal.rgb + Sb.normal.rgb + Sa.normal.rgb ));
+	float3 Ne = normalize(mul(float3x3(I.M1, I.M2, I.M3), (Sr.normal.rgb + Sg.normal.rgb + Sb.normal.rgb + Sa.normal.rgb) * normal_strength_params.z ));
 
 	// Color
 	C.rgb = (Sr.base.rgb + Sg.base.rgb + Sb.base.rgb + Sa.base.rgb ) * C.rgb * 2.0;
