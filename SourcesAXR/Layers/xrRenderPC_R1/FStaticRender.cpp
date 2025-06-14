@@ -107,7 +107,6 @@ void					CRender::create					()
 	L_Dynamic					= xr_new<CLightR_Manager>	();
 	PSLibrary.OnCreate			();
 
-	xrRender_apply_tf			();
 	::PortalTraverser.initialize();
 
 	Console->Execute("shaders_preset original_shaders_preset");
@@ -149,7 +148,6 @@ void					CRender::reset_begin			()
 
 void					CRender::reset_end				()
 {
-	xrRender_apply_tf			();
 	Target						=	xr_new<CRenderTarget>	();
 	if (L_Projector)			L_Projector->invalidate		();
 
