@@ -1473,6 +1473,41 @@ void player_hud::updateMovementLayerState()
 
 void player_hud::PlayBlendAnm(LPCSTR name, u8 part, float speed, float power, bool bLooped, bool no_restart)
 {
+	if (IsGameTypeSingle() && m_attached_items[0])
+	{
+		CPhysicItem& parent_object = m_attached_items[0]->m_parent_hud_item->object();
+
+		if (parent_object.H_Parent() == Level().CurrentControlEntity())
+		{
+			CActor* current_actor = smart_cast<CActor*>(Level().CurrentControlEntity());
+			VERIFY(current_actor);
+
+			LPCSTR fixed_blend_name = name;
+
+			if (strstr(fixed_blend_name, "blend\\") == fixed_blend_name)
+				fixed_blend_name += 6;
+
+			string_path ce_path;
+			string_path anm_name;
+			strconcat(sizeof(anm_name), anm_name, "camera_effects" "\\", "cam_eff_blend" "\\", fixed_blend_name);
+
+			if (FS.exist(ce_path, "$game_anims$", anm_name))
+			{
+				CEffectorCam* ec = current_actor->Cameras().GetCamEffector(eCEWeaponAction);
+
+				if (ec)
+					current_actor->Cameras().RemoveCamEffector(eCEWeaponAction);
+
+				CAnimatorCamEffector* e = xr_new<CAnimatorCamEffector>();
+				e->SetType(eCEWeaponAction);
+				e->SetHudAffect(false);
+				e->SetCyclic(false);
+				e->Start(anm_name);
+				current_actor->Cameras().AddCamEffector(e);
+			}
+		}
+	}
+
 	for (script_layer* anm : m_script_layers)
 	{
 		if (!xr_strcmp(anm->m_name, name))
