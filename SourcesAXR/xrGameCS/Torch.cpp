@@ -237,7 +237,17 @@ void CTorch::ProcessSwitch()
 		g_player_hud->script_anim_play(!Actor()->inventory().GetActiveSlot() ? 2 : 1, anim_sect, !Wpn ? "anm_use" : "anm_use_weapon", true, anim_speed);
 
 		if (use_cam_effector)
-			g_player_hud->PlayBlendAnm(use_cam_effector, 0, anim_speed, effector_intensity, false);
+		{
+			if (Wpn)
+				g_player_hud->PlayBlendAnm(use_cam_effector, 0, anim_speed, effector_intensity, false);
+			else
+			{
+				CEffectorCam* effector = Actor()->Cameras().GetCamEffector((ECamEffectorType)effUseItem);
+
+				if (!effector && use_cam_effector != nullptr)
+					AddEffector(Actor(), effUseItem, use_cam_effector, effector_intensity);
+			}
+		}
 
 		m_iAnimLength = Device.dwTimeGlobal + g_player_hud->motion_length_script(anim_sect, !Wpn ? "anm_use" : "anm_use_weapon", anim_speed);
 	}
