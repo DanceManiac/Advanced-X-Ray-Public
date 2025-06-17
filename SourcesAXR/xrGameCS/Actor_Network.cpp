@@ -403,7 +403,7 @@ void	CActor::net_Import_Base_proceed		( )
 {
 	if (g_Alive())
 	{
-		setVisible				((BOOL)!HUDview	());
+		setVisible				(TRUE);
 		setEnabled				(TRUE);
 	};
 	//---------------------------------------------

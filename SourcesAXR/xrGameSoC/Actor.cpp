@@ -1363,7 +1363,8 @@ void CActor::shedule_Update	(u32 DT)
 	
 	//если в режиме HUD, то сама модель актера не рисуется
 	if (!character_physics_support()->IsRemoved())
-										setVisible				(!HUDview	());
+		setVisible(TRUE);
+
 	//что актер видит перед собой
 	collide::rq_result& RQ = HUD().GetCurrentRayQuery();
 	
@@ -1496,21 +1497,56 @@ void CActor::shedule_Update	(u32 DT)
 		});*/
 	}
 };
+
+bool CActor::AllowActorShadow()
+{
+	if (!::Render->isActorShadowEnabled())
+		return false;
+
+	if (::Render->get_generation() != ::Render->GENERATION_R2)
+		return false;
+
+	/*CCustomDetector* pDet = smart_cast<CCustomDetector*>(inventory().ItemFromSlot(DETECTOR_SLOT));
+
+	if (pDet && pDet->m_iLightType == 2)
+		return false;*/
+
+	CTorch* pTorch = smart_cast<CTorch*>(inventory().ItemFromSlot(TORCH_SLOT));
+
+	if (pTorch && pTorch->torch_active())
+		return false;
+
+	return true;
+}
+
 #include "debug_renderer.h"
+
 void CActor::renderable_Render	()
 {
-	inherited::renderable_Render();
+	VERIFY(_valid(XFORM()));
 
-	if ((cam_active == eacFirstEye && // first eye cam
-		::Render->get_generation() == ::Render->GENERATION_R2 && // R2
-		::Render->active_phase() == 1) // shadow map rendering on R2	
-		||
-		!(IsFocused() &&
-			(cam_active == eacFirstEye) &&
-			((!m_holder) || (m_holder && m_holder->allowWeapon() && m_holder->HUDView())))
-		)
+	if (cam_active == eacFirstEye)
+	{
+		if (::Render->active_phase() == 0) // can render first person body here
+		{
+			//if (fpBody) 
+			//	inherited::renderable_Render();
+		}
+		else if (AllowActorShadow()) // render actor shadow
+		{
+			inherited::renderable_Render();
+			if ((IsFocused() || (!(IsFocused() && ((!m_holder) ||
+				(m_holder && m_holder->allowWeapon() && m_holder->HUDView()))))))
+				CInventoryOwner::renderable_Render();
+		}
+	}
 
-	CInventoryOwner::renderable_Render();
+	// Third Person Body and Weapon/Item
+	else
+	{
+		inherited::renderable_Render();
+		CInventoryOwner::renderable_Render();
+	}
 }
 
 BOOL CActor::renderable_ShadowGenerate	() 

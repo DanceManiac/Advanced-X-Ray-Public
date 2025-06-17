@@ -1673,7 +1673,13 @@ bool CActor::AllowActorShadow()
 		return false;
 
 	CCustomDetector* pDet = smart_cast<CCustomDetector*>(inventory().ItemFromSlot(DETECTOR_SLOT));
+	
 	if (pDet && pDet->m_iLightType == 2)
+		return false;
+
+	CTorch* pTorch = smart_cast<CTorch*>(inventory().ItemFromSlot(TORCH_SLOT));
+
+	if (pTorch && pTorch->torch_active())
 		return false;
 
 	return true;
