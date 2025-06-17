@@ -136,6 +136,18 @@ void AddEffector(CActor* A, int type, const shared_str& sect_name, float factor)
 	}
 };
 
+void AddEffector(LPCSTR path, int type, float factor, bool hud_affect, bool cyclic)
+{
+	if (Actor()->Cameras().GetCamEffector((ECamEffectorType)type))
+		Actor()->Cameras().RemoveCamEffector((ECamEffectorType)type);
+
+	CAnimatorCamEffector* e = xr_new<CAnimatorCamEffector>();
+	e->SetType((ECamEffectorType)type);
+	e->SetHudAffect(hud_affect);
+	e->SetCyclic(cyclic);
+	e->Start(path);
+	Actor()->Cameras().AddCamEffector(e);
+}
 
 void RemoveEffector		(CActor* A, int type)
 {

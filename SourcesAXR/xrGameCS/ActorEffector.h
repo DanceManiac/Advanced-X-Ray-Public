@@ -29,6 +29,7 @@ void AddEffector		(CActor* A, int type, const shared_str& sect_name);
 void AddEffector		(CActor* A, int type, const shared_str& sect_name, float factor);
 void AddEffector		(CActor* A, int type, const shared_str& sect_name, GET_KOEFF_FUNC);
 void AddEffector		(CActor* A, int type, const shared_str& sect_name, CEffectorController*);
+void AddEffector		(LPCSTR path, int type, float factor, bool hud_affect = false, bool cyclic = false);
 void RemoveEffector		(CActor* A, int type);
 
 class CEffectorController
