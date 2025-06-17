@@ -23,14 +23,14 @@ CParticleManager::~CParticleManager	()
 
 ParticleEffect*	CParticleManager::GetEffectPtr(int effect_id)
 {
-	std::scoped_lock<std::mutex> m(pm_Locked);
+	std::shared_lock lock(m_effect_mutex);
 	R_ASSERT(effect_id >= 0 && effect_id < (int)m_effect_vec.size());
 	return m_effect_vec[effect_id];
 }
 
 ParticleActions* CParticleManager::GetActionListPtr(int a_list_num)
 {
-	std::scoped_lock<std::mutex> m(pm_Locked);
+	std::shared_lock lock(m_action_mutex);
 	R_ASSERT(a_list_num>=0&&a_list_num<(int)m_alist_vec.size());
 	return m_alist_vec[a_list_num];
 }
@@ -38,7 +38,7 @@ ParticleActions* CParticleManager::GetActionListPtr(int a_list_num)
 // create
 int CParticleManager::CreateEffect(u32 max_particles)
 {
-	std::scoped_lock<std::mutex> m(pm_Locked);
+	std::unique_lock lock(m_effect_mutex);
 	int eff_id 		= -1;
 
 	for (int i = 0; i < (int)m_effect_vec.size(); i++)
@@ -62,15 +62,17 @@ int CParticleManager::CreateEffect(u32 max_particles)
 	
 	return eff_id;
 }
+
 void CParticleManager::DestroyEffect(int effect_id)
 {
-	std::scoped_lock<std::mutex> m(pm_Locked);
+	std::unique_lock lock(m_effect_mutex);
 	R_ASSERT(effect_id >= 0 && effect_id < (int)m_effect_vec.size());
 	xr_delete(m_effect_vec[effect_id]);
 }
+
 int	CParticleManager::CreateActionList()
 {
-	std::scoped_lock<std::mutex> m(pm_Locked);
+	std::unique_lock lock(m_action_mutex);
 	int list_id 		= -1;
 
 	for(u32 i=0; i<m_alist_vec.size(); ++i)
@@ -91,9 +93,10 @@ int	CParticleManager::CreateActionList()
 	
 	return list_id;
 }
+
 void CParticleManager::DestroyActionList(int alist_id)
 {
-	std::scoped_lock<std::mutex> m(pm_Locked);
+	std::unique_lock lock(m_action_mutex);
 	R_ASSERT(alist_id>=0&&alist_id<(int)m_alist_vec.size());
     xr_delete(m_alist_vec[alist_id]);
 }
@@ -176,9 +179,11 @@ void CParticleManager::Update(int effect_id, int alist_id, float dt)
     		(*it)->Execute	(pe, dt, kill_old_time);
 	}
 }
+
 void CParticleManager::Render(int)
 {
 }
+
 void CParticleManager::Transform(int alist_id, const Fmatrix& full, const Fvector& vel)
 {
 	// Execute the specified action list.
@@ -226,11 +231,13 @@ void CParticleManager::RemoveParticle(int effect_id, u32 p_id)
 	ParticleEffect *pe = GetEffectPtr(effect_id);
 	pe->Remove		(p_id);
 }
+
 void CParticleManager::SetMaxParticles(int effect_id, u32 max_particles)
 {
 	ParticleEffect *pe = GetEffectPtr(effect_id);
 	pe->Resize		(max_particles);
 }
+
 void CParticleManager::SetCallback(int effect_id, OnBirthParticleCB b, OnDeadParticleCB d, void* owner, u32 param)
 {
 	ParticleEffect *pe = GetEffectPtr(effect_id);
@@ -239,12 +246,14 @@ void CParticleManager::SetCallback(int effect_id, OnBirthParticleCB b, OnDeadPar
     pe->owner		= owner;
     pe->param		= param;
 }
+
 void CParticleManager::GetParticles(int effect_id, Particle*& particles, u32& cnt)
 {
 	ParticleEffect *pe = GetEffectPtr(effect_id);
     particles		= pe->particles;
     cnt				= pe->p_count;
 }
+
 u32	CParticleManager::GetParticlesCount	(int effect_id)
 {
 	ParticleEffect *pe = GetEffectPtr(effect_id);
@@ -292,23 +301,32 @@ ParticleAction* CParticleManager::CreateAction(PActionEnum type)
     pa->type					= type;
     return pa;
 }
+
 u32 CParticleManager::LoadActions(int alist_id, IReader& R)
 {
 	// Execute the specified action list.
 	ParticleActions* pa		= GetActionListPtr(alist_id);
 	VERIFY(pa);
+
+	std::scoped_lock<std::mutex> m(pa->m_bLocked);
+
     pa->clear				();
-    if (R.length())
+    
+	if (R.length())
 	{
         u32 cnt					= R.r_u32();
-        for (u32 k=0; k<cnt; k++){
-            ParticleAction* act	= CreateAction	((PActionEnum)R.r_u32());
-            act->Load			(R);
-            pa->append			(act);
-        }
+        
+		for (u32 k = 0; k < cnt; k++)
+		{
+			ParticleAction* act	= CreateAction	((PActionEnum)R.r_u32());
+			act->Load			(R);
+			pa->append			(act);
+		}
     }
+
     return pa->size();
 }
+
 void CParticleManager::SaveActions(int alist_id, IWriter& W)
 {
 	// Execute the specified action list.

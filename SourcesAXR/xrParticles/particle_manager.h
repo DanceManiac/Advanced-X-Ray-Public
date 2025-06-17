@@ -3,6 +3,7 @@
 #define particle_managerH
 //---------------------------------------------------------------------------
 #include "particle_actions.h"
+#include <shared_mutex>
 
 namespace PAPI{
     class CParticleManager: public IParticleManager
@@ -15,7 +16,8 @@ namespace PAPI{
         ParticleEffectVec           m_effect_vec;
 		ParticleActionsVec			m_alist_vec;
 
-        std::mutex                  pm_Locked;
+        std::shared_mutex           m_effect_mutex;
+        std::shared_mutex           m_action_mutex;
     public:
 		    						CParticleManager	();
         virtual						~CParticleManager	();
