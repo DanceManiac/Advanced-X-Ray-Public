@@ -963,7 +963,10 @@ public:
 #endif
 			SDrawStaticStruct* _s	= HUD().GetUI()->UIGame()->AddCustomStatic("game_save_blocked_icon", true);
 			SDrawStaticStruct* _s2	= HUD().GetUI()->UIGame()->AddCustomStatic("game_saved", true);
-			_s2->wnd()->SetText		(*CStringTable().translate("st_saves_locked"));
+			
+			if (_s2 && _s2->wnd())
+				_s2->wnd()->SetText		(*CStringTable().translate("st_saves_locked"));
+
 			return;
 		}
 
@@ -1017,7 +1020,7 @@ public:
 		LPSTR save_name;
 		STRCONCAT(save_name, CStringTable().translate("st_game_saved").c_str(), GameConstants::GetShowSaveName() ? ": ", S : "");
 
-		if (_s)
+		if (_s && _s->wnd())
 			_s->wnd()->SetText			(save_name);
 
 		xr_strcat				(S,".dds");
