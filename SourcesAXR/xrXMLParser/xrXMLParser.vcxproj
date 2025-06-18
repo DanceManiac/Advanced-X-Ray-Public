@@ -364,6 +364,7 @@
       <PreprocessorDefinitions>MIXED;DEBUG;WIN32;_WINDOWS;XRXMLPARSER_EXPORTS;_SECURE_SCL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)3rd party/tracy/public;</AdditionalIncludeDirectories>
+      <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
       <ImportLibrary>$(OutDir)$(TargetName).lib</ImportLibrary>
