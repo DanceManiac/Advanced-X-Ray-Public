@@ -109,7 +109,7 @@ BOOL CHangingLamp::net_Spawn(CSE_Abstract* DC)
 	light_render->set_cone	(lamp->spot_cone_angle);
 	light_render->set_texture(*lamp->light_texture);
 
-	light_render->set_flare	(true);
+	light_render->set_flare	(!!lamp->flags.is(CSE_ALifeObjectHangingLamp::flCastShadow));
 
 	light_render->set_volumetric_quality(lamp->m_volumetric_quality);
 	light_render->set_volumetric_intensity(lamp->m_volumetric_intensity);

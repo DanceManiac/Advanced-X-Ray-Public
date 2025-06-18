@@ -106,7 +106,7 @@ BOOL CHangingLamp::net_Spawn(CSE_Abstract* DC)
 	light_render->set_color	(clr);
 	light_render->set_cone	(lamp->spot_cone_angle);
 	light_render->set_texture(*lamp->light_texture);
-	light_render->set_flare	(true);
+	light_render->set_flare	(!!lamp->flags.is(CSE_ALifeObjectHangingLamp::flCastShadow));
 
 	if (lamp->glow_texture.size())	{
 		glow_render				= ::Render->glow_create();
