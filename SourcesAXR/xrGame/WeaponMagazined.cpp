@@ -1102,7 +1102,28 @@ void CWeaponMagazined::OnShot()
 		object->callback(GameObject::eOnWeaponFired)(object->lua_game_object(), this->lua_game_object(), iAmmoElapsed);
 
 	// Ёффект сдвига (отдача)
-	AddHUDShootingEffect();
+	{
+		AddHUDShootingEffect();
+
+		// Dance Maniac: ƒополнительный эффектор стрельбы
+		if (IsGameTypeSingle() && ParentIsActor())
+		{
+			CEffectorCam* effector = Actor()->Cameras().GetCamEffector((ECamEffectorType)eCEWeaponAction);
+
+			string128 effector_sect{};
+			xr_sprintf(effector_sect, "%s_shoot_effector", m_section_id.c_str());
+
+			if (pSettings->section_exist(effector_sect))
+			{
+				float effector_intensity		= READ_IF_EXISTS(pSettings, r_float, effector_sect, "shoot_effector_factor", 1.0f);
+				float effector_intensity_crouch	= READ_IF_EXISTS(pSettings, r_float, effector_sect, "shoot_effector_factor_crouch", 0.75f);
+				float effector_intensity_aim	= READ_IF_EXISTS(pSettings, r_float, effector_sect, "shoot_effector_factor_aim", 0.5f);
+
+				if (!effector)
+					AddEffector(Actor(), eCEWeaponAction, effector_sect, IsZoomed() ? effector_intensity_aim : Actor()->is_actor_crouch() ? effector_intensity_crouch : effector_intensity);
+			}
+		}
+	}
 
 	bool bIndoor = false;
 
