@@ -654,9 +654,9 @@ void CActor::ActorUse()
 
 	if (Pda && Pda->Is3DPDA() && psActorFlags.test(AF_3D_PDA) && PdaUI && PdaUI->IsShown())
 		return;
-		
-	PickupModeOn();
 
+	if (!GameConstants::GetMultiItemPickup())
+		PickupModeOn();
 		
 	if (m_holder)
 	{

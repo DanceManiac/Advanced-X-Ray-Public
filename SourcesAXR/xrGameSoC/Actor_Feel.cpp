@@ -18,18 +18,19 @@
 #include "game_cl_base.h"
 #include "Level.h"
 #include "clsid_game.h"
-#include "hudmanager.h"
+#include "HudManager.h"
 #include "ui\UIStatic.h"
 #include "ui\UIPdaWnd.h"
 #include "ui\UIInventoryWnd.h"
 #include "ui\UICarBodyWnd.h"
 #include "UIGameSP.h"
 #include "string_table.h"
-#include "AdvancedXrayGameConstants.h"
 #include "script_engine.h"
 #include "ai_space.h"
 #include "player_hud.h"
 #include "GamePersistent.h"
+
+#include "AdvancedXrayGameConstants.h"
 
 #define PICKUP_INFO_COLOR 0xFFDDDDDD
 
@@ -349,7 +350,8 @@ void	CActor::PickupModeUpdate_COD	()
 			TakeItemAnimCheck(use_pickup_anim);
 		}
 		
-		PickupModeOff();
+		if (!GameConstants::GetMultiItemPickup())
+			PickupModeOff();
 	}
 };
 
@@ -392,7 +394,12 @@ void CActor::feel_sound_new(CObject* who, int type, CSound_UserDataPtr user_data
 void CActor::TakeItemAnimCheck(bool use_pickup_anim)
 {
 	if (m_bActionAnimInProcess)
+	{
+		if (m_bTakeItemActivated && GameConstants::GetMultiItemPickup() && m_pObjectToTake)
+			Game().SendPickUpEvent(ID(), m_pObjectToTake->ID());
+
 		return;
+	}
 
 	m_bUsePickupAnim = use_pickup_anim;
 

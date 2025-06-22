@@ -473,7 +473,12 @@ void CActor::Feel_Grenade_Update( float rad )
 void CActor::TakeItemAnimCheck(bool use_pickup_anim)
 {
 	if (m_bActionAnimInProcess)
+	{
+		if (m_bTakeItemActivated && GameConstants::GetMultiItemPickup() && m_pObjectToTake)
+			Game().SendPickUpEvent(ID(), m_pObjectToTake->ID());
+
 		return;
+	}
 
 	m_bUsePickupAnim = use_pickup_anim;
 

@@ -24,6 +24,7 @@ namespace GameConstants
 	bool GetActorNarcotism();
 	bool GetActorFrostbite();
 	bool GetArtefactsDegradation();
+	bool GetMultiItemPickup();
 	bool GetShowWpnInfo();
 	bool GetJumpSpeedWeightCalc();
 	bool GetHideWeaponInInventory();

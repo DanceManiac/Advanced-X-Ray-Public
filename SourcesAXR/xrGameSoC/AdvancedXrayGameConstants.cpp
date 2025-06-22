@@ -26,6 +26,7 @@ bool	m_bActorAlcoholism = false;
 bool	m_bActorNarcotism = false;
 bool	m_bActorFrostbite = false;
 bool	m_bArtefactsDegradation = false;
+bool	m_bMultiItemPickup = true;
 bool	m_bShowWpnInfo = true;
 bool	m_bJumpSpeedWeightCalc = false;
 bool	m_bHideWeaponInInventory = false;
@@ -100,6 +101,7 @@ namespace GameConstants
 		m_bActorNarcotism = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "actor_narcotism_enabled", false);
 		m_bActorFrostbite = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "actor_frostbite_enabled", false);
 		m_bArtefactsDegradation = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "artefacts_degradation", false);
+		m_bMultiItemPickup = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "multi_item_pickup", true);
 		m_bShowWpnInfo = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "show_wpn_info", true);
 		m_bJumpSpeedWeightCalc = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "jump_and_speed_weight_calc", false);
 		m_bHideWeaponInInventory = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "hide_weapon_in_inventory", false);
@@ -249,6 +251,11 @@ namespace GameConstants
 	bool GetArtefactsDegradation()
 	{
 		return m_bArtefactsDegradation;
+	}
+
+	bool GetMultiItemPickup()
+	{
+		return m_bMultiItemPickup;
 	}
 
 	bool GetShowWpnInfo()
