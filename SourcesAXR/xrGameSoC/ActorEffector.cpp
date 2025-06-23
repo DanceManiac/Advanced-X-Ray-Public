@@ -39,24 +39,75 @@ void AddEffector(CActor* A, int type, const shared_str& sect_name)
 	}
 
 	int cam_index = 1;
+	bool random_cam_mode = READ_IF_EXISTS(pSettings, r_bool, sect_name, "random_cam_effects", false);
 
-	while (true)
+	// Обычный режим
+	if (!random_cam_mode)
 	{
+		while (true)
+		{
+			string128 cam_key;
+
+			if (cam_index == 1)
+				xr_strcpy(cam_key, "cam_eff_name");
+			else
+				xr_sprintf(cam_key, "cam_eff_name_%d", cam_index);
+
+			if (!pSettings->line_exist(sect_name, cam_key))
+				break;
+
+			bool bCyclic = !!pSettings->r_bool(sect_name, "cam_eff_cyclic");
+			CAnimatorCamEffector* cam_anm = xr_new<CAnimatorCamEffector>();
+
+			int cam_id = (cam_index > 1) ? (5000 + cam_index) : type;
+			cam_anm->SetType((ECamEffectorType)(cam_id));
+			cam_anm->SetCyclic(bCyclic);
+
+			if (pSettings->line_exist(sect_name, "cam_eff_hud_affect"))
+			{
+				bool b_hud_affect = !!pSettings->r_bool(sect_name, "cam_eff_hud_affect");
+				cam_anm->SetHudAffect(b_hud_affect);
+			}
+
+			LPCSTR fn = pSettings->r_string(sect_name, cam_key);
+			cam_anm->Start(fn);
+			A->Cameras().AddCamEffector(cam_anm);
+
+			cam_index++;
+		}
+	}
+	else // Режим рандомного запуска камеры
+	{
+		xr_vector<shared_str> available_effects{};
+
+		while (true)
+		{
+			string128 cam_key;
+			if (cam_index == 1)
+				xr_strcpy(cam_key, "cam_eff_name");
+			else
+				xr_sprintf(cam_key, "cam_eff_name_%d", cam_index);
+
+			if (!pSettings->line_exist(sect_name, cam_key))
+				break;
+
+			available_effects.push_back(cam_key);
+			cam_index++;
+		}
+
+		if (available_effects.empty())
+			return;
+
+		int random_index = Random.randI(available_effects.size());
 		string128 cam_key;
-
-		if (cam_index == 1)
-			xr_strcpy(cam_key, "cam_eff_name");
-		else
-			xr_sprintf(cam_key, "cam_eff_name_%d", cam_index);
-
-		if (!pSettings->line_exist(sect_name, cam_key))
-			break;
+		xr_strcpy(cam_key, available_effects[random_index].c_str());
 
 		bool bCyclic = !!pSettings->r_bool(sect_name, "cam_eff_cyclic");
-		CAnimatorCamEffector* cam_anm = xr_new<CAnimatorCamEffector>();
+		CAnimatorCamLerpEffectorConst* cam_anm = xr_new<CAnimatorCamLerpEffectorConst>();
 
-		int cam_id = (cam_index > 1) ? (5000 + cam_index) : type;
-		cam_anm->SetType((ECamEffectorType)(cam_id));
+		int cam_id = 5000 + Random.randI(1000);
+
+		cam_anm->SetType((ECamEffectorType)cam_id);
 		cam_anm->SetCyclic(bCyclic);
 
 		if (pSettings->line_exist(sect_name, "cam_eff_hud_affect"))
@@ -68,8 +119,6 @@ void AddEffector(CActor* A, int type, const shared_str& sect_name)
 		LPCSTR fn = pSettings->r_string(sect_name, cam_key);
 		cam_anm->Start(fn);
 		A->Cameras().AddCamEffector(cam_anm);
-
-		cam_index++;
 	}
 }
 
@@ -105,23 +154,74 @@ void AddEffector(CActor* A, int type, const shared_str& sect_name, CEffectorCont
 	}
 
 	int cam_index = 1;
+	bool random_cam_mode = READ_IF_EXISTS(pSettings, r_bool, sect_name, "random_cam_effects", false);
 
-	while (true)
+	// Обычный режим
+	if (!random_cam_mode)
 	{
+		while (true)
+		{
+			string128 cam_key;
+
+			if (cam_index == 1)
+				xr_strcpy(cam_key, "cam_eff_name");
+			else
+				xr_sprintf(cam_key, "cam_eff_name_%d", cam_index);
+
+			if (!pSettings->line_exist(sect_name, cam_key))
+				break;
+
+			bool bCyclic = !!pSettings->r_bool(sect_name, "cam_eff_cyclic");
+			CCameraEffectorControlled* cam_anm = xr_new<CCameraEffectorControlled>(ec);
+
+			int cam_id = (cam_index > 1) ? (5000 + cam_index) : type;
+			cam_anm->SetType((ECamEffectorType)cam_id);
+			cam_anm->SetCyclic(bCyclic);
+
+			if (pSettings->line_exist(sect_name, "cam_eff_hud_affect"))
+			{
+				bool b_hud_affect = !!pSettings->r_bool(sect_name, "cam_eff_hud_affect");
+				cam_anm->SetHudAffect(b_hud_affect);
+			}
+
+			LPCSTR fn = pSettings->r_string(sect_name, cam_key);
+			cam_anm->Start(fn);
+			A->Cameras().AddCamEffector(cam_anm);
+
+			cam_index++;
+		}
+	}
+	else // Режим рандомного запуска камеры
+	{
+		xr_vector<shared_str> available_effects{};
+
+		while (true)
+		{
+			string128 cam_key;
+			if (cam_index == 1)
+				xr_strcpy(cam_key, "cam_eff_name");
+			else
+				xr_sprintf(cam_key, "cam_eff_name_%d", cam_index);
+
+			if (!pSettings->line_exist(sect_name, cam_key))
+				break;
+
+			available_effects.push_back(cam_key);
+			cam_index++;
+		}
+
+		if (available_effects.empty())
+			return;
+
+		int random_index = Random.randI(available_effects.size());
 		string128 cam_key;
-
-		if (cam_index == 1)
-			xr_strcpy(cam_key, "cam_eff_name");
-		else
-			xr_sprintf(cam_key, "cam_eff_name_%d", cam_index);
-
-		if (!pSettings->line_exist(sect_name, cam_key))
-			break;
+		xr_strcpy(cam_key, available_effects[random_index].c_str());
 
 		bool bCyclic = !!pSettings->r_bool(sect_name, "cam_eff_cyclic");
 		CCameraEffectorControlled* cam_anm = xr_new<CCameraEffectorControlled>(ec);
 
-		int cam_id = (cam_index > 1) ? (5000 + cam_index) : type;
+		int cam_id = 5000 + Random.randI(1000);
+
 		cam_anm->SetType((ECamEffectorType)cam_id);
 		cam_anm->SetCyclic(bCyclic);
 
@@ -134,8 +234,6 @@ void AddEffector(CActor* A, int type, const shared_str& sect_name, CEffectorCont
 		LPCSTR fn = pSettings->r_string(sect_name, cam_key);
 		cam_anm->Start(fn);
 		A->Cameras().AddCamEffector(cam_anm);
-
-		cam_index++;
 	}
 }
 
@@ -172,23 +270,75 @@ void AddEffector(CActor* A, int type, const shared_str& sect_name, GET_KOEFF_FUN
 	}
 
 	int cam_index = 1;
+	bool random_cam_mode = READ_IF_EXISTS(pSettings, r_bool, sect_name, "random_cam_effects", false);
 
-	while (true)
+	// Обычный режим
+	if (!random_cam_mode)
 	{
+		while (true)
+		{
+			string128 cam_key;
+
+			if (cam_index == 1)
+				xr_strcpy(cam_key, "cam_eff_name");
+			else
+				xr_sprintf(cam_key, "cam_eff_name_%d", cam_index);
+
+			if (!pSettings->line_exist(sect_name, cam_key))
+				break;
+
+			bool bCyclic = !!pSettings->r_bool(sect_name, "cam_eff_cyclic");
+			CAnimatorCamLerpEffector* cam_anm = xr_new<CAnimatorCamLerpEffector>();
+
+			int cam_id = (cam_index > 1) ? (5000 + cam_index) : type;
+			cam_anm->SetFactorFunc(k_func);
+			cam_anm->SetType((ECamEffectorType)cam_id);
+			cam_anm->SetCyclic(bCyclic);
+
+			if (pSettings->line_exist(sect_name, "cam_eff_hud_affect"))
+			{
+				bool b_hud_affect = !!pSettings->r_bool(sect_name, "cam_eff_hud_affect");
+				cam_anm->SetHudAffect(b_hud_affect);
+			}
+
+			LPCSTR fn = pSettings->r_string(sect_name, cam_key);
+			cam_anm->Start(fn);
+			A->Cameras().AddCamEffector(cam_anm);
+
+			cam_index++;
+		}
+	}
+	else // Режим рандомного запуска камеры
+	{
+		xr_vector<shared_str> available_effects{};
+
+		while (true)
+		{
+			string128 cam_key;
+			if (cam_index == 1)
+				xr_strcpy(cam_key, "cam_eff_name");
+			else
+				xr_sprintf(cam_key, "cam_eff_name_%d", cam_index);
+
+			if (!pSettings->line_exist(sect_name, cam_key))
+				break;
+
+			available_effects.push_back(cam_key);
+			cam_index++;
+		}
+
+		if (available_effects.empty())
+			return;
+
+		int random_index = Random.randI(available_effects.size());
 		string128 cam_key;
-
-		if (cam_index == 1)
-			xr_strcpy(cam_key, "cam_eff_name");
-		else
-			xr_sprintf(cam_key, "cam_eff_name_%d", cam_index);
-
-		if (!pSettings->line_exist(sect_name, cam_key))
-			break;
+		xr_strcpy(cam_key, available_effects[random_index].c_str());
 
 		bool bCyclic = !!pSettings->r_bool(sect_name, "cam_eff_cyclic");
 		CAnimatorCamLerpEffector* cam_anm = xr_new<CAnimatorCamLerpEffector>();
 
-		int cam_id = (cam_index > 1) ? (5000 + cam_index) : type;
+		int cam_id = 5000 + Random.randI(1000);
+
 		cam_anm->SetFactorFunc(k_func);
 		cam_anm->SetType((ECamEffectorType)cam_id);
 		cam_anm->SetCyclic(bCyclic);
@@ -202,8 +352,6 @@ void AddEffector(CActor* A, int type, const shared_str& sect_name, GET_KOEFF_FUN
 		LPCSTR fn = pSettings->r_string(sect_name, cam_key);
 		cam_anm->Start(fn);
 		A->Cameras().AddCamEffector(cam_anm);
-
-		cam_index++;
 	}
 }
 
@@ -265,17 +413,71 @@ void AddEffector(CActor* A, int type, const shared_str& sect_name, float factor)
 	}
 
 	int cam_index = 1;
+	bool random_cam_mode = READ_IF_EXISTS(pSettings, r_bool, sect_name, "random_cam_effects", false);
 
-	while (true)
+	// Обычный режим
+	if (!random_cam_mode)
 	{
-		string128 cam_key;
-		if (cam_index == 1)
-			xr_strcpy(cam_key, "cam_eff_name");
-		else
-			xr_sprintf(cam_key, "cam_eff_name_%d", cam_index);
+		while (true)
+		{
+			string128 cam_key;
+			if (cam_index == 1)
+				xr_strcpy(cam_key, "cam_eff_name");
+			else
+				xr_sprintf(cam_key, "cam_eff_name_%d", cam_index);
 
-		if (!pSettings->line_exist(sect_name, cam_key))
-			break;
+			if (!pSettings->line_exist(sect_name, cam_key))
+				break;
+
+			LPCSTR params = pSettings->r_string(sect_name, cam_key);
+			auto [effect_name, factor_mod] = parse_effect_params(params, factor);
+
+			bool bCyclic = !!pSettings->r_bool(sect_name, "cam_eff_cyclic");
+			CAnimatorCamLerpEffectorConst* cam_anm = xr_new<CAnimatorCamLerpEffectorConst>();
+
+			int cam_id = (cam_index > 1) ? (5000 + cam_index) : type;
+
+			cam_anm->SetFactor(factor * factor_mod);
+			cam_anm->SetType((ECamEffectorType)cam_id);
+			cam_anm->SetCyclic(bCyclic);
+
+			if (pSettings->line_exist(sect_name, "cam_eff_hud_affect"))
+			{
+				bool b_hud_affect = !!pSettings->r_bool(sect_name, "cam_eff_hud_affect");
+				cam_anm->SetHudAffect(b_hud_affect);
+			}
+
+			cam_anm->Start(effect_name.c_str());
+			A->Cameras().AddCamEffector(cam_anm);
+
+			cam_index++;
+		}
+	}
+	else // Режим рандомного запуска камеры
+	{
+		xr_vector<shared_str> available_effects{};
+
+		while (true)
+		{
+			string128 cam_key;
+			if (cam_index == 1)
+				xr_strcpy(cam_key, "cam_eff_name");
+			else
+				xr_sprintf(cam_key, "cam_eff_name_%d", cam_index);
+
+			if (!pSettings->line_exist(sect_name, cam_key))
+				break;
+
+			available_effects.push_back(cam_key);
+			cam_index++;
+		}
+
+		if (available_effects.empty())
+			return;
+
+		int random_index = Random.randI(available_effects.size());
+		string128 cam_key;
+		xr_strcpy(cam_key, available_effects[random_index].c_str());
 
 		LPCSTR params = pSettings->r_string(sect_name, cam_key);
 		auto [effect_name, factor_mod] = parse_effect_params(params, factor);
@@ -283,7 +485,7 @@ void AddEffector(CActor* A, int type, const shared_str& sect_name, float factor)
 		bool bCyclic = !!pSettings->r_bool(sect_name, "cam_eff_cyclic");
 		CAnimatorCamLerpEffectorConst* cam_anm = xr_new<CAnimatorCamLerpEffectorConst>();
 
-		int cam_id = (cam_index > 1) ? (5000 + cam_index) : type;
+		int cam_id = 5000 + Random.randI(1000);
 
 		cam_anm->SetFactor(factor * factor_mod);
 		cam_anm->SetType((ECamEffectorType)cam_id);
@@ -297,8 +499,6 @@ void AddEffector(CActor* A, int type, const shared_str& sect_name, float factor)
 
 		cam_anm->Start(effect_name.c_str());
 		A->Cameras().AddCamEffector(cam_anm);
-
-		cam_index++;
 	}
 }
 
