@@ -1649,10 +1649,11 @@ void CWeaponMagazined::switch2_Unmis()
 			PlayReloadSound();
 	}
 
-	if (isHUDAnimationExist("anm_reload_misfire"))
-		PlayHUDMotionIfExists({ "anm_reload_misfire", "anm_reload" }, true, GetState());
-	else if (isHUDAnimationExist("anm_reload_jammed"))
-		PlayHUDMotionIfExists({ "anm_reload_jammed", "anm_reload" }, true, GetState());
+	string128 anmUnmisName{};
+	strconcat(sizeof(anmUnmisName), anmUnmisName, "anm_reload", isHUDAnimationExist("anm_reload_misfire") ? "_misfire" : "_jammed", (iAmmoElapsed == 1) ? "_empty" : "");
+
+	if (isHUDAnimationExist(anmUnmisName))
+		PlayHUDMotionIfExists({ anmUnmisName, "anm_reload" }, true, GetState());
 	else
 		PlayAnimReload();
 }
