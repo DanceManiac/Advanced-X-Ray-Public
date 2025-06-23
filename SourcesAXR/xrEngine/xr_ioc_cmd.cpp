@@ -564,10 +564,10 @@ ENGINE_API Fvector3 ps_ssfx_water_parallax_quality = { 2.0f, 0.5f, 0.05f }; // W
 ENGINE_API int ps_ssfx_terrain_grass_align = 0; // Grass align
 ENGINE_API float ps_ssfx_terrain_grass_slope = 1.0f; // Grass slope limit // Recommended 0.3f
 ENGINE_API int ps_ssfx_bloom_from_weather = 0;
-ENGINE_API Fvector4 ps_ssfx_bloom_1 = { 2.5f, 2.0f, 0.0f, 0.6f }; // Threshold, Exposure, -, Sky
-ENGINE_API Fvector4 ps_ssfx_bloom_2 = { 3.0f, 1.5f, 1.5f, 1.0f }; // Blur Radius, Vibrance, Lens, Dirt
+ENGINE_API Fvector4 ps_ssfx_bloom_1 = { 3.5f, 3.0f, 0.0f, 0.6f }; // Threshold, Exposure, -, Sky
+ENGINE_API Fvector4 ps_ssfx_bloom_2 = { 3.0f, 1.0f, 1.5f, 1.0f }; // Blur Radius, Vibrance, Lens, Dirt
 ENGINE_API int ps_ssfx_pom_refine = 0;
-ENGINE_API Fvector4 ps_ssfx_pom = { 16, 12, 0.035f, 0.4f };  // Samples , Range, Height, AO
+ENGINE_API Fvector4 ps_ssfx_pom = { 16, 12, 0.01f, 0.4f };  // Samples , Range, Height, AO
 ENGINE_API Fvector4 ps_ssfx_terrain_pom = { 12, 20, 0.04f, 1.0f }; // Samples, Range, Height, Water Limit
 ENGINE_API int ps_ssfx_terrain_pom_refine = 0;
 
