@@ -1235,7 +1235,7 @@ void CWeaponMagazined::OnAnimationEnd(u32 state)
 		{
 			bMisfire = false;
 			
-			if (!m_bIsRevolver)
+			if (!m_bIsRevolver && m_bMisfireBulletRemove)
 			{
 				m_magazine.pop_back();
 				iAmmoElapsed--;

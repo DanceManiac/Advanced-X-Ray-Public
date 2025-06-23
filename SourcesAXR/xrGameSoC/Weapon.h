@@ -463,6 +463,7 @@ protected:
 	bool					m_bIsBoltRiffle;
 	bool					m_bUseRG6_AddCartridgeAlt;
 	bool					m_bIndoorSoundsEnabled;
+	bool					m_bMisfireBulletRemove;
 
 	shared_str				ppeWpnExplosion;
 	ref_sound				sndWpnExplosion;

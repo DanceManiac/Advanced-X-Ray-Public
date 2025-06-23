@@ -143,6 +143,7 @@ CWeapon::CWeapon()
 	m_fWpnExplodeChance		= 0.5f;
 
 	m_bIndoorSoundsEnabled	= false;
+	m_bMisfireBulletRemove	= false;
 }
 
 const shared_str CWeapon::GetScopeName() const
@@ -681,6 +682,7 @@ void CWeapon::Load		(LPCSTR section)
 	m_fOverheatingCond		= READ_IF_EXISTS(pSettings, r_float, section, "overheating_condition_factor", 0.0f);
 
 	m_bIndoorSoundsEnabled	= READ_IF_EXISTS(pSettings, r_bool, section, "indoor_sounds_enabled", false);
+	m_bMisfireBulletRemove	= READ_IF_EXISTS(pSettings, r_bool, section, "misfire_bullet_remove", true);
 
 	m_bBulletsVisualization = pSettings->line_exist(section, "bullet_bones");
 
