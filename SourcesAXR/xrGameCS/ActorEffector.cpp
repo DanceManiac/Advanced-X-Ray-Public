@@ -357,7 +357,7 @@ void AddEffector(CActor* A, int type, const shared_str& sect_name, GET_KOEFF_FUN
 
 void AddEffector(CActor* A, int type, const shared_str& sect_name, float factor)
 {
-	clamp(factor, 0.001f, 1.5f);
+	clamp(factor, 0.001f, 10.0f);
 
 	auto parse_effect_params = [](LPCSTR params, float default_factor = 1.0f) -> std::pair<shared_str, float>
 	{
@@ -496,6 +496,149 @@ void AddEffector(CActor* A, int type, const shared_str& sect_name, float factor)
 			bool b_hud_affect = !!pSettings->r_bool(sect_name, "cam_eff_hud_affect");
 			cam_anm->SetHudAffect(b_hud_affect);
 		}
+
+		cam_anm->Start(effect_name.c_str());
+		A->Cameras().AddCamEffector(cam_anm);
+	}
+}
+
+void AddEffectorEditor(CActor* A, int type, const shared_str& sect_name, float factor, const SPPEffect* eff)
+{
+	if (!eff)
+	{
+		AddEffector(A, type, sect_name, factor);
+		return;
+	}
+
+	clamp(factor, 0.001f, 10.0f);
+
+	auto parse_effect_params = [](LPCSTR params, float default_factor = 1.0f) -> std::pair<shared_str, float>
+		{
+			if (!params || !params[0])
+				return std::make_pair(shared_str(params), default_factor);
+
+			string512 buffer;
+			float factor_mod = 1.0f;
+			int count = _GetItemCount(params);
+
+			_GetItem(params, 0, buffer);
+			shared_str effect_name = buffer;
+
+			// Dance Maniac: Factor modifiers
+			if (count > 1)
+			{
+				_GetItem(params, 1, buffer);
+				factor_mod = std::stof(buffer);
+			}
+
+			return std::make_pair(effect_name, factor_mod);
+		};
+
+	int pp_index = 1;
+
+	while (true)
+	{
+		string128 pp_key;
+		if (pp_index == 1)
+			xr_strcpy(pp_key, "pp_eff_name");
+		else
+			xr_sprintf(pp_key, "pp_eff_name_%d", pp_index);
+
+		if (eff->pp_effects.size() <= (pp_index-1))
+			break;
+
+		LPCSTR params = eff->pp_effects[pp_index - 1].c_str();
+		auto [effect_name, factor_mod] = parse_effect_params(params, factor);
+
+		bool bCyclic = !!eff->m_PPE_Cyclic;
+		CPostprocessAnimatorLerpConst* pp_anm = xr_new<CPostprocessAnimatorLerpConst>();
+
+		int eff_id = (pp_index > 1) ? (5000 + pp_index) : type;
+
+		pp_anm->SetType((EEffectorPPType)eff_id);
+		pp_anm->SetCyclic(bCyclic);
+		pp_anm->SetPower(factor * factor_mod);
+		pp_anm->bOverlap = eff->m_bOverlap;
+		pp_anm->Load(effect_name.c_str());
+		A->Cameras().AddPPEffector(pp_anm);
+
+		pp_index++;
+	}
+
+	int cam_index = 1;
+	bool random_cam_mode = eff->random_cam_effects;
+
+	// Обычный режим
+	if (!random_cam_mode)
+	{
+		while (true)
+		{
+			string128 cam_key;
+			if (cam_index == 1)
+				xr_strcpy(cam_key, "cam_eff_name");
+			else
+				xr_sprintf(cam_key, "cam_eff_name_%d", cam_index);
+
+			if (eff->cam_effects.size() <= (cam_index - 1))
+				break;
+
+			LPCSTR params = eff->cam_effects[cam_index - 1].c_str();
+			auto [effect_name, factor_mod] = parse_effect_params(params, factor);
+
+			bool bCyclic = !!eff->m_CamEffectCyclic;
+			CAnimatorCamLerpEffectorConst* cam_anm = xr_new<CAnimatorCamLerpEffectorConst>();
+
+			int cam_id = (cam_index > 1) ? (5000 + cam_index) : type;
+
+			cam_anm->SetFactor(factor * factor_mod);
+			cam_anm->SetType((ECamEffectorType)cam_id);
+			cam_anm->SetCyclic(bCyclic);
+			cam_anm->SetHudAffect(eff->m_bHudAffect);
+
+			cam_anm->Start(effect_name.c_str());
+			A->Cameras().AddCamEffector(cam_anm);
+
+			cam_index++;
+		}
+	}
+	else // Режим рандомного запуска камеры
+	{
+		xr_vector<shared_str> available_effects{};
+
+		if (eff->cam_effects.empty())
+			return;
+
+		while (true)
+		{
+			string128 cam_key;
+			if (cam_index == 1)
+				xr_strcpy(cam_key, "cam_eff_name");
+			else
+				xr_sprintf(cam_key, "cam_eff_name_%d", cam_index);
+
+			if (eff->cam_effects.size() <= (cam_index - 1))
+				break;
+
+			available_effects.push_back(cam_key);
+			cam_index++;
+		}
+
+		int random_index = Random.randI(eff->cam_effects.size());
+		string128 cam_key;
+		xr_strcpy(cam_key, available_effects[random_index].c_str());
+
+		LPCSTR params = eff->cam_effects[random_index].c_str();
+		auto [effect_name, factor_mod] = parse_effect_params(params, factor);
+
+		bool bCyclic = !!eff->m_CamEffectCyclic;
+		CAnimatorCamLerpEffectorConst* cam_anm = xr_new<CAnimatorCamLerpEffectorConst>();
+
+		int cam_id = 5000 + Random.randI(1000);
+
+		cam_anm->SetFactor(factor * factor_mod);
+		cam_anm->SetType((ECamEffectorType)cam_id);
+		cam_anm->SetCyclic(bCyclic);
+		cam_anm->SetHudAffect(eff->m_bHudAffect);
 
 		cam_anm->Start(effect_name.c_str());
 		A->Cameras().AddCamEffector(cam_anm);

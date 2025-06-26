@@ -1418,6 +1418,7 @@
     <ClInclude Include="embedded_editor\embedded_editor_person_attach.h" />
     <ClInclude Include="embedded_editor\embedded_editor_helper.h" />
     <ClInclude Include="embedded_editor\embedded_editor_hud.h" />
+    <ClInclude Include="embedded_editor\embedded_editor_postprocess.h" />
     <ClInclude Include="embedded_editor\embedded_editor_pos_informer.h" />
     <ClInclude Include="embedded_editor\embedded_editor_main.h" />
     <ClInclude Include="embedded_editor\embedded_editor_spawner.h" />
@@ -4772,6 +4773,7 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <ClCompile Include="embedded_editor\embedded_editor_hud.cpp" />
+    <ClCompile Include="embedded_editor\embedded_editor_postprocess.cpp" />
     <ClCompile Include="embedded_editor\embedded_editor_pos_informer.cpp" />
     <ClCompile Include="embedded_editor\embedded_editor_main.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">stdafx.h</PrecompiledHeaderFile>

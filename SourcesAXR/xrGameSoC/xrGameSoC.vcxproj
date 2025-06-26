@@ -608,6 +608,7 @@
     <ClInclude Include="debug_text_tree.h" />
     <ClInclude Include="debug_text_tree_inline.h" />
     <ClInclude Include="embedded_editor\embedded_editor_person_attach.h" />
+    <ClInclude Include="embedded_editor\embedded_editor_postprocess.h" />
     <ClInclude Include="embedded_editor\embedded_editor_ui.h" />
     <ClInclude Include="GlobalAchievements.h" />
     <ClInclude Include="LaserDesignator.h" />
@@ -2012,6 +2013,7 @@
     <ClCompile Include="embedded_editor\embedded_editor_hud.cpp" />
     <ClCompile Include="embedded_editor\embedded_editor_main.cpp" />
     <ClCompile Include="embedded_editor\embedded_editor_person_attach.cpp" />
+    <ClCompile Include="embedded_editor\embedded_editor_postprocess.cpp" />
     <ClCompile Include="embedded_editor\embedded_editor_pos_informer.cpp" />
     <ClCompile Include="embedded_editor\embedded_editor_spawner.cpp" />
     <ClCompile Include="embedded_editor\embedded_editor_ui.cpp" />

@@ -6755,6 +6755,9 @@
     <ClInclude Include="ActorHelmet.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
     </ClInclude>
+    <ClInclude Include="embedded_editor\embedded_editor_postprocess.h">
+      <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -10059,6 +10062,9 @@
     <ClCompile Include="GlobalAchievements.cpp" />
     <ClCompile Include="ActorHelmet.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_postprocess.cpp">
+      <Filter>EmbeddedEditor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

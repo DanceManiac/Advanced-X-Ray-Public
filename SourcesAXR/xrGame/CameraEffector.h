@@ -21,6 +21,7 @@
 #define effUseItem				(eStartEffectorID+13)
 #define effDrugs				(eStartEffectorID+14)
 #define effFrostbite			(eStartEffectorID+15)
+#define effPostprocessEditor	(eStartEffectorID+16)
 
 #define effPoltergeistTeleDetectStartEffect 2048
 // warning: ~50 constants after effPoltergeistTeleDetectStartEffect are reserved for poltergeists
@@ -43,3 +44,4 @@
 #define	eCEDOF					((ECamEffectorType)(cefNext+16))
 #define	eCEWeaponAction			((ECamEffectorType)(cefNext+17))
 #define	eCEActorMoving			((ECamEffectorType)(cefNext+18))
+#define	eCEPostprocessEditor	((ECamEffectorType)(cefNext+19))

@@ -20,6 +20,7 @@
 #define effUseItem				(eStartEffectorID+12)
 #define effDrugs				(eStartEffectorID+13)
 #define effFrostbite			(eStartEffectorID+14)
+#define effPostprocessEditor	(eStartEffectorID+15)
 
 #define	eCEFall					((ECamEffectorType)(cefNext+1))
 #define	eCENoise				((ECamEffectorType)(cefNext+2))
@@ -36,3 +37,4 @@
 #define	eCEDOF					((ECamEffectorType)(cefNext+16))
 #define	eCEWeaponAction			((ECamEffectorType)(cefNext+17))
 #define	eCEActorMoving			((ECamEffectorType)(cefNext+18))
+#define	eCEPostprocessEditor	((ECamEffectorType)(cefNext+19))

@@ -1385,6 +1385,7 @@
     <ClInclude Include="embedded_editor\embedded_editor_helper.h" />
     <ClInclude Include="embedded_editor\embedded_editor_hud.h" />
     <ClInclude Include="embedded_editor\embedded_editor_person_attach.h" />
+    <ClInclude Include="embedded_editor\embedded_editor_postprocess.h" />
     <ClInclude Include="embedded_editor\embedded_editor_pos_informer.h" />
     <ClInclude Include="embedded_editor\embedded_editor_main.h" />
     <ClInclude Include="embedded_editor\embedded_editor_spawner.h" />
@@ -4607,6 +4608,7 @@
     <ClCompile Include="embedded_editor\embedded_editor_hud.cpp" />
     <ClCompile Include="embedded_editor\embedded_editor_main.cpp" />
     <ClCompile Include="embedded_editor\embedded_editor_person_attach.cpp" />
+    <ClCompile Include="embedded_editor\embedded_editor_postprocess.cpp" />
     <ClCompile Include="embedded_editor\embedded_editor_pos_informer.cpp" />
     <ClCompile Include="embedded_editor\embedded_editor_spawner.cpp" />
     <ClCompile Include="embedded_editor\embedded_editor_ui.cpp" />

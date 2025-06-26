@@ -7,6 +7,7 @@
 #include "embedded_editor_weather.h"
 #include "embedded_editor_hud.h"
 #include "embedded_editor_person_attach.h"
+#include "embedded_editor_postprocess.h"
 #include "embedded_editor_pos_informer.h"
 #include "embedded_editor_spawner.h"
 #include "embedded_editor_ui.h"
@@ -23,6 +24,7 @@ bool show_test_window = true;
 bool show_weather_window = false;
 //bool show_hud_editor = false;      // Требует адаптации
 bool show_person_attach_editor = false;
+bool show_ppe_editor = false;
 bool show_position_informer = false;
 bool show_spawn_menu = false;
 bool show_ui_editor = false;
@@ -35,6 +37,7 @@ bool show_node_editor = false;*/
 
 static bool isAlt = false;
 static bool sections_list_created = false;
+static bool sections_list_ppe_created = false;
 
 enum class EditorStage {
     None,
@@ -72,6 +75,8 @@ void ShowMain()
 	//	show_hud_editor = !show_hud_editor;
     if (ImGui::Button(toUtf8(CStringTable().translate("st_editor_imgui_person_attach").c_str()).c_str()))
         show_person_attach_editor = !show_person_attach_editor;
+    if (ImGui::Button(toUtf8(CStringTable().translate("st_editor_imgui_ppe").c_str()).c_str()))
+        show_ppe_editor = !show_ppe_editor;
     if (ImGui::Button(toUtf8(CStringTable().translate("st_editor_imgui_spawn").c_str()).c_str()))
         show_spawn_menu = !show_spawn_menu;
     if (ImGui::Button(toUtf8(CStringTable().translate("st_editor_imgui_ui_debugger").c_str()).c_str()))
@@ -119,6 +124,16 @@ void ShowEditor()
 	//	ShowHudEditor(show_hud_editor);
     if (show_person_attach_editor)
         ShowPersonAttachEditor(show_person_attach_editor);
+    if (show_ppe_editor)
+    {
+        if (!sections_list_ppe_created)
+        {
+            FillSectionsListPPE();
+            sections_list_ppe_created = true;
+        }
+
+        ShowPostprocessEditor(show_ppe_editor);
+    }
     if (show_spawn_menu)
     {
         if (!sections_list_created)

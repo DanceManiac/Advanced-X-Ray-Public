@@ -207,4 +207,55 @@
 	<string id="st_editor_imgui_ui_debugger_mm_warning">
 		<text>Please, open main menu to show the structure.</text>
 	</string>
+	<string id="st_editor_imgui_ppe">
+		<text>Postprocess Editor</text>
+	</string>
+	<string id="st_pp_editor_create">
+		<text>Create</text>
+	</string>
+	<string id="st_pp_editor_editing_effector">
+		<text>Editing:</text>
+	</string>
+	<string id="st_pp_editor_custom_pp_params">
+		<text>Custom Effector Settings</text>
+	</string>
+	<string id="st_pp_editor_is_custom_effect">
+		<text>Custom PP-Effect</text>
+	</string>
+	<string id="st_pp_editor_custom_camera_params">
+		<text>Custom Camera Settings</text>
+	</string>
+	<string id="st_pp_editor_custom_effector_params">
+		<text>Base Custom Effector Settings</text>
+	</string>
+	<string id="st_pp_editor_main_params">
+		<text>Base Settings</text>
+	</string>
+	<string id="st_pp_editor_shoot_eff_params">
+		<text>Shoot Effector Settings</text>
+	</string>
+	<string id="st_pp_editor_pp_effects">
+		<text>PP-Effects</text>
+	</string>
+	<string id="st_pp_editor_play">
+		<text>Start</text>
+	</string>
+	<string id="st_pp_editor_stop">
+		<text>Stop</text>
+	</string>
+	<string id="st_pp_editor_add_pp_effect">
+		<text>Add PP-Effect</text>
+	</string>
+	<string id="st_pp_editor_camera_effects">
+		<text>Camera Effects</text>
+	</string>
+	<string id="st_pp_editor_add_cam_effect">
+		<text>Add Camera</text>
+	</string>
+	<string id="st_pp_editor_play_effector">
+		<text>Start Effector</text>
+	</string>
+	<string id="st_pp_editor_stop_effector">
+		<text>Stop Effector</text>
+	</string>
 </string_table>

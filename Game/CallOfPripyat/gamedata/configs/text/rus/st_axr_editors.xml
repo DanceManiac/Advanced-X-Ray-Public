@@ -207,4 +207,55 @@
 	<string id="st_editor_imgui_ui_debugger_mm_warning">
 		<text>Пожалуйста, откройте главное меню, чтобы увидеть структуру.</text>
 	</string>
+	<string id="st_editor_imgui_ppe">
+		<text>Редактор постпроцессов</text>
+	</string>
+	<string id="st_pp_editor_create">
+		<text>Создать</text>
+	</string>
+	<string id="st_pp_editor_editing_effector">
+		<text>Редактируется:</text>
+	</string>
+	<string id="st_pp_editor_custom_pp_params">
+		<text>Настройки пользовательского эффекта</text>
+	</string>
+	<string id="st_pp_editor_is_custom_effect">
+		<text>Пользовательский постпроцесс</text>
+	</string>
+	<string id="st_pp_editor_custom_camera_params">
+		<text>Настройки пользовательской камеры</text>
+	</string>
+	<string id="st_pp_editor_custom_effector_params">
+		<text>Общие настройки пользовательского эффекта</text>
+	</string>
+	<string id="st_pp_editor_main_params">
+		<text>Базовые настройки</text>
+	</string>
+	<string id="st_pp_editor_shoot_eff_params">
+		<text>Настройки эффекта стрельбы</text>
+	</string>
+	<string id="st_pp_editor_pp_effects">
+		<text>Эффекты постпроцесса</text>
+	</string>
+	<string id="st_pp_editor_play">
+		<text>Старт</text>
+	</string>
+	<string id="st_pp_editor_stop">
+		<text>Стоп</text>
+	</string>
+	<string id="st_pp_editor_add_pp_effect">
+		<text>Добавить пп-эффект</text>
+	</string>
+	<string id="st_pp_editor_camera_effects">
+		<text>Эффекты камеры</text>
+	</string>
+	<string id="st_pp_editor_add_cam_effect">
+		<text>Добавить камеру</text>
+	</string>
+	<string id="st_pp_editor_play_effector">
+		<text>Запустить постпроцесс</text>
+	</string>
+	<string id="st_pp_editor_stop_effector">
+		<text>Остановить постпроцесс</text>
+	</string>
 </string_table>
