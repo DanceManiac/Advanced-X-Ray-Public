@@ -1179,6 +1179,17 @@ public:
 	}
 };
 
+class CCC_UI_Reload : public IConsole_Command
+{
+public:
+	CCC_UI_Reload(LPCSTR N) : IConsole_Command(N) { bEmptyArgsHandled = TRUE; };
+	virtual void Execute(LPCSTR args)
+	{
+		if (g_pGamePersistent && g_pGameLevel && Level().game && (&HUD()))
+			HUD().OnScreenResolutionChanged();// перезагружаем UI через эту команду
+	}
+};
+
 class CCC_FlushLog : public IConsole_Command {
 public:
 	CCC_FlushLog(LPCSTR N) : IConsole_Command(N)  { bEmptyArgsHandled = true; };
@@ -2398,6 +2409,7 @@ void CCC_RegisterCommands()
 		CMD1(CCC_TimeFactor,	"time_factor");
 		CMD1(CCC_JumpToLevel,	"jump_to_level");
 		CMD1(CCC_Spawn_to_inv,	"g_spawn_to_inventory");
+		CMD1(CCC_UI_Reload,		"ui_reload");
 		CMD1(CCC_Giveinfo,		"g_info");
 		CMD1(CCC_Disinfo,		"d_info");
 		CMD1(CCC_GiveTask,		"g_task");
