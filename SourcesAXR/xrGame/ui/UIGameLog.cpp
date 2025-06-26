@@ -11,6 +11,7 @@
 #include "UIPdaMsgListItem.h"
 #include "UIPdaKillMessage.h"
 #include "UILines.h"
+#include "../AdvancedXrayGameConstants.h"
 
 CUIGameLog::CUIGameLog()
 {
@@ -30,7 +31,7 @@ CUITextWnd* CUIGameLog::AddLogMessage(LPCSTR msg)
 	pItem->SetColorAnimation		("ui_main_msgs_short", LA_ONLYALPHA|LA_TEXTCOLOR, 5000.0f);
 	ForceUpdate						();
 
-	if (curr_size == 0)
+	if (GameConstants::GetSmoothScrollEnabled() && (curr_size == 0))
 	{
 		const Fvector2 w_pos = { m_pad->GetWndPos().x, GetHeight() };
 		m_pad->SetWndPos(w_pos);
@@ -48,7 +49,7 @@ CUIPdaMsgListItem* CUIGameLog::AddPdaMessage()
 	pItem->SetColorAnimation				("ui_main_msgs_short", LA_ONLYALPHA|LA_TEXTCOLOR|LA_TEXTURECOLOR);
 	AddWindow								(pItem, true);
 
-	if (curr_size == 0)
+	if (GameConstants::GetSmoothScrollEnabled() && (curr_size == 0))
 	{
 		const Fvector2 w_pos = { m_pad->GetWndPos().x, GetHeight() };
 		m_pad->SetWndPos(w_pos);
@@ -115,7 +116,8 @@ void CUIGameLog::Update()
 			for (const auto& it : toDelList)
 				RemoveWindow(it);
 		}
-		ForceScrollPosition();
+		if (GameConstants::GetSmoothScrollEnabled())
+			ForceScrollPosition();
 
 		toDelList.clear();
 	}
