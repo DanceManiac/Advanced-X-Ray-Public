@@ -1,4 +1,12 @@
-﻿#include "stdafx.h"
+﻿////////////////////////////////////////////////////////////////////////////
+//	Module 		: embedded_editor_pos_informer.cpp
+//	Created 	: 20.11.2022
+//  Modified 	: 23.11.2022
+//	Author		: Dance Maniac (M.F.S. Team)
+//	Description : ImGui Position Informer
+////////////////////////////////////////////////////////////////////////////
+
+#include "stdafx.h"
 #include "pch_script.h"
 #include "Actor.h"
 #include "ai_object_location.h"

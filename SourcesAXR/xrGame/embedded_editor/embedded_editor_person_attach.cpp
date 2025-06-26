@@ -1,3 +1,11 @@
+////////////////////////////////////////////////////////////////////////////
+//	Module 		: embedded_editor_person_attach.cpp
+//	Created 	: 05.01.2025
+//  Modified 	: 05.01.2025
+//	Author		: Dance Maniac (M.F.S. Team)
+//	Description : ImGui Person Attaches Editor
+////////////////////////////////////////////////////////////////////////////
+
 #include "stdAfx.h"
 #include "embedded_editor_hud.h"
 #include "embedded_editor_helper.h"

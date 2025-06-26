@@ -1,3 +1,11 @@
+////////////////////////////////////////////////////////////////////////////
+//	Module 		: embedded_editor_hud.cpp
+//	Created 	: 05.05.2021
+//  Modified 	: 14.06.2024
+//	Author		: Dance Maniac (M.F.S. Team)
+//	Description : ImGui Hud Editor
+////////////////////////////////////////////////////////////////////////////
+
 #include "stdAfx.h"
 #include "embedded_editor_hud.h"
 #include "embedded_editor_helper.h"
