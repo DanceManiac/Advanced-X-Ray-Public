@@ -32,6 +32,9 @@
 ENGINE_API  extern float psHUD_FOV;
 ENGINE_API  extern float psHUD_FOV_def;
 
+BOOL m_b_advanced_shoot_effectors = FALSE;
+float m_b_advanced_se_factor = 1.0f;
+
 //CUIXml*				pWpnScopeXml = NULL;
 
 CWeaponMagazined::CWeaponMagazined(ESoundTypes eSoundType) : CWeapon()
@@ -1106,7 +1109,7 @@ void CWeaponMagazined::OnShot()
 		AddHUDShootingEffect();
 
 		// Dance Maniac: Дополнительный эффектор стрельбы
-		if (IsGameTypeSingle() && ParentIsActor())
+		if (m_b_advanced_shoot_effectors && IsGameTypeSingle() && ParentIsActor())
 		{
 			CEffectorCam* effector = Actor()->Cameras().GetCamEffector((ECamEffectorType)eCEWeaponAction);
 
@@ -1115,9 +1118,9 @@ void CWeaponMagazined::OnShot()
 
 			if (pSettings->section_exist(effector_sect))
 			{
-				float effector_intensity		= READ_IF_EXISTS(pSettings, r_float, effector_sect, "shoot_effector_factor", 1.0f);
-				float effector_intensity_crouch	= READ_IF_EXISTS(pSettings, r_float, effector_sect, "shoot_effector_factor_crouch", 0.75f);
-				float effector_intensity_aim	= READ_IF_EXISTS(pSettings, r_float, effector_sect, "shoot_effector_factor_aim", 0.5f);
+				float effector_intensity		= (READ_IF_EXISTS(pSettings, r_float, effector_sect, "shoot_effector_factor", 1.0f) * m_b_advanced_se_factor);
+				float effector_intensity_crouch	= (READ_IF_EXISTS(pSettings, r_float, effector_sect, "shoot_effector_factor_crouch", 0.75f) * m_b_advanced_se_factor);
+				float effector_intensity_aim	= (READ_IF_EXISTS(pSettings, r_float, effector_sect, "shoot_effector_factor_aim", 0.5f) * m_b_advanced_se_factor);
 
 				if (!effector)
 					AddEffector(Actor(), eCEWeaponAction, effector_sect, IsZoomed() ? effector_intensity_aim : Actor()->is_actor_crouch() ? effector_intensity_crouch : effector_intensity);

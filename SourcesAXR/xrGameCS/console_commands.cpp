@@ -138,6 +138,8 @@ extern	float	g_fTimeFactor;
 extern	BOOL	b_toggle_weapon_aim;
 extern	BOOL	b_hud_collision;
 extern	BOOL	m_b_actor_walk_inertion;
+extern	BOOL	m_b_advanced_shoot_effectors;
+extern	float	m_b_advanced_se_factor;
 //extern  BOOL	g_old_style_ui_hud;
 
 extern float	g_smart_cover_factor;
@@ -2860,6 +2862,8 @@ extern BOOL dbg_moving_bones_snd_player;
 	CMD4(CCC_Integer,	"wpn_aim_toggle",			&b_toggle_weapon_aim,	0, 1);
 	CMD4(CCC_Integer,	"hud_collision",			&b_hud_collision,		0, 1);
 	CMD4(CCC_Integer,	"actor_walk_inertion",		&m_b_actor_walk_inertion, 0, 1);
+	CMD4(CCC_Integer,	"advanced_shoot_effectors",	&m_b_advanced_shoot_effectors, 0, 1);
+	CMD4(CCC_Float,		"advanced_se_factor",		&m_b_advanced_se_factor,0.001f, 2.0f);
 //	CMD4(CCC_Integer,	"hud_old_style",			&g_old_style_ui_hud, 0, 1);
 
 #ifdef DEBUG

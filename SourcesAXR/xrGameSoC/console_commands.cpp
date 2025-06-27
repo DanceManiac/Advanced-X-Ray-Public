@@ -126,6 +126,8 @@ extern	BOOL	g_show_wnd_rect2			;
 extern	float	g_fTimeFactor;
 extern	BOOL	b_hud_collision;
 extern	BOOL	m_b_actor_walk_inertion;
+extern	BOOL	m_b_advanced_shoot_effectors;
+extern	float	m_b_advanced_se_factor;
 int				g_keypress_on_start = 1;
 extern	BOOL	g_advanced_crosshair;
 extern	int		hud_adj_item_idx;
@@ -2533,6 +2535,8 @@ void CCC_RegisterCommands()
 #endif
 	CMD4(CCC_Integer,	"hud_collision",			&b_hud_collision,		0, 1);
 	CMD4(CCC_Integer,	"actor_walk_inertion",		&m_b_actor_walk_inertion, 0, 1);
+	CMD4(CCC_Integer,	"advanced_shoot_effectors",	&m_b_advanced_shoot_effectors, 0, 1);
+	CMD4(CCC_Float,		"advanced_se_factor",		&m_b_advanced_se_factor,0.001f, 2.0f);
 
 	CMD4(CCC_Integer,		"g_sleep_time",			&psActorSleepTime, 1, 24);
 
