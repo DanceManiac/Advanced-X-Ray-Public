@@ -31,14 +31,14 @@ bool InFieldOfViewR(vis_data& vis, Fvector pos, float max_dist = 50.f)
 		return false;
 
 	// За спиной не надо
-	Fvector toObject;
+	/*Fvector toObject;
 	toObject.sub(pos, Device.vCameraPosition);
 	toObject.normalize();
 
 	Fvector cameraDirection = Device.vCameraDirection;
 	float dotProduct = cameraDirection.dotproduct(toObject);
 	if (dotProduct < 0 && dist > 2)
-		return false;
+		return false;*/
 
 	return true;
 }
