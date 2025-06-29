@@ -1002,6 +1002,26 @@ float CActor::currentFOV()
 
 void CActor::UpdateCL	()
 {
+	if (g_Alive() && Level().CurrentViewEntity() == this)
+	{
+		if (HUD().GetUI() && !HUD().GetUI()->UIGame()->MainInputReceiver() && !m_holder)
+		{
+			const bool allowed = GameConstants::GetMultiItemPickup();
+
+			auto dik = get_action_dik(kUSE, 0);
+			if (dik && pInput->iGetAsyncKeyState(dik) && allowed)
+				m_bPickupMode = true;
+
+			dik = get_action_dik(kUSE, 1);
+			if (dik && pInput->iGetAsyncKeyState(dik) && allowed)
+				m_bPickupMode = true;
+		}
+		else
+		{
+			m_bPickupMode = false;
+		}
+	}
+
 	if (load_screen_renderer.IsActive() && inventory().GetActiveSlot() == PDA_SLOT)
 		inventory().Activate(NO_ACTIVE_SLOT);
 
@@ -1134,6 +1154,9 @@ void CActor::UpdateCL	()
 		trans.c.sub(Device.vCameraPosition);
 		g_player_hud->update(trans);
 	}
+
+	if (GameConstants::GetMultiItemPickup())
+		m_bPickupMode = false;
 
 	g_pGamePersistent->devices_shader_data.device_global_psy_influence = m_fDevicesPsyFactor;
 	g_pGamePersistent->devices_shader_data.device_psy_zone_influence = 0.0f;

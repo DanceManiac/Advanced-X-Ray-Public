@@ -380,7 +380,7 @@ void CActor::IR_OnKeyboardRelease(int cmd)
 //	if (conditions().IsSleeping())	return;
 	if (m_input_external_handler && !m_input_external_handler->authorized(cmd))	return;
 
-	if (g_Alive())	
+	if (g_Alive() && !GameConstants::GetMultiItemPickup())
 	{
 		if (cmd == kUSE) 
 			PickupModeOff();

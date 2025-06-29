@@ -1066,6 +1066,26 @@ float CActor::currentFOV()
 
 void CActor::UpdateCL	()
 {
+	if (g_Alive() && Level().CurrentViewEntity() == this)
+	{
+		if (HUD().GetUI() && !HUD().GetUI()->UIGame()->MainInputReceiver() && !m_holder)
+		{
+			const bool allowed = GameConstants::GetMultiItemPickup();
+
+			auto dik = get_action_dik(kUSE, 0);
+			if (dik && pInput->iGetAsyncKeyState(dik) && allowed)
+				m_bPickupMode = true;
+
+			dik = get_action_dik(kUSE, 1);
+			if (dik && pInput->iGetAsyncKeyState(dik) && allowed)
+				m_bPickupMode = true;
+		}
+		else
+		{
+			m_bPickupMode = false;
+		}
+	}
+
 	UpdateInventoryOwner			(Device.dwTimeDelta);
 
 	// Dance Maniac: Hack for non-limited bolts.
@@ -1219,6 +1239,9 @@ void CActor::UpdateCL	()
 		trans.c.sub(Device.vCameraPosition);
 		g_player_hud->update(trans);
 	}
+
+	if (GameConstants::GetMultiItemPickup())
+		m_bPickupMode = false;
 
 	g_pGamePersistent->devices_shader_data.device_global_psy_influence = m_fDevicesPsyFactor;
 	g_pGamePersistent->devices_shader_data.device_psy_zone_influence = HUD().GetUI()->UIGame()->get_zone_cur_power(ALife::eHitTypeTelepatic) * 2;

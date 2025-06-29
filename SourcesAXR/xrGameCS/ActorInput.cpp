@@ -457,7 +457,7 @@ void CActor::IR_OnKeyboardRelease(int cmd)
 
 	if (g_Alive())	
 	{
-		if (cmd == kUSE) 
+		if (cmd == kUSE && !GameConstants::GetMultiItemPickup())
 			PickupModeOff();
 
 		if(m_holder)
