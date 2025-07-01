@@ -11,10 +11,13 @@
 #include "script_engine.h"
 #include "../xrEngine/IGame_Persistent.h"
 #include "Weapon.h"
+#include "Inventory.h"
 
 player_hud* g_player_hud = NULL;
 Fvector _ancor_pos;
 Fvector _wpn_root_pos;
+
+extern BOOL m_b_advanced_shoot_effectors;
 
 // Рассчитать стартовую секунду анимации --#SM+#--
 float CalculateMotionStartSeconds(float fStartFromTime, float fMotionLength)
@@ -526,6 +529,14 @@ u32 attachable_hud_item::anim_play(const shared_str& anm_name_b, BOOL bMixIn, co
 	{
 		CActor* current_actor = static_cast_checked<CActor*>(Level().CurrentControlEntity());
 		VERIFY(current_actor);
+
+		if (m_b_advanced_shoot_effectors && current_actor)
+		{
+			CWeapon* wpn = smart_cast<CWeapon*>(current_actor->inventory().ActiveItem());
+
+			if (wpn && wpn->IsWorking())
+				return ret;
+		}
 
 		string_path ce_path;
 		string_path anm_name;

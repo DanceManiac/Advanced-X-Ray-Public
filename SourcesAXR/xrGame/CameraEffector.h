@@ -43,5 +43,6 @@
 #define	eCEMonsterHit			((ECamEffectorType)(cefNext+15))
 #define	eCEDOF					((ECamEffectorType)(cefNext+16))
 #define	eCEWeaponAction			((ECamEffectorType)(cefNext+17))
-#define	eCEActorMoving			((ECamEffectorType)(cefNext+18))
-#define	eCEPostprocessEditor	((ECamEffectorType)(cefNext+19))
+#define	eCEWeaponAction2		((ECamEffectorType)(cefNext+18))
+#define	eCEActorMoving			((ECamEffectorType)(cefNext+19))
+#define	eCEPostprocessEditor	((ECamEffectorType)(cefNext+20))
