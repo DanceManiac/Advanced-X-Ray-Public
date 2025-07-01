@@ -72,7 +72,7 @@ public:
 					CCameraShotEffector	(const CameraRecoil& cam_recoil);
 	virtual			~CCameraShotEffector();
 	
-	virtual BOOL	ProcessCam			(SCamEffectorInfo& info);
+	virtual BOOL	ProcessCam			(SCamEffectorInfo& info, float m_fFactorMod = 1.0f);
 	virtual void	SetActor			(CActor* pActor) {m_pActor = pActor;};
 	
 	virtual CCameraShotEffector*		cast_effector_shot				()	{return this;}

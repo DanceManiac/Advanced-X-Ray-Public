@@ -10,7 +10,7 @@ public:
 					CCameraShotEffectorX(CameraRecoil& cam_recoil);
 	virtual			~CCameraShotEffectorX();
 
-	virtual BOOL		ProcessCam		(SCamEffectorInfo& info);
+	virtual BOOL		ProcessCam		(SCamEffectorInfo& info, float m_fFactorMod = 1.0f);
 	virtual	void	GetDeltaAngle		(Fvector& delta_angle);
 	virtual	void	Shot				(float angle);
 	virtual	void	Clear				();

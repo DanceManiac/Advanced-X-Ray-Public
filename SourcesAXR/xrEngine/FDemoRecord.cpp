@@ -293,7 +293,7 @@ void CDemoRecord::MakeCubeMapFace(Fvector &D, Fvector &N)
 	m_Stage++;
 }
 
-BOOL CDemoRecord::ProcessCam(SCamEffectorInfo& info)
+BOOL CDemoRecord::ProcessCam(SCamEffectorInfo& info, float m_fFactorMod)
 {
 	info.dont_apply					= false;
 	//if (0==file)					return TRUE;

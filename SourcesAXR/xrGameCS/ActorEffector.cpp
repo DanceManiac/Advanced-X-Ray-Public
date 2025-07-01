@@ -437,7 +437,8 @@ void AddEffector(CActor* A, int type, const shared_str& sect_name, float factor)
 
 			int cam_id = (cam_index > 1) ? (5000 + cam_index) : type;
 
-			cam_anm->SetFactor(factor * factor_mod);
+			cam_anm->SetFactor(factor);
+			cam_anm->SetFactorMod(factor * factor_mod);
 			cam_anm->SetType((ECamEffectorType)cam_id);
 			cam_anm->SetCyclic(bCyclic);
 
@@ -487,7 +488,8 @@ void AddEffector(CActor* A, int type, const shared_str& sect_name, float factor)
 
 		int cam_id = 5000 + Random.randI(1000);
 
-		cam_anm->SetFactor(factor * factor_mod);
+		cam_anm->SetFactor(factor);
+		cam_anm->SetFactorMod(factor* factor_mod);
 		cam_anm->SetType((ECamEffectorType)cam_id);
 		cam_anm->SetCyclic(bCyclic);
 
@@ -590,7 +592,8 @@ void AddEffectorEditor(CActor* A, int type, const shared_str& sect_name, float f
 
 			int cam_id = (cam_index > 1) ? (5000 + cam_index) : type;
 
-			cam_anm->SetFactor(factor * factor_mod);
+			cam_anm->SetFactor(factor);
+			cam_anm->SetFactorMod(factor * factor_mod);
 			cam_anm->SetType((ECamEffectorType)cam_id);
 			cam_anm->SetCyclic(bCyclic);
 			cam_anm->SetHudAffect(eff->m_bHudAffect);
@@ -635,7 +638,8 @@ void AddEffectorEditor(CActor* A, int type, const shared_str& sect_name, float f
 
 		int cam_id = 5000 + Random.randI(1000);
 
-		cam_anm->SetFactor(factor * factor_mod);
+		cam_anm->SetFactor(factor);
+		cam_anm->SetFactorMod(factor * factor_mod);
 		cam_anm->SetType((ECamEffectorType)cam_id);
 		cam_anm->SetCyclic(bCyclic);
 		cam_anm->SetHudAffect(eff->m_bHudAffect);
@@ -695,13 +699,13 @@ BOOL CAnimatorCamEffector::Valid()
 	return			inherited::Valid();
 }
 
-BOOL CAnimatorCamEffector::ProcessCam(SCamEffectorInfo& info)
+BOOL CAnimatorCamEffector::ProcessCam(SCamEffectorInfo& info, float m_fFactorMod)
 {
-	if(!inherited::ProcessCam(info))	
+	if(!inherited::ProcessCam(info, m_fFactorMod))	
 		return FALSE;
 
 	const Fmatrix& m			= m_objectAnimator->XFORM();
-	m_objectAnimator->Update	(Device.fTimeDelta);
+	m_objectAnimator->Update	(Device.fTimeDelta, m_fFactorMod);
 
 	if(!m_bAbsolutePositioning){
 		Fmatrix Mdef;
@@ -724,12 +728,13 @@ BOOL CAnimatorCamEffector::ProcessCam(SCamEffectorInfo& info)
 	return						TRUE;
 }
 
-BOOL CAnimatorCamLerpEffector::ProcessCam(SCamEffectorInfo& info)
+BOOL CAnimatorCamLerpEffector::ProcessCam(SCamEffectorInfo& info, float m_fFactorMod)
 {
-	if(!inherited::inherited::ProcessCam(info))	return FALSE;
+	if(!inherited::inherited::ProcessCam(info, m_fFactorMod))
+		return FALSE;
 
 	const Fmatrix& m			= m_objectAnimator->XFORM();
-	m_objectAnimator->Update	(Device.fTimeDelta);
+	m_objectAnimator->Update	(Device.fTimeDelta, m_fFactorMod);
 
 	Fmatrix Mdef;
 	Mdef.identity				();
@@ -882,7 +887,7 @@ CControllerPsyHitCamEffector::CControllerPsyHitCamEffector(ECamEffectorType type
 	m_direction.normalize	();
 }
 
-BOOL CControllerPsyHitCamEffector::ProcessCam(SCamEffectorInfo& info)
+BOOL CControllerPsyHitCamEffector::ProcessCam(SCamEffectorInfo& info, float m_fFactorMod)
 {
 	Fmatrix	Mdef;
 	Mdef.identity		();

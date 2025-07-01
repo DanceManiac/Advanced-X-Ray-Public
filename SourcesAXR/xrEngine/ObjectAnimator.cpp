@@ -74,11 +74,11 @@ void CObjectAnimator::Load(const char * name)
 	SetActiveMotion		(0);
 }
 
-void CObjectAnimator::Update(float dt)
+void CObjectAnimator::Update(float dt, float m_fFactorMod)
 {
 	if (m_Current){
 		Fvector R,P;
-		m_Current->_Evaluate(m_MParam.Frame(),P,R);
+		m_Current->_Evaluate(m_MParam.Frame(),P,R, m_fFactorMod);
 		m_MParam.Update	(dt,m_Speed,bLoop);
 		m_XFORM.setXYZi	(R.x,R.y,R.z);
         m_XFORM.translate_over(P);

@@ -182,7 +182,7 @@ CCameraShotEffector::~CCameraShotEffector()
 {
 }
 
-BOOL CCameraShotEffector::ProcessCam(SCamEffectorInfo& info)
+BOOL CCameraShotEffector::ProcessCam(SCamEffectorInfo& info, float m_fFactorMod)
 {
 	if (bActive){
 		float		h,p;

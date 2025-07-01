@@ -9,7 +9,7 @@ class CEffectorFall : public CEffectorCam
 	float	fPhase;
 public:
 					CEffectorFall	(float power, float life_time=1);
-	virtual BOOL	ProcessCam		(SCamEffectorInfo& info);
+	virtual BOOL	ProcessCam		(SCamEffectorInfo& info, float m_fFactorMod = 1.0f);
 };
 
 class CEffectorDOF : public CEffectorCam
@@ -17,5 +17,5 @@ class CEffectorDOF : public CEffectorCam
 	float			m_fPhase;
 public:
 					CEffectorDOF	(const Fvector4& dof);
-	virtual BOOL	ProcessCam		(SCamEffectorInfo& info);
+	virtual BOOL	ProcessCam		(SCamEffectorInfo& info, float m_fFactorMod = 1.0f);
 };

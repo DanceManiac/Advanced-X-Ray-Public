@@ -11,7 +11,7 @@ CPseudogigantStepEffector::CPseudogigantStepEffector(float time, float amp, floa
 	this->power		= power;
 }
 
-BOOL CPseudogigantStepEffector::ProcessCam(SCamEffectorInfo& info)
+BOOL CPseudogigantStepEffector::ProcessCam(SCamEffectorInfo& info, float m_fFactorMod)
 {
 	fLifeTime -= Device.fTimeDelta; 
 	if(fLifeTime<0) 

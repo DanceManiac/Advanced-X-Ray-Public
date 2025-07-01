@@ -90,7 +90,7 @@ void			CEffectorZoomInertion::CalcNextPoint		()
 	m_vTargetVel.sub(m_vTargetPoint, m_vLastPoint);
 };
 
-BOOL CEffectorZoomInertion::ProcessCam(SCamEffectorInfo& info)
+BOOL CEffectorZoomInertion::ProcessCam(SCamEffectorInfo& info, float m_fFactorMod)
 {
 	bool camera_moved = false;
 

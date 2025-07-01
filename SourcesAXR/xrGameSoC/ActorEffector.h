@@ -100,7 +100,7 @@ public:
 						CAnimatorCamEffector	();
 	virtual				~CAnimatorCamEffector	();
 			void		Start					(LPCSTR fn);
-	virtual BOOL		ProcessCam				(SCamEffectorInfo& info);
+	virtual BOOL		ProcessCam				(SCamEffectorInfo& info, float m_fFactorMod = 1.0f);
 			void		SetCyclic				(bool b)				{m_bCyclic=b;}
 	virtual	BOOL		Valid					();
 			float		GetAnimatorLength		()						{return fLifeTime;};
@@ -125,7 +125,7 @@ protected:
 	GET_KOEFF_FUNC									m_func;
 public:
 			void		SetFactorFunc				(GET_KOEFF_FUNC f)	{m_func=f;}
-	virtual BOOL		ProcessCam					(SCamEffectorInfo& info);
+	virtual BOOL		ProcessCam					(SCamEffectorInfo& info, float m_fFactorMod = 1.0f);
 };
 
 class CAnimatorCamLerpEffectorConst :public CAnimatorCamLerpEffector
@@ -134,7 +134,7 @@ protected:
 	float				m_factor;
 public:
 						CAnimatorCamLerpEffectorConst	();
-	void				SetFactor						(float v)		{m_factor=v; clamp(m_factor,0.0f,1000.0f);}
+	void				SetFactor						(float v)		{m_factor=v; clamp(m_factor,0.0f,1.0f);}
 	float	xr_stdcall	GetFactor						()				{return m_factor;}
 };
 
@@ -184,6 +184,6 @@ class CControllerPsyHitCamEffector :public CEffectorCam {
 public:
 						CControllerPsyHitCamEffector	(ECamEffectorType type, const Fvector &src_pos, const Fvector &target_pos, 
 														float time);
-	virtual BOOL		ProcessCam						(SCamEffectorInfo& info);
+	virtual BOOL		ProcessCam						(SCamEffectorInfo& info, float m_fFactorMod = 1.0f);
 };
 //////////////////////////////////////////////////////////////////////////

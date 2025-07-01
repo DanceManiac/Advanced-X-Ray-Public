@@ -59,7 +59,7 @@ CMonsterEffectorHit::CMonsterEffectorHit(float time, float amp, float periods, f
 	offset.set		(Random.randF(1,2),Random.randF(1,6),Random.randF(1,6));
 }
 
-BOOL CMonsterEffectorHit::ProcessCam(SCamEffectorInfo& info)
+BOOL CMonsterEffectorHit::ProcessCam(SCamEffectorInfo& info, float m_fFactorMod)
 {
 	fLifeTime -= Device.fTimeDelta; if(fLifeTime<0) return FALSE;
 

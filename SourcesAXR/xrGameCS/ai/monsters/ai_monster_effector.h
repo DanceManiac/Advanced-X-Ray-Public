@@ -33,7 +33,7 @@ class CMonsterEffectorHit : public CEffectorCam {
 	Fvector offset;
 public:
 					CMonsterEffectorHit		(float time, float amp, float periods, float power);
-	virtual BOOL	ProcessCam				(SCamEffectorInfo& info);
+	virtual BOOL	ProcessCam				(SCamEffectorInfo& info, float m_fFactorMod = 1.0f);
 };
 
 

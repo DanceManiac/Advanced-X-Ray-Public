@@ -57,7 +57,7 @@ public:
 					CCameraShotEffector	(float max_angle, float relax_speed, float max_angle_horz, float step_angle_horz, float angle_frac);
 	virtual			~CCameraShotEffector();
 	
-	virtual	BOOL	ProcessCam	(SCamEffectorInfo& info);
+	virtual	BOOL	ProcessCam	(SCamEffectorInfo& info, float m_fFactorMod = 1.0f);
 
 	virtual void	SetActor			(CActor* pActor) {m_pActor = pActor;};
 	

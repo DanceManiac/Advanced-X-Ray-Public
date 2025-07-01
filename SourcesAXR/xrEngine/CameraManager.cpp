@@ -356,7 +356,7 @@ void CCameraManager::Update(const Fvector& P, const Fvector& D, const Fvector& N
 bool CCameraManager::ProcessCameraEffector(CEffectorCam* eff)
 {
 	bool res = false;
-	if(eff->Valid() && eff->ProcessCam(m_cam_info))
+	if(eff->Valid() && eff->ProcessCam(m_cam_info, eff->m_fFactorModifier))
 	{
 		res = true;
 	}

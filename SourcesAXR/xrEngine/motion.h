@@ -91,7 +91,7 @@ public:
 
 	void			Clear			();
 
-	void			_Evaluate		(float t, Fvector& T, Fvector& R);
+	void			_Evaluate		(float t, Fvector& T, Fvector& R, float m_fFactorMod = 1.0f);
 	virtual void	Save			(IWriter& F);
 	virtual bool	Load			(IReader& F);
 

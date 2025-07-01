@@ -32,7 +32,7 @@ class ENGINE_API CDemoPlay :	public CEffectorCam
 	void				stat_Start	()		;
 	void				stat_Stop	()		;
 public:
-	virtual BOOL		ProcessCam		(SCamEffectorInfo& info);
+	virtual BOOL		ProcessCam		(SCamEffectorInfo& info, float m_fFactorMod = 1.0f);
 
 						CDemoPlay	(const char *name, float ms, u32 cycles, float life_time=60*60*1000);
 	virtual				~CDemoPlay	();

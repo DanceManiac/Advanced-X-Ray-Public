@@ -69,7 +69,7 @@ CVampireCameraEffector::CVampireCameraEffector(float time, const Fvector &src, c
 	dangle_current.set	(0.f, 0.f, 0.f);
 }
 
-BOOL CVampireCameraEffector::ProcessCam(SCamEffectorInfo& info)
+BOOL CVampireCameraEffector::ProcessCam(SCamEffectorInfo& info, float m_fFactorMod)
 {
 	fLifeTime -= Device.fTimeDelta; 
 	if(fLifeTime<0) 

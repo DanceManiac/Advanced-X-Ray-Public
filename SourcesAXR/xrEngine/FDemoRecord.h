@@ -60,7 +60,7 @@ public:
 	virtual void IR_OnMouseMove			(int dx, int dy);
 	virtual void IR_OnMouseHold			(int btn);
 	
-	virtual BOOL ProcessCam				(SCamEffectorInfo& info);
+	virtual BOOL ProcessCam				(SCamEffectorInfo& info, float m_fFactorMod = 1.0f);
 	static	void SetGlobalPosition		( const Fvector &p ) { g_position.p.set(p), g_position.set_position= true; }
 	static	void GetGlobalPosition		( Fvector &p ) { p.set( g_position.p ); }
 	BOOL		 m_b_redirect_input_to_level;

@@ -11,6 +11,7 @@ protected:
 	
 	friend class		CCameraManager;
 	float				fLifeTime;
+	float				m_fFactorModifier = 1.0f;
 	bool				bHudAffect;
 public:
 						CEffectorCam	(ECamEffectorType type, float tm)	{eType=type; fLifeTime=tm; bHudAffect=true;};
@@ -20,12 +21,15 @@ public:
 			void		SetHudAffect	(bool val)							{bHudAffect=val;}
 			bool		GetHudAffect	()									{return bHudAffect;}
 
+			void		SetFactorMod	(float val)							{ m_fFactorModifier = val;}
+			float		GetFactorMod	()									{return m_fFactorModifier;}
+
 	IC ECamEffectorType	GetType			()									{return eType;}
 	virtual	BOOL		Valid			()									{return fLifeTime>0.0f;}
 
 	BENCH_SEC_SCRAMBLEVTBL1
 
-	virtual BOOL		ProcessCam		(SCamEffectorInfo& info)			{fLifeTime-=Device.fTimeDelta; return Valid();};;
+	virtual BOOL		ProcessCam		(SCamEffectorInfo& info, float m_fFactorMod = 1.0f) {fLifeTime-=Device.fTimeDelta; return Valid();};
 		
 	virtual	void		ProcessIfInvalid(SCamEffectorInfo& info)			{};
 	virtual BOOL		AllowProcessingIfInvalid()							{return FALSE;}

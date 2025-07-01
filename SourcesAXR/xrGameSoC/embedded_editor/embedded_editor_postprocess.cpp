@@ -83,8 +83,8 @@ void ApplyEffect(const SPPEffect& eff)
         if (eff.m_bIsShootEffector)
         {
             float effector_intensity = eff.m_fShootEffectorFactor;
-            float effector_intensity_crouch = eff.m_fShootEffectorFactorAim;
-            float effector_intensity_aim = eff.m_fShootEffectorFactorCrouch;
+            float effector_intensity_aim = eff.m_fShootEffectorFactorAim;
+            float effector_intensity_crouch = eff.m_fShootEffectorFactorCrouch;
 
             CWeapon* Wpn = smart_cast<CWeapon*>(Actor()->inventory().ActiveItem());
 
@@ -544,7 +544,8 @@ void ShowPostprocessEditor(bool& show)
                 e->SetType((ECamEffectorType)eCEPostprocessEditor);
                 e->SetHudAffect(eff.m_bHudAffect);
                 e->SetCyclic(eff.m_CamEffectCyclic);
-                e->SetFactor(factor_mod);
+                e->SetFactor(1.0f);
+                e->SetFactorMod(factor_mod);;
                 e->Start(effect_name.c_str());
 
                 Actor()->Cameras().AddCamEffector(e);

@@ -33,7 +33,7 @@ class CVampireCameraEffector : public CEffectorCam {
 
 public:
 					CVampireCameraEffector	(float time, const Fvector &src, const Fvector &tgt);
-	virtual BOOL	ProcessCam				(SCamEffectorInfo& info);
+	virtual BOOL	ProcessCam				(SCamEffectorInfo& info, float m_fFactorMod = 1.0f);
 };
 
 

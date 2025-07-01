@@ -40,7 +40,7 @@ public:
 			void	Load				();
 			void	SetParams			(float disp);
 
-	virtual BOOL	ProcessCam			(SCamEffectorInfo& info);
+	virtual BOOL	ProcessCam			(SCamEffectorInfo& info, float m_fFactorMod = 1.0f);
 	virtual	void	SetRndSeed			(s32 Seed) { m_Random.seed(Seed); };
 	virtual	void	Init				(CWeaponMagazined*	pWeapon);
 

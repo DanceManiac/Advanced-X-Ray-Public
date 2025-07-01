@@ -89,7 +89,7 @@ class CAlienEffector : public CEffectorCam {
 
 public:
 					CAlienEffector	(ECamEffectorType type, CAI_Bloodsucker *obj);
-	virtual BOOL	ProcessCam		(SCamEffectorInfo& info);
+	virtual BOOL	ProcessCam		(SCamEffectorInfo& info, float m_fFactorMod = 1.0f);
 };
 
 
@@ -119,7 +119,7 @@ CAlienEffector::CAlienEffector(ECamEffectorType type, CAI_Bloodsucker *obj) :
 	m_current_fov			= MIN_FOV;
 }
 
-BOOL CAlienEffector::ProcessCam(SCamEffectorInfo& info)
+BOOL CAlienEffector::ProcessCam(SCamEffectorInfo& info, float m_fFactorMod)
 {
 	// Инициализация
 	Fmatrix	Mdef;
