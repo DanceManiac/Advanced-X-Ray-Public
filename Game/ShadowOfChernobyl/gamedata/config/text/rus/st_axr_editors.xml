@@ -258,4 +258,7 @@
 	<string id="st_pp_editor_stop_effector">
 		<text>Остановить постпроцесс</text>
 	</string>
+	<string id="st_editor_imgui_choose_pp_effect">
+		<text>Выбор эффекта</text>
+	</string>
 </string_table>

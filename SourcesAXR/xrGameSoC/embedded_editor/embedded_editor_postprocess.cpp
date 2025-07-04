@@ -39,6 +39,155 @@ struct SCustomEffector
 
 SCustomEffector m_CustomEffector{};
 
+bool ImGui_ListBox(const char* label, int* current_item, bool(*items_getter)(void*, int, const char**), void* data, int items_count, const ImVec2& size_arg = ImVec2(0, 0));
+
+static bool stristr(const xr_string& str, const char* search)
+{
+    if (search[0] == '\0')
+        return true;
+
+    const char* s = str.c_str();
+    const char* p = search;
+
+    for (; *s != '\0'; s++)
+    {
+        if (tolower(*s) == tolower(*p))
+        {
+            const char* s2 = s + 1;
+            const char* p2 = p + 1;
+            while (*s2 != '\0' && *p2 != '\0' && tolower(*s2) == tolower(*p2))
+            {
+                s2++;
+                p2++;
+            }
+
+            if (*p2 == '\0')
+                return true;
+        }
+    }
+    return false;
+}
+
+bool editEffect(const char* label, shared_str& effectName, bool pp_effect = false)
+{
+    char effect[256];
+    strncpy(effect, effectName.data(), 256);
+    bool changed = false;
+    static shared_str prevValue;
+
+    ImGui::PushID(label);
+
+    if (ImGui::InputText("", effect, 256))
+    {
+        effectName = effect;
+        changed = true;
+    }
+
+    ImGui::SameLine();
+
+    if (ImGui::Button("..."))
+    {
+        ImGui::OpenPopup(toUtf8(CStringTable().translate("st_editor_imgui_choose_pp_effect").c_str()).c_str());
+        prevValue = effectName;
+    }
+
+    ImGui::SameLine();
+
+    ImGui::SetNextWindowSize(ImVec2(250, 400), ImGuiCond_FirstUseEver);
+
+    if (ImGui::BeginPopupModal(toUtf8(CStringTable().translate("st_editor_imgui_choose_pp_effect").c_str()).c_str(), NULL, 0))
+    {
+        string_path dir, fn, ext;
+        _splitpath(effect, nullptr, dir, fn, ext);
+
+        static xr_map<xr_string, xr_vector<xr_string>> dirs;
+        static char searchStr[128] = "";
+
+        ImGui::InputText(toUtf8(CStringTable().translate("st_spawner_search").c_str()).c_str(), searchStr, IM_ARRAYSIZE(searchStr));
+
+        auto& filtered = dirs[dir];
+        if (filtered.empty())
+        {
+            xr_vector<LPSTR>* files = FS.file_list_open("$game_anims$", dir, FS_ListFiles);
+
+            if (files)
+            {
+                filtered.resize(files->size());
+
+                auto e = std::copy_if(files->begin(), files->end(), filtered.begin(),
+                    [&pp_effect](auto x) {
+                        return strstr(x, pp_effect ? ".ppe" : ".anm") != nullptr;
+                    });
+
+                filtered.resize(e - filtered.begin());
+
+                std::sort(filtered.begin(), filtered.end(),
+                    [](auto a, auto b) { return compare_naturally(a.c_str(), b.c_str()) < 0; });
+            }
+            FS.file_list_close(files);
+        }
+
+        xr_vector<xr_string> displayList;
+        for (const auto& name : filtered)
+        {
+            if (searchStr[0] == '\0' || stristr(name.c_str(), searchStr))
+            {
+                displayList.push_back(name);
+            }
+        }
+
+        int cur = -1;
+        string_path currentFile;
+        strconcat(sizeof(currentFile), currentFile, fn, ext);
+
+        for (size_t i = 0; i < displayList.size(); i++)
+        {
+            if (displayList[i] == currentFile)
+            {
+                cur = (int)i;
+                break;
+            }
+        }
+
+        if (ImGui_ListBox("", &cur,
+            [](void* data, int idx, const char** out_text) -> bool {
+                xr_vector<xr_string>* effects = (xr_vector<xr_string>*)data;
+                if (idx < 0 || idx >= (int)effects->size()) return false;
+                *out_text = (*effects)[idx].c_str();
+                return true;
+            },
+            &displayList, (int)displayList.size(), ImVec2(-1.0f, -20.0f)))
+        {
+            if (cur >= 0 && cur < (int)displayList.size())
+            {
+                strconcat(256, effect, dir, displayList[cur].c_str());
+                effectName = effect;
+                changed = true;
+            }
+        }
+
+        if (ImGui::Button(toUtf8(CStringTable().translate("st_weather_editor_btn_ok").c_str()).c_str(), ImVec2(120, 0)))
+        {
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button(toUtf8(CStringTable().translate("st_weather_editor_btn_cancel").c_str()).c_str(), ImVec2(120, 0)))
+        {
+            ImGui::CloseCurrentPopup();
+            effectName = prevValue;
+            changed = true;
+        }
+
+        ImGui::EndPopup();
+    }
+
+    ImGui::PopID();
+
+    return changed;
+}
+
 void ApplyEffect(const SPPEffect& eff)
 {
 
@@ -88,9 +237,18 @@ void ApplyEffect(const SPPEffect& eff)
 
             CWeapon* Wpn = smart_cast<CWeapon*>(Actor()->inventory().ActiveItem());
 
-            if (!effector)
-                AddEffectorEditor(Actor(), eCEPostprocessEditor, eff.section.c_str(), (Wpn && Wpn->IsZoomed()) ? effector_intensity_aim : Actor()->is_actor_crouch() ? effector_intensity_crouch : effector_intensity, &eff);
+            if (Wpn)
+            {
+                float disp = ((Wpn->GetFireDispersion(Wpn->m_fCurrentCartirdgeDisp) * 150.f) * (Wpn->IsZoomed() ? effector_intensity_aim : Actor()->is_actor_crouch() ? effector_intensity_crouch : effector_intensity));
 
+                if (!effector)
+                    AddEffectorEditor(Actor(), eCEPostprocessEditor, eff.section.c_str(), disp, &eff);
+            }
+            else
+            {
+                if (!effector)
+                    AddEffectorEditor(Actor(), eCEPostprocessEditor, eff.section.c_str(), (Wpn && Wpn->IsZoomed()) ? effector_intensity_aim : Actor()->is_actor_crouch() ? effector_intensity_crouch : effector_intensity, &eff);
+            }
         }
         else
         {

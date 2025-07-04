@@ -81,3 +81,40 @@ bool ImGui_ListBox(const char* label, int* current_item, bool(*items_getter)(voi
 	ImGui::ListBoxFooter();
 	return value_changed;
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// from https://www.strchr.com/natural_sorting
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+int count_digits(const char* s)
+{
+    const char* p = s;
+    while (isdigit(*p))
+        p++;
+    return (int)(p - s);
+}
+
+int compare_naturally(const void* a_ptr, const void* b_ptr)
+{
+    const char* a = (const char*)a_ptr;
+    const char* b = (const char*)b_ptr;
+
+    for (;;) {
+        if (isdigit(*a) && isdigit(*b)) {
+            int a_count = count_digits(a);
+            int diff = a_count - count_digits(b);
+            if (diff)
+                return diff;
+            diff = memcmp(a, b, a_count);
+            if (diff)
+                return diff;
+            a += a_count;
+            b += a_count;
+        }
+        if (*a != *b)
+            return *a - *b;
+        if (*a == '\0')
+            return 0;
+        a++, b++;
+    }
+}

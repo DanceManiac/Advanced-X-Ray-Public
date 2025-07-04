@@ -258,4 +258,7 @@
 	<string id="st_pp_editor_stop_effector">
 		<text>Stop Effector</text>
 	</string>
+	<string id="st_editor_imgui_choose_pp_effect">
+		<text>Choose Effect</text>
+	</string>
 </string_table>

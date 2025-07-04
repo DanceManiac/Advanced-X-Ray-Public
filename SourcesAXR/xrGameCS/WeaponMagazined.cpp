@@ -1104,11 +1104,13 @@ void CWeaponMagazined::OnShot()
 			if (pSettings->section_exist(effector_sect))
 			{
 				float effector_intensity		= (READ_IF_EXISTS(pSettings, r_float, effector_sect, "shoot_effector_factor", 1.0f) * m_b_advanced_se_factor);
-				float effector_intensity_crouch	= (READ_IF_EXISTS(pSettings, r_float, effector_sect, "shoot_effector_factor_crouch", 0.75f) * m_b_advanced_se_factor);
-				float effector_intensity_aim	= (READ_IF_EXISTS(pSettings, r_float, effector_sect, "shoot_effector_factor_aim", 0.5f) * m_b_advanced_se_factor);
+				float effector_intensity_crouch	= (READ_IF_EXISTS(pSettings, r_float, effector_sect, "shoot_effector_factor_crouch", 1.0f) * m_b_advanced_se_factor);
+				float effector_intensity_aim	= (READ_IF_EXISTS(pSettings, r_float, effector_sect, "shoot_effector_factor_aim", 1.0f) * m_b_advanced_se_factor);
+
+				float disp = ((GetFireDispersion(m_fCurrentCartirdgeDisp, IsZoomed()) * 150.f) * (IsZoomed() ? effector_intensity_aim : Actor()->is_actor_crouch() ? effector_intensity_crouch : effector_intensity)) * m_b_advanced_se_factor;
 
 				if (!effector)
-					AddEffector(Actor(), eCEWeaponAction2, effector_sect, IsZoomed() ? effector_intensity_aim : Actor()->is_actor_crouch() ? effector_intensity_crouch : effector_intensity);
+					AddEffector(Actor(), eCEWeaponAction2, effector_sect, disp);
 			}
 		}
 	}
