@@ -751,13 +751,14 @@ private:
 
 	bool has_laser;
 	shared_str laserdot_attach_bone;
-	Fvector laserdot_attach_offset, laserdot_world_attach_offset;
 	ref_light laser_light_render;
 	CLAItem* laser_lanim;
 	float laser_fBrightness{ 1.f };
 
 	void UpdateLaser();
 public:
+	Fvector laserdot_attach_offset, laserdot_world_attach_offset;
+
 	void SwitchLaser(bool on);
 	
 	inline bool IsLaserOn() const 
@@ -768,7 +769,6 @@ public:
 private:
 	bool has_flashlight;
 	shared_str flashlight_attach_bone;
-	Fvector flashlight_attach_offset, flashlight_omni_attach_offset, flashlight_world_attach_offset, flashlight_omni_world_attach_offset;
 	ref_light flashlight_render;
 	ref_light flashlight_omni;
 	ref_glow flashlight_glow;
@@ -777,6 +777,8 @@ private:
 
 	void UpdateFlashlight();
 public:
+	Fvector flashlight_attach_offset{}, flashlight_omni_attach_offset{}, flashlight_world_attach_offset{}, flashlight_omni_world_attach_offset{};
+
 	void SwitchFlashlight(bool on);
 
 	inline bool IsFlashlightOn() const 

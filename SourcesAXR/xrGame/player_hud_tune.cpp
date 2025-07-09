@@ -473,8 +473,39 @@ void player_hud::SaveCfg(const int idx) const
 
 	auto Wpn = smart_cast<CWeapon*>(Actor()->inventory().ActiveItem());
 
-	if (Wpn && Wpn->m_weapon_attaches.size())
-		SaveAttachesCfg(Wpn->cNameSect().c_str(), Wpn);
+	if (Wpn)
+	{
+		const char* wpn_sect_name = Wpn->m_section_id.c_str();
+
+		string_path fname_main;
+		FS.update_path(fname_main, "$app_data_root$", make_string("HudEditor\\%s.ltx", wpn_sect_name).c_str());
+
+		CInifile pWpnCfg(fname_main, false, false, true);
+
+		if (Wpn->LaserAttachable())
+		{
+			pWpnCfg.w_string(wpn_sect_name,
+				"laserdot_attach_offset",
+				make_string("%f,%f,%f", Wpn->laserdot_attach_offset.x, Wpn->laserdot_attach_offset.y, Wpn->laserdot_attach_offset.z)
+				.c_str());
+		}
+
+		if (Wpn->TacticalTorchAttachable())
+		{
+			pWpnCfg.w_string(wpn_sect_name,
+				"torch_attach_offset",
+				make_string("%f,%f,%f", Wpn->flashlight_attach_offset.x, Wpn->flashlight_attach_offset.y, Wpn->flashlight_attach_offset.z)
+				.c_str());
+
+			pWpnCfg.w_string(wpn_sect_name,
+				"torch_omni_attach_offset",
+				make_string("%f,%f,%f", Wpn->flashlight_omni_attach_offset.x, Wpn->flashlight_omni_attach_offset.y, Wpn->flashlight_omni_attach_offset.z)
+				.c_str());
+		}
+
+		if (Wpn->m_weapon_attaches.size())
+			SaveAttachesCfg(Wpn->cNameSect().c_str(), Wpn);
+	}
 
 	//-----------------//
 	Msg("[%s] HUD data saved to %s", __FUNCTION__, fname);
@@ -490,33 +521,30 @@ void player_hud::SaveAttachesCfg(LPCSTR parent_section, CWeapon* parent_wpn) con
 
 	FS.update_path(fname, "$app_data_root$", make_string("HudEditor\\%s\\%s.ltx", parent_section, parent_section_attaches_fname).c_str());
 
-	CInifile pAttachesCfg(fname, false, false, true);
+	CInifile pAttachesCfg(fname, false, true, true);
 
 	for (int i = 0; i < parent_wpn->m_weapon_attaches.size(); i++)
 	{
 		auto mesh = parent_wpn->m_weapon_attaches[i];
 
-		string128 section_to_w{};
-		strconcat(sizeof(section_to_w), section_to_w, "[", mesh->m_section.c_str(), "]");
+		LPCSTR section_to_w = mesh->m_section.c_str();
 
-		pAttachesCfg.w_string(parent_section_attaches_fname, "\n", section_to_w);
-
-		pAttachesCfg.w_string(parent_section_attaches_fname,
+		pAttachesCfg.w_string(section_to_w,
 			"hud_attach_offset",
 			make_string("%f,%f,%f", mesh->hud_attach_pos[0].x, mesh->hud_attach_pos[0].y, mesh->hud_attach_pos[0].z)
 			.c_str());
 
-		pAttachesCfg.w_string(parent_section_attaches_fname,
+		pAttachesCfg.w_string(section_to_w,
 			"hud_attach_rotation",
 			make_string("%f,%f,%f", mesh->hud_attach_pos[1].x, mesh->hud_attach_pos[1].y, mesh->hud_attach_pos[1].z)
 			.c_str());
 
-		pAttachesCfg.w_string(parent_section_attaches_fname,
+		pAttachesCfg.w_string(section_to_w,
 			"world_attach_offset",
 			make_string("%f,%f,%f", mesh->hud_attach_pos[0].x, mesh->hud_attach_pos[0].y, mesh->hud_attach_pos[0].z)
 			.c_str());
 
-		pAttachesCfg.w_string(parent_section_attaches_fname,
+		pAttachesCfg.w_string(section_to_w,
 			"world_attach_rotation",
 			make_string("%f,%f,%f", mesh->hud_attach_pos[1].x, mesh->hud_attach_pos[1].y, mesh->hud_attach_pos[1].z)
 			.c_str());

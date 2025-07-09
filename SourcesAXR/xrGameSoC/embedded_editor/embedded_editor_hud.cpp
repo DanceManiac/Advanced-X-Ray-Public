@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //	Module 		: embedded_editor_hud.cpp
 //	Created 	: 05.05.2021
-//  Modified 	: 14.06.2024
+//  Modified 	: 07.07.2025
 //	Author		: Dance Maniac (M.F.S. Team)
 //	Description : ImGui Hud Editor
 ////////////////////////////////////////////////////////////////////////////
@@ -68,6 +68,19 @@ void ShowHudEditor(bool& show)
 
 		if (Wpn)
 		{
+			// Laser light offsets
+			if (Wpn->LaserAttachable())
+			{
+				ImGui::DragFloat3("laserdot_attach_offset 0",	(float*)&Wpn->laserdot_attach_offset, drag_intensity, NULL, NULL, "%.6f");
+			}
+
+			//Torch light offsets
+			if (Wpn->TacticalTorchAttachable())
+			{
+				ImGui::DragFloat3("torch_attach_offset 0",		(float*)&Wpn->flashlight_attach_offset, drag_intensity, NULL, NULL, "%.6f");
+				ImGui::DragFloat3("torch_omni_attach_offset 0", (float*)&Wpn->flashlight_omni_attach_offset, drag_intensity, NULL, NULL, "%.6f");
+			}
+
 			for (int i = 0; i < Wpn->m_weapon_attaches.size(); i++)
 			{
 				auto mesh = Wpn->m_weapon_attaches[i];
