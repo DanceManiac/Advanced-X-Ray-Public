@@ -435,7 +435,8 @@ protected:
 	Fvector					m_vSafetyRotationAxis;
 	Fmatrix					m_mSafetyRotation;
 
-	bool					m_bBlockSilencerWithGL;
+	// Временные блокировки аддонов
+	bool					m_bBlockSilencerWithGL, m_bLaserBlockedByAddon, m_bFlashlightBlockedByAddon;
 
 	float					m_fOverheatingSubRpm, m_fOverheatingMisfire, m_fOverheatingCond;
 
@@ -779,4 +780,7 @@ public:
 	{
 		return (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonFlashlightOn && (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch || m_eTacticalTorchStatus == ALife::eAddonPermanent));
 	}
+
+private:
+	void UpdateAddonsBlocks();
 };

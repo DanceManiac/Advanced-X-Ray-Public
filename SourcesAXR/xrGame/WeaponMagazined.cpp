@@ -1784,16 +1784,26 @@ bool CWeaponMagazined::CanAttach(PIItem pIItem)
 
 				return true;
 			}
-	else if (	pLaser &&
-				m_eLaserDesignatorStatus == ALife::eAddonAttachable &&
-				(m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator) == 0 &&
-				(m_sLaserName  == pIItem->object().cNameSect()) )
-		return true;
-	else if (	pTacticalTorch &&
-				m_eTacticalTorchStatus == ALife::eAddonAttachable &&
-				(m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch) == 0 &&
-				(m_sTacticalTorchName  == pIItem->object().cNameSect()) )
-		return true;
+	else if (pLaser &&
+			m_eLaserDesignatorStatus == ALife::eAddonAttachable &&
+			(m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator) == 0 &&
+			(m_sLaserName == pIItem->object().cNameSect()))
+			{
+				if (m_bLaserBlockedByAddon)
+					return false;
+
+				return true;
+			}
+	else if (pTacticalTorch &&
+			m_eTacticalTorchStatus == ALife::eAddonAttachable &&
+			(m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch) == 0 &&
+			(m_sTacticalTorchName  == pIItem->object().cNameSect()) )
+			{
+				if (m_bFlashlightBlockedByAddon)
+					return false;
+
+				return true;
+			}
 	else
 		return inherited::CanAttach(pIItem);
 }

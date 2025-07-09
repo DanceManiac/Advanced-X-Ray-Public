@@ -128,6 +128,8 @@ CWeapon::CWeapon()
 	m_mSafetyRotation.identity();
 
 	m_bBlockSilencerWithGL	= false;
+	m_bLaserBlockedByAddon	= false;
+	m_bFlashlightBlockedByAddon = false;
 
 	m_fOverheatingSubRpm	= 0.0f;
 	m_fOverheatingMisfire	= 0.0f;
@@ -1607,6 +1609,7 @@ void CWeapon::UpdateCL		()
 	UpdateLight				();
 	UpdateLaser				();
 	UpdateFlashlight		();
+	UpdateAddonsBlocks		();
 
 	//нарисовать партиклы
 	UpdateFlameParticles	();
@@ -1836,6 +1839,29 @@ void CWeapon::UpdateFlashlight()
 			}
 		}
 	}
+}
+
+void CWeapon::UpdateAddonsBlocks()
+{
+	if (IsLaserAttached())
+	{
+		if (m_sLaserAttachSection.size())
+			m_bFlashlightBlockedByAddon = READ_IF_EXISTS(pSettings, r_bool, m_sLaserAttachSection, "block_flashlight", false);
+		else
+			m_bFlashlightBlockedByAddon = READ_IF_EXISTS(pSettings, r_bool, cNameSect(), "laser_block_flashlight", false);
+	}
+	else
+		m_bFlashlightBlockedByAddon = false;
+
+	if (IsTacticalTorchAttached())
+	{
+		if (m_sTacticalTorchAttachSection.size())
+			m_bLaserBlockedByAddon = READ_IF_EXISTS(pSettings, r_bool, m_sTacticalTorchAttachSection, "block_laser", false);
+		else
+			m_bLaserBlockedByAddon = READ_IF_EXISTS(pSettings, r_bool, cNameSect(), "flashlight_block_laser", false);
+	}
+	else
+		m_bLaserBlockedByAddon = false;
 }
 
 void CWeapon::EnableActorNVisnAfterZoom()
