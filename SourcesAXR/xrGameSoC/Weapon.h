@@ -72,7 +72,9 @@ public:
 	void					LoadSilencerParams(LPCSTR section);
 	void					LoadGrenadeLauncherParams(LPCSTR section);
 	void					LoadLaserDesignatorParams(LPCSTR section);
+	void					LoadLaserLightParams(LPCSTR section);
 	void					LoadTacticalTorchParams(LPCSTR section);
+	void					LoadTacticalTorchLightParams(LPCSTR section);
 	void					GetZoomData(const float scope_factor, float& delta, float& min_zoom_factor);
 	void					ZoomDynamicMod(bool bIncrement, bool bForceLimit);
 	void					UpdateAltScope();
@@ -674,6 +676,9 @@ public:
 	SCOPES_VECTOR			m_scopes;
 	u8						m_cur_scope;
 
+	xr_vector<shared_str>	m_availableLasers{};
+	xr_vector<shared_str>	m_availableFlashlights{};
+
 	CWeaponAmmo*			m_pAmmo;
 	u32						m_ammoType;
 	shared_str				m_ammoName;
@@ -759,6 +764,7 @@ public:
 	Fvector laserdot_attach_offset, laserdot_world_attach_offset;
 
 	void SwitchLaser(bool on);
+	void DestroyLaserLight() { if (laser_light_render) laser_light_render.destroy(); }
 
 	inline bool IsLaserOn() const
 	{
@@ -779,6 +785,7 @@ public:
 	Fvector flashlight_attach_offset, flashlight_omni_attach_offset, flashlight_world_attach_offset, flashlight_omni_world_attach_offset;
 
 	void SwitchFlashlight(bool on);
+	void DestroyFlashlightLight() { if (flashlight_render) flashlight_render.destroy(); }
 
 	inline bool IsFlashlightOn() const
 	{

@@ -13,6 +13,7 @@
 #include "../Torch.h"
 #include "../AnomalyDetector.h"
 #include "../ArtefactContainer.h"
+#include "../Weapon.h"
 
 #define INV_BACKGR_ICON_NAME "__bgr_icon"  // Ќазвание CUIStatic иконки, которое используетс€ дл€ определени€ пор€дка отрисовки аддонов оружи€ --#SM+#--
 
@@ -114,6 +115,11 @@ bool CUIInventoryCellItem::EqualTo(CUICellItem* itm)
 	}
 	auto art_con = smart_cast<CArtefactContainer*>(object());
 	if (art_con && art_con->GetArtefactsInside() != smart_cast<CArtefactContainer*>(ci->object())->GetArtefactsInside())
+	{
+		return false;
+	}
+	auto wpn = smart_cast<CWeapon*>(object());
+	if (wpn && wpn->m_weapon_attaches != smart_cast<CWeapon*>(ci->object())->m_weapon_attaches)
 	{
 		return false;
 	}

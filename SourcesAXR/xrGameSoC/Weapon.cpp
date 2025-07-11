@@ -703,90 +703,6 @@ void CWeapon::Load		(LPCSTR section)
 		}
 	}
 
-	if (!laser_light_render && m_eLaserDesignatorStatus)
-	{
-		has_laser = true;
-
-		laserdot_attach_bone = READ_IF_EXISTS(pSettings, r_string, section, "laserdot_attach_bone", m_sWpn_laser_bone);
-		laserdot_attach_offset = READ_IF_EXISTS(pSettings, r_fvector3, section, "laserdot_attach_offset", Fvector3().set(0.f, 0.f, 0.f));
-		laserdot_world_attach_offset = READ_IF_EXISTS(pSettings, r_fvector3, section, "laserdot_world_attach_offset", Fvector3().set(0.f, 0.f, 0.f));
-
-		const bool b_r2 = psDeviceFlags.test(rsR2) || psDeviceFlags.test(rsR4);
-
-		const char* m_light_section = pSettings->r_string(m_sLaserName, "laser_light_section");
-
-		laser_lanim = LALib.FindItem(READ_IF_EXISTS(pSettings, r_string, m_light_section, "color_animator", ""));
-
-		laser_light_render = ::Render->light_create();
-		laser_light_render->set_type(IRender_Light::SPOT);
-		laser_light_render->set_shadow(true);
-		laser_light_render->set_moveable(true);
-
-		Fcolor clr = READ_IF_EXISTS(pSettings, r_fcolor, m_light_section, b_r2 ? "color_r2" : "color", (Fcolor{ 1.0f, 0.0f, 0.0f, 1.0f }));
-		laser_fBrightness = clr.intensity() * 2.f;
-		clr.mul_rgb(laser_fBrightness);
-		laser_light_render->set_color(clr);
-		const float range = READ_IF_EXISTS(pSettings, r_float, m_light_section, b_r2 ? "range_r2" : "range", 100.f);
-		laser_light_render->set_range(range);
-		laser_light_render->set_cone(deg2rad(READ_IF_EXISTS(pSettings, r_float, m_light_section, "spot_angle", 1.f)));
-		laser_light_render->set_texture(READ_IF_EXISTS(pSettings, r_string, m_light_section, "spot_texture", nullptr));
-	}
-
-	if (!flashlight_render && m_eTacticalTorchStatus)
-	{
-		has_flashlight = true;
-
-		flashlight_attach_bone = READ_IF_EXISTS(pSettings, r_string, section, "torch_light_bone", m_sWpn_flashlight_bone);
-		flashlight_attach_offset = READ_IF_EXISTS(pSettings, r_fvector3, section, "torch_attach_offset", Fvector3().set(0.f, 0.f, 0.f));
-		flashlight_omni_attach_offset = READ_IF_EXISTS(pSettings, r_fvector3, section, "torch_omni_attach_offset", Fvector3().set(0.f, 0.f, 0.f));
-		flashlight_world_attach_offset = READ_IF_EXISTS(pSettings, r_fvector3, section, "torch_world_attach_offset", Fvector3().set(0.f, 0.f, 0.f));
-		flashlight_omni_world_attach_offset = READ_IF_EXISTS(pSettings, r_fvector3, section, "torch_omni_world_attach_offset", Fvector3().set(0.f, 0.f, 0.f));
-
-		const bool b_r2 = psDeviceFlags.test(rsR2) || psDeviceFlags.test(rsR4);
-
-		const char* m_light_section = pSettings->r_string(m_sTacticalTorchName, "flashlight_section");
-
-		flashlight_lanim = LALib.FindItem(READ_IF_EXISTS(pSettings, r_string, m_light_section, "color_animator", ""));
-
-		flashlight_render = ::Render->light_create();
-		flashlight_render->set_type(IRender_Light::SPOT);
-		flashlight_render->set_shadow(true);
-		flashlight_render->set_moveable(true);
-		flashlight_render->set_flare(true);
-
-		if (ParentIsActor())
-			flashlight_render->set_volumetric(!!READ_IF_EXISTS(pSettings, r_bool, m_light_section, "volumetric_for_actor", 0));
-		else
-			flashlight_render->set_volumetric(!!READ_IF_EXISTS(pSettings, r_bool, m_light_section, "volumetric", 0));
-
-		flashlight_render->set_volumetric_quality(READ_IF_EXISTS(pSettings, r_float, m_light_section, "volumetric_quality", 1.f));
-		flashlight_render->set_volumetric_intensity(READ_IF_EXISTS(pSettings, r_float, m_light_section, "volumetric_intensity", 1.f));
-		flashlight_render->set_volumetric_distance(READ_IF_EXISTS(pSettings, r_float, m_light_section, "volumetric_distance", 1.f));
-
-		const Fcolor clr = READ_IF_EXISTS(pSettings, r_fcolor, m_light_section, b_r2 ? "color_r2" : "color", (Fcolor{ 0.6f, 0.55f, 0.55f, 1.0f }));
-		flashlight_fBrightness = clr.intensity();
-		flashlight_render->set_color(clr);
-		const float range = READ_IF_EXISTS(pSettings, r_float, m_light_section, b_r2 ? "range_r2" : "range", 50.f);
-		flashlight_render->set_range(range);
-		flashlight_render->set_cone(deg2rad(READ_IF_EXISTS(pSettings, r_float, m_light_section, "spot_angle", 60.f)));
-		flashlight_render->set_texture(READ_IF_EXISTS(pSettings, r_string, m_light_section, "spot_texture", nullptr));
-
-		flashlight_omni = ::Render->light_create();
-		flashlight_omni->set_type((IRender_Light::LT)(READ_IF_EXISTS(pSettings, r_u8, m_light_section, "omni_type", 2))); //KRodin: вообще omni это обычно поинт, но поинт светит во все стороны от себя, поэтому тут спот используется по умолчанию.
-		flashlight_omni->set_shadow(false);
-		flashlight_omni->set_moveable(true);
-
-		const Fcolor oclr = READ_IF_EXISTS(pSettings, r_fcolor, m_light_section, b_r2 ? "omni_color_r2" : "omni_color", (Fcolor{ 1.0f , 1.0f , 1.0f , 0.0f }));
-		flashlight_omni->set_color(oclr);
-		const float orange = READ_IF_EXISTS(pSettings, r_float, m_light_section, b_r2 ? "omni_range_r2" : "omni_range", 0.25f);
-		flashlight_omni->set_range(orange);
-
-		flashlight_glow = ::Render->glow_create();
-		flashlight_glow->set_texture(READ_IF_EXISTS(pSettings, r_string, m_light_section, "glow_texture", "glow\\glow_torch_r2"));
-		flashlight_glow->set_color(clr);
-		flashlight_glow->set_radius(READ_IF_EXISTS(pSettings, r_float, m_light_section, "glow_radius", 0.3f));
-	}
-
 	hud_recalc_koef = READ_IF_EXISTS(pSettings, r_float, m_hud_sect, "hud_recalc_koef", 1.35f); //На калаше при 1.35 вроде норм смотрится, другим стволам возможно придется подбирать другие значения.
 
 	m_SuitableRepairKits.clear();
@@ -972,15 +888,27 @@ void CWeapon::LoadLaserDesignatorParams(LPCSTR section)
 {
 	if (m_eLaserDesignatorStatus == ALife::eAddonAttachable)
 	{
-		if (pSettings->line_exist(section, "laser_designator_attach_sect"))
+		if (pSettings->line_exist(section, "laser_designator_attach_sects"))
 		{
-			m_sLaserAttachSection = pSettings->r_string(section, "laser_designator_attach_sect");
-			m_sLaserName = pSettings->r_string(m_sLaserAttachSection, "laser_designator_name");
+			LPCSTR laser_sects = pSettings->r_string(section, "laser_designator_attach_sects");
+			string128 single_sect;
+			int count = _GetItemCount(laser_sects);
 
-			m_iLaserX = pSettings->r_s32(m_sLaserAttachSection, "laser_designator_x");
-			m_iLaserY = pSettings->r_s32(m_sLaserAttachSection, "laser_designator_y");
+			for (int i = 0; i < count; ++i)
+			{
+				_GetItem(laser_sects, i, single_sect);
+				m_availableLasers.push_back(single_sect);
+			}
+
+			if (!m_availableLasers.empty() && !m_sLaserAttachSection)
+			{
+				m_sLaserAttachSection = m_availableLasers[0];
+				m_sLaserName = pSettings->r_string(m_sLaserAttachSection, "laser_designator_name");
+				m_iLaserX = pSettings->r_s32(m_sLaserAttachSection, "laser_designator_x");
+				m_iLaserY = pSettings->r_s32(m_sLaserAttachSection, "laser_designator_y");
+			}
 		}
-		else
+		else if (pSettings->line_exist(section, "laser_designator_name"))
 		{
 			m_sLaserName = pSettings->r_string(section, "laser_designator_name");
 
@@ -995,19 +923,76 @@ void CWeapon::LoadLaserDesignatorParams(LPCSTR section)
 	}
 }
 
+void CWeapon::LoadLaserLightParams(LPCSTR section)
+{
+	if (!laser_light_render && m_eLaserDesignatorStatus)
+	{
+		has_laser = true;
+
+		laserdot_attach_bone = READ_IF_EXISTS(pSettings, r_string, section, "laserdot_attach_bone", m_sWpn_laser_bone);
+		laserdot_attach_offset = READ_IF_EXISTS(pSettings, r_fvector3, section, "laserdot_attach_offset", Fvector3().set(0.f, 0.f, 0.f));
+		laserdot_world_attach_offset = READ_IF_EXISTS(pSettings, r_fvector3, section, "laserdot_world_attach_offset", Fvector3().set(0.f, 0.f, 0.f));
+
+		const bool b_r2 = psDeviceFlags.test(rsR2) || psDeviceFlags.test(rsR4);
+
+		shared_str current_laser_section = m_sLaserName;
+		if (!current_laser_section.size() && !m_availableLasers.empty())
+		{
+			current_laser_section = pSettings->r_string(m_availableLasers[0], "laser_designator_name");
+		}
+
+		if (current_laser_section.size())
+		{
+			const char* m_light_section = pSettings->r_string(current_laser_section, "laser_light_section");
+
+			laser_lanim = LALib.FindItem(READ_IF_EXISTS(pSettings, r_string, m_light_section, "color_animator", ""));
+
+			laser_light_render = ::Render->light_create();
+			laser_light_render->set_type(IRender_Light::SPOT);
+			laser_light_render->set_shadow(true);
+
+			Fcolor clr = READ_IF_EXISTS(pSettings, r_fcolor, m_light_section, b_r2 ? "color_r2" : "color", (Fcolor{ 1.0f, 0.0f, 0.0f, 1.0f }));
+			laser_fBrightness = clr.intensity() * 2.f;
+			clr.mul_rgb(laser_fBrightness);
+			laser_light_render->set_color(clr);
+
+			const float range = READ_IF_EXISTS(pSettings, r_float, m_light_section, b_r2 ? "range_r2" : "range", 100.f);
+			laser_light_render->set_range(range);
+			laser_light_render->set_cone(deg2rad(READ_IF_EXISTS(pSettings, r_float, m_light_section, "spot_angle", 1.f)));
+			laser_light_render->set_texture(READ_IF_EXISTS(pSettings, r_string, m_light_section, "spot_texture", nullptr));
+		}
+		else
+		{
+			Msg("! [%s]: No valid laser section found. Weapon section: [%s]", __FUNCTION__, section);
+		}
+	}
+}
+
 void CWeapon::LoadTacticalTorchParams(LPCSTR section)
 {
 	if (m_eTacticalTorchStatus == ALife::eAddonAttachable)
 	{
-		if (pSettings->line_exist(section, "tactical_torch_attach_sect"))
+		if (pSettings->line_exist(section, "tactical_torch_attach_sects"))
 		{
-			m_sTacticalTorchAttachSection = pSettings->r_string(section, "tactical_torch_attach_sect");
-			m_sTacticalTorchName = pSettings->r_string(m_sTacticalTorchAttachSection, "tactical_torch_name");
+			LPCSTR flashlight_sects = pSettings->r_string(section, "tactical_torch_attach_sects");
+			string128 single_sect;
+			int count = _GetItemCount(flashlight_sects);
 
-			m_iTacticalTorchX = pSettings->r_s32(m_sTacticalTorchAttachSection, "tactical_torch_x");
-			m_iTacticalTorchY = pSettings->r_s32(m_sTacticalTorchAttachSection, "tactical_torch_y");
+			for (int i = 0; i < count; ++i)
+			{
+				_GetItem(flashlight_sects, i, single_sect);
+				m_availableFlashlights.push_back(single_sect);
+			}
+
+			if (!m_availableFlashlights.empty() && !m_sTacticalTorchAttachSection)
+			{
+				m_sTacticalTorchAttachSection = m_availableFlashlights[0];
+				m_sTacticalTorchName = pSettings->r_string(m_sTacticalTorchAttachSection, "tactical_torch_name");
+				m_iTacticalTorchX = pSettings->r_s32(m_sTacticalTorchAttachSection, "tactical_torch_x");
+				m_iTacticalTorchY = pSettings->r_s32(m_sTacticalTorchAttachSection, "tactical_torch_y");
+			}
 		}
-		else
+		else if (pSettings->line_exist(section, "tactical_torch_name"))
 		{
 			m_sTacticalTorchName = pSettings->r_string(section, "tactical_torch_name");
 
@@ -1019,6 +1004,75 @@ void CWeapon::LoadTacticalTorchParams(LPCSTR section)
 	{
 		m_sTacticalTorchName = READ_IF_EXISTS(pSettings, r_string, section, "tactical_torch_name", "");
 		m_sTacticalTorchAttachSection = READ_IF_EXISTS(pSettings, r_string, section, "tactical_torch_attach_sect", "");
+	}
+}
+
+void CWeapon::LoadTacticalTorchLightParams(LPCSTR section)
+{
+	if (!flashlight_render && m_eTacticalTorchStatus)
+	{
+		has_flashlight = true;
+		
+		flashlight_attach_bone = READ_IF_EXISTS(pSettings, r_string, section, "torch_light_bone", m_sWpn_flashlight_bone);
+		flashlight_attach_offset = READ_IF_EXISTS(pSettings, r_fvector3, section, "torch_attach_offset", Fvector3().set(0.f, 0.f, 0.f));
+		flashlight_omni_attach_offset = READ_IF_EXISTS(pSettings, r_fvector3, section, "torch_omni_attach_offset", Fvector3().set(0.f, 0.f, 0.f));
+		flashlight_world_attach_offset = READ_IF_EXISTS(pSettings, r_fvector3, section, "torch_world_attach_offset", Fvector3().set(0.f, 0.f, 0.f));
+		flashlight_omni_world_attach_offset = READ_IF_EXISTS(pSettings, r_fvector3, section, "torch_omni_world_attach_offset", Fvector3().set(0.f, 0.f, 0.f));
+
+		const bool b_r2 = psDeviceFlags.test(rsR2) || psDeviceFlags.test(rsR4);
+
+		shared_str current_flashlight_section = m_sTacticalTorchName;
+		if (!current_flashlight_section.size() && !m_availableFlashlights.empty())
+		{
+			current_flashlight_section = pSettings->r_string(m_availableFlashlights[0], "tactical_torch_name");
+		}
+
+		if (current_flashlight_section.size())
+		{
+			const char* m_light_section = pSettings->r_string(current_flashlight_section, "flashlight_section");
+
+			flashlight_lanim = LALib.FindItem(READ_IF_EXISTS(pSettings, r_string, m_light_section, "color_animator", ""));
+
+			flashlight_render = ::Render->light_create();
+			flashlight_render->set_type(IRender_Light::SPOT);
+			flashlight_render->set_shadow(true);
+			flashlight_render->set_flare(true);
+
+			if (ParentIsActor())
+				flashlight_render->set_volumetric(!!READ_IF_EXISTS(pSettings, r_bool, m_light_section, "volumetric_for_actor", 0));
+			else
+				flashlight_render->set_volumetric(!!READ_IF_EXISTS(pSettings, r_bool, m_light_section, "volumetric", 0));
+
+			flashlight_render->set_volumetric_quality(READ_IF_EXISTS(pSettings, r_float, m_light_section, "volumetric_quality", 1.f));
+			flashlight_render->set_volumetric_intensity(READ_IF_EXISTS(pSettings, r_float, m_light_section, "volumetric_intensity", 1.f));
+			flashlight_render->set_volumetric_distance(READ_IF_EXISTS(pSettings, r_float, m_light_section, "volumetric_distance", 1.f));
+
+			const Fcolor clr = READ_IF_EXISTS(pSettings, r_fcolor, m_light_section, b_r2 ? "color_r2" : "color", (Fcolor{ 0.6f, 0.55f, 0.55f, 1.0f }));
+			flashlight_fBrightness = clr.intensity();
+			flashlight_render->set_color(clr);
+			const float range = READ_IF_EXISTS(pSettings, r_float, m_light_section, b_r2 ? "range_r2" : "range", 50.f);
+			flashlight_render->set_range(range);
+			flashlight_render->set_cone(deg2rad(READ_IF_EXISTS(pSettings, r_float, m_light_section, "spot_angle", 60.f)));
+			flashlight_render->set_texture(READ_IF_EXISTS(pSettings, r_string, m_light_section, "spot_texture", nullptr));
+
+			flashlight_omni = ::Render->light_create();
+			flashlight_omni->set_type((IRender_Light::LT)(READ_IF_EXISTS(pSettings, r_u8, m_light_section, "omni_type", 2))); //KRodin: вообще omni это обычно поинт, но поинт светит во все стороны от себя, поэтому тут спот используется по умолчанию.
+			flashlight_omni->set_shadow(false);
+
+			const Fcolor oclr = READ_IF_EXISTS(pSettings, r_fcolor, m_light_section, b_r2 ? "omni_color_r2" : "omni_color", (Fcolor{ 1.0f , 1.0f , 1.0f , 0.0f }));
+			flashlight_omni->set_color(oclr);
+			const float orange = READ_IF_EXISTS(pSettings, r_float, m_light_section, b_r2 ? "omni_range_r2" : "omni_range", 0.25f);
+			flashlight_omni->set_range(orange);
+
+			flashlight_glow = ::Render->glow_create();
+			flashlight_glow->set_texture(READ_IF_EXISTS(pSettings, r_string, m_light_section, "glow_texture", "glow\\glow_torch_r2"));
+			flashlight_glow->set_color(clr);
+			flashlight_glow->set_radius(READ_IF_EXISTS(pSettings, r_float, m_light_section, "glow_radius", 0.3f));
+		}
+		else
+		{
+			Msg("! [%s]: No valid tactical torch section found. Weapon section: [%s]", __FUNCTION__, section);
+		}
 	}
 }
 
@@ -1331,6 +1385,11 @@ void CWeapon::save(NET_Packet &output_packet)
 	save_data		(m_zoom_params.m_bIsZoomModeNow,	output_packet);
 	save_data		(bNVsecondVPstatus,	output_packet);
 	save_data		(m_cur_scope,		output_packet);
+
+	save_data		(m_sLaserName,					output_packet);
+	save_data		(m_sLaserAttachSection,			output_packet);
+	save_data		(m_sTacticalTorchName,			output_packet);
+	save_data		(m_sTacticalTorchAttachSection,	output_packet);
 }
 
 void CWeapon::load(IReader &input_packet)
@@ -1343,6 +1402,11 @@ void CWeapon::load(IReader &input_packet)
 	load_data		(m_zoom_params.m_bIsZoomModeNow,	input_packet);
 	load_data		(bNVsecondVPstatus,	input_packet);
 	load_data		(m_cur_scope,		input_packet);
+
+	load_data		(m_sLaserName,					input_packet);
+	load_data		(m_sLaserAttachSection,			input_packet);
+	load_data		(m_sTacticalTorchName,			input_packet);
+	load_data		(m_sTacticalTorchAttachSection, input_packet);
 
 	if (m_zoom_params.m_bIsZoomModeNow)
 		OnZoomIn();

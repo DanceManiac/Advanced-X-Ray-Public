@@ -1786,23 +1786,39 @@ bool CWeaponMagazined::CanAttach(PIItem pIItem)
 			}
 	else if (pLaser &&
 			m_eLaserDesignatorStatus == ALife::eAddonAttachable &&
-			(m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator) == 0 &&
-			(m_sLaserName == pIItem->object().cNameSect()))
+			(m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator) == 0)
 			{
 				if (m_bLaserBlockedByAddon)
 					return false;
 
-				return true;
+				for (const auto& laser_sect : m_availableLasers)
+				{
+					shared_str laser_name = pSettings->r_string(laser_sect, "laser_designator_name");
+					if (laser_name == pIItem->object().cNameSect())
+					{
+						return true;
+					}
+				}
+
+				return false;
 			}
 	else if (pTacticalTorch &&
 			m_eTacticalTorchStatus == ALife::eAddonAttachable &&
-			(m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch) == 0 &&
-			(m_sTacticalTorchName  == pIItem->object().cNameSect()) )
+			(m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch) == 0)
 			{
 				if (m_bFlashlightBlockedByAddon)
 					return false;
 
-				return true;
+				for (const auto& flashlight_sect : m_availableFlashlights)
+				{
+					shared_str flashlight_name = pSettings->r_string(flashlight_sect, "tactical_torch_name");
+					if (flashlight_name == pIItem->object().cNameSect())
+					{
+						return true;
+					}
+				}
+
+				return false;
 			}
 	else
 		return inherited::CanAttach(pIItem);
@@ -1899,21 +1915,69 @@ bool CWeaponMagazined::Attach(PIItem pIItem, bool b_send_event)
 		m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher;
 		result = true;
 	}
-	else if(pLaser &&
-	   m_eLaserDesignatorStatus == ALife::eAddonAttachable &&
-	   (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator) == 0 &&
-	   (m_sLaserName == pIItem->object().cNameSect()))
+	else if(pLaser && m_eLaserDesignatorStatus == ALife::eAddonAttachable && (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator) == 0)
 	{
-		m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator;
-		result = true;
+		bool bCompatibleLaser = false;
+
+		if (m_sLaserName.size() && m_sLaserName == pIItem->object().cNameSect())
+		{
+			bCompatibleLaser = true;
+		}
+		else
+		{
+			for (const auto& laser_sect : m_availableLasers)
+			{
+				shared_str laser_name = pSettings->r_string(laser_sect, "laser_designator_name");
+				if (laser_name == pIItem->object().cNameSect())
+				{
+					bCompatibleLaser = true;
+					m_sLaserAttachSection = laser_sect;
+					m_sLaserName = laser_name;
+
+					m_iLaserX = pSettings->r_s32(laser_sect, "laser_designator_x");
+					m_iLaserY = pSettings->r_s32(laser_sect, "laser_designator_y");
+					break;
+				}
+			}
+		}
+
+		if (bCompatibleLaser)
+		{
+			m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator;
+			result = true;
+		}
 	}
-	else if(pTacticalTorch &&
-	   m_eTacticalTorchStatus == ALife::eAddonAttachable &&
-	   (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch) == 0 &&
-	   (m_sTacticalTorchName == pIItem->object().cNameSect()))
+	else if (pTacticalTorch && m_eTacticalTorchStatus == ALife::eAddonAttachable && (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch) == 0)
 	{
-		m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch;
-		result = true;
+		bool bCompatibleFlashlight = false;
+
+		if (m_sTacticalTorchName.size() && m_sTacticalTorchName == pIItem->object().cNameSect())
+		{
+			bCompatibleFlashlight = true;
+		}
+		else
+		{
+			for (const auto& flashlight_sect : m_availableFlashlights)
+			{
+				shared_str flashlight_name = pSettings->r_string(flashlight_sect, "tactical_torch_name");
+				if (flashlight_name == pIItem->object().cNameSect())
+				{
+					bCompatibleFlashlight = true;
+					m_sTacticalTorchAttachSection = flashlight_sect;
+					m_sTacticalTorchName = flashlight_name;
+
+					m_iTacticalTorchX = pSettings->r_s32(flashlight_sect, "tactical_torch_x");
+					m_iTacticalTorchY = pSettings->r_s32(flashlight_sect, "tactical_torch_y");
+					break;
+				}
+			}
+		}
+
+		if (bCompatibleFlashlight)
+		{
+			m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch;
+			result = true;
+		}
 	}
 
 	if(result)
@@ -2132,6 +2196,9 @@ void CWeaponMagazined::InitAddons()
 
 	if (m_sLaserAttachSection.size() && pSettings->line_exist(m_sLaserAttachSection, "attach_hud_visual"))
 	{
+		DestroyLaserLight();
+		LoadLaserLightParams(cNameSect().c_str());
+
 		if (IsLaserAttached())
 			WeaponAttach().CreateAttach(m_sLaserAttachSection, m_weapon_attaches);
 		else
@@ -2140,6 +2207,9 @@ void CWeaponMagazined::InitAddons()
 
 	if (m_sTacticalTorchAttachSection.size() && pSettings->line_exist(m_sTacticalTorchAttachSection, "attach_hud_visual"))
 	{
+		DestroyFlashlightLight();
+		LoadTacticalTorchLightParams(cNameSect().c_str());
+
 		if (IsTacticalTorchAttached())
 			WeaponAttach().CreateAttach(m_sTacticalTorchAttachSection, m_weapon_attaches);
 		else
