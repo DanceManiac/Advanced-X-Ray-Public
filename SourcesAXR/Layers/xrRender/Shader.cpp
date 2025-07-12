@@ -74,7 +74,6 @@ ShaderElement::ShaderElement()
 	flags.bWmark		= FALSE;
 
 	// SSS Custom rendering
-	flags.isLandscape	= FALSE;
 	flags.isWater		= FALSE;
 }
 

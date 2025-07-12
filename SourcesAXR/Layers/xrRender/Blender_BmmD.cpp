@@ -198,17 +198,12 @@ void	CBlender_BmmD::Compile	(CBlender_Compile& C)
 	// codepath is the same, only the shaders differ
 	// ***only pixel shaders differ***
 
-	C.SH->flags.isLandscape = FALSE;
 	string256				mask;
-	string_path fn;
-	LPSTR LodTexture		= strconcat(sizeof(mask), mask, C.L_textures[0].c_str(), "_lod_textures");
-
 	strconcat				(sizeof(mask),mask,C.L_textures[0].c_str(),"_mask");
 
 	switch(C.iElement) 
 	{
 	case SE_R2_NORMAL_HQ: 		// deffer
-		C.SH->flags.isLandscape = TRUE;
 		uber_deffer			(C, true, "terrain", "terrain_high", false, oT2_Name[0] ? oT2_Name : 0);
 
 		//C.r_Sampler		("s_mask",	mask);
@@ -262,16 +257,9 @@ void	CBlender_BmmD::Compile	(CBlender_Compile& C)
 		C.r_End			();
 		break;
 	case SE_R2_NORMAL_LQ: 		// deffer
-		C.SH->flags.isLandscape = TRUE;
+		uber_deffer		(C, false,	"base","impl",false,oT2_Name[0]?oT2_Name:0,true);
 
-		uber_deffer			(C, false, "base", "terrain_mid", false, oT2_Name[0] ? oT2_Name : 0);
-		C.r_dx10Texture		("s_mask", mask);
-
-		if (FS.exist(fn, "$game_textures$", LodTexture, ".dds"))
-			C.r_dx10Texture	("s_lod_texture", LodTexture);
-		else
-			C.r_dx10Texture	("s_lod_texture", "terrain\\default_lod_textures");
-
+		C.r_dx10Texture		("s_lmap", C.L_textures[1]);
 		C.r_dx10Sampler		("smp_base");
 		C.r_dx10Sampler		("smp_linear");
 
