@@ -124,6 +124,7 @@ extern	BOOL	g_show_wnd_rect			;
 extern	BOOL	g_show_wnd_rect2			;
 //-----------------------------------------------------------
 extern	float	g_fTimeFactor;
+extern	BOOL	b_toggle_weapon_aim;
 extern	BOOL	b_hud_collision;
 extern	BOOL	m_b_actor_walk_inertion;
 extern	BOOL	m_b_advanced_shoot_effectors;
@@ -2533,6 +2534,7 @@ void CCC_RegisterCommands()
 	CMD4(CCC_Integer,	"dbg_show_ani_info",		&g_ShowAnimationInfo,	0, 1);
 	CMD4(CCC_Integer,	"dbg_dump_physics_step",	&g_bDebugDumpPhysicsStep, 0, 1);
 #endif
+	CMD4(CCC_Integer,	"wpn_aim_toggle",			&b_toggle_weapon_aim,	0, 1);
 	CMD4(CCC_Integer,	"hud_collision",			&b_hud_collision,		0, 1);
 	CMD4(CCC_Integer,	"actor_walk_inertion",		&m_b_actor_walk_inertion, 0, 1);
 	CMD4(CCC_Integer,	"advanced_shoot_effectors",	&m_b_advanced_shoot_effectors, 0, 1);

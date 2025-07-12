@@ -44,6 +44,7 @@
 constexpr auto WEAPON_REMOVE_TIME = 60000;
 constexpr auto ROTATION_TIME = 0.25f;
 
+BOOL b_toggle_weapon_aim	= FALSE;
 extern CUIXml* pWpnScopeXml = NULL;
 
 ENGINE_API extern float psHUD_FOV_def;
@@ -1965,14 +1966,43 @@ bool CWeapon::Action(s32 cmd, u32 flags)
 			return true;
 
 		case kWPN_ZOOM:
-			if(IsZoomEnabled())
+			if (IsZoomEnabled())
 			{
-				if(flags&CMD_START && !IsPending())
-					OnZoomIn();
-				else if(IsZoomed())
-					OnZoomOut();
+				if (b_toggle_weapon_aim)
+				{
+					if (flags & CMD_START)
+					{
+						if (!IsZoomed())
+						{
+							if (!IsPending())
+							{
+								if (GetState() != eIdle && !(m_bIsBoltRiffle && GetState() == eFire))
+									SwitchState(eIdle);
+								OnZoomIn();
+							}
+						}
+						else
+							OnZoomOut();
+					}
+				}
+				else
+				{
+					if (flags & CMD_START)
+					{
+						if (!IsZoomed() && !IsPending())
+						{
+							if (GetState() != eIdle && !(m_bIsBoltRiffle && GetState() == eFire))
+								SwitchState(eIdle);
+							OnZoomIn();
+						}
+					}
+					else
+						if (IsZoomed())
+							OnZoomOut();
+				}
 				return true;
-			}else 
+			}
+			else
 				return false;
 
 		case kWPN_ZOOM_INC:
