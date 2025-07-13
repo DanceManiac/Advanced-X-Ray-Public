@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //	Module 		: embedded_editor_spawner.cpp
 //	Created 	: 17.02.2024
-//  Modified 	: 17.02.2024
+//  Modified 	: 13.07.2025
 //	Author		: Dance Maniac (M.F.S. Team)
 //	Description : ImGui Spawn Menu
 ////////////////////////////////////////////////////////////////////////////
@@ -28,6 +28,44 @@ xr_map<xr_string, xr_string> m_ItemsVec{}, m_CarsVec{}, m_WeaponsVec{}, m_FoodVe
 LPCSTR m_sSelectedName = nullptr, m_sSelectedSection = nullptr;
 static int objects_type{10}, objects_count{1};
 char* m_sSearchText = new char[512]{};
+
+// Отображение текста с переносом
+void DrawTextWithEllipsis(const char* text, float maxWidth)
+{
+	const char* ellipsis = "...";
+	const float ellipsisWidth = ImGui::CalcTextSize(ellipsis).x;
+
+	ImVec2 textSize = ImGui::CalcTextSize(text);
+
+	if (textSize.x <= maxWidth)
+	{
+		ImGui::TextUnformatted(text);
+		return;
+	}
+
+	ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + maxWidth);
+	ImGui::TextUnformatted(text);
+	ImGui::PopTextWrapPos();
+
+	bool wrapped = (ImGui::GetItemRectSize().y > ImGui::GetTextLineHeight());
+
+	if (!wrapped)
+	{
+		const char* end = text;
+
+		while (*end && ImGui::CalcTextSize(text, end + 1).x <= (maxWidth - ellipsisWidth))
+			end++;
+
+		if (end > text)
+		{
+			xr_string truncated(text, end);
+			truncated += ellipsis;
+			ImGui::TextUnformatted(truncated.c_str());
+		}
+		else
+			ImGui::TextUnformatted(ellipsis);
+	}
+}
 
 bool IsWeapon(CLASS_ID cls)
 {
@@ -190,58 +228,122 @@ void FillSectionsList()
 
 void DrawObjectsList(int mode)
 {
+	static const std::vector<xr_map<xr_string, xr_string>*> itemLists = {
+		&m_CarsVec, &m_WeaponsVec, &m_FoodVec, &m_DevicesVec,
+		&m_EntitiesVec, &m_AnomaliesVec, &m_ArtefactsVec,
+		&m_AmmoVec, &m_OutfitVec, &m_QuestItemsVec, &m_ItemsVec
+	};
+
+	auto& itemsList = *itemLists[mode >= 0 && mode < 10 ? mode : 10];
+
+	// Поиск
 	ImGui::InputText(toUtf8(CStringTable().translate("st_spawner_search").c_str()).c_str(), m_sSearchText, 512);
-
-	ImGui::BeginListBox(toUtf8(CStringTable().translate("st_spawner_items_list").c_str()).c_str(), ImVec2(300, 400));
-
 	xr_string searchTextLower = m_sSearchText;
 	ToLowerUtf8RU(searchTextLower);
 
-	auto& itemsList = [&]() -> xr_map<xr_string, xr_string>&
+	const auto surfaceParams	= ::Render->getSurface(EQUIPMENT_ICONS);
+	const float iconsKx			= UI().get_icons_kx();
+	const float invGridKx		= UI().inv_grid_kx();
+	const float padding			= 8.0f;
+	const float textHeight		= ImGui::GetTextLineHeight();
+
+	float maxIconWidth			= 2.0f * invGridKx / iconsKx;
+	float maxIconHeight			= maxIconWidth;
+
+	for (auto& item : itemsList)
 	{
-		switch (mode)
+		if (pSettings->line_exist(item.first.c_str(), "inv_grid_width") && pSettings->line_exist(item.first.c_str(), "inv_grid_height"))
 		{
-			case 0: return m_CarsVec;
-			case 1: return m_WeaponsVec;
-			case 2: return m_FoodVec;
-			case 3: return m_DevicesVec;
-			case 4: return m_EntitiesVec;
-			case 5: return m_AnomaliesVec;
-			case 6: return m_ArtefactsVec;
-			case 7: return m_AmmoVec;
-			case 8: return m_OutfitVec;
-			case 9: return m_QuestItemsVec;
-			default: return m_ItemsVec;
-		}
-	} ();
-
-	std::unordered_set<std::string> displayedItems;
-
-	for (auto it = itemsList.begin(); it != itemsList.end(); ++it)
-	{
-		const char* t = it->second.c_str();
-
-		xr_string itemNameLower = toUtf8(it->second.c_str()).c_str();
-		ToLowerUtf8RU(itemNameLower);
-
-		if (m_sSearchText[0] == '\0' || xr_string_find(itemNameLower, searchTextLower) != std::u32string::npos)
-		{
-			if (displayedItems.find(it->second.c_str()) == displayedItems.end())
-			{
-				shared_str itemNameUtf8 = toUtf8(it->second.c_str()).c_str();
-
-				if (ImGui::Selectable(itemNameUtf8.c_str()))
-				{
-					m_sSelectedName = itemNameUtf8.c_str();
-					m_sSelectedSection = it->first.c_str();
-				}
-
-				displayedItems.insert(it->second.c_str());
-			}
+			float w				= pSettings->r_float(item.first.c_str(), "inv_grid_width") * invGridKx / iconsKx;
+			float h				= pSettings->r_float(item.first.c_str(), "inv_grid_height") * invGridKx / iconsKx;
+			maxIconWidth		= std::max(maxIconWidth, w);
+			maxIconHeight		= std::max(maxIconHeight, h);
 		}
 	}
 
-	ImGui::EndListBox();
+	const float cellWidth		= maxIconWidth + padding * 2;
+	const float cellHeight		= std::max(100.0f, maxIconHeight + textHeight + padding * 3);
+	const int columns			= std::max(1, (int)((ImGui::GetContentRegionAvail().x - ImGui::GetStyle().ScrollbarSize) / cellWidth));
+
+	ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, { padding, padding });
+	ImGui::PushStyleColor(ImGuiCol_TableRowBgAlt, { 0.1f, 0.1f, 0.1f, 0.5f });
+
+	if (ImGui::BeginTable("ItemsGrid", columns, ImGuiTableFlags_NoBordersInBody | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingFixedFit))
+	{
+		for (int i = 0; i < columns; i++)
+			ImGui::TableSetupColumn(nullptr, ImGuiTableColumnFlags_WidthFixed, cellWidth);
+
+		std::unordered_set<std::string> displayedItems;
+
+		for (auto& [section, name] : itemsList)
+		{
+			xr_string itemNameLower = toUtf8(name.c_str()).c_str();
+			ToLowerUtf8RU(itemNameLower);
+
+			if ((m_sSearchText[0] && xr_string_find(itemNameLower, searchTextLower) == std::u32string::npos) || displayedItems.count(name.c_str()))
+				continue;
+
+			displayedItems.insert(name.c_str());
+			ImGui::TableNextColumn();
+
+			shared_str displayName = toUtf8(name.c_str()).c_str();
+			const float frameWidth = maxIconWidth + padding * 2;
+			const float frameHeight = maxIconHeight + padding * 2;
+
+			ImGui::BeginChildFrame(ImGui::GetID((void*)(intptr_t)section.c_str()), { frameWidth, frameHeight }, ImGuiWindowFlags_NoScrollbar);
+			{
+				bool has_icon = (pSettings->line_exist(section.c_str(), "inv_grid_x") &&
+					pSettings->line_exist(section.c_str(), "inv_grid_y") &&
+					pSettings->line_exist(section.c_str(), "inv_grid_width") &&
+					pSettings->line_exist(section.c_str(), "inv_grid_height"));
+
+				if (has_icon)
+				{
+					// Отображение иконки
+					float x = pSettings->r_float(section.c_str(), "inv_grid_x") * invGridKx;
+					float y = pSettings->r_float(section.c_str(), "inv_grid_y") * invGridKx;
+					float w = pSettings->r_float(section.c_str(), "inv_grid_width") * invGridKx;
+					float h = pSettings->r_float(section.c_str(), "inv_grid_height") * invGridKx;
+
+					ImVec2 uv0(x / surfaceParams.w, y / surfaceParams.h);
+					ImVec2 uv1((x + w) / surfaceParams.w, (y + h) / surfaceParams.h);
+					ImVec2 size(w / iconsKx, h / iconsKx);
+
+					ImGui::SetCursorPosX((ImGui::GetContentRegionAvail().x - size.x) * 0.5f);
+					ImGui::SetCursorPosY((ImGui::GetContentRegionAvail().y - size.y) * 0.5f);
+					ImGui::Image(surfaceParams.Surface, size, uv0, uv1);
+				}
+				else
+				{
+					// Элементы без иконки
+					const float size = maxIconWidth;
+					ImGui::SetCursorPosX((ImGui::GetContentRegionAvail().x - size) * 0.5f);
+					ImGui::SetCursorPosY((ImGui::GetContentRegionAvail().y - size) * 0.5f);
+
+					const char* text = "N";
+					ImVec2 textSize = ImGui::CalcTextSize(text);
+					ImVec2 pos = ImGui::GetCursorScreenPos();
+					pos.x += (size - textSize.x) * 0.5f;
+					pos.y += (size - textSize.y) * 0.5f;
+
+					ImGui::GetWindowDrawList()->AddText(pos, ImGui::GetColorU32({ 1,1,1,0.9f }), text);
+					ImGui::Dummy({ size, size });
+				}
+			}
+			ImGui::EndChildFrame();
+
+			DrawTextWithEllipsis(displayName.c_str(), cellWidth - padding * 2);
+			
+			if (ImGui::IsItemClicked())
+			{
+				m_sSelectedName = displayName.c_str();
+				m_sSelectedSection = section.c_str();
+			}
+		}
+		ImGui::EndTable();
+	}
+	ImGui::PopStyleColor();
+	ImGui::PopStyleVar();
 }
 
 void ShowSpawner(bool& show)
@@ -251,14 +353,14 @@ void ShowSpawner(bool& show)
 	if (wnd.Collapsed)
 		return;
 
-	ImGui::BeginChild(toUtf8(CStringTable().translate("st_spawner_objects_to_spawn").c_str()).c_str(), ImVec2(300, 420), true);
+	ImGui::BeginChild(toUtf8(CStringTable().translate("st_spawner_objects_to_spawn").c_str()).c_str(), ImVec2(700, 420), true);
 		DrawObjectsList(objects_type);
 
 	ImGui::EndChild();
 
 	ImGui::SameLine();
 
-	ImGui::BeginChild(toUtf8(CStringTable().translate("st_spawner_spawn_options").c_str()).c_str(), ImVec2(400, 400), true);
+	ImGui::BeginChild(toUtf8(CStringTable().translate("st_spawner_spawn_options").c_str()).c_str(), ImVec2(400, 420), true);
 	{
 		//Название 
 		if (m_sSelectedName)
