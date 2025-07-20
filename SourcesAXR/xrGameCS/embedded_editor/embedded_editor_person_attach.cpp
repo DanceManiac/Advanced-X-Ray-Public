@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //	Module 		: embedded_editor_person_attach.cpp
 //	Created 	: 05.01.2025
-//  Modified 	: 05.01.2025
+//  Modified 	: 20.07.2025
 //	Author		: Dance Maniac (M.F.S. Team)
 //	Description : ImGui Person Attaches Editor
 ////////////////////////////////////////////////////////////////////////////
@@ -108,6 +108,31 @@ void EditWeaponParameters(CWeapon* weapon, float drag_intensity)
 
 		if (ImGui::DragFloat3(alt_strap_orient_name, (float*)&strapYprAlt, drag_intensity, NULL, NULL, "%.6f"))
 			weapon->SetStrapAltPosRot(strapPosAlt, strapYprAlt); */
+
+		// Laser light offsets
+		if (weapon->LaserAttachable())
+		{
+			ImGui::DragFloat3("laserdot_world_attach_offset 0", (float*)&weapon->laserdot_world_attach_offset, drag_intensity, NULL, NULL, "%.6f");
+		}
+
+		//Torch light offsets
+		if (weapon->TacticalTorchAttachable())
+		{
+			ImGui::DragFloat3("torch_world_attach_offset 0", (float*)&weapon->flashlight_world_attach_offset, drag_intensity, NULL, NULL, "%.6f");
+			ImGui::DragFloat3("torch_omni_world_attach_offset 0", (float*)&weapon->flashlight_omni_world_attach_offset, drag_intensity, NULL, NULL, "%.6f");
+		}
+
+		for (int i = 0; i < weapon->m_weapon_attaches.size(); i++)
+		{
+			auto mesh = weapon->m_weapon_attaches[i];
+
+			string256 pos_name, orient_name;
+			strconcat(sizeof(pos_name), pos_name, mesh->m_section.c_str(), "_world_position");
+			strconcat(sizeof(orient_name), orient_name, mesh->m_section.c_str(), "_world_orientation");
+
+			ImGui::DragFloat3(pos_name, (float*)&mesh->world_attach_pos[0], drag_intensity, NULL, NULL, "%.6f");
+			ImGui::DragFloat3(orient_name, (float*)&mesh->world_attach_pos[1], drag_intensity, NULL, NULL, "%.6f");
+		}
 	}
 }
 
@@ -134,6 +159,47 @@ void EditMissileParameters(CAttachableItem* attachable, float drag_intensity)
 
 	if (ImGui::DragFloat3(orient_name, (float*)&itm_rot, drag_intensity, NULL, NULL, "%.6f"))
 		attachable->set_rot(attachable, itm_rot);
+}
+
+void SaveAttachesCfg(LPCSTR parent_section, CWeapon* parent_wpn)
+{
+	string_path fname;
+
+	string256 parent_section_attaches_fname;
+	strconcat(sizeof(parent_section_attaches_fname), parent_section_attaches_fname, parent_section, "_attaches");
+
+	FS.update_path(fname, "$app_data_root$", make_string("NPC_AttachesEditor\\%s\\%s.ltx", parent_section, parent_section_attaches_fname).c_str());
+
+	CInifile pAttachesCfg(fname, false, true, true);
+
+	for (int i = 0; i < parent_wpn->m_weapon_attaches.size(); i++)
+	{
+		auto mesh = parent_wpn->m_weapon_attaches[i];
+
+		LPCSTR section_to_w = mesh->m_section.c_str();
+
+		pAttachesCfg.w_string(section_to_w,
+			"hud_attach_offset",
+			make_string("%f,%f,%f", mesh->hud_attach_pos[0].x, mesh->hud_attach_pos[0].y, mesh->hud_attach_pos[0].z)
+			.c_str());
+
+		pAttachesCfg.w_string(section_to_w,
+			"hud_attach_rotation",
+			make_string("%f,%f,%f", mesh->hud_attach_pos[1].x, mesh->hud_attach_pos[1].y, mesh->hud_attach_pos[1].z)
+			.c_str());
+
+		pAttachesCfg.w_string(section_to_w,
+			"world_attach_offset",
+			make_string("%f,%f,%f", mesh->world_attach_pos[0].x, mesh->world_attach_pos[0].y, mesh->world_attach_pos[0].z)
+			.c_str());
+
+		pAttachesCfg.w_string(section_to_w,
+			"world_attach_rotation",
+			make_string("%f,%f,%f", mesh->world_attach_pos[1].x, mesh->world_attach_pos[1].y, mesh->world_attach_pos[1].z)
+			.c_str());
+	}
+
+	Msg("[%s] Weapon attaches data saved to %s", __FUNCTION__, fname);
 }
 
 void SaveToFile(CAttachmentOwner* owner)
@@ -226,6 +292,35 @@ void SaveToFile(CAttachmentOwner* owner)
 			"strap_orientation_alt",
 			make_string("%f,%f,%f", Wpn1->GetStrapOffsetAltRot().x, Wpn1->GetStrapOffsetAltRot().y, Wpn1->GetStrapOffsetAltRot().z)
 			.c_str()); */
+
+		const char* wpn_sect_name = Wpn1->m_section_id.c_str();
+
+		string_path fname_main;
+		FS.update_path(fname_main, "$app_data_root$", make_string("NPC_AttachesEditor\\%s\\%s.ltx", "Actor", wpn_sect_name).c_str());
+
+		if (Wpn1->LaserAttachable())
+		{
+			pAttachesCfg.w_string(wpn_sect_name,
+				"laserdot_world_attach_offset",
+				make_string("%f,%f,%f", Wpn1->laserdot_attach_offset.x, Wpn1->laserdot_attach_offset.y, Wpn1->laserdot_attach_offset.z)
+				.c_str());
+		}
+
+		if (Wpn1->TacticalTorchAttachable())
+		{
+			pAttachesCfg.w_string(wpn_sect_name,
+				"torch_world_attach_offset",
+				make_string("%f,%f,%f", Wpn1->flashlight_attach_offset.x, Wpn1->flashlight_attach_offset.y, Wpn1->flashlight_attach_offset.z)
+				.c_str());
+
+			pAttachesCfg.w_string(wpn_sect_name,
+				"torch_omni_world_attach_offset",
+				make_string("%f,%f,%f", Wpn1->flashlight_omni_attach_offset.x, Wpn1->flashlight_omni_attach_offset.y, Wpn1->flashlight_omni_attach_offset.z)
+				.c_str());
+		}
+
+		if (Wpn1->m_weapon_attaches.size())
+			SaveAttachesCfg(Wpn1->cNameSect().c_str(), Wpn1);
 	}
 
 	if (CWeapon* Wpn2 = smart_cast<CWeapon*>(Actor()->inventory().ItemFromSlot(RIFLE_SLOT)))
@@ -272,6 +367,35 @@ void SaveToFile(CAttachmentOwner* owner)
 			"strap_orientation_alt",
 			make_string("%f,%f,%f", Wpn2->GetStrapOffsetAltRot().x, Wpn2->GetStrapOffsetAltRot().y, Wpn2->GetStrapOffsetAltRot().z)
 			.c_str()); */
+
+		const char* wpn_sect_name = Wpn2->m_section_id.c_str();
+
+		string_path fname_main;
+		FS.update_path(fname_main, "$app_data_root$", make_string("NPC_AttachesEditor\\%s.ltx", wpn_sect_name).c_str());
+
+		if (Wpn2->LaserAttachable())
+		{
+			pAttachesCfg.w_string(wpn_sect_name,
+				"laserdot_world_attach_offset",
+				make_string("%f,%f,%f", Wpn2->laserdot_attach_offset.x, Wpn2->laserdot_attach_offset.y, Wpn2->laserdot_attach_offset.z)
+				.c_str());
+		}
+
+		if (Wpn2->TacticalTorchAttachable())
+		{
+			pAttachesCfg.w_string(wpn_sect_name,
+				"torch_world_attach_offset",
+				make_string("%f,%f,%f", Wpn2->flashlight_attach_offset.x, Wpn2->flashlight_attach_offset.y, Wpn2->flashlight_attach_offset.z)
+				.c_str());
+
+			pAttachesCfg.w_string(wpn_sect_name,
+				"torch_omni_world_attach_offset",
+				make_string("%f,%f,%f", Wpn2->flashlight_omni_attach_offset.x, Wpn2->flashlight_omni_attach_offset.y, Wpn2->flashlight_omni_attach_offset.z)
+				.c_str());
+		}
+
+		if (Wpn2->m_weapon_attaches.size())
+			SaveAttachesCfg(Wpn2->cNameSect().c_str(), Wpn2);
 	}
 
 	if (CWeapon* binocular = smart_cast<CWeapon*>(Actor()->inventory().ItemFromSlot(APPARATUS_SLOT)))
