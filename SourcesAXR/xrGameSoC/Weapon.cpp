@@ -273,9 +273,6 @@ void CWeapon::UpdateXForm	()
 
 	m_dwXF_Frame = Device.dwFrame;
 
-	if (!GetHUDmode())
-		UpdateAddonsTransform(false);
-
 	if (!H_Parent())
 		return;
 
@@ -1861,8 +1858,10 @@ void CWeapon::renderable_Render		()
 {
 	UpdateXForm				();
 
-	//нарисовать подсветку
+	if (!GetHUDmode())
+		UpdateAddonsTransform(false);
 
+	//нарисовать подсветку
 	RenderLight				();	
 
 	//если мы в режиме снайперки, то сам HUD рисовать не надо
@@ -3525,12 +3524,11 @@ void CWeapon::UpdateAddonsTransform(bool for_hud)
 		m_scopeAttachTransform.mul(t, scale); // rafa: hack for fucking gunslinger models
 	}
 
-	for (auto& mesh : m_weapon_attaches)
+	for (auto mesh : m_weapon_attaches)
+	{
 		mesh->UpdateAttachesPosition(model, base_model_trans, for_hud);
 
-	if (!for_hud)
-	{
-		for (auto mesh : m_weapon_attaches)
+		if (!for_hud)
 			mesh->RenderAttach(false);
 	}
 }
