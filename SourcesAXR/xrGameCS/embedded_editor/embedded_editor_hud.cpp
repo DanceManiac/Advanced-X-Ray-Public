@@ -62,6 +62,12 @@ void ShowHudEditor(bool& show)
 		ImGui::DragFloat3("shell_point 0",					(float*)&item->m_measures.m_shell_point_offset[0],	drag_intensity, NULL, NULL, "%.6f");
 		ImGui::DragFloat3("overheating_smoke_point 0",		(float*)&item->m_measures.m_overheating_smoke_offset[0], drag_intensity, NULL, NULL, "%.6f");
 
+		if (READ_IF_EXISTS(pSettings, r_bool, item->m_sect_name, "hud_collision_enabled", false))
+		{
+			ImGui::DragFloat3("hud_collision_offset_pos 0",	(float*)&item->m_measures.m_collision_offset[0],	drag_intensity, NULL, NULL, "%.6f");
+			ImGui::DragFloat3("hud_collision_offset_rot 0",	(float*)&item->m_measures.m_collision_offset[1],	drag_intensity, NULL, NULL, "%.6f");
+		}
+
 		if (Wpn)
 		{
 			// Laser light offsets
@@ -108,6 +114,12 @@ void ShowHudEditor(bool& show)
 		ImGui::DragFloat3("fire_point2 1",			(float*)&item->m_measures.m_fire_point2_offset[0],	drag_intensity, NULL, NULL, "%.6f");
 		ImGui::DragFloat3("shell_point 1",			(float*)&item->m_measures.m_shell_point_offset[0],	drag_intensity, NULL, NULL, "%.6f");
 		ImGui::DragFloat3("overheating_smoke_point 1", (float*)&item->m_measures.m_overheating_smoke_offset[0], drag_intensity, NULL, NULL, "%.6f");
+	
+		if (READ_IF_EXISTS(pSettings, r_bool, item->m_sect_name, "hud_collision_enabled", false))
+		{
+			ImGui::DragFloat3("hud_collision_offset_pos 1", (float*)&item->m_measures.m_collision_offset[0], drag_intensity, NULL, NULL, "%.6f");
+			ImGui::DragFloat3("hud_collision_offset_rot 1", (float*)&item->m_measures.m_collision_offset[1], drag_intensity, NULL, NULL, "%.6f");
+		}
 	}
 
 	if (ImGui::Button(toUtf8(CStringTable().translate("st_editor_imgui_save").c_str()).c_str()))
