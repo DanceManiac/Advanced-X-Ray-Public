@@ -73,7 +73,7 @@ bool CWeaponAutomaticShotgun::Action(s32 cmd, u32 flags)
 
 void CWeaponAutomaticShotgun::OnAnimationEnd(u32 state) 
 {
-	if(!m_bTriStateReload || (m_bIsBoltRiffle && !(IsScopeAttached() && m_bOnlyTriStateWithScope) && !iAmmoElapsed) || state != eReload)
+	if(!m_bTriStateReload || (m_bIsBoltRiffle && !(IsScopeAttached() && m_bOnlyTriStateWithScope) && !iAmmoElapsed && HaveCartridgeInInventory(iMagazineSize)) || state != eReload)
 		return inherited::OnAnimationEnd(state);
 
 	switch(m_sub_state)
@@ -104,7 +104,7 @@ void CWeaponAutomaticShotgun::OnAnimationEnd(u32 state)
 
 void CWeaponAutomaticShotgun::Reload() 
 {
-	if (!m_bTriStateReload || (m_bIsBoltRiffle && !(IsScopeAttached() && m_bOnlyTriStateWithScope) && !iAmmoElapsed))
+	if (!m_bTriStateReload || (m_bIsBoltRiffle && !(IsScopeAttached() && m_bOnlyTriStateWithScope) && !iAmmoElapsed && HaveCartridgeInInventory(iMagazineSize)))
 	{
 		inherited::Reload();
 	}
@@ -126,7 +126,7 @@ void CWeaponAutomaticShotgun::TriStateReload()
 
 void CWeaponAutomaticShotgun::OnStateSwitch	(u32 S)
 {
-	if(!m_bIsCancelReloadNow && (!m_bTriStateReload || (m_bIsBoltRiffle && !(IsScopeAttached() && m_bOnlyTriStateWithScope) && !iAmmoElapsed) || S != eReload))
+	if(!m_bIsCancelReloadNow && (!m_bTriStateReload || (m_bIsBoltRiffle && !(IsScopeAttached() && m_bOnlyTriStateWithScope) && !iAmmoElapsed && HaveCartridgeInInventory(iMagazineSize)) || S != eReload))
 	{
 		inherited::OnStateSwitch(S);
 		return;

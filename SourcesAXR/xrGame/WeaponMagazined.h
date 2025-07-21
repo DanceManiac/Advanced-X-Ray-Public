@@ -118,6 +118,9 @@ public:
 
 	virtual bool	GetBriefInfo	(II_BriefInfo& info);
 
+			bool	HaveCartridgeInInventory(u8 cnt);
+			u8		GetAvailableCartridgesToLoad(bool full_reload);
+
 public:
 	virtual bool	SwitchMode				();
 	virtual bool	SingleShotMode			()			{return 1 == m_iQueueSize;}

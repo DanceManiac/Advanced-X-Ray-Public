@@ -123,6 +123,9 @@ public:
 
 	virtual bool	GetBriefInfo	(II_BriefInfo& info);
 
+			bool	HaveCartridgeInInventory(u8 cnt);
+			u8		GetAvailableCartridgesToLoad(bool full_reload);
+
 
 	//////////////////////////////////////////////
 	// для стрельбы очередями или одиночными

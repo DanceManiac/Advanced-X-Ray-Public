@@ -1596,8 +1596,10 @@ void CWeaponMagazined::PlayReloadSound()
 	{
 		if (m_bIsRevolver)
 		{
+			u8 bullets_to_load = iMagazineSize - GetAvailableCartridgesToLoad(!iAmmoElapsed);
+
 			string128 sndReloadName;
-			strconcat(sizeof(sndReloadName), sndReloadName, "sndReload", (iAmmoElapsed > 0) ? std::to_string(iAmmoElapsed).c_str() : "Empty");
+			strconcat(sizeof(sndReloadName), sndReloadName, "sndReload", (bullets_to_load > 0) ? std::to_string(bullets_to_load).c_str() : "Empty");
 
 			if (m_sounds.FindSoundItem(sndReloadName, false))
 				m_sounds.PlaySound(sndReloadName, get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
@@ -2312,8 +2314,10 @@ void CWeaponMagazined::PlayAnimReload()
 
 	if (m_bIsRevolver)
 	{
+		u8 bullets_to_load = iMagazineSize - GetAvailableCartridgesToLoad(!iAmmoElapsed);
+
 		string128 anmReloadName;
-		strconcat(sizeof(anmReloadName), anmReloadName, "anm_reload_", (iAmmoElapsed > 0) ? std::to_string(iAmmoElapsed).c_str() : "empty");
+		strconcat(sizeof(anmReloadName), anmReloadName, "anm_reload_", (bullets_to_load > 0) ? std::to_string(bullets_to_load).c_str() : "empty");
 
 		if (isHUDAnimationExist(anmReloadName))
 			PlayHUDMotionIfExists({ anmReloadName, "anm_reload" }, true, GetState());
@@ -3052,5 +3056,64 @@ void CWeaponMagazined::CheckMagazine()
 	else if (psWpnAnimsFlag.test(ANM_RELOAD_EMPTY) && iAmmoElapsed == 0 && m_bNeedBulletInGun == true)
 	{
 		m_bNeedBulletInGun = false;
+	}
+}
+
+bool CWeaponMagazined::HaveCartridgeInInventory(u8 cnt)
+{
+	if (unlimited_ammo())
+		return true;
+
+	if (!m_pInventory)
+		return false;
+
+	u32 ac = GetAmmoCount(m_ammoType);
+
+	if (ac < cnt)
+	{
+		for (u8 i = 0; i < u8(m_ammoTypes.size()); ++i)
+		{
+			if (m_ammoType == i) continue;
+			ac += GetAmmoCount(i);
+
+			if (ac >= cnt)
+			{
+				m_ammoType = i;
+				break;
+			}
+		}
+	}
+	return ac >= cnt;
+}
+
+u8 CWeaponMagazined::GetAvailableCartridgesToLoad(bool full_reload)
+{
+	if (full_reload)
+	{
+		if (HaveCartridgeInInventory(iMagazineSize))
+			return iMagazineSize;
+
+		for (u8 try_load = (iMagazineSize - 1); try_load > 0; try_load--)
+		{
+			if (HaveCartridgeInInventory(try_load))
+				return try_load;
+		}
+
+		return 0;
+	}
+	else
+	{
+		u8 needed = iMagazineSize - iAmmoElapsed;
+
+		if (HaveCartridgeInInventory(needed))
+			return needed;
+
+		for (u8 try_load = needed - 1; try_load > 0; try_load--)
+		{
+			if (HaveCartridgeInInventory(try_load))
+				return try_load;
+		}
+
+		return 0;
 	}
 }
