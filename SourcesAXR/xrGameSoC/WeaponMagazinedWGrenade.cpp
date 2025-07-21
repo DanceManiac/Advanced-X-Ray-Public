@@ -1026,9 +1026,9 @@ void CWeaponMagazinedWGrenade::PlayAnimShoot()
 	if (m_bGrenadeMode)
 	{
 		string_path guns_shoot_anm{};
-		strconcat(sizeof(guns_shoot_anm), guns_shoot_anm, (isHUDAnimationExist("anm_shoot") ? "anm_shoot" : "anm_shots"), (this->IsZoomed() && !this->IsRotatingToZoom()) ? "_aim" : "", "_g", (IsMisfire() ? "_jammed" : IsMainMagazineEmpty() ? "_empty" : ""));
+		strconcat(sizeof(guns_shoot_anm), guns_shoot_anm, (isHUDAnimationExist("anm_shoot") ? "anm_shoot" : "anm_shots"), (IsZoomed() && !IsRotatingToZoom()) ? "_aim" : "", (IsMisfire() ? "_jammed" : IsMainMagazineEmpty() ? "_empty" : ""), "_g");
 
-		PlayHUDMotionIfExists({ guns_shoot_anm, "anim_shoot_g", "anm_shots_g" }, false, GetState());
+		PlayHUDMotionIfExists({ guns_shoot_anm, "anm_shoot_g", "anim_shoot_g", "anm_shots_g" }, false, GetState());
 	}
 	else
 	{
@@ -1042,12 +1042,12 @@ void CWeaponMagazinedWGrenade::PlayAnimShoot()
 		if (IsGrenadeLauncherAttached())
 		{
 			string_path guns_shoot_anm{};
-			strconcat(sizeof(guns_shoot_anm), guns_shoot_anm, (isHUDAnimationExist("anm_shoot") ? "anm_shoot" : "anm_shots"), (iAmmoElapsed == 1) ? "_last" : "", (this->IsZoomed() && !this->IsRotatingToZoom()) ? (this->IsScopeAttached() ? "_aim_scope" : "_aim") : "", this->IsSilencerAttached() ? "_sil" : "", "_w_gl");
+			strconcat(sizeof(guns_shoot_anm), guns_shoot_anm, (isHUDAnimationExist("anm_shoot") ? "anm_shoot" : "anm_shots"), (IsZoomed() && !IsRotatingToZoom()) ? (IsScopeAttached() && m_bUseAimScopeAnims ? "_aim_scope" : "_aim") : "", (iAmmoElapsed == 1) ? "_last" : "", (IsMisfire() ? "_jammed" : IsMagazineEmpty() ? "_empty" : ""), (IsSilencerAttached() && m_bUseSilShotAnim) ? "_sil" : "", "_w_gl");
 
 			if (iAmmoElapsed == 1)
-				PlayHUDMotionIfExists({ guns_shoot_anm, "anm_shot_l_w_gl", "anm_shots_w_gl", "anim_shoot_gl" }, false, GetState());
+				PlayHUDMotionIfExists({ guns_shoot_anm,"anm_shoot_last_w_gl", "anm_shots_last_w_gl", "anm_shot_l_w_gl", "anm_shoot_w_gl", "anm_shots_w_gl", "anim_shoot_gl" }, false, GetState());
 			else
-				PlayHUDMotionIfExists({ guns_shoot_anm, "anm_shots_w_gl", "anim_shoot_gl" }, false, GetState());
+				PlayHUDMotionIfExists({ guns_shoot_anm, "anm_shoot_w_gl", "anm_shots_w_gl", "anim_shoot_gl" }, false, GetState());
 		}
 		else
 		{

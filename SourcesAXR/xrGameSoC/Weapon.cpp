@@ -121,8 +121,9 @@ CWeapon::CWeapon(LPCSTR name)
 	m_bBulletsVisualization = false;
 	bullet_cnt				= 0;
 
-	m_bUseAimAnmDirDependency = false;
+	m_bUseAimScopeAnims		= true;
 	m_bUseScopeAimMoveAnims = true;
+	m_bUseAimAnmDirDependency = false;
 
 	m_bAltZoomEnabled		= false;
 	m_bAltZoomEnabledScope	= false;
@@ -715,9 +716,10 @@ void CWeapon::Load		(LPCSTR section)
 	m_flags.set(FUsingCondition, READ_IF_EXISTS(pSettings, r_bool, section, "use_condition", true));
 	m_bShowWpnStats					= READ_IF_EXISTS(pSettings, r_bool, section, "show_wpn_stats", true);
 	m_bEnableBoreDof				= READ_IF_EXISTS(pSettings, r_bool, section, "enable_bore_dof", true);
-	m_bUseAimAnmDirDependency		= READ_IF_EXISTS(pSettings, r_bool, section, "enable_aim_anm_dir_dependency", false);
+	m_bUseAimScopeAnims				= READ_IF_EXISTS(pSettings, r_bool, section, "enable_aim_scope_anims", true);
 	m_bUseScopeAimMoveAnims			= READ_IF_EXISTS(pSettings, r_bool, section, "enable_scope_aim_move_anm", true);
-	m_bUseAimSilShotAnim			= READ_IF_EXISTS(pSettings, r_bool, section, "enable_aim_silencer_shoot_anm", false);
+	m_bUseAimAnmDirDependency		= READ_IF_EXISTS(pSettings, r_bool, section, "enable_aim_anm_dir_dependency", false);
+	m_bUseSilShotAnim				= READ_IF_EXISTS(pSettings, r_bool, section, "enable_silencer_shoot_anm", false);
 	m_bAltZoomEnabled				= READ_IF_EXISTS(pSettings, r_bool, section, "enable_alternative_aim", false);
 	m_sSafetyBoneName				= READ_IF_EXISTS(pSettings, r_string, section, "safety_bone", nullptr);
 

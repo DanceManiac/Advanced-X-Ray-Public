@@ -444,8 +444,6 @@ protected:
 	// 0-используется без участия рук, 1-одна рука, 2-две руки
 	EHandDependence			eHandDependence;
 	bool					m_bIsSingleHanded;
-	bool					m_bUseAimAnmDirDependency;
-	bool					m_bUseScopeAimMoveAnims;
 	bool					m_bAltZoomEnabled;
 	bool					m_bAltZoomEnabledScope;
 	bool					m_bAltZoomActive;
@@ -685,7 +683,10 @@ public:
 	BOOL					m_bHasTracers;
 	bool					m_bShowWpnStats;
 	bool					m_bEnableBoreDof;
-	bool					m_bUseAimSilShotAnim;
+	bool					m_bUseSilShotAnim;
+	bool					m_bUseAimScopeAnims;
+	bool					m_bUseScopeAimMoveAnims;
+	bool					m_bUseAimAnmDirDependency;
 	u8						m_u8TracerColorID;
 	u32						m_set_next_ammoType_on_reload;
 	// Multitype ammo support

@@ -2491,14 +2491,14 @@ void CWeaponMagazined::PlayAnimShoot()
 		det->PlayDetectorAnimation(true, eDetAction, guns_det_shoot_anm);
 
 	string_path guns_shoot_anm{};
-	strconcat(sizeof(guns_shoot_anm), guns_shoot_anm, (isHUDAnimationExist("anm_shoot") ? "anm_shoot" : "anm_shots"), (iAmmoElapsed == 1) ? "_last" : "", (IsZoomed() && !IsRotatingToZoom()) ? (IsScopeAttached() ? "_aim_scope" : "_aim") : "", (IsSilencerAttached() && m_bUseAimSilShotAnim) ? "_sil" : "");
+	strconcat(sizeof(guns_shoot_anm), guns_shoot_anm, (isHUDAnimationExist("anm_shoot") ? "anm_shoot" : "anm_shots"), (IsZoomed() && !IsRotatingToZoom()) ? (IsScopeAttached() && m_bUseAimScopeAnims ? "_aim_scope" : "_aim") : "", (iAmmoElapsed == 1) ? "_last" : "", (IsMisfire() ? "_jammed" : IsMagazineEmpty() ? "_empty" : ""), (IsSilencerAttached() && m_bUseSilShotAnim) ? "_sil" : "");
 
 	//HUD_VisualBulletUpdate();
 
 	if (iAmmoElapsed == 1)
-		PlayHUDMotionIfExists({ guns_shoot_anm, "anm_shot_l", "anm_shots" }, false, GetState());
+		PlayHUDMotionIfExists({ guns_shoot_anm, "anm_shoot_last", "anm_shots_last", "anm_shot_l", "anm_shoot", "anm_shots" }, false, GetState());
 	else
-		PlayHUDMotionIfExists({ guns_shoot_anm, "anm_shots" }, false, GetState());
+		PlayHUDMotionIfExists({ guns_shoot_anm, "anm_shoot", "anm_shots" }, false, GetState());
 }
 
 void CWeaponMagazined::PlayAnimFakeShoot()
