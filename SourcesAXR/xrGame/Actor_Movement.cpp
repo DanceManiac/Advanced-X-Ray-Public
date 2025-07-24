@@ -76,6 +76,7 @@ void CActor::g_cl_ValidateMState(float dt, u32 mstate_wf)
 			
 			// CActor_on_land
 			this->callback(GameObject::eOnActorLand)(this->lua_game_object(), character_physics_support()->get_movement()->GetContactSpeed());
+			StartActionSndAnm("OnLandSnd", "on_actor_land");
 		}
 		m_bJumpKeyPressed	=	TRUE;
 		m_fJumpTime			=	s_fJumpTime;
@@ -252,6 +253,7 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 				conditions().ConditionJump(inventory().TotalWeight() / MaxCarryWeight());
 
 			this->callback(GameObject::eOnActorJump)(this->lua_game_object());
+			StartActionSndAnm("OnJumpSnd", "on_actor_jump");
 		}
 
 		// mask input into "real" state

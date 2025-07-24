@@ -17,6 +17,8 @@
 
 #include "step_manager.h"
 #include "xr_level_controller.h"
+#include "HudSound.h"
+
 #include "ActorSkills.h"
 #include "CustomTimer.h"
 
@@ -226,6 +228,8 @@ protected:
 	//звук тяжелого дыхания
 	ref_sound			m_HeavyBreathSnd;
 	ref_sound			m_BloodSnd;
+
+	HUD_SOUND_COLLECTION_LAYERED m_layered_sounds;
 
 	xr_vector<const CArtefact*> m_ArtefactsOnBelt;
 
@@ -846,6 +850,8 @@ public:
 	void						SetHeatingStatus	(bool status, float power = 0.0f) { m_bHeating = status; m_fHeatingPower = power; }
 	bool						GetHeatingStatus	() const { return m_bHeating; }
 	float						GetCurrentHeating	() const { return m_fHeatingPower; }
+
+	void						StartActionSndAnm	(shared_str snd_name, shared_str eff_name);
 
 	bool						HasItemsForRepair	(xr_vector<std::pair<shared_str, int>> item);
 	void						RemoveItemsForRepair(xr_vector<std::pair<shared_str, int>> item);

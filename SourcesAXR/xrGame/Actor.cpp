@@ -485,6 +485,19 @@ void CActor::Load	(LPCSTR section )
 		m_DangerSnd.create		(pSettings->r_string(section,"heavy_danger_snd"), st_Effect,SOUND_TYPE_MONSTER_INJURING);
 	}
 
+	shared_str action_sounds_sect = READ_IF_EXISTS(pSettings, r_string, section, "action_sounds_section", "action_sounds");
+
+	if (pSettings->section_exist(action_sounds_sect))
+	{
+		m_layered_sounds.LoadSound(pSettings, action_sounds_sect.c_str(), "on_jump_snd",			"OnJumpSnd",			false, SOUND_TYPE_MONSTER_DYING);
+		m_layered_sounds.LoadSound(pSettings, action_sounds_sect.c_str(), "on_land_snd",			"OnLandSnd",			false, SOUND_TYPE_MONSTER_DYING);
+		m_layered_sounds.LoadSound(pSettings, action_sounds_sect.c_str(), "on_crouch_in_snd",		"OnCrouchInSnd",		false, SOUND_TYPE_MONSTER_DYING);
+		m_layered_sounds.LoadSound(pSettings, action_sounds_sect.c_str(), "on_crouch_out_snd",		"OnCrouchOutSnd",		false, SOUND_TYPE_MONSTER_DYING);
+		m_layered_sounds.LoadSound(pSettings, action_sounds_sect.c_str(), "on_crouch_slow_in_snd",	"OnCrouchSlowInSnd",	false, SOUND_TYPE_MONSTER_DYING);
+		m_layered_sounds.LoadSound(pSettings, action_sounds_sect.c_str(), "on_crouch_slow_out_snd",	"OnCrouchSlowOutSnd",	false, SOUND_TYPE_MONSTER_DYING);
+		m_layered_sounds.LoadSound(pSettings, action_sounds_sect.c_str(), "on_lookout_snd",			"OnLookoutSnd",			false, SOUND_TYPE_MONSTER_DYING);
+	}
+
 	if (this == Level().CurrentEntity()) //--#SM+#--      [reset some render flags]
 	{
 		if (g_pGamePersistent && g_pGamePersistent->m_pGShaderConstants)
@@ -3624,4 +3637,23 @@ void CActor::DetectorToogle(bool fastmode) const
 {
 	if (auto det = smart_cast<CCustomDetector*>(inventory().ItemFromSlot(DETECTOR_SLOT)))
 		det->ToggleDetector(fastmode);
+}
+
+void CActor::StartActionSndAnm(shared_str snd_name, shared_str eff_name)
+{
+	m_layered_sounds.PlaySound(snd_name.c_str(), Position(), smart_cast<CObject*>(this), false, false, (u8)-1);
+
+	string_path ce_path;
+	string_path anm_name;
+	strconcat(sizeof(anm_name), anm_name, "camera_effects" "\\" "actor_move" "\\", eff_name.c_str(), ".anm");
+
+	if (FS.exist(ce_path, "$game_anims$", anm_name))
+	{
+		CAnimatorCamEffector* e = xr_new<CAnimatorCamEffector>();
+		e->SetType(eCEActorMoving);
+		e->SetHudAffect(true);
+		e->SetCyclic(false);
+		e->Start(anm_name);
+		Cameras().AddCamEffector(e);
+	}
 }

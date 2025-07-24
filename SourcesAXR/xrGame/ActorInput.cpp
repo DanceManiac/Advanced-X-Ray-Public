@@ -151,7 +151,22 @@ void CActor::IR_OnKeyboardPress(int cmd)
 		{
 			if (psActorFlags.test(AF_CROUCH_TOGGLE))
 				mstate_wishful ^= mcCrouch;
-		}break;
+
+			StartActionSndAnm("OnCrouchInSnd", "on_actor_crouch_in");
+		} break;
+	case kACCEL:
+		{
+			if (mstate_real & mcCrouch)
+				StartActionSndAnm("OnCrouchSlowInSnd", "on_actor_crouch_slow_in");
+		} break;
+	case kR_LOOKOUT:
+		{
+			StartActionSndAnm("OnLookoutSnd", "on_actor_lookout_right");
+		} break;
+	case kL_LOOKOUT:
+		{
+			StartActionSndAnm("OnLookoutSnd", "on_actor_lookout_left");
+		} break;
 	case kCAM_1:	cam_Set			(eacFirstEye);				break;
 	case kCAM_2:	cam_Set			(eacLookAt);				break;
 	case kCAM_3:	cam_Set			(eacFreeLook);				break;
@@ -389,13 +404,17 @@ void CActor::IR_OnMouseWheel(int direction)
 
 void CActor::IR_OnKeyboardRelease(int cmd)
 {
-	if (m_blocked_actions.find((EGameActions)cmd) != m_blocked_actions.end()) return; // Real Wolf. 14.10.2014
+	if (m_blocked_actions.find((EGameActions)cmd) != m_blocked_actions.end())
+		return; // Real Wolf. 14.10.2014
 
-	if(hud_adj_mode && pInput->iGetAsyncKeyState(DIK_LSHIFT))	return;
+	if(hud_adj_mode && pInput->iGetAsyncKeyState(DIK_LSHIFT))
+		return;
 
-	if (Remote())	return;
+	if (Remote())
+		return;
 
-	if (m_input_external_handler && !m_input_external_handler->authorized(cmd))	return;
+	if (m_input_external_handler && !m_input_external_handler->authorized(cmd))
+		return;
 
 	if (g_Alive())	
 	{
@@ -406,17 +425,43 @@ void CActor::IR_OnKeyboardRelease(int cmd)
 		{
 			m_holder->OnKeyboardRelease(cmd);
 			
-			if(m_holder->allowWeapon() && inventory().Action((u16)cmd, CMD_STOP))		return;
+			if(m_holder->allowWeapon() && inventory().Action((u16)cmd, CMD_STOP))
+				return;
+
 			return;
-		}else
-			if(inventory().Action((u16)cmd, CMD_STOP))		return;
-
-
+		}
+		else
+		{
+			if (inventory().Action((u16)cmd, CMD_STOP))
+				return;
+		}
 
 		switch(cmd)
 		{
-		case kJUMP:		mstate_wishful &=~mcJump;		break;
-		case kDROP:		if(GAME_PHASE_INPROGRESS == Game().Phase()) g_PerformDrop();				break;
+		case kJUMP:
+			mstate_wishful &=~mcJump;
+			break;
+		case kDROP:
+			if(GAME_PHASE_INPROGRESS == Game().Phase())
+				g_PerformDrop();
+			break;
+		case kCROUCH:
+			{
+				StartActionSndAnm("OnCrouchOutSnd", "on_actor_crouch_out");
+			} break;
+		case kACCEL:
+			{
+				if (mstate_real & mcCrouch)
+					StartActionSndAnm("OnCrouchSlowOutSnd", "on_actor_crouch_slow_out");
+			} break;
+		case kR_LOOKOUT:
+			{
+				StartActionSndAnm("OnLookoutSnd", "on_actor_lookout_right");
+			} break;
+		case kL_LOOKOUT:
+			{
+				StartActionSndAnm("OnLookoutSnd", "on_actor_lookout_left");
+			} break;
 		}
 	}
 }
