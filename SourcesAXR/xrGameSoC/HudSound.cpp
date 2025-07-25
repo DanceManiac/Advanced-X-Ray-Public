@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include "HudSound.h"
-//#include "AdvancedXrayGameConstants.h"
+#include "AdvancedXrayGameConstants.h"
 
 float psHUDSoundVolume			= 1.0f;
 float psHUDStepSoundVolume		= 1.0f;
@@ -317,21 +317,48 @@ void HUD_SOUND_COLLECTION_LAYERED::SetPosition(LPCSTR alias, const Fvector& pos)
 void HUD_SOUND_COLLECTION_LAYERED::PlaySound(LPCSTR alias, const Fvector& position, const CObject* parent,
 	bool hud_mode, bool looped, u8 index)
 {
-	xr_vector<HUD_SOUND_COLLECTION>::iterator it = m_sound_items.begin();
-	xr_vector<HUD_SOUND_COLLECTION>::iterator it_e = m_sound_items.end();
+	xr_vector<HUD_SOUND_COLLECTION*> random_sounds;
+	xr_vector<HUD_SOUND_COLLECTION*> distant_random_sounds;
 
-	for (; it != it_e; ++it)
+	const float dist_to_camera = position.distance_to(Device.vCameraPosition);
+	const float distant_snd_dist = GameConstants::GetDistantSndDistance();
+
+	for (auto& sound_item : m_sound_items)
 	{
-		if (xr_strcmp(it->m_alias.c_str(), alias) == 0)
+		if (xr_strcmp(sound_item.m_alias.c_str(), alias) != 0)
+			continue;
+
+		if (sound_item.IsRandomSound)
 		{
-			if (!it->IsDistantSound)
-				it->PlaySound(alias, position, parent, hud_mode, looped, index);
+			if (sound_item.IsDistantSound)
+				distant_random_sounds.push_back(&sound_item);
 			else
-			{
-				if (position.distance_to(Device.vCameraPosition) >= 150.f/*GameConstants::GetDistantSndDistance()*/)
-					it->PlaySound(alias, position, parent, hud_mode, looped, index);
-			}
+				random_sounds.push_back(&sound_item);
+
+			continue;
 		}
+
+		if (!sound_item.IsDistantSound)
+			sound_item.PlaySound(alias, position, parent, hud_mode, looped, index);
+		else if (dist_to_camera >= distant_snd_dist)
+			sound_item.PlaySound(alias, position, parent, hud_mode, looped, index);
+	}
+
+	if (random_sounds.size())
+	{
+		auto PlayRandomSound = [&](xr_vector<HUD_SOUND_COLLECTION*>& sounds)
+		{
+			if (!sounds.empty())
+			{
+				u32 rnd_idx = ::Random.randI(0, sounds.size());
+					sounds[rnd_idx]->PlaySound(alias, position, parent, hud_mode, looped, index);
+			}
+		};
+
+		PlayRandomSound(random_sounds);
+
+		if (dist_to_camera >= distant_snd_dist)
+			PlayRandomSound(distant_random_sounds);
 	}
 }
 
@@ -366,12 +393,14 @@ void HUD_SOUND_COLLECTION_LAYERED::LoadSound(LPCSTR section, LPCSTR line, LPCSTR
 
 	if (pSettings->section_exist(buf_str))
 	{
-		string256 sound_line, sound_distant_line;
+		string256 sound_line, sound_distant_line, sound_rnd_line, sound_distant_rnd_line;;
 
 		xr_strcpy(sound_line, "snd_1_layer");
 		xr_strcpy(sound_distant_line, "snd_1_layer_dist");
+		xr_strcpy(sound_rnd_line, "snd_1_layer_rnd");
+		xr_strcpy(sound_distant_rnd_line, "snd_1_layer_dist_rnd");
 
-		int k = 1, k2 = 1;
+		int k = 1, k2 = 1, k3 = 1, k4 = 1;
 		while (pSettings->line_exist(buf_str, sound_line))
 		{
 			m_sound_items.resize(m_sound_items.size() + 1);
@@ -379,9 +408,11 @@ void HUD_SOUND_COLLECTION_LAYERED::LoadSound(LPCSTR section, LPCSTR line, LPCSTR
 			snd_item.LoadSound(buf_str, sound_line, alias, exclusive, type);
 			snd_item.m_alias = alias;
 			snd_item.IsDistantSound = false;
+			snd_item.IsRandomSound = false;
 			xr_sprintf(sound_line, "snd_%d_layer", ++k);
 		}
 
+		// Dance Maniac: Distant sound layers
 		while (pSettings->line_exist(buf_str, sound_distant_line))
 		{
 			m_sound_items.resize(m_sound_items.size() + 1);
@@ -389,7 +420,32 @@ void HUD_SOUND_COLLECTION_LAYERED::LoadSound(LPCSTR section, LPCSTR line, LPCSTR
 			snd_item.LoadSound(buf_str, sound_distant_line, alias, exclusive, type);
 			snd_item.m_alias = alias;
 			snd_item.IsDistantSound = true;
+			snd_item.IsRandomSound = false;
 			xr_sprintf(sound_distant_line, "snd_%d_layer_dist", ++k2);
+		}
+
+		// Dance Maniac: Random sound layers
+		while (pSettings->line_exist(buf_str, sound_rnd_line))
+		{
+			m_sound_items.resize(m_sound_items.size() + 1);
+			HUD_SOUND_COLLECTION& snd_item = m_sound_items.back();
+			snd_item.LoadSound(buf_str, sound_rnd_line, alias, exclusive, type);
+			snd_item.m_alias = alias;
+			snd_item.IsDistantSound = false;
+			snd_item.IsRandomSound = true;
+			xr_sprintf(sound_rnd_line, "snd_%d_layer_rnd", ++k3);
+		}
+
+		// Dance Maniac: Random distant sound layers
+		while (pSettings->line_exist(buf_str, sound_distant_rnd_line))
+		{
+			m_sound_items.resize(m_sound_items.size() + 1);
+			HUD_SOUND_COLLECTION& snd_item = m_sound_items.back();
+			snd_item.LoadSound(buf_str, sound_distant_rnd_line, alias, exclusive, type);
+			snd_item.m_alias = alias;
+			snd_item.IsDistantSound = true;
+			snd_item.IsRandomSound = true;
+			xr_sprintf(sound_distant_rnd_line, "snd_%d_layer_dist_rnd", ++k4);
 		}
 	}
 	else //For compatibility with normal HUD_SOUND_COLLECTION sounds
@@ -419,12 +475,14 @@ void HUD_SOUND_COLLECTION_LAYERED::LoadSound(CInifile const* ini, LPCSTR section
 
 	if (ini->section_exist(buf_str))
 	{
-		string256 sound_line, sound_distant_line;
+		string256 sound_line, sound_distant_line, sound_rnd_line, sound_distant_rnd_line;
 
 		xr_strcpy(sound_line, "snd_1_layer");
 		xr_strcpy(sound_distant_line, "snd_1_layer_dist");
+		xr_strcpy(sound_rnd_line, "snd_1_layer_rnd");
+		xr_strcpy(sound_distant_rnd_line, "snd_1_layer_dist_rnd");
 
-		int k = 1, k2 = 1;
+		int k = 1, k2 = 1, k3 = 1, k4 = 1;
 		while (ini->line_exist(buf_str, sound_line))
 		{
 			m_sound_items.resize(m_sound_items.size() + 1);
@@ -432,9 +490,11 @@ void HUD_SOUND_COLLECTION_LAYERED::LoadSound(CInifile const* ini, LPCSTR section
 			snd_item.LoadSound(buf_str, sound_line, alias, exclusive, type);
 			snd_item.m_alias = alias;
 			snd_item.IsDistantSound = false;
+			snd_item.IsRandomSound = false;
 			xr_sprintf(sound_line, "snd_%d_layer", ++k);
 		}
 
+		// Dance Maniac: Distant sound layers
 		while (ini->line_exist(buf_str, sound_distant_line))
 		{
 			m_sound_items.resize(m_sound_items.size() + 1);
@@ -442,7 +502,32 @@ void HUD_SOUND_COLLECTION_LAYERED::LoadSound(CInifile const* ini, LPCSTR section
 			snd_item.LoadSound(buf_str, sound_distant_line, alias, exclusive, type);
 			snd_item.m_alias = alias;
 			snd_item.IsDistantSound = true;
+			snd_item.IsRandomSound = false;
 			xr_sprintf(sound_distant_line, "snd_%d_layer_dist", ++k2);
+		}
+
+		// Dance Maniac: Random sound layers
+		while (ini->line_exist(buf_str, sound_rnd_line))
+		{
+			m_sound_items.resize(m_sound_items.size() + 1);
+			HUD_SOUND_COLLECTION& snd_item = m_sound_items.back();
+			snd_item.LoadSound(buf_str, sound_rnd_line, alias, exclusive, type);
+			snd_item.m_alias = alias;
+			snd_item.IsDistantSound = false;
+			snd_item.IsRandomSound = true;
+			xr_sprintf(sound_rnd_line, "snd_%d_layer_rnd", ++k3);
+		}
+
+		// Dance Maniac: Random distant sound layers
+		while (ini->line_exist(buf_str, sound_distant_rnd_line))
+		{
+			m_sound_items.resize(m_sound_items.size() + 1);
+			HUD_SOUND_COLLECTION& snd_item = m_sound_items.back();
+			snd_item.LoadSound(buf_str, sound_distant_rnd_line, alias, exclusive, type);
+			snd_item.m_alias = alias;
+			snd_item.IsDistantSound = true;
+			snd_item.IsRandomSound = true;
+			xr_sprintf(sound_distant_rnd_line, "snd_%d_layer_dist_rnd", ++k4);
 		}
 	}
 	else //For compatibility with normal HUD_SOUND_COLLECTION sounds

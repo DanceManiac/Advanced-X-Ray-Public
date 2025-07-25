@@ -81,6 +81,7 @@ public:
 
 								shared_str m_alias; //Alundaio: For use when it's part of a layered Collection
 								bool IsDistantSound; //Distant Sound Control
+								bool IsRandomSound; //Random Sound
 	xr_vector<HUD_SOUND_ITEM>	m_sound_items;
 
 	void						PlaySound		(	LPCSTR alias, 
