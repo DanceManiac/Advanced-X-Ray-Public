@@ -61,6 +61,8 @@ public:
 	float			m_fRadiationProtection;
 
 	bool			m_bUseAttach;
+	bool			m_bAutoCrouch;
+	bool			m_bInvOnIdle;
 
 //protected:
 //	virtual bool	install_upgrade_impl(LPCSTR section, bool test);

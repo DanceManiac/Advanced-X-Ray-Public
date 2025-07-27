@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //	Module 		: CustomBackpack.cpp
 //	Created 	: 21.08.2023
-//  Modified 	: 21.08.2023
+//  Modified 	: 27.07.2025
 //	Author		: Dance Maniac
 //	Description : Backpack class
 //  MIT License
@@ -56,6 +56,8 @@ CCustomBackpack::CCustomBackpack()
 	m_fRadiationProtection		= 0.0f;
 
 	m_bUseAttach				= false;
+	m_bAutoCrouch				= true;
+	m_bInvOnIdle				= true;
 }
 
 CCustomBackpack::~CCustomBackpack()
@@ -101,6 +103,8 @@ void CCustomBackpack::Load(LPCSTR section)
 	m_fRadiationProtection		= READ_IF_EXISTS(pSettings, r_float, section, "radiation_protection", 0.0f);
 
 	m_bUseAttach				= READ_IF_EXISTS(pSettings, r_bool, section, "use_attaching", false);
+	m_bAutoCrouch				= READ_IF_EXISTS(pSettings, r_bool, section, "auto_crouch", true);
+	m_bInvOnIdle				= READ_IF_EXISTS(pSettings, r_bool, section, "inventory_on_idle", true);
 }
 
 void CCustomBackpack::shedule_Update(u32 dt)
@@ -130,7 +134,8 @@ void CCustomBackpack::OnMoveToRuck(EItemPlace prev)
 		g_actor_allow_ladder = true;
 		g_block_actor_movement = false;
 
-		Actor()->SetCamHeightFactor(pSettings->r_float("actor", "camera_height_factor"));
+		if (m_bAutoCrouch)
+			Actor()->SetCamHeightFactor(pSettings->r_float("actor", "camera_height_factor"));
 	}
 
 	StopCurrentAnimWithoutCallback();
@@ -164,7 +169,8 @@ void CCustomBackpack::OnDrop()
 	g_actor_allow_ladder = true;
 	g_block_actor_movement = false;
 
-	Actor()->SetCamHeightFactor(pSettings->r_float("actor", "camera_height_factor"));
+	if (m_bAutoCrouch)
+		Actor()->SetCamHeightFactor(pSettings->r_float("actor", "camera_height_factor"));
 }
 
 void CCustomBackpack::OnBeforeDrop()
@@ -174,7 +180,8 @@ void CCustomBackpack::OnBeforeDrop()
 	g_actor_allow_ladder = true;
 	g_block_actor_movement = false;
 
-	Actor()->SetCamHeightFactor(pSettings->r_float("actor", "camera_height_factor"));
+	if (m_bAutoCrouch)
+		Actor()->SetCamHeightFactor(pSettings->r_float("actor", "camera_height_factor"));
 }
 
 void CCustomBackpack::HideBackpack()
@@ -220,11 +227,16 @@ void CCustomBackpack::OnStateSwitch(u32 S, u32 old_state)
 			g_actor_allow_ladder = false;
 			g_block_actor_movement = true;
 
-			Actor()->SetCamHeightFactor(start_cam_height / 2.0f);
+			if (m_bAutoCrouch)
+				Actor()->SetCamHeightFactor(start_cam_height / 2.0f);
 
 			g_player_hud->attach_item(this);
 			m_sounds.PlaySound("sndShow", Fvector().set(0, 0, 0), this, true, false);
 			PlayHUDMotion("anm_show", FALSE, this, GetState());
+
+			if (!m_bInvOnIdle && pGameSP && pGameSP->InventoryMenu && !pGameSP->InventoryMenu->IsShown())
+				pGameSP->InventoryMenu->ShowDialog1(false);
+
 			SetPending(TRUE);
 		}break;
 	case eHiding:
@@ -232,7 +244,8 @@ void CCustomBackpack::OnStateSwitch(u32 S, u32 old_state)
 			g_actor_allow_ladder = true;
 			g_block_actor_movement = false;
 
-			Actor()->SetCamHeightFactor(start_cam_height);
+			if (m_bAutoCrouch)
+				Actor()->SetCamHeightFactor(start_cam_height);
 
 			m_sounds.PlaySound("sndHide", Fvector().set(0, 0, 0), this, true, false);
 			PlayHUDMotion("anm_hide", FALSE, this, GetState());
@@ -246,7 +259,7 @@ void CCustomBackpack::OnStateSwitch(u32 S, u32 old_state)
 		{
 			PlayAnimIdle();
 
-			if (pGameSP && pGameSP->InventoryMenu && !pGameSP->InventoryMenu->IsShown())
+			if (m_bInvOnIdle && pGameSP && pGameSP->InventoryMenu && !pGameSP->InventoryMenu->IsShown())
 				pGameSP->InventoryMenu->ShowDialog1(false);
 
 			SetPending(FALSE);
