@@ -211,18 +211,24 @@ protected:
 	BOOL					m_bAutoSpawnAmmo;
 public:
 			u8   m_sub_state;
-			bool IsGrenadeLauncherAttached	() const;
-			bool IsScopeAttached			() const;
-			bool IsSilencerAttached			() const;
-			bool IsLaserAttached			() const;
-			bool IsTacticalTorchAttached	() const;
 
-	virtual bool GrenadeLauncherAttachable();
-	virtual bool ScopeAttachable();
-	virtual bool SilencerAttachable();
-	virtual bool LaserAttachable();
-	virtual bool TacticalTorchAttachable();
+			bool IsAddonAttached			(ALife::EWeaponAddonStatus addon_status, int addon_state) const;
 
+			bool IsGrenadeLauncherAttached	() const { return IsAddonAttached(m_eGrenadeLauncherStatus,	m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher); }
+			bool IsScopeAttached			() const { return IsAddonAttached(m_eScopeStatus,			m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonScope); }
+			bool IsSilencerAttached			() const { return IsAddonAttached(m_eSilencerStatus,		m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonSilencer); }
+			bool IsLaserAttached			() const { return IsAddonAttached(m_eLaserDesignatorStatus,	m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator); }
+			bool IsTacticalTorchAttached	() const { return IsAddonAttached(m_eTacticalTorchStatus,	m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch); }
+
+			bool IsAddonAttachedBySection	(shared_str addon_name) const;
+	virtual bool AddonAttachable			(ALife::EWeaponAddonStatus addon_status) const;
+	
+	virtual bool GrenadeLauncherAttachable	() const {return AddonAttachable(m_eGrenadeLauncherStatus);}
+	virtual bool ScopeAttachable			() const {return AddonAttachable(m_eScopeStatus);}
+	virtual bool SilencerAttachable			() const {return AddonAttachable(m_eSilencerStatus);}
+	virtual bool LaserAttachable			() const {return AddonAttachable(m_eLaserDesignatorStatus);}
+	virtual bool TacticalTorchAttachable	() const {return AddonAttachable(m_eTacticalTorchStatus);}
+			
 	ALife::EWeaponAddonStatus	get_GrenadeLauncherStatus	() const { return m_eGrenadeLauncherStatus; }
 	ALife::EWeaponAddonStatus	get_ScopeStatus				() const { return m_eScopeStatus; }
 	ALife::EWeaponAddonStatus	get_SilencerStatus			() const { return m_eSilencerStatus; }

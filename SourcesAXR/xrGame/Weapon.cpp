@@ -2315,62 +2315,34 @@ BOOL CWeapon::IsEmptyMagazine() const
 	return (iAmmoElapsed == 0);
 }
 
-bool CWeapon::IsGrenadeLauncherAttached() const
+bool CWeapon::IsAddonAttached(ALife::EWeaponAddonStatus addon_status, int addon_state) const
 {
-	return (ALife::eAddonAttachable == m_eGrenadeLauncherStatus &&
-			0 != (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher)) || 
-			ALife::eAddonPermanent == m_eGrenadeLauncherStatus;
+	return (ALife::eAddonAttachable == addon_status &&
+			0 != (addon_state)) || 
+			ALife::eAddonPermanent == addon_status;
 }
 
-bool CWeapon::IsScopeAttached() const
+bool CWeapon::IsAddonAttachedBySection(shared_str addon_name) const
 {
-	return (ALife::eAddonAttachable == m_eScopeStatus &&
-			0 != (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonScope)) || 
-			ALife::eAddonPermanent == m_eScopeStatus;
-
+	if (addon_name == m_sScopeName.c_str() || addon_name == m_sScopeName)
+		return IsScopeAttached();
+	else if (addon_name == m_sSilencerName.c_str() || addon_name == m_sSilencerName)
+		return IsSilencerAttached();
+	else if (addon_name == m_sGrenadeLauncherName.c_str() || addon_name == m_sGrenadeLauncherName)
+		return IsGrenadeLauncherAttached();
+	else if (addon_name == m_sLaserName.c_str() || addon_name == m_sLaserName)
+		return IsLaserAttached();
+	else if (addon_name == m_sTacticalTorchName.c_str() || addon_name == m_sTacticalTorchName)
+		return IsTacticalTorchAttached();
+	else
+		return false;
 }
 
-bool CWeapon::IsSilencerAttached() const
+bool CWeapon::AddonAttachable(ALife::EWeaponAddonStatus addon_status) const
 {
-	return (ALife::eAddonAttachable == m_eSilencerStatus &&
-			0 != (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonSilencer)) || 
-			ALife::eAddonPermanent == m_eSilencerStatus;
+	return (ALife::eAddonAttachable == addon_status);
 }
 
-bool CWeapon::IsLaserAttached() const
-{
-	return (ALife::eAddonAttachable == m_eLaserDesignatorStatus &&
-		0 != (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator)) ||
-		ALife::eAddonPermanent == m_eLaserDesignatorStatus;
-}
-
-bool CWeapon::IsTacticalTorchAttached() const
-{
-	return (ALife::eAddonAttachable == m_eTacticalTorchStatus &&
-		0 != (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch)) ||
-		ALife::eAddonPermanent == m_eTacticalTorchStatus;
-}
-
-bool CWeapon::GrenadeLauncherAttachable()
-{
-	return (ALife::eAddonAttachable == m_eGrenadeLauncherStatus);
-}
-bool CWeapon::ScopeAttachable()
-{
-	return (ALife::eAddonAttachable == m_eScopeStatus);
-}
-bool CWeapon::SilencerAttachable()
-{
-	return (ALife::eAddonAttachable == m_eSilencerStatus);
-}
-bool CWeapon::LaserAttachable()
-{
-	return (ALife::eAddonAttachable == m_eLaserDesignatorStatus);
-}
-bool CWeapon::TacticalTorchAttachable()
-{
-	return (ALife::eAddonAttachable == m_eTacticalTorchStatus);
-}
 
 void CWeapon::HUD_VisualBulletUpdate(bool force, int force_idx)
 {

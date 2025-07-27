@@ -108,6 +108,8 @@ public:
 	virtual bool	CanAttach		(PIItem pIItem);
 	virtual bool	CanDetach		(const char* item_section_name);
 
+	virtual bool	AttachIsBlockedByAnotherAddon(shared_str addon_name);
+
 	virtual void	InitAddons		();
 
 	virtual bool	Action			(s32 cmd, u32 flags);
@@ -164,6 +166,8 @@ protected:
 	bool m_opened;
 	bool m_bUseFiremodeChangeAnim;
 	bool m_bIsRevolver;
+
+	std::vector<shared_str> attach_blocker_addons;
 
 public:
 	virtual void	OnZoomIn			();
