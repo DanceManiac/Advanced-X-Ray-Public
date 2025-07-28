@@ -101,13 +101,14 @@ FS_file_list_ex::FS_file_list_ex(LPCSTR path, u32 flags, LPCSTR mask)
 {
 	FS_Path* P = FS.get_path(path);
 	P->m_Flags.set	(FS_Path::flNeedRescan,TRUE);
-	FS.m_Flags.set	(CLocatorAPI::flNeedCheck,TRUE);
+	FS.m_Flags.set	(CLocatorAPI::flNeedExistsCheck,TRUE);
 	FS.rescan_pathes();
 
 	FS_FileSet		files;
 	FS.file_list(files,path,flags,mask);
 
-	for(FS_FileSetIt it=files.begin();it!=files.end();++it){
+	for (FS_FileSetIt it = files.begin(); it != files.end(); ++it)
+	{
 		m_file_items.push_back	(FS_item());
 		FS_item& itm			= m_file_items.back();
 		ZeroMemory				(itm.name,sizeof(itm.name));
@@ -116,7 +117,7 @@ FS_file_list_ex::FS_file_list_ex(LPCSTR path, u32 flags, LPCSTR mask)
 		itm.size				= it->size;
 	}
 
-	FS.m_Flags.set	(CLocatorAPI::flNeedCheck,FALSE);
+	FS.m_Flags.set	(CLocatorAPI::flNeedExistsCheck,FALSE);
 }
 
 void FS_file_list_ex::Sort(u32 flags)

@@ -105,7 +105,7 @@ void FS_Path::_update(xr_string& dest, LPCSTR src)const
 void FS_Path::rescan_path_cb	()
 {
 	m_Flags.set(flNeedRescan,TRUE);
-    FS.m_Flags.set(CLocatorAPI::flNeedRescan,TRUE);
+    //FS.m_Flags.set(CLocatorAPI::flNeedRescan,TRUE);
 }
 
 bool XRCORE_API PatternMatch(LPCSTR s, LPCSTR mask)

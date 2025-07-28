@@ -946,7 +946,7 @@ void get_files_list(xr_vector<shared_str>& files, LPCSTR dir, LPCSTR file_ext)
 
 	FS_Path* P = FS.get_path(dir);
 	P->m_Flags.set(FS_Path::flNeedRescan, TRUE);
-	FS.m_Flags.set(CLocatorAPI::flNeedCheck, TRUE);
+	FS.m_Flags.set(CLocatorAPI::flNeedExistsCheck, TRUE);
 	FS.rescan_pathes();
 
 	LPCSTR fext;
@@ -967,7 +967,7 @@ void get_files_list(xr_vector<shared_str>& files, LPCSTR dir, LPCSTR file_ext)
 		strncpy_s(fn, sizeof(fn), fn_ext, xr_strlen(fn_ext) - len_str_ext);
 		files.push_back(fn);
 	}
-	FS.m_Flags.set(CLocatorAPI::flNeedCheck, FALSE);
+	FS.m_Flags.set(CLocatorAPI::flNeedExistsCheck, FALSE);
 }
 
 #include "UIGameCustom.h"

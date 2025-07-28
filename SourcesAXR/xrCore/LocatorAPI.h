@@ -28,6 +28,8 @@ public:
 		u32						size_real;		// 
 		u32						size_compressed;// if (size_real==size_compressed) - uncompressed
         u32						modif;			// for editor
+
+		shared_str real_file_path;
 	};
 	struct	archive
 	{
@@ -81,7 +83,7 @@ private:
 	FFVec						rec_files;
 
     int							m_iLockRescan	; 
-    void						check_pathes	();
+    //void						check_pathes	();
 
 	files_set					m_files			;
 	BOOL						bNoRecurse		;
@@ -91,16 +93,23 @@ private:
 
 	void						Register		(LPCSTR name, u32 vfs, u32 crc, u32 ptr, u32 size_real, u32 size_compressed, u32 modif);
 	void						ProcessArchive	(LPCSTR path);
-	void						ProcessOne		(LPCSTR path, void* F);
-	bool						Recurse			(LPCSTR path);	
+	void						ProcessExternalAddons(LPCSTR base_path);
+	void						ProcessOne		(LPCSTR path, void* F, bool bNoRecurse);
+	bool						Recurse			(LPCSTR path, bool bNoRecurse);
 
 	files_it					file_find_it	(LPCSTR n);
 
 	CInifile*					gamedata_unused_references = nullptr;
 
+	// addons support. used only in ProcessExternalAddons
+	xr_string addon_base_path;
+	xr_string addon_subdir;
+	xr_string target_base_path;
+	// end of addons support :)
+
 public:
 	enum{
-		flNeedRescan			= (1<<0),
+		//flNeedRescan			= (1<<0),
 		flBuildCopy				= (1<<1),
 		flReady					= (1<<2),
 		flEBuildCopy			= (1<<3),
@@ -108,20 +117,21 @@ public:
 		flTargetFolderOnly		= (1<<5),
 		flCacheFiles			= (1<<6),
 		flScanAppRoot			= (1<<7),
-		flNeedCheck				= (1<<8),
+		flNeedExistsCheck		= (1<<8),
 		flDumpFileActivity		= (1<<9),
+		flLoadingAddons			= (1<<10),
 	};    
 	Flags32						m_Flags			;
 	u32							dwAllocGranularity;
 	u32							dwOpenCounter;
 
 private:
-			void				check_cached_files	(LPSTR fname, const u32 &fname_size, const file &desc, LPCSTR &source_name);
+			void				check_cached_files	(LPCSTR fname, const u32 &fname_size, const file &desc, LPCSTR &source_name);
 
-			void				file_from_cache_impl(IReader *&R, LPSTR fname, const file &desc);
-			void				file_from_cache_impl(CStreamReader *&R, LPSTR fname, const file &desc);
+			void				file_from_cache_impl(IReader *&R, LPCSTR fname, const file &desc);
+			void				file_from_cache_impl(CStreamReader *&R, LPCSTR fname, const file &desc);
 	template <typename T>
-			void				file_from_cache		(T *&R, LPSTR fname, const u32 &fname_size, const file &desc, LPCSTR &source_name);
+			void				file_from_cache		(T *&R, LPCSTR fname, const u32 &fname_size, const file &desc, LPCSTR &source_name);
 			
 			void				file_from_archive	(IReader *&R, LPCSTR fname, const file &desc);
 			void				file_from_archive	(CStreamReader *&R, LPCSTR fname, const file &desc);
@@ -201,8 +211,8 @@ public:
 	void						rescan_path			(LPCSTR full_path, BOOL bRecurse);
 	// editor functions
 	void						rescan_pathes		();
-	void						lock_rescan			();
-	void						unlock_rescan		();
+	//void						lock_rescan			();
+	//void						unlock_rescan		();
 };
 
 extern XRCORE_API	CLocatorAPI*					xr_FS;
