@@ -218,9 +218,9 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 	Fvector2 pos;
 	float h = m_Prop_line->GetWndPos().y + m_Prop_line->GetWndSize().y;
 
-	bool ShowChargeTorch = GameConstants::GetTorchHasBattery();
-	bool ShowChargeArtDet = GameConstants::GetArtDetectorUseBattery();
-	bool ShowChargeAnomDet = GameConstants::GetAnoDetectorUseBattery();
+	bool ShowChargeTorch = psActorFlags.test(AF_USE_BATTERY);
+	bool ShowChargeArtDet = psActorFlags.test(AF_USE_BATTERY);
+	bool ShowChargeAnomDet = psActorFlags.test(AF_USE_BATTERY);
 	
 	if (ShowChargeTorch && pTorch || ShowChargeArtDet && pDet || ShowChargeAnomDet && pAnomDet || pBattery)
 	{

@@ -21,7 +21,8 @@
 #include "CustomDetector.h"
 #include "Torch.h"
 #include "AnomalyDetector.h"
-
+#include "../Weapon.h"
+#include "../CustomOutfit.h"
 #include "AdvancedXrayGameConstants.h"
 
 CUICellItem* CUICellItem::m_mouse_selected_item = NULL;
@@ -337,7 +338,14 @@ void CUICellItem::UpdateConditionProgressBar()
 			m_pConditionState->SetWndPos(Fvector2().set(x, y));
 			m_pConditionState->SetProgressPos(iCeil(itm->GetCondition() * 13.0f) / 13.0f);
 
-			m_pConditionState->Show(true);
+			if (psActorFlags.test(AF_INV_ITEMCONDITION))
+			{
+				m_pConditionState->Show(true);
+			}
+			else
+			{
+				m_pConditionState->Show(false);
+			}
 
 			return;
 		}
@@ -457,17 +465,17 @@ void CUICellItem::UpdateChargeLevelProgressBar()
 
 			m_pChargeState->SetWndPos(Fvector2().set(x, y));
 
-			if (torch && GameConstants::GetTorchHasBattery())
+			if (torch && psActorFlags.test(AF_USE_BATTERY))
 			{
 				m_pChargeState->SetProgressPos(iCeil(torch->GetCurrentChargeLevel() * 13.0f) / 13.0f);
 				m_pChargeState->Show(true);
 			}
-			else if (artefact_detector && GameConstants::GetArtDetectorUseBattery())
+			else if (artefact_detector && psActorFlags.test(AF_USE_BATTERY))
 			{
 				m_pChargeState->SetProgressPos(iCeil(artefact_detector->GetCurrentChargeLevel() * 13.0f) / 13.0f);
 				m_pChargeState->Show(true);
 			}
-			else if (anomaly_detector && GameConstants::GetAnoDetectorUseBattery())
+			else if (anomaly_detector && psActorFlags.test(AF_USE_BATTERY))
 			{
 				m_pChargeState->SetProgressPos(iCeil(anomaly_detector->GetCurrentChargeLevel() * 13.0f) / 13.0f);
 				m_pChargeState->Show(true);

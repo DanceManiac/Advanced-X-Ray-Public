@@ -6,15 +6,6 @@
 #include "Inventory.h"
 #include "CustomBackpack.h"
 
-bool	m_bTorchUseBattery = false;
-bool	m_bArtefactDetectorUseBattery = false;
-bool	m_bAnomalyDetectorUseBattery = false;
-bool	m_bLimitedBolts = false;
-bool	m_bActorThirst = false;
-bool	m_bActorIntoxication = false;
-bool	m_bActorSleepeness = false;
-bool	m_bActorAlcoholism = false;
-bool	m_bActorNarcotism = false;
 bool	m_bActorFrostbite = false;
 bool	m_bArtefactsDegradation = false;
 bool	m_bMultiItemPickup = true;
@@ -25,7 +16,6 @@ bool	m_bStopActorIfShoot = false;
 bool	m_bReloadIfSprint = true;
 bool	m_bColorizeValues = false;
 bool	m_bArtefactsRanks = false;
-bool	m_bUseFilters = false;
 bool	m_bHideHudOnMaster = false;
 bool	m_bActorSkills = false;
 bool	m_bSleepInfluenceOnPsyHealth = false;
@@ -67,15 +57,6 @@ namespace GameConstants
 {
 	void LoadConstants()
 	{
-		m_bTorchUseBattery = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "torch_use_battery", false);
-		m_bArtefactDetectorUseBattery = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "artefact_detector_use_battery", false);
-		m_bAnomalyDetectorUseBattery = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "anomaly_detector_use_battery", false);
-		m_bLimitedBolts = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "limited_bolts", false);
-		m_bActorThirst = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "actor_thirst_enabled", false);
-		m_bActorIntoxication = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "actor_intoxication_enabled", false);
-		m_bActorSleepeness = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "actor_sleepeness_enabled", false);
-		m_bActorAlcoholism = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "actor_alcoholism_enabled", false);
-		m_bActorNarcotism = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "actor_narcotism_enabled", false);
 		m_bActorFrostbite = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "actor_frostbite_enabled", false);
 		m_bArtefactsDegradation = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "artefacts_degradation", false);
 		m_bMultiItemPickup = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "multi_item_pickup", true);
@@ -85,7 +66,6 @@ namespace GameConstants
 		m_bStopActorIfShoot = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "stop_actor_sprint_if_shoot", false);
 		m_bReloadIfSprint = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "enable_reload_if_sprint", true);
 		m_bArtefactsRanks = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "enable_artefacts_ranks", false);
-		m_bUseFilters = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "enable_antigas_filters", false);
 		m_bHideHudOnMaster = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "hide_hud_on_master", false);
 		m_bActorSkills = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "actor_skills_enabled", false);
 		m_bSleepInfluenceOnPsyHealth = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "sleepeness_infl_on_psy_health", false);
@@ -125,51 +105,6 @@ namespace GameConstants
 		Msg("# Advanced X-Ray GameConstants are loaded");
 	}
 	
-	bool GetTorchHasBattery()
-	{
-		return m_bTorchUseBattery;
-	}
-
-	bool GetArtDetectorUseBattery()
-	{
-		return m_bArtefactDetectorUseBattery;
-	}
-
-	bool GetAnoDetectorUseBattery()
-	{
-		return m_bAnomalyDetectorUseBattery;
-	}
-
-	bool GetLimitedBolts()
-	{
-		return m_bLimitedBolts;
-	}
-
-	bool GetActorThirst()
-	{
-		return m_bActorThirst;
-	}
-
-	bool GetActorIntoxication()
-	{
-		return m_bActorIntoxication;
-	}
-
-	bool GetActorSleepeness()
-	{
-		return m_bActorSleepeness;
-	}
-
-	bool GetActorAlcoholism()
-	{
-		return m_bActorAlcoholism;
-	}
-
-	bool GetActorNarcotism()
-	{
-		return m_bActorNarcotism;
-	}
-
 	bool GetActorFrostbite()
 	{
 		return m_bActorFrostbite;
@@ -226,11 +161,6 @@ namespace GameConstants
 	bool GetAfRanks()
 	{
 		return m_bArtefactsRanks;
-	}
-
-	bool GetOutfitUseFilters()
-	{
-		return m_bUseFilters;
 	}
 
 	bool GetHideHudOnMaster()

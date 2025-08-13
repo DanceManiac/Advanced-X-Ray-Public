@@ -935,10 +935,7 @@ float CGamePersistent::GetActorBleeding()
 
 float CGamePersistent::GetActorIntoxication()
 {
-	if (GameConstants::GetActorIntoxication())
-		return	(Actor()->conditions().GetIntoxication());
-
-	return 0.0f;
+	return	(Actor()->conditions().GetIntoxication());
 }
 
 float CGamePersistent::GetActorFrostbite()

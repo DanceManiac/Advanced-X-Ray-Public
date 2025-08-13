@@ -160,7 +160,7 @@ void CEatableItem::UpdateInRuck(CActor* actor)
 {
 	UpdateUseAnim(actor);
 
-	if (GameConstants::GetFoodRotting() && GameConstants::GetActorIntoxication())
+	if (psActorFlags.test(AF_USE_BATTERY) && GameConstants::GetFoodRotting())
 	{
 		float rotten_coef = (m_fFoodRottingCoef / 128) * Device.fTimeDelta;
 		static float spoliage = m_fSpoliage;

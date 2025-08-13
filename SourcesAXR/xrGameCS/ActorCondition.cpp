@@ -262,25 +262,12 @@ void CActorCondition::UpdateCondition()
 	{
 		UpdateSatiety();
 		UpdateBoosters();
-
-		if (GameConstants::GetActorThirst())
-			UpdateThirst();
-
-		if (GameConstants::GetActorIntoxication())
-			UpdateIntoxication();
-
-		if (GameConstants::GetActorSleepeness())
-			UpdateSleepeness();
-		
-		if (GameConstants::GetActorAlcoholism())
-			UpdateAlcoholism();
-
-		if (GameConstants::GetActorNarcotism())
-			UpdateNarcotism();
-
-		if (GameConstants::GetActorFrostbite())
-			UpdateFrostbite();
-
+		UpdateThirst();
+		UpdateIntoxication();
+		UpdateSleepeness();
+		UpdateAlcoholism();
+		UpdateNarcotism();
+		UpdateFrostbite();
 		UpdatePsyHealth();
 
 		m_fAlcohol		+= m_fV_Alcohol*m_fDeltaTime;
@@ -367,21 +354,11 @@ void CActorCondition::UpdateCondition()
 	UpdateSatiety();
 	UpdateBoosters();
 	UpdatePsyHealth();
-
-	if (GameConstants::GetActorThirst())
-		UpdateThirst();
-
-	if (GameConstants::GetActorIntoxication())
-		UpdateIntoxication();
-
-	if (GameConstants::GetActorSleepeness())
-		UpdateSleepeness();
-
-	if (GameConstants::GetActorAlcoholism())
-		UpdateAlcoholism();
-
-	if (GameConstants::GetActorNarcotism())
-		UpdateNarcotism();
+	UpdateThirst();
+	UpdateIntoxication();
+	UpdateSleepeness();
+	UpdateAlcoholism();
+	UpdateNarcotism();
 
 	if (GameConstants::GetActorFrostbite())
 		UpdateFrostbite();

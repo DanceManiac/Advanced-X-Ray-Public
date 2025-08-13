@@ -109,7 +109,7 @@ void CDetectorAnomaly::Load(LPCSTR section)
 		}
 	}
 
-	if (GameConstants::GetAnoDetectorUseBattery())
+	if (psActorFlags.test(AF_USE_BATTERY))
 	{
 		float rnd_charge = ::Random.randF(0.0f, m_fMaxChargeLevel);
 		m_fCurrentChargeLevel = rnd_charge;
@@ -153,7 +153,7 @@ void CDetectorAnomaly::UpdateCL()
 	if( !H_Parent()  ) return;
 	if(!m_pCurrentActor) return;
 
-	if (GameConstants::GetAnoDetectorUseBattery())
+	if (psActorFlags.test(AF_USE_BATTERY))
 		UpdateChargeLevel();
 
 	if (m_fCurrentChargeLevel <= 0.0f)

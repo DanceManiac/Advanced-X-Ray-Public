@@ -142,7 +142,7 @@ void CTorch::Load(LPCSTR section)
 	}
 
 	//Случайный начальный заряд батареек в фонарике, если включена опция ограниченного заряда батареек у фонарика
-	if (GameConstants::GetTorchHasBattery())
+	if (psActorFlags.test(AF_USE_BATTERY))
 	{
 		float rnd_charge = ::Random.randF(0.0f, m_fMaxChargeLevel);
 		m_fCurrentChargeLevel = rnd_charge;
@@ -449,7 +449,7 @@ void CTorch::OnH_B_Independent(bool just_before_destroy)
 
 void CTorch::UpdateChargeLevel(void)
 {
-	if (GameConstants::GetTorchHasBattery())
+	if (psActorFlags.test(AF_USE_BATTERY))
 	{
 		float uncharge_coef = (m_fUnchargeSpeed / 16) * Device.fTimeDelta;
 		ChangeChargeLevel(-uncharge_coef);
@@ -460,6 +460,11 @@ void CTorch::UpdateChargeLevel(void)
 
 		light_render->set_range(range);
 		m_delta_h = PI_DIV_2 - atan((range*0.5f) / _abs(TORCH_OFFSET.x));
+
+		if (psActorFlags.test(AF_DBG_BATTERY_USE_CONSOLE))
+		{
+			Msg("Torch Charge is: %f", m_fCurrentChargeLevel); //Для тестов // For tests
+		}
 
 		if (m_fCurrentChargeLevel <= 0.0)
 			Switch(false);
@@ -718,6 +723,11 @@ void CTorch::Recharge(float val)
 {
 	m_fCurrentChargeLevel += val;
 	clamp(m_fCurrentChargeLevel, 0.f, m_fMaxChargeLevel);
+
+	if (psActorFlags.test(AF_DBG_BATTERY_USE_CONSOLE))
+	{
+		Msg("Battery Charge in Recharge is: %f", val); //Для тестов // For tests
+	}
 
 	SetChargeLevel(m_fCurrentChargeLevel);
 }

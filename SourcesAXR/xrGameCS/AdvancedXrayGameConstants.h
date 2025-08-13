@@ -4,15 +4,6 @@ namespace GameConstants
 {
 	void LoadConstants();
 
-	bool GetTorchHasBattery();
-	bool GetArtDetectorUseBattery();
-	bool GetAnoDetectorUseBattery();
-	bool GetLimitedBolts();
-	bool GetActorThirst();
-	bool GetActorIntoxication();
-	bool GetActorSleepeness();
-	bool GetActorAlcoholism();
-	bool GetActorNarcotism();
 	bool GetActorFrostbite();
 	bool GetArtefactsDegradation();
 	bool GetMultiItemPickup();
@@ -23,7 +14,6 @@ namespace GameConstants
 	bool GetReloadIfSprint();
 	bool GetColorizeValues();
 	bool GetAfRanks();
-	bool GetOutfitUseFilters();
 	bool GetHideHudOnMaster();
 	bool GetActorSkillsEnabled();
 	bool GetSleepInfluenceOnPsyHealth();

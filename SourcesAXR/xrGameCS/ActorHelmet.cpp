@@ -135,7 +135,7 @@ void CHelmet::Load(LPCSTR section)
 		}
 	}
 
-	if (GameConstants::GetOutfitUseFilters())
+	if (psActorFlags.test(AF_USE_FILTERS))
 	{
 		float rnd_cond = ::Random.randF(0.0f, m_fMaxFilterCondition);
 		m_fFilterCondition = rnd_cond;
@@ -230,7 +230,7 @@ void CHelmet::UpdateCL()
 {
 	inherited::UpdateCL();
 
-	if (GameConstants::GetOutfitUseFilters())
+	if (psActorFlags.test(AF_USE_FILTERS))
 		UpdateFilterCondition();
 }
 
@@ -268,7 +268,8 @@ void CHelmet::Hit(float hit_power, ALife::EHitType hit_type)
 	hit_power *= GetHitImmunity(hit_type);
 	ChangeCondition(-hit_power);
 
-	if (!GameConstants::GetOutfitUseFilters() || !Actor()->inventory().InSlot(this) || !m_bUseFilter)
+	if (!psActorFlags.test(AF_USE_FILTERS) || !Actor()->inventory().InSlot(this) || !m_bUseFilter)
+//	if (!GameConstants::GetOutfitUseFilters() || !Actor()->inventory().InSlot(this) || !m_bUseFilter)
 		return;
 
 	switch (hit_type)

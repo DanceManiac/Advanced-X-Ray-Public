@@ -435,7 +435,7 @@ void CUIOutfitItem::SetInfo(CCustomOutfit* cur_outfit, CCustomOutfit* slot_outfi
 
 	float cur_filter = cur_outfit->GetFilterCondition() > 0.f ? (cur_outfit->GetFilterCondition() * 100.0f + 1.0f - EPS) : 0.f;
 
-	if (GameConstants::GetOutfitUseFilters() && cur_outfit->m_bUseFilter)
+	if (psActorFlags.test(AF_USE_FILTERS) && cur_outfit->m_bUseFilter)
 	{
 		m_outfit_filter_condition->SetProgressValue(cur_filter, cur_filter);
 
@@ -561,7 +561,7 @@ void CUIOutfitItem::SetInfo(CHelmet* cur_helmet, CHelmet* slot_helmet)
 		slot_filter = slot_helmet->GetFilterCondition() > 0.f ? (slot_helmet->GetFilterCondition() * 100.0f + 1.0f - EPS) : 0.f;
 	}
 
-	if (GameConstants::GetOutfitUseFilters() && (cur_helmet->m_bUseFilter || slot_helmet && (slot_helmet != cur_helmet) && slot_helmet->m_bUseFilter))
+	if (psActorFlags.test(AF_USE_FILTERS) && (cur_helmet->m_bUseFilter || slot_helmet && (slot_helmet != cur_helmet) && slot_helmet->m_bUseFilter))
 	{
 		m_outfit_filter_condition->SetProgressValue(cur_filter, slot_filter);
 

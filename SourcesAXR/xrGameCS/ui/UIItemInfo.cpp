@@ -556,7 +556,7 @@ void CUIItemInfo::TryAddItemInfo(CInventoryItem& pInvItem)
 	CAntigasFilter* pFilter = smart_cast<CAntigasFilter*>(&pInvItem);
 	CRepairKit* pKit = smart_cast<CRepairKit*>(&pInvItem);
 
-	bool ShowChargeTorch = GameConstants::GetTorchHasBattery();
+	bool ShowChargeTorch = psActorFlags.test(AF_USE_BATTERY);
 
 	if ((pTorch && ShowChargeTorch || pArtefact_detector || pAnomaly_detector || pAf_container || pBackpack || pBattery || pFilter || pKit) && UIInventoryItem)
 	{

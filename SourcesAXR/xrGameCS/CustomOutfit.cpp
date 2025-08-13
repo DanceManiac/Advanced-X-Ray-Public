@@ -125,7 +125,7 @@ void CCustomOutfit::UpdateCL()
 	if (Actor())
 		DynamicHudGlass::UpdateDynamicHudGlass();
 
-	if (GameConstants::GetOutfitUseFilters())
+	if (psActorFlags.test(AF_USE_FILTERS))
 		UpdateFilterCondition();
 }
 
@@ -259,7 +259,7 @@ void CCustomOutfit::Load(LPCSTR section)
 		}
 	}
 
-	if (GameConstants::GetOutfitUseFilters())
+	if (psActorFlags.test(AF_USE_FILTERS))
 	{
 		float rnd_cond = ::Random.randF(0.0f, m_fMaxFilterCondition);
 		m_fFilterCondition = rnd_cond;
@@ -288,7 +288,8 @@ void CCustomOutfit::Hit(float hit_power, ALife::EHitType hit_type)
 	hit_power *= m_HitTypeK[hit_type];
 	ChangeCondition(-hit_power);
 
-	if (!GameConstants::GetOutfitUseFilters() || !Actor()->inventory().InSlot(this) || !m_bUseFilter)
+	if (!psActorFlags.test(AF_USE_FILTERS) || !Actor()->inventory().InSlot(this) || !m_bUseFilter)
+	//if (!GameConstants::GetOutfitUseFilters() || !Actor()->inventory().InSlot(this) || !m_bUseFilter)
 		return;
 
 	switch (hit_type)

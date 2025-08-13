@@ -41,7 +41,7 @@ void CBolt::State(u32 state)
 	} break;
 	case eThrowEnd:
 	{
-		if (GameConstants::GetLimitedBolts() && actor && (Level().CurrentViewEntity() == H_Parent()))
+		if (psActorFlags.test(AF_UNLIMITED_BOLTS) && actor && (Level().CurrentViewEntity() == H_Parent()))
 		{
 			if (m_pPhysicsShell) m_pPhysicsShell->Deactivate();
 			xr_delete(m_pPhysicsShell);
@@ -71,7 +71,7 @@ void CBolt::Throw()
 
 bool CBolt::Useful() const
 {
-	if (GameConstants::GetLimitedBolts())
+	if (psActorFlags.test(AF_UNLIMITED_BOLTS))
 		return true;
 	else
 		return false;

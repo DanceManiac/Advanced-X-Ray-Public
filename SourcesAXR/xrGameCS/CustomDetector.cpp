@@ -1,4 +1,4 @@
-#include "stdafx.h"
+п»ї#include "stdafx.h"
 #include "customdetector.h"
 #include "ui/ArtefactDetectorUI.h"
 #include "hudmanager.h"
@@ -290,7 +290,7 @@ void CCustomDetector::Load(LPCSTR section)
 		}
 	}
 
-	if (GameConstants::GetArtDetectorUseBattery())
+	if (psActorFlags.test(AF_USE_BATTERY))
 	{
 		float rnd_charge = ::Random.randF(0.0f, m_fMaxChargeLevel);
 		m_fCurrentChargeLevel = rnd_charge;
@@ -544,7 +544,7 @@ void CCustomDetector::UpdateCL()
 	inherited::UpdateCL();
 	UpdateLights();
 
-	if (GameConstants::GetArtDetectorUseBattery())
+	if (psActorFlags.test(AF_USE_BATTERY))
 		UpdateChargeLevel();
 
 	if(H_Parent()!=Level().CurrentEntity() )			return;
@@ -621,6 +621,12 @@ void CCustomDetector::UpdateChargeLevel(void)
 	{
 		float uncharge_coef = (m_fUnchargeSpeed / 16) * Device.fTimeDelta;
 		ChangeChargeLevel(-uncharge_coef);
+
+		if (psActorFlags.test(AF_DBG_BATTERY_USE_CONSOLE))
+		{
+			Msg("Charge detector: %f", m_fCurrentChargeLevel); //Р”Р»СЏ С‚РµСЃС‚РѕРІ // For tests
+		}
+
 	}
 }
 
@@ -650,7 +656,12 @@ void CCustomDetector::Recharge(float val)
 
 	SetChargeLevel(m_fCurrentChargeLevel);
 
-	//Msg("Переданый в детектор заряд: %f", val); //Для Тестов
+	//Msg("ГЏГҐГ°ГҐГ¤Г Г­Г»Г© Гў Г¤ГҐГІГҐГЄГІГ®Г° Г§Г Г°ГїГ¤: %f", val); //Г„Г«Гї Г’ГҐГ±ГІГ®Гў
+
+	if (psActorFlags.test(AF_DBG_BATTERY_USE_CONSOLE))
+	{
+		Msg("Charge transferred to the detector: %f", val); // Р”Р»СЏ С‚РµСЃС‚РѕРІ // For tests
+	}
 }
 
 bool CCustomDetector::ParentIsActor()

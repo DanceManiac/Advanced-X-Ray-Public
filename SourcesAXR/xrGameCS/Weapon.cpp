@@ -45,6 +45,7 @@ extern CUIXml*	pWpnScopeXml	= NULL;
 
 ENGINE_API extern float psHUD_FOV_def;
 static float last_hud_fov = psHUD_FOV_def;
+extern BOOL g_use_aim_inertion = 1;
 
 CWeapon::CWeapon()
 {
@@ -2806,6 +2807,7 @@ void CWeapon::OnZoomIn()
 
 	//EnableHudInertion					(FALSE);
 
+	EnableHudInertion(g_use_aim_inertion);
 
 	//if(m_zoom_params.m_bZoomDofEnabled && !IsScopeAttached())
 	//	GamePersistent().SetEffectorDOF	(m_zoom_params.m_ZoomDof);
@@ -2915,6 +2917,8 @@ CUIWindow* CWeapon::ZoomTexture()
 		return m_UIScope;
 	else
 		return NULL;
+
+	EnableHudInertion(TRUE);
 }
 
 void CWeapon::SwitchState(u32 S)

@@ -155,6 +155,8 @@ extern	BOOL	g_b_COD_PickUpMode;
 
 extern bool		g_saves_locked;
 
+extern	BOOL	g_use_aim_inertion;
+
 extern BOOL		m_b_animated_backpack;
 static BOOL		m_b_last_animated_backpack_status = m_b_animated_backpack;
 
@@ -2684,6 +2686,16 @@ CMD4(CCC_Integer,			"hit_anims_tune",						&tune_hit_anims,		0, 1);
 	CMD3(CCC_Mask,			"g_autopickup",			&psActorFlags,	AF_AUTOPICKUP);
 	CMD3(CCC_Mask,			"g_dynamic_music",		&psActorFlags,	AF_DYNAMIC_MUSIC);
 	CMD1(CCC_GameLanguage,	"g_language");
+
+	//LFO
+	CMD3(CCC_Mask,			"g_scopes_shoot_zoom_out",					&psActorFlags, AF_WPN_ZOOM_OUT_SHOOT);
+	CMD4(CCC_Integer,		"g_use_aim_inertion",						&g_use_aim_inertion, 0, 1);
+	CMD3(CCC_Mask,			"g_inventory_itm_con",						&psActorFlags, AF_INV_ITEMCONDITION);
+	CMD3(CCC_Mask,			"g_unlimited_bolts",						&psActorFlags, AF_UNLIMITED_BOLTS);
+	CMD3(CCC_Mask,			"g_use_battery",							&psActorFlags, AF_USE_BATTERY);
+	CMD3(CCC_Mask,			"dbg_battery_usage",						&psActorFlags, AF_DBG_BATTERY_USE_CONSOLE); // for modding, you can see the battery uncharge in console
+	CMD3(CCC_Mask,			"g_use_filters",							&psActorFlags, AF_USE_FILTERS);
+
 
 #ifdef DEBUG
 	CMD1(CCC_LuaHelp,				"lua_help");
