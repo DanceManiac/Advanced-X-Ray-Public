@@ -450,7 +450,7 @@ _value_type CStalkerPropertyEvaluatorShouldThrowGrenade::evaluate	()
 		return					(false);
 
 	// throw grenades only in case when we have them
-	if (object().inventory().m_slots[3].m_pIItem == 0)
+	if (object().inventory().m_slots[4].m_pIItem == 0)
 		return					(false);
 
 	// do not throw grenades when there is no enemies
@@ -478,7 +478,7 @@ _value_type CStalkerPropertyEvaluatorShouldThrowGrenade::evaluate	()
 
 	// here we should check if we are unable to stop grenade throwing
 	// in this case we should return true
-	if (object().inventory().m_slots[3].m_pIItem == object().inventory().ActiveItem())
+	if (object().inventory().m_slots[4].m_pIItem == object().inventory().ActiveItem())
 		return					(true);
 
 	// do not throw grenades when throw trajectory is obstructed

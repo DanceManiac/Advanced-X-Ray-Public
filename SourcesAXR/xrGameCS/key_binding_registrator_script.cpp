@@ -46,6 +46,7 @@ void key_binding_registrator::script_register(lua_State *L)
 				value("kWPN_4",						int(kWPN_4)),
 				value("kWPN_5",						int(kWPN_5)),
 				value("kWPN_6",						int(kWPN_6)),
+				value("kWPN_7",						int(kWPN_7)),
 				value("kWPN_NEXT",					int(kWPN_NEXT)),
 //.				value("kWPN_PREV",					int(kWPN_PREV)),
 				value("kWPN_FIRE",					int(kWPN_FIRE)),

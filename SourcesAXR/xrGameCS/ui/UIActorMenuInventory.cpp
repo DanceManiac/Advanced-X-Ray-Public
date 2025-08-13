@@ -67,6 +67,7 @@ void CUIActorMenu::InitInventoryMode()
 	m_pInventoryOutfitList->Show		(true);
 	m_pInventoryDetectorList->Show		(true);
 	m_pInventoryPistolList->Show		(true);
+	m_pInventorySmgList->Show			(true);
 	m_pInventoryAutomaticList->Show		(true);
 	m_pInventoryBoltList->Show			(true);
 
@@ -481,18 +482,20 @@ void CUIActorMenu::InitInventoryContents(CUIDragDropListEx* pBagList)
 	CUIDragDropListEx*			curr_list = NULL;
 	//Slots
 	InitCellForSlot				(PISTOL_SLOT);
+	InitCellForSlot				(SMG_SLOT);
 	InitCellForSlot				(RIFLE_SLOT);
 	InitCellForSlot				(OUTFIT_SLOT);
 	InitCellForSlot				(DETECTOR_SLOT);
-	InitCellForSlot(KNIFE_SLOT);
-	InitCellForSlot(APPARATUS_SLOT);
-	InitCellForSlot(TORCH_SLOT);
-	InitCellForSlot(BACKPACK_SLOT);
-	InitCellForSlot(HELMET_SLOT);
-	InitCellForSlot(SECOND_HELMET_SLOT);
-	InitCellForSlot(DOSIMETER_SLOT);
-	InitCellForSlot(PANTS_SLOT);
-	InitCellForSlot(PDA_SLOT);
+	InitCellForSlot				(KNIFE_SLOT);
+	InitCellForSlot				(APPARATUS_SLOT);
+	InitCellForSlot				(TORCH_SLOT);
+	InitCellForSlot				(BACKPACK_SLOT);
+	InitCellForSlot				(HELMET_SLOT);
+	InitCellForSlot				(SECOND_HELMET_SLOT);
+	InitCellForSlot				(DOSIMETER_SLOT);
+	InitCellForSlot				(PANTS_SLOT);
+	InitCellForSlot				(PDA_SLOT);
+	InitCellForSlot				(BOLT_SLOT);
 
 	curr_list					= m_pInventoryBeltList;
 	TIItemContainer::iterator itb = m_pActorInvOwner->inventory().m_belt.begin();
@@ -793,6 +796,10 @@ CUIDragDropListEx* CUIActorMenu::GetSlotList(u32 slot_idx)
 			return m_pInventoryPistolList;
 			break;
 
+		case SMG_SLOT:
+			return m_pInventorySmgList;
+			break;
+
 		case RIFLE_SLOT:
 			return m_pInventoryAutomaticList;
 			break;
@@ -851,6 +858,11 @@ CUIDragDropListEx* CUIActorMenu::GetSlotList(u32 slot_idx)
 		case SECOND_HELMET_SLOT:
 		{
 			return m_pInventorySecondHelmetList;
+		}break;
+
+		case BOLT_SLOT:
+		{
+			return m_pInventoryBoltList;
 		}break;
 	};
 	return NULL;
@@ -1179,6 +1191,12 @@ void CUIActorMenu::PropertiesBoxForAddon( PIItem item, bool& b_show )
 			m_UIPropertiesBox->AddItem( "st_attach_silencer_to_rifle",  (void*)tgt, INVENTORY_ATTACH_ADDON );
 			b_show			= true;
 		}
+		if (inv->m_slots[SMG_SLOT].m_pIItem && inv->m_slots[SMG_SLOT].m_pIItem->CanAttach(pSilencer))
+		{
+			PIItem tgt = inv->m_slots[SMG_SLOT].m_pIItem;
+			m_UIPropertiesBox->AddItem("st_attach_silencer_to_rifle", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			b_show = true;
+		}
 		return;
 	}
 	
@@ -1189,6 +1207,12 @@ void CUIActorMenu::PropertiesBoxForAddon( PIItem item, bool& b_show )
 			PIItem tgt = inv->m_slots[RIFLE_SLOT].m_pIItem;
 			m_UIPropertiesBox->AddItem( "st_attach_gl_to_rifle",  (void*)tgt, INVENTORY_ATTACH_ADDON );
 			b_show			= true;
+		}
+		if (inv->m_slots[SMG_SLOT].m_pIItem && inv->m_slots[SMG_SLOT].m_pIItem->CanAttach(pGrenadeLauncher))
+		{
+			PIItem tgt = inv->m_slots[SMG_SLOT].m_pIItem;
+			m_UIPropertiesBox->AddItem("st_attach_gl_to_rifle", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			b_show = true;
 		}
 	}
 
@@ -1206,6 +1230,12 @@ void CUIActorMenu::PropertiesBoxForAddon( PIItem item, bool& b_show )
 			m_UIPropertiesBox->AddItem("st_attach_laser_to_rifle", (void*)tgt, INVENTORY_ATTACH_ADDON);
 			b_show = true;
 		}
+		if (inv->m_slots[SMG_SLOT].m_pIItem && inv->m_slots[SMG_SLOT].m_pIItem->CanAttach(pLaser))
+		{
+			PIItem tgt = inv->m_slots[SMG_SLOT].m_pIItem;
+			m_UIPropertiesBox->AddItem("st_attach_laser_to_rifle", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			b_show = true;
+		}
 	}
 
 	if (pTacticalTorch)
@@ -1219,6 +1249,12 @@ void CUIActorMenu::PropertiesBoxForAddon( PIItem item, bool& b_show )
 		if (inv->m_slots[RIFLE_SLOT].m_pIItem && inv->m_slots[RIFLE_SLOT].m_pIItem->CanAttach(pTacticalTorch))
 		{
 			PIItem tgt = inv->m_slots[RIFLE_SLOT].m_pIItem;
+			m_UIPropertiesBox->AddItem("st_attach_tactical_torch_to_rifle", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			b_show = true;
+		}
+		if (inv->m_slots[SMG_SLOT].m_pIItem && inv->m_slots[SMG_SLOT].m_pIItem->CanAttach(pTacticalTorch))
+		{
+			PIItem tgt = inv->m_slots[SMG_SLOT].m_pIItem;
 			m_UIPropertiesBox->AddItem("st_attach_tactical_torch_to_rifle", (void*)tgt, INVENTORY_ATTACH_ADDON);
 			b_show = true;
 		}

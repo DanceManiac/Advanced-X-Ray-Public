@@ -79,7 +79,7 @@ void CActor::IR_OnKeyboardPress(int cmd)
 			if( (mstate_wishful & mcLookout) && !IsGameTypeSingle() ) return;
 
 			u32 slot = inventory().GetActiveSlot();
-			if(inventory().ActiveItem() && (slot==RIFLE_SLOT || slot==PISTOL_SLOT) )
+			if (inventory().ActiveItem() && (slot == RIFLE_SLOT || slot == PISTOL_SLOT || slot == SMG_SLOT))
 				mstate_wishful &=~mcSprint;
 			//-----------------------------
 			if (OnServer())
@@ -797,9 +797,10 @@ BOOL CActor::HUDview				( )const
 static	u32 SlotsToCheck [] = {
 		KNIFE_SLOT		,		// 0
 		PISTOL_SLOT		,		// 1
-		RIFLE_SLOT		,		// 2
-		GRENADE_SLOT	,		// 3
-		APPARATUS_SLOT	,		// 4
+		SMG_SLOT		,		// 2
+		RIFLE_SLOT		,		// 3
+		GRENADE_SLOT	,		// 4
+		APPARATUS_SLOT	,		// 5
 		ARTEFACT_SLOT	,		// 10
 		PDA_SLOT		,
 		BACKPACK_SLOT	,

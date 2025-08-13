@@ -1151,7 +1151,7 @@ void CStalkerCombatActionThrowGrenade::initialize			()
 
 	object().get_movement().set_mental_state	(eMentalStateDanger);
 
-	const CInventoryItem					*grenade = object().inventory().m_slots[3].m_pIItem;
+	const CInventoryItem					*grenade = object().inventory().m_slots[4].m_pIItem;
 	VERIFY									(grenade);
 	m_grenade_id							= grenade->object().ID();
 
@@ -1172,7 +1172,7 @@ void CStalkerCombatActionThrowGrenade::execute				()
 {
 	inherited::execute						();
 
-	const CInventoryItem					*grenade = object().inventory().m_slots[3].m_pIItem;
+	const CInventoryItem					*grenade = object().inventory().m_slots[4].m_pIItem;
 	if (!grenade || grenade->object().ID() != m_grenade_id) {
 		object().on_throw_completed			();
 		m_storage->set_property				(eWorldPropertyStartedToThrowGrenade, false);

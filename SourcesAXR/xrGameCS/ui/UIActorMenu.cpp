@@ -367,9 +367,10 @@ EDDListType CUIActorMenu::GetListType(CUIDragDropListEx* l)
 
 	if(l==m_pInventoryAutomaticList)	return iActorSlot;
 	if(l==m_pInventoryPistolList)		return iActorSlot;
+	if(l==m_pInventorySmgList)			return iActorSlot;
 	if(l==m_pInventoryOutfitList)		return iActorSlot;
 	if(l==m_pInventoryDetectorList)		return iActorSlot;
-	
+	if(l==m_pInventoryBoltList)			return iActorSlot;
 
 	if(l==m_pTradeActorBagList)			return iActorBag;
 	if(l==m_pTradeActorList)			return iActorTrade;
@@ -1025,6 +1026,7 @@ void CUIActorMenu::ClearAllLists()
 	m_pInventoryOutfitList->ClearAll			(true);
 	m_pInventoryDetectorList->ClearAll			(true);
 	m_pInventoryPistolList->ClearAll			(true);
+	m_pInventorySmgList->ClearAll				(true);
 	m_pInventoryAutomaticList->ClearAll			(true);
 	if (m_pQuickSlot)
 		m_pQuickSlot->ClearAll					(true);
@@ -1034,6 +1036,7 @@ void CUIActorMenu::ClearAllLists()
 	m_pTradePartnerBagList->ClearAll			(true);
 	m_pTradePartnerList->ClearAll				(true);
 	m_pDeadBodyBagList->ClearAll				(true);
+	m_pInventoryBoltList->ClearAll				(true);
 
 	if (m_pInventoryKnifeList)
 		m_pInventoryKnifeList->ClearAll(true);

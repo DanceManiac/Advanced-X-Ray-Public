@@ -175,6 +175,7 @@ void CUIActorMenu::Construct()
 	m_pInventoryOutfitList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_outfit", this);
 	m_pInventoryDetectorList	= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_detector", this);
 
+	/*
 	// Try "dragdrop_inv_slot1" first and then "dragdrop_pistol"
 	m_pInventoryPistolList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_inv_slot1", this, false);
 	if (!m_pInventoryPistolList)
@@ -183,6 +184,13 @@ void CUIActorMenu::Construct()
 	m_pInventoryAutomaticList	= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_inv_slot2", this, false);
 	if (!m_pInventoryAutomaticList)
 		m_pInventoryAutomaticList= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_automatic", this, false);
+	*/
+
+	m_pInventoryPistolList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_pistol", this);
+	m_pInventorySmgList			= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_smg", this);
+	m_pInventoryAutomaticList	= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_automatic", this);
+
+	m_pInventoryBoltList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_bolt", this);
 
 	m_pTradeActorBagList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_actor_trade_bag", this);
 	m_pTradeActorList			= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_actor_trade", this);
@@ -399,7 +407,8 @@ void CUIActorMenu::Construct()
 
 	BindDragDropListEvents				(m_pInventoryBeltList);		
 	BindDragDropListEvents				(m_pInventoryBoltList);
-	BindDragDropListEvents				(m_pInventoryPistolList);		
+	BindDragDropListEvents				(m_pInventoryPistolList);
+	BindDragDropListEvents				(m_pInventorySmgList);
 	BindDragDropListEvents				(m_pInventoryAutomaticList);	
 	BindDragDropListEvents				(m_pInventoryOutfitList);	
 	BindDragDropListEvents				(m_pInventoryDetectorList);	

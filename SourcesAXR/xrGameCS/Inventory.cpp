@@ -882,9 +882,10 @@ bool CInventory::Action(s32 cmd, u32 flags)
 	case kWPN_4:
 	case kWPN_5:
 	case kWPN_6:
+	case kWPN_7:
 		{
 			b_send_event = true;
-			if (cmd == kWPN_6 && !IsGameTypeSingle()) return false;
+			if (cmd == kWPN_7 && !IsGameTypeSingle()) return false;
 			
 			u32 slot = cmd - kWPN_1;
 			if ( flags & CMD_START )

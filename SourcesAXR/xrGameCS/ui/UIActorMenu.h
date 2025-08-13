@@ -93,6 +93,7 @@ protected:
 
 	CUIDragDropListEx*			m_pInventoryBeltList;
 	CUIDragDropListEx*			m_pInventoryPistolList;
+	CUIDragDropListEx*			m_pInventorySmgList;
 	CUIDragDropListEx*			m_pInventoryAutomaticList;
 	CUIDragDropListEx*			m_pInventoryOutfitList;
 	CUIDragDropListEx*			m_pInventoryHelmetList;

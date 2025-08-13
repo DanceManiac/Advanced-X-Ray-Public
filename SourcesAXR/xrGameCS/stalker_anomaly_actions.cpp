@@ -160,5 +160,5 @@ void CStalkerActionDetectAnomaly::execute	()
 		return;
 	}
 	
-	object().CObjectHandler::set_goal	(eObjectActionFire1,object().inventory().m_slots[5].m_pIItem);
+	object().CObjectHandler::set_goal(eObjectActionFire1, object().inventory().m_slots[6].m_pIItem);
 }

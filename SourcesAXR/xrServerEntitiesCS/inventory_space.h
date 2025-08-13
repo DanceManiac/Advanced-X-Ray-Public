@@ -7,20 +7,23 @@
 #define KNIFE_SLOT			0
 #define PISTOL_SLOT			1
 #define RIFLE_SLOT			2
-#define GRENADE_SLOT		3
-#define APPARATUS_SLOT		4
-#define BOLT_SLOT			5
-#define OUTFIT_SLOT			6
-#define PDA_SLOT			7
-#define DETECTOR_SLOT		8
-#define TORCH_SLOT			9
-#define ARTEFACT_SLOT		10
-#define FLARE_SLOT			11
-#define BACKPACK_SLOT		12
-#define DOSIMETER_SLOT		13
-#define PANTS_SLOT			14
-#define HELMET_SLOT			15
+#define SMG_SLOT			3
+#define GRENADE_SLOT		4
+#define APPARATUS_SLOT		5
+#define BOLT_SLOT			6
+#define OUTFIT_SLOT			7
+#define PDA_SLOT			8
+#define DETECTOR_SLOT		9
+#define TORCH_SLOT			10
+#define ARTEFACT_SLOT		11
+#define FLARE_SLOT			12
+#define HELMET_SLOT			13
+#define DEVICE_SLOT			14
+#define BACKPACK_SLOT		15
 #define SECOND_HELMET_SLOT	16
+#define DOSIMETER_SLOT		17
+#define PANTS_SLOT			18
+
 #define LAST_SLOT			SECOND_HELMET_SLOT
 //.#define SLOTS_TOTAL			12
 

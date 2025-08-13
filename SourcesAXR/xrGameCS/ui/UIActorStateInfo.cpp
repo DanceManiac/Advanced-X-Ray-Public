@@ -125,6 +125,7 @@ void ui_actor_state_wnd::UpdateActorInfo( CInventoryOwner* owner )
 		value *= helmet2->GetBoneArmor(head_bone);					m_state[stt_armor]->set_text(value);
 	}
 
+	/*
 	if (pants)
 	{
 		value = pants->GetCondition();								m_state[stt_armor]->set_progress(value);
@@ -134,6 +135,7 @@ void ui_actor_state_wnd::UpdateActorInfo( CInventoryOwner* owner )
 		u16 spine_bone = ikv->LL_BoneID("bip01_spine");
 		value *= pants->GetBoneArmor(spine_bone);					m_state[stt_armor]->set_text(value);
 	}
+	*/
 
 	if (!outfit && !pants)
 	{
