@@ -27,14 +27,14 @@ LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_ICON1               ICON                    "stalker_cs.ico"
+IDI_ICON1               ICON                    "stalker_cs_lfo_mod_icon.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Bitmap
 //
 
-IDB_BITMAP1             BITMAP                  "advanced_xray_splash.bmp"
+IDB_BITMAP1             BITMAP                  "advanced_xray_splash_lfo_mod.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -79,7 +79,7 @@ END
 // PNG
 //
 
-IDB_PNG1 PNG "advanced_xray_splash.png"
+IDB_PNG1 PNG "advanced_xray_splash_lfo_mod.png"
 #endif    // Russian (Russia) resources
 
 /////////////////////////////////////////////////////////////////////////////

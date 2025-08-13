@@ -987,13 +987,13 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="stalker_cs.ico">
+    <Image Include="stalker_cs_lfo_mod_icon.ico">
       <Filter>General\Resources</Filter>
     </Image>
-    <Image Include="advanced_xray_splash.bmp">
+    <Image Include="advanced_xray_splash_lfo_mod.bmp">
       <Filter>General\Resources</Filter>
     </Image>
-    <Image Include="advanced_xray_splash.png">
+    <Image Include="advanced_xray_splash_lfo_mod.png">
       <Filter>General\Resources</Filter>
     </Image>
   </ItemGroup>
