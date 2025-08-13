@@ -68,6 +68,8 @@ void CUIActorMenu::InitInventoryMode()
 	m_pInventoryDetectorList->Show		(true);
 	m_pInventoryPistolList->Show		(true);
 	m_pInventoryAutomaticList->Show		(true);
+	m_pInventoryBoltList->Show			(true);
+
 	if (m_pQuickSlot)
 		m_pQuickSlot->Show				(true);
 	
@@ -81,32 +83,14 @@ void CUIActorMenu::InitInventoryMode()
 	if (m_clock_value)
 		m_clock_value->Show				(true);
 
-	if (m_pInventoryKnifeList && GameConstants::GetKnifeSlotEnabled())
-		m_pInventoryKnifeList->Show(true);
-
-	if (m_pInventoryBinocularList && GameConstants::GetBinocularSlotEnabled())
-		m_pInventoryBinocularList->Show(true);
-
-	if (m_pInventoryTorchList && GameConstants::GetTorchSlotEnabled())
-		m_pInventoryTorchList->Show(true);
-
-	if (m_pInventoryBackpackList && GameConstants::GetBackpackSlotEnabled())
-		m_pInventoryBackpackList->Show(true);
-
-	if (m_pInventoryHelmetList && GameConstants::GetHelmetSlotEnabled())
-		m_pInventoryHelmetList->Show(true);
-
-	if (m_pInventorySecondHelmetList && GameConstants::GetSecondHelmetSlotEnabled())
-		m_pInventorySecondHelmetList->Show(true);
-
-	if (m_pInventoryDosimeterList && GameConstants::GetDosimeterSlotEnabled())
-		m_pInventoryDosimeterList->Show(true);
-
-	if (m_pInventoryPantsList && GameConstants::GetPantsSlotEnabled())
-		m_pInventoryPantsList->Show(true);
-
-	if (m_pInventoryPdaList && GameConstants::GetPdaSlotEnabled())
-		m_pInventoryPdaList->Show(true);
+	m_pInventoryKnifeList->Show(true);
+	m_pInventoryBinocularList->Show(true);
+	m_pInventoryTorchList->Show(true);
+	m_pInventoryBackpackList->Show(true);
+	m_pInventoryHelmetList->Show(true);
+	m_pInventorySecondHelmetList->Show(true);
+	m_pInventoryDosimeterList->Show(true);
+	m_pInventoryPantsList->Show(true);
 
 	InitInventoryContents				(m_pInventoryBagList);
 
@@ -308,6 +292,7 @@ void CUIActorMenu::OnInventoryAction(PIItem pItem, u16 action_type)
 	CUIDragDropListEx* all_lists[] =
 	{
 		m_pInventoryBeltList,
+		m_pInventoryBoltList,
 		m_pInventoryPistolList,
 		m_pInventoryAutomaticList,
 		m_pInventoryOutfitList,
@@ -315,15 +300,14 @@ void CUIActorMenu::OnInventoryAction(PIItem pItem, u16 action_type)
 		m_pInventoryBagList,
 		m_pTradeActorBagList,
 		m_pTradeActorList,
-		GameConstants::GetKnifeSlotEnabled() ? m_pInventoryKnifeList : nullptr,
-		GameConstants::GetBinocularSlotEnabled() ? m_pInventoryBinocularList : nullptr,
-		GameConstants::GetTorchSlotEnabled() ? m_pInventoryTorchList : nullptr,
-		GameConstants::GetBackpackSlotEnabled() ? m_pInventoryBackpackList : nullptr,
-		GameConstants::GetHelmetSlotEnabled() ? m_pInventoryHelmetList : nullptr,
-		GameConstants::GetSecondHelmetSlotEnabled() ? m_pInventorySecondHelmetList : nullptr,
-		GameConstants::GetDosimeterSlotEnabled() ? m_pInventoryDosimeterList : nullptr,
-		GameConstants::GetPantsSlotEnabled() ? m_pInventoryPantsList : nullptr,
-		GameConstants::GetPdaSlotEnabled() ? m_pInventoryPdaList : nullptr,
+		m_pInventoryKnifeList,
+		m_pInventoryBinocularList,
+		m_pInventoryTorchList,
+		m_pInventoryBackpackList,
+		m_pInventoryHelmetList,
+		m_pInventorySecondHelmetList,
+		m_pInventoryDosimeterList,
+		m_pInventoryPantsList,
 		NULL
 	};
 
@@ -500,33 +484,15 @@ void CUIActorMenu::InitInventoryContents(CUIDragDropListEx* pBagList)
 	InitCellForSlot				(RIFLE_SLOT);
 	InitCellForSlot				(OUTFIT_SLOT);
 	InitCellForSlot				(DETECTOR_SLOT);
-
-	if (GameConstants::GetKnifeSlotEnabled())
-		InitCellForSlot(KNIFE_SLOT);
-
-	if (GameConstants::GetBinocularSlotEnabled())
-		InitCellForSlot(APPARATUS_SLOT);
-
-	if (GameConstants::GetTorchSlotEnabled())
-		InitCellForSlot(TORCH_SLOT);
-
-	if (GameConstants::GetBackpackSlotEnabled())
-		InitCellForSlot(BACKPACK_SLOT);
-
-	if (GameConstants::GetHelmetSlotEnabled())
-		InitCellForSlot(HELMET_SLOT);
-
-	if (GameConstants::GetSecondHelmetSlotEnabled())
-		InitCellForSlot(SECOND_HELMET_SLOT);
-
-	if (GameConstants::GetDosimeterSlotEnabled())
-		InitCellForSlot(DOSIMETER_SLOT);
-
-	if (GameConstants::GetPantsSlotEnabled())
-		InitCellForSlot(PANTS_SLOT);
-
-	if (GameConstants::GetPdaSlotEnabled())
-		InitCellForSlot(PDA_SLOT);
+	InitCellForSlot(KNIFE_SLOT);
+	InitCellForSlot(APPARATUS_SLOT);
+	InitCellForSlot(TORCH_SLOT);
+	InitCellForSlot(BACKPACK_SLOT);
+	InitCellForSlot(HELMET_SLOT);
+	InitCellForSlot(SECOND_HELMET_SLOT);
+	InitCellForSlot(DOSIMETER_SLOT);
+	InitCellForSlot(PANTS_SLOT);
+	InitCellForSlot(PDA_SLOT);
 
 	curr_list					= m_pInventoryBeltList;
 	TIItemContainer::iterator itb = m_pActorInvOwner->inventory().m_belt.begin();
@@ -642,7 +608,7 @@ bool CUIActorMenu::ToSlot(CUICellItem* itm, bool force_place)
 			CCustomOutfit* pOutfit = smart_cast<CCustomOutfit*>(iitem);
 			if (pOutfit)
 			{
-				if (GameConstants::GetHelmetSlotEnabled() && !pOutfit->bIsHelmetAvaliable)
+				if (!pOutfit->bIsHelmetAvaliable)
 				{
 					CUIDragDropListEx* helmet_list = GetSlotList(HELMET_SLOT);
 					if (helmet_list->ItemsCount() == 1)
@@ -652,7 +618,7 @@ bool CUIActorMenu::ToSlot(CUICellItem* itm, bool force_place)
 					}
 				}
 
-				if (GameConstants::GetSecondHelmetSlotEnabled() && !pOutfit->bIsSecondHelmetAvaliable)
+				if (!pOutfit->bIsSecondHelmetAvaliable)
 				{
 					CUIDragDropListEx* second_helmet_list = GetSlotList(SECOND_HELMET_SLOT);
 					if (second_helmet_list->ItemsCount() == 1)
@@ -664,36 +630,33 @@ bool CUIActorMenu::ToSlot(CUICellItem* itm, bool force_place)
 			}
 		}
 
-		if (GameConstants::GetSecondHelmetSlotEnabled() && GameConstants::GetHelmetSlotEnabled())
+		CHelmet* helmet = smart_cast<CHelmet*>(iitem);
+
+		if (_slot == HELMET_SLOT)
 		{
-			CHelmet* helmet = smart_cast<CHelmet*>(iitem);
-
-			if (_slot == HELMET_SLOT)
+			if (helmet && !helmet->m_bSecondHelmetEnabled)
 			{
-				if (helmet && !helmet->m_bSecondHelmetEnabled)
+				CUIDragDropListEx* second_helmet_list = GetSlotList(SECOND_HELMET_SLOT);
+				if (second_helmet_list->ItemsCount() == 1)
 				{
-					CUIDragDropListEx* second_helmet_list = GetSlotList(SECOND_HELMET_SLOT);
-					if (second_helmet_list->ItemsCount() == 1)
-					{
-						CUICellItem* second_helmet_cell = second_helmet_list->GetItemIdx(0);
+					CUICellItem* second_helmet_cell = second_helmet_list->GetItemIdx(0);
 						ToBag(second_helmet_cell, false);
-					}
-				}
-			}
-			else if (_slot == SECOND_HELMET_SLOT)
-			{
-				if (helmet && !helmet->m_bSecondHelmetEnabled)
-				{
-					CUIDragDropListEx* helmet_list = GetSlotList(HELMET_SLOT);
-					if (helmet_list->ItemsCount() == 1)
-					{
-						CUICellItem* helmet_cell = helmet_list->GetItemIdx(0);
-						ToBag(helmet_cell, false);
-					}
 				}
 			}
 		}
-
+		else if (_slot == SECOND_HELMET_SLOT)
+		{
+			if (helmet && !helmet->m_bSecondHelmetEnabled)
+			{
+				CUIDragDropListEx* helmet_list = GetSlotList(HELMET_SLOT);
+				if (helmet_list->ItemsCount() == 1)
+				{
+					CUICellItem* helmet_cell = helmet_list->GetItemIdx(0);
+					ToBag(helmet_cell, false);
+				}
+			}
+		}
+	
 		bool result							= (!b_own_item) || m_pActorInvOwner->inventory().Slot(iitem);
 		VERIFY								(result);
 
@@ -852,74 +815,42 @@ CUIDragDropListEx* CUIActorMenu::GetSlotList(u32 slot_idx)
 
 		case KNIFE_SLOT:
 		{
-			if (GameConstants::GetKnifeSlotEnabled())
-			{
-				return m_pInventoryKnifeList;
-			}
+			return m_pInventoryKnifeList;
 		}break;
 
 		case APPARATUS_SLOT:
 		{
-			if (GameConstants::GetBinocularSlotEnabled())
-			{
-				return m_pInventoryBinocularList;
-			}
+			return m_pInventoryBinocularList;
 		}break;
 
 		case TORCH_SLOT:
 		{
-			if (GameConstants::GetTorchSlotEnabled())
-			{
-				return m_pInventoryTorchList;
-			}
+			return m_pInventoryTorchList;
 		}break;
 
 		case BACKPACK_SLOT:
 		{
-			if (GameConstants::GetBackpackSlotEnabled())
-			{
-				return m_pInventoryBackpackList;
-			}
+			return m_pInventoryBackpackList;
 		}break;
 
 		case DOSIMETER_SLOT:
 		{
-			if (GameConstants::GetDosimeterSlotEnabled())
-			{
-				return m_pInventoryDosimeterList;
-			}
+			return m_pInventoryDosimeterList;
 		}break;
 
 		case PANTS_SLOT:
 		{
-			if (GameConstants::GetPantsSlotEnabled())
-			{
 				return m_pInventoryPantsList;
-			}
-		}break;
-
-		case PDA_SLOT:
-		{
-			if (GameConstants::GetPdaSlotEnabled())
-			{
-				return m_pInventoryPdaList;
-			}
 		}break;
 
 		case HELMET_SLOT:
 		{
-			if (GameConstants::GetHelmetSlotEnabled())
-			{
-				return m_pInventoryHelmetList;
-			}
+			return m_pInventoryHelmetList;
 		}break;
 
 		case SECOND_HELMET_SLOT:
 		{
-			if (GameConstants::GetSecondHelmetSlotEnabled())
-			{
-				return m_pInventorySecondHelmetList;
-			}
+			return m_pInventorySecondHelmetList;
 		}break;
 	};
 	return NULL;
@@ -2027,35 +1958,30 @@ void CUIActorMenu::UpdateOutfit()
 	PIItem         ii_outfit = m_pActorInvOwner->inventory().m_slots[OUTFIT_SLOT].m_pIItem;
 	CCustomOutfit* outfit    = smart_cast<CCustomOutfit*>( ii_outfit );
 
-	if (GameConstants::GetHelmetSlotEnabled())
-	{
-		if (outfit && !outfit->bIsHelmetAvaliable)
-			m_HelmetOver->Show(true);
-		else
-			m_HelmetOver->Show(false);
-	}
+	if (outfit && !outfit->bIsHelmetAvaliable)
+		m_HelmetOver->Show(true);
+	else
+		m_HelmetOver->Show(false);
 
-	if (GameConstants::GetSecondHelmetSlotEnabled() && GameConstants::GetHelmetSlotEnabled())
+	if (outfit && !outfit->bIsSecondHelmetAvaliable)
+		m_SecondHelmetOver->Show(true);
+	else
+		m_SecondHelmetOver->Show(false);
+
+	CHelmet* pHelmet1 = smart_cast<CHelmet*>(m_pActorInvOwner->inventory().ItemFromSlot(HELMET_SLOT));
+	CHelmet* pHelmet2 = smart_cast<CHelmet*>(m_pActorInvOwner->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
+
+	if (pHelmet1 && !pHelmet1->m_bSecondHelmetEnabled)
 	{
-		if (outfit && !outfit->bIsSecondHelmetAvaliable)
+		if (!pHelmet2)
 			m_SecondHelmetOver->Show(true);
-		else
-			m_SecondHelmetOver->Show(false);
-
-		CHelmet* pHelmet1 = smart_cast<CHelmet*>(m_pActorInvOwner->inventory().ItemFromSlot(HELMET_SLOT));
-		CHelmet* pHelmet2 = smart_cast<CHelmet*>(m_pActorInvOwner->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
-
-		if (pHelmet1 && !pHelmet1->m_bSecondHelmetEnabled)
-		{
-			if (!pHelmet2)
-				m_SecondHelmetOver->Show(true);
-		}
-		else if (pHelmet2 && !pHelmet2->m_bSecondHelmetEnabled)
-		{
-			if (!pHelmet1)
-				m_HelmetOver->Show(true);
-		}
 	}
+	else if (pHelmet2 && !pHelmet2->m_bSecondHelmetEnabled)
+	{
+		if (!pHelmet1)
+			m_HelmetOver->Show(true);
+	}
+
 
 	if (outfit && !m_bNeedMoveAfsToBag)
 		m_bNeedMoveAfsToBag = true;

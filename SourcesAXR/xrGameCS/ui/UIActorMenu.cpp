@@ -383,31 +383,28 @@ EDDListType CUIActorMenu::GetListType(CUIDragDropListEx* l)
 	if(l == m_pTrashList && m_pTrashList != nullptr)
 		return iTrashSlot;
 
-	if ((l == m_pInventoryKnifeList) && (m_pInventoryKnifeList != nullptr) && GameConstants::GetKnifeSlotEnabled())
+	if ((l == m_pInventoryKnifeList) && (m_pInventoryKnifeList != nullptr))
 		return iActorSlot;
 
-	if ((l == m_pInventoryBinocularList) && (m_pInventoryBinocularList != nullptr) && GameConstants::GetBinocularSlotEnabled())
+	if ((l == m_pInventoryBinocularList) && (m_pInventoryBinocularList != nullptr))
 		return iActorSlot;
 
-	if ((l == m_pInventoryTorchList) && (m_pInventoryTorchList != nullptr) && GameConstants::GetTorchSlotEnabled())
+	if ((l == m_pInventoryTorchList) && (m_pInventoryTorchList != nullptr))
 		return iActorSlot;
 
-	if ((l == m_pInventoryBackpackList) && (m_pInventoryBackpackList != nullptr) && GameConstants::GetBackpackSlotEnabled())
+	if ((l == m_pInventoryBackpackList) && (m_pInventoryBackpackList != nullptr))
 		return iActorSlot;
 
-	if ((l == m_pInventoryHelmetList) && (m_pInventoryHelmetList != nullptr) && GameConstants::GetHelmetSlotEnabled())
+	if ((l == m_pInventoryHelmetList) && (m_pInventoryHelmetList != nullptr))
 		return iActorSlot;
 
-	if ((l == m_pInventorySecondHelmetList) && (m_pInventorySecondHelmetList != nullptr) && GameConstants::GetSecondHelmetSlotEnabled())
+	if ((l == m_pInventorySecondHelmetList) && (m_pInventorySecondHelmetList != nullptr))
 		return iActorSlot;
 
-	if ((l == m_pInventoryDosimeterList) && (m_pInventoryDosimeterList != nullptr) && GameConstants::GetDosimeterSlotEnabled())
+	if ((l == m_pInventoryDosimeterList) && (m_pInventoryDosimeterList != nullptr))
 		return iActorSlot;
 
-	if ((l == m_pInventoryPantsList) && (m_pInventoryPantsList != nullptr) && GameConstants::GetPantsSlotEnabled())
-		return iActorSlot;
-
-	if ((l == m_pInventoryPdaList) && (m_pInventoryPdaList != nullptr) && GameConstants::GetPdaSlotEnabled())
+	if ((l == m_pInventoryPantsList) && (m_pInventoryPantsList != nullptr))
 		return iActorSlot;
 
 	R_ASSERT(0);
@@ -576,28 +573,25 @@ void CUIActorMenu::clear_highlight_lists()
 		m_OutfitSlotHighlight->Show(false);
 	if (m_DetectorSlotHighlight)
 		m_DetectorSlotHighlight->Show(false);
-
-	if (m_KnifeSlotHighlight && GameConstants::GetKnifeSlotEnabled())
+	if (m_KnifeSlotHighlight)
 		m_KnifeSlotHighlight->Show(false);
-	if (m_BinocularSlotHighlight && GameConstants::GetBinocularSlotEnabled())
+	if (m_BinocularSlotHighlight)
 		m_BinocularSlotHighlight->Show(false);
-	if (m_TorchSlotHighlight && GameConstants::GetTorchSlotEnabled())
+	if (m_TorchSlotHighlight)
 		m_TorchSlotHighlight->Show(false);
-	if (m_BackpackSlotHighlight && GameConstants::GetBackpackSlotEnabled())
+	if (m_BackpackSlotHighlight)
 		m_BackpackSlotHighlight->Show(false);
-	if (GameConstants::GetHelmetSlotEnabled() && m_HelmetSlotHighlight)
+	if (m_HelmetSlotHighlight)
 		m_HelmetSlotHighlight->Show(false);
-	if (GameConstants::GetSecondHelmetSlotEnabled() && m_SecondHelmetSlotHighlight)
+	if (m_SecondHelmetSlotHighlight)
 		m_SecondHelmetSlotHighlight->Show(false);
 
-	if (m_DosimeterSlotHighlight && GameConstants::GetDosimeterSlotEnabled())
+	if (m_DosimeterSlotHighlight)
 		m_DosimeterSlotHighlight->Show(false);
 
-	if (m_PantsSlotHighlight && GameConstants::GetPantsSlotEnabled())
+	if (m_PantsSlotHighlight)
 		m_PantsSlotHighlight->Show(false);
 
-	if (m_PdaSlotHighlight && GameConstants::GetPdaSlotEnabled())
-		m_PdaSlotHighlight->Show(false);
 
 	if (m_QuickSlotsHighlight[0])
 	{
@@ -669,10 +663,10 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 
 	if (helmet)
 	{
-		if (GameConstants::GetHelmetSlotEnabled() && m_HelmetSlotHighlight)
+		if (m_HelmetSlotHighlight)
 			m_HelmetSlotHighlight->Show(true);
 
-		if (GameConstants::GetSecondHelmetSlotEnabled() && m_SecondHelmetSlotHighlight)
+		if (m_SecondHelmetSlotHighlight)
 			m_SecondHelmetSlotHighlight->Show(true);
 
 		return;
@@ -683,7 +677,7 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 		if (m_OutfitSlotHighlight)
 			m_OutfitSlotHighlight->Show(true);
 
-		if (m_PantsSlotHighlight && GameConstants::GetPantsSlotEnabled())
+		if (m_PantsSlotHighlight)
 			m_PantsSlotHighlight->Show(true);
 
 		return;
@@ -716,39 +710,33 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 		return;
 	}
 
-	if (m_KnifeSlotHighlight && knife && GameConstants::GetKnifeSlotEnabled())
+	if (m_KnifeSlotHighlight && knife)
 	{
 		m_KnifeSlotHighlight->Show(true);	
 		return;
 	}
 
-	if (m_BinocularSlotHighlight && binoculars && GameConstants::GetBinocularSlotEnabled())
+	if (m_BinocularSlotHighlight && binoculars)
 	{
 		m_BinocularSlotHighlight->Show(true);
 		return;
 	}
 
-	if (m_TorchSlotHighlight && torch && GameConstants::GetTorchSlotEnabled())
+	if (m_TorchSlotHighlight && torch)
 	{
 		m_TorchSlotHighlight->Show(true);
 		return;
 	}
 
-	if (m_BackpackSlotHighlight && backpack && GameConstants::GetBackpackSlotEnabled())
+	if (m_BackpackSlotHighlight && backpack)
 	{
 		m_BackpackSlotHighlight->Show(true);
 		return;
 	}
 
-	if (m_DosimeterSlotHighlight && anomaly_detector && GameConstants::GetDosimeterSlotEnabled())
+	if (m_DosimeterSlotHighlight && anomaly_detector)
 	{
 		m_DosimeterSlotHighlight->Show(true);
-		return;
-	}
-
-	if (m_PdaSlotHighlight && pda && GameConstants::GetPdaSlotEnabled())
-	{
-		m_PdaSlotHighlight->Show(true);
 		return;
 	}
 }
@@ -1047,32 +1035,30 @@ void CUIActorMenu::ClearAllLists()
 	m_pTradePartnerList->ClearAll				(true);
 	m_pDeadBodyBagList->ClearAll				(true);
 
-	if (m_pInventoryKnifeList && GameConstants::GetKnifeSlotEnabled())
+	if (m_pInventoryKnifeList)
 		m_pInventoryKnifeList->ClearAll(true);
 
-	if (m_pInventoryBinocularList && GameConstants::GetBinocularSlotEnabled())
+	if (m_pInventoryBinocularList)
 		m_pInventoryBinocularList->ClearAll(true);
 
-	if (m_pInventoryTorchList && GameConstants::GetTorchSlotEnabled())
+	if (m_pInventoryTorchList)
 		m_pInventoryTorchList->ClearAll(true);
 
-	if (m_pInventoryBackpackList && GameConstants::GetBackpackSlotEnabled())
+	if (m_pInventoryBackpackList)
 		m_pInventoryBackpackList->ClearAll(true);
 
-	if (m_pInventoryDosimeterList && GameConstants::GetDosimeterSlotEnabled())
+	if (m_pInventoryDosimeterList)
 		m_pInventoryDosimeterList->ClearAll(true);
 
-	if (m_pInventoryHelmetList && GameConstants::GetHelmetSlotEnabled())
+	if (m_pInventoryHelmetList)
 		m_pInventoryHelmetList->ClearAll(true);
 
-	if (m_pInventorySecondHelmetList && GameConstants::GetSecondHelmetSlotEnabled())
+	if (m_pInventorySecondHelmetList)
 		m_pInventorySecondHelmetList->ClearAll(true);
 
-	if (m_pInventoryPantsList && GameConstants::GetPantsSlotEnabled())
+	if (m_pInventoryPantsList)
 		m_pInventoryPantsList->ClearAll(true);
 
-	if (m_pInventoryPdaList && GameConstants::GetPdaSlotEnabled())
-		m_pInventoryPdaList->ClearAll(true);
 }
 
 void CUIActorMenu::CallMessageBoxYesNo( LPCSTR text )

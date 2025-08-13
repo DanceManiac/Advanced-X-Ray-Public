@@ -6,15 +6,6 @@
 #include "Inventory.h"
 #include "CustomBackpack.h"
 
-bool	m_bKnifeSlotEnabled = false;
-bool	m_bBinocularSlotEnabled = false;
-bool	m_bTorchSlotEnabled = false;
-bool	m_bBackpackSlotEnabled = false;
-bool	m_bHelmetSlotEnabled = false;
-bool	m_bSecondHelmetSlotEnabled = false;
-bool	m_bDosimeterSlotEnabled = false;
-bool	m_bPantsSlotEnabled = false;
-bool	m_bPdaSlotEnabled = false;
 bool	m_bTorchUseBattery = false;
 bool	m_bArtefactDetectorUseBattery = false;
 bool	m_bAnomalyDetectorUseBattery = false;
@@ -79,15 +70,6 @@ namespace GameConstants
 		m_bTorchUseBattery = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "torch_use_battery", false);
 		m_bArtefactDetectorUseBattery = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "artefact_detector_use_battery", false);
 		m_bAnomalyDetectorUseBattery = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "anomaly_detector_use_battery", false);
-		m_bKnifeSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_knife_slot", false);
-		m_bBinocularSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_binocular_slot", false);
-		m_bTorchSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_torch_slot", false);
-		m_bBackpackSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_backpack_slot", false);
-		m_bHelmetSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_helmet_slot", false);
-		m_bSecondHelmetSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_second_helmet_slot", false);
-		m_bDosimeterSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_dosimeter_slot", false);
-		m_bPantsSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_pants_slot", false);
-		m_bPdaSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_pda_slot", false);
 		m_bLimitedBolts = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "limited_bolts", false);
 		m_bActorThirst = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "actor_thirst_enabled", false);
 		m_bActorIntoxication = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "actor_intoxication_enabled", false);
@@ -156,51 +138,6 @@ namespace GameConstants
 	bool GetAnoDetectorUseBattery()
 	{
 		return m_bAnomalyDetectorUseBattery;
-	}
-
-	bool GetKnifeSlotEnabled()
-	{
-		return m_bKnifeSlotEnabled;
-	}
-
-	bool GetBinocularSlotEnabled()
-	{
-		return m_bBinocularSlotEnabled;
-	}
-
-	bool GetTorchSlotEnabled()
-	{
-		return m_bTorchSlotEnabled;
-	}
-
-	bool GetBackpackSlotEnabled()
-	{
-		return m_bBackpackSlotEnabled;
-	}
-
-	bool GetHelmetSlotEnabled()
-	{
-		return m_bHelmetSlotEnabled;
-	}
-
-	bool GetSecondHelmetSlotEnabled()
-	{
-		return m_bSecondHelmetSlotEnabled;
-	}
-
-	bool GetDosimeterSlotEnabled()
-	{
-		return m_bDosimeterSlotEnabled;
-	}
-
-	bool GetPantsSlotEnabled()
-	{
-		return m_bPantsSlotEnabled;
-	}
-
-	bool GetPdaSlotEnabled()
-	{
-		return m_bPdaSlotEnabled;
 	}
 
 	bool GetLimitedBolts()

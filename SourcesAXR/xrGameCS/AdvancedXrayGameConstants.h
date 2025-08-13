@@ -4,15 +4,6 @@ namespace GameConstants
 {
 	void LoadConstants();
 
-	bool GetKnifeSlotEnabled();
-	bool GetBinocularSlotEnabled();
-	bool GetTorchSlotEnabled();
-	bool GetBackpackSlotEnabled();
-	bool GetHelmetSlotEnabled();
-	bool GetSecondHelmetSlotEnabled();
-	bool GetDosimeterSlotEnabled();
-	bool GetPantsSlotEnabled();
-	bool GetPdaSlotEnabled();
 	bool GetTorchHasBattery();
 	bool GetArtDetectorUseBattery();
 	bool GetAnoDetectorUseBattery();

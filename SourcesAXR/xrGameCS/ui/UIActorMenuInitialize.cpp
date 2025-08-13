@@ -146,41 +146,29 @@ void CUIActorMenu::Construct()
 	if (m_QuickSlotsHighlight[0]	= UIHelper::CreateStatic(uiXml, "quick_slot_highlight", this, false))
 		m_QuickSlotsHighlight[0]->Show(false);
 
-	if (GameConstants::GetKnifeSlotEnabled())
-		if (m_KnifeSlotHighlight = UIHelper::CreateStatic(uiXml, "knife_slot_highlight", this, false))
-			m_KnifeSlotHighlight->Show(false);
+	if (m_KnifeSlotHighlight = UIHelper::CreateStatic(uiXml, "knife_slot_highlight", this, false))
+		m_KnifeSlotHighlight->Show(false);
 		
-	if (GameConstants::GetBinocularSlotEnabled())
-		if (m_BinocularSlotHighlight = UIHelper::CreateStatic(uiXml, "binocular_slot_highlight", this, false))
-			m_BinocularSlotHighlight->Show(false);
+	if (m_BinocularSlotHighlight = UIHelper::CreateStatic(uiXml, "binocular_slot_highlight", this, false))
+		m_BinocularSlotHighlight->Show(false);
 
-	if (GameConstants::GetTorchSlotEnabled())
-		if (m_TorchSlotHighlight = UIHelper::CreateStatic(uiXml, "torch_slot_highlight", this, false))
-			m_TorchSlotHighlight->Show(false);
+	if (m_TorchSlotHighlight = UIHelper::CreateStatic(uiXml, "torch_slot_highlight", this, false))
+		m_TorchSlotHighlight->Show(false);
 
-	if (GameConstants::GetBackpackSlotEnabled())
-		if (m_BackpackSlotHighlight = UIHelper::CreateStatic(uiXml, "backpack_slot_highlight", this, false))
-			m_BackpackSlotHighlight->Show(false);
+	if (m_BackpackSlotHighlight = UIHelper::CreateStatic(uiXml, "backpack_slot_highlight", this, false))
+		m_BackpackSlotHighlight->Show(false);
 
-	if (GameConstants::GetHelmetSlotEnabled())
-		if ((m_HelmetSlotHighlight = UIHelper::CreateStatic(uiXml, "helmet_slot_highlight", this, false)))
-			m_HelmetSlotHighlight->Show(false);
+	if ((m_HelmetSlotHighlight = UIHelper::CreateStatic(uiXml, "helmet_slot_highlight", this, false)))
+		m_HelmetSlotHighlight->Show(false);
 
-	if (GameConstants::GetSecondHelmetSlotEnabled())
-		if ((m_SecondHelmetSlotHighlight = UIHelper::CreateStatic(uiXml, "second_helmet_slot_highlight", this, false)))
-			m_SecondHelmetSlotHighlight->Show(false);
+	if ((m_SecondHelmetSlotHighlight = UIHelper::CreateStatic(uiXml, "second_helmet_slot_highlight", this, false)))
+		m_SecondHelmetSlotHighlight->Show(false);
 
-	if (GameConstants::GetDosimeterSlotEnabled())
-		if (m_DosimeterSlotHighlight = UIHelper::CreateStatic(uiXml, "dosimeter_slot_highlight", this, false))
-			m_DosimeterSlotHighlight->Show(false);
+	if (m_DosimeterSlotHighlight = UIHelper::CreateStatic(uiXml, "dosimeter_slot_highlight", this, false))
+		m_DosimeterSlotHighlight->Show(false);
 
-	if (GameConstants::GetPantsSlotEnabled())
-		if (m_PantsSlotHighlight = UIHelper::CreateStatic(uiXml, "pants_slot_highlight", this, false))
-			m_PantsSlotHighlight->Show(false);
-
-	if (GameConstants::GetPdaSlotEnabled())
-		if (m_PdaSlotHighlight = UIHelper::CreateStatic(uiXml, "pda_slot_highlight", this, false))
-			m_PdaSlotHighlight->Show(false);
+	if (m_PantsSlotHighlight = UIHelper::CreateStatic(uiXml, "pants_slot_highlight", this, false))
+		m_PantsSlotHighlight->Show(false);
 
 	m_pInventoryBagList			= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_bag", this);
 	m_pInventoryBeltList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_belt", this);
@@ -263,7 +251,7 @@ void CUIActorMenu::Construct()
 			pos.y += dy;
 		}
 	}
-
+	/*
 	if (GameConstants::GetKnifeSlotEnabled())
 		m_pInventoryKnifeList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_knife", this, false);
 
@@ -290,7 +278,8 @@ void CUIActorMenu::Construct()
 
 	if (GameConstants::GetPdaSlotEnabled())
 		m_pInventoryPdaList			= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_pda", this, false);
-	
+	*/
+
 	if (m_pTrashList				= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_trash", this, false))
 	{
 		m_pTrashList->m_f_item_drop	= CUIDragDropListEx::DRAG_CELL_EVENT	(this,&CUIActorMenu::OnItemDrop);
@@ -329,17 +318,11 @@ void CUIActorMenu::Construct()
 		}
 	}
 
-	if (GameConstants::GetHelmetSlotEnabled())
-	{
-		m_HelmetOver = UIHelper::CreateStatic(uiXml, "helmet_over", this);
-		m_HelmetOver->Show(false);
-	}
+	m_HelmetOver = UIHelper::CreateStatic(uiXml, "helmet_over", this);
+	m_HelmetOver->Show(false);
 
-	if (GameConstants::GetSecondHelmetSlotEnabled())
-	{
-		m_SecondHelmetOver = UIHelper::CreateStatic(uiXml, "second_helmet_over", this);
-		m_SecondHelmetOver->Show(false);
-	}
+	m_SecondHelmetOver = UIHelper::CreateStatic(uiXml, "second_helmet_over", this);
+	m_SecondHelmetOver->Show(false);
 
 	m_ActorMoney	= UIHelper::CreateStatic(uiXml, "actor_money_static", this);
 	m_PartnerMoney	= UIHelper::CreateStatic(uiXml, "partner_money_static", this);
@@ -415,6 +398,7 @@ void CUIActorMenu::Construct()
 	InitCallbacks						();
 
 	BindDragDropListEvents				(m_pInventoryBeltList);		
+	BindDragDropListEvents				(m_pInventoryBoltList);
 	BindDragDropListEvents				(m_pInventoryPistolList);		
 	BindDragDropListEvents				(m_pInventoryAutomaticList);	
 	BindDragDropListEvents				(m_pInventoryOutfitList);	
@@ -428,32 +412,14 @@ void CUIActorMenu::Construct()
 	if (m_pQuickSlot)
 		BindDragDropListEvents			(m_pQuickSlot);
 
-	if (m_pInventoryKnifeList && GameConstants::GetKnifeSlotEnabled())
-		BindDragDropListEvents(m_pInventoryKnifeList);
-
-	if (m_pInventoryBinocularList && GameConstants::GetBinocularSlotEnabled())
-		BindDragDropListEvents(m_pInventoryBinocularList);
-
-	if (m_pInventoryTorchList && GameConstants::GetTorchSlotEnabled())
-		BindDragDropListEvents(m_pInventoryTorchList);
-
-	if (m_pInventoryBackpackList && GameConstants::GetBackpackSlotEnabled())
-		BindDragDropListEvents(m_pInventoryBackpackList);
-
-	if (m_pInventoryHelmetList && GameConstants::GetHelmetSlotEnabled())
-		BindDragDropListEvents(m_pInventoryHelmetList);
-
-	if (m_pInventorySecondHelmetList && GameConstants::GetSecondHelmetSlotEnabled())
-		BindDragDropListEvents(m_pInventorySecondHelmetList);
-
-	if (m_pInventoryDosimeterList && GameConstants::GetDosimeterSlotEnabled())
-		BindDragDropListEvents(m_pInventoryDosimeterList);
-
-	if (m_pInventoryPantsList && GameConstants::GetPantsSlotEnabled())
-		BindDragDropListEvents(m_pInventoryPantsList);
-
-	if (m_pInventoryPdaList && GameConstants::GetPdaSlotEnabled())
-		BindDragDropListEvents(m_pInventoryPdaList);
+	BindDragDropListEvents(m_pInventoryKnifeList);
+	BindDragDropListEvents(m_pInventoryBinocularList);
+	BindDragDropListEvents(m_pInventoryTorchList);
+	BindDragDropListEvents(m_pInventoryBackpackList);
+	BindDragDropListEvents(m_pInventoryHelmetList);
+	BindDragDropListEvents(m_pInventorySecondHelmetList);
+	BindDragDropListEvents(m_pInventoryDosimeterList);
+	BindDragDropListEvents(m_pInventoryPantsList);
 
 	m_allowed_drops[iTrashSlot].push_back(iActorBag);
 	m_allowed_drops[iTrashSlot].push_back(iActorSlot);

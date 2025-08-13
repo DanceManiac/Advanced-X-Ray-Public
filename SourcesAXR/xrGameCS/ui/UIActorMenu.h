@@ -112,7 +112,7 @@ protected:
 	CUIDragDropListEx*			m_pInventorySecondHelmetList;
 	CUIDragDropListEx*			m_pInventoryDosimeterList;
 	CUIDragDropListEx*			m_pInventoryPantsList;
-	CUIDragDropListEx*			m_pInventoryPdaList;
+	CUIDragDropListEx*			m_pInventoryBoltList;
 
 	xr_vector<CUIStatic*>		m_belt_list_over;
 	CUIStatic*					m_HelmetOver;
@@ -132,7 +132,6 @@ protected:
 	CUIStatic*					m_SecondHelmetSlotHighlight;
 	CUIStatic*					m_DosimeterSlotHighlight;
 	CUIStatic*					m_PantsSlotHighlight;
-	CUIStatic*					m_PdaSlotHighlight;
 
 	CUIInventoryUpgradeWnd*		m_pUpgradeWnd;
 	
