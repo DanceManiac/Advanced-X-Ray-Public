@@ -108,7 +108,9 @@ _action  actions[]		= {
 	{ "quick_use_2",		kQUICK_USE_2			,_both},
 	{ "quick_use_3",		kQUICK_USE_3			,_both},
 	{ "quick_use_4",		kQUICK_USE_4			,_both},	
-								
+	{ "quick_use_5",		kQUICK_USE_5			,_both},
+	{ "quick_use_6",		kQUICK_USE_6			,_both},
+
 	{ "quick_save",			kQUICK_SAVE				,_sp},		
 	{ "quick_load",			kQUICK_LOAD				,_sp},		
 	{ "alife_command",		kALIFE_CMD				,_sp},		

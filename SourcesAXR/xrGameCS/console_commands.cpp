@@ -2930,6 +2930,8 @@ extern BOOL dbg_moving_bones_snd_player;
 	CMD3(CCC_String, "slot_1", g_quick_use_slots[1], 32);
 	CMD3(CCC_String, "slot_2", g_quick_use_slots[2], 32);
 	CMD3(CCC_String, "slot_3", g_quick_use_slots[3], 32);
+	CMD3(CCC_String, "slot_4", g_quick_use_slots[4], 32);
+	CMD3(CCC_String, "slot_5", g_quick_use_slots[5], 32);
 
 	//Custom commands for scripts end
 

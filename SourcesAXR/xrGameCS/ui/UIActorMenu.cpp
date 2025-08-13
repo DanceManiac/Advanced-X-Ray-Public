@@ -598,7 +598,7 @@ void CUIActorMenu::clear_highlight_lists()
 
 	if (m_QuickSlotsHighlight[0])
 	{
-		for(u8 i=0; i<4; i++)
+		for(u8 i=0; i<6; i++)
 			m_QuickSlotsHighlight[i]->Show(false);
 	}
 	
@@ -697,7 +697,7 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 		if (cell_item->OwnerList() && GetListType(cell_item->OwnerList()) == iQuickSlot)
 			return;
 
-		for(u8 i=0; i<4; i++)
+		for(u8 i=0; i<6; i++)
 			m_QuickSlotsHighlight[i]->Show(true);
 		return;
 	}

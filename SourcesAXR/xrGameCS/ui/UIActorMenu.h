@@ -123,7 +123,7 @@ protected:
 	CUIStatic*					m_OutfitSlotHighlight;
 	CUIStatic*					m_HelmetSlotHighlight;
 	CUIStatic*					m_DetectorSlotHighlight;
-	CUIStatic*					m_QuickSlotsHighlight[4];
+	CUIStatic*					m_QuickSlotsHighlight[6];
 	xr_vector<CUIStatic*>		m_ArtefactSlotsHighlight;
 	CUIStatic*					m_KnifeSlotHighlight;
 	CUIStatic*					m_BinocularSlotHighlight;
@@ -153,7 +153,9 @@ protected:
 	CUIStatic*					m_QuickSlot2;
 	CUIStatic*					m_QuickSlot3;
 	CUIStatic*					m_QuickSlot4;
-	
+	CUIStatic*					m_QuickSlot5;
+	CUIStatic*					m_QuickSlot6;
+
 
 	// bottom ---------------------------------
 	CUIStatic*					m_ActorBottomInfo;

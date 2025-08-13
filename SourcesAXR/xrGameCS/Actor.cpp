@@ -91,7 +91,7 @@ extern float cammera_into_collision_shift ;
 
 u32	death_camera_mode = READ_IF_EXISTS(pAdvancedSettings, r_u32, "gameplay", "death_camera_mode", 1);
 
-string32		ACTOR_DEFS::g_quick_use_slots[4]={NULL, NULL, NULL, NULL};
+string32		ACTOR_DEFS::g_quick_use_slots[6] = { NULL, NULL, NULL, NULL, NULL, NULL };
 //skeleton
 
 extern bool g_block_all_except_movement;

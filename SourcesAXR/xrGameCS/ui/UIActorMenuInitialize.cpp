@@ -207,7 +207,7 @@ void CUIActorMenu::Construct()
 		pos		= m_QuickSlotsHighlight[0]->GetWndPos();
 		dx		= uiXml.ReadAttribFlt("quick_slot_highlight", 0, "dx", 24.0f);
 		dy		= uiXml.ReadAttribFlt("quick_slot_highlight", 0, "dy", 0.0f);
-		for(u8 i=1;i<4;i++)
+		for(u8 i=1;i<6;i++)
 		{
 			pos.x						+= dx;
 			pos.y						+= dy;
@@ -338,6 +338,8 @@ void CUIActorMenu::Construct()
 	m_QuickSlot2	= UIHelper::CreateStatic(uiXml, "quick_slot2_text", this, false);
 	m_QuickSlot3	= UIHelper::CreateStatic(uiXml, "quick_slot3_text", this, false);
 	m_QuickSlot4	= UIHelper::CreateStatic(uiXml, "quick_slot4_text", this, false);
+	m_QuickSlot5	= UIHelper::CreateStatic(uiXml, "quick_slot5_text", this, false);
+	m_QuickSlot6	= UIHelper::CreateStatic(uiXml, "quick_slot6_text", this, false);
 
 	m_trade_button		= UIHelper::Create3tButtonEx(uiXml, "trade_button", this, false);
 	m_takeall_button	= UIHelper::Create3tButtonEx(uiXml, "takeall_button", this);
@@ -593,4 +595,24 @@ void CUIActorMenu::UpdateButtonsLayout()
 			tmp[1] = '\0';
 		m_QuickSlot4->SetTextST(tmp);
 	}
+
+
+	if (m_QuickSlot5)
+	{
+		str = CStringTable().translate("quick_use_str_5").c_str();
+		strncpy_s(tmp, sizeof(tmp), str, 3);
+		if (tmp[2] == ',')
+			tmp[1] = '\0';
+		m_QuickSlot5->SetTextST(tmp);
+	}
+
+	if (m_QuickSlot6)
+	{
+		str = CStringTable().translate("quick_use_str_6").c_str();
+		strncpy_s(tmp, sizeof(tmp), str, 3);
+		if (tmp[2] == ',')
+			tmp[1] = '\0';
+		m_QuickSlot6->SetTextST(tmp);
+	}
+
 }

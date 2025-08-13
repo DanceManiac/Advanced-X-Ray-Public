@@ -102,6 +102,8 @@ void CActor::IR_OnKeyboardPress(int cmd)
 		case kQUICK_USE_2:
 		case kQUICK_USE_3:
 		case kQUICK_USE_4:
+		case kQUICK_USE_5:
+		case kQUICK_USE_6:
 		{
 			const shared_str& item_name		= g_quick_use_slots[cmd-kQUICK_USE_1];
 			if(item_name.size())
