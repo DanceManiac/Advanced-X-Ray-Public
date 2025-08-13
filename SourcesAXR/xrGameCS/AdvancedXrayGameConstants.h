@@ -37,7 +37,6 @@ namespace GameConstants
 	bool GetActorSkillsEnabled();
 	bool GetSleepInfluenceOnPsyHealth();
 	bool GetUseHQ_Icons();
-	bool GetArtefactPanelEnabled();
 	bool GetHUD_UsedItemTextEnabled();
 	bool GetLimitedInventory();
 	bool GetInventoryItemsAutoVolume();

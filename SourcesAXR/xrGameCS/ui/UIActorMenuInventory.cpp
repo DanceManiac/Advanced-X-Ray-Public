@@ -111,7 +111,15 @@ void CUIActorMenu::InitInventoryMode()
 	InitInventoryContents				(m_pInventoryBagList);
 
 	VERIFY( HUD().GetUI() && HUD().GetUI()->UIMainIngameWnd );
-	HUD().GetUI()->UIMainIngameWnd->ShowZoneMap(true);
+
+	if (psHUD_Flags.test(HUD_MINIMAP_INVENTORY))
+	{
+		HUD().GetUI()->UIMainIngameWnd->ShowZoneMap(true);
+	}
+	else
+	{
+		HUD().GetUI()->UIMainIngameWnd->ShowZoneMap(false);
+	}
 
 	m_bNeedMoveAfsToBag = false;
 }

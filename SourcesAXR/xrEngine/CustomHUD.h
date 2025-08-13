@@ -14,6 +14,12 @@ ENGINE_API extern Flags32		psHUD_Flags;
 #define HUD_WEAPON_RT2			(1<<11)
 #define HUD_DRAW_RT2			(1<<12)
 
+//LFO
+#define HUD_AF_PANEL			(1<<13)
+#define ALTERNATIV_INVENTORY	(1<<14)
+#define HUD_MINIMAP_INVENTORY	(1<<15)
+
+
 class ENGINE_API IRender_Visual;
 class CUI;
 

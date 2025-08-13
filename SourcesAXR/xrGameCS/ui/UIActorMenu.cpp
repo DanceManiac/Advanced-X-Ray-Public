@@ -152,8 +152,6 @@ void CUIActorMenu::SetMenuMode(EMenuMode mode)
 			break;
 		}
 
-		HUD().GetUI()->UIMainIngameWnd->ShowZoneMap(false);
-
 		m_currMenuMode = mode;
 		switch(mode)
 		{
@@ -162,6 +160,7 @@ void CUIActorMenu::SetMenuMode(EMenuMode mode)
 			Msg("* now is Undefined mode");
 #endif // #ifdef DEBUG
 			ResetMode();
+			HUD().GetUI()->UIMainIngameWnd->ShowZoneMap(false);
 			break;
 		case mmInventory:
 			InitInventoryMode();
@@ -259,7 +258,11 @@ void CUIActorMenu::Hide()
 
 void CUIActorMenu::Draw()
 {
-	HUD().GetUI()->UIMainIngameWnd->DrawZoneMap();
+	if (psHUD_Flags.test(HUD_MINIMAP_INVENTORY) && m_currMenuMode == mmInventory)
+	{
+		HUD().GetUI()->UIMainIngameWnd->DrawZoneMap();
+	}
+
 	HUD().GetUI()->UIMainIngameWnd->DrawMainIndicatorsForInventory();
 
 	inherited::Draw	();

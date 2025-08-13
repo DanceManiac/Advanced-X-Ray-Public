@@ -75,7 +75,15 @@ void CEncyclopediaArticle::load_shared	(LPCSTR)
 
 	if(ltx)
 	{
-		data()->image.SetShader(InventoryUtilities::GetEquipmentIconsShader());
+		if (pSettings->line_exist(ltx, "icons_texture"))
+		{
+			LPCSTR icons_texture = pSettings->r_string(ltx, "icons_texture");
+			data()->image.SetShader(InventoryUtilities::GetCustomIconTextureShader(icons_texture));
+		}
+		else
+		{
+			data()->image.SetShader(InventoryUtilities::GetEquipmentIconsShader());
+		}
 
 		float x			= float(pSettings->r_u32(ltx, "inv_grid_x") * UI().inv_grid_kx());
 		float y			= float(pSettings->r_u32(ltx, "inv_grid_y") * UI().inv_grid_kx());

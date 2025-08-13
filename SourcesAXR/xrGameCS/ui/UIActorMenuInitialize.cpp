@@ -23,6 +23,7 @@
 #include "ui_base.h"
 #include "../string_table.h"
 #include "AdvancedXrayGameConstants.h"
+#include "../HUDManager.h"
 
 CUIActorMenu::CUIActorMenu()
 {
@@ -50,7 +51,15 @@ CUIActorMenu::~CUIActorMenu()
 void CUIActorMenu::Construct()
 {
 	CUIXml								uiXml;
-	uiXml.Load							(CONFIG_PATH, UI_PATH, "actor_menu.xml");
+
+	if (psHUD_Flags.test(ALTERNATIV_INVENTORY))
+	{
+		uiXml.Load(CONFIG_PATH, UI_PATH, "actor_menu_alternativ.xml");
+	}
+	else
+	{
+		uiXml.Load(CONFIG_PATH, UI_PATH, "actor_menu.xml");
+	}
 
 	CUIXmlInit							xml_init;
 

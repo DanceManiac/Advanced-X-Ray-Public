@@ -2501,6 +2501,17 @@ void CCC_RegisterCommands()
 	psHUD_Flags.set(HUD_DRAW,			true);
 	psHUD_Flags.set(HUD_INFO,			true);
 
+	//LFO
+	CMD3(CCC_Mask, "hud_artefact_panel", &psHUD_Flags, HUD_AF_PANEL);
+	CMD3(CCC_Mask, "g_alternativ_inventory", &psHUD_Flags, ALTERNATIV_INVENTORY);
+	CMD3(CCC_Mask, "g_inventory_minimap", &psHUD_Flags, HUD_MINIMAP_INVENTORY);
+
+	psHUD_Flags.set(HUD_AF_PANEL,					true);
+	psHUD_Flags.set(ALTERNATIV_INVENTORY,			true);
+	psHUD_Flags.set(HUD_MINIMAP_INVENTORY,			true);
+
+
+
 	CMD3(CCC_Mask,				"hud_crosshair",		&psHUD_Flags,	HUD_CROSSHAIR);
 	CMD3(CCC_Mask,				"hud_crosshair_dist",	&psHUD_Flags,	HUD_CROSSHAIR_DIST);
 

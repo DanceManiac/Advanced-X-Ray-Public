@@ -34,11 +34,21 @@ void CUIArtefactPanel::InitFromXML	(CUIXml& xml, LPCSTR path, int index)
 void CUIArtefactPanel::InitIcons(const xr_vector<const CArtefact*>& artefacts)
 {
 	m_vRects.clear();
-	m_si.SetShader(InventoryUtilities::GetEquipmentIconsShader());
+	//m_si.SetShader(InventoryUtilities::GetEquipmentIconsShader());
 
 	for(xr_vector<const CArtefact*>::const_iterator it = artefacts.begin(); it != artefacts.end(); it++)
 	{
 		const CArtefact* artefact = *it;
+
+		if (pSettings->line_exist(artefact->cNameSect(), "icons_texture"))
+		{
+			LPCSTR icons_texture = pSettings->r_string(artefact->cNameSect(), "icons_texture");
+			m_si.SetShader(InventoryUtilities::GetCustomIconTextureShader(icons_texture));
+		}
+		else
+		{
+			m_si.SetShader(InventoryUtilities::GetEquipmentIconsShader());
+		}
 
 		Frect rect;
 		rect.left = pSettings->r_float(artefact->cNameSect(), "inv_grid_x") * UI().inv_grid_kx();

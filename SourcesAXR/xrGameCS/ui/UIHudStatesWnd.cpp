@@ -83,7 +83,7 @@ void CUIHudStatesWnd::InitFromXml( CUIXml& xml, LPCSTR path )
 	m_ui_grenade				= UIHelper::CreateStatic( xml, "static_grenade", this );
 
 	m_ui_weapon_icon			= UIHelper::CreateStatic( xml, "static_wpn_icon", this );
-	m_ui_weapon_icon->SetShader	(InventoryUtilities::GetEquipmentIconsShader());
+//	m_ui_weapon_icon->SetShader	(InventoryUtilities::GetEquipmentIconsShader());
 	m_ui_weapon_icon_rect		= m_ui_weapon_icon->GetWndRect();
 	m_ui_weapon_icon_scale		= xml.ReadAttribFlt("static_wpn_icon", 0,"scale", 1.f);
 	
@@ -313,6 +313,16 @@ void CUIHudStatesWnd::SetAmmoIcon(const shared_str& sect_name)
 		return;
 	}
 	m_ui_weapon_icon->Show(true);
+
+	if (pSettings->line_exist(sect_name, "icons_texture"))
+	{
+		LPCSTR icons_texture = pSettings->r_string(sect_name, "icons_texture");
+		m_ui_weapon_icon->SetShader(InventoryUtilities::GetCustomIconTextureShader(icons_texture));
+	}
+	else
+	{
+		m_ui_weapon_icon->SetShader(InventoryUtilities::GetEquipmentIconsShader());
+	}
 
 	//properties used by inventory menu
 	float xPos						= pSettings->r_float(sect_name, "inv_grid_x")		* UI().inv_grid_kx();

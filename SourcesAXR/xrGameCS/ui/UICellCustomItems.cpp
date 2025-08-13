@@ -36,7 +36,15 @@ CUIInventoryCellItem::CUIInventoryCellItem(CInventoryItem* itm)
 {
 	m_pData											= (void*)itm;
 
-	inherited::SetShader							(InventoryUtilities::GetEquipmentIconsShader());
+	if (pSettings->line_exist(itm->m_section_id.c_str(), "icons_texture"))
+	{
+		LPCSTR icons_texture = pSettings->r_string(itm->m_section_id.c_str(), "icons_texture");
+		inherited::SetShader(InventoryUtilities::GetCustomIconTextureShader(icons_texture));
+	}
+	else
+	{
+		inherited::SetShader(InventoryUtilities::GetEquipmentIconsShader());
+	}
 
 	m_grid_size.set									(itm->GetInvGridRect().rb);
 	Frect rect{}; 
@@ -300,7 +308,15 @@ void CUIWeaponCellItem::CreateIcon(eAddonType t, const shared_str& sAddonName) /
 	m_addons[t]					= xr_new<CUIStatic>();	
 	m_addons[t]->SetAutoDelete	(true);
 	AttachChild					(m_addons[t]);
-	m_addons[t]->SetShader		(InventoryUtilities::GetEquipmentIconsShader());
+	if (pSettings->line_exist(object()->cNameSect(), "icons_texture"))
+	{
+		LPCSTR icons_texture = pSettings->r_string(object()->cNameSect(), "icons_texture");
+		m_addons[t]->SetShader(InventoryUtilities::GetCustomIconTextureShader(icons_texture));
+	}
+	else
+	{
+		m_addons[t]->SetShader(InventoryUtilities::GetEquipmentIconsShader());
+	}
 
 	// Регулируем порядок отрисовки иконок аддонов --#SM+#--
 	bool bIconToBackground = READ_IF_EXISTS(pSettings, r_bool, sAddonName, "inv_icon_to_back", false);
@@ -627,6 +643,17 @@ CUIDragItem* CUIWeaponCellItem::CreateDragItem()
 		s				= xr_new<CUIStatic>(); s->SetAutoDelete(true);
 		s->SetShader	(InventoryUtilities::GetEquipmentIconsShader());
 		InitAddon		(s, *object()->GetSilencerName(), m_addon_offset[eSilencer], false, true, is_scope(), is_silencer(), is_launcher());
+
+		if (pSettings->line_exist(object()->GetSilencerName(), "icons_texture"))
+		{
+			LPCSTR icons_texture = pSettings->r_string(object()->GetSilencerName(), "icons_texture");
+			s->SetShader(InventoryUtilities::GetCustomIconTextureShader(icons_texture));
+		}
+		else
+		{
+			s->SetShader(InventoryUtilities::GetEquipmentIconsShader());
+		}
+
 		s->SetColor		(i->wnd()->GetColor());
 		i->wnd			()->AttachChild	(s);
 	}
@@ -636,6 +663,19 @@ CUIDragItem* CUIWeaponCellItem::CreateDragItem()
 		s				= xr_new<CUIStatic>(); s->SetAutoDelete(true);
 		s->SetShader	(InventoryUtilities::GetEquipmentIconsShader());
 		InitAddon		(s,	*object()->GetScopeName(),		m_addon_offset[eScope], false, true, is_scope(), is_silencer(), is_launcher());
+
+
+		if (pSettings->line_exist(object()->GetSilencerName(), "icons_texture"))
+		{
+			LPCSTR icons_texture = pSettings->r_string(object()->GetSilencerName(), "icons_texture");
+			s->SetShader(InventoryUtilities::GetCustomIconTextureShader(icons_texture));
+		}
+		else
+		{
+			s->SetShader(InventoryUtilities::GetEquipmentIconsShader());
+		}
+
+
 		s->SetColor		(i->wnd()->GetColor());
 		i->wnd			()->AttachChild	(s);
 	}
@@ -645,6 +685,19 @@ CUIDragItem* CUIWeaponCellItem::CreateDragItem()
 		s				= xr_new<CUIStatic>(); s->SetAutoDelete(true);
 		s->SetShader	(InventoryUtilities::GetEquipmentIconsShader());
 		InitAddon		(s, *object()->GetGrenadeLauncherName(),m_addon_offset[eLauncher], false, true, is_scope(), is_silencer(), is_launcher());
+
+
+		if (pSettings->line_exist(object()->GetSilencerName(), "icons_texture"))
+		{
+			LPCSTR icons_texture = pSettings->r_string(object()->GetSilencerName(), "icons_texture");
+			s->SetShader(InventoryUtilities::GetCustomIconTextureShader(icons_texture));
+		}
+		else
+		{
+			s->SetShader(InventoryUtilities::GetEquipmentIconsShader());
+		}
+
+
 		s->SetColor		(i->wnd()->GetColor());
 		i->wnd			()->AttachChild	(s);
 	}
@@ -654,6 +707,19 @@ CUIDragItem* CUIWeaponCellItem::CreateDragItem()
 		s				= xr_new<CUIStatic>(); s->SetAutoDelete(true);
 		s->SetShader	(InventoryUtilities::GetEquipmentIconsShader());
 		InitAddon		(s, *object()->GetLaserName(), m_addon_offset[eLaser], false, true, is_scope(), is_silencer(), is_launcher());
+
+
+		if (pSettings->line_exist(object()->GetSilencerName(), "icons_texture"))
+		{
+			LPCSTR icons_texture = pSettings->r_string(object()->GetSilencerName(), "icons_texture");
+			s->SetShader(InventoryUtilities::GetCustomIconTextureShader(icons_texture));
+		}
+		else
+		{
+			s->SetShader(InventoryUtilities::GetEquipmentIconsShader());
+		}
+
+
 		s->SetColor		(i->wnd()->GetTextureColor());
 		i->wnd			()->AttachChild(s);
 	}
@@ -663,6 +729,19 @@ CUIDragItem* CUIWeaponCellItem::CreateDragItem()
 		s				= xr_new<CUIStatic>(); s->SetAutoDelete(true);
 		s->SetShader	(InventoryUtilities::GetEquipmentIconsShader());
 		InitAddon		(s, *object()->GetTacticalTorchName(), m_addon_offset[eTorch], false, true, is_scope(), is_silencer(), is_launcher());
+
+
+		if (pSettings->line_exist(object()->GetSilencerName(), "icons_texture"))
+		{
+			LPCSTR icons_texture = pSettings->r_string(object()->GetSilencerName(), "icons_texture");
+			s->SetShader(InventoryUtilities::GetCustomIconTextureShader(icons_texture));
+		}
+		else
+		{
+			s->SetShader(InventoryUtilities::GetEquipmentIconsShader());
+		}
+
+
 		s->SetColor		(i->wnd()->GetTextureColor());
 		i->wnd			()->AttachChild(s);
 	}

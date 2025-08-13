@@ -35,7 +35,15 @@ void CUIStatsIcon::InitTexInfo(){
 	float fXPos			= pSettings->r_float(artefact_name, "inv_grid_x");
 	float fYPos			= pSettings->r_float(artefact_name, "inv_grid_y");
 
-	m_tex_info[ARTEFACT][0].sh = InventoryUtilities::GetEquipmentIconsShader();
+	if (pSettings->line_exist(artefact_name, "icons_texture"))
+	{
+		LPCSTR icons_texture = pSettings->r_string(artefact_name, "icons_texture");
+		m_tex_info[ARTEFACT][0].sh = InventoryUtilities::GetCustomIconTextureShader(icons_texture);
+	}
+	else
+	{
+		m_tex_info[ARTEFACT][0].sh = InventoryUtilities::GetEquipmentIconsShader();
+	}
 	m_tex_info[ARTEFACT][0].rect.set(
 		fXPos * UI().inv_grid_kx(),
 		fYPos * UI().inv_grid_kx(),

@@ -338,7 +338,15 @@ void CUIItemInfo::InitItem(CUICellItem* pCellItem, CInventoryItem* pCompareItem,
 	if(UIItemImage)
 	{
 		// Загружаем картинку
-		UIItemImage->SetShader				(InventoryUtilities::GetEquipmentIconsShader());
+		if (pSettings->line_exist(m_pInvItem->m_section_id.c_str(), "icons_texture"))
+		{
+			LPCSTR icons_texture = pSettings->r_string(m_pInvItem->m_section_id.c_str(), "icons_texture");
+			UIItemImage->SetShader(InventoryUtilities::GetCustomIconTextureShader(icons_texture));
+		}
+		else
+		{
+			UIItemImage->SetShader(InventoryUtilities::GetEquipmentIconsShader());
+		}
 
 		Irect item_grid_rect				= pInvItem->GetInvGridRect();
 		UIItemImage->GetUIStaticItem().SetOriginalRect(	float(item_grid_rect.x1*UI().inv_grid_kx()), float(item_grid_rect.y1*UI().inv_grid_kx()),

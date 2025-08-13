@@ -311,11 +311,6 @@ namespace GameConstants
 		return m_bSleepInfluenceOnPsyHealth;
 	}
 
-	bool GetArtefactPanelEnabled()
-	{
-		return m_bAfPanelEnabled;
-	}
-
 	bool GetHUD_UsedItemTextEnabled()
 	{
 		return m_bHUD_UsedItemText;

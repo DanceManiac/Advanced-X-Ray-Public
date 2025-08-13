@@ -308,7 +308,7 @@ void CUIMainIngameWnd::Init()
 	AttachChild								(&UIMotionIcon);
 	UIMotionIcon.Init						();
 
-	if (GameConstants::GetArtefactPanelEnabled())
+	if (psHUD_Flags.test(HUD_AF_PANEL))
 	{
 		UIArtefactsPanel					= xr_new<CUIArtefactPanel>();
 		UIArtefactsPanel->InitFromXML		(uiXml, "artefact_panel", 0);

@@ -47,6 +47,9 @@ ui_shader	*g_BuyMenuShader			= NULL;
 ui_shader	*g_EquipmentIconsShader		= NULL;
 ui_shader	*g_MPCharIconsShader		= NULL;
 ui_shader	*g_tmpWMShader				= NULL;
+
+xr_map<LPCSTR, ui_shader*> g_CustomIconShaders;
+
 static CUIStatic*	GetUIStatic				();
 
 typedef				std::pair<CHARACTER_RANK_VALUE, shared_str>	CharInfoStringID;
@@ -69,6 +72,7 @@ void InventoryUtilities::DestroyShaders()
 	g_BuyMenuShader = 0;
 
 	xr_delete(g_EquipmentIconsShader);
+	delete_data(g_CustomIconShaders);
 	g_EquipmentIconsShader = 0;
 
 	xr_delete(g_MPCharIconsShader);
@@ -193,11 +197,32 @@ const ui_shader& InventoryUtilities::GetEquipmentIconsShader()
 	if(!g_EquipmentIconsShader)
 	{
 		g_EquipmentIconsShader = xr_new<ui_shader>();
-		(*g_EquipmentIconsShader)->create("hud\\default", EQUIPMENT_ICONS);
+	//	(*g_EquipmentIconsShader)->create("hud\\default", EQUIPMENT_ICONS);
+		(*g_EquipmentIconsShader)->create("hud\\default", "ui\\icon\\ui_icon_equipment");
 	}
 
 	return *g_EquipmentIconsShader;
 }
+
+ui_shader& InventoryUtilities::GetCustomIconTextureShader(LPCSTR name)
+{
+	xr_map<LPCSTR, ui_shader*>::iterator it = g_CustomIconShaders.find(name);
+
+	if (it != g_CustomIconShaders.end())
+		return *(it)->second;
+
+	ui_shader* shader = xr_new<ui_shader>();
+	(*shader)->create("hud\\default", name);
+
+	std::pair<LPCSTR, ui_shader*> name_shader;
+	name_shader.first = name;
+	name_shader.second = shader;
+
+	g_CustomIconShaders.insert(name_shader);
+
+	return *shader;
+}
+
 
 const ui_shader&	InventoryUtilities::GetMPCharIconsShader()
 {
