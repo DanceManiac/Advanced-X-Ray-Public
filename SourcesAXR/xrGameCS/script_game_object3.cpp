@@ -54,6 +54,7 @@
 #include "AntigasFilter.h"
 #include "CustomDetector.h"
 #include "Torch.h"
+#include "ActorHelmet.h"
 
 namespace MemorySpace {
 	struct CVisibleObject;
@@ -266,6 +267,75 @@ float CScriptGameObject::GetCurrentOutfitProtection(int hit_type)
 	if(!o)				return 0.0f;
 
 	return		o->GetDefHitTypeProtection(ALife::EHitType(hit_type));
+}
+
+
+float CScriptGameObject::GetCurrentOutfitFilterCondition() const
+{
+	CInventoryOwner* inventoryOwner = smart_cast<CInventoryOwner*>(&object());
+	if (!inventoryOwner) {
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CInventoryOwner : cannot access class member GetCurrentOutfitFilterCondition!");
+		return		(0);
+	}
+	CGameObject* current_equipment = inventoryOwner->GetOutfit();
+	CCustomOutfit* o = smart_cast<CCustomOutfit*>(current_equipment);
+	if (!o || !o->m_bUseFilter)
+		return 0.0f;
+
+	return o->GetFilterCondition();
+}
+float CScriptGameObject::GetCurrentHelmetFilterCondition() const
+{
+	CInventoryOwner* inventoryOwner = smart_cast<CInventoryOwner*>(&object());
+	if (!inventoryOwner) {
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CInventoryOwner : cannot access class member GetCurrentHelmetFilterCondition!");
+		return		(0);
+	}
+	CGameObject* current_equipment = inventoryOwner->GetHelmet();
+	CHelmet* o = smart_cast<CHelmet*>(current_equipment);
+	if (!o || !o->m_bUseFilter)
+		return 0.0f;
+
+	return o->GetFilterCondition();
+}
+
+float CScriptGameObject::GetProtection(int hit_type)
+{
+	CGameObject* item = smart_cast<CGameObject*>(&object());
+	if (!item) {
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CGameObject : cannot access class member GetProtection!");
+		return		(0);
+	}
+	CCustomOutfit* o = smart_cast<CCustomOutfit*>(item);
+	if (!o)				return 0.0f;
+
+	return		o->GetDefHitTypeProtection(ALife::EHitType(hit_type));
+}
+
+bool CScriptGameObject::GetUseFilter() const
+{
+	CGameObject* item = smart_cast<CGameObject*>(&object());
+	if (!item) {
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CGameObject : cannot access class member GetUseFilter!");
+		return		(0);
+	}
+	CCustomOutfit* o = smart_cast<CCustomOutfit*>(item);
+	if (!o) return false;
+
+	return o->m_bUseFilter;
+}
+
+float CScriptGameObject::GetFilterCondition() const
+{
+	CGameObject* item = smart_cast<CGameObject*>(&object());
+	if (!item) {
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CGameObject : cannot access class member GetFilterCondition!");
+		return		(0);
+	}
+	CCustomOutfit* o = smart_cast<CCustomOutfit*>(item);
+	if (!o) return 0.0f;
+
+	return o->GetFilterCondition();
 }
 
 CScriptGameObject *CScriptGameObject::GetFood() const

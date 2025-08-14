@@ -102,6 +102,7 @@ CEntityCondition::CEntityCondition(CEntityAlive *object)
 	m_fNarcotism			= 0.0f;
 	m_fWithdrawal			= 0.0f;
 	m_fFrostbite			= 0.0f;
+	m_fInfection			= 0.0f;
 }
 
 CEntityCondition::~CEntityCondition(void)

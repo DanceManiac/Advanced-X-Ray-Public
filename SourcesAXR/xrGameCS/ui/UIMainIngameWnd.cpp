@@ -199,6 +199,16 @@ void CUIMainIngameWnd::Init()
 	m_ind_thirst			= UIHelper::CreateStatic(uiXml, "indicator_thirst", this);
 	m_ind_sleepeness		= UIHelper::CreateStatic(uiXml, "indicator_tired", this);
 	m_ind_infection			= UIHelper::CreateStatic(uiXml, "indicator_infection", this);
+	m_ind_health			= UIHelper::CreateStatic(uiXml, "indicator_health", this);
+	m_ind_frostbite			= UIHelper::CreateStatic(uiXml, "indicator_frostbite", this);
+
+	m_ind_filter_dirty					= UIHelper::CreateStatic(uiXml, "indicator_filter", this);
+	m_ind_lfo_filter_dirty				= UIHelper::CreateStatic(uiXml, "indicator_lfo_filter", this);
+
+	m_ind_battery						= UIHelper::CreateStatic(uiXml, "indicator_torch_battery", this);
+	m_ind_battery_torch					= UIHelper::CreateStatic(uiXml, "indicator_lfo_battery_torch", this);
+	m_ind_battery_artefact_detector		= UIHelper::CreateStatic(uiXml, "indicator_lfo_battery_artefact_detector", this);
+	m_ind_battery_anomaly_detector		= UIHelper::CreateStatic(uiXml, "indicator_lfo_battery_anomaly_detector", this);
 
 	m_ind_boost_psy			->Show(false);
 	m_ind_boost_radia		->Show(false);
@@ -218,6 +228,16 @@ void CUIMainIngameWnd::Init()
 	m_ind_boost_narcotism	->Show(false);
 	m_ind_boost_withdrawal	->Show(false);
 	m_ind_boost_frostbite	->Show(false);
+
+	if (psHUD_Flags.test(HUD_LFO_TEMPERATURE_ON_HUD))
+	{
+		m_ind_temperature = UIHelper::CreateStatic(uiXml, "indicator_temperature", this);
+	}
+
+	if (psHUD_Flags.test(HUD_LFO_CLOCK_ON_HUD))
+	{
+		m_clock_value = UIHelper::CreateStatic(uiXml, "indicator_hud_clock", this);
+	}
 
 	// Загружаем иконки 
 	if ( IsGameTypeSingle() )
@@ -475,19 +495,23 @@ void CUIMainIngameWnd::Update()
 		SetWarningIconColor( ewiInvincible, 0x00ffffff );
 	}
 
+	if (!psActorFlags3.test(AF_LFO_SURVIVAL_MODE))
+	{
+		if (m_pActor->GetHeatingStatus() && GameConstants::GetActorFrostbite())
+		{
+			SetWarningIconColor(ewiHeating, 0xffffffff);
+		}
+		else
+		{
+			SetWarningIconColor(ewiHeating, 0x00ffffff);
+		}
+	}
+
 	UpdateMainIndicators();
+
 	if (IsGameTypeSingle())
 		return;
-
-	if (m_pActor->GetHeatingStatus() && GameConstants::GetActorFrostbite())
-	{
-		SetWarningIconColor(ewiHeating, 0xffffffff);
-	}
-	else
-	{
-		SetWarningIconColor(ewiHeating, 0x00ffffff);
-	}
-
+	
 	// ewiArtefact
 	if ( GameID() == eGameIDArtefactHunt && !IsGameTypeSingle())
 	{

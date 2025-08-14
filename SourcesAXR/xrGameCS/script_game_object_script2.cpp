@@ -219,6 +219,13 @@ class_<CScriptGameObject> script_register_game_object1(class_<CScriptGameObject>
 		.def("get_current_outfit",			&CScriptGameObject::GetCurrentOutfit)
 		.def("get_current_outfit_protection",&CScriptGameObject::GetCurrentOutfitProtection)
 
+		.def("get_current_outfit_filter_condition", &CScriptGameObject::GetCurrentOutfitFilterCondition)
+		.def("get_current_helmet_filter_condition", &CScriptGameObject::GetCurrentHelmetFilterCondition)
+		
+		.def("get_protection",       		&CScriptGameObject::GetProtection)
+		.def("get_use_filter",       		&CScriptGameObject::GetUseFilter)
+		.def("get_filter_condition", 		&CScriptGameObject::GetFilterCondition)
+
 		.def("deadbody_closed",				&CScriptGameObject::deadbody_closed)
 		.def("deadbody_closed_status",		&CScriptGameObject::deadbody_closed_status)
 		.def("deadbody_can_take",			&CScriptGameObject::deadbody_can_take)

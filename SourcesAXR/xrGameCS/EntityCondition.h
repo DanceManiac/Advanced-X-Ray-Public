@@ -161,7 +161,7 @@ public:
 	IC float				GetNarcotism			() const			{return m_fNarcotism;}
 	IC float				GetWithdrawal			() const			{return m_fWithdrawal;}
 	IC float				GetFrostbite			() const			{return m_fFrostbite;}
-	IC float				GetInfection			() const			{ return 1.f; }
+	IC float				GetInfection			() const			{return m_fInfection;}
 
 	IC float 				GetEntityMorale			() const			{return m_fEntityMorale;}
 
@@ -228,8 +228,6 @@ protected:
 	virtual void			UpdateRadiation			();
 	void					UpdatePsyHealth			();
 
-	void					UpdateInfection			(float k = 1.0f);
-
 	void					UpdateEntityMorale		();
 
 
@@ -264,6 +262,7 @@ protected:
 	float m_fNarcotism;				//Наркомания
 	float m_fWithdrawal;			//Ломка
 	float m_fFrostbite;				//Обморожение
+	float m_fInfection;
 
 	//максимальные величины
 	//	float m_fSatietyMax;

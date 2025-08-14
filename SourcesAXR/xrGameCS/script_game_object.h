@@ -479,7 +479,12 @@ public:
 			void					bind_object		(CScriptBinderObject *object);
 			CScriptGameObject		*GetCurrentOutfit() const;
 			float					GetCurrentOutfitProtection(int hit_type);
-			
+			float					GetCurrentOutfitFilterCondition() const;
+			float					GetCurrentHelmetFilterCondition() const;
+			float 					GetProtection(int hit_type);
+			bool 					GetUseFilter() const;
+			float 					GetFilterCondition() const;
+
 			void					deadbody_closed			(bool status);
 			bool					deadbody_closed_status	();
 			void					deadbody_can_take		(bool status);

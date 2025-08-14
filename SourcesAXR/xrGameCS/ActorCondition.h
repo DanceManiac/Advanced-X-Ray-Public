@@ -138,7 +138,7 @@ public:
 			float	xr_stdcall	GetDrugs			()	{return m_fDrugs;}
 			float	xr_stdcall	GetFrostbite		()	{return m_fFrostbite;}
 
-			float				GetInfection		() { return m_fInfection; }
+			float	xr_stdcall  GetInfection		()	{return m_fInfection;}
 
 			void		AffectDamage_InjuriousMaterialAndMonstersInfluence();
 			float		GetInjuriousMaterialDamage	();
@@ -206,7 +206,6 @@ public:
 	float m_fV_SatietyHealth;
 	float m_fSatietyCritical;
 
-	float m_fInfection;
 	float m_fV_Infection;
 	float m_fV_InfectionPower;
 	float m_fV_InfectionHealth;

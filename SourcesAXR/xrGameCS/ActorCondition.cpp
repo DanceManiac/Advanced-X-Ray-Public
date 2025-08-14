@@ -842,6 +842,8 @@ void CActorCondition::UpdateInfection()
 			object().KillEntity(object().ID());
 		else
 			clamp(m_fInfection, 0.0f, 1.0f);
+
+			Msg("Update m_fInfection: %f", m_fInfection);
 	}
 	if (!m_bIsBleeding)
 	{
