@@ -14,6 +14,7 @@
 #include "ui_base.h"
 #include "HUDManager.h"
 #include "Weapon.h"
+#include "WeaponMagazinedWGrenade.h"
 #include "PDA.h"
 #include <array>
 
@@ -720,9 +721,17 @@ void CHudItem::PlayAnimIdleSprint()
 void CHudItem::PlayAnimSprintStart()
 {
 	CWeapon* wpn = smart_cast<CWeapon*>(this);
+	CWeaponMagazinedWGrenade* wpn_wgrenade = smart_cast<CWeaponMagazinedWGrenade*>(this);
+
+	bool magazine_empty = false;
+	
+	if (wpn_wgrenade && wpn_wgrenade->IsGrenadeMode())
+		magazine_empty = wpn_wgrenade->IsMainMagazineEmpty();
+	else
+		magazine_empty = IsMagazineEmpty();
 
 	string_path guns_sprint_start_anm{};
-	strconcat(sizeof(guns_sprint_start_anm), guns_sprint_start_anm, "anm_idle_sprint_start", (wpn && wpn->IsGrenadeLauncherAttached()) ? (wpn && wpn->IsGrenadeMode() ? "_g" : "_w_gl") : "", (IsMisfireNow() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
+	strconcat(sizeof(guns_sprint_start_anm), guns_sprint_start_anm, "anm_idle_sprint_start", (wpn && wpn->IsGrenadeLauncherAttached()) ? (wpn && wpn->IsGrenadeMode() ? "_g" : "_w_gl") : "", (IsMisfireNow() ? "_jammed" : (magazine_empty) ? "_empty" : ""));
 
 	if (m_sounds.FindSoundItem("sndSprintStart", false))
 		m_sounds.PlaySound("sndSprintStart", HudItemData()->m_item_transform.c, object().H_Root(), !!GetHUDmode(), false, (u8)-1);
@@ -773,6 +782,7 @@ void CHudItem::PlayAnimSprintStart()
 void CHudItem::PlayAnimSprintEnd()
 {
 	CWeapon* wpn = smart_cast<CWeapon*>(this);
+	CWeaponMagazinedWGrenade* wpn_wgrenade = smart_cast<CWeaponMagazinedWGrenade*>(this);
 
 	if (wpn && wpn->IsRotatingFromZoom())
 	{
@@ -782,8 +792,15 @@ void CHudItem::PlayAnimSprintEnd()
 		return;
 	}
 
+	bool magazine_empty = false;
+
+	if (wpn_wgrenade && wpn_wgrenade->IsGrenadeMode())
+		magazine_empty = wpn_wgrenade->IsMainMagazineEmpty();
+	else
+		magazine_empty = IsMagazineEmpty();
+
 	string_path guns_sprint_end_anm{};
-	strconcat(sizeof(guns_sprint_end_anm), guns_sprint_end_anm, "anm_idle_sprint_end", (wpn && wpn->IsGrenadeLauncherAttached()) ? (wpn && wpn->IsGrenadeMode() ? "_g" : "_w_gl") : "", (IsMisfireNow() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
+	strconcat(sizeof(guns_sprint_end_anm), guns_sprint_end_anm, "anm_idle_sprint_end", (wpn && wpn->IsGrenadeLauncherAttached()) ? (wpn && wpn->IsGrenadeMode() ? "_g" : "_w_gl") : "", (IsMisfireNow() ? "_jammed" : (magazine_empty) ? "_empty" : ""));
 
 	if (m_sounds.FindSoundItem("sndSprintEnd", false))
 		m_sounds.PlaySound("sndSprintEnd", HudItemData()->m_item_transform.c, object().H_Root(), !!GetHUDmode(), false, (u8)-1);
