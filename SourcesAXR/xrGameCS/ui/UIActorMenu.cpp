@@ -49,6 +49,7 @@
 #include "../Car.h"
 #include "../xrEngine/x_ray.h"
 #include "../../xrServerEntitiesCS/script_engine.h"
+#include "../CustomPsyHelmet.h"
 
 bool SSFX_UI_DoF_active = false;
 
@@ -378,6 +379,18 @@ EDDListType CUIActorMenu::GetListType(CUIDragDropListEx* l)
 	if(l==m_pTradePartnerList)			return iPartnerTrade;
 	if(l==m_pDeadBodyBagList)			return iDeadBodyBag;
 
+	if (l == m_pInventoryKnifeList)		return iActorSlot;
+	if (l == m_pInventoryBinocularList)	return iActorSlot;
+	if (l == m_pInventoryTorchList)		return iActorSlot;
+	if (l == m_pInventoryBackpackList)		return iActorSlot;
+	if (l == m_pInventoryDosimeterList)	return iActorSlot;
+	if (l == m_pInventoryBoltList)			return iActorSlot;
+	if (l == m_pInventoryPantsList)		return iActorSlot;
+	if (l == m_pInventorySecondHelmetList)	return iActorSlot;
+	if (l == m_pInventoryDeviceList)		return iActorSlot;
+
+
+	/*
 	if(l == m_pQuickSlot && m_pQuickSlot != nullptr)					
 		return iQuickSlot;
 	
@@ -407,6 +420,7 @@ EDDListType CUIActorMenu::GetListType(CUIDragDropListEx* l)
 
 	if ((l == m_pInventoryPantsList) && (m_pInventoryPantsList != nullptr))
 		return iActorSlot;
+	*/
 
 	R_ASSERT(0);
 	
@@ -593,6 +607,8 @@ void CUIActorMenu::clear_highlight_lists()
 	if (m_PantsSlotHighlight)
 		m_PantsSlotHighlight->Show(false);
 
+	if (m_DeviceSlotHighlight)
+		m_DeviceSlotHighlight->Show(false);
 
 	if (m_QuickSlotsHighlight[0])
 	{
@@ -650,6 +666,7 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 	CDetectorAnomaly* anomaly_detector = smart_cast<CDetectorAnomaly*>(item);
 	CPda* pda = smart_cast<CPda*>(item);
 	CWeaponPistol* pistol = smart_cast<CWeaponPistol*>(item);
+	CPsyHelmet* psyhelmet = smart_cast<CPsyHelmet*>(item);
 
 	if (pistol && m_PistolSlotHighlight)
 	{
@@ -659,10 +676,11 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 	if (weapon && !pistol && !(knife || binoculars) && m_RiffleSlotHighlight)
 	{
 		m_RiffleSlotHighlight->Show(true);
+
 		return;
 	}
 
-	if (helmet)
+	if (helmet && !psyhelmet)
 	{
 		if (m_HelmetSlotHighlight)
 			m_HelmetSlotHighlight->Show(true);
@@ -670,6 +688,12 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 		if (m_SecondHelmetSlotHighlight)
 			m_SecondHelmetSlotHighlight->Show(true);
 
+		return;
+	}
+
+	if (psyhelmet)
+	{
+		m_DeviceSlotHighlight->Show(true);
 		return;
 	}
 
@@ -1028,16 +1052,26 @@ void CUIActorMenu::ClearAllLists()
 	m_pInventoryPistolList->ClearAll			(true);
 	m_pInventorySmgList->ClearAll				(true);
 	m_pInventoryAutomaticList->ClearAll			(true);
-	if (m_pQuickSlot)
-		m_pQuickSlot->ClearAll					(true);
-
+	m_pInventoryKnifeList->ClearAll				(true);
+	m_pInventoryBinocularList->ClearAll			(true);
+	m_pInventoryTorchList->ClearAll				(true);
+	m_pInventoryBackpackList->ClearAll			(true);
+	m_pInventoryDosimeterList->ClearAll			(true);
+	m_pInventoryHelmetList->ClearAll			(true);
+	m_pInventorySecondHelmetList->ClearAll		(true);
+	m_pInventoryPantsList->ClearAll				(true);
 	m_pTradeActorBagList->ClearAll				(true);
 	m_pTradeActorList->ClearAll					(true);
 	m_pTradePartnerBagList->ClearAll			(true);
 	m_pTradePartnerList->ClearAll				(true);
 	m_pDeadBodyBagList->ClearAll				(true);
 	m_pInventoryBoltList->ClearAll				(true);
+	m_pInventoryDeviceList->ClearAll			(true);
 
+	if (m_pQuickSlot)
+		m_pQuickSlot->ClearAll(true);
+
+	/*
 	if (m_pInventoryKnifeList)
 		m_pInventoryKnifeList->ClearAll(true);
 
@@ -1061,7 +1095,7 @@ void CUIActorMenu::ClearAllLists()
 
 	if (m_pInventoryPantsList)
 		m_pInventoryPantsList->ClearAll(true);
-
+		*/
 }
 
 void CUIActorMenu::CallMessageBoxYesNo( LPCSTR text )

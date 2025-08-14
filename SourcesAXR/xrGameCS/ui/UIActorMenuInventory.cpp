@@ -92,6 +92,7 @@ void CUIActorMenu::InitInventoryMode()
 	m_pInventorySecondHelmetList->Show(true);
 	m_pInventoryDosimeterList->Show(true);
 	m_pInventoryPantsList->Show(true);
+	m_pInventoryDeviceList->Show(true);
 
 	InitInventoryContents				(m_pInventoryBagList);
 
@@ -309,6 +310,7 @@ void CUIActorMenu::OnInventoryAction(PIItem pItem, u16 action_type)
 		m_pInventorySecondHelmetList,
 		m_pInventoryDosimeterList,
 		m_pInventoryPantsList,
+		m_pInventoryDeviceList,
 		NULL
 	};
 
@@ -496,6 +498,7 @@ void CUIActorMenu::InitInventoryContents(CUIDragDropListEx* pBagList)
 	InitCellForSlot				(PANTS_SLOT);
 	InitCellForSlot				(PDA_SLOT);
 	InitCellForSlot				(BOLT_SLOT);
+	InitCellForSlot				(DEVICE_SLOT);
 
 	curr_list					= m_pInventoryBeltList;
 	TIItemContainer::iterator itb = m_pActorInvOwner->inventory().m_belt.begin();
@@ -863,6 +866,11 @@ CUIDragDropListEx* CUIActorMenu::GetSlotList(u32 slot_idx)
 		case BOLT_SLOT:
 		{
 			return m_pInventoryBoltList;
+		}break;
+
+		case DEVICE_SLOT:
+		{
+			return m_pInventoryDeviceList;
 		}break;
 	};
 	return NULL;
@@ -1284,6 +1292,7 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 	CWeapon* item_in_knife_slot = smart_cast<CWeapon*>(inv->ItemFromSlot(KNIFE_SLOT));
 	CWeapon* item_in_wpn1_slot = smart_cast<CWeapon*>(inv->ItemFromSlot(PISTOL_SLOT));
 	CWeapon* item_in_wpn2_slot = smart_cast<CWeapon*>(inv->ItemFromSlot(RIFLE_SLOT));
+	CWeapon* item_in_wpn3_slot = smart_cast<CWeapon*>(Actor()->inventory().ItemFromSlot(SMG_SLOT));
 
 	bool outfit_use_filter = false;
 	bool helmet_use_filter = false;
@@ -1295,6 +1304,7 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 	bool can_repair_knife = false;
 	bool can_repair_wpn1 = false;
 	bool can_repair_wpn2 = false;
+	bool can_repair_wpn3 = false;
 
 	if (item_in_outfit_slot && pFilter)
 		outfit_use_filter = item_in_outfit_slot->m_bUseFilter && item_in_outfit_slot->m_fFilterCondition <= 0.99f && item_in_outfit_slot->IsNecessaryItem(pFilter->cNameSect().c_str(), item_in_outfit_slot->m_SuitableFilters);
@@ -1315,6 +1325,10 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 		can_repair_wpn1 = item_in_wpn1_slot->GetCondition() < 0.9f && item_in_wpn1_slot->GetCondition() >= 0.4f && item_in_wpn1_slot->IsNecessaryItem(pRepairKit->cNameSect().c_str(), item_in_wpn1_slot->m_SuitableRepairKits);
 	if (item_in_wpn2_slot && pRepairKit)
 		can_repair_wpn2 = item_in_wpn2_slot->GetCondition() < 0.9f && item_in_wpn2_slot->GetCondition() >= 0.4f && item_in_wpn2_slot->IsNecessaryItem(pRepairKit->cNameSect().c_str(), item_in_wpn2_slot->m_SuitableRepairKits);
+	if (item_in_wpn3_slot && pRepairKit)
+		can_repair_wpn3 = item_in_wpn3_slot->GetCondition() < 0.9f && item_in_wpn3_slot->GetCondition() >= 0.4f && item_in_wpn3_slot->IsNecessaryItem(pRepairKit->cNameSect().c_str(), item_in_wpn3_slot->m_SuitableRepairKits);
+
+
 
 	LPCSTR act_str = NULL;
 	CGameObject* GO = smart_cast<CGameObject*>(item);
@@ -1515,6 +1529,29 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_wpn2_slot, REPAIR_KIT_WPN2, repair_hint.c_str());
 			b_show = true;
 		}
+
+		if (item_in_wpn3_slot && can_repair_wpn3)
+		{
+			shared_str str = CStringTable().translate(use_text ? use_text : "st_repair");
+			str.printf("%s %s", str.c_str(), item_in_wpn3_slot->m_name.c_str());
+
+			shared_str repair_hint{};
+
+			if (!item_in_wpn3_slot->m_ItemsForRepair.empty())
+			{
+				repair_hint = CStringTable().translate("st_materials_for_repair");
+
+				for (int i = 0; i < item_in_wpn3_slot->m_ItemsForRepair.size(); i++)
+				{
+					repair_hint.printf("%s\\n%s: x%s;\\n", repair_hint.c_str(), CStringTable().translate(item_in_wpn3_slot->m_ItemsForRepairNames[i]).c_str(), std::to_string(item_in_wpn3_slot->m_ItemsForRepair[i].second));
+				}
+			}
+
+			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_wpn3_slot, REPAIR_KIT_WPN1, repair_hint.c_str());
+
+			b_show = true;
+		}
+
 		return;
 	}
 	else if (pArtefact)

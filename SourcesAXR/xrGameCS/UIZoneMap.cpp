@@ -34,7 +34,22 @@ void CUIZoneMap::Init()
 	ZoneScoped;
 
 	CUIXml uiXml;
-	uiXml.Load					(CONFIG_PATH, UI_PATH, "zone_map.xml");
+	string128		ZONE_MAP_XML;
+
+	if (UI().is_widescreen())
+	{
+		if (!ui_hud_type)
+			ui_hud_type = 1;
+		sprintf_s(ZONE_MAP_XML, "hud_type_%d\\zone_map_%d_16.xml", ui_hud_type, ui_hud_type);
+		uiXml.Load(CONFIG_PATH, UI_PATH, ZONE_MAP_XML);
+	}
+	else
+	{
+		if (!ui_hud_type)
+			ui_hud_type = 1;
+		sprintf_s(ZONE_MAP_XML, "hud_type_%d\\zone_map_%d.xml", ui_hud_type, ui_hud_type);
+		uiXml.Load(CONFIG_PATH, UI_PATH, ZONE_MAP_XML);
+	}
 
 	CUIXmlInit					xml_init;
 	xml_init.InitStatic			(uiXml, "minimap:background", 0, &m_background);

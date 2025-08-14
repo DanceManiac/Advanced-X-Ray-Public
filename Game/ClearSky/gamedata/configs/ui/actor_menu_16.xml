@@ -210,6 +210,11 @@
 		<texture >ui_inGame2_helmet_blocker</texture>
   </helmet_over>
 
+  <second_helmet_over x="3333467" y="11" width="89" height="115" stretch="1">
+		<texture >ui_inGame2_helmet_blocker</texture>
+  </second_helmet_over>
+
+
 	<dragdrop_trash x="0" y="0" width="353" height="768"
 			cell_width="353" cell_height="768" rows_num="1" cols_num="1" a="0"/>
 

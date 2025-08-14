@@ -33,17 +33,8 @@ void CPSLibrary::OnCreate()
 #endif
 	{
 		string_path fn;
-
-		if (!bWinterMode)
-		{
-			FS.update_path(fn, _game_data_, "particles.xr");
-			Load(fn);
-		}
-		else
-		{
-			FS.update_path(fn, _game_data_, "particles_winter.xr");
-			Load(fn);
-		}
+        FS.update_path(fn, _game_data_, "game_particles.xr");
+        Load(fn);
     }
 }
  

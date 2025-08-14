@@ -77,12 +77,7 @@
 #include "Inventory.h"
 #include "AdvancedXrayGameConstants.h"
 
-// Hud Type
-xr_token			qhud_type_token[] = {
-	{ "hud_1",					1},
-	{ "hud_2",					2},
-	{ 0,						0}
-};
+xr_vector<xr_token> qhud_type_token;
 
 // M.F.S. Crosshair Type
 extern u32	crosshair_type;
@@ -1201,7 +1196,7 @@ public:
 	}
 };
 
-class CCC_UiHud_Mode : public CCC_Token
+class	CCC_UiHud_Mode : public CCC_Token
 {
 public:
 	CCC_UiHud_Mode(LPCSTR N, u32* V, xr_token* T) : CCC_Token(N, V, T) {};
@@ -1213,7 +1208,13 @@ public:
 		{
 			if (*value >= 1 && *value <= 3)
 			{
-				HUD().OnScreenResolutionChanged();
+				if (g_hud)
+					//g_hud->OnScreenRatioChanged(); //???????????? ????
+					HUD().OnScreenResolutionChanged();
+
+				CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+				//	if (pGameSP)
+				//		pGameSP->ReinitDialogs(); //?????? ?????????? ???? ????? talk wnd
 			}
 		}
 	}
@@ -2451,6 +2452,16 @@ public:
 	}
 };
 
+static void LoadTokensFromIni(xr_vector<xr_token>& tokens, LPCSTR section)
+{
+	tokens.clear();
+	for (auto& item : pSettings->r_section(section).Data)
+	{
+		tokens.push_back({ item.first.c_str(), atoi(item.second.c_str()) });
+	}
+	tokens.push_back({ nullptr, 0 });
+}
+
 void CCC_RegisterCommands()
 {
 	// options
@@ -2747,6 +2758,9 @@ CMD4(CCC_Integer,			"hit_anims_tune",						&tune_hit_anims,		0, 1);
 		CMD3(CCC_Mask, "dbg_hud_infos", &psActorFlags2, AF_LFO_DEBUG_HUD_INFOS);
 	}
 
+	LoadTokensFromIni(qhud_type_token, "ui_hud_types");
+	CMD3(CCC_UiHud_Mode, "ui_hud_type", &ui_hud_type, qhud_type_token.data());
+
 	CMD3(CCC_Mask,			"g_3d_scopes",			&psActorFlags,	AF_3DSCOPE_ENABLE);
 	CMD3(CCC_Mask,			"g_pnv_in_scope",		&psActorFlags,	AF_PNV_W_SCOPE_DIS);
 
@@ -2990,7 +3004,6 @@ extern BOOL dbg_moving_bones_snd_player;
 
 	CMD4(CCC_BKPK_ANIM, "g_animated_backpack",		&m_b_animated_backpack, 0, 1);
 
-	CMD3(CCC_UiHud_Mode, "hud_type",				&ui_hud_type,			qhud_type_token);
 	CMD1(CCC_DebugFonts, "debug_fonts");
 
 	//Custom commands for scripts

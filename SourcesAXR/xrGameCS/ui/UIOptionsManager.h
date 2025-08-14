@@ -17,8 +17,10 @@ public:
 	void DoVidRestart						();
 	void DoSndRestart						();
 	void DoSystemRestart					();
+	void DoUIReload							();
 
 	bool NeedSystemRestart					()	{return m_b_system_restart;}
+	bool NeedUIReload						() { return m_b_ui_reload; }
 	void SendMessage2Group					(const shared_str& group, const char* message);
 
 protected:	
@@ -37,4 +39,5 @@ protected:
 	bool	m_b_vid_restart;
 	bool	m_b_snd_restart;
 	bool	m_b_system_restart;
+	bool	m_b_ui_reload;
 };

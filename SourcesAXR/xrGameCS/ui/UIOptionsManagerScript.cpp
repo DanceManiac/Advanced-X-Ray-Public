@@ -37,6 +37,11 @@ bool CUIOptionsManagerScript::NeedSystemRestart()
 	return CUIOptionsItem::GetOptionsManager()->NeedSystemRestart();
 }
 
+bool CUIOptionsManagerScript::NeedUIReload()
+{
+	return CUIOptionsItem::GetOptionsManager()->NeedUIReload();
+}
+
 #pragma optimize("s",on)
 void CUIOptionsManagerScript::script_register(lua_State *L)
 {
@@ -52,5 +57,6 @@ void CUIOptionsManagerScript::script_register(lua_State *L)
 			.def("OptionsPostAccept",	&CUIOptionsManagerScript::OptionsPostAccept )
 			.def("SendMessage2Group",	&CUIOptionsManagerScript::SendMessage2Group )
 			.def("NeedSystemRestart",	&CUIOptionsManagerScript::NeedSystemRestart )
+			.def("NeedUIReload",		&CUIOptionsManagerScript::NeedUIReload)
 		];
 }

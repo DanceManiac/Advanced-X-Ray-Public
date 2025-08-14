@@ -1295,6 +1295,12 @@ bool game_use_lfo_weather_icons() {
 	return !!psActorFlags3.test(AF_LFO_WEATHER_ICONS);
 }
 
+// WEATHER WINTER MODE ACTIVE
+bool is_winter_mode()
+{
+	return			(bWinterMode);
+}
+
 /*LFO EXPORTS FOR SCRIPTED OPTIONALS END*/
 // -------------------------------------------------------------------------
 
@@ -1450,6 +1456,7 @@ void CLevel::script_register(lua_State *L)
 
 
 /*LFO EXPORTS FOR SCRIPTED OPTIONALS START */
+		def("winter_mode_activ",				is_winter_mode),
 		def("use_level_autosaves",				&game_use_level_autosaves),
 		def("use_savezone",						&game_use_savezone),
 		def("use_mask_breath_sounds",			&game_use_mask_breath_sounds),

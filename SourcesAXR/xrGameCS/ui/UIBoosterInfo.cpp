@@ -107,7 +107,7 @@ LPCSTR ef_quick_eat_nodes_names[] =
 	"quick_eat_narcotism",
 	"quick_eat_withdrawal",
 
-	"quick_eat_frostbite"
+	"quick_eat_frostbite",
 	"quick_infection"
 };
 

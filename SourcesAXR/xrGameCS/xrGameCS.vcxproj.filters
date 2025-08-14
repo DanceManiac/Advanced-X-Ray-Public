@@ -7398,6 +7398,9 @@
     <ClInclude Include="ActorHelmet.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
     </ClInclude>
+	<ClInclude Include="CustomPsyHelmet.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
+    </ClInclude>
     <ClInclude Include="embedded_editor\embedded_editor_postprocess.h">
       <Filter>EmbeddedEditor</Filter>
     </ClInclude>
@@ -11055,6 +11058,9 @@
       <Filter>UI\UIWindows\Static</Filter>
     </ClCompile>
     <ClCompile Include="ActorHelmet.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
+    </ClCompile>
+	<ClCompile Include="CustomPsyHelmet.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
     </ClCompile>
     <ClCompile Include="embedded_editor\embedded_editor_postprocess.cpp">

@@ -141,6 +141,7 @@
 #	include "ExoOutfit.h"
 #	include "MilitaryOutfit.h"
 #	include "ScientificOutfit.h"
+#	include "CustomPsyHelmet.h"
 #	include "Torch.h"
 #	include "WeaponAK74.h"
 #	include "WeaponBinoculars.h"

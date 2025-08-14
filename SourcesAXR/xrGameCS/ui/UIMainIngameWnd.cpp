@@ -115,7 +115,13 @@ void CUIMainIngameWnd::Init()
 	ZoneScoped;
 
 	CUIXml						uiXml;
-	uiXml.Load					(CONFIG_PATH, UI_PATH, MAININGAME_XML);
+	string128					MAINGAME_XML;
+
+	if (!ui_hud_type)
+		ui_hud_type = 1;
+	sprintf_s(MAINGAME_XML, "hud_type_%d\\maingame_%d.xml", ui_hud_type, ui_hud_type);
+
+	uiXml.Load(CONFIG_PATH, UI_PATH, MAINGAME_XML);
 	
 	CUIXmlInit					xml_init;
 	xml_init.InitWindow			(uiXml,"main",0,this);

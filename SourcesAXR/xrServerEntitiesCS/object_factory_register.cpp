@@ -126,6 +126,7 @@
 #	include "MilitaryOutfit.h"
 #	include "ExoOutfit.h"
 #	include "ActorHelmet.h"
+#	include "CustomPsyHelmet.h"
 
 #	include "f1.h"
 #	include "rgd5.h"
@@ -353,6 +354,7 @@ void CObjectFactory::register_classes	()
 	ADD(CExoOutfit				,CSE_ALifeItemCustomOutfit		,CLSID_EQUIPMENT_EXO			,"equ_exo");
 	ADD(CHelmet					,CSE_ALifeItem					,CLSID_EQUIPMENT_HELMET			,"helmet");
 	ADD(CCustomBackpack			,CSE_ALifeItem					,CLSID_EQUIPMENT_BACKPACK		,"equ_backpack");
+	ADD(CPsyHelmet				,CSE_ALifeItem					,CLSID_EQUIPMENT_PSYHELMET		,"equ_psyhelmet");
 
 	// Grenades
 	ADD(CF1						,CSE_ALifeItemGrenade			,CLSID_GRENADE_F1				,"wpn_grenade_f1");

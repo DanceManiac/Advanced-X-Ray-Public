@@ -327,6 +327,14 @@ void CUIGameSP::FillDebugInfo()
 #endif
 }
 
+void CUIGameSP::ReinitDialogs()
+{
+	delete_data(Actor_Menu);
+	Actor_Menu = xr_new<CUIActorMenu>();
+	delete_data(TalkMenu);
+	TalkMenu = xr_new<CUITalkWnd>();
+}
+
 CChangeLevelWnd::CChangeLevelWnd		()
 {
 	m_messageBox			= xr_new<CUIMessageBox>();	

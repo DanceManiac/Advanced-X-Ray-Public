@@ -108,6 +108,9 @@ void CUIOptionsItem::SaveValue()
 	else
 	if(m_dep==sdSystemRestart)
 		m_optionsManager.DoSystemRestart();
+	else
+		if (m_dep == sdUIReload)
+			m_optionsManager.DoUIReload();
 /*
 	if (	m_entry == "vid_mode"		||	+
 			m_entry == "_preset"		||	+

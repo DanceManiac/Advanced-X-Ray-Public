@@ -149,7 +149,7 @@ void CUIActorMenu::Construct()
 	if (m_KnifeSlotHighlight = UIHelper::CreateStatic(uiXml, "knife_slot_highlight", this, false))
 		m_KnifeSlotHighlight->Show(false);
 		
-	if (m_BinocularSlotHighlight = UIHelper::CreateStatic(uiXml, "binocular_slot_highlight", this, false))
+	if (m_BinocularSlotHighlight = UIHelper::CreateStatic(uiXml, "binoc_slot_highlight", this, false))
 		m_BinocularSlotHighlight->Show(false);
 
 	if (m_TorchSlotHighlight = UIHelper::CreateStatic(uiXml, "torch_slot_highlight", this, false))
@@ -170,27 +170,46 @@ void CUIActorMenu::Construct()
 	if (m_PantsSlotHighlight = UIHelper::CreateStatic(uiXml, "pants_slot_highlight", this, false))
 		m_PantsSlotHighlight->Show(false);
 
-	m_pInventoryBagList			= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_bag", this);
-	m_pInventoryBeltList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_belt", this);
-	m_pInventoryOutfitList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_outfit", this);
-	m_pInventoryDetectorList	= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_detector", this);
+	m_DeviceSlotHighlight = UIHelper::CreateStatic(uiXml, "device_slot_highlight", this);
+	m_DeviceSlotHighlight->Show(false);
+
+
 
 	/*
-	// Try "dragdrop_inv_slot1" first and then "dragdrop_pistol"
-	m_pInventoryPistolList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_inv_slot1", this, false);
-	if (!m_pInventoryPistolList)
-		m_pInventoryPistolList	= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_pistol", this, false);
-	// Try "dragdrop_inv_slot2" first and then "dragdrop_automatic"
-	m_pInventoryAutomaticList	= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_inv_slot2", this, false);
-	if (!m_pInventoryAutomaticList)
-		m_pInventoryAutomaticList= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_automatic", this, false);
-	*/
+// Try "dragdrop_inv_slot1" first and then "dragdrop_pistol"
+m_pInventoryPistolList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_inv_slot1", this, false);
+if (!m_pInventoryPistolList)
+	m_pInventoryPistolList	= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_pistol", this, false);
+// Try "dragdrop_inv_slot2" first and then "dragdrop_automatic"
+m_pInventoryAutomaticList	= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_inv_slot2", this, false);
+if (!m_pInventoryAutomaticList)
+	m_pInventoryAutomaticList= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_automatic", this, false);
+*/
 
-	m_pInventoryPistolList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_pistol", this);
-	m_pInventorySmgList			= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_smg", this);
-	m_pInventoryAutomaticList	= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_automatic", this);
+	m_pInventoryPistolList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_pistol", this);
+	m_pInventorySmgList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_smg", this);
+	m_pInventoryAutomaticList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_automatic", this);
+	m_pInventoryDeviceList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_device", this);
+	m_pInventoryHelmetList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_helmet", this);
+	m_pInventorySecondHelmetList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_second_helmet", this);
+	m_pInventoryPantsList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_pants", this);
+	m_pInventoryDosimeterList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_dosimeter", this);
+	m_pInventoryKnifeList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_knife", this);
+	m_pInventoryBinocularList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_bino", this);
+	m_pInventoryTorchList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_torch", this);
+	m_pInventoryBackpackList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_backpack", this);
+	m_pInventoryBagList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_bag", this);
+	m_pInventoryBeltList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_belt", this);
+	m_pInventoryOutfitList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_outfit", this);
+	m_pInventoryDetectorList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_detector", this);
+	m_pInventoryBoltList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_bolt", this);
+	m_pTradeActorBagList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_actor_trade_bag", this);
+	m_pTradeActorList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_actor_trade", this);
+	m_pTradePartnerBagList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_partner_bag", this);
+	m_pTradePartnerList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_partner_trade", this);
+	m_pDeadBodyBagList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_deadbody_bag", this);
 
-	m_pInventoryBoltList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_bolt", this);
+
 
 	m_pTradeActorBagList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_actor_trade_bag", this);
 	m_pTradeActorList			= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_actor_trade", this);
@@ -259,34 +278,6 @@ void CUIActorMenu::Construct()
 			pos.y += dy;
 		}
 	}
-	/*
-	if (GameConstants::GetKnifeSlotEnabled())
-		m_pInventoryKnifeList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_knife", this, false);
-
-	if (GameConstants::GetBinocularSlotEnabled())
-		m_pInventoryBinocularList	= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_binocular", this, false);
-
-	if (GameConstants::GetTorchSlotEnabled())
-		m_pInventoryTorchList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_torch", this, false);
-
-	if (GameConstants::GetBackpackSlotEnabled())
-		m_pInventoryBackpackList	= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_backpack", this, false);
-
-	if (GameConstants::GetHelmetSlotEnabled())
-		m_pInventoryHelmetList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_helmet", this, false);
-
-	if (GameConstants::GetSecondHelmetSlotEnabled())
-		m_pInventorySecondHelmetList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_second_helmet", this, false);
-
-	if (GameConstants::GetDosimeterSlotEnabled())
-		m_pInventoryDosimeterList	= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_dosimeter", this, false);
-
-	if (GameConstants::GetPantsSlotEnabled())
-		m_pInventoryPantsList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_pants", this, false);
-
-	if (GameConstants::GetPdaSlotEnabled())
-		m_pInventoryPdaList			= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_pda", this, false);
-	*/
 
 	if (m_pTrashList				= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_trash", this, false))
 	{
@@ -418,17 +409,18 @@ void CUIActorMenu::Construct()
 	BindDragDropListEvents				(m_pTradePartnerBagList);
 	BindDragDropListEvents				(m_pTradePartnerList);
 	BindDragDropListEvents				(m_pDeadBodyBagList);
+	BindDragDropListEvents				(m_pInventoryKnifeList);
+	BindDragDropListEvents				(m_pInventoryBinocularList);
+	BindDragDropListEvents				(m_pInventoryTorchList);
+	BindDragDropListEvents				(m_pInventoryBackpackList);
+	BindDragDropListEvents				(m_pInventoryHelmetList);
+	BindDragDropListEvents				(m_pInventorySecondHelmetList);
+	BindDragDropListEvents				(m_pInventoryDosimeterList);
+	BindDragDropListEvents				(m_pInventoryPantsList);
+	BindDragDropListEvents				(m_pInventoryDeviceList);
+
 	if (m_pQuickSlot)
 		BindDragDropListEvents			(m_pQuickSlot);
-
-	BindDragDropListEvents(m_pInventoryKnifeList);
-	BindDragDropListEvents(m_pInventoryBinocularList);
-	BindDragDropListEvents(m_pInventoryTorchList);
-	BindDragDropListEvents(m_pInventoryBackpackList);
-	BindDragDropListEvents(m_pInventoryHelmetList);
-	BindDragDropListEvents(m_pInventorySecondHelmetList);
-	BindDragDropListEvents(m_pInventoryDosimeterList);
-	BindDragDropListEvents(m_pInventoryPantsList);
 
 	m_allowed_drops[iTrashSlot].push_back(iActorBag);
 	m_allowed_drops[iTrashSlot].push_back(iActorSlot);

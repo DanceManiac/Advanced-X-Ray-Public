@@ -5,9 +5,10 @@
 
 CUIOptionsManager::CUIOptionsManager()
 {
-	m_b_vid_restart = false;
-	m_b_vid_restart = false;
-	m_b_system_restart = false;
+	m_b_vid_restart		= false;
+	m_b_vid_restart		= false;
+	m_b_system_restart	= false;
+	m_b_ui_reload		= false;
 }
 
 void CUIOptionsManager::RegisterItem(CUIOptionsItem* item, const shared_str& group)
@@ -124,8 +125,12 @@ void CUIOptionsManager::OptionsPostAccept()
 	if (m_b_snd_restart)
 		Console->Execute("snd_restart");
 
+	if (m_b_ui_reload)
+		Console->Execute("ui_reload");
+
 	m_b_vid_restart = false;
 	m_b_snd_restart = false;
+	m_b_ui_reload = false;
 }
 
 void CUIOptionsManager::DoVidRestart()
@@ -143,6 +148,9 @@ void CUIOptionsManager::DoSystemRestart()
 	m_b_system_restart = true;
 }
 
-
+void CUIOptionsManager::DoUIReload()
+{
+	m_b_ui_reload = true;
+}
 
 

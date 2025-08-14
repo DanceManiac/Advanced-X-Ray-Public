@@ -5,7 +5,7 @@ class CUIOptionsItem
 {
 	friend class CUIOptionsManager;
 public:
-	enum ESystemDepends		{sdNothing, sdVidRestart, sdSndRestart, sdSystemRestart, sdApplyOnChange};
+	enum ESystemDepends		{ sdNothing, sdVidRestart, sdSndRestart, sdSystemRestart, sdApplyOnChange, sdUIReload };
 
 public:
 							CUIOptionsItem		();

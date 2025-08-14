@@ -12,6 +12,7 @@ public:
 	void OptionsPostAccept();
 	void SendMessage2Group(const char* group, const char* message);
 	bool NeedSystemRestart();
+	bool NeedUIReload();
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };
 

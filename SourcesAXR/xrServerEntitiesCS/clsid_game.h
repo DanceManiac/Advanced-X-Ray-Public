@@ -211,6 +211,7 @@
 #define CLSID_EQUIPMENT_EXO			MK_CLSID('E','Q','U','_','E','X','O',' ')
 #define CLSID_EQUIPMENT_HELMET		MK_CLSID('E','Q','_','H','L','M','E','T')
 #define CLSID_EQUIPMENT_BACKPACK	MK_CLSID('E','Q','U','_','B','K','P','K')
+#define CLSID_EQUIPMENT_PSYHELMET	MK_CLSID('E','Q','_','H','L','P','S','Y')
 
 // Game types
 #define CLSID_SV_GAME_SINGLE			MK_CLSID('S','V','_','S','I','N','G','L')

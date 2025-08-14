@@ -52,7 +52,23 @@ CUIGameCustom::CUIGameCustom()
 	uFlags					= 0;
 	m_pgameCaptions			= xr_new<CUICaption>();
 	m_msgs_xml				= xr_new<CUIXml>();
-	m_msgs_xml->Load		(CONFIG_PATH, UI_PATH, "ui_custom_msgs.xml");
+	CUIXml					uiXml;
+	string128				UI_CUSTOM_MSGS_XML;
+
+	if (UI().is_widescreen())
+	{
+		if (!ui_hud_type)
+			ui_hud_type = 1;
+		sprintf_s(UI_CUSTOM_MSGS_XML, "hud_type_%d\\ui_custom_msgs_%d_16.xml", ui_hud_type, ui_hud_type);
+		m_msgs_xml->Load(CONFIG_PATH, UI_PATH, UI_CUSTOM_MSGS_XML);
+	}
+	else
+	{
+		if (!ui_hud_type)
+			ui_hud_type = 1;
+		sprintf_s(UI_CUSTOM_MSGS_XML, "hud_type_%d\\ui_custom_msgs_%d.xml", ui_hud_type, ui_hud_type);
+		m_msgs_xml->Load(CONFIG_PATH, UI_PATH, UI_CUSTOM_MSGS_XML);
+	}
 
 	m_ActorMenu		= xr_new<CUIActorMenu>		();
 	m_PdaMenu		= xr_new<CUIPdaWnd>			();
