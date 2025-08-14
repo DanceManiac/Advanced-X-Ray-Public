@@ -13,7 +13,7 @@ public:
 
 protected:
 	virtual void	PlayAnimShoot					();
-	virtual void	PlayAnimFakeShoot				();
+	virtual bool	PlayAnimFakeShoot				();
 	virtual void	PlayAnimReload					();
 	virtual void	PlayReloadSound					();
 	virtual void	PlayAnimIdle					();
