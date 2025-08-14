@@ -79,6 +79,7 @@ protected:
 		_item_quick_withdrawal,
 
 		_item_quick_frostbite,
+		_item_quick_infection,
 
 		eQuickItemLast
 	};

@@ -87,8 +87,12 @@ void CUIHudStatesWnd::InitFromXml( CUIXml& xml, LPCSTR path )
 	m_ui_weapon_icon_rect		= m_ui_weapon_icon->GetWndRect();
 	m_ui_weapon_icon_scale		= xml.ReadAttribFlt("static_wpn_icon", 0,"scale", 1.f);
 	
-	m_ui_health_bar   = UIHelper::CreateProgressBar( xml, "progress_bar_health", this );
-	m_ui_armor_bar    = UIHelper::CreateProgressBar( xml, "progress_bar_armor", this );
+	m_ui_health_bar				= UIHelper::CreateProgressBar(xml, "progress_bar_health", this);
+	m_ui_armor_bar				= UIHelper::CreateProgressBar(xml, "progress_bar_armor", this);
+	m_ui_satiety_bar			= UIHelper::CreateProgressBar(xml, "progress_bar_satiety", this);
+	m_ui_thirsty_bar			= UIHelper::CreateProgressBar(xml, "progress_bar_thirsty", this);
+	m_ui_tired_bar				= UIHelper::CreateProgressBar(xml, "progress_bar_tired", this);
+	m_ui_infection_bar			= UIHelper::CreateProgressBar(xml, "progress_bar_infection", this);
 
 	m_progress_self = xr_new<CUIProgressShape>();
 	m_progress_self->SetAutoDelete(true);
@@ -224,6 +228,11 @@ void CUIHudStatesWnd::Update()
 
 void CUIHudStatesWnd::UpdateHealth( CActor* actor )
 {
+
+	m_ui_satiety_bar->SetProgressPos(actor->conditions().GetSatiety() * 100.0f);
+	m_ui_thirsty_bar->SetProgressPos(actor->conditions().GetThirst() * 100.0f);
+	m_ui_tired_bar->SetProgressPos(actor->conditions().GetSleepeness() * 100.0f);
+	m_ui_infection_bar->SetProgressPos(actor->conditions().GetInfection() * 100.0f);
 	m_ui_health_bar->SetProgressPos( actor->GetfHealth() * 100.0f );
 	m_ui_stamina_bar->SetProgressPos( actor->conditions().GetPower()*100.0f );
 

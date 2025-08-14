@@ -37,6 +37,10 @@ private:
 		stt_radia,
 		stt_acid,
 		stt_psi,
+		stt_satiety,
+		stt_thirsty,
+		stt_tired,
+		stt_infection,
 		stt_count
 	};
 	ui_actor_state_item*	m_state[stt_count];

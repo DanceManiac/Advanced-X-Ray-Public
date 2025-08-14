@@ -2503,15 +2503,28 @@ void CCC_RegisterCommands()
 	psHUD_Flags.set(HUD_DRAW,			true);
 	psHUD_Flags.set(HUD_INFO,			true);
 
+
+
+
+
 	//LFO
+	CMD3(CCC_Mask, "g_lfo_autosave_by_level", &psActorFlags2, AF_LFO_LEVEL_AUTOSAVES);
+	CMD3(CCC_Mask, "g_frostbite_damage", &psActorFlags2, AF_LFO_FROSTBITE);
+
+
+
 	CMD3(CCC_Mask, "hud_artefact_panel", &psHUD_Flags, HUD_AF_PANEL);
 	CMD3(CCC_Mask, "g_alternativ_inventory", &psHUD_Flags, ALTERNATIV_INVENTORY);
 	CMD3(CCC_Mask, "g_inventory_minimap", &psHUD_Flags, HUD_MINIMAP_INVENTORY);
+	CMD3(CCC_Mask, "hud_clock", &psHUD_Flags, HUD_LFO_CLOCK_ON_HUD);
+	CMD3(CCC_Mask, "hud_temperature", &psHUD_Flags, HUD_LFO_TEMPERATURE_ON_HUD);
+	CMD3(CCC_Mask, "hud_lfo_indicators", &psHUD_Flags, HUD_AF_INDICATORS);
 
 	psHUD_Flags.set(HUD_AF_PANEL,					true);
 	psHUD_Flags.set(ALTERNATIV_INVENTORY,			true);
 	psHUD_Flags.set(HUD_MINIMAP_INVENTORY,			true);
-
+	psHUD_Flags.set(HUD_LFO_CLOCK_ON_HUD, true);
+	psHUD_Flags.set(HUD_LFO_TEMPERATURE_ON_HUD, true);
 
 
 	CMD3(CCC_Mask,				"hud_crosshair",		&psHUD_Flags,	HUD_CROSSHAIR);
@@ -2678,6 +2691,8 @@ CMD4(CCC_Integer,			"hit_anims_tune",						&tune_hit_anims,		0, 1);
 		CMD4(CCC_Integer,		"hud_adjust_mode",	&hud_adj_mode, 0, 5);
 		CMD4(CCC_Integer,		"dbg_show_material_info", &g_dbgShowMaterialInfo, 0, 1);
 		CMD1(CCC_TuneAttachableItem, "dbg_adjust_attachable_item");
+		CMD3(CCC_Mask, "dbg_mode", &psActorFlags2, AF_DEV_MODE);
+		CMD3(CCC_Mask, "dbg_hud_infos", &psActorFlags2, AF_LFO_DEBUG_HUD_INFOS);
 	}
 
 	CMD3(CCC_Mask,			"g_3d_scopes",			&psActorFlags,	AF_3DSCOPE_ENABLE);

@@ -797,8 +797,8 @@ BOOL CActor::HUDview				( )const
 static	u32 SlotsToCheck [] = {
 		KNIFE_SLOT		,		// 0
 		PISTOL_SLOT		,		// 1
-		SMG_SLOT		,		// 2
-		RIFLE_SLOT		,		// 3
+		RIFLE_SLOT		,		// 2
+		SMG_SLOT		,		// 3
 		GRENADE_SLOT	,		// 4
 		APPARATUS_SLOT	,		// 5
 		ARTEFACT_SLOT	,		// 10

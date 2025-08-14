@@ -126,6 +126,7 @@ namespace ALife {
 		eNarcotismRestoreSpeed,
 		eWithDrawalRestoreSpeed,
 		eFrostbiteRestoreSpeed,
+		eInfectionRestoreSpeed,
 		eRestoreTypeMax,
 	};
 

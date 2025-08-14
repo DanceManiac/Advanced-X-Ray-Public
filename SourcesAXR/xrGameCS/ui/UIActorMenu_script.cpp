@@ -190,6 +190,9 @@ void CUIActorMenu::script_register(lua_State* L)
 				.def_readonly("m_ui_health_bar",					&CUIHudStatesWnd::m_ui_health_bar)
 				.def_readonly("m_ui_stamina_bar",					&CUIHudStatesWnd::m_ui_stamina_bar)
 				.def_readonly("m_radia_damage",						&CUIHudStatesWnd::m_radia_damage)
+				.def_readonly("m_ui_satiety_bar",					&CUIHudStatesWnd::m_ui_satiety_bar)
+				.def_readonly("m_ui_thirsty_bar",					&CUIHudStatesWnd::m_ui_thirsty_bar)
+				.def_readonly("m_ui_tired_bar",						&CUIHudStatesWnd::m_ui_tired_bar)
 		];
 
 		module(L, "ActorMenu")

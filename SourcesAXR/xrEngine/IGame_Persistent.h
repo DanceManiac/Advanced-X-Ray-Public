@@ -166,6 +166,7 @@ public:
 	virtual bool					GetActorNightvision	() { return 0; };
 	virtual bool					GetActorHelmetStatus() { return 0; };
 	virtual bool					GetFogInfluenceVolumetricLight() { return 0; };
+	virtual float					GetActorInfection	() { return 0; };
 
 	virtual std::string				GetMoonPhase		() { return 0; };
 	virtual u32						GetTimeHours		() { return 0; }

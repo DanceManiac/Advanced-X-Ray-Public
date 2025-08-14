@@ -59,15 +59,19 @@ void ui_actor_state_wnd::init_from_xml( CUIXml& xml, LPCSTR path )
 		AttachChild( m_state[i] );
 		m_state[i]->set_hint_wnd( m_hint_wnd );
 	}
-	m_state[stt_stamina]->init_from_xml( xml, "stamina_state" );
-	m_state[stt_health ]->init_from_xml( xml, "health_state"  );
-	m_state[stt_armor  ]->init_from_xml( xml, "armor_state"   );
+	m_state[stt_stamina			]->init_from_xml(xml, "stamina_state");
+	m_state[stt_health			]->init_from_xml(xml, "health_state");
+	m_state[stt_armor			]->init_from_xml(xml, "armor_state");
+	m_state[stt_satiety			]->init_from_xml(xml, "satiety_state");
+	m_state[stt_thirsty			]->init_from_xml(xml, "thirsty_state");
+	m_state[stt_tired			]->init_from_xml(xml, "tired_state");
+	m_state[stt_infection		]->init_from_xml(xml, "infection_state");
 
-	m_state[stt_main ]->init_from_xml( xml, "main_sensor"  );
-	m_state[stt_fire ]->init_from_xml( xml, "fire_sensor"  );
-	m_state[stt_radia]->init_from_xml( xml, "radia_sensor" );
-	m_state[stt_acid ]->init_from_xml( xml, "acid_sensor"  );
-	m_state[stt_psi  ]->init_from_xml( xml, "psi_sensor"   );
+	m_state[stt_main			]->init_from_xml( xml, "main_sensor"  );
+	m_state[stt_fire			]->init_from_xml( xml, "fire_sensor"  );
+	m_state[stt_radia			]->init_from_xml( xml, "radia_sensor" );
+	m_state[stt_acid			]->init_from_xml( xml, "acid_sensor"  );
+	m_state[stt_psi				]->init_from_xml( xml, "psi_sensor"   );
 
 	xml.SetLocalRoot( stored_root );
 }
@@ -82,6 +86,21 @@ void ui_actor_state_wnd::UpdateActorInfo( CInventoryOwner* owner )
 
 	float value = 0.0f;
 	
+	value = actor->conditions().GetRadiation();						m_state[stt_radia]->set_progress(value);
+	value = actor->GetRestoreSpeed(ALife::eRadiationRestoreSpeed);	m_state[stt_radia]->set_text(value);
+
+	value = actor->conditions().GetSatiety();						m_state[stt_satiety]->set_progress(value);
+	value = actor->GetRestoreSpeed(ALife::eSatietyRestoreSpeed);	m_state[stt_satiety]->set_text(value);
+
+	value = actor->conditions().GetThirst();						m_state[stt_thirsty]->set_progress(value);
+	value = actor->GetRestoreSpeed(ALife::eThirstRestoreSpeed);		m_state[stt_thirsty]->set_text(value); // 0..0.99
+
+	value = actor->conditions().GetSleepeness();					m_state[stt_tired]->set_progress(value);
+	value = actor->GetRestoreSpeed(ALife::eSleepenessRestoreSpeed);	m_state[stt_tired]->set_text(value); // 0..0.99
+
+	value = actor->conditions().GetInfection();						m_state[stt_infection]->set_progress(value);
+	value = actor->GetRestoreSpeed(ALife::eInfectionRestoreSpeed);	m_state[stt_infection]->set_text(value); // 0..0.99
+
 	value = actor->conditions().GetPower();							m_state[stt_stamina]->set_progress( value );
 	value = actor->GetRestoreSpeed( ALife::ePowerRestoreSpeed );	m_state[stt_stamina]->set_text( value ); // 0..0.99
 

@@ -161,6 +161,7 @@ public:
 	IC float				GetNarcotism			() const			{return m_fNarcotism;}
 	IC float				GetWithdrawal			() const			{return m_fWithdrawal;}
 	IC float				GetFrostbite			() const			{return m_fFrostbite;}
+	IC float				GetInfection			() const			{ return 1.f; }
 
 	IC float 				GetEntityMorale			() const			{return m_fEntityMorale;}
 
@@ -183,6 +184,7 @@ public:
 	void 					ChangeRadiation			(const float value);
 	void 					ChangePsyHealth			(const float value);
 	virtual void 			ChangeAlcohol			(const float value){};
+	virtual void			ChangeInfection			(float value) {};
 
 	IC void					MaxPower				()					{m_fPower = m_fPowerMax;};
 	IC void					SetMaxPower				(const float val)	{m_fPowerMax = val; clamp(m_fPowerMax,0.1f,1.0f);};
@@ -226,6 +228,8 @@ protected:
 	virtual void			UpdateRadiation			();
 	void					UpdatePsyHealth			();
 
+	void					UpdateInfection			(float k = 1.0f);
+
 	void					UpdateEntityMorale		();
 
 
@@ -266,7 +270,7 @@ protected:
 	float m_fPowerMax;
 	float m_fRadiationMax;
 	float m_fPsyHealthMax;
-
+	float m_fInfectionMax;
 	float m_fEntityMoraleMax;
 
 	//величины изменения параметров на каждом обновлении

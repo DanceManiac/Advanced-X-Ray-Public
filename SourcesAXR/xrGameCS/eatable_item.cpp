@@ -56,6 +56,8 @@ CEatableItem::CEatableItem()
 	m_fIrradiationZonePower = 0.0f;
 	m_fSpoliage				= 0.0f;
 	m_fFoodRottingCoef		= 0.0f;
+
+	m_fInfectionInfluence = 0;
 }
 
 CEatableItem::~CEatableItem()
@@ -90,6 +92,9 @@ void CEatableItem::Load(LPCSTR section)
 	m_fIrradiationCoef			= READ_IF_EXISTS(pSettings, r_float, section, "irradiation_coef", 0.0005f);
 	m_fIrradiationZonePower		= READ_IF_EXISTS(pSettings, r_float, section, "irradiation_zone_power", 0.0f);
 	m_fFoodRottingCoef			= READ_IF_EXISTS(pSettings, r_float, section, "rotting_factor", 0.0f);
+
+	m_fInfectionInfluence		= pSettings->r_float(section, "infection");
+
 }
 
 BOOL CEatableItem::net_Spawn				(CSE_Abstract* DC)
@@ -362,6 +367,8 @@ bool CEatableItem::UseBy (CEntityAlive* entity_alive)
 		m_using_sound.create(snd_name.c_str(), st_Effect, sg_SourceType);
 		m_using_sound.play(NULL, sm_2D);
 	}
+
+	entity_alive->conditions().ChangeInfection(m_fInfectionInfluence);
 
 	entity_alive->conditions().ApplyInfluence(V, m_physic_item->cNameSect(), this);
 

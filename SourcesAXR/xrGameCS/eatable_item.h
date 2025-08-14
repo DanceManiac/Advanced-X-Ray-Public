@@ -62,6 +62,8 @@ public:
 			shared_str		use_cam_effector;
 			ref_sound		m_using_sound;
 
+			float			m_fInfectionInfluence;
+
 			//количество порций еды, 
 			//-1 - порция одна и больше не бывает (чтоб не выводить надпись в меню)
 			u32						m_iConstPortions;

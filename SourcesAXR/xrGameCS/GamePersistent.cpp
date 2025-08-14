@@ -1091,3 +1091,8 @@ bool CGamePersistent::IsTutorialSequencerActive()
 {
 	return ((g_tutorial && g_tutorial->IsActive()) || g_tutorial2 && g_tutorial2->IsActive());
 }
+
+float CGamePersistent::GetActorInfection()
+{
+	return	(Actor()->conditions().GetInfection());
+}

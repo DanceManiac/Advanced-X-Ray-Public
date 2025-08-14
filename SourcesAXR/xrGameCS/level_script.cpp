@@ -1154,6 +1154,22 @@ luabind::internal_string get_weather_type_icon()
 	return iconName;
 }
 
+
+// -------------------------------------------------------------------------
+/*LFO EXPORTS FOR SCRIPTED OPTIONALS*/
+// DEBUG HUD INFOS
+bool game_use_debug_hud_info()
+{
+	return !!psActorFlags2.test(AF_LFO_DEBUG_HUD_INFOS);
+}
+// Level Autosaves
+bool game_use_level_autosaves()
+{
+	return !!psActorFlags2.test(AF_LFO_LEVEL_AUTOSAVES);
+}
+
+
+
 #pragma optimize("s",on)
 void CLevel::script_register(lua_State *L)
 {
@@ -1302,6 +1318,14 @@ void CLevel::script_register(lua_State *L)
 		def("vertex_count",						vertex_count),
 
 		def("game_id",							&GameID),
+
+
+/*LFO EXPORTS FOR SCRIPTED OPTIONALS START */
+		def("use_level_autosaves",				&game_use_level_autosaves),
+		def("use_debug_hud_info",				&game_use_debug_hud_info),
+
+
+/*LFO EXPORTS FOR SCRIPTED OPTIONALS END*/
 
 		def("create_custom_timer",				&create_custom_timer),
 		def("start_custom_timer",				&start_custom_timer),

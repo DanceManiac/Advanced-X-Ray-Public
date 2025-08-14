@@ -25,7 +25,17 @@ enum{
 	AF_USE_FILTERS = (1 << 22),
 };
 
+enum
+{
+	AF_LFO_LEVEL_AUTOSAVES = (1 << 0),
+	AF_LFO_DEBUG_HUD_INFOS = (1 << 1),
+	AF_LFO_FROSTBITE = (1 << 2),
+	AF_DEV_MODE = (1 << 3),
+};
+
 extern Flags32 psActorFlags;
+extern Flags32 psActorFlags2;
+extern Flags32 psActorFlags3;
 extern BOOL		GodMode	();	
 
 extern int		psActorSleepTime;

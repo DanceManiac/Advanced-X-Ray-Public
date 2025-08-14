@@ -113,6 +113,8 @@ BIND_FUNCTION10	(&object(), CScriptGameObject::GetAlcohol,			CEntityAlive,	condi
 BIND_FUNCTION01	(&object(), CScriptGameObject::ChangeAlcohol,		CEntityAlive,	conditions().ChangeAlcohol,		float, float);
 BIND_FUNCTION10 (&object(), CScriptGameObject::GetFrostbite,		CEntityAlive,	conditions().GetFrostbite,		float, -1);
 BIND_FUNCTION01 (&object(), CScriptGameObject::ChangeFrostbite,		CEntityAlive,	conditions().ChangeFrostbite,	float, float);
+BIND_FUNCTION10	(&object(), CScriptGameObject::GetInfection,		CEntityAlive,	conditions().GetInfection, float, -1);
+BIND_FUNCTION01	(&object(), CScriptGameObject::SetInfection,		CEntityAlive,	conditions().ChangeInfection, float, float);
 
 u32	CScriptGameObject::level_vertex_id		() const
 {

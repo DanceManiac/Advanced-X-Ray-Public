@@ -73,6 +73,7 @@ LPCSTR af_restore_section_names[] = // ALife::EConditionRestoreType
 	"narcotism_restore_speed",		// eNarcotismRestoreSpeed=11
 	"withdrawal_restore_speed",		// eWithDrawalRestoreSpeed=12
 	"frostbite_restore_speed",		// eFrostbiteRestoreSpeed=13
+	"infection_restore_speed",		// eInfectionRestoreSpeed=14
 };
 
 LPCSTR af_immunity_caption[] =  // ALife::EHitType
@@ -105,6 +106,7 @@ LPCSTR af_restore_caption[] =  // ALife::EConditionRestoreType
 	"ui_inv_narcotism",
 	"ui_inv_withdrawal",
 	"ui_inv_frostbite",
+	"ui_inv_infection",
 };
 
 void CUIArtefactParams::InitFromXml( CUIXml& xml )

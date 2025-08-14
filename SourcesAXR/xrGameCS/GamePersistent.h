@@ -120,6 +120,7 @@ public:
 			float		GetActorBleeding		() override;
 			float		GetActorIntoxication	() override;
 			float		GetActorFrostbite		() override;
+			float		GetActorInfection		() override;
 			bool		GetClearMaskProcess		() override;
 			bool		GetActorAliveStatus		();
 			bool		GetActor				();

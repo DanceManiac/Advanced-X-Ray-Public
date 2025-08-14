@@ -76,6 +76,30 @@ public:
 	
 	CUIHudStatesWnd*	m_ui_hud_states;
 
+	CUIStatic*	m_ind_sleepeness;
+	CUIStatic*	m_ind_alcoholism;
+	CUIStatic*	m_ind_narcotism;
+	CUIStatic*	m_ind_psy_health;
+	CUIStatic*	m_ind_filter_dirty;
+	CUIStatic*	m_ind_lfo_filter_dirty;
+	CUIStatic*	m_ind_battery;
+	CUIStatic*	m_ind_battery_torch;
+	CUIStatic*	m_ind_battery_artefact_detector;
+	CUIStatic*	m_ind_battery_anomaly_detector;
+	CUIStatic*	m_ind_intoxication;
+	CUIStatic*	m_ind_bleeding;
+	CUIStatic*	m_ind_radiation;
+	CUIStatic*	m_ind_starvation;
+	CUIStatic*	m_ind_infection;
+	CUIStatic*	m_ind_frostbite;
+	CUIStatic*	m_ind_thirst;
+	CUIStatic*	m_ind_weapon_broken;
+	CUIStatic*	m_ind_helmet_broken;
+	CUIStatic*	m_ind_outfit_broken;
+	CUIStatic*	m_ind_overweight;
+	CUIStatic*	m_ind_health;
+	CUIStatic*	m_clock_value;
+
 	IC	void			ShowZoneMap( bool status ) { UIZoneMap->visible = status; }
 		void			DrawZoneMap() { UIZoneMap->Render(); }
 		void			UpdateZoneMap() { UIZoneMap->Update(); }
@@ -83,6 +107,15 @@ public:
 	
 	CUIHudStatesWnd*	get_hud_states() { return m_ui_hud_states; } //temp
 	void				OnSectorChanged			(int sector);
+
+
+	xr_vector<CUIStatic* > m_quick_slots_icons;
+	CUIStatic* m_QuickSlotText1;
+	CUIStatic* m_QuickSlotText2;
+	CUIStatic* m_QuickSlotText3;
+	CUIStatic* m_QuickSlotText4;
+	CUIStatic* m_QuickSlotText5;
+	CUIStatic* m_QuickSlotText6;
 
 	float				hud_info_x;
 	float				hud_info_y;
@@ -169,8 +202,9 @@ public:
 	void				ReceiveNews						(GAME_NEWS_DATA* news);
 	void				UpdateMainIndicators			();
 	void				UpdateBoosterIndicators			(const xr_map<EBoostParams, SBooster> influences);
-	
+
 protected:
+	void				UpdateQuickSlots				();
 	void				SetWarningIconColorUI			(CUIStatic* s, const u32 cl);
 	void				InitFlashingIcons				(CUIXml* node);
 	void				DestroyFlashingIcons			();

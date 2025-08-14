@@ -59,6 +59,7 @@ LPCSTR ef_quick_eat_values_names[] =
 	"eat_withdrawal",
 
 	"eat_frostbite"
+	"infection"
 };
 
 LPCSTR quick_eat_influence_caption[] =
@@ -107,6 +108,7 @@ LPCSTR ef_quick_eat_nodes_names[] =
 	"quick_eat_withdrawal",
 
 	"quick_eat_frostbite"
+	"quick_infection"
 };
 
 LPCSTR ef_boosters_values_names[] =
@@ -160,6 +162,7 @@ LPCSTR boost_influence_caption[] =
 	"ui_inv_narcotism",
 	"ui_inv_withdrawal",
 	"ui_inv_frostbite",
+	"ui_inv_infection"
 	"ui_inv_outfit_additional_weight",
 	"ui_inv_outfit_radiation_protection",
 	"ui_inv_outfit_telepatic_protection",

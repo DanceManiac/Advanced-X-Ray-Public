@@ -31,6 +31,7 @@ private:
 			eCriticalNarcotismReached		=(1<<14),
 			eCriticalWithdrawalReached		=(1<<15),
 			eCriticalFrostbiteReached		=(1<<16),
+			eCriticalInfectionReached		=(1<<17),
 			};
 	Flags16											m_condition_flags;
 private:
@@ -46,6 +47,8 @@ private:
 			void 		UpdatePsyHealth				();
 			void 		UpdateFrostbite				();
 	virtual void		UpdateRadiation				();
+	virtual void 		UpdateInfection				();
+
 public:
 						CActorCondition				(CActor *object);
 	virtual				~CActorCondition			();
@@ -57,6 +60,7 @@ public:
 	virtual void		UpdateCondition				();
 			void		UpdateBoosters				();
 
+	virtual void 		ChangeInfection				(float value);
 	virtual void 		ChangeAlcohol				(const float value);
 	virtual void 		ChangeSatiety				(const float value);
 	virtual void		ChangeThirst				(const float value);
@@ -134,6 +138,8 @@ public:
 			float	xr_stdcall	GetDrugs			()	{return m_fDrugs;}
 			float	xr_stdcall	GetFrostbite		()	{return m_fFrostbite;}
 
+			float				GetInfection		() { return m_fInfection; }
+
 			void		AffectDamage_InjuriousMaterialAndMonstersInfluence();
 			float		GetInjuriousMaterialDamage	();
 			
@@ -171,7 +177,11 @@ public:
 	IC		float const&	V_Frostbite				() { return m_fV_Frostbite; }
 	IC		float const&	V_FrostbiteHealth		() { return m_fV_FrostbiteHealth; }
 	IC		float const&	FrostbiteCritical		() { return m_fFrostbiteCritical; }
-	
+	IC		float const&	Infection				() { return m_fInfection; }
+	IC		float const&	V_Infection				() { return m_fV_Infection; }
+	IC		float const&	V_InfectionPower		() { return m_fV_InfectionPower; }
+	IC		float const&	V_InfectionHealth		() { return m_fV_InfectionHealth; }
+
 	float	GetZoneMaxPower							(ALife::EInfluenceType type) const;
 	float	GetZoneMaxPower							(ALife::EHitType hit_type) const;
 
@@ -195,6 +205,11 @@ public:
 	float m_fV_SatietyPower;
 	float m_fV_SatietyHealth;
 	float m_fSatietyCritical;
+
+	float m_fInfection;
+	float m_fV_Infection;
+	float m_fV_InfectionPower;
+	float m_fV_InfectionHealth;
 //--
 
 //--M.F.S. Team

@@ -99,6 +99,8 @@ void CArtefact::Load(LPCSTR section)
 			m_iAfRank = 5;
 	}
 
+//	m_fInfectionRestoreSpeed			= pSettings->r_float(section, "infection_restore_speed") * m_iAfRank;
+	m_fInfectionRestoreSpeed			= READ_IF_EXISTS(pSettings, r_float, section, "infection_restore_speed", 0.f) * m_iAfRank;
 	m_fConstHealthRestoreSpeed			= READ_IF_EXISTS(pSettings, r_float, section, "health_restore_speed",			0.f) * m_iAfRank;
 	m_fConstRadiationRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "radiation_restore_speed",		0.f);
 	m_fConstSatietyRestoreSpeed			= READ_IF_EXISTS(pSettings, r_float, section, "satiety_restore_speed",			0.f) * m_iAfRank;

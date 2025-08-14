@@ -43,6 +43,10 @@ public:
 	CUIProgressBar*		m_ui_health_bar;
 	CUIProgressBar*		m_ui_armor_bar;
 	CUIProgressBar*		m_ui_stamina_bar;
+	CUIProgressBar*		m_ui_satiety_bar;
+	CUIProgressBar*		m_ui_thirsty_bar;
+	CUIProgressBar*		m_ui_tired_bar;
+	CUIProgressBar*		m_ui_infection_bar;
 
 	CUIProgressShape*	m_progress_self;
 	CUIStatic*			m_radia_damage;

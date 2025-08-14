@@ -59,6 +59,7 @@ CActorCondition::CActorCondition(CActor *object) :
 	m_fDrugs					= 0.0f;
 	m_fFrostbite				= 0.0f;
 	m_fV_PsyHealth_Health		= 0.0f;
+	m_fInfection				= 1.0f;
 
 	m_bPsyHealthKillActor		= false;
 
@@ -146,6 +147,10 @@ void CActorCondition::LoadCondition(LPCSTR entity_section)
 	VERIFY( !fis_zero(m_zone_max_power[ALife::infl_acid]) );
 	VERIFY( !fis_zero(m_zone_max_power[ALife::infl_psi]) );
 	VERIFY( !fis_zero(m_zone_max_power[ALife::infl_electra]) );
+
+	m_fV_Infection = pSettings->r_float(section, "infection_v");
+	m_fV_InfectionPower = pSettings->r_float(section, "infection_power_v");
+	m_fV_InfectionHealth = pSettings->r_float(section, "infection_health_v");
 
 	// M.F.S. Team Thirst
 	m_fThirstCritical = READ_IF_EXISTS(pSettings,r_float,section,"thirst_critical", 1.0f);
@@ -269,6 +274,7 @@ void CActorCondition::UpdateCondition()
 		UpdateNarcotism();
 		UpdateFrostbite();
 		UpdatePsyHealth();
+		UpdateInfection();
 
 		m_fAlcohol		+= m_fV_Alcohol*m_fDeltaTime;
 		clamp			(m_fAlcohol,			0.0f,		1.0f);
@@ -360,8 +366,14 @@ void CActorCondition::UpdateCondition()
 	UpdateAlcoholism();
 	UpdateNarcotism();
 
-	if (GameConstants::GetActorFrostbite())
-		UpdateFrostbite();
+
+	if (psActorFlags2.test(AF_LFO_FROSTBITE))
+	{
+		if (GameConstants::GetActorFrostbite())
+		{
+			UpdateFrostbite();
+		}
+	}
 
 	inherited::UpdateCondition();
 
@@ -819,6 +831,25 @@ void CActorCondition::UpdateFrostbite()
 	}
 }
 
+void CActorCondition::UpdateInfection()
+{
+	if (!IsGameTypeSingle()) return;
+
+	if (m_fInfection > 0.f)
+	{
+		m_fInfection -= m_fV_Infection * m_fDeltaTime;
+		if (m_fInfection <= 0.f && !GodMode() && object().g_Alive()) //skyloader: kill actor
+			object().KillEntity(object().ID());
+		else
+			clamp(m_fInfection, 0.0f, 1.0f);
+	}
+	if (!m_bIsBleeding)
+	{
+		m_fDeltaHealth += CanBeHarmed() ? (m_fV_InfectionHealth * (m_fInfection > 0.0f ? 1.f : -1.f) * m_fDeltaTime) : 0.f;
+	}
+	m_fDeltaPower += (m_fV_InfectionPower * (m_fInfection > 0.0f ? 1.f : -1.f)) * m_fDeltaTime;
+}
+
 CWound* CActorCondition::ConditionHit(SHit* pHDS)
 {
 	if (GodMode()) return NULL;
@@ -924,6 +955,7 @@ void CActorCondition::save(NET_Packet &output_packet)
 	save_data			(m_fWithdrawal, output_packet);
 	save_data			(m_fDrugs, output_packet);
 	save_data			(m_fFrostbite, output_packet);
+	save_data			(m_fInfection, output_packet);
 
 	save_data			(m_curr_medicine_influence.fHealth, output_packet);
 	save_data			(m_curr_medicine_influence.fPower, output_packet);
@@ -969,6 +1001,7 @@ void CActorCondition::load(IReader &input_packet)
 	load_data			(m_fWithdrawal, input_packet);
 	load_data			(m_fDrugs, input_packet);
 	load_data			(m_fFrostbite, input_packet);
+	load_data			(m_fInfection, input_packet);
 
 	load_data			(m_curr_medicine_influence.fHealth, input_packet);
 	load_data			(m_curr_medicine_influence.fPower, input_packet);
@@ -1006,6 +1039,7 @@ void CActorCondition::reinit	()
 	inherited::reinit	();
 	m_bLimping					= false;
 	m_fSatiety					= 1.f;
+	m_fInfection				= 1.f;
 }
 
 void CActorCondition::ChangeAlcohol	(float value)
@@ -1017,6 +1051,12 @@ void CActorCondition::ChangeSatiety(float value)
 {
 	m_fSatiety += value;
 	clamp		(m_fSatiety, 0.0f, 1.0f);
+}
+
+void CActorCondition::ChangeInfection(float value)
+{
+	m_fInfection += value;
+	clamp(m_fInfection, 0.0f, 1.0f);
 }
 
 //M.F.S. Team Thirst
@@ -1354,6 +1394,7 @@ void CActorCondition::UpdateTutorialThresholds()
 	static float _cNarcotism		= READ_IF_EXISTS(pSettings, r_float, "tutorial_conditions_thresholds", "narcotism", 0.0f);
 	static float _cWithdrawal		= READ_IF_EXISTS(pSettings, r_float, "tutorial_conditions_thresholds", "withdrawal", 0.0f);
 	static float _cFrostbite		= READ_IF_EXISTS(pSettings, r_float, "tutorial_conditions_thresholds", "frostbite", 0.0f);
+	static float _cInfection		= pSettings->r_float("tutorial_conditions_thresholds", "infection");
 
 	bool b = true;
 	if(b && !m_condition_flags.test(eCriticalPowerReached) && GetPower()<_cPowerThr){
@@ -1385,6 +1426,12 @@ void CActorCondition::UpdateTutorialThresholds()
 		m_condition_flags.set(eCriticalThirstReached, TRUE);
 		b = false;
 		xr_strcpy(cb_name, "_G.on_actor_thirst");
+	}
+
+	if (b && !m_condition_flags.test(eCriticalInfectionReached) && GetInfection() < _cInfection) {
+		m_condition_flags.set(eCriticalInfectionReached, TRUE);
+		b = false;
+		strcpy_s(cb_name, "_G.on_actor_infection");
 	}
 
 	if (b && !m_condition_flags.test(eCriticalIntoxicationReached) && GetIntoxication() > _cIntoxication && (!fis_zero(m_fV_Intoxication))) {

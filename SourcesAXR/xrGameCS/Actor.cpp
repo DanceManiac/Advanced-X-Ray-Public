@@ -102,6 +102,8 @@ static Fvector	vFootCenter;
 static Fvector	vFootExt;
 
 Flags32			psActorFlags={/*AF_DYNAMIC_MUSIC|*/AF_GODMODE_RT};
+Flags32			psActorFlags2 = {};
+Flags32			psActorFlags3 = {};
 
 int				psActorSleepTime = 1;
 int				psActorQuickSaveNumberCurrent = 0;
@@ -2080,6 +2082,7 @@ void CActor::UpdateRestores()
 		conditions().ChangeNarcotism	(outfit->m_fNarcotismRestoreSpeed * f_update_time);
 		conditions().ChangePsyHealth	(outfit->m_fPsyHealthRestoreSpeed * f_update_time);
 		conditions().ChangeFrostbite	(outfit->m_fFrostbiteRestoreSpeed * f_update_time);
+		conditions().ChangeInfection	(outfit->m_fInfectionRestoreSpeed * f_update_time);
 	}
 	else
 	{
@@ -2177,6 +2180,7 @@ void CActor::UpdateArtefactsOnBelt()
 			conditions().ChangeNarcotism	(artefact->m_fNarcotismRestoreSpeed * f_update_time);
 			conditions().ChangePsyHealth	(artefact->m_fPsyHealthRestoreSpeed * f_update_time);
 			conditions().ChangeFrostbite	(artefact->m_fFrostbiteRestoreSpeed * f_update_time);
+			conditions().ChangeInfection	(artefact->m_fInfectionRestoreSpeed * f_update_time);
 
 			if (GameConstants::GetArtefactsDegradation())
 				artefact->UpdateDegradation();
@@ -2525,6 +2529,7 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 	{
 		res = conditions().change_v().m_fV_HealthRestore;
 		res += conditions().V_SatietyHealth() * ( (conditions().GetSatiety() > 0.0f) ? 1.0f : -1.0f );
+		res += conditions().V_InfectionHealth() * ((conditions().GetInfection() > 0.0f) ? 1.0f : -1.0f);
 
 		TIItemContainer::iterator itb = inventory().m_belt.begin();
 		TIItemContainer::iterator ite = inventory().m_belt.end();
@@ -2679,6 +2684,27 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 		if (backpack)
 		{
 			res += backpack->m_fThirstRestoreSpeed;
+		}
+		break;
+	}
+	case ALife::eInfectionRestoreSpeed:
+	{
+		res = conditions().V_Infection();
+
+		TIItemContainer::iterator itb = inventory().m_belt.begin();
+		TIItemContainer::iterator ite = inventory().m_belt.end();
+		for (; itb != ite; ++itb)
+		{
+			CArtefact* artefact = smart_cast<CArtefact*>(*itb);
+			if (artefact)
+			{
+				res += artefact->m_fInfectionRestoreSpeed;
+			}
+		}
+		CCustomOutfit* outfit = GetOutfit();
+		if (outfit)
+		{
+			res += outfit->m_fInfectionRestoreSpeed;
 		}
 		break;
 	}
