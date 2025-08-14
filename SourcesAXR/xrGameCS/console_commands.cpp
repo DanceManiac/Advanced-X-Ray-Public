@@ -2508,23 +2508,75 @@ void CCC_RegisterCommands()
 
 
 	//LFO
+	CMD3(CCC_Mask, "g_item_animations", &psActorFlags, AF_ITEM_ANIMS_ENABLE);
+	CMD3(CCC_Mask, "g_ladder_show_weapon", &psActorFlags, AF_CMB_SHOW_WEAPON);
+	CMD3(CCC_Mask, "g_no_head_bobbing", &psActorFlags, AF_NO_HEAD_BOBBING);
+	CMD3(CCC_Mask, "g_lfo_weather_fallout", &psActorFlags2, AF_LFO_WEATHER_FALLOUT);
+	CMD3(CCC_Mask, "g_lfo_weather_fallout_siren", &psActorFlags2, AF_LFO_WEATHER_FALLOUT_SIREN);
+	CMD3(CCC_Mask, "g_savezone_hide_weapon", &psActorFlags2, AF_LFO_HIDE_WEAPON_SAVEZONE);
+	CMD3(CCC_Mask, "g_mask_breath_sounds", &psActorFlags2, AF_LFO_MASK_BREATH_SOUNDS);
+	CMD3(CCC_Mask, "g_ai_spawn_random", &psActorFlags2, AF_LFO_AI_SPAWN_RANDOM);
+	CMD3(CCC_Mask, "g_dynamic_hud_overlay", &psActorFlags2, AF_LFO_DYNAMIC_HUD_MASK_OVERLAY);
+	CMD3(CCC_Mask, "g_dynamic_hud_shoot_shake", &psActorFlags2, AF_LFO_DYNAMIC_HUD_WPN_SHAKING);
+	CMD3(CCC_Mask, "g_dynamic_hud_hit_effects", &psActorFlags2, AF_LFO_DYNAMIC_HUD_HIT_EFFECTS);
+	CMD3(CCC_Mask, "g_hud_dof", &psActorFlags2, AF_HUD_DOF);
+	CMD3(CCC_Mask, "g_hud_item_dof", &psActorFlags2, AF_HUD_ITEM_DOF);
+	CMD3(CCC_Mask, "g_wpn_automatic_reload", &psActorFlags2, AF_WPN_RELOAD_TYPE);
+	CMD3(CCC_Mask, "g_freeplay", &psActorFlags2, AF_LFO_FREEPLAY);
+	CMD3(CCC_Mask, "g_nightvision_idle_snd", &psActorFlags2, AF_NVG_IDLE_SOUND);
+	CMD3(CCC_Mask, "g_artefact_respawn_faster", &psActorFlags2, AF_ARTEFACT_RESPAWN_FAST);
+	CMD3(CCC_Mask, "g_lfo_weather_extra_snow_effects", &psActorFlags2, AF_LFO_WEATHER_EXTRA_SNOW_EFFECTS);
+	CMD3(CCC_Mask, "g_lfo_weather_extra_effects", &psActorFlags2, AF_LFO_WEATHER_EXTRA_EFFECTS);
+	CMD3(CCC_Mask, "g_lfo_wpn_extra_aim_eff", &psActorFlags2, AF_LFO_WEAPON_AIM_CAM_EFF);
+	CMD3(CCC_Mask, "g_lfo_wpn_extra_recoil", &psActorFlags2, AF_LFO_WEAPON_EXTRA_RECOIL);
+	CMD3(CCC_Mask, "g_lfo_anomaly_cam_effects", &psActorFlags2, AF_LFO_ANOMALY_CAM_EFF);
+	CMD3(CCC_Mask, "g_lfo_test_cmd", &psActorFlags2, AF_LFO_TEST_FLAG);
+	CMD3(CCC_Mask, "g_lfo_weapon_ground_physic", &psActorFlags2, AF_LFO_WPN_PH_OBJ);
 	CMD3(CCC_Mask, "g_lfo_autosave_by_level", &psActorFlags2, AF_LFO_LEVEL_AUTOSAVES);
 	CMD3(CCC_Mask, "g_frostbite_damage", &psActorFlags2, AF_LFO_FROSTBITE);
+	CMD3(CCC_Mask, "g_lfo_economy_upgrade", &psActorFlags2, AF_LFO_ECO);
+	CMD3(CCC_Mask, "g_lfo_weather_fallout_cant_sleep", &psActorFlags2, AF_LFO_FALLOUT_SLEEP);
+	CMD3(CCC_Mask, "g_lfo_no_npc_map_points", &psActorFlags2, AF_LFO_NO_AI_MAP_POINTS);
+	CMD3(CCC_Mask, "g_lfo_loot", &psActorFlags2, AF_LFO_RW_LOOT);
+	CMD3(CCC_Mask, "g_snd_mainmenu_vanilla", &psActorFlags3, AF_MAINMENU_MUSIC);
+	CMD3(CCC_Mask, "g_alternativ_global_map", &psActorFlags3, AF_ALTERNATIV_GLOBAL_MAP);
+	CMD3(CCC_Mask, "g_lfo_hud_postprocess", &psActorFlags3, AF_LFO_POSTPROCESS);
+	CMD3(CCC_Mask, "g_lfo_extra_zone_particles", &psActorFlags3, AF_LFO_PARTICLES);
 
+	//CMD3(CCC_Token, "g_lfo_scope_type", &lfo_scope_type, lfo_scope_type_token);
 
+	//	CMD3(CCC_Mask,				"g_take_item_aniamtions",				&psActorFlags2,			AF_TAKE_ITEM_ANIMATIONS);
 
+	CMD4(CCC_BKPK_ANIM, "g_animated_backpack", &m_b_animated_backpack, 0, 1);
+	CMD3(CCC_Mask, "hud_weapon", &psHUD_Flags, HUD_WEAPON);
+	CMD3(CCC_Mask, "hud_info", &psHUD_Flags, HUD_INFO);
+	CMD3(CCC_Mask, "hud_draw", &psHUD_Flags, HUD_DRAW);
 	CMD3(CCC_Mask, "hud_artefact_panel", &psHUD_Flags, HUD_AF_PANEL);
+	CMD3(CCC_Mask, "hud_pda_info_icon", &psHUD_Flags, HUD_PDA_INFO);
+	CMD3(CCC_Mask, "hud_lfo", &psHUD_Flags, HUD_OLD_HUD);
 	CMD3(CCC_Mask, "g_alternativ_inventory", &psHUD_Flags, ALTERNATIV_INVENTORY);
 	CMD3(CCC_Mask, "g_inventory_minimap", &psHUD_Flags, HUD_MINIMAP_INVENTORY);
+	CMD3(CCC_Mask, "hud_crosshair_aim", &psHUD_Flags, HUD_CROSSHAIR_AIM);
+	CMD3(CCC_Mask, "hud_hud_minimap", &psHUD_Flags, HUD_DRAW_MINIMAP);
 	CMD3(CCC_Mask, "hud_clock", &psHUD_Flags, HUD_LFO_CLOCK_ON_HUD);
 	CMD3(CCC_Mask, "hud_temperature", &psHUD_Flags, HUD_LFO_TEMPERATURE_ON_HUD);
 	CMD3(CCC_Mask, "hud_lfo_indicators", &psHUD_Flags, HUD_AF_INDICATORS);
 
+	psHUD_Flags.set(HUD_CROSSHAIR,					true);
+	psHUD_Flags.set(HUD_WEAPON,						true);
+	psHUD_Flags.set(HUD_DRAW,						true);
+	psHUD_Flags.set(HUD_INFO,						true);
+	psHUD_Flags.set(HUD_CROSSHAIR_AIM,				false);
 	psHUD_Flags.set(HUD_AF_PANEL,					true);
+	psHUD_Flags.set(HUD_PDA_INFO,					true);
+	psHUD_Flags.set(HUD_OLD_HUD,					true);
+	psHUD_Flags.set(ALTERNATIV_INVENTORY,			true);
 	psHUD_Flags.set(ALTERNATIV_INVENTORY,			true);
 	psHUD_Flags.set(HUD_MINIMAP_INVENTORY,			true);
-	psHUD_Flags.set(HUD_LFO_CLOCK_ON_HUD, true);
-	psHUD_Flags.set(HUD_LFO_TEMPERATURE_ON_HUD, true);
+	psHUD_Flags.set(HUD_DRAW_MINIMAP,				true);
+	psHUD_Flags.set(HUD_LFO_CLOCK_ON_HUD,			true);
+	psHUD_Flags.set(HUD_LFO_TEMPERATURE_ON_HUD,		true);
+	psHUD_Flags.set(HUD_AF_INDICATORS,				true);
 
 
 	CMD3(CCC_Mask,				"hud_crosshair",		&psHUD_Flags,	HUD_CROSSHAIR);

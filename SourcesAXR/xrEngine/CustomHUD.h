@@ -1,26 +1,30 @@
 #pragma once
 
-ENGINE_API extern Flags32		psHUD_Flags;
-#define HUD_CROSSHAIR			(1<<0)
-#define HUD_CROSSHAIR_DIST		(1<<1)
-#define HUD_WEAPON				(1<<2)
-#define HUD_INFO				(1<<3)
-#define HUD_DRAW				(1<<4)
-#define HUD_CROSSHAIR_RT		(1<<5)
-#define HUD_WEAPON_RT			(1<<6)
-#define HUD_CROSSHAIR_DYNAMIC	(1<<7)
-#define HUD_CROSSHAIR_RT2		(1<<9)
-#define HUD_DRAW_RT				(1<<10)
-#define HUD_WEAPON_RT2			(1<<11)
-#define HUD_DRAW_RT2			(1<<12)
+ENGINE_API extern Flags32 psHUD_Flags;
+#define HUD_CROSSHAIR				(1<<0)
+#define HUD_CROSSHAIR_DIST			(1<<1)
+#define HUD_WEAPON					(1<<2)
+#define HUD_INFO					(1<<3)
+#define HUD_DRAW					(1<<4)
+#define HUD_CROSSHAIR_RT			(1<<5)
+#define HUD_WEAPON_RT				(1<<6)
+#define HUD_CROSSHAIR_DYNAMIC		(1<<7)
+#define HUD_CROSSHAIR_RT2			(1<<9)
+#define HUD_DRAW_RT					(1<<10)
+#define HUD_WEAPON_RT2				(1<<11)
+#define HUD_DRAW_RT2				(1<<12)
 
 //LFO
-#define HUD_AF_PANEL			(1<<13)
-#define ALTERNATIV_INVENTORY	(1<<14)
-#define HUD_MINIMAP_INVENTORY	(1<<15)
-#define HUD_LFO_CLOCK_ON_HUD		(1<<16)
-#define HUD_LFO_TEMPERATURE_ON_HUD	(1<<17)
-#define HUD_AF_INDICATORS			(1<<18)
+#define HUD_AF_PANEL				(1<<13)
+#define HUD_PDA_INFO				(1<<14)
+#define HUD_OLD_HUD					(1<<15)
+#define ALTERNATIV_INVENTORY		(1<<16)
+#define HUD_MINIMAP_INVENTORY		(1<<17)
+#define HUD_CROSSHAIR_AIM			(1<<18)
+#define HUD_DRAW_MINIMAP			(1<<19)
+#define HUD_LFO_CLOCK_ON_HUD		(1<<20)
+#define HUD_LFO_TEMPERATURE_ON_HUD	(1<<21)
+#define HUD_AF_INDICATORS			(1<<22)
 
 class ENGINE_API IRender_Visual;
 class CUI;

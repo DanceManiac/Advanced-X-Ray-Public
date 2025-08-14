@@ -1156,7 +1156,59 @@ luabind::internal_string get_weather_type_icon()
 
 
 // -------------------------------------------------------------------------
-/*LFO EXPORTS FOR SCRIPTED OPTIONALS*/
+/*LFO EXPORTS FOR SCRIPTED OPTIONALS START*/
+
+/* YZX */
+bool actor_in_hideout() {
+	collide::rq_result RQ;
+	return !!g_pGameLevel->ObjectSpace.RayPick(Device.vCameraPosition, Fvector().set(0, 1, 0), 50.f,
+		collide::rqtBoth, RQ, g_pGameLevel->CurrentViewEntity());
+}
+
+bool game_use_filters() {
+	return !!psActorFlags.test(AF_USE_FILTERS);
+}
+
+bool game_use_fallout() {
+	return !!psActorFlags2.test(AF_LFO_WEATHER_FALLOUT);
+}
+
+bool game_use_fallout_siren() {
+	return !!psActorFlags2.test(AF_LFO_WEATHER_FALLOUT_SIREN);
+}
+
+bool game_use_fallout_cant_sleep() {
+	return !!psActorFlags2.test(AF_LFO_FALLOUT_SLEEP);
+}
+
+bool game_use_lfo_loot() {
+	return !!psActorFlags2.test(AF_LFO_RW_LOOT);
+}
+/* YZX */
+
+// Survival Mode
+bool game_use_survival_mode()
+{
+	return !!psActorFlags3.test(AF_LFO_SURVIVAL_MODE);
+}
+
+// PDA STUFF 
+bool game_use_extra_pda_ui()
+{
+	return !!psActorFlags3.test(AF_LFO_PDA_EXTRA);
+}
+
+// No NPS Mappoints
+bool game_use_no_npc_map_points()
+{
+	return !!psActorFlags2.test(AF_LFO_NO_AI_MAP_POINTS);
+}
+
+// For Alternative Economy
+bool game_use_economy_upgrade()
+{
+	return !!psActorFlags2.test(AF_LFO_ECO);
+}
 // DEBUG HUD INFOS
 bool game_use_debug_hud_info()
 {
@@ -1167,7 +1219,84 @@ bool game_use_level_autosaves()
 {
 	return !!psActorFlags2.test(AF_LFO_LEVEL_AUTOSAVES);
 }
+// Show/Hide Weapons in Safezones
+bool game_use_savezone()
+{
+	return !!psActorFlags2.test(AF_LFO_HIDE_WEAPON_SAVEZONE);
+}
+//ON/OFF Breathsound for Gasmasks
+bool game_use_mask_breath_sounds()
+{
+	return !!psActorFlags2.test(AF_LFO_MASK_BREATH_SOUNDS);
+}
+//ON/OFF Random Monster Spawns 
+bool game_use_ai_spawn_random()
+{
+	return !!psActorFlags2.test(AF_LFO_AI_SPAWN_RANDOM);
+}
+//ON/OFF Dynamic Hud: Scripts 
+bool game_use_dynamic_hud_mask_overlay()
+{
+	return !!psActorFlags2.test(AF_LFO_DYNAMIC_HUD_MASK_OVERLAY);
+}
+//ON/OFF Dynamic Hud: Hud Shooting Shake
+bool game_use_dynamic_hud_shoot_shake()
+{
+	return !!psActorFlags2.test(AF_LFO_DYNAMIC_HUD_WPN_SHAKING);
+}
+//ON/OFF Dynamic Hud: Hud Hit Effects
+bool game_use_dynamic_hud_hit_effects()
+{
+	return !!psActorFlags2.test(AF_LFO_DYNAMIC_HUD_HIT_EFFECTS);
+}
+//ON/OFF RESPAWN ARTEFACTS FASTER
+bool game_artefacts_respawn_faster()
+{
+	return !!psActorFlags2.test(AF_ARTEFACT_RESPAWN_FAST);
+}
+// LFO DEV FULL MAIN MENU
+bool game_use_dev_full_main_menu()
+{
+	return !!psActorFlags3.test(AF_LFO_FULL_MAINMENU);
+}
+// DEF MODE 
+bool game_use_dev_mode()
+{
+	return !!psActorFlags2.test(AF_DEV_MODE);
+}
+// Enable/Disable Freeplay
+bool game_freeplay()
+{
+	return !!psActorFlags2.test(AF_LFO_FREEPLAY);
+}
 
+// WEATHER Enable/Disable EXTRA SNOW EFFECTS
+bool game_use_extra_snow_effects() {
+	return !!psActorFlags2.test(AF_LFO_WEATHER_EXTRA_SNOW_EFFECTS);
+}
+
+// WEATHER Enable/Disable EXTRA WEATHER EFFECTS
+bool game_use_extra_weather_effects() {
+	return !!psActorFlags2.test(AF_LFO_WEATHER_EXTRA_EFFECTS);
+}
+
+// Enable/Disable WEAPON EXTRA RECOIL 
+bool game_use_extra_weapon_recoil() {
+	return !!psActorFlags2.test(AF_LFO_WEAPON_EXTRA_RECOIL);
+}
+
+// Enable/Disable WEAPON GROUND PHYSICS 
+bool game_use_weapon_ground_physics() {
+	return !!psActorFlags2.test(AF_LFO_WPN_PH_OBJ);
+}
+
+// UI WEATHER ICONS
+bool game_use_lfo_weather_icons() {
+	return !!psActorFlags3.test(AF_LFO_WEATHER_ICONS);
+}
+
+/*LFO EXPORTS FOR SCRIPTED OPTIONALS END*/
+// -------------------------------------------------------------------------
 
 
 #pragma optimize("s",on)
@@ -1322,7 +1451,35 @@ void CLevel::script_register(lua_State *L)
 
 /*LFO EXPORTS FOR SCRIPTED OPTIONALS START */
 		def("use_level_autosaves",				&game_use_level_autosaves),
+		def("use_savezone",						&game_use_savezone),
+		def("use_mask_breath_sounds",			&game_use_mask_breath_sounds),
+		def("use_ai_spawn_random",				&game_use_ai_spawn_random),
+		def("use_dynamic_hud_mask_overlay",		&game_use_dynamic_hud_mask_overlay),
+		def("use_dynamic_hud_shoot_shake",		&game_use_dynamic_hud_shoot_shake),
+		def("use_dynamic_hud_hit_effects",		&game_use_dynamic_hud_hit_effects),
+		def("is_developer_mode",				&game_use_dev_mode),
+		def("active_freeplay",					&game_freeplay),
+		def("artefacts_respawns_faster",		&game_artefacts_respawn_faster),
+		def("use_extra_snow_effects",			&game_use_extra_snow_effects),
+		def("use_extra_weather_effects",		&game_use_extra_weather_effects),
+		def("use_extra_weapon_recoil",			&game_use_extra_weapon_recoil),
+		def("use_weapon_ground_physics",		&game_use_weapon_ground_physics),
 		def("use_debug_hud_info",				&game_use_debug_hud_info),
+		def("use_economy_upgrade",				&game_use_economy_upgrade),
+		def("use_no_npc_map_points",			&game_use_no_npc_map_points),
+		def("use_lfo_loot",						&game_use_lfo_loot),
+		def("use_survival_mode",				&game_use_survival_mode),
+		def("use_extra_pda_ui",					&game_use_extra_pda_ui),
+		def("use_dev_full_main_menu",			&game_use_dev_full_main_menu),
+		def("use_lfo_weather_icons",			&game_use_lfo_weather_icons),
+
+		/* YZX */
+		def("actor_in_hideout", 				&actor_in_hideout),
+		def("use_filters", 						&game_use_filters),
+		def("use_fallout", 						&game_use_fallout),
+		def("use_fallout_siren",				&game_use_fallout_siren),
+		def("use_fallout_cant_sleep",			&game_use_fallout_cant_sleep),
+		/* YZX */
 
 
 /*LFO EXPORTS FOR SCRIPTED OPTIONALS END*/
