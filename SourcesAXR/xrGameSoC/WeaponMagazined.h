@@ -195,7 +195,7 @@ protected:
 	virtual void	PlayAnimIdle		();
 	virtual void	PlayAnimAim			();
 	virtual void	PlayAnimShoot		();
-	virtual void	PlayAnimFakeShoot	();
+	virtual bool	PlayAnimFakeShoot	();
 	virtual void	PlayAnimBore		();
 	virtual void	PlayAnimIdleSprint	();
 	virtual void	PlayAnimIdleMoving	();

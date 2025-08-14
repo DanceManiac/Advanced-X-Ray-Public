@@ -15,6 +15,7 @@ CWeaponShotgun::CWeaponShotgun()
 	m_bOnlyTriStateWithScope = false;
 	m_bLastShotRPM			= true;
 	m_bIsCancelReloadNow	= false;
+	m_bIsShotgun			= !m_bIsBoltRiffle;
 }
 
 CWeaponShotgun::~CWeaponShotgun()
@@ -85,6 +86,15 @@ bool CWeaponShotgun::Action			(u16 cmd, u32 flags)
 
 void CWeaponShotgun::OnAnimationEnd(u32 state) 
 {
+	switch (state)
+	{
+	case eFire:
+		{
+			if (IsMisfire())
+				SwitchState(eIdle);
+		} break;
+	}
+
 	if(!m_bTriStateReload || (m_bIsBoltRiffle && !(IsScopeAttached() && m_bOnlyTriStateWithScope) && !iAmmoElapsed && HaveCartridgeInInventory(iMagazineSize)) || state != eReload)
 		return inherited::OnAnimationEnd(state);
 

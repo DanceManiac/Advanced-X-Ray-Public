@@ -146,6 +146,7 @@ CWeapon::CWeapon()
 
 	m_bIsRevolver			= false;
 	m_bIsBoltRiffle			= false;
+	m_bIsShotgun			= false;
 	m_bLastShotRPM			= false;
 	m_bUseRG6_AddCartridgeAlt = false;
 

@@ -15,6 +15,7 @@ CWeaponShotgun::CWeaponShotgun(void) : CWeaponCustomPistol("TOZ34")
 
 	m_bOnlyTriStateWithScope = false;
 	m_bIsCancelReloadNow	= false;
+	m_bIsShotgun			= !m_bIsBoltRiffle;
 }
 
 CWeaponShotgun::~CWeaponShotgun(void)
@@ -226,6 +227,15 @@ bool CWeaponShotgun::Action			(s32 cmd, u32 flags)
 
 void CWeaponShotgun::OnAnimationEnd(u32 state) 
 {
+	switch (state)
+	{
+	case eFire:
+		{
+			if (IsMisfire())
+				SwitchState(eIdle);
+		} break;
+	}
+
 	if (!m_bTriStateReload || (m_bIsBoltRiffle && !(IsScopeAttached() && m_bOnlyTriStateWithScope) && !iAmmoElapsed && HaveCartridgeInInventory(iMagazineSize)) || state != eReload)
 		return inherited::OnAnimationEnd(state);
 

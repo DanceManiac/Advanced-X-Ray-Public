@@ -54,10 +54,10 @@ void CWeaponBM16::PlayAnimShoot()
 	}
 }
 
-void CWeaponBM16::PlayAnimFakeShoot()
+bool CWeaponBM16::PlayAnimFakeShoot()
 {
 	if ((IsRotatingToZoom() && m_zoom_params.m_fZoomRotationFactor != 0.0f) || (IsRotatingFromZoom() && m_zoom_params.m_fZoomRotationFactor != 1.0f))
-		return;
+		return false;
 
 	string128 guns_fakeshoot_anm{};
 	strconcat(sizeof(guns_fakeshoot_anm), guns_fakeshoot_anm, ("anm_fakeshoot"), (IsZoomed() && !IsRotatingToZoom()) ? "_aim" : "", IsMisfire() ? "_jammed" : "", "_", std::to_string(m_magazine.size()).c_str());
@@ -65,6 +65,7 @@ void CWeaponBM16::PlayAnimFakeShoot()
 	if (isHUDAnimationExist(guns_fakeshoot_anm))
 	{
 		PlayHUDMotionNew(guns_fakeshoot_anm, true, GetState());
+		return true;
 	}
 	else if (guns_fakeshoot_anm && strstr(guns_fakeshoot_anm, "_jammed"))
 	{
@@ -75,6 +76,7 @@ void CWeaponBM16::PlayAnimFakeShoot()
 		if (isHUDAnimationExist(new_guns_fakeshoot_anm))
 		{
 			PlayHUDMotionNew(new_guns_fakeshoot_anm, true, GetState());
+			return true;
 		}
 	}
 	else if (guns_fakeshoot_anm && strstr(guns_fakeshoot_anm, "_empty"))
@@ -86,8 +88,11 @@ void CWeaponBM16::PlayAnimFakeShoot()
 		if (isHUDAnimationExist(new_guns_fakeshoot_anm))
 		{
 			PlayHUDMotionNew(new_guns_fakeshoot_anm, true, GetState());
+			return true;
 		}
 	}
+
+	return false;
 }
 
 void CWeaponBM16::PlayAnimShow()

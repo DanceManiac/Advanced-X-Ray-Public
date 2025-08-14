@@ -462,6 +462,7 @@ protected:
 
 	bool					m_bIsRevolver;
 	bool					m_bIsBoltRiffle;
+	bool					m_bIsShotgun;
 	bool					m_bUseRG6_AddCartridgeAlt;
 	bool					m_bIndoorSoundsEnabled;
 	bool					m_bMisfireBulletRemove;

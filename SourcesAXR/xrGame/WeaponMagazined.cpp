@@ -170,6 +170,10 @@ void CWeaponMagazined::Load	(LPCSTR section)
 		m_sounds.LoadSound(section, "snd_reload_misfire", "sndReloadMisfire", true, m_eSoundReload);
 	if (WeaponSoundExist(section, "snd_reload_jammed", true))
 		m_sounds.LoadSound(section, "snd_reload_jammed", "sndReloadJammed", true, m_eSoundReload);
+	if (WeaponSoundExist(section, "snd_reload_misfire_empty", true))
+		m_sounds.LoadSound(section, "snd_reload_misfire_empty", "sndReloadMisfireEmpty", true, m_eSoundReload);
+	if (WeaponSoundExist(section, "snd_reload_jammed_empty", true))
+		m_sounds.LoadSound(section, "snd_reload_jammed_empty", "sndReloadJammedEmpty", true, m_eSoundReload);
 	if (WeaponSoundExist(section, "snd_pump_gun", true))
 		m_sounds.LoadSound(section, "snd_pump_gun", "sndPumpGun", true, m_eSoundReload);
 
@@ -459,10 +463,10 @@ bool CWeaponMagazined::TryReload()
 
 		m_pCurrentAmmo = smart_cast<CWeaponAmmo*>(m_pInventory->GetAny( m_ammoTypes[m_ammoType].c_str() ));
 		
-		if (IsMisfire() && iAmmoElapsed)
+		if (IsMisfire())
 		{
-			SetPending(TRUE);
-			SwitchState(eUnMisfire);
+			SetPending			(TRUE);
+			SwitchState			(eUnMisfire);
 			return				true;
 		}
 
@@ -641,7 +645,8 @@ void CWeaponMagazined::ReloadMagazine()
 	m_BriefInfo_CalcFrame = 0;	
 
 	//устранить осечку при перезарядке
-	if(IsMisfire())	bMisfire = false;
+	if(IsMisfire() && !IsGrenadeMode())
+		bMisfire = false;
 	
 	if (!m_bLockType)
 	{
@@ -1004,11 +1009,9 @@ void CWeaponMagazined::state_Fire(float dt)
 
 			++m_iShotNum;
 			
-			if(CheckForMisfire())
-			{
-				StopShooting();
-				return;
-			}
+			if (!IsGrenadeMode())
+				CheckForMisfire();
+
 			OnShot					();
 
 			if (m_iShotNum>m_iBaseDispersionedBulletsCount)
@@ -1052,8 +1055,11 @@ void CWeaponMagazined::state_Fire(float dt)
 
 void CWeaponMagazined::state_Misfire	(float dt)
 {
-	OnEmptyClick			();
-	SwitchState				(eIdle);
+	if (!m_bIsShotgun)
+	{
+		OnEmptyClick();
+		SwitchState(eIdle);
+	}
 	
 	bMisfire				= true;
 
@@ -1250,15 +1256,18 @@ void CWeaponMagazined::OnShot()
 
 void CWeaponMagazined::OnEmptyClick	()
 {
-	if (m_BlendFakeShootCam.name.size())
+	if (PlayAnimFakeShoot())
 	{
-		if (ParentIsActor())
-			g_player_hud->PlayBlendAnm(m_BlendFakeShootCam.name.c_str(), 2, m_BlendFakeShootCam.speed, m_BlendFakeShootCam.power, false, false);
+		PlaySound("sndEmptyClick", get_LastFP());
+		return;
 	}
 	else
 	{
-		PlayAnimFakeShoot();
-		return;
+		if (m_BlendFakeShootCam.name.size())
+		{
+			if (ParentIsActor())
+				g_player_hud->PlayBlendAnm(m_BlendFakeShootCam.name.c_str(), 2, m_BlendFakeShootCam.speed, m_BlendFakeShootCam.power, false, false);
+		}
 	}
 
 	PlaySound("sndEmptyClick", get_LastFP());
@@ -1315,7 +1324,7 @@ void CWeaponMagazined::OnAnimationEnd(u32 state)
 		{
 			bMisfire = false;
 
-			if (!m_bIsRevolver && m_bMisfireBulletRemove)
+			if (!m_bIsRevolver && m_bMisfireBulletRemove && iAmmoElapsed)
 			{
 				m_magazine.pop_back();
 				iAmmoElapsed--;
@@ -1648,7 +1657,11 @@ void CWeaponMagazined::switch2_Unmis()
 
 	if (m_sounds_enabled)
 	{
-		if (m_sounds.FindSoundItem("sndReloadMisfire", false) && isHUDAnimationExist("anm_reload_misfire"))
+		if ((iAmmoElapsed == 1) && m_sounds.FindSoundItem("sndReloadMisfireEmpty", false) && isHUDAnimationExist("anm_reload_misfire_empty"))
+			PlaySound("sndReloadMisfireEmpty", get_LastFP());
+		else if ((iAmmoElapsed == 1) && m_sounds.FindSoundItem("sndReloadJammedEmpty", false) && isHUDAnimationExist("anm_reload_jammed_empty"))
+			PlaySound("sndReloadJammedEmpty", get_LastFP());
+		else if (m_sounds.FindSoundItem("sndReloadMisfire", false) && isHUDAnimationExist("anm_reload_misfire"))
 			PlaySound("sndReloadMisfire", get_LastFP());
 		else if (m_sounds.FindSoundItem("sndReloadJammed", false) && isHUDAnimationExist("anm_reload_jammed"))
 			PlaySound("sndReloadJammed", get_LastFP());
@@ -2263,10 +2276,10 @@ void CWeaponMagazined::PlayAnimShow()
 
 	HUD_VisualBulletUpdate();
 
-	if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_SHOW_EMPTY))
-		PlayHUDMotion("anm_show_empty", FALSE, this, GetState());
-	else if (IsMisfire() && isHUDAnimationExist("anm_show_jammed"))
+	if (IsMisfire() && isHUDAnimationExist("anm_show_jammed"))
 		PlayHUDMotion("anm_show_jammed", false, this, GetState());
+	else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_SHOW_EMPTY))
+		PlayHUDMotion("anm_show_empty", FALSE, this, GetState());
 	else
 		PlayHUDMotion("anm_show", FALSE, this, GetState());
 }
@@ -2275,10 +2288,10 @@ void CWeaponMagazined::PlayAnimHide()
 {
 	VERIFY(GetState()==eHiding);
 
-	if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_HIDE_EMPTY))
-		PlayHUDMotion("anm_hide_empty", TRUE, this, GetState());
-	else if (IsMisfire() && isHUDAnimationExist("anm_hide_jammed"))
+	if (IsMisfire() && isHUDAnimationExist("anm_hide_jammed"))
 		PlayHUDMotion("anm_hide_jammed", true, this, GetState());
+	else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_HIDE_EMPTY))
+		PlayHUDMotion("anm_hide_empty", TRUE, this, GetState());
 	else
 		PlayHUDMotion("anm_hide", TRUE, this, GetState());
 }
@@ -2290,20 +2303,20 @@ void CWeaponMagazined::PlayAnimBore()
 
 void CWeaponMagazined::PlayAnimIdleSprint()
 {
-	if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_SPRINT_EMPTY))
-		PlayHUDMotion("anm_idle_sprint_empty", TRUE, NULL, GetState());
-	else if (IsMisfire() && isHUDAnimationExist("anm_idle_sprint_jammed"))
+	if (IsMisfire() && isHUDAnimationExist("anm_idle_sprint_jammed"))
 		PlayHUDMotion("anm_idle_sprint_jammed", true, nullptr, GetState());
+	else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_SPRINT_EMPTY))
+		PlayHUDMotion("anm_idle_sprint_empty", TRUE, NULL, GetState());
 	else
 		inherited::PlayAnimIdleSprint();
 }
 
 void CWeaponMagazined::PlayAnimIdleMoving()
 {
-	if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_MOVING_EMPTY))
-		PlayHUDMotion("anm_idle_moving_empty", TRUE, NULL, GetState());
-	else if (IsMisfire() && isHUDAnimationExist("anm_idle_moving_jammed"))
+	if (IsMisfire() && isHUDAnimationExist("anm_idle_moving_jammed"))
 		PlayHUDMotion("anm_idle_moving_jammed", true, nullptr, GetState());
+	else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_MOVING_EMPTY))
+		PlayHUDMotion("anm_idle_moving_empty", TRUE, NULL, GetState());
 	else
 		inherited::PlayAnimIdleMoving();
 }
@@ -2422,10 +2435,10 @@ void CWeaponMagazined::PlayAnimAim()
 		}
 	}
 
-	if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_AIM_EMPTY))
-		PlayHUDMotion("anm_idle_aim_empty", TRUE, NULL, GetState());
-	else if (IsMisfire() && isHUDAnimationExist("anm_idle_aim_jammed"))
+	if (IsMisfire() && isHUDAnimationExist("anm_idle_aim_jammed"))
 		PlayHUDMotion("anm_idle_aim_jammed", true, nullptr, GetState());
+	else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_AIM_EMPTY))
+		PlayHUDMotion("anm_idle_aim_empty", TRUE, NULL, GetState());
 	else
 		PlayHUDMotion("anm_idle_aim", TRUE, NULL, GetState());
 
@@ -2485,10 +2498,10 @@ void CWeaponMagazined::PlayAnimIdle()
 
 	if(IsZoomed())
 		PlayAnimAim();
-	else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_IDLE_EMPTY) && !TryPlayAnimIdle() && !IsRotatingFromZoom())
-		PlayHUDMotion("anm_idle_empty", TRUE, NULL, GetState());
 	else if (IsMisfire() && isHUDAnimationExist("anm_idle_jammed") && !TryPlayAnimIdle() && !IsRotatingFromZoom())
 		PlayHUDMotion("anm_idle_jammed", true, nullptr, GetState());
+	else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_IDLE_EMPTY) && !TryPlayAnimIdle() && !IsRotatingFromZoom())
+		PlayHUDMotion("anm_idle_empty", TRUE, NULL, GetState());
 	else
 	{
 		if (IsRotatingFromZoom())
@@ -2524,12 +2537,10 @@ void CWeaponMagazined::PlayAnimShoot()
 		PlayHUDMotionIfExists({ guns_shoot_anm, "anm_shoot", "anm_shots" }, false, GetState());
 }
 
-void CWeaponMagazined::PlayAnimFakeShoot()
+bool CWeaponMagazined::PlayAnimFakeShoot()
 {
 	if ((IsRotatingToZoom() && m_zoom_params.m_fZoomRotationFactor != 0.0f) || (IsRotatingFromZoom() && m_zoom_params.m_fZoomRotationFactor != 1.0f))
-		return;
-
-	PlaySound("sndEmptyClick", get_LastFP());
+		return false;
 
 	string256 guns_det_shoot_anm{};
 	strconcat(sizeof(guns_det_shoot_anm), guns_det_shoot_anm, "anm_fakeshoot", (IsZoomed() && !IsRotatingToZoom()) ? "_aim" : "");
@@ -2544,6 +2555,8 @@ void CWeaponMagazined::PlayAnimFakeShoot()
 	{
 		SetPending(TRUE);
 		PlayHUDMotionNew(guns_fakeshoot_anm, true, GetState());
+
+		return true;
 	}
 	else if (guns_fakeshoot_anm && strstr(guns_fakeshoot_anm, "_jammed"))
 	{
@@ -2555,6 +2568,8 @@ void CWeaponMagazined::PlayAnimFakeShoot()
 		{
 			SetPending(TRUE);
 			PlayHUDMotionNew(new_guns_fakeshoot_anm, true, GetState());
+
+			return true;
 		}
 	}
 	else if (guns_fakeshoot_anm && strstr(guns_fakeshoot_anm, "_empty"))
@@ -2567,8 +2582,12 @@ void CWeaponMagazined::PlayAnimFakeShoot()
 		{
 			SetPending(TRUE);
 			PlayHUDMotionNew(new_guns_fakeshoot_anm, true, GetState());
+
+			return true;
 		}
 	}
+
+	return false;
 }
 
 void CWeaponMagazined::PlayAnimDeviceSwitch()
