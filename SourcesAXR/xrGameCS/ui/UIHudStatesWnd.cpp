@@ -63,6 +63,24 @@ void CUIHudStatesWnd::InitFromXml( CUIXml& xml, LPCSTR path )
 	m_back_v          = UIHelper::CreateStatic( xml, "back_v", this );
 	m_static_armor    = UIHelper::CreateStatic( xml, "static_armor", this );
 	
+	m_back_hud_lfo_a			= UIHelper::CreateStatic(xml, "background_lfo_base_a", this);
+	m_back_hud_lfo_a			= UIHelper::CreateStatic(xml, "background_lfo_base_b", this);
+	m_back_hud_lfo_temp			= UIHelper::CreateStatic(xml, "background_lfo_base_c", this);
+	m_back_hud_lfo_stamina		= UIHelper::CreateStatic(xml, "background_lfo_stamina", this);
+	m_back_hud_lfo_bleeding		= UIHelper::CreateStatic(xml, "background_lfo_bleeding", this);
+	m_back_hud_lfo_quickslots   = UIHelper::CreateStatic(xml, "background_lfo_quickslots", this);
+	m_back_hud_lfo_anomaly		= UIHelper::CreateStatic(xml, "background_lfo_anomaly_indicator", this);
+
+	if (psHUD_Flags.test(HUD_AF_INDICATORS))
+	{
+		m_back_hud_lfo_battery = UIHelper::CreateStatic(xml, "background_lfo_indicators", this);
+	}
+
+	if (psHUD_Flags.test(HUD_AF_PANEL))
+	{
+		m_back_hud_lfo_artefacts	= UIHelper::CreateStatic(xml, "background_lfo_artefact_slots", this);
+	}
+
 	m_resist_back[ALife::infl_rad]  = UIHelper::CreateStatic( xml, "resist_back_rad", this );
 	m_resist_back[ALife::infl_fire] = UIHelper::CreateStatic( xml, "resist_back_fire", this );
 	m_resist_back[ALife::infl_acid] = UIHelper::CreateStatic( xml, "resist_back_acid", this );

@@ -26,6 +26,16 @@ public:
 	CUIStatic*			m_back_over_arrow;
 	CUIStatic*			m_static_armor;
 
+	CUIStatic*			m_back_hud_lfo_a;
+	CUIStatic*			m_back_hud_lfo_b;
+	CUIStatic*			m_back_hud_lfo_temp;
+	CUIStatic*			m_back_hud_lfo_stamina;
+	CUIStatic*			m_back_hud_lfo_bleeding;
+	CUIStatic*			m_back_hud_lfo_quickslots;
+	CUIStatic*			m_back_hud_lfo_anomaly;
+	CUIStatic*			m_back_hud_lfo_artefacts;
+	CUIStatic*			m_back_hud_lfo_battery;
+
 	CUIStatic*			m_resist_back[it_max];
 	CUIStatic*			m_indik[it_max];
 
