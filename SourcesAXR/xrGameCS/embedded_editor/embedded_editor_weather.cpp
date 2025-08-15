@@ -131,6 +131,16 @@ void saveWeather(shared_str name, const xr_vector<CEnvDescriptor*>& env)
 		f.w_float(el->m_identifier.c_str(), "bloom_threshold", el->bloom_threshold);
 		f.w_float(el->m_identifier.c_str(), "bloom_exposure", el->bloom_exposure);
 		f.w_float(el->m_identifier.c_str(), "bloom_sky_intensity", el->bloom_sky_intensity);
+		f.w_float(el->m_identifier.c_str(), "fallout_effects_acid", el->m_fWindVolumeFalloutAcid);
+		f.w_float(el->m_identifier.c_str(), "fallout_effects_radiation", el->m_fWindVolumeFalloutRadiation);
+		f.w_float(el->m_identifier.c_str(), "weather_effects_cold_wind", el->m_fWinterColdWind);
+		f.w_float(el->m_identifier.c_str(), "weather_effects_snowfall", el->m_fWinterSnowFall);
+		f.w_float(el->m_identifier.c_str(), "weather_effects_snow_layer", el->m_fWinterSnowLayer);
+		f.w_float(el->m_identifier.c_str(), "weather_air_temperature", el->m_fAirTemperature);
+		f.w_float(el->m_identifier.c_str(), "weather_effects_rainfall_drops", el->m_fWeatherRainFall);
+		f.w_float(el->m_identifier.c_str(), "bloom_threshold", el->bloom_threshold);
+		f.w_float(el->m_identifier.c_str(), "bloom_exposure", el->bloom_exposure);
+		f.w_float(el->m_identifier.c_str(), "bloom_sky_intensity", el->bloom_sky_intensity);
 	}
 	string_path fileName;
 	FS.update_path(fileName, "$game_weathers$", name.c_str());
@@ -339,6 +349,20 @@ void ShowWeatherEditor(bool& show)
 			sel = i;
 	}
 
+	// --------------------------------------------------------------------------------------------------------
+	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_other_options").c_str()).c_str());
+
+	if (ImGui::SliderFloat("air_temperature", &cur->m_fAirTemperature, -50.0f, 50.0f))
+		changed = true;
+
+	static char newType[256]{};
+
+	if (cur->m_sWeatherType.size())
+		strcpy(newType, cur->m_sWeatherType.c_str());
+	else
+		memset(newType, 0, sizeof(newType));
+
+	// Ambient Lights
 	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_amb_light_options").c_str()).c_str());
 
 	if (ImGui::Combo("ambient", &sel, enumIni, env.m_ambients_config, env.m_ambients_config->sections().size())) {
@@ -348,6 +372,8 @@ void ShowWeatherEditor(bool& show)
 	if (ImGui::ColorEdit3("ambient_color", (float*)&cur->ambient))
 		changed = true;
 
+
+	// Clouds
 	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_clouds_options").c_str()).c_str());
 
 	if (ImGui::ColorEdit4("clouds_color", (float*)&cur->clouds_color, ImGuiColorEditFlags_AlphaBar))
@@ -368,6 +394,7 @@ void ShowWeatherEditor(bool& show)
 			changed = true;
 	}
 
+	// Fog 
 	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_fog_options").c_str()).c_str());
 
 	if (ImGui::SliderFloat("far_plane", &cur->far_plane, 0.01f, 10000.0f))
@@ -383,11 +410,14 @@ void ShowWeatherEditor(bool& show)
 	if (ImGui::ColorEdit3("fog_color", (float*)&cur->fog_color))
 		changed = true;
 
+
+	// Hemi
 	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_hemi_options").c_str()).c_str());
 
 	if (ImGui::ColorEdit4("hemisphere_color", (float*)&cur->hemi_color, ImGuiColorEditFlags_AlphaBar))
 		changed = true;
 
+	// Rain
 	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_rain_options").c_str()).c_str());
 
 	if (ImGui::SliderFloat("rain_density", &cur->rain_density, 0.0f, 10.0f))
@@ -395,6 +425,8 @@ void ShowWeatherEditor(bool& show)
 	if (ImGui::ColorEdit3("rain_color", (float*)&cur->rain_color))
 		changed = true;
 
+
+	//SKy 
 	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_sky_options").c_str()).c_str());
 
 	if (ImGui::ColorEdit3("sky_color", (float*)&cur->sky_color))
@@ -410,6 +442,33 @@ void ShowWeatherEditor(bool& show)
 		changed = true;
 	}
 
+	// LFO Stuff
+	ImGui::Text(u8"st_weather_editor_weather_effects");
+
+	if (ImGui::SliderFloat("weather_air_temperature", &cur->m_fAirTemperature, -50.0f, 50.0f))
+		changed = true;
+
+	if (ImGui::SliderFloat("weather_effects_rainfall_drops", &cur->m_fWeatherRainFall, 0.0f, 1.00f))
+		changed = true;
+
+	if (ImGui::SliderFloat("weather_effects_cold_wind", &cur->m_fWinterColdWind, 0.0f, 1.00f))
+		changed = true;
+
+	if (ImGui::SliderFloat("weather_effects_snowfall", &cur->m_fWinterSnowFall, 0.0f, 0.5f))
+		changed = true;
+
+	if (ImGui::SliderFloat("weather_effects_snow_layer", &cur->m_fWinterSnowLayer, 1.0f, 0.00f))
+		changed = true;
+
+	ImGui::Text(u8"st_weather_editor_fallout_effects");
+
+	if (ImGui::SliderFloat("fallout_effects_acid", &cur->m_fWindVolumeFalloutAcid, 0.0f, 2.00f))
+		changed = true;
+
+	if (ImGui::SliderFloat("fallout_effects_radiation", &cur->m_fWindVolumeFalloutRadiation, 0.0f, 2.00f))
+		changed = true;
+
+	// Sun
 	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_sun_options").c_str()).c_str());
 
 	sel = -1;
@@ -445,6 +504,7 @@ void ShowWeatherEditor(bool& show)
 			sel = i + 1;
 	}
 
+	// Thunder
 	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_thunder_bolt_options").c_str()).c_str());
 
 	if (ImGui::Combo("thunderbolt_collection", &sel, enumIniWithEmpty, env.m_thunderbolt_collections_config,
@@ -472,8 +532,10 @@ void ShowWeatherEditor(bool& show)
 	if (ImGui::SliderFloat("wind_direction", &cur->wind_direction, 0.0f, 360.0f))
 		changed = true;
 
-	if (!bWeatherWindInfluenceKoef)
-	{
+
+	// Wind
+//	if (!bWeatherWindInfluenceKoef)
+//	{
 		ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_trees_options").c_str()).c_str());
 
 		if (ImGui::SliderFloat("trees_amplitude_intensity", &cur->m_fTreeAmplitudeIntensity, 0.01f, 0.250f))
@@ -501,8 +563,9 @@ void ShowWeatherEditor(bool& show)
 			changed = true;
 		if (ImGui::SliderFloat("swing_fast_speed", &cur->m_cSwingDesc[1].speed, 0.0f, 10.0f))
 			changed = true;
-	}
+//	}
 
+	// Colour Grading
 	if (bWeatherColorGrading)
 	{
 		ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_clr_grad_options").c_str()).c_str());
@@ -511,6 +574,7 @@ void ShowWeatherEditor(bool& show)
 			changed = true;
 	}
 
+	// Bloom
 	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_bloom_options").c_str()).c_str());
 
 	if (ImGui::SliderFloat("bloom_threshold", &cur->bloom_threshold, 0.0f, 2.5f))
@@ -522,6 +586,7 @@ void ShowWeatherEditor(bool& show)
 	if (ImGui::SliderFloat("bloom_sky_intensity", &cur->bloom_sky_intensity, 0.0f, 1.0f))
 		changed = true;
 
+	// DOF
 	if (bDofWeather)
 	{
 		ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_dof_options").c_str()).c_str());
@@ -534,18 +599,6 @@ void ShowWeatherEditor(bool& show)
 			changed = true;
 	}
 
-	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_other_options").c_str()).c_str());
-
-	if (ImGui::SliderFloat("air_temperature", &cur->m_fAirTemperature, -50.0f, 50.0f))
-		changed = true;
-
-	static char newType[256]{};
-
-	if (cur->m_sWeatherType.size())
-		strcpy(newType, cur->m_sWeatherType.c_str());
-	else
-		memset(newType, 0, sizeof(newType));
-
 	if (ImGui::InputText("weather_type", newType, 512))
 		changed = true;
 
@@ -554,6 +607,8 @@ void ShowWeatherEditor(bool& show)
 		cur->m_sWeatherType = newType;
 		modifiedWeathers.insert(env.CurrentWeatherName);
 	}
+
+	// --------------------------------------------------------------------------------------------------------
 
 	if (ImGui::Button(toUtf8(CStringTable().translate("st_editor_imgui_save").c_str()).c_str())) {
 		for (auto name : modifiedWeathers)

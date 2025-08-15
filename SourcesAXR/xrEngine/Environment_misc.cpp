@@ -14,6 +14,9 @@
 
 extern ENGINE_API float ps_weather_fog_clamping;
 
+extern float ps_r2_sun_shafts_min;
+extern float ps_r2_sun_shafts_value;
+
 void CEnvModifier::load	(IReader* fs, u32 version)
 {
 	use_flags.one					();
@@ -340,6 +343,24 @@ CEnvDescriptor::CEnvDescriptor	(shared_str const& identifier) : m_identifier(ide
 	m_fSunShaftsIntensity = 0;
 	m_fWaterIntensity = 1;
 
+	winter_effects_cold				= 0.0f;
+	winter_effects_snowlayer		= 0.0f;
+	winter_effects_snowfall			= 0.0f;
+
+	weather_effects_rainfall		= 0.0f;
+
+	m_fWinterColdWind				= 0.01;
+	m_fWinterSnowFall				= 0.01;
+	m_fWinterSnowLayer				= 1.00;
+
+	m_fWeatherRainFall				= 0.01;
+
+	fallout_effects_acid			= 0.0f;
+	m_fWindVolumeFalloutAcid		= 0.01;
+
+	fallout_effects_radiation		= 0.0f;
+	m_fWindVolumeFalloutRadiation	= 0.01;
+
 #ifdef TREE_WIND_EFFECT
 	m_fTreeAmplitudeIntensity = 0.01;
 #endif
@@ -422,6 +443,28 @@ void CEnvDescriptor::load	(CEnvironment& environment, CInifile& config, bool isW
 
 	if (config.line_exist(m_identifier.c_str(),"water_intensity"))
 		m_fWaterIntensity = config.r_float(m_identifier.c_str(),"water_intensity");
+
+	if (config.line_exist(m_identifier.c_str(), "weather_effects_cold_wind"))
+		m_fWinterColdWind = config.r_float(m_identifier.c_str(), "weather_effects_cold_wind");
+
+	if (config.line_exist(m_identifier.c_str(), "weather_effects_snowfall"))
+		m_fWinterSnowFall = config.r_float(m_identifier.c_str(), "weather_effects_snowfall");
+
+	if (config.line_exist(m_identifier.c_str(), "weather_effects_snow_layer"))
+		m_fWinterSnowLayer = config.r_float(m_identifier.c_str(), "weather_effects_snow_layer");
+
+	if (config.line_exist(m_identifier.c_str(), "fallout_effects_acid"))
+		m_fWindVolumeFalloutAcid = config.r_float(m_identifier.c_str(), "fallout_effects_acid");
+
+	if (config.line_exist(m_identifier.c_str(), "fallout_effects_radiation"))
+		m_fWindVolumeFalloutRadiation = config.r_float(m_identifier.c_str(), "fallout_effects_radiation");
+
+	if (config.line_exist(m_identifier.c_str(), "weather_effects_rainfall_drops"))
+		m_fWeatherRainFall = config.r_float(m_identifier.c_str(), "weather_effects_rainfall_drops");
+
+	if (config.line_exist(m_identifier.c_str(), "weather_air_temperature"))
+		m_fAirTemperature = config.r_float(m_identifier.c_str(), "weather_air_temperature");
+
 
 #ifdef TREE_WIND_EFFECT
 	if (config.line_exist(m_identifier.c_str(), "tree_amplitude_intensity"))
@@ -748,6 +791,13 @@ void CEnvDescriptorMixer::lerp	(CEnvironment* , CEnvDescriptor& A, CEnvDescripto
 	wind_velocity			=	fi*A.wind_velocity + f*B.wind_velocity;
 	wind_direction			=	fi*A.wind_direction + f*B.wind_direction;
 
+	m_fWeatherRainFall = fi * A.m_fWeatherRainFall + f * B.m_fWeatherRainFall;
+	m_fWinterSnowFall = fi * A.m_fWinterSnowFall + f * B.m_fWinterSnowFall;
+	m_fWinterColdWind = fi * A.m_fWinterColdWind + f * B.m_fWinterColdWind;
+	m_fWinterSnowLayer = fi * A.m_fWinterSnowLayer + f * B.m_fWinterSnowLayer;
+	m_fWindVolumeFalloutAcid = fi * A.m_fWindVolumeFalloutAcid + f * B.m_fWindVolumeFalloutAcid;
+	m_fWindVolumeFalloutRadiation = fi * A.m_fWindVolumeFalloutRadiation + f * B.m_fWindVolumeFalloutRadiation;
+
 	if (!bWeatherWindInfluenceKoef)
 	{
 		clouds_velocity_0 = fi * A.clouds_velocity_0 + f * B.clouds_velocity_0;
@@ -800,6 +850,11 @@ void CEnvDescriptorMixer::lerp	(CEnvironment* , CEnvDescriptor& A, CEnvDescripto
 	bloom_threshold		= fi * A.bloom_threshold + f * B.bloom_threshold;
 	bloom_exposure		= fi * A.bloom_exposure + f * B.bloom_exposure;
 	bloom_sky_intensity = fi * A.bloom_sky_intensity + f * B.bloom_sky_intensity;
+
+	m_fSunShaftsIntensity *= 1.0f - ps_r2_sun_shafts_min;
+	m_fSunShaftsIntensity += ps_r2_sun_shafts_min;
+	m_fSunShaftsIntensity *= ps_r2_sun_shafts_value;
+	clamp(m_fSunShaftsIntensity, 0.0f, 1.0f);
 
 	// colors
 //.	sky_color.lerp			(A.sky_color,B.sky_color,f).add(Mdf.sky_color).mul(modif_power);

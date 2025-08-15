@@ -308,16 +308,18 @@ void xrSASH::GetAllOptions()
 	//Option.Dependency.ComparisonVal.Enum = TEXT("renderer_r2.5");
 	//Option.Dependency.ComparisonValType = GetOptionType("renderer");
 	{
-		DescribeOption("r2_sun_shafts",			Option.Dependency);
-		DescribeOption("r2_ssao",				Option.Dependency);
-		DescribeOption("r2_ssao_opt_data",		Option.Dependency);
-		DescribeOption("r2_ssao_half_data",		Option.Dependency);
-		DescribeOption("r2_ssao_hbao",			Option.Dependency);
-		DescribeOption("r2_soft_water",			Option.Dependency);
-		DescribeOption("r2_soft_particles",		Option.Dependency);
-		DescribeOption("r2_dof_enable",			Option.Dependency);
-		DescribeOption("r2_volumetric_lights",	Option.Dependency);
-		DescribeOption("r2_steep_parallax",		Option.Dependency);
+		DescribeOption("r2_sun_shafts",						Option.Dependency);
+		DescribeOption("r2_ssao",							Option.Dependency);
+		DescribeOption("r2_ssao_opt_data",					Option.Dependency);
+		DescribeOption("r2_ssao_half_data",					Option.Dependency);
+		DescribeOption("r2_ssao_hbao",						Option.Dependency);
+		DescribeOption("r2_soft_water",						Option.Dependency);
+		DescribeOption("r2_soft_particles",					Option.Dependency);
+		DescribeOption("r2_dof_enable",						Option.Dependency);
+		DescribeOption("r2_volumetric_lights",				Option.Dependency);
+		DescribeOption("r2_steep_parallax",					Option.Dependency);
+		DescribeOption("r2_rainbow",						Option.Dependency);
+		DescribeOption("renderer_amd_reticle_fix",			Option.Dependency);
 	}
 
 	//	>=r3
@@ -326,12 +328,16 @@ void xrSASH::GetAllOptions()
 	//Option.Dependency.ComparisonVal.Enum = TEXT("renderer_r3");
 	//Option.Dependency.ComparisonValType = GetOptionType("renderer");
 	{
-		DescribeOption("r3_dynamic_wet_surfaces",Option.Dependency);
-		DescribeOption("r3_volumetric_smoke",	Option.Dependency);
-		DescribeOption("r3_gbuff_opt",			Option.Dependency);
-		DescribeOption("r3_use_dx10_1",			Option.Dependency);
-		DescribeOption("r3_minmax_sm",			Option.Dependency);
-		DescribeOption("r3_msaa",				Option.Dependency);
+		DescribeOption("r3_cloud_shadows",					Option.Dependency);
+		DescribeOption("r3_dynamic_wet_surfaces_hand",		Option.Dependency);
+		DescribeOption("r3_dynamic_wet_surfaces",			Option.Dependency);
+		DescribeOption("r3_volumetric_smoke",				Option.Dependency);
+		DescribeOption("r3_gbuff_opt",						Option.Dependency);
+		DescribeOption("r3_use_dx10_1",						Option.Dependency);
+		DescribeOption("r3_minmax_sm",						Option.Dependency);
+		DescribeOption("r3_msaa",							Option.Dependency);
+		DescribeOption("r3_puddle",							Option.Dependency);
+		DescribeOption("r3_sss_contact_shadows",			Option.Dependency);
 		//	>= 2x
 		//Option.Dependency.ParentName = TEXT("r3_msaa");
 		//Option.Dependency.ComparisonOp = OA_COMP_OP_GREATER_OR_EQUAL;
@@ -372,6 +378,7 @@ void xrSASH::GetCurrentOptions()
 	GetOption("r2_slight_fade");
 	GetOption("r2_ls_squality");
 	GetOption("r2_detail_bump");
+	GetOption("r2_rainbow");
 
 	//	>=r2.5
 	GetOption("r2_sun_shafts");
@@ -384,8 +391,13 @@ void xrSASH::GetCurrentOptions()
 	GetOption("r2_dof_enable");
 	GetOption("r2_volumetric_lights");
 	GetOption("r2_steep_parallax");
+	GetOption("renderer_amd_reticle_fix");
 
 	//	>=r3
+	GetOption("r3_sss_contact_shadows");
+	GetOption("r3_puddle");
+	GetOption("r3_cloud_shadows");
+	GetOption("r3_dynamic_wet_surfaces_hand");
 	GetOption("r3_dynamic_wet_surfaces");
 	GetOption("r3_volumetric_smoke");
 	GetOption("r3_use_dx10_1");

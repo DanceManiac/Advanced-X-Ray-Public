@@ -750,6 +750,9 @@ ENGINE_API BOOL		debugSecondVP = FALSE;
 ENGINE_API int			ps_r__Supersample			= 1;
 ENGINE_API int			ps_r__WallmarksOnSkeleton	= 0;
 
+ENGINE_API float		ps_r2_sun_shafts_min = 0.f;
+ENGINE_API float 		ps_r2_sun_shafts_value = 1.f;
+
 ENGINE_API int			ps_r__ShaderNVG				= 0;
 
 ENGINE_API int			ps_detail_enable_collision	= 0;
@@ -815,6 +818,9 @@ void CCC_Register()
 
 	CMD4(CCC_Integer,	"r__detail_collision_enabled",			&ps_detail_enable_collision,	0, 1);
 
+	CMD4(CCC_Float,		"r2_sun_shafts_min",	&ps_r2_sun_shafts_min,		0.0, 0.5);				// 0.0, 0.5);
+	CMD4(CCC_Float,		"r2_sun_shafts_value",	&ps_r2_sun_shafts_value,	0.0, 1.0);				// 0.5, 2.0);
+
 	CMD4(CCC_Float,		"svp_image_size_k",		&psSVPImageSizeK,	0.1f,	2.f				);
 	CMD4(CCC_Integer,	"svp_frame_delay",		&psSVPFrameDelay,	1,		3				);
 	CMD4(CCC_Integer,	"rs_debug_second_vp",	&debugSecondVP,		FALSE,	TRUE			);
@@ -837,7 +843,7 @@ void CCC_Register()
 	CMD2(CCC_Gamma,		"rs_c_brightness"		,&ps_brightness		);
 	CMD2(CCC_Gamma,		"rs_c_contrast"			,&ps_contrast		);
 	CMD3(CCC_Mask,		"rs_draw_fps",			&psDeviceFlags,		rsDrawFPS				);
-	CMD4(CCC_Float,		"rs_fps_limit",			&fps_limit,			10.f, 900.f				);
+	CMD4(CCC_Float,		"rs_fps_limit",			&fps_limit,			10.f, 240.f				);
 	CMD4(CCC_Integer,	"svp_frame_delay",		&psSVPFrameDelay,	1, 3					);
 //	CMD4(CCC_Integer,	"rs_vb_size",			&rsDVB_Size,		32,		4096);
 //	CMD4(CCC_Integer,	"rs_ib_size",			&rsDIB_Size,		32,		4096);

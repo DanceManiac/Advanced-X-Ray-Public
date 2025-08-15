@@ -26,7 +26,15 @@ CEffect_Rain::CEffect_Rain()
 {
 	state							= stIdle;
 	
-	snd_Wind.create("mfs_team\\ambient\\weather\\wind", st_Effect, sg_Undefined);
+	// SOUNDS
+	snd_Rain.create("nature\\rain\\rain", st_Effect, sg_Undefined);
+	snd_RainOnMask.create("nature\\rain\\rain_on_mask", st_Effect, sg_Undefined);
+	snd_Wind.create("nature\\wind\\wind", st_Effect, sg_Undefined);
+	snd_Wind_Tree.create("nature\\wind\\wind_tree", st_Effect, sg_Undefined);
+	snd_Wind_Fallout_Acid.create("nature\\wind_fallout\\wind_fallout_acid", st_Effect, sg_Undefined);
+	snd_Wind_Fallout_Radiation.create("nature\\wind_fallout\\wind_fallout_radiation", st_Effect, sg_Undefined);
+	snd_Winter_Cold_Wind.create("nature\\wind\\winter_cold_wind", st_Effect, sg_Undefined);
+	// SOUNDS
 	m_bWindWorking = false;
 	
 	m_fWindVolumeKoef = READ_IF_EXISTS(pAdvancedSettings, r_float, "environment", "wind_volume_koef", 0.0f);
@@ -35,29 +43,13 @@ CEffect_Rain::CEffect_Rain()
 	RainPerlin->SetOctaves(2);
 	RainPerlin->SetAmplitude(0.66666f);
 
-	if (!bWinterMode)
-	{
-		snd_Ambient.create("mfs_team\\ambient\\weather\\rain", st_Effect, sg_Undefined);
-		snd_RainOnMask.create("mfs_team\\ambient\\weather\\rain_on_mask", st_Effect, sg_Undefined);
-		drop_speed_min = READ_IF_EXISTS(pAdvancedSettings, r_float, "rain_params", "min_rain_drop_speed", 40.0f);
-		drop_speed_max = READ_IF_EXISTS(pAdvancedSettings, r_float, "rain_params", "man_rain_drop_speed", 80.0f);
-		drop_length = READ_IF_EXISTS(pAdvancedSettings, r_float, "rain_params", "rain_drop_length", 5.0f);
-		drop_width = READ_IF_EXISTS(pAdvancedSettings, r_float, "rain_params", "rain_drop_width", 0.30f);
-		drop_angle = deg2rad(READ_IF_EXISTS(pAdvancedSettings, r_float, "rain_params", "rain_drop_angle", 15.0f));
-		drop_max_wind_vel = READ_IF_EXISTS(pAdvancedSettings, r_float, "rain_params", "rain_drop_max_wind_vel", 20.0f);
-		drop_max_angle = deg2rad(READ_IF_EXISTS(pAdvancedSettings, r_float, "rain_params", "rain_drop_max_angle", 35.0f));
-	}
-	else
-	{
-		drop_speed_min = READ_IF_EXISTS(pAdvancedSettings, r_float, "snow_params", "min_rain_drop_speed", 1.0f);
-		drop_speed_max = READ_IF_EXISTS(pAdvancedSettings, r_float, "snow_params", "man_rain_drop_speed", 1.5f);
-		drop_length = READ_IF_EXISTS(pAdvancedSettings, r_float, "snow_params", "rain_drop_length", 0.1f);
-		drop_width = READ_IF_EXISTS(pAdvancedSettings, r_float, "snow_params", "rain_drop_width", 0.25f);
-		drop_angle = deg2rad(READ_IF_EXISTS(pAdvancedSettings, r_float, "snow_params", "rain_drop_angle", 15.0f));
-		drop_max_wind_vel = READ_IF_EXISTS(pAdvancedSettings, r_float, "snow_params", "rain_drop_max_wind_vel", 20.0f);
-		drop_max_angle = deg2rad(READ_IF_EXISTS(pAdvancedSettings, r_float, "snow_params", "rain_drop_max_angle", 35.0f));
-	}
-
+	drop_speed_min = READ_IF_EXISTS(pAdvancedSettings, r_float, "rain_params", "min_rain_drop_speed", 40.0f);
+	drop_speed_max = READ_IF_EXISTS(pAdvancedSettings, r_float, "rain_params", "man_rain_drop_speed", 80.0f);
+	drop_length = READ_IF_EXISTS(pAdvancedSettings, r_float, "rain_params", "rain_drop_length", 5.0f);
+	drop_width = READ_IF_EXISTS(pAdvancedSettings, r_float, "rain_params", "rain_drop_width", 0.30f);
+	drop_angle = deg2rad(READ_IF_EXISTS(pAdvancedSettings, r_float, "rain_params", "rain_drop_angle", 15.0f));
+	drop_max_wind_vel = READ_IF_EXISTS(pAdvancedSettings, r_float, "rain_params", "rain_drop_max_wind_vel", 20.0f);
+	drop_max_angle = deg2rad(READ_IF_EXISTS(pAdvancedSettings, r_float, "rain_params", "rain_drop_max_angle", 35.0f));
 
 	p_create						();
 }
@@ -66,12 +58,14 @@ CEffect_Rain::~CEffect_Rain()
 {
 	xr_delete(RainPerlin);
 
-	if (!bWinterMode)
-	{
-		snd_Ambient.destroy();
-		snd_RainOnMask.destroy();
-	}
+	snd_Rain.destroy();
+	snd_RainOnMask.destroy();
+
 	snd_Wind.destroy();
+	snd_Wind_Tree.destroy();
+	snd_Wind_Fallout_Acid.destroy();
+	snd_Wind_Fallout_Radiation.destroy();
+	snd_Winter_Cold_Wind.destroy();
 
 	// Cleanup
 	p_destroy						();
@@ -182,8 +176,14 @@ void	CEffect_Rain::OnFrame	()
 	if (!g_pGameLevel)			return;
 #endif
 	// Parse states
-	float	factor				= g_pGamePersistent->Environment().CurrentEnv->rain_density;
-	float	wind_volume			= (g_pGamePersistent->Environment().CurrentEnv->wind_velocity/100) * m_fWindVolumeKoef;
+	float	factor						= g_pGamePersistent->Environment().CurrentEnv->rain_density;
+//	float	wind_volume					= (g_pGamePersistent->Environment().CurrentEnv->wind_velocity/100) * m_fWindVolumeKoef;
+	float	wind_volume					= g_pGamePersistent->Environment().CurrentEnv->wind_velocity/100;
+	float	wind_tree_volume			= g_pGamePersistent->Environment().CurrentEnv->wind_velocity/100;
+	float	fallout_effects_acid		= g_pGamePersistent->Environment().CurrentEnv->m_fWindVolumeFalloutAcid;
+	float	fallout_effects_radiation	= g_pGamePersistent->Environment().CurrentEnv->m_fWindVolumeFalloutRadiation;
+	float	winter_effects_cold			= g_pGamePersistent->Environment().CurrentEnv->m_fWinterColdWind;
+
 	bool	wind_enabled		= (wind_volume >= EPS_L);
 	static float hemi_factor	= 0.f;
 #ifndef _EDITOR
@@ -206,85 +206,103 @@ void	CEffect_Rain::OnFrame	()
 	}
 #endif
 
-	if (!m_bWindWorking)
+	switch (state)
 	{
-		if (wind_enabled)
+	case stIdle:
+		if (factor < EPS_L)		return;
+		state = stWorking;
+		snd_Rain.play(0, sm_Looped);
+		snd_Rain.set_position(Fvector().set(0, 0, 0));
+		snd_Rain.set_range(m_fsource_offset, m_fsource_offset * 2.f);
+
+		snd_RainOnMask.play(0, sm_Looped);
+		snd_RainOnMask.set_position(Fvector().set(0, 0, 0));
+		snd_RainOnMask.set_range(m_fsource_offset, m_fsource_offset * 2.f);
+
+		snd_Winter_Cold_Wind.play(0, sm_Looped);
+		snd_Winter_Cold_Wind.set_position(Fvector().set(0, 0, 0));
+		snd_Winter_Cold_Wind.set_range(m_fsource_offset, m_fsource_offset * 2.f);
+
+		snd_Wind_Fallout_Acid.play(0, sm_Looped);
+		snd_Wind_Fallout_Acid.set_position(Fvector().set(0, 0, 0));
+		snd_Wind_Fallout_Acid.set_range(m_fsource_offset, m_fsource_offset * 2.f);
+
+		snd_Wind_Fallout_Radiation.play(0, sm_Looped);
+		snd_Wind_Fallout_Radiation.set_position(Fvector().set(0, 0, 0));
+		snd_Wind_Fallout_Radiation.set_range(m_fsource_offset, m_fsource_offset * 2.f);
+
+		snd_Wind.play(0, sm_Looped);
+		snd_Wind.set_position(Fvector().set(0, 0, 0));
+		snd_Wind.set_range(m_fsource_offset, m_fsource_offset * 2.f);
+
+		snd_Wind_Tree.play(0, sm_Looped);
+		snd_Wind_Tree.set_position(Fvector().set(0, 0, 0));
+		snd_Wind_Tree.set_range(m_fsource_offset, m_fsource_offset * 2.f);
+
+		break;
+	case stWorking:
+		if (factor < EPS_L)
 		{
-			snd_Wind.play		(0,sm_Looped);
-			snd_Wind.set_position(Fvector().set(0,0,0));
-			snd_Wind.set_range	(m_fsource_offset,m_fsource_offset*2.f);	
-			
-			m_bWindWorking = true;
-		}
-	}
-	else
-	{
-		if (wind_enabled)
-		{
-			//Wind Sound
-			if (snd_Wind._feedback())
-			{
-				snd_Wind.set_volume(_max(0.1f, wind_volume) * hemi_factor);
-			}	
-		}
-		else
-		{
+			state = stIdle;
+			snd_Rain.stop();
+			snd_RainOnMask.stop();
+			snd_Winter_Cold_Wind.stop();
+			snd_Wind_Fallout_Acid.stop();
+			snd_Wind_Fallout_Radiation.stop();
 			snd_Wind.stop();
-			m_bWindWorking = false;
+			snd_Wind_Tree.stop();
+			return;
 		}
+		break;
 	}
-	
-	if (!bWinterMode)
+
+
+	// Wind Sound 
+	if (snd_Wind._feedback())
 	{
-		switch (state)
-		{
-		case stIdle:
-			{
-				if (factor < EPS_L)
-				{
-					if (snd_Ambient._feedback())
-						snd_Ambient.stop();
+		snd_Wind.set_volume(_max(0.0f, hemi_factor) * wind_volume);
+	}
 
-					return;
-				}
+	// Wind Sound Tree
+	if (snd_Wind_Tree._feedback())
+	{
+		snd_Wind_Tree.set_volume(_max(0.1f, factor) * wind_tree_volume);
+	}
 
-				state = stWorking;
-				snd_Ambient.play(0, sm_Looped);
-				snd_Ambient.set_position(Fvector().set(0, 0, 0));
-				snd_Ambient.set_range(m_fsource_offset, m_fsource_offset * 2.f);
+	// Rain Sound
+	if (snd_Rain._feedback())
+	{
+		snd_Rain.set_volume(_max(0.1f, factor) * hemi_factor);
+	}
 
-				snd_RainOnMask.play(0, sm_Looped);
-				snd_RainOnMask.set_position(Fvector().set(0, 0, 0));
-				snd_RainOnMask.set_range(m_fsource_offset, m_fsource_offset * 2.f);
-			} break;
-		case stWorking:
-			{
-				if (factor < EPS_L)
-				{
-					state = stIdle;
-					snd_Ambient.stop();
-					snd_RainOnMask.stop();
-					return;
-				}
-			} break;
-		}
+	// Rain Cold Wind
+	if (snd_Winter_Cold_Wind._feedback())
+	{
+		snd_Winter_Cold_Wind.set_volume(_max(0.1f, factor) * winter_effects_cold);
+	}
 
-		// Rain Sound
-		if (snd_Ambient._feedback())
-		{
-			snd_Ambient.set_volume(_max(0.1f, factor) * hemi_factor);
-		}
+	// Rain Acid
+	if (snd_Wind_Fallout_Acid._feedback())
+	{
+		snd_Wind_Fallout_Acid.set_volume(_max(0.1f, factor) * fallout_effects_acid);
+	}
 
-		// Rain On Mask Sound
-		if (snd_RainOnMask._feedback())
-		{
-			if (g_pGamePersistent->IsCamFirstEye() && g_pGamePersistent->GetActorHelmetStatus())
-				snd_RainOnMask.set_volume(_max(0.0f, hemi_factor) * factor);
-			else
-				snd_RainOnMask.set_volume(0.0f);
-		}
+	// Rain Fallout
+	if (snd_Wind_Fallout_Radiation._feedback())
+	{
+		snd_Wind_Fallout_Radiation.set_volume(_max(0.1f, factor) * fallout_effects_radiation);
+	}
+
+	// Rain On Mask Sound
+	if (snd_RainOnMask._feedback())
+	{
+		if (g_pGamePersistent->IsCamFirstEye() && g_pGamePersistent->GetActorHelmetStatus())
+			snd_RainOnMask.set_volume(_max(0.0f, hemi_factor) * factor);
+		else
+			snd_RainOnMask.set_volume(0.0f);
 	}
 }
+
 
 void	CEffect_Rain::Render	()
 {

@@ -78,9 +78,13 @@ private:
 	float							drop_max_angle;
 
 	// Sounds
-	ref_sound						snd_Ambient;
+	ref_sound						snd_Rain;
 	ref_sound						snd_Wind;
+	ref_sound						snd_Wind_Tree;
 	ref_sound						snd_RainOnMask;
+	ref_sound						snd_Wind_Fallout_Acid;
+	ref_sound						snd_Wind_Fallout_Radiation;
+	ref_sound						snd_Winter_Cold_Wind;
 
 	float							rain_hemi = 0.0f;
 	

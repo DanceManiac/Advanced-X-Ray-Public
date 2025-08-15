@@ -178,6 +178,22 @@ public:
 	float				clouds_velocity_0; //skyloader: speed of clouds
 	float				clouds_velocity_1; //skyloader: speed of second clouds
     
+	float				fallout_effects_acid;
+	float				fallout_effects_radiation;
+
+	float				winter_effects_cold;
+	float				winter_effects_snowfall;
+	float				winter_effects_snowlayer;
+	float				weather_effects_rainfall;
+
+	float				m_fWindVolumeFalloutAcid;
+	float				m_fWindVolumeFalloutRadiation;
+	float				m_fWinterColdWind;
+	float				m_fWinterSnowFall;
+	float				m_fWinterSnowLayer;
+	float				m_fWeatherRainFall;
+
+
 	Fvector3			ambient		;
 	Fvector4			hemi_color	;	// w = R2 correction
 	Fvector3			sun_color	;
