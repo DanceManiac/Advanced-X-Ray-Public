@@ -363,22 +363,24 @@ void CUIActorMenu::CheckDistance()
 
 EDDListType CUIActorMenu::GetListType(CUIDragDropListEx* l)
 {
-	if(l==m_pInventoryBagList)			return iActorBag;
-	if(l==m_pInventoryBeltList)			return iActorBelt;
+	if (l == m_pInventoryBagList)			return iActorBag;
+	if (l == m_pInventoryBeltList)			return iActorBelt;
 
-	if(l==m_pInventoryAutomaticList)	return iActorSlot;
-	if(l==m_pInventoryPistolList)		return iActorSlot;
-	if(l==m_pInventorySmgList)			return iActorSlot;
-	if(l==m_pInventoryOutfitList)		return iActorSlot;
-	if(l==m_pInventoryDetectorList)		return iActorSlot;
-	if(l==m_pInventoryBoltList)			return iActorSlot;
+	if (l == m_pInventoryAutomaticList)	return iActorSlot;
+	if (l == m_pInventoryPistolList)		return iActorSlot;
+	if (l == m_pInventorySmgList)			return iActorSlot;
+	if (l == m_pInventoryOutfitList)		return iActorSlot;
+	if (l == m_pInventoryHelmetList)		return iActorSlot;
+	if (l == m_pInventoryDetectorList)		return iActorSlot;
+	if (l == m_pInventoryDeviceList)		return iActorSlot;
 
-	if(l==m_pTradeActorBagList)			return iActorBag;
-	if(l==m_pTradeActorList)			return iActorTrade;
-	if(l==m_pTradePartnerBagList)		return iPartnerTradeBag;
-	if(l==m_pTradePartnerList)			return iPartnerTrade;
-	if(l==m_pDeadBodyBagList)			return iDeadBodyBag;
-
+	if (l == m_pTradeActorBagList)			return iActorBag;
+	if (l == m_pTradeActorList)			return iActorTrade;
+	if (l == m_pTradePartnerBagList)		return iPartnerTradeBag;
+	if (l == m_pTradePartnerList)			return iPartnerTrade;
+	if (l == m_pDeadBodyBagList)			return iDeadBodyBag;
+	if (l == m_pTrashList)					return iTrashSlot;
+	if (l == m_pQuickSlot)					return iQuickSlot;
 	if (l == m_pInventoryKnifeList)		return iActorSlot;
 	if (l == m_pInventoryBinocularList)	return iActorSlot;
 	if (l == m_pInventoryTorchList)		return iActorSlot;
@@ -387,45 +389,13 @@ EDDListType CUIActorMenu::GetListType(CUIDragDropListEx* l)
 	if (l == m_pInventoryBoltList)			return iActorSlot;
 	if (l == m_pInventoryPantsList)		return iActorSlot;
 	if (l == m_pInventorySecondHelmetList)	return iActorSlot;
-	if (l == m_pInventoryDeviceList)		return iActorSlot;
-
-
-	/*
-	if(l == m_pQuickSlot && m_pQuickSlot != nullptr)					
-		return iQuickSlot;
-	
-	if(l == m_pTrashList && m_pTrashList != nullptr)
-		return iTrashSlot;
-
-	if ((l == m_pInventoryKnifeList) && (m_pInventoryKnifeList != nullptr))
-		return iActorSlot;
-
-	if ((l == m_pInventoryBinocularList) && (m_pInventoryBinocularList != nullptr))
-		return iActorSlot;
-
-	if ((l == m_pInventoryTorchList) && (m_pInventoryTorchList != nullptr))
-		return iActorSlot;
-
-	if ((l == m_pInventoryBackpackList) && (m_pInventoryBackpackList != nullptr))
-		return iActorSlot;
-
-	if ((l == m_pInventoryHelmetList) && (m_pInventoryHelmetList != nullptr))
-		return iActorSlot;
-
-	if ((l == m_pInventorySecondHelmetList) && (m_pInventorySecondHelmetList != nullptr))
-		return iActorSlot;
-
-	if ((l == m_pInventoryDosimeterList) && (m_pInventoryDosimeterList != nullptr))
-		return iActorSlot;
-
-	if ((l == m_pInventoryPantsList) && (m_pInventoryPantsList != nullptr))
-		return iActorSlot;
-	*/
 
 	R_ASSERT(0);
 	
 	return iInvalid;
 }
+
+
 
 CUIDragDropListEx* CUIActorMenu::GetListByType(EDDListType t)
 {
@@ -580,35 +550,19 @@ void CUIActorMenu::UpdateItemsPlace()
 
 void CUIActorMenu::clear_highlight_lists()
 {
-	if (m_PistolSlotHighlight)
-		m_PistolSlotHighlight->Show(false);
-	if (m_RiffleSlotHighlight)
-		m_RiffleSlotHighlight->Show(false);
-	if (m_OutfitSlotHighlight)
-		m_OutfitSlotHighlight->Show(false);
-	if (m_DetectorSlotHighlight)
-		m_DetectorSlotHighlight->Show(false);
-	if (m_KnifeSlotHighlight)
-		m_KnifeSlotHighlight->Show(false);
-	if (m_BinocularSlotHighlight)
-		m_BinocularSlotHighlight->Show(false);
-	if (m_TorchSlotHighlight)
-		m_TorchSlotHighlight->Show(false);
-	if (m_BackpackSlotHighlight)
-		m_BackpackSlotHighlight->Show(false);
-	if (m_HelmetSlotHighlight)
-		m_HelmetSlotHighlight->Show(false);
-	if (m_SecondHelmetSlotHighlight)
-		m_SecondHelmetSlotHighlight->Show(false);
-
-	if (m_DosimeterSlotHighlight)
-		m_DosimeterSlotHighlight->Show(false);
-
-	if (m_PantsSlotHighlight)
-		m_PantsSlotHighlight->Show(false);
-
-	if (m_DeviceSlotHighlight)
-		m_DeviceSlotHighlight->Show(false);
+	m_PistolSlotHighlight->Show(false);
+	m_Riffle1Highlight->Show(false);
+	m_Riffle2Highlight->Show(false);
+	m_OutfitSlotHighlight->Show(false);
+	m_DetectorSlotHighlight->Show(false);
+	m_KnifeSlotHighlight->Show(false);
+	m_BinocularSlotHighlight->Show(false);
+	m_TorchSlotHighlight->Show(false);
+	m_BackpackSlotHighlight->Show(false);
+	m_DosimeterSlotHighlight->Show(false);
+	m_PantsSlotHighlight->Show(false);
+	m_HelmetSlotHighlight->Show(false);
+	m_DeviceSlotHighlight->Show(false);
 
 	if (m_QuickSlotsHighlight[0])
 	{
@@ -673,9 +627,10 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 		m_PistolSlotHighlight->Show(true);
 		return;
 	}
-	if (weapon && !pistol && !(knife || binoculars) && m_RiffleSlotHighlight)
+	if (weapon && !pistol && !(knife || binoculars))
 	{
-		m_RiffleSlotHighlight->Show(true);
+		m_Riffle1Highlight->Show(true);
+		m_Riffle2Highlight->Show(true);
 
 		return;
 	}
@@ -1044,58 +999,31 @@ void CUIActorMenu::highlight_weapons_for_addon( PIItem addon_item, CUIDragDropLi
 
 void CUIActorMenu::ClearAllLists()
 {
-	m_pInventoryBagList->ClearAll				(true);
-	
-	m_pInventoryBeltList->ClearAll				(true);
-	m_pInventoryOutfitList->ClearAll			(true);
-	m_pInventoryDetectorList->ClearAll			(true);
-	m_pInventoryPistolList->ClearAll			(true);
-	m_pInventorySmgList->ClearAll				(true);
-	m_pInventoryAutomaticList->ClearAll			(true);
-	m_pInventoryKnifeList->ClearAll				(true);
-	m_pInventoryBinocularList->ClearAll			(true);
-	m_pInventoryTorchList->ClearAll				(true);
-	m_pInventoryBackpackList->ClearAll			(true);
-	m_pInventoryDosimeterList->ClearAll			(true);
-	m_pInventoryHelmetList->ClearAll			(true);
-	m_pInventorySecondHelmetList->ClearAll		(true);
-	m_pInventoryPantsList->ClearAll				(true);
-	m_pTradeActorBagList->ClearAll				(true);
-	m_pTradeActorList->ClearAll					(true);
-	m_pTradePartnerBagList->ClearAll			(true);
-	m_pTradePartnerList->ClearAll				(true);
-	m_pDeadBodyBagList->ClearAll				(true);
-	m_pInventoryBoltList->ClearAll				(true);
-	m_pInventoryDeviceList->ClearAll			(true);
+	m_pInventoryBagList->ClearAll(true);
+	m_pInventoryHelmetList->ClearAll(true);
+	m_pInventoryBeltList->ClearAll(true);
+	m_pInventoryOutfitList->ClearAll(true);
+	m_pInventoryDetectorList->ClearAll(true);
+	m_pInventoryPistolList->ClearAll(true);
+	m_pInventorySmgList->ClearAll(true);
+	m_pInventoryAutomaticList->ClearAll(true);
 
-	if (m_pQuickSlot)
-		m_pQuickSlot->ClearAll(true);
+	m_pTradeActorBagList->ClearAll(true);
+	m_pTradeActorList->ClearAll(true);
+	m_pTradePartnerBagList->ClearAll(true);
+	m_pTradePartnerList->ClearAll(true);
+	m_pDeadBodyBagList->ClearAll(true);
+	m_pQuickSlot->ClearAll(true);
 
-	/*
-	if (m_pInventoryKnifeList)
-		m_pInventoryKnifeList->ClearAll(true);
-
-	if (m_pInventoryBinocularList)
-		m_pInventoryBinocularList->ClearAll(true);
-
-	if (m_pInventoryTorchList)
-		m_pInventoryTorchList->ClearAll(true);
-
-	if (m_pInventoryBackpackList)
-		m_pInventoryBackpackList->ClearAll(true);
-
-	if (m_pInventoryDosimeterList)
-		m_pInventoryDosimeterList->ClearAll(true);
-
-	if (m_pInventoryHelmetList)
-		m_pInventoryHelmetList->ClearAll(true);
-
-	if (m_pInventorySecondHelmetList)
-		m_pInventorySecondHelmetList->ClearAll(true);
-
-	if (m_pInventoryPantsList)
-		m_pInventoryPantsList->ClearAll(true);
-		*/
+	m_pInventoryDosimeterList->ClearAll(true);
+	m_pInventoryKnifeList->ClearAll(true);
+	m_pInventoryBinocularList->ClearAll(true);
+	m_pInventoryTorchList->ClearAll(true);
+	m_pInventoryBackpackList->ClearAll(true);
+	m_pInventoryBoltList->ClearAll(true);
+	m_pInventoryPantsList->ClearAll(true);
+	m_pInventoryDeviceList->ClearAll(true);
+	m_pInventorySecondHelmetList->ClearAll(true);
 }
 
 void CUIActorMenu::CallMessageBoxYesNo( LPCSTR text )

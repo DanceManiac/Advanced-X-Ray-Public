@@ -62,37 +62,29 @@ void move_item_from_to(u16 from_id, u16 to_id, u16 what_id);
 
 void CUIActorMenu::InitInventoryMode()
 {
-	m_pInventoryBagList->Show			(true);
-	m_pInventoryBeltList->Show			(true);
-	m_pInventoryOutfitList->Show		(true);
-	m_pInventoryDetectorList->Show		(true);
-	m_pInventoryPistolList->Show		(true);
-	m_pInventorySmgList->Show			(true);
-	m_pInventoryAutomaticList->Show		(true);
-	m_pInventoryBoltList->Show			(true);
+	m_pInventoryBagList->Show(true);
+	m_pInventoryBeltList->Show(true);
+	m_pInventoryOutfitList->Show(true);
+	m_pInventoryDetectorList->Show(true);
+	m_pInventoryPistolList->Show(true);
+	m_pInventorySmgList->Show(true);
+	m_pInventoryAutomaticList->Show(true);
+	m_pInventoryBoltList->Show(true);
+	m_pTrashList->Show(true);
+	m_pQuickSlot->Show(true);
+	m_pInventoryPantsList->Show(true);
+	m_pInventoryHelmetList->Show(true);
+	m_pInventorySecondHelmetList->Show(true);
+	m_pInventoryDeviceList->Show(true);
 
-	if (m_pQuickSlot)
-		m_pQuickSlot->Show				(true);
-	
-	if (m_pTrashList)
-		m_pTrashList->Show				(true);
+	m_RightDelimiter->Show(false);
+	m_clock_value->Show(true);
 
-	if (m_sleep_button)
-		m_sleep_button->Show			(true);
-
-	m_RightDelimiter->Show				(false);
-	if (m_clock_value)
-		m_clock_value->Show				(true);
-
+	m_pInventoryDosimeterList->Show(true);
 	m_pInventoryKnifeList->Show(true);
 	m_pInventoryBinocularList->Show(true);
 	m_pInventoryTorchList->Show(true);
 	m_pInventoryBackpackList->Show(true);
-	m_pInventoryHelmetList->Show(true);
-	m_pInventorySecondHelmetList->Show(true);
-	m_pInventoryDosimeterList->Show(true);
-	m_pInventoryPantsList->Show(true);
-	m_pInventoryDeviceList->Show(true);
 
 	InitInventoryContents				(m_pInventoryBagList);
 
@@ -296,9 +288,11 @@ void CUIActorMenu::OnInventoryAction(PIItem pItem, u16 action_type)
 		m_pInventoryBeltList,
 		m_pInventoryBoltList,
 		m_pInventoryPistolList,
+		m_pInventorySmgList,
 		m_pInventoryAutomaticList,
 		m_pInventoryOutfitList,
 		m_pInventoryDetectorList,
+		m_pInventoryDosimeterList,
 		m_pInventoryBagList,
 		m_pTradeActorBagList,
 		m_pTradeActorList,
@@ -306,11 +300,11 @@ void CUIActorMenu::OnInventoryAction(PIItem pItem, u16 action_type)
 		m_pInventoryBinocularList,
 		m_pInventoryTorchList,
 		m_pInventoryBackpackList,
-		m_pInventoryHelmetList,
-		m_pInventorySecondHelmetList,
-		m_pInventoryDosimeterList,
 		m_pInventoryPantsList,
+		m_pInventorySecondHelmetList,
+		m_pInventoryHelmetList,
 		m_pInventoryDeviceList,
+
 		NULL
 	};
 
@@ -483,22 +477,22 @@ void CUIActorMenu::InitInventoryContents(CUIDragDropListEx* pBagList)
 
 	CUIDragDropListEx*			curr_list = NULL;
 	//Slots
-	InitCellForSlot				(PISTOL_SLOT);
-	InitCellForSlot				(SMG_SLOT);
-	InitCellForSlot				(RIFLE_SLOT);
-	InitCellForSlot				(OUTFIT_SLOT);
-	InitCellForSlot				(DETECTOR_SLOT);
-	InitCellForSlot				(KNIFE_SLOT);
-	InitCellForSlot				(APPARATUS_SLOT);
-	InitCellForSlot				(TORCH_SLOT);
-	InitCellForSlot				(BACKPACK_SLOT);
-	InitCellForSlot				(HELMET_SLOT);
-	InitCellForSlot				(SECOND_HELMET_SLOT);
-	InitCellForSlot				(DOSIMETER_SLOT);
-	InitCellForSlot				(PANTS_SLOT);
-	InitCellForSlot				(PDA_SLOT);
-	InitCellForSlot				(BOLT_SLOT);
-	InitCellForSlot				(DEVICE_SLOT);
+	InitCellForSlot(PISTOL_SLOT);
+	InitCellForSlot(SMG_SLOT);
+	InitCellForSlot(RIFLE_SLOT);
+	InitCellForSlot(OUTFIT_SLOT);
+	InitCellForSlot(DETECTOR_SLOT);
+	InitCellForSlot(GRENADE_SLOT);
+	InitCellForSlot(KNIFE_SLOT);
+	InitCellForSlot(APPARATUS_SLOT);
+	InitCellForSlot(TORCH_SLOT);
+	InitCellForSlot(BACKPACK_SLOT);
+	InitCellForSlot(BOLT_SLOT);
+	InitCellForSlot(PANTS_SLOT);
+	InitCellForSlot(HELMET_SLOT);
+	InitCellForSlot(SECOND_HELMET_SLOT);
+	InitCellForSlot(DOSIMETER_SLOT);
+	InitCellForSlot(DEVICE_SLOT);
 
 	curr_list					= m_pInventoryBeltList;
 	TIItemContainer::iterator itb = m_pActorInvOwner->inventory().m_belt.begin();
@@ -789,89 +783,80 @@ bool CUIActorMenu::ToBelt(CUICellItem* itm, bool b_use_cursor_pos)
 }
 CUIDragDropListEx* CUIActorMenu::GetSlotList(u32 slot_idx)
 {
-	if ( slot_idx == NO_ACTIVE_SLOT /*|| m_pActorInvOwner->inventory().m_slots[slot_idx].m_bPersistent*/ )
+	if (slot_idx == NO_ACTIVE_SLOT /*|| m_pActorInvOwner->inventory().m_slots[slot_idx].m_bPersistent*/)
 	{
 		return NULL;
 	}
-	switch ( slot_idx )
+	switch (slot_idx)
 	{
-		case PISTOL_SLOT:
-			return m_pInventoryPistolList;
-			break;
+	case PISTOL_SLOT:
+		return m_pInventoryPistolList;
+		break;
 
-		case SMG_SLOT:
-			return m_pInventorySmgList;
-			break;
+	case SMG_SLOT:
+		return m_pInventorySmgList;
+		break;
 
-		case RIFLE_SLOT:
-			return m_pInventoryAutomaticList;
-			break;
+	case RIFLE_SLOT:
+		return m_pInventoryAutomaticList;
+		break;
 
-		case OUTFIT_SLOT:
-			return m_pInventoryOutfitList;
-			break;
+	case OUTFIT_SLOT:
+		return m_pInventoryOutfitList;
+		break;
 
-		case DETECTOR_SLOT:
-			return m_pInventoryDetectorList;
-			break;
+	case HELMET_SLOT:
+		return m_pInventoryHelmetList;
+		break;
 
-		case GRENADE_SLOT://fake
+	case SECOND_HELMET_SLOT:
+		return m_pInventorySecondHelmetList;
+		break;
+
+	case DETECTOR_SLOT:
+		return m_pInventoryDetectorList;
+		break;
+
+	case KNIFE_SLOT:
+		return m_pInventoryKnifeList;
+		break;
+
+	case BOLT_SLOT:
+		return m_pInventoryBoltList;
+		break;
+
+	case APPARATUS_SLOT:
+		return m_pInventoryBinocularList;
+		break;
+
+	case TORCH_SLOT:
+		return m_pInventoryTorchList;
+		break;
+
+	case PANTS_SLOT:
+		return m_pInventoryPantsList;
+		break;
+
+	case BACKPACK_SLOT:
+		return m_pInventoryBackpackList;
+		break;
+
+	case DEVICE_SLOT:
+		return m_pInventoryDeviceList;
+		break;
+
+	case DOSIMETER_SLOT:
+		return m_pInventoryDosimeterList;
+		break;
+
+	case GRENADE_SLOT://fake
+		if (m_currMenuMode == mmTrade)
 		{
-			if (m_currMenuMode == mmTrade)
-			{
-				return m_pTradeActorBagList;
-			}
-		}break;
+			return m_pTradeActorBagList;
+		}
+		return m_pInventoryBagList;
+		break;
 
-		case KNIFE_SLOT:
-		{
-			return m_pInventoryKnifeList;
-		}break;
-
-		case APPARATUS_SLOT:
-		{
-			return m_pInventoryBinocularList;
-		}break;
-
-		case TORCH_SLOT:
-		{
-			return m_pInventoryTorchList;
-		}break;
-
-		case BACKPACK_SLOT:
-		{
-			return m_pInventoryBackpackList;
-		}break;
-
-		case DOSIMETER_SLOT:
-		{
-			return m_pInventoryDosimeterList;
-		}break;
-
-		case PANTS_SLOT:
-		{
-				return m_pInventoryPantsList;
-		}break;
-
-		case HELMET_SLOT:
-		{
-			return m_pInventoryHelmetList;
-		}break;
-
-		case SECOND_HELMET_SLOT:
-		{
-			return m_pInventorySecondHelmetList;
-		}break;
-
-		case BOLT_SLOT:
-		{
-			return m_pInventoryBoltList;
-		}break;
-
-		case DEVICE_SLOT:
-		{
-			return m_pInventoryDeviceList;
-		}break;
 	};
 	return NULL;
 }

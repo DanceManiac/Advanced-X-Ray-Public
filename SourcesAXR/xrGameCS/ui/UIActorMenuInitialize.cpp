@@ -125,70 +125,37 @@ void CUIActorMenu::Construct()
 		m_ActorInvCapacity		= UIHelper::CreateStatic(uiXml, "actor_inv_capacity", this, false);
 	}
 
-	// Try "inv_slot2_highlight" first and then "pistol_slot_highlight"
-	m_PistolSlotHighlight			= UIHelper::CreateStatic(uiXml, "inv_slot2_highlight", this, false);
-	if (!m_PistolSlotHighlight)
-		m_PistolSlotHighlight		= UIHelper::CreateStatic(uiXml, "pistol_slot_highlight", this, false);
-	if (m_PistolSlotHighlight)
-		m_PistolSlotHighlight		->Show(false);
-
-	// Try "inv_slot3_highlight" first and then "riffle_slot_highlight"
-	m_RiffleSlotHighlight			= UIHelper::CreateStatic(uiXml, "inv_slot3_highlight", this, false);
-	if (!m_RiffleSlotHighlight)
-		m_RiffleSlotHighlight		= UIHelper::CreateStatic(uiXml, "riffle_slot_highlight", this, false);	// riffle pringles cheeps
-	if (m_RiffleSlotHighlight)
-		m_RiffleSlotHighlight		->Show(false);
-
-	if (m_OutfitSlotHighlight		= UIHelper::CreateStatic(uiXml, "outfit_slot_highlight", this, false))
-		m_OutfitSlotHighlight		->Show(false);
-	if (m_DetectorSlotHighlight		= UIHelper::CreateStatic(uiXml, "detector_slot_highlight", this, false))
-		m_DetectorSlotHighlight		->Show(false);
-	if (m_QuickSlotsHighlight[0]	= UIHelper::CreateStatic(uiXml, "quick_slot_highlight", this, false))
-		m_QuickSlotsHighlight[0]->Show(false);
-
-	if (m_KnifeSlotHighlight = UIHelper::CreateStatic(uiXml, "knife_slot_highlight", this, false))
-		m_KnifeSlotHighlight->Show(false);
-		
-	if (m_BinocularSlotHighlight = UIHelper::CreateStatic(uiXml, "binoc_slot_highlight", this, false))
-		m_BinocularSlotHighlight->Show(false);
-
-	if (m_TorchSlotHighlight = UIHelper::CreateStatic(uiXml, "torch_slot_highlight", this, false))
-		m_TorchSlotHighlight->Show(false);
-
-	if (m_BackpackSlotHighlight = UIHelper::CreateStatic(uiXml, "backpack_slot_highlight", this, false))
-		m_BackpackSlotHighlight->Show(false);
-
-	if ((m_HelmetSlotHighlight = UIHelper::CreateStatic(uiXml, "helmet_slot_highlight", this, false)))
-		m_HelmetSlotHighlight->Show(false);
-
-	if ((m_SecondHelmetSlotHighlight = UIHelper::CreateStatic(uiXml, "second_helmet_slot_highlight", this, false)))
-		m_SecondHelmetSlotHighlight->Show(false);
-
-	if (m_DosimeterSlotHighlight = UIHelper::CreateStatic(uiXml, "dosimeter_slot_highlight", this, false))
-		m_DosimeterSlotHighlight->Show(false);
-
-	if (m_PantsSlotHighlight = UIHelper::CreateStatic(uiXml, "pants_slot_highlight", this, false))
-		m_PantsSlotHighlight->Show(false);
-
+	m_PistolSlotHighlight = UIHelper::CreateStatic(uiXml, "pistol_slot_highlight", this);
+	m_PistolSlotHighlight->Show(false);
+	m_Riffle1Highlight = UIHelper::CreateStatic(uiXml, "riffle1_slot_highlight", this);
+	m_Riffle1Highlight->Show(false);
+	m_Riffle2Highlight = UIHelper::CreateStatic(uiXml, "riffle2_slot_highlight", this);
+	m_Riffle2Highlight->Show(false);
+	m_OutfitSlotHighlight = UIHelper::CreateStatic(uiXml, "outfit_slot_highlight", this);
+	m_OutfitSlotHighlight->Show(false);
+	m_DetectorSlotHighlight = UIHelper::CreateStatic(uiXml, "detector_slot_highlight", this);
+	m_DetectorSlotHighlight->Show(false);
+	m_QuickSlotsHighlight[0] = UIHelper::CreateStatic(uiXml, "quick_slot_highlight", this);
+	m_QuickSlotsHighlight[0]->Show(false);
+	m_KnifeSlotHighlight = UIHelper::CreateStatic(uiXml, "knife_slot_highlight", this);
+	m_KnifeSlotHighlight->Show(false);
+	m_BinocularSlotHighlight = UIHelper::CreateStatic(uiXml, "binoc_slot_highlight", this);
+	m_BinocularSlotHighlight->Show(false);
+	m_TorchSlotHighlight = UIHelper::CreateStatic(uiXml, "torch_slot_highlight", this);
+	m_TorchSlotHighlight->Show(false);
+	m_BackpackSlotHighlight = UIHelper::CreateStatic(uiXml, "backpack_slot_highlight", this);
+	m_BackpackSlotHighlight->Show(false);
+	m_DosimeterSlotHighlight = UIHelper::CreateStatic(uiXml, "dosimeter_slot_highlight", this);
+	m_DosimeterSlotHighlight->Show(false);
+	m_PantsSlotHighlight = UIHelper::CreateStatic(uiXml, "pants_slot_highlight", this);
+	m_PantsSlotHighlight->Show(false);
+	m_HelmetSlotHighlight = UIHelper::CreateStatic(uiXml, "helmet_slot_highlight", this);
+	m_HelmetSlotHighlight->Show(false);
+	m_SecondHelmetSlotHighlight = UIHelper::CreateStatic(uiXml, "second_helmet_slot_highlight", this);
+	m_SecondHelmetSlotHighlight->Show(false);
 	m_DeviceSlotHighlight = UIHelper::CreateStatic(uiXml, "device_slot_highlight", this);
 	m_DeviceSlotHighlight->Show(false);
 
-
-
-	/*
-// Try "dragdrop_inv_slot1" first and then "dragdrop_pistol"
-m_pInventoryPistolList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_inv_slot1", this, false);
-if (!m_pInventoryPistolList)
-	m_pInventoryPistolList	= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_pistol", this, false);
-// Try "dragdrop_inv_slot2" first and then "dragdrop_automatic"
-m_pInventoryAutomaticList	= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_inv_slot2", this, false);
-if (!m_pInventoryAutomaticList)
-	m_pInventoryAutomaticList= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_automatic", this, false);
-*/
-
-	m_pInventoryPistolList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_pistol", this);
-	m_pInventorySmgList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_smg", this);
-	m_pInventoryAutomaticList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_automatic", this);
 	m_pInventoryDeviceList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_device", this);
 	m_pInventoryHelmetList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_helmet", this);
 	m_pInventorySecondHelmetList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_second_helmet", this);
@@ -202,20 +169,16 @@ if (!m_pInventoryAutomaticList)
 	m_pInventoryBeltList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_belt", this);
 	m_pInventoryOutfitList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_outfit", this);
 	m_pInventoryDetectorList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_detector", this);
+	m_pInventoryPistolList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_pistol", this);
+	m_pInventorySmgList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_smg", this);
 	m_pInventoryBoltList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_bolt", this);
+	m_pInventoryAutomaticList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_automatic", this);
 	m_pTradeActorBagList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_actor_trade_bag", this);
 	m_pTradeActorList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_actor_trade", this);
 	m_pTradePartnerBagList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_partner_bag", this);
 	m_pTradePartnerList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_partner_trade", this);
 	m_pDeadBodyBagList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_deadbody_bag", this);
 
-
-
-	m_pTradeActorBagList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_actor_trade_bag", this);
-	m_pTradeActorList			= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_actor_trade", this);
-	m_pTradePartnerBagList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_partner_bag", this);
-	m_pTradePartnerList			= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_partner_trade", this);
-	m_pDeadBodyBagList			= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_deadbody_bag", this);
 	if (m_pQuickSlot				= UIHelper::CreateDragDropReferenceList(uiXml, "dragdrop_quick_slots", this, false))
 	{
 		m_quick_vert_attrib			= uiXml.ReadAttrib		("dragdrop_quick_slots", 0, "horizontal", "");
@@ -396,31 +359,30 @@ if (!m_pInventoryAutomaticList)
 
 	InitCallbacks						();
 
-	BindDragDropListEvents				(m_pInventoryBeltList);		
-	BindDragDropListEvents				(m_pInventoryBoltList);
-	BindDragDropListEvents				(m_pInventoryPistolList);
-	BindDragDropListEvents				(m_pInventorySmgList);
-	BindDragDropListEvents				(m_pInventoryAutomaticList);	
-	BindDragDropListEvents				(m_pInventoryOutfitList);	
-	BindDragDropListEvents				(m_pInventoryDetectorList);	
-	BindDragDropListEvents				(m_pInventoryBagList);
-	BindDragDropListEvents				(m_pTradeActorBagList);
-	BindDragDropListEvents				(m_pTradeActorList);
-	BindDragDropListEvents				(m_pTradePartnerBagList);
-	BindDragDropListEvents				(m_pTradePartnerList);
-	BindDragDropListEvents				(m_pDeadBodyBagList);
-	BindDragDropListEvents				(m_pInventoryKnifeList);
-	BindDragDropListEvents				(m_pInventoryBinocularList);
-	BindDragDropListEvents				(m_pInventoryTorchList);
-	BindDragDropListEvents				(m_pInventoryBackpackList);
-	BindDragDropListEvents				(m_pInventoryHelmetList);
-	BindDragDropListEvents				(m_pInventorySecondHelmetList);
-	BindDragDropListEvents				(m_pInventoryDosimeterList);
-	BindDragDropListEvents				(m_pInventoryPantsList);
-	BindDragDropListEvents				(m_pInventoryDeviceList);
+	BindDragDropListEvents(m_pInventoryBeltList);
+	BindDragDropListEvents(m_pInventoryBoltList);
+	BindDragDropListEvents(m_pInventoryPistolList);
+	BindDragDropListEvents(m_pInventorySmgList);
+	BindDragDropListEvents(m_pInventoryAutomaticList);
+	BindDragDropListEvents(m_pInventoryOutfitList);
+	BindDragDropListEvents(m_pInventoryDetectorList);
+	BindDragDropListEvents(m_pInventoryBagList);
+	BindDragDropListEvents(m_pTradeActorBagList);
+	BindDragDropListEvents(m_pTradeActorList);
+	BindDragDropListEvents(m_pTradePartnerBagList);
+	BindDragDropListEvents(m_pTradePartnerList);
+	BindDragDropListEvents(m_pDeadBodyBagList);
+	BindDragDropListEvents(m_pQuickSlot);
+	BindDragDropListEvents(m_pInventoryKnifeList);
+	BindDragDropListEvents(m_pInventoryBinocularList);
+	BindDragDropListEvents(m_pInventoryTorchList);
+	BindDragDropListEvents(m_pInventoryBackpackList);
+	BindDragDropListEvents(m_pInventoryDosimeterList);
+	BindDragDropListEvents(m_pInventoryPantsList);
+	BindDragDropListEvents(m_pInventoryHelmetList);
+	BindDragDropListEvents(m_pInventorySecondHelmetList);
+	BindDragDropListEvents(m_pInventoryDeviceList);
 
-	if (m_pQuickSlot)
-		BindDragDropListEvents			(m_pQuickSlot);
 
 	m_allowed_drops[iTrashSlot].push_back(iActorBag);
 	m_allowed_drops[iTrashSlot].push_back(iActorSlot);

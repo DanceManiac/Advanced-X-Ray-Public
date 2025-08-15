@@ -121,7 +121,8 @@ protected:
 	CUIStatic*					m_SecondHelmetOver;
 	
 	CUIStatic*					m_PistolSlotHighlight;
-	CUIStatic*					m_RiffleSlotHighlight;
+	CUIStatic*					m_Riffle1Highlight;
+	CUIStatic*					m_Riffle2Highlight;
 	CUIStatic*					m_OutfitSlotHighlight;
 	CUIStatic*					m_HelmetSlotHighlight;
 	CUIStatic*					m_DetectorSlotHighlight;
