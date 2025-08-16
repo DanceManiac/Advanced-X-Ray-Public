@@ -57,6 +57,11 @@ class CPhysicObject :
 	CBlend					*m_anim_blend			;
 	moving_bones_snd_player *bones_snd_player		;
 	anim_script_callback	m_anim_script_callback	;
+	u32						m_spawn_time;
+	u32						m_remove_time;
+	bool					m_need_removing;
+	bool					m_bRemoved;
+
 private:
 	//Creating
 			void	CreateBody			(CSE_ALifeObjectPhysic	*po)													;
@@ -114,7 +119,8 @@ protected:
 	net_updatePhData*						NetSync							();
 	net_updatePhData*						m_net_updateData;
 	void								CalculateInterpolationParams	();
-	
+	void								SendDestroy						();
+
 	enum EIIFlags{				Fdrop				=(1<<0),
 		FCanTake			=(1<<1),
 		FCanTrade			=(1<<2),

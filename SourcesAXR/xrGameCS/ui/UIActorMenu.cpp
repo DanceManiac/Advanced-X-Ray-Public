@@ -191,6 +191,7 @@ void CUIActorMenu::SetMenuMode(EMenuMode mode)
 			R_ASSERT(0);
 			break;
 		}
+		UpdateConditionProgressBars();
 		CurModeToScript();
 	}//if
 
@@ -1081,4 +1082,75 @@ CScriptGameObject* CUIActorMenu::GetCurrentItemAsGameObject()
 		return GO->lua_game_object();
 
 	return nullptr;
+}
+
+void CUIActorMenu::UpdateConditionProgressBars()
+{
+	PIItem itm = m_pActorInvOwner->inventory().ItemFromSlot(PISTOL_SLOT);
+	if (itm)
+	{
+		m_PistolSlot_progress->SetProgressPos(iCeil(itm->GetCondition() * 15.0f) / 15.0f);
+	}
+	else
+		m_PistolSlot_progress->SetProgressPos(0);
+
+	itm = m_pActorInvOwner->inventory().ItemFromSlot(SMG_SLOT);
+	if (itm)
+		m_SMGSlot_progress->SetProgressPos(iCeil(itm->GetCondition() * 15.0f) / 15.0f);
+	else
+		m_SMGSlot_progress->SetProgressPos(0);
+
+	itm = m_pActorInvOwner->inventory().ItemFromSlot(RIFLE_SLOT);
+	if (itm)
+		m_RifleSlot_progress->SetProgressPos(iCeil(itm->GetCondition() * 15.0f) / 15.0f);
+	else
+		m_RifleSlot_progress->SetProgressPos(0);
+
+	itm = m_pActorInvOwner->inventory().ItemFromSlot(KNIFE_SLOT);
+	if (itm)
+		m_KnifeSlot_progress->SetProgressPos(iCeil(itm->GetCondition() * 15.0f) / 15.0f);
+	else
+		m_KnifeSlot_progress->SetProgressPos(0);
+
+	itm = m_pActorInvOwner->inventory().ItemFromSlot(OUTFIT_SLOT);
+	if (itm)
+		m_Outfit_progress->SetProgressPos(iCeil(itm->GetCondition() * 15.0f) / 15.0f);
+	else
+		m_Outfit_progress->SetProgressPos(0);
+
+	itm = m_pActorInvOwner->inventory().ItemFromSlot(HELMET_SLOT);
+	if (itm)
+		m_Helmet_progress->SetProgressPos(iCeil(itm->GetCondition() * 15.0f) / 15.0f);
+	else
+		m_Helmet_progress->SetProgressPos(0);
+
+	itm = m_pActorInvOwner->inventory().ItemFromSlot(SECOND_HELMET_SLOT);
+	if (itm)
+		m_SecondHelmet_progress->SetProgressPos(iCeil(itm->GetCondition() * 15.0f) / 15.0f);
+	else
+		m_SecondHelmet_progress->SetProgressPos(0);
+
+	itm = m_pActorInvOwner->inventory().ItemFromSlot(PANTS_SLOT);
+	if (itm)
+		m_Pants_progress->SetProgressPos(iCeil(itm->GetCondition() * 15.0f) / 15.0f);
+	else
+		m_Pants_progress->SetProgressPos(0);
+
+	itm = m_pActorInvOwner->inventory().ItemFromSlot(TORCH_SLOT);
+	if (itm)
+		m_TORCHSlot_progress->SetProgressPos(iCeil(itm->GetCondition() * 15.0f) / 15.0f);
+	else
+		m_TORCHSlot_progress->SetProgressPos(0);
+
+	itm = m_pActorInvOwner->inventory().ItemFromSlot(DETECTOR_SLOT);
+	if (itm)
+		m_DETECTORSlot_progress->SetProgressPos(iCeil(itm->GetCondition() * 15.0f) / 15.0f);
+	else
+		m_DETECTORSlot_progress->SetProgressPos(0);
+
+	itm = m_pActorInvOwner->inventory().ItemFromSlot(DOSIMETER_SLOT);
+	if (itm)
+		m_DOSIMETERSlot_progress->SetProgressPos(iCeil(itm->GetCondition() * 15.0f) / 15.0f);
+	else
+		m_DOSIMETERSlot_progress->SetProgressPos(0);
 }

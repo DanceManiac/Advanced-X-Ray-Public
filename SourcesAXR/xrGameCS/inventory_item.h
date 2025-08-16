@@ -370,10 +370,15 @@ protected:
 
 	bool								m_just_after_spawn;
 	bool								m_activated;
+	bool								m_mark_item;
+	bool								m_mark_item_fallout;
 
 public:
 	IC bool	is_helper_item				()				 { return !!m_flags.test(FIsHelperItem); }
 	IC void	set_is_helper				(bool is_helper) { m_flags.set(FIsHelperItem,is_helper); }
+	IC bool	is_marked_item				() { return m_mark_item; }
+	IC bool	is_marked_item_fallout		() { return m_mark_item_fallout; }
+
 }; // class CInventoryItem
 
 #include "inventory_item_inline.h"

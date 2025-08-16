@@ -107,10 +107,13 @@ void CPda::Load(LPCSTR section)
 		pda_light = ::Render->light_create();
 		pda_light->set_shadow(READ_IF_EXISTS(pSettings, r_string, section, "light_shadow", false));
 
-		m_bVolumetricLights = READ_IF_EXISTS(pSettings, r_bool, section, "volumetric_lights", false);
-		m_fVolumetricQuality = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_quality", 1.0f);
-		m_fVolumetricDistance = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_distance", 0.3f);
-		m_fVolumetricIntensity = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_intensity", 0.5f);
+		if (psActorFlags.test(HUD_ITEM_VOL_LIGHTS))
+		{
+			m_bVolumetricLights = READ_IF_EXISTS(pSettings, r_bool, section, "volumetric_lights", false);
+			m_fVolumetricQuality = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_quality", 1.0f);
+			m_fVolumetricDistance = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_distance", 0.3f);
+			m_fVolumetricIntensity = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_intensity", 0.5f);
+		}
 
 		m_iLightType = READ_IF_EXISTS(pSettings, r_u8, section, "light_type", 1);
 		light_lanim = LALib.FindItem(READ_IF_EXISTS(pSettings, r_string, section, "color_animator", ""));
@@ -128,10 +131,13 @@ void CPda::Load(LPCSTR section)
 		pda_light->set_cone(deg2rad(READ_IF_EXISTS(pSettings, r_float, section, "light_spot_angle", 1.f)));
 		pda_light->set_texture(READ_IF_EXISTS(pSettings, r_string, section, "spot_texture", nullptr));
 
-		pda_light->set_volumetric(m_bVolumetricLights);
-		pda_light->set_volumetric_quality(m_fVolumetricQuality);
-		pda_light->set_volumetric_distance(m_fVolumetricDistance);
-		pda_light->set_volumetric_intensity(m_fVolumetricIntensity);
+		if (psActorFlags.test(HUD_ITEM_VOL_LIGHTS))
+		{
+			pda_light->set_volumetric(m_bVolumetricLights);
+			pda_light->set_volumetric_quality(m_fVolumetricQuality);
+			pda_light->set_volumetric_distance(m_fVolumetricDistance);
+			pda_light->set_volumetric_intensity(m_fVolumetricIntensity);
+		}
 
 		//Glow
 		m_bGlowEnabled = READ_IF_EXISTS(pSettings, r_string, section, "glow_enabled", false);

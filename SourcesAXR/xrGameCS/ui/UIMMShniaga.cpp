@@ -46,6 +46,8 @@ CUIMMShniaga::~CUIMMShniaga()
 
 	delete_data(m_buttons);
 	delete_data(m_buttons_new);
+	delete_data(m_buttons_new_arena);
+	delete_data(m_buttons_new_lite);
 }
 
 void CUIMMShniaga::InitShniaga(CUIXml& xml_doc, LPCSTR path)
@@ -65,30 +67,50 @@ void CUIMMShniaga::InitShniaga(CUIXml& xml_doc, LPCSTR path)
 
 	if (!g_pGameLevel || !g_pGameLevel->bReady) 
 	{
-		
 		if (!*g_last_saved_game || !CSavedGameWrapper::valid_saved_game(g_last_saved_game))
-			CreateList		(m_buttons, xml_doc, "menu_main");
+			CreateList(m_buttons, xml_doc, "menu_main");
 		else
-			CreateList		(m_buttons, xml_doc, "menu_main_last_save");
+			CreateList(m_buttons, xml_doc, "menu_main_last_save");
 
-		CreateList			(m_buttons_new, xml_doc, "menu_new_game");
-	}
-	else {
-		if (GameID() == eGameIDSingle) {
-			VERIFY			(Actor());
-			if (Actor() && !Actor()->g_Alive())
-				CreateList	(m_buttons, xml_doc, "menu_main_single_dead");
-			else
-				CreateList	(m_buttons, xml_doc, "menu_main_single");
+		if (psActorFlags3.test(AF_LFO_SURVIVAL_MODE))
+		{
+			CreateList(m_buttons_new, xml_doc, "menu_new_game_sm");
+			CreateList(m_buttons_new_arena, xml_doc, "menu_new_game_arena");
+			CreateList(m_buttons_new_lite, xml_doc, "menu_new_game_lite");
 		}
 		else
-			CreateList		(m_buttons, xml_doc, "menu_main_mm");
+		{
+			CreateList(m_buttons_new, xml_doc, "menu_new_game");
+			CreateList(m_buttons_new_arena, xml_doc, "menu_new_game_arena");
+			CreateList(m_buttons_new_lite, xml_doc, "menu_new_game_lite");
+		}
+	}
+	else 
+	{
+		if (GameID() == eGameIDSingle) 
+		{
+			VERIFY			(Actor());
+			if (Actor() && !Actor()->g_Alive())
+				CreateList(m_buttons, xml_doc, "menu_main_single_dead");
+			else
+				CreateList(m_buttons, xml_doc, "menu_main_single");
+		}
+		else
+			CreateList(m_buttons, xml_doc, "menu_main_mm");
 	}
 
     ShowMain				();
 
-	m_sound->Init(xml_doc, "menu_sound");
-	m_sound->music_Play();
+	if (psActorFlags3.test(AF_MAINMENU_MUSIC))
+	{
+		m_sound->Init(xml_doc, "menu_sound_original");
+		m_sound->music_Play();
+	}
+	else
+	{
+		m_sound->Init(xml_doc, "menu_sound");
+		m_sound->music_Play();
+	}
 }
 
 void CUIMMShniaga::OnDeviceReset()
@@ -153,6 +175,14 @@ void CUIMMShniaga::SetPage		(enum_page_id page_id, LPCSTR xml_file, LPCSTR xml_p
 		{
 			lst = &m_buttons_new;
 		}break;
+	case epi_new_game_arena:
+		{
+			lst = &m_buttons_new_arena;
+		}break;
+	case epi_new_game_lite:
+		{
+			lst = &m_buttons_new_lite;
+		}break;
 	case epi_new_network_game:
 		{
 		//	lst = &m_buttons_new_network;
@@ -176,6 +206,14 @@ void CUIMMShniaga::ShowPage		(enum_page_id page_id)
 	case epi_new_game:
 		{
 			ShowNewGame();
+		}break;
+	case epi_new_game_arena:
+		{
+			ShowNewGameArena();
+		}break;
+	case epi_new_game_lite:
+		{
+			ShowNewGameLite();
 		}break;
 	case epi_new_network_game:
 		{
@@ -205,6 +243,26 @@ void CUIMMShniaga::ShowNewGame()
 	SelectBtn(m_buttons_new[0]);
 }
 
+void CUIMMShniaga::ShowNewGameArena()
+{
+	m_page = epi_new_game_arena;
+	m_view->Clear();
+	for (u32 i = 0; i < m_buttons_new_arena.size(); i++)
+		m_view->AddWindow(m_buttons_new_arena[i], false);
+
+	SelectBtn(m_buttons_new_arena[0]);
+}
+
+void CUIMMShniaga::ShowNewGameLite()
+{
+	m_page = epi_new_game_lite;
+	m_view->Clear();
+	for (u32 i = 0; i < m_buttons_new_lite.size(); i++)
+		m_view->AddWindow(m_buttons_new_lite[i], false);
+
+	SelectBtn(m_buttons_new_lite[0]);
+}
+
 bool CUIMMShniaga::IsButton(CUIWindow* st)
 {
 	for (u32 i = 0; i<m_buttons.size(); ++i)
@@ -213,6 +271,14 @@ bool CUIMMShniaga::IsButton(CUIWindow* st)
 
 	for (u32 i = 0; i<m_buttons_new.size(); ++i)
 		if (m_buttons_new[i] == st)
+			return true;
+
+	for (u32 i = 0; i < m_buttons_new_arena.size(); ++i)
+		if (m_buttons_new_arena[i] == st)
+			return true;
+
+	for (u32 i = 0; i < m_buttons_new_lite.size(); ++i)
+		if (m_buttons_new_lite[i] == st)
 			return true;
 
 	/*for (u32 i = 0, count = m_buttons_new_network.size(); i<count; ++i)
@@ -245,6 +311,11 @@ void CUIMMShniaga::SelectBtn(int btn)
         m_selected = m_buttons[btn];
 	else if (epi_new_game == m_page)
 		m_selected = m_buttons_new[btn];
+	else if (epi_new_game_arena == m_page)
+		m_selected = m_buttons_new_arena[btn];
+	else if (epi_new_game_lite == m_page)
+		m_selected = m_buttons_new_lite[btn];
+
 	//else if (epi_new_network_game == m_page)
 	//	m_selected = m_buttons_new_network[btn];
 	
@@ -271,7 +342,22 @@ void CUIMMShniaga::SelectBtn(CUIWindow* btn)
 				SelectBtn(i);
 				return;
 			}
-		}else if (2 == m_page)
+		}
+		else if (2 == m_page)
+		{
+			if (m_buttons_new_arena[i] == btn)
+			{
+				SelectBtn(i);
+				return;
+			}
+		}else if (3 == m_page)
+		{
+			if (m_buttons_new_lite[i] == btn)
+			{
+				SelectBtn(i);
+				return;
+			}
+		}else if (4 == m_page)
 		{
 			/*if (m_buttons_new_network[i] == btn)
 			{
@@ -279,6 +365,7 @@ void CUIMMShniaga::SelectBtn(CUIWindow* btn)
 				return;
 			}*/
 		}
+
 	}	
 }
 
@@ -326,10 +413,15 @@ bool CUIMMShniaga::OnMouseAction(float x, float y, EUIMessages mouse_action)
 void CUIMMShniaga::OnBtnClick(){
 	if (0 == xr_strcmp("btn_new_game", m_selected->WindowName()))
             ShowNewGame();
-		else if (0 == xr_strcmp("btn_new_back", m_selected->WindowName()))
+	else if (0 == xr_strcmp("btn_new_game_arena", m_selected->WindowName()))
+			ShowNewGameArena();
+	else if (0 == xr_strcmp("btn_new_game_lite", m_selected->WindowName()))
+			ShowNewGameLite();
+	else if (0 == xr_strcmp("btn_new_back", m_selected->WindowName()))
             ShowMain();
-		else
+	else
             GetMessageTarget()->SendMessage(m_selected, BUTTON_CLICKED);
+
 }
 
 #include <dinput.h>
@@ -370,7 +462,11 @@ int CUIMMShniaga::BtnCount()
         return (int)m_buttons.size();
 	else if (m_page == 1)
 		return (int)m_buttons_new.size();
-	//else if (m_page == 2)
+	else if (m_page == 2)
+		return (int)m_buttons_new_arena.size();
+	else if (m_page == 3)
+		return (int)m_buttons_new_lite.size();
+	//else if (m_page == 3)
 	//	return (int)m_buttons_new_network.size();
 	else 
 		return -1;

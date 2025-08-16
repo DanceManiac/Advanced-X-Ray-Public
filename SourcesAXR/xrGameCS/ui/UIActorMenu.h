@@ -26,6 +26,7 @@ class UIInvUpgradeInfo;
 class CUIMessageBoxEx;
 class CUIPropertiesBox;
 class CTrade;
+class CUIProgressBar;
 
 namespace inventory { namespace upgrade {
 	class Upgrade;
@@ -159,6 +160,17 @@ protected:
 	CUIStatic*					m_QuickSlot5;
 	CUIStatic*					m_QuickSlot6;
 
+	CUIProgressBar*				m_KnifeSlot_progress;
+	CUIProgressBar*				m_PistolSlot_progress;
+	CUIProgressBar*				m_SMGSlot_progress;
+	CUIProgressBar*				m_RifleSlot_progress;
+	CUIProgressBar*				m_Helmet_progress;
+	CUIProgressBar*				m_SecondHelmet_progress;
+	CUIProgressBar*				m_Outfit_progress;
+	CUIProgressBar*				m_Pants_progress;
+	CUIProgressBar*				m_TORCHSlot_progress;
+	CUIProgressBar*				m_DETECTORSlot_progress;
+	CUIProgressBar*				m_DOSIMETERSlot_progress;
 
 	// bottom ---------------------------------
 	CUIStatic*					m_ActorBottomInfo;
@@ -387,6 +399,7 @@ public:
 	CScriptGameObject*			GetCurrentItemAsGameObject	();
 
 	void						RefreshCurrentItemCell		();
+	void						UpdateConditionProgressBars	();
 
 	IC	UIHint*					get_hint_wnd				() { return m_hint_wnd; }
 

@@ -5,6 +5,12 @@
 #include "level.h"
 #include "physicsshellholder.h"
 #include "../xrengine/xr_collide_form.h"
+#include "Actor.h"
+#include "AdvancedXrayGameConstants.h"
+
+#include "actorEffector.h"
+#include "GamePersistent.h"
+#include "CameraEffector.h"
 
 CMosquitoBald::CMosquitoBald(void) 
 {
@@ -70,4 +76,19 @@ void CMosquitoBald::Affect(SZoneObjectInfo* O)
 		CreateHit(pGameObject->ID(),ID(),hit_dir,power,0,position_in_bone_space,impulse,m_eHitTypeBlowout);
 		PlayHitParticles(pGameObject);
 	}
+}
+
+void CMosquitoBald::shedule_Update(u32 dt)
+{
+
+	inherited::shedule_Update(dt);
+
+	if (Actor() && GameConstants::GetActorFrostbite())
+	{
+		float dist_to_actor = Actor()->Position().distance_to_sqr(Position());
+
+		if (dist_to_actor <= 5.f)
+			Actor()->SetHeatingStatus(true, RelativePower(dist_to_actor));
+	}
+
 }

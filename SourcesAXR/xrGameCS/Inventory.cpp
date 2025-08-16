@@ -379,6 +379,10 @@ bool CInventory::DropItem(CGameObject *pObj, bool just_before_destroy)
 	return							true;
 }
 
+#include "pch_script.h"
+#include "script_callback_ex.h"
+#include "script_game_object.h"
+
 //положить вещь в слот
 bool CInventory::Slot(PIItem pIItem, bool bNotActivate, bool strict_placement) 
 {
@@ -478,6 +482,8 @@ bool CInventory::Slot(PIItem pIItem, bool bNotActivate, bool strict_placement)
 		Actor()->ChangeInventoryFullness(-pIItem->GetOccupiedInvSpace());
 	
 	pIItem->object().processing_activate();
+
+	UpdateNewHudIcons();
 
 	return						true;
 }
@@ -1629,5 +1635,40 @@ void CInventory::SetSlotsBlocked(u32 mask, bool bBlock)
 				SetPrevActiveSlot(ActiveSlot);
 			}
 		}
+	}
+}
+
+void CInventory::UpdateNewHudIcons()
+{
+	luabind::functor<void> funct;
+
+	if (psActorFlags3.test(AF_LFO_HUD_FUNCTIONS_ICONS))
+	{
+		if (ai().script_engine().functor("lfo_actor_functions.on_actor_pda", funct))
+			funct();
+
+		if (ai().script_engine().functor("lfo_actor_functions.on_actor_tip", funct))
+			funct();
+
+		if (ai().script_engine().functor("lfo_actor_functions.on_actor_backpack", funct))
+			funct();
+
+		if (ai().script_engine().functor("lfo_actor_functions.on_actor_clean_mask", funct))
+			funct();
+
+		if (ai().script_engine().functor("lfo_actor_functions.on_actor_torch", funct))
+			funct();
+
+		if (ai().script_engine().functor("lfo_actor_functions.on_actor_detector", funct))
+			funct();
+
+		if (ai().script_engine().functor("lfo_actor_functions.on_actor_bolt", funct))
+			funct();
+
+		//	if (ai().script_engine().functor("lfo_weapons.on_actor_weapon_alt_aim_on", funct))
+		//		funct();
+
+		//	if (ai().script_engine().functor("lfo_weapons.on_actor_weapon_gl_attached", funct))
+		//		funct();
 	}
 }

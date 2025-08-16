@@ -91,6 +91,9 @@ CInventoryItem::CInventoryItem()
 	m_bUpgradesIcon3D			= false;
 
 	m_bCanPickTroughGeom		= false;
+
+	m_mark_item = false;
+	m_mark_item_fallout = false;
 }
 
 CInventoryItem::~CInventoryItem() 
@@ -140,6 +143,9 @@ void CInventoryItem::Load(LPCSTR section)
 	m_flags.set(FCanTake,		m_can_trade);
 	m_flags.set(FCanTrade,		READ_IF_EXISTS(pSettings, r_bool, section, "can_trade",	TRUE));
 	m_flags.set(FIsQuestItem,	READ_IF_EXISTS(pSettings, r_bool, section, "quest_item",FALSE));
+
+	m_mark_item = READ_IF_EXISTS(pSettings, r_bool, section, "mark_item", false);
+	m_mark_item_fallout = READ_IF_EXISTS(pSettings, r_bool, section, "mark_item_fallout_save", false);
 
 	// Added by Axel, to enable optional condition use on any item
 	m_flags.set(FUsingCondition, READ_IF_EXISTS(pSettings, r_bool, section, "use_condition", false));

@@ -44,6 +44,8 @@ BOOL CPhysicObject::net_Spawn(CSE_Abstract* DC)
 	m_anim_blend			= 0;
 	inherited::net_Spawn	( DC );
 
+	m_spawn_time			= Device.dwTimeGlobal;
+	m_bRemoved				= false;
 	create_collision_model  ( );
 
 
@@ -321,6 +323,9 @@ void CPhysicObject::Load(LPCSTR section)
 {
 	inherited::Load(section);
 	CPHSkeleton::Load(section);
+	m_remove_time = READ_IF_EXISTS(pSettings, r_u32, section, "remove_time", 0) * 1000;
+	m_need_removing = READ_IF_EXISTS(pSettings, r_bool, section, "need_removing", FALSE);
+
 }
 
 
@@ -335,6 +340,13 @@ if(dbg_draw_doors)
 	get_door_vectors( c, o );
 }
 #endif
+}
+
+void CPhysicObject::SendDestroy()
+{
+	if (Local())
+		DestroyObject();
+	m_bRemoved = true;
 }
 
 void CPhysicObject::UpdateCL()
@@ -363,6 +375,12 @@ if(dbg_draw_doors)
 	get_door_vectors( c, o );
 }
 #endif
+
+if (m_pPhysicsShell)
+{
+	if (m_need_removing && !m_bRemoved && Device.dwTimeGlobal - m_spawn_time > m_remove_time)
+		SendDestroy();
+}
 
 	if( !is_active( bones_snd_player ) )
 		return;

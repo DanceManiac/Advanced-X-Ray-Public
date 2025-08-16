@@ -295,6 +295,19 @@ void CUIActorMenu::Construct()
 	m_QuickSlot5	= UIHelper::CreateStatic(uiXml, "quick_slot5_text", this, false);
 	m_QuickSlot6	= UIHelper::CreateStatic(uiXml, "quick_slot6_text", this, false);
 
+
+	m_KnifeSlot_progress = UIHelper::CreateProgressBar(uiXml, "progress_bar_slot_knife", this);
+	m_PistolSlot_progress = UIHelper::CreateProgressBar(uiXml, "progress_bar_slot_pistol", this);
+	m_SMGSlot_progress = UIHelper::CreateProgressBar(uiXml, "progress_bar_slot_mps", this);
+	m_RifleSlot_progress = UIHelper::CreateProgressBar(uiXml, "progress_bar_slot_rifle", this);
+	m_Outfit_progress = UIHelper::CreateProgressBar(uiXml, "progress_bar_slot_outfit", this);
+	m_Helmet_progress = UIHelper::CreateProgressBar(uiXml, "progress_bar_slot_helmet", this);
+	m_SecondHelmet_progress = UIHelper::CreateProgressBar(uiXml, "progress_bar_slot_second_helmet", this);
+	m_Pants_progress = UIHelper::CreateProgressBar(uiXml, "progress_bar_slot_pants", this);
+	m_TORCHSlot_progress = UIHelper::CreateProgressBar(uiXml, "progress_bar_slot_torch", this);
+	m_DETECTORSlot_progress = UIHelper::CreateProgressBar(uiXml, "progress_bar_slot_detector", this);
+	m_DOSIMETERSlot_progress = UIHelper::CreateProgressBar(uiXml, "progress_bar_slot_dosimeter", this);
+
 	m_trade_button		= UIHelper::Create3tButtonEx(uiXml, "trade_button", this, false);
 	m_takeall_button	= UIHelper::Create3tButtonEx(uiXml, "takeall_button", this);
 	m_exit_button		= UIHelper::Create3tButtonEx(uiXml, "exit_button", this);
@@ -493,6 +506,8 @@ void CUIActorMenu::UpdateButtonsLayout()
 	}
 	
 	m_exit_button->SetWndPos(btn_exit_pos);
+
+	UpdateConditionProgressBars();
 
 	string32 tmp;
 	LPCSTR str;

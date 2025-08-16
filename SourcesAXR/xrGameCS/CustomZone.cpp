@@ -18,6 +18,11 @@
 #include "zone_effector.h"
 #include "breakableobject.h"
 #include "GamePersistent.h"
+#include "Actor.h"
+
+#include "AdvancedXrayGameConstants.h"
+#include "actorEffector.h"
+#include "CameraEffector.h"
 
 #define WIND_RADIUS (4*Radius())	//расстояние до актера, когда появляется ветер 
 #define FASTMODE_DISTANCE (50.f)	//distance to camera from sphere, when zone switches to fast update sequence
@@ -172,6 +177,13 @@ void CCustomZone::Load(LPCSTR section)
 		m_entrance_sound.create(sound_str, st_Effect,sg_SourceType);
 	}
 
+	if (psActorFlags3.test(AF_LFO_PARTICLES))
+	{
+		if (pSettings->line_exist(section, "idle_particles_2"))
+			m_sIdleParticles = pSettings->r_string(section, "idle_particles_2");
+		if (pSettings->line_exist(section, "blowout_particles_2"))
+			m_sBlowoutParticles = pSettings->r_string(section, "blowout_particles_2");
+	}
 
 	if(pSettings->line_exist(section,"idle_particles")) 
 		m_sIdleParticles	= pSettings->r_string(section,"idle_particles");
@@ -210,6 +222,14 @@ void CCustomZone::Load(LPCSTR section)
 		m_actor_effector->Load			(pSettings->r_string(section,"postprocess"));
 	};
 
+	if (psActorFlags3.test(AF_LFO_POSTPROCESS))
+	{
+		if (pSettings->line_exist(section, "postprocess"))
+		{
+			m_actor_effector = xr_new<CZoneEffector>();
+			m_actor_effector->Load(pSettings->r_string(section, "postprocess"));
+		};
+	}
 
 	if(pSettings->line_exist(section,"bolt_entrance_particles")) 
 	{
@@ -320,6 +340,22 @@ void CCustomZone::Load(LPCSTR section)
 	m_ef_weapon_type			= pSettings->r_u32(section,"ef_weapon_type");
 	
 	m_zone_flags.set			(eAffectPickDOF, pSettings->r_bool (section, "pick_dof_effector"));
+
+	if (pSettings->line_exist(section, "zone_acid_use_hud_effector"))
+		m_zone_flags.set(eEffectAddHudEffectAcid, pSettings->r_bool(section, "zone_acid_use_hud_effector"));
+
+	if (pSettings->line_exist(section, "zone_fire_use_hud_effector"))
+		m_zone_flags.set(eEffectAddHudEffectFire, pSettings->r_bool(section, "zone_fire_use_hud_effector"));
+
+	if (pSettings->line_exist(section, "zone_shock_use_hud_effector"))
+		m_zone_flags.set(eEffectAddHudEffectElec, pSettings->r_bool(section, "zone_shock_use_hud_effector"));
+
+	if (pSettings->line_exist(section, "zone_gravi_use_hud_effector"))
+		m_zone_flags.set(eEffectAddHudEffectGravi, pSettings->r_bool(section, "zone_gravi_use_hud_effector"));
+
+	if (pSettings->line_exist(section, "zone_rad_use_hud_effector"))
+		m_zone_flags.set(eEffectAddHudEffectRad, pSettings->r_bool(section, "zone_rad_use_hud_effector"));
+
 }
 
 BOOL CCustomZone::net_Spawn(CSE_Abstract* DC) 
@@ -1362,6 +1398,31 @@ void CCustomZone::enter_Zone(SZoneObjectInfo& io)
 		if(io.object->ID()==Level().CurrentEntity()->ID())
 			GamePersistent().SetPickableEffectorDOF(true);
 	}
+
+	if (Actor() && io.object->ID() == Level().CurrentEntity()->ID() && psActorFlags2.test(AF_LFO_ANOMALY_CAM_EFF))
+	{
+		if (m_zone_flags.test(eEffectAddHudEffectAcid) && Level().CurrentEntity())
+		{
+			AddEffector(Actor(), effAnomalyAcid, "hud_zone_effect_acid");
+		}
+		if (m_zone_flags.test(eEffectAddHudEffectFire) && Level().CurrentEntity())
+		{
+			AddEffector(Actor(), effAnomalyFire, "hud_zone_effect_fire");
+		}
+		if (m_zone_flags.test(eEffectAddHudEffectElec) && Level().CurrentEntity())
+		{
+			AddEffector(Actor(), effAnomalyElec, "hud_zone_effect_shock");
+		}
+		if (m_zone_flags.test(eEffectAddHudEffectGravi) && Level().CurrentEntity())
+		{
+			AddEffector(Actor(), effAnomalyGravi, "hud_zone_effect_gravi");
+		}
+		if (m_zone_flags.test(eEffectAddHudEffectRad) && Level().CurrentEntity())
+		{
+			AddEffector(Actor(), effAnomalyRad, "hud_zone_effect_rad");
+		}
+	}
+
 }
 
 void CCustomZone::exit_Zone	(SZoneObjectInfo& io)
@@ -1373,6 +1434,16 @@ void CCustomZone::exit_Zone	(SZoneObjectInfo& io)
 		if(io.object->ID()==Level().CurrentEntity()->ID())
 			GamePersistent().SetPickableEffectorDOF(false);
 	}
+
+	if (Actor && psActorFlags2.test(AF_LFO_ANOMALY_CAM_EFF))
+	{
+		RemoveEffector(Actor(), effAnomalyAcid);
+		RemoveEffector(Actor(), effAnomalyFire);
+		RemoveEffector(Actor(), effAnomalyElec);
+		RemoveEffector(Actor(), effAnomalyGravi);
+		RemoveEffector(Actor(), effAnomalyRad);
+	}
+
 }
 
 void CCustomZone::PlayAccumParticles()

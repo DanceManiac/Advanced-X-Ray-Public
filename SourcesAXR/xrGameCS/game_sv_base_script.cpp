@@ -49,6 +49,12 @@ void reload_language()
 	CStringTable().ReloadLanguage();
 }
 
+void stop_tutorial()
+{
+	if (g_tutorial)
+		g_tutorial->Stop();
+}
+
 LPCSTR translate_string(LPCSTR str)
 {
 	return *CStringTable().translate(str);
@@ -226,6 +232,7 @@ void game_sv_GameState::script_register(lua_State *L)
 		.def("getRPcount",			&game_sv_GameState::getRPcount),
 
 		def("start_tutorial",		&start_tutorial),
+		def("stop_tutorial",		&stop_tutorial),
 		def("has_active_tutorial",	&has_active_tutotial),
 		def("reload_language",		&reload_language),
 		def("translate_string",		&translate_string),

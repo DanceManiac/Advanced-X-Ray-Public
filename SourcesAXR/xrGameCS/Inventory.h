@@ -68,6 +68,7 @@ public:
 	bool					Action				(s32 cmd, u32 flags);
 	void					ActiveWeapon		(u32 slot);
 	void					Update				();
+	void					UpdateNewHudIcons	();
 	// »щет на по€се аналогичный IItem
 	PIItem					Same				(const PIItem pIItem, bool bSearchRuck) const;
 	// »щет на по€се IItem дл€ указанного слота

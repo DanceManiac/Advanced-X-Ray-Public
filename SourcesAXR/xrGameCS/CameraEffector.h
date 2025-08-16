@@ -22,6 +22,11 @@
 #define effDrugs				(eStartEffectorID+14)
 #define effFrostbite			(eStartEffectorID+15)
 #define effPostprocessEditor	(eStartEffectorID+16)
+#define effAnomalyAcid			(eStartEffectorID+17)
+#define effAnomalyFire			(eStartEffectorID+18)
+#define effAnomalyElec			(eStartEffectorID+19)
+#define effAnomalyGravi			(eStartEffectorID+20)
+#define effAnomalyRad			(eStartEffectorID+21)
 
 #define effPoltergeistTeleDetectStartEffect 2048
 // warning: ~50 constants after effPoltergeistTeleDetectStartEffect are reserved for poltergeists

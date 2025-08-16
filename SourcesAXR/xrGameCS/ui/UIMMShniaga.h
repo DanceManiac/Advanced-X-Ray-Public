@@ -29,6 +29,8 @@ public:
 	{
 		epi_main		= 0x00,
 		epi_new_game,
+		epi_new_game_arena,
+		epi_new_game_lite,
 		epi_new_network_game,
 		epi_none
 	};//enum	enum_page_id
@@ -53,9 +55,11 @@ protected:
 	void 				CreateList				(xr_vector<CUIStatic*>& lst, CUIXml& xml_doc, LPCSTR path);
 	void 				ShowMain				();
 	void 				ShowNewGame				();
+	void 				ShowNewGameArena		();
+	void 				ShowNewGameLite			();
 	float				pos						(float x1, float x2, u32 t);
 
-	pcstr				GetDebugType			() override { return "CUIMMShniaga"; }
+	pcstr				GetDebugType() override { return "CUIMMShniaga"; }
 
     CUIStatic*			m_shniaga;
 	CUIStatic*			m_magnifier;
@@ -72,6 +76,8 @@ protected:
 
 	xr_vector<CUIStatic*>	m_buttons;
 	xr_vector<CUIStatic*>	m_buttons_new;
+	xr_vector<CUIStatic*>	m_buttons_new_arena;
+	xr_vector<CUIStatic*>	m_buttons_new_lite;
 	int						m_selected_btn;
 	enum_page_id			m_page;
     CUIWindow*				m_selected;
