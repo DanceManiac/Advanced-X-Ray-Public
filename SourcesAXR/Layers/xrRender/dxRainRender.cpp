@@ -10,6 +10,31 @@ dxRainRender::dxRainRender()
 {
 	current_items = 0;
 
+	IReader* F = FS.r_open("$game_meshes$", "dm\\rain.dm");
+	VERIFY3(F, "Can't open file.", "dm\\rain.dm");
+
+	DM_Drop = ::RImplementation.model_CreateDM(F);
+
+	//
+#if defined(USE_DX11)
+	if (ps_r4_shaders_flags.test(R4FLAG_SSS_ADDON))
+		SH_Rain.create("effects\\rain_screen_space", "fx\\fx_rain");
+	else
+#endif
+		SH_Rain.create("effects\\rain", "fx\\fx_rain");
+
+	hGeom_Rain.create(FVF::F_LIT, RCache.Vertex.Buffer(), RCache.QuadIB);
+	hGeom_Drops.create(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1, RCache.Vertex.Buffer(), RCache.Index.Buffer());
+
+#if defined(USE_DX11)
+	if (RImplementation.o.ssfx_rain)
+		SH_Splash.create("effects\\rain_splash", "fx\\fx_rain");
+#endif
+
+	FS.r_close(F);
+}
+
+	/*
 	if (!bWinterMode)
 	{
 		IReader* F = FS.r_open("$game_meshes$", "dm\\rain.dm");
@@ -50,6 +75,7 @@ dxRainRender::dxRainRender()
 		FS.r_close(F);
 	}
 }
+*/
 
 dxRainRender::~dxRainRender()
 {

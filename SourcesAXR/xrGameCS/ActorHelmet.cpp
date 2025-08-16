@@ -74,7 +74,7 @@ void CHelmet::Load(LPCSTR section)
 	m_BonesProtectionSect			= READ_IF_EXISTS(pSettings, r_string, section, "bones_koeff_protection",  "" );
 	m_fShowNearestEnemiesDistance	= READ_IF_EXISTS(pSettings, r_float, section, "nearest_enemies_show_dist",  0.0f );
 
-	m_b_HasGlass					= !!READ_IF_EXISTS(pSettings, r_bool, section, "has_glass", FALSE);
+	m_b_HasGlass					= !!READ_IF_EXISTS(pSettings, r_bool, section, "glass_present", FALSE);
 	m_bUseFilter					= READ_IF_EXISTS(pSettings, r_bool, section, "use_filter", false);
 	m_bUseAttach					= READ_IF_EXISTS(pSettings, r_bool, section, "use_attaching", false);
 

@@ -197,7 +197,7 @@ void CCustomOutfit::Load(LPCSTR section)
 	bIsHelmetAvaliable		= !!READ_IF_EXISTS(pSettings, r_bool, section, "helmet_avaliable", true);
 	bIsSecondHelmetAvaliable = !!READ_IF_EXISTS(pSettings, r_bool, section, "second_helmet_avaliable", bIsHelmetAvaliable);
 
-	m_b_HasGlass				= !!READ_IF_EXISTS(pSettings, r_bool, section, "has_glass", FALSE);
+	m_b_HasGlass				= !!READ_IF_EXISTS(pSettings, r_bool, section, "glass_present", FALSE);
 	m_bUseFilter				= READ_IF_EXISTS(pSettings, r_bool, section, "use_filter", false);
 	m_bHasLSS					= READ_IF_EXISTS(pSettings, r_bool, section, "has_ls_system", false);
 

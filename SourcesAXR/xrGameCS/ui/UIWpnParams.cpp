@@ -250,9 +250,6 @@ void CUIWpnParams::SetInfo(CInventoryItem* slot_wpn, CInventoryItem& cur_wpn)
 			m_stAmmoType1.SetShader(InventoryUtilities::GetEquipmentIconsShader());
 		}
 
-
-
-
 		Frect				tex_rect;
 		tex_rect.x1 = float(pSettings->r_u32(ammo_types[0].c_str(), "inv_grid_x") * UI().inv_grid_kx());
 		tex_rect.y1 = float(pSettings->r_u32(ammo_types[0].c_str(), "inv_grid_y") * UI().inv_grid_kx());
@@ -283,10 +280,7 @@ void CUIWpnParams::SetInfo(CInventoryItem* slot_wpn, CInventoryItem& cur_wpn)
 		m_stAmmoType2.SetStretchTexture(true);
 
 		m_stAmmoType2.SetWndSize(Fvector2().set((tex_rect.x2 - tex_rect.x1) * UI().get_current_kx() * (1 / UI().get_icons_kx()), (tex_rect.y2 - tex_rect.y1) * (1 / UI().get_icons_kx())));
-
 	}
-
-
 }
 
 bool CUIWpnParams::Check(CInventoryItem& wpn_section)

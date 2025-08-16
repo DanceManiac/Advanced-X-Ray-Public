@@ -79,13 +79,26 @@
 
 xr_vector<xr_token> qhud_type_token;
 
+// LFO SCOPE Type
+extern u32	lfo_scope_type;
+xr_token								lfo_scope_type_token[] = {
+	{ "scopes_2d",						1												},
+	{ "scopes_2d_open",					2												},
+	{ "scopes_3d_pip",					3												},
+	{ "scopes_3d_lfo",					4												},
+	{ 0,								0												}
+};
+
 // M.F.S. Crosshair Type
 extern u32	crosshair_type;
-xr_token							crosshair_type_token[] = {
-	{ "default_crosshair",			1												},
-	{ "builds_crosshair",			2												},
-	{ "point_crosshair",			3												},
-	{ 0,							0												}
+xr_token								crosshair_type_token[] = {
+	{ "default_crosshair",				1												},
+	{ "builds_crosshair",				2												},
+	{ "point_crosshair_lfo_01",			3												},
+	{ "point_crosshair_lfo_02",			4												},
+	{ "point_crosshair_lfo_03",			5												},
+	{ "point_crosshair",				6												},
+	{ 0,								0												}
 };
 
 extern u32	death_camera_mode;
@@ -2554,7 +2567,7 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask, "g_lfo_hud_postprocess", &psActorFlags3, AF_LFO_POSTPROCESS);
 	CMD3(CCC_Mask, "g_lfo_extra_zone_particles", &psActorFlags3, AF_LFO_PARTICLES);
 
-	//CMD3(CCC_Token, "g_lfo_scope_type", &lfo_scope_type, lfo_scope_type_token);
+	CMD3(CCC_Token, "g_lfo_scope_type", &lfo_scope_type, lfo_scope_type_token);
 
 	//	CMD3(CCC_Mask,				"g_take_item_aniamtions",				&psActorFlags2,			AF_TAKE_ITEM_ANIMATIONS);
 
@@ -2764,6 +2777,12 @@ CMD4(CCC_Integer,			"hit_anims_tune",						&tune_hit_anims,		0, 1);
 	CMD3(CCC_Mask,			"g_3d_scopes",			&psActorFlags,	AF_3DSCOPE_ENABLE);
 	CMD3(CCC_Mask,			"g_pnv_in_scope",		&psActorFlags,	AF_PNV_W_SCOPE_DIS);
 
+
+
+
+
+
+
 	CMD3(CCC_Mask,			"g_autopickup",			&psActorFlags,	AF_AUTOPICKUP);
 	CMD3(CCC_Mask,			"g_dynamic_music",		&psActorFlags,	AF_DYNAMIC_MUSIC);
 	CMD1(CCC_GameLanguage,	"g_language");
@@ -2776,7 +2795,19 @@ CMD4(CCC_Integer,			"hit_anims_tune",						&tune_hit_anims,		0, 1);
 	CMD3(CCC_Mask,			"g_use_battery",							&psActorFlags, AF_USE_BATTERY);
 	CMD3(CCC_Mask,			"dbg_battery_usage",						&psActorFlags, AF_DBG_BATTERY_USE_CONSOLE); // for modding, you can see the battery uncharge in console
 	CMD3(CCC_Mask,			"g_use_filters",							&psActorFlags, AF_USE_FILTERS);
-
+	CMD3(CCC_Mask,			"g_alternative_scope_aim",					&psActorFlags, ALTERNATIV_ALT_AIM);
+	CMD3(CCC_Mask,			"g_autopickup",								&psActorFlags, AF_AUTOPICKUP);
+	CMD3(CCC_Mask,			"g_dynamic_music",							&psActorFlags, AF_DYNAMIC_MUSIC);
+	CMD3(CCC_Mask,			"render_item_volumetric_lights",			&psActorFlags, HUD_ITEM_VOL_LIGHTS);
+	CMD3(CCC_Mask,			"g_lfo_wpn_enable_animations",				&psActorFlags3, AF_LFO_WPN_DISABLE_WPN_ANIMS);
+	CMD3(CCC_Mask,			"g_lfo_wpn_enable_movement_layers",			&psActorFlags3, AF_LFO_WPN_MOVEMENT_LAYER);
+	CMD3(CCC_Mask,			"g_lfo_functions_icons_on_hud",				&psActorFlags3, AF_LFO_HUD_FUNCTIONS_ICONS);
+	CMD3(CCC_Mask,			"g_lfo_survival_mode",						&psActorFlags3, AF_LFO_SURVIVAL_MODE);
+	CMD3(CCC_Mask,			"g_lfo_ui_pda_extras",						&psActorFlags3, AF_LFO_PDA_EXTRA);
+	CMD3(CCC_Mask,			"g_lfo_wpn_shot_shell_anims",				&psActorFlags3, AF_LFO_SHOT_SHELL_ANIMATIONS);
+	CMD3(CCC_Mask,			"lfo_dev_full_main_menu",					&psActorFlags3, AF_LFO_FULL_MAINMENU);
+	CMD3(CCC_Mask,			"g_lfo_ui_weather_icons",					&psActorFlags3, AF_LFO_WEATHER_ICONS);
+	CMD3(CCC_Mask,			"g_lfo_hud_patron_icon",					&psActorFlags3, AF_LFO_AMMO_ICONS);
 
 #ifdef DEBUG
 	CMD1(CCC_LuaHelp,				"lua_help");

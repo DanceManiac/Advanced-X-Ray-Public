@@ -46,6 +46,7 @@ extern CUIXml*	pWpnScopeXml	= NULL;
 ENGINE_API extern float psHUD_FOV_def;
 static float last_hud_fov = psHUD_FOV_def;
 extern BOOL g_use_aim_inertion = 1;
+u32		lfo_scope_type = 1;
 
 CWeapon::CWeapon()
 {
