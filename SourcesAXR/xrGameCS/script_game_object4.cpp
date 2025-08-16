@@ -319,7 +319,9 @@ void CScriptGameObject::start_particles(LPCSTR pname, LPCSTR bone, bool auto_sto
 	if(!PP)	return;
 
 	IKinematics* K					= smart_cast<IKinematics*>(object().Visual());
-	R_ASSERT						(K);
+	//R_ASSERT						(K);
+	if (!K)
+		return;
 
 	u16 play_bone					= K->LL_BoneID(bone);
 	R_ASSERT						(play_bone!=BI_NONE);
@@ -335,7 +337,9 @@ void CScriptGameObject::stop_particles(LPCSTR pname, LPCSTR bone)
 	if(!PP)	return;
 
 	IKinematics* K					= smart_cast<IKinematics*>(object().Visual());
-	R_ASSERT						(K);
+	//R_ASSERT						(K);
+	if (!K) 
+		return;
 
 	u16 play_bone					= K->LL_BoneID(bone);
 	R_ASSERT						(play_bone!=BI_NONE);
