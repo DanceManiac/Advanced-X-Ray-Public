@@ -55,6 +55,7 @@ public:
 	bool					bChangeNVSecondVPStatus();
 	virtual	bool            bMarkCanShow() { return IsZoomed(); }
 	virtual void			UpdateAddonsTransform(bool for_hud);
+	bool					IsOutScopeAfterShot() const { return m_bOutScopeAfterShot; }
 
 	static void				SafetyBoneCallback(CBoneInstance* P);
 	virtual void			SetSafetyBoneCallback();
@@ -80,6 +81,13 @@ public:
 	void					ZoomDynamicMod(bool bIncrement, bool bForceLimit);
 	void					UpdateAltScope();
 	void					UpdateAimOffsets();
+	void					UpdateAimFOV();
+	void					UpdateAltAimZoomFactor();
+	void					UpdateCheckWeaponHaveLaser();
+	void					UpdateHudAltAimHud();
+	void					UpdateAltAimZoomFactor2();
+	void					UpdateGLAttached();
+	void					UpdateHudAltAimHudMode2();
 
 	// Up
 	// Magazine system & etc
@@ -188,6 +196,7 @@ public:
 		eSubstateReloadBegin		=0,
 		eSubstateReloadInProcess,
 		eSubstateReloadEnd,
+		eSubstateReloadInProcessEmptyEnd,
 	};
 
 	IC BOOL					IsValid				()	const		{	return iAmmoElapsed;						}
@@ -206,10 +215,12 @@ protected:
 	bool					m_bTriStateReload;
 	// a misfire happens, you'll need to rearm weapon
 	bool					bMisfire;				
+	bool					m_bOutScopeAfterShot;
 
 	BOOL					m_bAutoSpawnAmmo;
 public:
 			u8   m_sub_state;
+			bool IsCustomReloadAvaible;
 			bool IsGrenadeLauncherAttached	() const;
 			bool IsScopeAttached			() const;
 			bool IsSilencerAttached			() const;
@@ -232,6 +243,7 @@ public:
 
 	//обновление видимости для косточек аддонов
 			void UpdateAddonsVisibility(IKinematics* visual = nullptr);
+		//	void UpdateAddonsVisibility();
 			void UpdateHUDAddonsVisibility();
 	//инициализация свойств присоединенных аддонов
 	virtual void InitAddons();
@@ -302,6 +314,11 @@ protected:
 
 	xr_vector<shared_str> m_all_scope_bones;
 	shared_str		m_cur_scope_bone;
+	shared_str		m_cur_scope_bone_aim;
+	shared_str		m_cur_scope_bone_part;
+	shared_str		m_cur_scope_bone_aim_part;
+	shared_str		m_cur_scope_show_bone_rail;
+	shared_str		m_cur_scope_hide_bone_rail;
 
 	//смещение иконов апгрейдов в инвентаре
 	int	m_iScopeX, m_iScopeY;
@@ -312,6 +329,15 @@ protected:
 
 	RStringVec		m_defShownBones;
 	RStringVec		m_defHiddenBones;
+	RStringVec		m_defShownBonesScope;
+	RStringVec		m_defHiddenBonesScope;
+	RStringVec		m_upgShowBones;
+	RStringVec		m_upgHideBones;
+	RStringVec		m_defSilHiddenBones;
+	RStringVec		m_defShellBones;
+	RStringVec		m_defShownBonesScopePermanent;
+	RStringVec		m_defHiddenBonesScopePermanent;
+	RStringVec		m_defHiddenBonesScopePermanent2;
 
 public:
 
@@ -709,11 +735,16 @@ public:
 			bool			WeaponSoundExist			(LPCSTR section, LPCSTR sound_name, bool log = false) const;
 	
 private:
-	virtual	bool			install_upgrade_ammo_class	( LPCSTR section, bool test );
-			bool			install_upgrade_disp		( LPCSTR section, bool test );
-			bool			install_upgrade_hit			( LPCSTR section, bool test );
-			bool			install_upgrade_addon		( LPCSTR section, bool test );
-			bool			install_upgrade_other		( LPCSTR section, bool test );
+	virtual	bool			install_upgrade_ammo_class		( LPCSTR section, bool test );
+			bool			install_upgrade_disp			( LPCSTR section, bool test );
+			bool			install_upgrade_hit				( LPCSTR section, bool test );
+			bool			install_upgrade_addon			( LPCSTR section, bool test );
+			bool			install_upgrade_other			( LPCSTR section, bool test );
+			bool			install_upgrade_hud				( LPCSTR section, bool test );
+			bool			install_upgrade_show_bones		( LPCSTR section, bool test );
+			bool			install_upgrade_hide_bones		( LPCSTR section, bool test );
+			bool			install_upgrade_silencer_bone	( LPCSTR section, bool test );
+
 protected:
 	virtual bool			install_upgrade_impl		( LPCSTR section, bool test );
 

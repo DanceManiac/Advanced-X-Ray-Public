@@ -26,11 +26,15 @@ bool CWeapon::install_upgrade_impl( LPCSTR section, bool test )
 	//inherited::install_upgrade( section );
 	bool result = CInventoryItemObject::install_upgrade_impl( section, test );
 	
-	result |= install_upgrade_ammo_class( section, test );
-	result |= install_upgrade_disp      ( section, test );
-	result |= install_upgrade_hit       ( section, test );
-	result |= install_upgrade_addon     ( section, test );
-	result |= install_upgrade_other		( section, test	);
+	result |= install_upgrade_ammo_class    ( section, test );
+	result |= install_upgrade_disp			( section, test );
+	result |= install_upgrade_hit			( section, test );
+	result |= install_upgrade_addon			( section, test );
+	result |= install_upgrade_other			( section, test );
+	result |= install_upgrade_hud			( section, test );
+	result |= install_upgrade_show_bones	( section, test );
+	result |= install_upgrade_hide_bones	( section, test );
+	result |= install_upgrade_silencer_bone	( section, test );
 	return result;
 }
 
@@ -359,6 +363,89 @@ bool CWeapon::install_upgrade_other(LPCSTR section, bool test)
 	result = process_if_exists_set(section, "hide_bones", &CInifile::r_string, str, test);
 	if (result && !test)
 		this->ModifyUpgradeBones(str, false);
+
+	return result;
+}
+
+bool CWeapon::install_upgrade_hud(LPCSTR section, bool test)
+{
+	LPCSTR str;
+
+	// name of the ltx-section of hud section
+	bool result = process_if_exists_set(section, "hud_section", &CInifile::r_string, str, test);
+	if (result && !test)
+		this->ReplaceHudSection(str);
+
+	return result;
+}
+
+bool CWeapon::install_upgrade_show_bones(LPCSTR section, bool test)
+{
+	LPCSTR str;
+	bool result = process_if_exists(section, "fire_dispersion_condition_factor", &CInifile::r_float, fireDispersionConditionFactor, test);
+
+	bool result2 = process_if_exists_set(section, "show_bones", &CInifile::r_string, str, test);
+
+	if (result2 && !test)
+	{
+		int ShowCount = _GetItemCount(str);
+		for (int i = 0; i < ShowCount; ++i)
+		{
+			string128 bone_name;
+			_GetItem(str, i, bone_name);
+			m_upgShowBones.push_back(bone_name);
+		}
+	}
+
+	result |= result2;
+	UpdateHUDAddonsVisibility();
+	UpdateAddonsVisibility();
+
+	return result;
+}
+
+bool CWeapon::install_upgrade_hide_bones(LPCSTR section, bool test)
+{
+	LPCSTR str;
+
+	bool result = process_if_exists(section, "fire_dispersion_condition_factor", &CInifile::r_float, fireDispersionConditionFactor, test);
+
+	bool result2 = process_if_exists_set(section, "hide_bones", &CInifile::r_string, str, test);
+
+	if (result2 && !test)
+	{
+		int HideCount = _GetItemCount(str);
+		for (int i = 0; i < HideCount; ++i)
+		{
+			string128 bone_name;
+			_GetItem(str, i, bone_name);
+			m_upgHideBones.push_back(bone_name);
+		}
+	}
+
+	result |= result2;
+	UpdateHUDAddonsVisibility();
+	UpdateAddonsVisibility();
+
+	return result;
+}
+
+bool CWeapon::install_upgrade_silencer_bone(LPCSTR section, bool test)
+{
+	LPCSTR str;
+
+	bool result = process_if_exists(section, "fire_dispersion_condition_factor", &CInifile::r_float, fireDispersionConditionFactor, test);
+
+	bool result2 = process_if_exists_set(section, "silencer_bone", &CInifile::r_string, str, test);
+
+	if (result2 && !test)
+	{
+		m_sWpn_silencer_bone = pSettings->r_string(section, "silencer_bone");
+	}
+
+	result |= result2;
+	UpdateHUDAddonsVisibility();
+	UpdateAddonsVisibility();
 
 	return result;
 }

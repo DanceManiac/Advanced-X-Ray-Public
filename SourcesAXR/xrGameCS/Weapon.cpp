@@ -36,6 +36,11 @@
 #include "../xrEngine/CameraBase.h"
 #include "CharacterPhysicsSupport.h"
 #include "AdvancedXrayGameConstants.h"
+#include "string_table.h"
+
+#include "pch_script.h"
+#include "script_callback_ex.h"
+#include "script_game_object.h"
 
 constexpr auto WEAPON_REMOVE_TIME = 60000;
 constexpr auto ROTATION_TIME = 0.25f;
@@ -117,6 +122,7 @@ CWeapon::CWeapon()
 	bHasBulletsToHide	= false;
 	m_bBulletsVisualization = false;
 	bullet_cnt			= 0;
+	IsCustomReloadAvaible = false;
 
 	m_bUseAimScopeAnims = true;
 	m_bUseScopeAimMoveAnims = true;
@@ -149,6 +155,8 @@ CWeapon::CWeapon()
 
 	m_bIndoorSoundsEnabled	= false;
 	m_bMisfireBulletRemove	= false;
+
+	m_bOutScopeAfterShot = false;
 }
 
 const shared_str CWeapon::GetScopeName() const
@@ -614,14 +622,40 @@ void CWeapon::Load		(LPCSTR section)
 
 
 	// информация о возможных апгрейдах и их визуализации в инвентаре
-	m_eScopeStatus			 = (ALife::EWeaponAddonStatus)pSettings->r_s32(section,"scope_status");
+	if (lfo_scope_type == 3)// SHOKER 3d Scopes PiP
+	{
+		m_eScopeStatus = (ALife::EWeaponAddonStatus)pSettings->r_s32(section, "scope_status_pip");
+	}
+	else
+	{
+
+		if (lfo_scope_type == 1 || lfo_scope_type == 2)
+		{
+			m_eScopeStatus = (ALife::EWeaponAddonStatus)pSettings->r_s32(section, "scope_status_2d");
+		}
+		else
+		{
+			m_eScopeStatus = (ALife::EWeaponAddonStatus)pSettings->r_s32(section, "scope_status");
+		}
+	}
+
 	m_eSilencerStatus		 = (ALife::EWeaponAddonStatus)pSettings->r_s32(section,"silencer_status");
 	m_eGrenadeLauncherStatus = (ALife::EWeaponAddonStatus)pSettings->r_s32(section,"grenade_launcher_status");
 	m_eLaserDesignatorStatus = (ALife::EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, section, "laser_designator_status", 0);
 	m_eTacticalTorchStatus	 = (ALife::EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, section, "tactical_torch_status", 0);
 
 	m_zoom_params.m_bZoomEnabled		= !!pSettings->r_bool(section,"zoom_enabled");
-	m_zoom_params.m_fZoomRotateTime		= pSettings->r_float(section,"zoom_rotate_time");
+
+	if (lfo_scope_type == 3)// SHOKER 3d Scopes PiP
+	{
+		m_zoom_params.m_fZoomRotateTime = pSettings->r_float(section, "zoom_rotate_time_pip");
+	}
+	else
+	{
+		m_zoom_params.m_fZoomRotateTime = pSettings->r_float(section, "zoom_rotate_time");
+	}
+
+	m_bOutScopeAfterShot = READ_IF_EXISTS(pSettings, r_bool, section, "out_scope_after_shot", false);
 
 	bUseAltScope = !!bLoadAltScopesParams(section);
 
@@ -647,8 +681,11 @@ void CWeapon::Load		(LPCSTR section)
 
 	m_zoom_params.m_bHideCrosshairInZoom		= true;
 
-	if(pSettings->line_exist(m_hud_sect, "zoom_hide_crosshair"))
-		m_zoom_params.m_bHideCrosshairInZoom = !!pSettings->r_bool(m_hud_sect, "zoom_hide_crosshair");	
+	if (psHUD_Flags.test(HUD_CROSSHAIR_AIM))
+	{
+		if (pSettings->line_exist(m_hud_sect, "zoom_hide_crosshair"))
+			m_zoom_params.m_bHideCrosshairInZoom = !!pSettings->r_bool(m_hud_sect, "zoom_hide_crosshair");
+	}
 
 	Fvector			def_dof;
 	def_dof.set		(-1,-1,-1);
@@ -722,10 +759,16 @@ void CWeapon::Load		(LPCSTR section)
 	};
 
 	// Default shown bones
+	// SHOW-HIDE BONES
 	LoadBoneNames(section, "def_show_bones", m_defShownBones);
-
-	// Default hidden bones
 	LoadBoneNames(section, "def_hide_bones", m_defHiddenBones);
+	LoadBoneNames(section, "def_show_bones_aim_scope_permanent", m_defShownBonesScopePermanent);
+	LoadBoneNames(section, "def_hide_bones_aim_scope_permanent", m_defHiddenBonesScopePermanent);
+	LoadBoneNames(section, "def_hide_bones_aim_scope_permanent2", m_defHiddenBonesScopePermanent2);
+	LoadBoneNames(section, "def_show_bones_with_scopes", m_defShownBonesScope);
+	LoadBoneNames(section, "def_hide_bones_with_scopes", m_defHiddenBonesScope);
+	LoadBoneNames(section, "hide_bones_override_when_silencer_attached", m_defSilHiddenBones);
+	LoadBoneNames(section, "def_animated_3d_shell_bones", m_defShellBones);
 
 	if (pSettings->line_exist(section, "scopes_sect"))
 	{
@@ -762,8 +805,16 @@ void CWeapon::Load		(LPCSTR section)
 	m_bUseScopeAimMoveAnims		= READ_IF_EXISTS(pSettings, r_bool, section, "enable_scope_aim_move_anm", true);
 	m_bUseAimAnmDirDependency	= READ_IF_EXISTS(pSettings, r_bool, section, "enable_aim_anm_dir_dependency", false);
 	m_bUseSilShotAnim			= READ_IF_EXISTS(pSettings, r_bool, section, "enable_silencer_shoot_anm", false);
-	m_bAltZoomEnabled			= READ_IF_EXISTS(pSettings, r_bool, section, "enable_alternative_aim", false);
 	m_sSafetyBoneName			= READ_IF_EXISTS(pSettings, r_string, section, "safety_bone", nullptr);
+
+	if (lfo_scope_type == 4)//LFO 3d Scopes
+	{
+		m_bAltZoomEnabled = READ_IF_EXISTS(pSettings, r_bool, section, "enable_alternative_aim", false);
+	}
+	else
+	{
+		m_bAltZoomEnabled = READ_IF_EXISTS(pSettings, r_bool, section, "enable_alternative_aim_pip", false);
+	}
 
 	if (m_sSafetyBoneName.size())
 	{
@@ -821,6 +872,18 @@ void CWeapon::Load		(LPCSTR section)
 	ProcessBlendCamParams(READ_IF_EXISTS(pSettings, r_string, m_hud_sect, "blend_aim_end_g",	nullptr),	m_BlendAimEndGL_Cam);
 	ProcessBlendCamParams(READ_IF_EXISTS(pSettings, r_string, m_hud_sect, "blend_aim_idle_g",	nullptr),	m_BlendAimIdleGL_Cam);
 	ProcessBlendCamParams(READ_IF_EXISTS(pSettings, r_string, m_hud_sect, "blend_fakeshot",		nullptr),	m_BlendFakeShootCam);
+
+	if (lfo_scope_type == 3)// SHOKER 3d Scopes PiP
+	{
+		m_zoom_params.m_fSecondVPFovFactor = READ_IF_EXISTS(pSettings, r_float, section, "scope_zoom_3d_fov", 0.0f);
+		m_zoom_params.m_f3dZoomFactor = READ_IF_EXISTS(pSettings, r_float, section, "scope_zoom_factor_3d", 100.0f);
+	}
+	else
+	{
+		m_zoom_params.m_fSecondVPFovFactor = 0.0f;
+		m_zoom_params.m_f3dZoomFactor = 0.0f;
+	}
+
 }
 
 void CWeapon::ProcessBlendCamParams(LPCSTR params, BlendCamParams& cam_params)
@@ -1190,6 +1253,7 @@ void CWeapon::LoadOriginalScopesParams(LPCSTR section)
 	{
 		LoadCurrentScopeParams(section);
 	}
+	UpdateAltAimZoomFactor();
 }
 
 void createWpnScopeXML()
@@ -1205,11 +1269,71 @@ void CWeapon::LoadCurrentScopeParams(LPCSTR section)
 {
 	shared_str scope_tex_name = "none";
 	bScopeIsHasTexture = false;
-	if (pSettings->line_exist(section, "scope_texture"))
+	if (lfo_scope_type == 4)//LFO 3d Scopes
 	{
-		scope_tex_name = pSettings->r_string(section, "scope_texture");
-		if (xr_strcmp(scope_tex_name, "none") != 0)
-			bScopeIsHasTexture = true;
+
+		if (lfo_scope_type == 2)//LFO Open 2d Scopes
+		{
+			if (pSettings->line_exist(section, "scope_texture_for_3d_open"))
+			{
+				scope_tex_name = pSettings->r_string(section, "scope_texture_for_3d_open");
+				if (xr_strcmp(scope_tex_name, "none") != 0)
+					bScopeIsHasTexture = true;
+			}
+		}
+		else
+		{
+			if (pSettings->line_exist(section, "scope_texture_for_3d"))
+			{
+				scope_tex_name = pSettings->r_string(section, "scope_texture_for_3d");
+				if (xr_strcmp(scope_tex_name, "none") != 0)
+					bScopeIsHasTexture = true;
+			}
+		}
+	}
+	else
+	{
+		if (lfo_scope_type == 2)//LFO Open 2d Scopes
+		{
+			if (pSettings->line_exist(section, "scope_texture_open"))
+			{
+				scope_tex_name = pSettings->r_string(section, "scope_texture_open");
+				if (xr_strcmp(scope_tex_name, "none") != 0)
+					bScopeIsHasTexture = true;
+			}
+		}
+		else
+		{
+			if (pSettings->line_exist(section, "scope_texture"))
+			{
+				scope_tex_name = pSettings->r_string(section, "scope_texture");
+				if (xr_strcmp(scope_tex_name, "none") != 0)
+					bScopeIsHasTexture = true;
+			}
+		}
+	}
+
+
+	if (lfo_scope_type == 3)// SHOKER 3d Scopes PiP
+	{
+		if (lfo_scope_type == 2)//LFO Open 2d Scopes
+		{
+			if (pSettings->line_exist(section, "scope_texture_open"))
+			{
+				scope_tex_name = pSettings->r_string(section, "scope_texture_open");
+				if (xr_strcmp(scope_tex_name, "none") != 0)
+					bScopeIsHasTexture = true;
+			}
+		}
+		else
+		{
+			if (pSettings->line_exist(section, "scope_texture"))
+			{
+				scope_tex_name = pSettings->r_string(section, "scope_texture");
+				if (xr_strcmp(scope_tex_name, "none") != 0)
+					bScopeIsHasTexture = true;
+			}
+		}
 	}
 
 	string256 attach_sect;
@@ -1218,21 +1342,29 @@ void CWeapon::LoadCurrentScopeParams(LPCSTR section)
 	if (attach_sect && pSettings->line_exist(m_section_id.c_str(), attach_sect))
 		m_sScopeAttachSection = READ_IF_EXISTS(pSettings, r_string, m_section_id.c_str(), attach_sect, "");
 
-	m_zoom_params.m_fScopeZoomFactor = pSettings->r_float(section, "scope_zoom_factor");
-	m_zoom_params.m_fAltAimZoomFactor = READ_IF_EXISTS(pSettings, r_float, section, "alt_aim_zoom_factor", m_zoom_params.m_fIronSightZoomFactor);
-	Load3DScopeParams(section);
-
-	shared_str cur_scope_sect = (m_sScopeAttachSection.size() ? m_sScopeAttachSection : (m_eScopeStatus == ALife::eAddonAttachable) ? m_scopes[m_cur_scope].c_str() : "scope");
-	m_bAltZoomEnabledScope = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "enable_alternative_aim", false);
-
-	if (bIsSecondVPZoomPresent())
+	if (lfo_scope_type == 4)//LFO 3d Scopes
 	{
-		bScopeIsHasTexture = false;
-		m_zoom_params.m_fScopeZoomFactor = pSettings->r_float(section, "3d_zoom_factor");
+		m_bAltZoomEnabled = READ_IF_EXISTS(pSettings, r_bool, section, "enable_alternative_aim", false);
+	}
+
+	if (lfo_scope_type != 4)//LFO 3d Scopes
+	{
+		m_zoom_params.m_fScopeZoomFactor = pSettings->r_float(section, "scope_zoom_factor");
+		Load3DScopeParams(section);
+
+		if (bIsSecondVPZoomPresent())
+		{
+			bScopeIsHasTexture = false;
+			m_zoom_params.m_fScopeZoomFactor = pSettings->r_float(section, "scope_zoom_factor_3d_pip");
+		}
+		else
+		{
+			m_zoom_params.m_fScopeZoomFactor = pSettings->r_float(section, "scope_zoom_factor");
+		}
 	}
 	else
 	{
-		m_zoom_params.m_fScopeZoomFactor = pSettings->r_float(section, "scope_zoom_factor");
+		m_zoom_params.m_fScopeZoomFactor = pSettings->r_float(section, "scope_zoom_factor_3d");
 	}
 
 	if (bScopeIsHasTexture || bIsSecondVPZoomPresent())
@@ -1242,12 +1374,12 @@ void CWeapon::LoadCurrentScopeParams(LPCSTR section)
 		else
 			m_zoom_params.m_sUseZoomPostprocess = READ_IF_EXISTS(pSettings, r_string, section, "scope_nightvision", 0);
 
-		m_zoom_params.m_bUseDynamicZoom = READ_IF_EXISTS(pSettings, r_bool, section, "scope_dynamic_zoom", FALSE);
+		m_zoom_params.m_bUseDynamicZoom = READ_IF_EXISTS(pSettings, r_bool, section, "scope_zoom_dynamic", FALSE);
 
 		if (m_zoom_params.m_bUseDynamicZoom)
 		{
 			m_fZoomStepCount = READ_IF_EXISTS(pSettings, r_u8, section, "scope_zoom_steps", 3.0f);
-			m_fZoomMinKoeff = READ_IF_EXISTS(pSettings, r_u8, section, "min_zoom_k", 0.3f);
+			m_fZoomMinKoeff = READ_IF_EXISTS(pSettings, r_u8, section, "scope_zoom_min_koeff", 0.3f);
 		}
 
 		m_zoom_params.m_sUseBinocularVision = READ_IF_EXISTS(pSettings, r_string, section, "scope_alive_detector", 0);
@@ -1287,10 +1419,10 @@ void CWeapon::LoadCurrentScopeParams(LPCSTR section)
 
 void CWeapon::Load3DScopeParams(LPCSTR section)
 {
-	if (psActorFlags.test(AF_3DSCOPE_ENABLE))
+	if (lfo_scope_type == 3)// SHOKER 3d Scopes PiP
 	{
-		m_zoom_params.m_fSecondVPFovFactor = READ_IF_EXISTS(pSettings, r_float, section, "3d_fov", 0.0f);
-		m_zoom_params.m_f3dZoomFactor = READ_IF_EXISTS(pSettings, r_float, section, "3d_zoom_factor", 100.0f);
+		m_zoom_params.m_fSecondVPFovFactor = READ_IF_EXISTS(pSettings, r_float, section, "scope_zoom_3d_fov", 0.0f);
+		m_zoom_params.m_f3dZoomFactor = READ_IF_EXISTS(pSettings, r_float, section, "scope_zoom_factor_3d", 100.0f);
 	}
 	else
 	{
@@ -1667,6 +1799,10 @@ void CWeapon::UpdateCL		()
 	UpdateFlashlight		();
 	UpdateAddonsBlocks		();
 
+	UpdateGLAttached();
+	UpdateAltAimZoomFactor();
+	UpdateAltAimZoomFactor2();
+
 	//нарисовать партиклы
 	UpdateFlameParticles	();
 	UpdateFlameParticles2	();
@@ -2027,39 +2163,74 @@ bool CWeapon::Action(s32 cmd, u32 flags)
 			} 
 
 		case kWPN_ZOOM:
-			if(IsZoomEnabled())
+			if (IsZoomEnabled())
 			{
-				if(b_toggle_weapon_aim)
+				if (b_toggle_weapon_aim)
 				{
-					if(flags&CMD_START)
+					if (flags & CMD_START)
 					{
-						if(!IsZoomed())
+						if (!IsZoomed())
 						{
-							if(!IsPending())
+							if (!IsPending())
 							{
-								if(GetState()!=eIdle && !(m_bIsBoltRiffle && GetState() == eFire))
-									SwitchState(eIdle);
-								OnZoomIn	();
+								if (GetState() != eIdle)
+									if (psActorFlags.test(AF_WPN_ZOOM_OUT_SHOOT))
+									{
+										if (IsOutScopeAfterShot() && GetState() != eFire) // Чтобы не глючила для продолжительных анимаций, не знаю зачем тут этот стейт
+										{
+											SwitchState(eIdle);
+										}
+									}
+									else
+									{
+										SwitchState(eIdle);
+									}
+								if (IsOutScopeAfterShot())
+								{
+									if (GetState() != eFire)
+									{
+										OnZoomIn();
+									}
+								}
+								else
+								{
+									OnZoomIn();
+								}
 							}
-						}else
-							OnZoomOut	();
-					}
-				}else
-				{
-					if(flags&CMD_START)
-					{
-						if(!IsZoomed() && !IsPending())
-						{
-							if(GetState()!=eIdle && !(m_bIsBoltRiffle && GetState() == eFire))
-								SwitchState(eIdle);
-							OnZoomIn	();
 						}
-					}else 
-						if(IsZoomed())
-							OnZoomOut	();
+						else
+							OnZoomOut();
+					}
+				}
+				else
+				{
+					if (flags & CMD_START)
+					{
+						if (!IsZoomed() && !IsPending())
+						{
+							if (GetState() != eIdle)
+
+								if (psActorFlags.test(AF_WPN_ZOOM_OUT_SHOOT))
+								{
+									if (IsOutScopeAfterShot() && GetState() != eFire) // Чтобы не глючила для продолжительных анимаций, не знаю зачем тут этот стейт
+									{
+										SwitchState(eIdle);
+									}
+								}
+								else
+								{
+									SwitchState(eIdle);
+								}
+							OnZoomIn();
+						}
+					}
+					else
+						if (IsZoomed())
+							OnZoomOut();
 				}
 				return true;
-			}else 
+			}
+			else
 				return false;
 
 		case kWPN_ZOOM_INC:
@@ -2442,119 +2613,430 @@ void CWeapon::HUD_VisualBulletUpdate(bool force, int force_idx)
 
 void CWeapon::UpdateHUDAddonsVisibility()
 {//actor only
-	if(!GetHUDmode())										return;
+	if (!GetHUDmode())										return;
 
-//.	return;
+	//.	return;
 
 	u16 bone_id = HudItemData()->m_model->LL_BoneID(wpn_scope_def_bone);
 
 	auto SetBoneVisible = [&](const shared_str& boneName, BOOL visibility)
-	{
-		HudItemData()->set_bone_visible(boneName, visibility, TRUE);
-	};
+		{
+			HudItemData()->set_bone_visible(boneName, visibility, TRUE);
+		};
 
-	// Hide default bones
+	//---------------------------------------------------------------------------
+	//---------------------------------------------------------------------------
+		// Hide default bones
 	for (const shared_str& bone : m_defHiddenBones)
 	{
 		SetBoneVisible(bone, FALSE);
 	}
 
-	// Show default bones
+	for (const shared_str& bone : m_defHiddenBonesScope)
+	{
+		if (IsScopeAttached())
+		{
+			SetBoneVisible(bone, FALSE);
+		}
+	}
+
+	if (IsSilencerAttached())
+	{
+		for (const shared_str& bone : m_defSilHiddenBones)
+		{
+			SetBoneVisible(bone, FALSE);
+		}
+	}
+
+	for (const shared_str& bone : m_upgHideBones)
+	{
+		SetBoneVisible(bone, FALSE);
+	}
+	//---------------------------------------------------------------------------
+		// Show default bones
 	for (const shared_str& bone : m_defShownBones)
+	{
+		if (!IsScopeAttached())
+		{
+			SetBoneVisible(bone, TRUE);
+		}
+		else
+		{
+			SetBoneVisible(bone, FALSE);
+		}
+	}
+
+	for (const shared_str& bone : m_defShellBones)
+	{
+		if (psActorFlags3.test(AF_LFO_SHOT_SHELL_ANIMATIONS))
+		{
+			if (GetState() != eFire)
+			{
+				SetBoneVisible(bone, FALSE);
+			}
+			else
+			{
+				SetBoneVisible(bone, TRUE);
+			}
+		}
+		else
+		{
+			SetBoneVisible(bone, FALSE);
+		}
+
+	}
+
+	for (const shared_str& bone : m_defShownBonesScope)
+	{
+		if (IsScopeAttached())
+		{
+			SetBoneVisible(bone, TRUE);
+		}
+		else
+		{
+			SetBoneVisible(bone, FALSE);
+		}
+	}
+
+	for (const shared_str& bone : m_upgShowBones)
 	{
 		SetBoneVisible(bone, TRUE);
 	}
 
+	if (lfo_scope_type == 4)//LFO 3d Scopes
+	{
+		// for lfo scope system and weapon with permament scope
+		bool WeaponHavePermanentScope = false;
+
+		if (pSettings->line_exist(m_section_id.c_str(), "weapon_have_permanent_scope"))
+			WeaponHavePermanentScope = READ_IF_EXISTS(pSettings, r_bool, m_section_id, "weapon_have_permanent_scope", false);
+
+		for (const shared_str& bone : m_defShownBonesScopePermanent)
+		{
+			if (WeaponHavePermanentScope)
+			{
+				if (!IsZoomed() && GetZRotatingFactor() < .9f)
+				{
+					if (!IsScopeAttached())
+					{
+						SetBoneVisible(bone, TRUE);
+					}
+					else
+					{
+						SetBoneVisible(bone, FALSE);
+					}
+				}
+			}
+		}
+
+		for (const shared_str& bone : m_defHiddenBonesScopePermanent)
+		{
+			if (WeaponHavePermanentScope)
+			{
+				if (!IsZoomed() && GetZRotatingFactor() < .9f)
+				{
+					SetBoneVisible(bone, TRUE);
+				}
+				else
+				{
+					SetBoneVisible(bone, FALSE);
+				}
+			}
+		}
+	}
+
+	bool WeaponHavePermanentScope2 = false;
+
+	if (pSettings->line_exist(m_section_id.c_str(), "weapon_need_secundary_hide_bones"))
+		WeaponHavePermanentScope2 = READ_IF_EXISTS(pSettings, r_bool, m_section_id, "weapon_need_secundary_hide_bones", false);
+
+	for (const shared_str& bone : m_defHiddenBonesScopePermanent2)
+	{
+		if (WeaponHavePermanentScope2)
+		{
+
+			if (!IsZoomed() && GetZRotatingFactor() < .9f)
+			{
+				SetBoneVisible(bone, FALSE);
+			}
+			else
+			{
+				if (lfo_scope_type == 3)
+				{
+					SetBoneVisible(bone, FALSE);
+				}
+				else
+				{
+					SetBoneVisible(bone, TRUE);
+				}
+			}
+		}
+	}
+
+	//---------------------------------------------------------------------------
+	//---------------------------------------------------------------------------
+
 	for (int i = 0; i < m_all_scope_bones.size(); i++)
 		SetBoneVisible(m_all_scope_bones[i], FALSE);
 
-	if (m_cur_scope_bone != NULL)
-		SetBoneVisible(m_cur_scope_bone, TRUE);
+	shared_str cur_scope_sect = (m_sScopeAttachSection.size() ? m_sScopeAttachSection : (m_eScopeStatus == ALife::eAddonAttachable) ? m_scopes[m_cur_scope].c_str() : "scope");
 
-	if (!m_sScopeAttachSection.size())
+	bool UseScopeAimBone = false;
+	if (pSettings->line_exist(cur_scope_sect, "scope_use_aim_bone"))
+		UseScopeAimBone = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "scope_use_aim_bone", false);
+
+	bool UseScopeRailBone = false;
+	if (pSettings->line_exist(cur_scope_sect, "scope_use_rail_bone"))
+		UseScopeRailBone = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "scope_use_rail_bone", false);
+
+	bool UseScopeAltAimBone = false;
+	if (pSettings->line_exist(cur_scope_sect, "scope_use_alt_aim_bones"))
+		UseScopeAltAimBone = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "scope_use_alt_aim_bones", false);
+
+	bool UseScopeAltAimBoneIronsight = false;
+	if (pSettings->line_exist(cur_scope_sect, "scope_use_alt_aim_bones_ironsight"))
+		UseScopeAltAimBoneIronsight = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "scope_use_alt_aim_bones_ironsight", false);
+
+	bool WeaponNeedAltAimBoneIronsight = false;
+	if (pSettings->line_exist(m_section_id.c_str(), "enable_alternative_aim_ironsight"))
+		//	WeaponNeedAltAimBoneIronsight = READ_IF_EXISTS(pSettings, r_bool, m_section_id, "enable_alternative_aim_ironsight", false);
+		WeaponNeedAltAimBoneIronsight = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "enable_alternative_aim_ironsight", false);
+
+
+	if (!IsZoomed() && GetZRotatingFactor() < .9f)
+		//	if (!IsZoomed() && !IsRotatingFromZoom())
 	{
-		if (bone_id != BI_NONE)
-		{
-			if (ScopeAttachable())
-			{
-				HudItemData()->set_bone_visible(wpn_scope_def_bone, IsScopeAttached());
-			}
+		// BONE FOR SCOPE IDLE MODEL
+		if (m_cur_scope_bone != NULL)
+			SetBoneVisible(m_cur_scope_bone, TRUE);
 
-			if (m_eScopeStatus == ALife::eAddonDisabled)
+		// BONE FOR SCOPE IDLE MODEL
+		if (m_cur_scope_bone_part != NULL)
+			SetBoneVisible(m_cur_scope_bone_part, TRUE);
+
+		if (lfo_scope_type == 3 && IsScopeAttached())// SHOKER 3d Scopes PiP
+		{
+			// BONE FOR SCOPE AIM MODEL
+			if (m_cur_scope_bone_aim != NULL)
+				SetBoneVisible(m_cur_scope_bone_aim, FALSE);
+
+			// BONE FOR SCOPE AIM MODEL
+			if (m_cur_scope_bone_aim_part != NULL)
+				SetBoneVisible(m_cur_scope_bone_aim_part, FALSE);
+		}
+		else
+		{
+			if (UseScopeAimBone)
 			{
-				HudItemData()->set_bone_visible(wpn_scope_def_bone, FALSE, TRUE);
+				// BONE FOR SCOPE AIM MODEL
+				if (m_cur_scope_bone_aim != NULL)
+					SetBoneVisible(m_cur_scope_bone_aim, FALSE);
+
+				if (m_cur_scope_bone_aim_part != NULL)
+					SetBoneVisible(m_cur_scope_bone_aim_part, FALSE);
 			}
 			else
-				if (m_eScopeStatus == ALife::eAddonPermanent)
-					HudItemData()->set_bone_visible(wpn_scope_def_bone, TRUE, TRUE);
+			{
+				// BONE FOR SCOPE AIM MODEL
+				if (m_cur_scope_bone_aim != NULL)
+					SetBoneVisible(m_cur_scope_bone_aim, TRUE);
+
+				if (m_cur_scope_bone_aim_part != NULL)
+					SetBoneVisible(m_cur_scope_bone_aim_part, TRUE);
+			}
+		}
+
+		if (UseScopeRailBone)
+		{
+			// BONE FOR Picatinny RAILS SHOW
+			if (m_cur_scope_show_bone_rail != NULL)
+				SetBoneVisible(m_cur_scope_show_bone_rail, TRUE);
+
+			// BONE FOR Picatinny RAILS HIDE
+			if (m_cur_scope_hide_bone_rail != NULL)
+				SetBoneVisible(m_cur_scope_hide_bone_rail, FALSE);
 		}
 	}
-
-	if (!m_sSilencerAttachSection.size())
+	else
 	{
-		if (SilencerAttachable())
+		if (lfo_scope_type == 3 && IsScopeAttached())// SHOKER 3d Scopes PiP
 		{
-			SetBoneVisible(m_sWpn_silencer_bone, IsSilencerAttached());
-		}
 
-		if (m_eSilencerStatus == ALife::eAddonDisabled)
-		{
-			SetBoneVisible(m_sWpn_silencer_bone, FALSE);
+			// BONE FOR SCOPE IDLE MODEL
+			if (m_cur_scope_bone != NULL)
+				SetBoneVisible(m_cur_scope_bone, TRUE);
+
+			if (m_cur_scope_bone_part != NULL)
+				SetBoneVisible(m_cur_scope_bone_part, TRUE);
+
+			// BONE FOR SCOPE AIM MODEL
+			if (m_cur_scope_bone_aim != NULL)
+				SetBoneVisible(m_cur_scope_bone_aim, FALSE);
+
+			if (m_cur_scope_bone_aim_part != NULL)
+				SetBoneVisible(m_cur_scope_bone_aim_part, FALSE);
 		}
 		else
-			if (m_eSilencerStatus == ALife::eAddonPermanent)
-				SetBoneVisible(m_sWpn_silencer_bone, TRUE);
+		{
+			if (UseScopeAimBone)
+			{
+				if (IsZoomed() && GetAltZoomStatus())		//WeaponNeedAltAimBoneIronsight
+				{
+					if (UseScopeAltAimBone)
+					{
+						// BONE FOR SCOPE IDLE MODEL
+						if (m_cur_scope_bone != NULL)
+							SetBoneVisible(m_cur_scope_bone, FALSE);
+
+						if (m_cur_scope_bone_part != NULL)
+							SetBoneVisible(m_cur_scope_bone_part, FALSE);
+
+						// BONE FOR SCOPE AIM MODEL
+						if (m_cur_scope_bone_aim != NULL)
+							SetBoneVisible(m_cur_scope_bone_aim, TRUE);
+
+						if (m_cur_scope_bone_aim_part != NULL)
+							SetBoneVisible(m_cur_scope_bone_aim_part, TRUE);
+						else
+							// BONE FOR SCOPE IDLE MODEL
+							if (m_cur_scope_bone != NULL)
+								SetBoneVisible(m_cur_scope_bone, TRUE);
+
+						if (m_cur_scope_bone_part != NULL)
+							SetBoneVisible(m_cur_scope_bone_part, TRUE);
+
+						// BONE FOR SCOPE AIM MODEL
+						if (m_cur_scope_bone_aim != NULL)
+							SetBoneVisible(m_cur_scope_bone_aim, TRUE);
+
+						if (m_cur_scope_bone_aim_part != NULL)
+							SetBoneVisible(m_cur_scope_bone_aim_part, TRUE);
+					}
+
+					if (UseScopeAltAimBoneIronsight)
+					{
+						// BONE FOR SCOPE IDLE MODEL
+						if (m_cur_scope_bone != NULL)
+							SetBoneVisible(m_cur_scope_bone, TRUE);
+
+						// BONE FOR SCOPE AIM MODEL
+						if (m_cur_scope_bone_aim != NULL)
+							SetBoneVisible(m_cur_scope_bone_aim, FALSE);
+					}
+
+				}
+				else
+				{
+					// BONE FOR SCOPE IDLE MODEL
+					if (m_cur_scope_bone != NULL)
+						SetBoneVisible(m_cur_scope_bone, FALSE);
+
+					if (m_cur_scope_bone_part != NULL)
+						SetBoneVisible(m_cur_scope_bone_part, FALSE);
+
+					// BONE FOR SCOPE AIM MODEL
+					if (m_cur_scope_bone_aim != NULL)
+						SetBoneVisible(m_cur_scope_bone_aim, TRUE);
+
+					if (m_cur_scope_bone_aim_part != NULL)
+						SetBoneVisible(m_cur_scope_bone_aim_part, TRUE);
+				}
+			}
+			else
+			{
+				// BONE FOR SCOPE IDLE MODEL
+				if (m_cur_scope_bone != NULL)
+					SetBoneVisible(m_cur_scope_bone, TRUE);
+
+				if (m_cur_scope_bone_part != NULL)
+					SetBoneVisible(m_cur_scope_bone_part, TRUE);
+
+				// BONE FOR SCOPE AIM MODEL
+				if (m_cur_scope_bone_aim != NULL)
+					SetBoneVisible(m_cur_scope_bone_aim, TRUE);
+
+				if (m_cur_scope_bone_aim_part != NULL)
+					SetBoneVisible(m_cur_scope_bone_aim_part, TRUE);
+			}
+		}
+
+		if (UseScopeRailBone)
+		{
+			// BONE FOR Picatinny RAILS SHOW
+			if (m_cur_scope_show_bone_rail != NULL)
+				SetBoneVisible(m_cur_scope_show_bone_rail, TRUE);
+
+			// BONE FOR Picatinny RAILS HIDE
+			if (m_cur_scope_hide_bone_rail != NULL)
+				SetBoneVisible(m_cur_scope_hide_bone_rail, FALSE);
+		}
 	}
 
-	if (!m_sGrenadeLauncherAttachSection.size())
+	if (bone_id != BI_NONE)
 	{
-		if (GrenadeLauncherAttachable())
+		if (ScopeAttachable())
 		{
-			SetBoneVisible(m_sWpn_launcher_bone, IsGrenadeLauncherAttached());
+			HudItemData()->set_bone_visible(wpn_scope_def_bone, IsScopeAttached() && !m_sScopeAttachSection.size());
 		}
 
-		if (m_eGrenadeLauncherStatus == ALife::eAddonDisabled)
+		if (m_eScopeStatus == ALife::eAddonDisabled || m_sScopeAttachSection.size())
 		{
-			SetBoneVisible(m_sWpn_launcher_bone, FALSE);
-		}
-		else if (m_eGrenadeLauncherStatus == ALife::eAddonPermanent)
-			SetBoneVisible(m_sWpn_launcher_bone, TRUE);
-	}
-
-	if (!m_sLaserAttachSection.size())
-	{
-		if (LaserAttachable())
-		{
-			SetBoneVisible(m_sWpn_laser_bone, IsLaserAttached());
-		}
-
-		if (m_eLaserDesignatorStatus == ALife::eAddonDisabled)
-		{
-			SetBoneVisible(m_sWpn_laser_bone, FALSE);
+			HudItemData()->set_bone_visible(wpn_scope_def_bone, FALSE, TRUE);
 		}
 		else
-			if (m_eLaserDesignatorStatus == ALife::eAddonPermanent)
-				SetBoneVisible(m_sWpn_laser_bone, TRUE);
+			if (m_eScopeStatus == ALife::eAddonPermanent && !m_sScopeAttachSection.size())
+				HudItemData()->set_bone_visible(wpn_scope_def_bone, TRUE, TRUE);
 	}
+
+	if (SilencerAttachable())
+	{
+		SetBoneVisible(m_sWpn_silencer_bone, IsSilencerAttached());
+	}
+	if (m_eSilencerStatus == ALife::eAddonDisabled)
+	{
+		SetBoneVisible(m_sWpn_silencer_bone, FALSE);
+	}
+	else
+		if (m_eSilencerStatus == ALife::eAddonPermanent)
+			SetBoneVisible(m_sWpn_silencer_bone, TRUE);
+
+	if (GrenadeLauncherAttachable())
+	{
+		SetBoneVisible(m_sWpn_launcher_bone, IsGrenadeLauncherAttached() && !m_sGrenadeLauncherAttachSection.size());
+	}
+	if (m_eGrenadeLauncherStatus == ALife::eAddonDisabled || m_sGrenadeLauncherAttachSection.size())
+	{
+		SetBoneVisible(m_sWpn_launcher_bone, FALSE);
+	}
+	else if (m_eGrenadeLauncherStatus == ALife::eAddonPermanent && !m_sGrenadeLauncherAttachSection.size())
+		SetBoneVisible(m_sWpn_launcher_bone, TRUE);
+
+	if (LaserAttachable())
+	{
+		SetBoneVisible(m_sWpn_laser_bone, IsLaserAttached() && !m_sLaserAttachSection.size());
+	}
+	if (m_eLaserDesignatorStatus == ALife::eAddonDisabled || m_sLaserAttachSection.size())
+	{
+		SetBoneVisible(m_sWpn_laser_bone, FALSE);
+	}
+	else
+		if (m_eLaserDesignatorStatus == ALife::eAddonPermanent && !m_sLaserAttachSection.size())
+			SetBoneVisible(m_sWpn_laser_bone, TRUE);
 
 	if (m_sHud_wpn_laser_ray_bone.size() && has_laser)
 		SetBoneVisible(m_sHud_wpn_laser_ray_bone, IsLaserOn());
 
-	if (!m_sTacticalTorchAttachSection.size())
+	if (TacticalTorchAttachable())
 	{
-		if (TacticalTorchAttachable())
-		{
-			SetBoneVisible(m_sWpn_flashlight_bone, IsTacticalTorchAttached());
-		}
-
-		if (m_eTacticalTorchStatus == ALife::eAddonDisabled)
-		{
-			SetBoneVisible(m_sWpn_flashlight_bone, FALSE);
-		}
-		else
-			if (m_eTacticalTorchStatus == ALife::eAddonPermanent)
-				SetBoneVisible(m_sWpn_flashlight_bone, TRUE);
+		SetBoneVisible(m_sWpn_flashlight_bone, IsLaserAttached() && !m_sTacticalTorchAttachSection.size());
 	}
+	if (m_eTacticalTorchStatus == ALife::eAddonDisabled || m_sTacticalTorchAttachSection.size())
+	{
+		SetBoneVisible(m_sWpn_flashlight_bone, FALSE);
+	}
+	else
+		if (m_eTacticalTorchStatus == ALife::eAddonPermanent && !m_sTacticalTorchAttachSection.size())
+			SetBoneVisible(m_sWpn_laser_bone, TRUE);
 
 	if (m_sHud_wpn_flashlight_cone_bone.size() && has_flashlight)
 		SetBoneVisible(m_sHud_wpn_flashlight_cone_bone, IsFlashlightOn());
@@ -2562,108 +3044,215 @@ void CWeapon::UpdateHUDAddonsVisibility()
 
 void CWeapon::UpdateAddonsVisibility(IKinematics* visual)
 {
-	IKinematics* pWeaponVisual = visual ? visual : smart_cast<IKinematics*>(Visual());
-	R_ASSERT(pWeaponVisual);
+	IKinematics* pWeaponVisual = smart_cast<IKinematics*>(Visual()); R_ASSERT(pWeaponVisual);
 
 	u16 bone_id;
-	UpdateHUDAddonsVisibility();	
+	UpdateHUDAddonsVisibility();
 
 	pWeaponVisual->CalculateBones_Invalidate();
 
 	bone_id = pWeaponVisual->LL_BoneID(wpn_scope_def_bone);
 
 	auto SetBoneVisible = [&](const shared_str& boneName, BOOL visibility)
-	{
-		u16 bone_id = pWeaponVisual->LL_BoneID(boneName);
-		if (bone_id != BI_NONE && visibility != pWeaponVisual->LL_GetBoneVisible(bone_id))
-			pWeaponVisual->LL_SetBoneVisible(bone_id, visibility, TRUE);
-	};
+		{
+			u16 bone_id = pWeaponVisual->LL_BoneID(boneName);
+			if (bone_id != BI_NONE && visibility != pWeaponVisual->LL_GetBoneVisible(bone_id))
+				pWeaponVisual->LL_SetBoneVisible(bone_id, visibility, TRUE);
+		};
 
-	// Hide default bones
+	//---------------------------------------------------------------------------
+	//---------------------------------------------------------------------------
+		// Hide default bones
 	for (const shared_str& bone : m_defHiddenBones)
 	{
 		SetBoneVisible(bone, FALSE);
 	}
 
-	// Show default bones
+	for (const shared_str& bone : m_defHiddenBonesScope)
+	{
+		SetBoneVisible(bone, FALSE);
+	}
+
+	if (IsSilencerAttached())
+	{
+		for (const auto& boneName : m_defSilHiddenBones)
+		{
+			bone_id = pWeaponVisual->LL_BoneID(boneName);
+			if (bone_id != BI_NONE && pWeaponVisual->LL_GetBoneVisible(bone_id))
+				pWeaponVisual->LL_SetBoneVisible(bone_id, FALSE, TRUE);
+		}
+	}
+
+	for (const auto& boneName : m_upgHideBones)
+	{
+		bone_id = pWeaponVisual->LL_BoneID(boneName);
+		if (bone_id != BI_NONE)
+			pWeaponVisual->LL_SetBoneVisible(bone_id, FALSE, TRUE);
+	}
+	//---------------------------------------------------------------------------
+		// Show default bones
 	for (const shared_str& bone : m_defShownBones)
 	{
 		SetBoneVisible(bone, TRUE);
 	}
 
+	for (const shared_str& bone : m_defShownBonesScope)
+	{
+		SetBoneVisible(bone, TRUE);
+	}
+
+	for (const auto& boneName : m_upgShowBones)
+	{
+		bone_id = pWeaponVisual->LL_BoneID(boneName);
+		if (bone_id != BI_NONE)
+			pWeaponVisual->LL_SetBoneVisible(bone_id, TRUE, TRUE);
+	}
+	//---------------------------------------------------------------------------
+	//---------------------------------------------------------------------------
+
 	for (int i = 0; i < m_all_scope_bones.size(); i++)
 		SetBoneVisible(m_all_scope_bones[i], FALSE);
 
-	if (m_cur_scope_bone != NULL)
-		SetBoneVisible(m_cur_scope_bone, TRUE);
+	bool UseScopeAimBone = false;
+	bool UseScopeRailBone = false;
 
-	if (ScopeAttachable() && !m_sScopeAttachSection.size())
+	if (!IsZoomed() && !IsRotatingFromZoom())
 	{
-		if (IsScopeAttached())
+		// BONE FOR SCOPE IDLE MODEL
+		if (m_cur_scope_bone != NULL)
+			SetBoneVisible(m_cur_scope_bone, TRUE);
+
+		if (lfo_scope_type == 3 && IsScopeAttached())// SHOKER 3d Scopes PiP
+		{
+			// BONE FOR SCOPE AIM MODEL
+			if (m_cur_scope_bone_aim != NULL)
+				SetBoneVisible(m_cur_scope_bone_aim, FALSE);
+
+		}
+		else
+		{
+			if (UseScopeAimBone)
+			{
+				// BONE FOR SCOPE AIM MODEL
+				if (m_cur_scope_bone_aim != NULL)
+					SetBoneVisible(m_cur_scope_bone_aim, TRUE);
+
+			}
+			else
+			{
+				// BONE FOR SCOPE AIM MODEL
+				if (m_cur_scope_bone_aim != NULL)
+					SetBoneVisible(m_cur_scope_bone_aim, TRUE);
+			}
+		}
+
+		if (UseScopeRailBone)
+		{
+			// BONE FOR Picatinny RAILS SHOW
+			if (m_cur_scope_show_bone_rail != NULL)
+				SetBoneVisible(m_cur_scope_show_bone_rail, TRUE);
+
+			// BONE FOR Picatinny RAILS HIDE
+			if (m_cur_scope_hide_bone_rail != NULL)
+				SetBoneVisible(m_cur_scope_hide_bone_rail, FALSE);
+		}
+	}
+	else
+	{
+		if (lfo_scope_type == 3 && IsScopeAttached())// SHOKER 3d Scopes PiP
+		{
+
+			// BONE FOR SCOPE IDLE MODEL
+			if (m_cur_scope_bone != NULL)
+				SetBoneVisible(m_cur_scope_bone, TRUE);
+
+			// BONE FOR SCOPE AIM MODEL
+			if (m_cur_scope_bone_aim != NULL)
+				SetBoneVisible(m_cur_scope_bone_aim, FALSE);
+		}
+		else
+		{
+			if (UseScopeAimBone)
+			{
+				// BONE FOR SCOPE IDLE MODEL
+				if (m_cur_scope_bone != NULL)
+					SetBoneVisible(m_cur_scope_bone, FALSE);
+
+				// BONE FOR SCOPE AIM MODEL
+				if (m_cur_scope_bone_aim != NULL)
+					SetBoneVisible(m_cur_scope_bone_aim, TRUE);
+
+			}
+			else
+			{
+				// BONE FOR SCOPE IDLE MODEL
+				if (m_cur_scope_bone != NULL)
+					SetBoneVisible(m_cur_scope_bone, TRUE);
+
+				// BONE FOR SCOPE AIM MODEL
+				if (m_cur_scope_bone_aim != NULL)
+					SetBoneVisible(m_cur_scope_bone_aim, TRUE);
+			}
+		}
+
+		if (UseScopeRailBone)
+		{
+			// BONE FOR Picatinny RAILS SHOW
+			if (m_cur_scope_show_bone_rail != NULL)
+				SetBoneVisible(m_cur_scope_show_bone_rail, TRUE);
+
+			// BONE FOR Picatinny RAILS HIDE
+			if (m_cur_scope_hide_bone_rail != NULL)
+				SetBoneVisible(m_cur_scope_hide_bone_rail, FALSE);
+		}
+	}
+
+	if (ScopeAttachable())
+	{
+		if (IsScopeAttached() && !m_sScopeAttachSection.size())
 		{
 			if (bone_id != BI_NONE && !pWeaponVisual->LL_GetBoneVisible(bone_id))
-				pWeaponVisual->LL_SetBoneVisible(bone_id,TRUE,TRUE);
+				pWeaponVisual->LL_SetBoneVisible(bone_id, TRUE, TRUE);
 		}
 		else
 		{
 			if (bone_id != BI_NONE && pWeaponVisual->LL_GetBoneVisible(bone_id))
-				pWeaponVisual->LL_SetBoneVisible(bone_id,FALSE,TRUE);
+				pWeaponVisual->LL_SetBoneVisible(bone_id, FALSE, TRUE);
 		}
 	}
-
-	if (m_eScopeStatus==ALife::eAddonDisabled && bone_id!=BI_NONE && pWeaponVisual->LL_GetBoneVisible(bone_id))
+	if ((m_eScopeStatus == ALife::eAddonDisabled || m_sScopeAttachSection.size()) && bone_id != BI_NONE &&
+		pWeaponVisual->LL_GetBoneVisible(bone_id))
 	{
-		pWeaponVisual->LL_SetBoneVisible					(bone_id,FALSE,TRUE);
-//		Log("scope", pWeaponVisual->LL_GetBoneVisible		(bone_id));
+		pWeaponVisual->LL_SetBoneVisible(bone_id, FALSE, TRUE);
+		//		Log("scope", pWeaponVisual->LL_GetBoneVisible		(bone_id));
 	}
 
-	bone_id = pWeaponVisual->LL_BoneID						(m_sWpn_silencer_bone);
+	bone_id = pWeaponVisual->LL_BoneID(m_sWpn_silencer_bone);
 
-	if (SilencerAttachable() && !m_sSilencerAttachSection.size())
+	if (SilencerAttachable())
 	{
 		if (IsSilencerAttached())
 		{
-			if(!pWeaponVisual->LL_GetBoneVisible(bone_id))
-				pWeaponVisual->LL_SetBoneVisible(bone_id,TRUE,TRUE);
+			if (!pWeaponVisual->LL_GetBoneVisible(bone_id))
+				pWeaponVisual->LL_SetBoneVisible(bone_id, TRUE, TRUE);
 		}
 		else
 		{
-			if(bone_id != BI_NONE && pWeaponVisual->LL_GetBoneVisible(bone_id) && bone_id)
-				pWeaponVisual->LL_SetBoneVisible(bone_id,FALSE,TRUE);
+			if (pWeaponVisual->LL_GetBoneVisible(bone_id))
+				pWeaponVisual->LL_SetBoneVisible(bone_id, FALSE, TRUE);
 		}
 	}
-
-	if (m_eSilencerStatus==ALife::eAddonDisabled && bone_id!=BI_NONE && pWeaponVisual->LL_GetBoneVisible(bone_id) )
+	if (m_eSilencerStatus == ALife::eAddonDisabled && bone_id != BI_NONE &&
+		pWeaponVisual->LL_GetBoneVisible(bone_id))
 	{
-		pWeaponVisual->LL_SetBoneVisible					(bone_id,FALSE,TRUE);
-//		Log("silencer", pWeaponVisual->LL_GetBoneVisible	(bone_id));
+		pWeaponVisual->LL_SetBoneVisible(bone_id, FALSE, TRUE);
+		//		Log("silencer", pWeaponVisual->LL_GetBoneVisible	(bone_id));
 	}
 
-	bone_id = pWeaponVisual->LL_BoneID						(m_sWpn_launcher_bone);
-	if (GrenadeLauncherAttachable() && !m_sGrenadeLauncherAttachSection.size())
+	bone_id = pWeaponVisual->LL_BoneID(m_sWpn_launcher_bone);
+	if (GrenadeLauncherAttachable())
 	{
-		if (IsGrenadeLauncherAttached())
-		{
-			if(!pWeaponVisual->LL_GetBoneVisible(bone_id))
-				pWeaponVisual->LL_SetBoneVisible(bone_id,TRUE,TRUE);
-		}
-		else
-		{
-			if(bone_id != BI_NONE && pWeaponVisual->LL_GetBoneVisible(bone_id))
-				pWeaponVisual->LL_SetBoneVisible(bone_id,FALSE,TRUE);
-		}
-	}
-
-	if (m_eGrenadeLauncherStatus==ALife::eAddonDisabled && bone_id!=BI_NONE && pWeaponVisual->LL_GetBoneVisible(bone_id) )
-	{
-		pWeaponVisual->LL_SetBoneVisible					(bone_id,FALSE,TRUE);
-//		Log("gl", pWeaponVisual->LL_GetBoneVisible			(bone_id));
-	}
-
-	bone_id = pWeaponVisual->LL_BoneID(m_sWpn_laser_bone);
-	if (LaserAttachable() && !m_sLaserAttachSection.size())
-	{
-		if (IsLaserAttached())
+		if (IsGrenadeLauncherAttached() && !m_sGrenadeLauncherAttachSection.size())
 		{
 			if (!pWeaponVisual->LL_GetBoneVisible(bone_id))
 				pWeaponVisual->LL_SetBoneVisible(bone_id, TRUE, TRUE);
@@ -2674,17 +3263,37 @@ void CWeapon::UpdateAddonsVisibility(IKinematics* visual)
 				pWeaponVisual->LL_SetBoneVisible(bone_id, FALSE, TRUE);
 		}
 	}
+	if ((m_eGrenadeLauncherStatus == ALife::eAddonDisabled || m_sGrenadeLauncherAttachSection.size()) && bone_id != BI_NONE &&
+		pWeaponVisual->LL_GetBoneVisible(bone_id))
+	{
+		pWeaponVisual->LL_SetBoneVisible(bone_id, FALSE, TRUE);
+		//		Log("gl", pWeaponVisual->LL_GetBoneVisible			(bone_id));
+	}
 
-	if (m_eLaserDesignatorStatus == ALife::eAddonDisabled && bone_id != BI_NONE && pWeaponVisual->LL_GetBoneVisible(bone_id))
+	bone_id = pWeaponVisual->LL_BoneID(m_sWpn_laser_bone);
+	if (LaserAttachable())
+	{
+		if (IsLaserAttached() && !m_sLaserAttachSection.size())
+		{
+			if (!pWeaponVisual->LL_GetBoneVisible(bone_id))
+				pWeaponVisual->LL_SetBoneVisible(bone_id, TRUE, TRUE);
+		}
+		else
+		{
+			if (bone_id != BI_NONE && pWeaponVisual->LL_GetBoneVisible(bone_id))
+				pWeaponVisual->LL_SetBoneVisible(bone_id, FALSE, TRUE);
+		}
+	}
+	if ((m_eLaserDesignatorStatus == ALife::eAddonDisabled || m_sLaserAttachSection.size()) && bone_id != BI_NONE && pWeaponVisual->LL_GetBoneVisible(bone_id))
 	{
 		pWeaponVisual->LL_SetBoneVisible(bone_id, FALSE, TRUE);
 		//		Log("laser", pWeaponVisual->LL_GetBoneVisible	(bone_id));
 	}
 
 	bone_id = pWeaponVisual->LL_BoneID(m_sWpn_flashlight_bone);
-	if (TacticalTorchAttachable() && !m_sTacticalTorchAttachSection.size())
+	if (TacticalTorchAttachable())
 	{
-		if (IsTacticalTorchAttached())
+		if (IsTacticalTorchAttached() && !m_sTacticalTorchAttachSection.size())
 		{
 			if (!pWeaponVisual->LL_GetBoneVisible(bone_id))
 				pWeaponVisual->LL_SetBoneVisible(bone_id, TRUE, TRUE);
@@ -2695,8 +3304,7 @@ void CWeapon::UpdateAddonsVisibility(IKinematics* visual)
 				pWeaponVisual->LL_SetBoneVisible(bone_id, FALSE, TRUE);
 		}
 	}
-
-	if (m_eTacticalTorchStatus == ALife::eAddonDisabled && bone_id != BI_NONE && pWeaponVisual->LL_GetBoneVisible(bone_id))
+	if ((m_eTacticalTorchStatus == ALife::eAddonDisabled || m_sTacticalTorchAttachSection.size()) && bone_id != BI_NONE && pWeaponVisual->LL_GetBoneVisible(bone_id))
 	{
 		pWeaponVisual->LL_SetBoneVisible(bone_id, FALSE, TRUE);
 		//		Log("tactical torch", pWeaponVisual->LL_GetBoneVisible	(bone_id));
@@ -2734,8 +3342,8 @@ void CWeapon::UpdateAddonsVisibility(IKinematics* visual)
 
 	///////////////////////////////////////////////////////////////////
 
-	pWeaponVisual->CalculateBones_Invalidate				();
-	pWeaponVisual->CalculateBones							(TRUE);
+	pWeaponVisual->CalculateBones_Invalidate();
+	pWeaponVisual->CalculateBones(TRUE);
 }
 
 
@@ -2745,7 +3353,7 @@ void CWeapon::InitAddons()
 
 float CWeapon::CurrentZoomFactor()
 {
-	if (psActorFlags.test(AF_3DSCOPE_ENABLE) && IsScopeAttached())
+	if (lfo_scope_type == 3 && IsScopeAttached())// SHOKER 3d Scopes PiP
 	{
 		return m_bAltZoomActive ? m_zoom_params.m_fAltAimZoomFactor : GameConstants::GetOGSE_WpnZoomSystem() ? 1.0f : bIsSecondVPZoomPresent() ? m_zoom_params.m_f3dZoomFactor : m_zoom_params.m_fScopeZoomFactor; // no change to main fov zoom when use second vp
 	}
@@ -2818,6 +3426,11 @@ void CWeapon::OnZoomIn()
 		last_hud_fov = psHUD_FOV_def;
 		GamePersistent().SetPickableEffectorDOF(true);
 		UpdateAimOffsets();
+		UpdateAimFOV();
+		UpdateAltAimZoomFactor();
+		UpdateHudAltAimHud();
+		UpdateHudAltAimHudMode2();
+
 
 		if (IsGrenadeMode())
 		{
@@ -2851,7 +3464,10 @@ void CWeapon::OnZoomIn()
 			}
 		}
 	}
-	g_player_hud->updateMovementLayerState();
+	if (psActorFlags3.test(AF_LFO_WPN_MOVEMENT_LAYER))
+	{
+		g_player_hud->updateMovementLayerState();
+	}
 }
 
 void CWeapon::OnZoomOut()
@@ -2865,7 +3481,7 @@ void CWeapon::OnZoomOut()
 		m_freelook_switch_back = false;
 	}
 
-	if (!bIsSecondVPZoomPresent() || !psActorFlags.test(AF_3DSCOPE_ENABLE))
+	if (!bIsSecondVPZoomPresent() || lfo_scope_type != 3)// SHOKER 3d Scopes PiP
 		m_fRTZoomFactor = GetZoomFactor(); //  
 	m_zoom_params.m_bIsZoomModeNow = false;
 	SetZoomFactor(GameConstants::GetOGSE_WpnZoomSystem() ? 1.f : g_fov);
@@ -2878,6 +3494,16 @@ void CWeapon::OnZoomOut()
 		psHUD_FOV_def = last_hud_fov;
 		GamePersistent().SetPickableEffectorDOF(false);
 		UpdateAimOffsets();
+		UpdateHudAltAimHud();
+		UpdateHudAltAimHudMode2();
+
+		if (m_BlendAimEndCam.name.size())
+		{
+			if (m_BlendAimIdleCam.name.size())
+				g_player_hud->StopBlendAnm(m_BlendAimIdleCam.name.c_str());
+
+			g_player_hud->PlayBlendAnm(m_BlendAimEndCam.name.c_str(), 2, m_BlendAimEndCam.speed, m_BlendAimEndCam.power, false, false);
+		}
 
 		if (IsGrenadeMode())
 		{
@@ -2909,12 +3535,15 @@ void CWeapon::OnZoomOut()
 		m_zoom_params.m_pNight_vision->StopForScope(100000.0f, false);
 		xr_delete(m_zoom_params.m_pNight_vision);
 	}
-	g_player_hud->updateMovementLayerState();
+	if (psActorFlags3.test(AF_LFO_WPN_MOVEMENT_LAYER))
+	{
+		g_player_hud->updateMovementLayerState();
+	}
 }
 
 CUIWindow* CWeapon::ZoomTexture()
 {
-	if (UseScopeTexture() && !bIsSecondVPZoomPresent() && !m_bAltZoomActive)
+	if (UseScopeTexture() && !bIsSecondVPZoomPresent())
 		return m_UIScope;
 	else
 		return NULL;
@@ -3376,19 +4005,21 @@ void CWeapon::OnStateSwitch	(u32 S)
 	if (H_Parent() == Level().CurrentEntity())
 	{
 		CActor* current_actor = smart_cast<CActor*>(H_Parent());
-		bool fp_cam = current_actor->cam_Active() == current_actor->cam_FirstEye();
 
-		if (&HUD().GetUI()->UIGame()->ActorMenu() && HUD().GetUI()->UIGame()->ActorMenu().GetMenuMode() == mmUndefined)
+		if (psActorFlags2.test(AF_HUD_DOF))
 		{
-			if ((GetState() == eReload || GetState() == eUnMisfire || (GetState() == eBore && (GameConstants::GetSSFX_EnableBoreDoF() && m_bEnableBoreDof))) && current_actor && fp_cam)
+			if (&HUD().GetUI()->UIGame()->ActorMenu() && HUD().GetUI()->UIGame()->ActorMenu().GetMenuMode() == mmUndefined)
 			{
-				ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_FocusDoF();
-				ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_FocusDoF().z;
-			}
-			else
-			{
-				ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
-				ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
+				if ((GetState() == eReload || GetState() == eUnMisfire || (GetState() == eBore && (GameConstants::GetSSFX_EnableBoreDoF() && m_bEnableBoreDof))) && current_actor)
+				{
+					ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_FocusDoF();
+					ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_FocusDoF().z;
+				}
+				else
+				{
+					ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
+					ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
+				}
 			}
 		}
 	}
@@ -3476,12 +4107,18 @@ void CWeapon::ZoomDynamicMod(bool bIncrement, bool bForceLimit)
 
 void CWeapon::ZoomInc()
 {
-	ZoomDynamicMod(true, false);
+	if (lfo_scope_type != 4)//LFO 3d Scopes
+	{
+		ZoomDynamicMod(true, false);
+	}
 }
 
 void CWeapon::ZoomDec()
 {
-	ZoomDynamicMod(false, false);
+	if (lfo_scope_type != 4)//LFO 3d Scopes
+	{
+		ZoomDynamicMod(false, false);
+	}
 }
 
 u32 CWeapon::Cost() const
@@ -3550,16 +4187,19 @@ const char* CWeapon::GetAnimAimName()
 	{
 		const u32 state = pActor->get_state();
 
-		if (state && state & mcAnyMove)
+		if (psActorFlags3.test(AF_LFO_WPN_DISABLE_WPN_ANIMS))
 		{
-			if (IsScopeAttached() && m_bUseScopeAimMoveAnims)
-				return strconcat(sizeof(guns_aim_anm), guns_aim_anm, GenerateAimAnimName("anm_idle_aim_scope_moving"), (IsMisfire()) ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : "");
-			else
+			if (state && state & mcAnyMove)
 			{
-				if (m_bUseAimAnmDirDependency)
-					return strconcat(sizeof(guns_aim_anm), guns_aim_anm, GenerateAimAnimName("anm_idle_aim_moving"), (state & mcFwd) ? "_forward" : ((state & mcBack) ? "_back" : ""), (state & mcLStrafe) ? "_left" : ((state & mcRStrafe) ? "_right" : ""), (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
+				if (IsScopeAttached() && m_bUseScopeAimMoveAnims)
+					return strconcat(sizeof(guns_aim_anm), guns_aim_anm, GenerateAimAnimName("anm_idle_aim_scope_moving"), (IsMisfire()) ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : "");
 				else
-					return strconcat(sizeof(guns_aim_anm), guns_aim_anm, GenerateAimAnimName("anm_idle_aim_moving"), (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
+				{
+					if (m_bUseAimAnmDirDependency)
+						return strconcat(sizeof(guns_aim_anm), guns_aim_anm, GenerateAimAnimName("anm_idle_aim_moving"), (state & mcFwd) ? "_forward" : ((state & mcBack) ? "_back" : ""), (state & mcLStrafe) ? "_left" : ((state & mcRStrafe) ? "_right" : ""), (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
+					else
+						return strconcat(sizeof(guns_aim_anm), guns_aim_anm, GenerateAimAnimName("anm_idle_aim_moving"), (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
+				}
 			}
 		}
 	}
@@ -3621,20 +4261,40 @@ bool CWeapon::IsMagazineEmpty()
 
 void CWeapon::SwitchZoomMode()
 {
-	!m_bAltZoomActive ? m_bAltZoomActive = true : m_bAltZoomActive = false;
-
 	if (!IsZoomed())
-		return;
+	{
+		!m_bAltZoomActive ? m_bAltZoomActive = true : m_bAltZoomActive = false;
+	}
+	else
+	{
+		shared_str cur_scope_sect = (m_sScopeAttachSection.size() ? m_sScopeAttachSection : (m_eScopeStatus == ALife::eAddonAttachable) ? m_scopes[m_cur_scope].c_str() : "scope");
 
-	shared_str cur_scope_sect = (m_sScopeAttachSection.size() ? m_sScopeAttachSection : (m_eScopeStatus == ALife::eAddonAttachable) ? m_scopes[m_cur_scope].c_str() : "scope");
+		bool HudFovFromScope = false;
+		HudFovFromScope = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "cur_scope_hud_fov", false);
 
-	bool HudFovFromScope = false;
-	HudFovFromScope = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "cur_scope_hud_fov", false);
-
-	if (HudFovFromScope)
-		psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, !m_bAltZoomActive ? "aim_hud_fov" : "aim_alt_hud_fov", GetHudFov());
-
-	m_zoom_params.m_fCurrentZoomFactor = CurrentZoomFactor();
+		if (HudFovFromScope)
+		{
+			if (lfo_scope_type == 4)//LFO 3d Scopes
+			{
+				psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, !m_bAltZoomActive ? "aim_hud_fov" : "alt_aim_hud_fov", GetHudFov());
+				m_zoom_params.m_fCurrentZoomFactor = CurrentZoomFactor();
+			}
+			else
+			{
+				if (psActorFlags.test(ALTERNATIV_ALT_AIM))
+				{
+					psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, !m_bAltZoomActive ? "aim_hud_fov_pip_2" : "alt_aim_hud_fov_pip_2", GetHudFov());
+					m_zoom_params.m_fCurrentZoomFactor = CurrentZoomFactor();
+				}
+				else
+				{
+					psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, !m_bAltZoomActive ? "aim_hud_fov_pip" : "alt_aim_hud_fov_pip", GetHudFov());
+					m_zoom_params.m_fCurrentZoomFactor = CurrentZoomFactor();
+				}
+			}
+		}
+	}
+	UpdateAltAimZoomFactor();
 }
 
 void CWeapon::SwitchLaser(bool on)
@@ -3690,85 +4350,6 @@ void CWeapon::UpdateAddonsTransform(bool for_hud)
 
 		if (!for_hud)
 			mesh->RenderAttach(false);
-	}
-}
-
-void CWeapon::UpdateAimOffsets()
-{
-	shared_str cur_scope_sect = (m_sScopeAttachSection.size() ? m_sScopeAttachSection : (m_eScopeStatus == ALife::eAddonAttachable) ? m_scopes[m_cur_scope].c_str() : "scope");
-	psHUD_FOV_def = last_hud_fov;
-
-	static bool bNeedRestoreOffsets = false;
-
-	if ((bNeedRestoreOffsets && (!IsScopeAttached() || (!IsZoomed() && !IsRotatingFromZoom())) || !cur_scope_sect.size() || m_bAltZoomEnabled))
-	{
-		attachable_hud_item* hi = HudItemData();
-
-		if (!hi)
-			return;
-
-		bool is_16x9 = UI().is_widescreen();
-		string64	_prefix;
-		xr_sprintf(_prefix, "%s", is_16x9 ? "_16x9" : "");
-		string128	val_name;
-
-		strconcat(sizeof(val_name), val_name, "aim_hud_offset_pos", _prefix);
-		hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(m_hud_sect, val_name);
-		strconcat(sizeof(val_name), val_name, "aim_hud_offset_rot", _prefix);
-		hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(m_hud_sect, val_name);
-
-		strconcat(sizeof(val_name), val_name, "aim_alt_hud_offset_pos", _prefix);
-		hi->m_measures.m_hands_offset[0][3] = READ_IF_EXISTS(pSettings, r_fvector3, m_hud_sect, val_name, hi->m_measures.m_hands_offset[0][1]);
-		strconcat(sizeof(val_name), val_name, "aim_alt_hud_offset_rot", _prefix);
-		hi->m_measures.m_hands_offset[1][3] = READ_IF_EXISTS(pSettings, r_fvector3, m_hud_sect, val_name, hi->m_measures.m_hands_offset[1][1]);
-
-		strconcat(sizeof(val_name), val_name, "gl_hud_offset_pos", _prefix);
-		hi->m_measures.m_hands_offset[0][2] = pSettings->r_fvector3(m_hud_sect, val_name);
-		strconcat(sizeof(val_name), val_name, "gl_hud_offset_rot", _prefix);
-		hi->m_measures.m_hands_offset[1][2] = pSettings->r_fvector3(m_hud_sect, val_name);
-
-		if (cur_scope_sect.size())
-			m_bAltZoomEnabledScope = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "enable_alternative_aim", false);
-		
-		bNeedRestoreOffsets = false;
-
-		return;
-	}
-
-	bool HudFovFromScope = false;
-	HudFovFromScope = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "cur_scope_hud_fov", false);
-
-	if (HudFovFromScope && !IsRotatingFromZoom())
-		psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, !m_bAltZoomActive ? "aim_hud_fov" : "aim_alt_hud_fov", GetHudFov());
-
-	bool AimOffsetsFromScope = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "cur_scope_aim_offsets", m_bAltZoomEnabledScope);
-
-	if (AimOffsetsFromScope)
-	{
-		attachable_hud_item* hi = HudItemData();
-
-		if (!hi)
-			return;
-
-		bool is_16x9 = UI().is_widescreen();
-		string64	_prefix;
-		xr_sprintf(_prefix, "%s", is_16x9 ? "_16x9" : "");
-		string128	val_name;
-
-		strconcat(sizeof(val_name), val_name, "aim_hud_offset_pos", _prefix);
-		hi->m_measures.m_hands_offset[0][1] = READ_IF_EXISTS(pSettings, r_fvector3, cur_scope_sect, val_name, hi->m_measures.m_hands_offset[0][1]);
-		strconcat(sizeof(val_name), val_name, "aim_hud_offset_rot", _prefix);
-		hi->m_measures.m_hands_offset[1][1] = READ_IF_EXISTS(pSettings, r_fvector3, cur_scope_sect, val_name, hi->m_measures.m_hands_offset[1][1]);
-
-		if (m_bAltZoomEnabledScope)
-		{
-			strconcat(sizeof(val_name), val_name, "aim_alt_hud_offset_pos", _prefix);
-			hi->m_measures.m_hands_offset[0][3] = READ_IF_EXISTS(pSettings, r_fvector3, cur_scope_sect, val_name, hi->m_measures.m_hands_offset[0][1]);
-			strconcat(sizeof(val_name), val_name, "aim_alt_hud_offset_rot", _prefix);
-			hi->m_measures.m_hands_offset[1][3] = READ_IF_EXISTS(pSettings, r_fvector3, cur_scope_sect, val_name, hi->m_measures.m_hands_offset[1][1]);
-		}
-
-		bNeedRestoreOffsets = true;
 	}
 }
 
@@ -3956,4 +4537,352 @@ void CWeapon::WpnExplosion()
 	// Уничтожаем оружие
 	if (m_bWpnDestroyAfterExplode)
 		DestroyObject();
+}
+
+void CWeapon::UpdateAimOffsets()
+{
+	shared_str cur_scope_sect = (m_sScopeAttachSection.size() ? m_sScopeAttachSection : (m_eScopeStatus == ALife::eAddonAttachable) ? m_scopes[m_cur_scope].c_str() : "scope");
+	bool UseScopeAimBone = false;
+
+	bool AimOffsetsFromScope = false;
+	AimOffsetsFromScope = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "cur_scope_aim_offsets", false);
+
+	bool NeedAnotherOffset = false;
+	NeedAnotherOffset = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "cur_scope_aim_offsets_3d", false);
+
+
+	bool AimOffsetsPermanentScope = false;
+	if (pSettings->line_exist(m_section_id.c_str(), "weapon_have_permanent_scope"))
+		AimOffsetsPermanentScope = READ_IF_EXISTS(pSettings, r_bool, m_section_id, "weapon_have_permanent_scope", false);
+
+
+	if (!IsScopeAttached() || (!IsZoomed() && !IsRotatingFromZoom()) || !cur_scope_sect.size())
+	{
+		attachable_hud_item* hi = HudItemData();
+
+		if (!hi)
+			return;
+
+		bool is_16x9 = UI().is_widescreen();
+		string64	_prefix;
+		xr_sprintf(_prefix, "%s", is_16x9 ? "_16x9" : "");
+		string128	val_name;
+
+		if (AimOffsetsPermanentScope)
+		{
+			strconcat(sizeof(val_name), val_name, "aim_hud_offset_3d_pos", _prefix);
+			hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(m_hud_sect, val_name);
+			strconcat(sizeof(val_name), val_name, "aim_hud_offset_3d_rot", _prefix);
+			hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(m_hud_sect, val_name);
+		}
+		else
+		{
+			strconcat(sizeof(val_name), val_name, "aim_hud_offset_pos", _prefix);
+			hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(m_hud_sect, val_name);
+			strconcat(sizeof(val_name), val_name, "aim_hud_offset_rot", _prefix);
+			hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(m_hud_sect, val_name);
+		}
+		
+		strconcat(sizeof(val_name), val_name, "aim_hud_offset_3d_alt_pos", _prefix);
+		hi->m_measures.m_hands_offset[0][3] = READ_IF_EXISTS(pSettings, r_fvector3, m_hud_sect, val_name, hi->m_measures.m_hands_offset[0][1]);
+		strconcat(sizeof(val_name), val_name, "aim_hud_offset_3d_alt_rot", _prefix);
+		hi->m_measures.m_hands_offset[1][3] = READ_IF_EXISTS(pSettings, r_fvector3, m_hud_sect, val_name, hi->m_measures.m_hands_offset[1][1]);
+
+		strconcat(sizeof(val_name), val_name, "gl_hud_offset_pos", _prefix);
+		hi->m_measures.m_hands_offset[0][2] = pSettings->r_fvector3(m_hud_sect, val_name);
+		strconcat(sizeof(val_name), val_name, "gl_hud_offset_rot", _prefix);
+		hi->m_measures.m_hands_offset[1][2] = pSettings->r_fvector3(m_hud_sect, val_name);
+
+		return;
+	}
+
+	if (AimOffsetsFromScope)
+	{
+		attachable_hud_item* hi = HudItemData();
+
+		if (!hi)
+			return;
+
+		bool is_16x9 = UI().is_widescreen();
+		string64	_prefix;
+		xr_sprintf(_prefix, "%s", is_16x9 ? "_16x9" : "");
+		string128	val_name;
+
+		if (NeedAnotherOffset && !bIsSecondVPZoomPresent())
+		{
+			if (lfo_scope_type != 3)// SHOKER 3d Scopes PiP
+			{
+				strconcat(sizeof(val_name), val_name, "aim_hud_offset_3d_pos", _prefix);
+				hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+				strconcat(sizeof(val_name), val_name, "aim_hud_offset_3d_rot", _prefix);
+				hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+
+			}
+			else
+			{
+				strconcat(sizeof(val_name), val_name, "aim_hud_offset_3d_pos", _prefix);
+				hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+				strconcat(sizeof(val_name), val_name, "aim_hud_offset_3d_rot", _prefix);
+				hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+			}
+
+			strconcat(sizeof(val_name), val_name, "aim_hud_offset_3d_alt_pos", _prefix);
+			hi->m_measures.m_hands_offset[0][3] = READ_IF_EXISTS(pSettings, r_fvector3, cur_scope_sect, val_name, hi->m_measures.m_hands_offset[0][1]);
+			strconcat(sizeof(val_name), val_name, "aim_hud_offset_3d_alt_rot", _prefix);
+			hi->m_measures.m_hands_offset[1][3] = READ_IF_EXISTS(pSettings, r_fvector3, cur_scope_sect, val_name, hi->m_measures.m_hands_offset[1][1]);
+		}
+		else
+		{
+
+			if (lfo_scope_type != 3)// SHOKER 3d Scopes PiP
+			{
+				strconcat(sizeof(val_name), val_name, "aim_hud_offset_pos", _prefix);
+				hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+				strconcat(sizeof(val_name), val_name, "aim_hud_offset_rot", _prefix);
+				hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+			}
+			else
+			{
+				strconcat(sizeof(val_name), val_name, "aim_hud_offset_pos", _prefix);
+				hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+				strconcat(sizeof(val_name), val_name, "aim_hud_offset_rot", _prefix);
+				hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+			}
+	
+			strconcat(sizeof(val_name), val_name, "aim_hud_offset_alt_pos", _prefix);
+			hi->m_measures.m_hands_offset[0][3] = READ_IF_EXISTS(pSettings, r_fvector3, cur_scope_sect, val_name, hi->m_measures.m_hands_offset[0][1]);
+			strconcat(sizeof(val_name), val_name, "aim_hud_offset_alt_rot", _prefix);
+			hi->m_measures.m_hands_offset[1][3] = READ_IF_EXISTS(pSettings, r_fvector3, cur_scope_sect, val_name, hi->m_measures.m_hands_offset[1][1]);
+		}
+
+		strconcat(sizeof(val_name), val_name, "gl_hud_offset_pos", _prefix);
+		hi->m_measures.m_hands_offset[0][2] = pSettings->r_fvector3(cur_scope_sect, val_name);
+		strconcat(sizeof(val_name), val_name, "gl_hud_offset_rot", _prefix);
+		hi->m_measures.m_hands_offset[1][2] = pSettings->r_fvector3(cur_scope_sect, val_name);
+	}
+}
+
+void CWeapon::UpdateAltAimZoomFactor()	//FOR SCOPED WEAPONS
+{
+	shared_str cur_scope_sect = (m_sScopeAttachSection.size() ? m_sScopeAttachSection : (m_eScopeStatus == ALife::eAddonAttachable) ? m_scopes[m_cur_scope].c_str() : "scope");
+	if (lfo_scope_type == 4)//LFO 3d Scopes
+	{
+		m_zoom_params.m_fScopeZoomFactor = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, !m_bAltZoomActive ? "scope_zoom_factor_3d" : "scope_zoom_factor_3d_alt", GetHudFov());
+	}
+}
+
+void CWeapon::UpdateAltAimZoomFactor2()	//FOR NONE SCOPED WEAPONS
+{
+	luabind::functor<void> funct;
+	bool ShowHudAltAimNoScope = false;
+	
+	if (pSettings->line_exist(m_section_id, "enable_alternative_aim_no_scope"))
+		ShowHudAltAimNoScope = READ_IF_EXISTS(pSettings, r_bool, m_section_id, "enable_alternative_aim_no_scope", false);
+
+	if (ShowHudAltAimNoScope)
+	{
+		if (m_bAltZoomEnabled)
+		{
+			if (m_bAltZoomActive)
+			{
+				//	Msg("!Weapon No Scope Alt Aim Enabled");
+				if (ai().script_engine().functor("lfo_weapons.on_actor_weapon_test_process_on", funct))
+					funct();
+
+				m_zoom_params.m_fScopeZoomFactor = pSettings->r_float(cNameSect(), "scope_zoom_factor_alt");
+			}
+			else
+			{
+				//	Msg("!Weapon No Scope Alt Aim Disabled");
+				if (ai().script_engine().functor("lfo_weapons.on_actor_weapon_test_process_off", funct))
+					funct();
+
+				m_zoom_params.m_fScopeZoomFactor = pSettings->r_float(cNameSect(), "scope_zoom_factor");
+
+			}
+		}
+	}
+}
+
+void CWeapon::UpdateHudAltAimHud()
+{
+	luabind::functor<void> funct;
+	shared_str cur_scope_sect = (m_sScopeAttachSection.size() ? m_sScopeAttachSection : (m_eScopeStatus == ALife::eAddonAttachable) ? m_scopes[m_cur_scope].c_str() : "scope");
+	bool ShowHudAltAimPossibleScopedWeapon = false;
+	bool ShowHudAltAimPossible = false;
+
+	if (pSettings->line_exist(cur_scope_sect, "enable_alternative_aim_scope_info"))
+		ShowHudAltAimPossibleScopedWeapon = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "enable_alternative_aim_scope_info", false);
+
+	if (pSettings->line_exist(m_section_id, "enable_alternative_aim_info"))
+		ShowHudAltAimPossible = READ_IF_EXISTS(pSettings, r_bool, m_section_id, "enable_alternative_aim_info", false);
+
+	if (lfo_scope_type == 4 && psActorFlags3.test(AF_LFO_HUD_FUNCTIONS_ICONS))//LFO 3d Scopes
+	{
+		if (ShowHudAltAimPossibleScopedWeapon)
+		{
+			//Msg("!Weapon Scoped Alt Aim Enabled");
+
+			if (ai().script_engine().functor("lfo_weapons.on_actor_weapon_alt_aim_on", funct))
+				funct();
+		}
+		else
+		{
+			//Msg("!Weapon Scoped Alt Aim Disabled");
+
+			if (ai().script_engine().functor("lfo_weapons.on_actor_weapon_alt_aim_off", funct))
+				funct();
+		}
+
+		if (ShowHudAltAimPossible)
+		{
+			//Msg("!Weapon Alt Aim Enabled");
+
+			if (ai().script_engine().functor("lfo_weapons.on_actor_weapon_alt_aim_on", funct))
+				funct();
+		}
+		else
+		{
+			//Msg("!Weapon Scoped Alt Aim Disabled");
+
+			if (ai().script_engine().functor("lfo_weapons.on_actor_weapon_alt_aim_off", funct))
+				funct();
+		}
+	}
+}
+
+void CWeapon::UpdateHudAltAimHudMode2() //Let us make unique for Survival mode
+{
+	luabind::functor<void> funct;
+	shared_str cur_scope_sect = (m_sScopeAttachSection.size() ? m_sScopeAttachSection : (m_eScopeStatus == ALife::eAddonAttachable) ? m_scopes[m_cur_scope].c_str() : "scope");
+	bool ShowHudAltAimPossibleScopedWeapon = false;
+	bool ShowHudAltAimPossible = false;
+
+	if (pSettings->line_exist(cur_scope_sect, "enable_alternative_aim_scope_info"))
+		ShowHudAltAimPossibleScopedWeapon = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "enable_alternative_aim_scope_info", false);
+
+	if (pSettings->line_exist(m_section_id, "enable_alternative_aim_info"))
+		ShowHudAltAimPossible = READ_IF_EXISTS(pSettings, r_bool, m_section_id, "enable_alternative_aim_info", false);
+
+	if (lfo_scope_type == 4 && psActorFlags3.test(AF_LFO_SURVIVAL_MODE))//LFO 3d Scopes
+	{
+		if (ShowHudAltAimPossibleScopedWeapon)
+		{
+			//Msg("!Weapon Scoped Alt Aim Enabled");
+
+			if (ai().script_engine().functor("lfo_weapons.on_actor_weapon_alt_aim2_on", funct))
+				funct();
+		}
+		else
+		{
+			//Msg("!Weapon Scoped Alt Aim Disabled");
+
+			if (ai().script_engine().functor("lfo_weapons.on_actor_weapon_alt_aim_off", funct))
+				funct();
+		}
+
+		if (ShowHudAltAimPossible)
+		{
+			//Msg("!Weapon Alt Aim Enabled");
+
+			if (ai().script_engine().functor("lfo_weapons.on_actor_weapon_alt_aim2_on", funct))
+				funct();
+		}
+		else
+		{
+			//Msg("!Weapon Scoped Alt Aim Disabled");
+
+			if (ai().script_engine().functor("lfo_weapons.on_actor_weapon_alt_aim_off", funct))
+				funct();
+		}
+	}
+}
+
+void CWeapon::UpdateCheckWeaponHaveLaser()
+{
+	string64 str;
+	luabind::functor<void> funct;
+	bool WeaponHaveLaser = false;
+
+	if (pSettings->line_exist(m_section_id.c_str(), "weapon_use_laser"))
+		WeaponHaveLaser = READ_IF_EXISTS(pSettings, r_bool, m_section_id, "weapon_use_laser", false);
+
+	if (psHUD_Flags.test(HUD_CROSSHAIR))
+	{
+		if (WeaponHaveLaser)
+		{
+		//	Msg("!Weapon Have Laser");
+
+			if (ai().script_engine().functor("lfo_weapons.on_actor_weapon_have_laser", funct))
+				funct();
+
+			psHUD_Flags.set(HUD_CROSSHAIR_RT, FALSE);
+		}
+		else
+		{
+		//	Msg("!Weapon Dont Have Laser");
+	
+			if (ai().script_engine().functor("lfo_weapons.on_actor_weapon_dont_have_laser", funct))
+				funct();
+
+			psHUD_Flags.set(HUD_CROSSHAIR_RT, TRUE);
+		}
+	}
+}
+
+void CWeapon::UpdateGLAttached()	//FOR NONE SCOPED WEAPONS
+{
+	luabind::functor<void> funct;
+	bool ShowHudAltAimNoScope = false;
+
+	if (psActorFlags3.test(AF_LFO_HUD_FUNCTIONS_ICONS)) 
+	{
+		if (IsGrenadeLauncherAttached() && GetGrenadeLauncherName().size())
+		{
+			//	Msg("!Weapon GL ATTACHED");
+			if (ai().script_engine().functor("lfo_weapons.on_actor_weapon_gl_attached", funct))
+				funct();
+		}
+	}
+}
+
+void CWeapon::UpdateAimFOV()
+{
+	shared_str cur_scope_sect = (m_sScopeAttachSection.size() ? m_sScopeAttachSection : (m_eScopeStatus == ALife::eAddonAttachable) ? m_scopes[m_cur_scope].c_str() : "scope");
+	psHUD_FOV_def = last_hud_fov;
+
+	bool HudFovFromScope = false;
+	HudFovFromScope = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "cur_scope_hud_fov", false);
+
+	if (HudFovFromScope && IsScopeAttached() && !IsRotatingFromZoom())	//SCOPED WEAPONS
+	{
+		if (lfo_scope_type == 4)//LFO 3d Scopes
+		{
+			psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, !m_bAltZoomActive ? "aim_hud_fov" : "alt_aim_hud_fov", GetHudFov());
+			m_zoom_params.m_fCurrentZoomFactor = CurrentZoomFactor();
+		}
+		else
+		{
+			if (psActorFlags.test(ALTERNATIV_ALT_AIM))
+			{
+				psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, !m_bAltZoomActive ? "aim_hud_fov_pip_2" : "alt_aim_hud_fov_pip_2", GetHudFov());
+				m_zoom_params.m_fCurrentZoomFactor = CurrentZoomFactor();
+			}
+			else
+			{
+				psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, !m_bAltZoomActive ? "aim_hud_fov_pip" : "alt_aim_hud_fov_pip", GetHudFov());
+				m_zoom_params.m_fCurrentZoomFactor = CurrentZoomFactor();
+			}
+		}
+	}
+
+	bool HudFovFromNoScope = false;
+	HudFovFromNoScope = READ_IF_EXISTS(pSettings, r_bool, m_section_id, "cur_no_scope_hud_fov", false);
+
+	if (HudFovFromNoScope && !IsScopeAttached())	//NONE SCOPED WEAPONS
+	{
+		psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, m_section_id, !m_bAltZoomActive ? "aim_hud_fov_ironsight" : "alt_aim_hud_fov_ironsight", GetHudFov());
+		m_zoom_params.m_fCurrentZoomFactor = CurrentZoomFactor();
+	}
+
 }

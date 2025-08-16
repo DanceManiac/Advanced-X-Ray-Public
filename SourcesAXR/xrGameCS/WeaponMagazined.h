@@ -30,10 +30,12 @@ protected:
 	ESoundTypes		m_eSoundReload;
 	ESoundTypes		m_eSoundClose;
 	ESoundTypes		m_eSoundReflect;
+
 	bool			m_sounds_enabled;
 	// General
 	//кадр момента пересчета UpdateSounds
 	u32				dwUpdateSounds_Frame;
+	u32				lfo_scope_type;
 
 	virtual void    CheckMagazine();
 
@@ -56,7 +58,7 @@ protected:
 	virtual void	switch2_FlashlightSwitch();
 	
 	virtual void	OnShot			();	
-	
+	virtual void	PlaySoundShot	();
 	virtual void	OnEmptyClick	();
 
 	virtual void	OnAnimationEnd	(u32 state);
@@ -159,6 +161,7 @@ protected:
 	bool m_bAutoreloadEnabled;
 	bool m_opened;
 	bool m_bUseFiremodeChangeAnim;
+	bool m_bIsRevolver;
 
 public:
 	virtual void	OnZoomIn			();

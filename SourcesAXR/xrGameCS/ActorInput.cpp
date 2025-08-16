@@ -428,18 +428,20 @@ void CActor::IR_OnKeyboardPress(int cmd)
 		{
 			auto wpn = smart_cast<CWeapon*>(inventory().ActiveItem());
 
-			if (wpn)
+			if (wpn/*&& wpn->IsScopeAttached()*/)		// "IsScopeAttached" Deactivated because so i can enable alt aim without attached scope
 			{
 				if (!wpn->IsAltAimEnabled())
 					return;
 
 				wpn->SwitchZoomMode();
 
+				/*
 				string256 alt_aim_status;
 				strconcat(sizeof(alt_aim_status), alt_aim_status, "st_alt_aim_switched_", wpn->GetAltZoomStatus() ? "on" : "off");
 
-				if (SDrawStaticStruct* custom_static = HUD().GetUI()->UIGame()->AddCustomStatic("alt_aim_switched", true))
-					custom_static->wnd()->SetText(CStringTable().translate(alt_aim_status).c_str());
+				SDrawStaticStruct* custom_static = HUD().GetUI()->UIGame()->AddCustomStatic("alt_aim_switched", true);
+				custom_static->wnd()->SetText(CStringTable().translate(alt_aim_status).c_str());
+				*/
 			}
 		}break;
 	}

@@ -19,6 +19,9 @@ class CHUDTarget
 private:
 	ui_shader				hShader;
 	ui_shader				hShaderCrosshairBuild;
+	ui_shader				hShaderCrosshairLFOa;
+	ui_shader				hShaderCrosshairLFOb;
+	ui_shader				hShaderCrosshairLFOc;
 	float					fuzzyShowInfo;
 	SPickParam				PP;
 

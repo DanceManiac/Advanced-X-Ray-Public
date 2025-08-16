@@ -417,14 +417,14 @@ void player_hud::SaveCfg(const int idx) const
 		.c_str());
 
 	pHudCfg.w_string(sect_name,
-		"aim_alt_hud_offset_pos_16x9",
+		"aim_hud_offset_alt_pos_16x9",
 		make_string("%f,%f,%f",
 			hi->m_measures.m_hands_offset[0][1].x,
 			hi->m_measures.m_hands_offset[0][1].y,
 			hi->m_measures.m_hands_offset[0][1].z)
 		.c_str());
 	pHudCfg.w_string(sect_name,
-		"aim_alt_hud_offset_rot_16x9",
+		"aim_hud_offset_alt_rot_16x9",
 		make_string("%f,%f,%f",
 			hi->m_measures.m_hands_offset[1][1].x,
 			hi->m_measures.m_hands_offset[1][1].y,
@@ -432,19 +432,94 @@ void player_hud::SaveCfg(const int idx) const
 		.c_str());
 
 	pHudCfg.w_string(sect_name,
-		"hud_collision_offset_pos_16x9",
+		"aim_hud_offset_3d_pos_16x9",
 		make_string("%f,%f,%f",
-			hi->m_measures.m_collision_offset[0].x,
-			hi->m_measures.m_collision_offset[0].y,
-			hi->m_measures.m_collision_offset[0].z)
+			hi->m_measures.m_hands_offset[0][1].x,
+			hi->m_measures.m_hands_offset[0][1].y,
+			hi->m_measures.m_hands_offset[0][1].z)
+		.c_str());
+	pHudCfg.w_string(sect_name,
+		"aim_hud_offset_3d_rot_16x9",
+		make_string("%f,%f,%f",
+			hi->m_measures.m_hands_offset[1][1].x,
+			hi->m_measures.m_hands_offset[1][1].y,
+			hi->m_measures.m_hands_offset[1][1].z)
 		.c_str());
 
 	pHudCfg.w_string(sect_name,
-		"hud_collision_offset_rot_16x9",
+		"aim_hud_offset_3d_alt_pos_16x9",
 		make_string("%f,%f,%f",
-			hi->m_measures.m_collision_offset[1].x,
-			hi->m_measures.m_collision_offset[1].y,
-			hi->m_measures.m_collision_offset[1].z)
+			hi->m_measures.m_hands_offset[0][1].x,
+			hi->m_measures.m_hands_offset[0][1].y,
+			hi->m_measures.m_hands_offset[0][1].z)
+		.c_str());
+	pHudCfg.w_string(sect_name,
+		"aim_hud_offset_3d_alt_rot_16x9",
+		make_string("%f,%f,%f",
+			hi->m_measures.m_hands_offset[1][1].x,
+			hi->m_measures.m_hands_offset[1][1].y,
+			hi->m_measures.m_hands_offset[1][1].z)
+		.c_str());
+	//-----------------//
+
+	pHudCfg.w_string(sect_name,
+		"aim_hud_offset_pos",
+		make_string("%f,%f,%f",
+			hi->m_measures.m_hands_offset[0][1].x,
+			hi->m_measures.m_hands_offset[0][1].y,
+			hi->m_measures.m_hands_offset[0][1].z)
+		.c_str());
+	pHudCfg.w_string(sect_name,
+		"aim_hud_offset_rot",
+		make_string("%f,%f,%f",
+			hi->m_measures.m_hands_offset[1][1].x,
+			hi->m_measures.m_hands_offset[1][1].y,
+			hi->m_measures.m_hands_offset[1][1].z)
+		.c_str());
+
+	pHudCfg.w_string(sect_name,
+		"aim_hud_offset_alt_pos",
+		make_string("%f,%f,%f",
+			hi->m_measures.m_hands_offset[0][1].x,
+			hi->m_measures.m_hands_offset[0][1].y,
+			hi->m_measures.m_hands_offset[0][1].z)
+		.c_str());
+	pHudCfg.w_string(sect_name,
+		"aim_hud_offset_alt_rot",
+		make_string("%f,%f,%f",
+			hi->m_measures.m_hands_offset[1][1].x,
+			hi->m_measures.m_hands_offset[1][1].y,
+			hi->m_measures.m_hands_offset[1][1].z)
+		.c_str());
+
+	pHudCfg.w_string(sect_name,
+		"aim_hud_offset_3d_pos",
+		make_string("%f,%f,%f",
+			hi->m_measures.m_hands_offset[0][1].x,
+			hi->m_measures.m_hands_offset[0][1].y,
+			hi->m_measures.m_hands_offset[0][1].z)
+		.c_str());
+	pHudCfg.w_string(sect_name,
+		"aim_hud_offset_3d_rot",
+		make_string("%f,%f,%f",
+			hi->m_measures.m_hands_offset[1][1].x,
+			hi->m_measures.m_hands_offset[1][1].y,
+			hi->m_measures.m_hands_offset[1][1].z)
+		.c_str());
+
+	pHudCfg.w_string(sect_name,
+		"aim_hud_offset_3d_alt_pos",
+		make_string("%f,%f,%f",
+			hi->m_measures.m_hands_offset[0][1].x,
+			hi->m_measures.m_hands_offset[0][1].y,
+			hi->m_measures.m_hands_offset[0][1].z)
+		.c_str());
+	pHudCfg.w_string(sect_name,
+		"aim_hud_offset_3d_alt_rot",
+		make_string("%f,%f,%f",
+			hi->m_measures.m_hands_offset[1][1].x,
+			hi->m_measures.m_hands_offset[1][1].y,
+			hi->m_measures.m_hands_offset[1][1].z)
 		.c_str());
 
 	pHudCfg.w_string(sect_name,

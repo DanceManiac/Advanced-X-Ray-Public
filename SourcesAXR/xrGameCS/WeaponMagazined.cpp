@@ -45,6 +45,7 @@ CWeaponMagazined::CWeaponMagazined(ESoundTypes eSoundType) : CWeapon()
 	m_eSoundEmptyClick			= ESoundTypes(SOUND_TYPE_WEAPON_EMPTY_CLICKING | eSoundType);
 	m_eSoundReload				= ESoundTypes(SOUND_TYPE_WEAPON_RECHARGING | eSoundType);
 	m_eSoundClose				= ESoundTypes(SOUND_TYPE_WEAPON_RECHARGING);
+
 	m_sounds_enabled			= true;
 
 	psWpnAnimsFlag = { 0 };
@@ -57,7 +58,6 @@ CWeaponMagazined::CWeaponMagazined(ESoundTypes eSoundType) : CWeapon()
 	bullet_cnt					= 0;
 	m_iQueueSize				= WEAPON_ININITE_QUEUE;
 	m_bLockType					= false;
-	m_bAutoreloadEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "autoreload_enabled", true);
 	m_bNeedBulletInGun			= false;
 	m_bHasDifferentFireModes	= false;
 	m_opened					= false;
@@ -65,6 +65,7 @@ CWeaponMagazined::CWeaponMagazined(ESoundTypes eSoundType) : CWeapon()
 	bHasBulletsToHide			= false;
 
 	m_sSndShotCurrent			= nullptr;
+	m_bIsRevolver				= false;
 }
 
 CWeaponMagazined::~CWeaponMagazined()
@@ -102,7 +103,7 @@ void CWeaponMagazined::Load	(LPCSTR section)
 	SetAnimFlag(ANM_RELOAD_EMPTY,	"anm_reload_empty");
 	SetAnimFlag(ANM_MISFIRE,		"anm_reload_misfire");
 	SetAnimFlag(ANM_SHOT_AIM,		"anm_shots_when_aim");
-		
+	
 	// Sounds
 	m_sounds.LoadSound(section,"snd_draw",			"sndShow",			false,	m_eSoundShow		);
 	m_sounds.LoadSound(section,"snd_holster",		"sndHide",			false,	m_eSoundHide		);
@@ -203,10 +204,10 @@ void CWeaponMagazined::Load	(LPCSTR section)
 		m_sounds.LoadSound(section,"snd_silncer_shot", "sndSilencerShot", false, m_eSoundShot);
 	}
 
-	if (WeaponSoundExist(section, "snd_zoom_in", true))
-		m_sounds.LoadSound(section, "snd_zoom_in", "sndZoomIn", true, m_eSoundEmptyClick);
-	if (WeaponSoundExist(section, "snd_zoom_out", true))
-		m_sounds.LoadSound(section, "snd_zoom_out", "sndZoomOut", true, m_eSoundEmptyClick);
+	if (WeaponSoundExist(section, "snd_aim_up", true))
+		m_sounds.LoadSound(section, "snd_aim_up", "sndZoomIn", true, m_eSoundEmptyClick);
+	if (WeaponSoundExist(section, "snd_aim_down", true))
+		m_sounds.LoadSound(section, "snd_aim_down", "sndZoomOut", true, m_eSoundEmptyClick);
 	if (WeaponSoundExist(section, "snd_sprint_start", true))
 		m_sounds.LoadSound(section, "snd_sprint_start", "sndSprintStart", true, m_eSoundEmptyClick);
 	if (WeaponSoundExist(section, "snd_sprint_end", true))
@@ -323,7 +324,7 @@ void CWeaponMagazined::FireEnd()
 {
 	inherited::FireEnd();
 
-	if (m_bAutoreloadEnabled)
+	if (psActorFlags2.test(AF_WPN_RELOAD_TYPE))
 	{
 		if (Actor()->mstate_real & (mcSprint) && !GameConstants::GetReloadIfSprint())
 			return;
@@ -460,6 +461,15 @@ bool CWeaponMagazined::TryReload()
 			m_pCurrentAmmo = smart_cast<CWeaponAmmo*>(m_pInventory->GetAny(*m_ammoTypes[m_ammoType] ));
 		else
 			m_pCurrentAmmo = NULL;
+
+		/*
+		if (ParentIsActor())
+		{
+			luabind::functor<void> funct;
+			if (ai().script_engine().functor("lfo_weapons.on_actor_reloading", funct))
+				funct();
+		}
+		*/
 
 		if (IsMisfire() && iAmmoElapsed)
 		{
@@ -876,6 +886,11 @@ void CWeaponMagazined::UpdateCL()
 			{
 				fShotTimeCounter	-=	dt;
 				clamp				(fShotTimeCounter, 0.0f, flt_max);
+
+				luabind::functor<void> funct;
+				if (ai().script_engine().functor("lfo_weapons.on_actor_not_shooting", funct))
+					funct();
+
 			}break;
 		case eFire:			
 			{
@@ -917,9 +932,9 @@ void CWeaponMagazined::UpdateSounds	()
 		m_sounds.SetPosition("sndFlashlightOff", P);
 	if (WeaponSoundExist(m_section_id.c_str(), "snd_change_zoom"))
 		m_sounds.SetPosition("sndChangeZoom", P);
-	if (WeaponSoundExist(m_section_id.c_str(), "snd_zoom_in"))
+	if (WeaponSoundExist(m_section_id.c_str(), "snd_aim_up"))
 		m_sounds.SetPosition("sndZoomIn", P);
-	if (WeaponSoundExist(m_section_id.c_str(), "snd_zoom_out"))
+	if (WeaponSoundExist(m_section_id.c_str(), "snd_aim_down"))
 		m_sounds.SetPosition("sndZoomOut", P);
 	if (WeaponSoundExist(m_section_id.c_str(), "snd_sprint_start"))
 		m_sounds.SetPosition("sndSprintStart", P);
@@ -927,6 +942,10 @@ void CWeaponMagazined::UpdateSounds	()
 		m_sounds.SetPosition("sndSprintEnd", P);
 	if (WeaponSoundExist(m_section_id.c_str(), "snd_sprint_idle"))
 		m_sounds.SetPosition("sndSprintIdle", P);
+	if (m_sounds.FindSoundItem("sndAimUp", false))
+		m_sounds.SetPosition("sndAimUp", P);
+	if (m_sounds.FindSoundItem("sndAimDown", false))
+		m_sounds.SetPosition("sndAimDown", P);
 
 //. nah	m_sounds.SetPosition("sndShot", P);
 	m_sounds.SetPosition("sndReload", P);
@@ -1054,9 +1073,52 @@ void CWeaponMagazined::SetDefaults	()
 	CWeapon::SetDefaults		();
 }
 
+void CWeaponMagazined::PlaySoundShot()
+{
+	if (ParentIsActor())
+	{
+		if (bMisfire)
+		{
+			string128 sndNameMisfire;
+			strconcat(sizeof(sndNameMisfire), sndNameMisfire, m_sSndShotCurrent.c_str(), "MisfireActor");
+			if (m_sounds.FindSoundItem(sndNameMisfire, false))
+			{
+				m_sounds.PlaySound(sndNameMisfire, get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
+				return;
+			}
+		}
+
+		string128 sndName;
+		strconcat(sizeof(sndName), sndName, m_sSndShotCurrent.c_str(), "Actor");
+		if (m_sounds.FindSoundItem(sndName, false))
+		{
+			m_sounds.PlaySound(sndName, get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
+			return;
+		}
+	}
+
+	if (bMisfire)
+	{
+		string128 sndNameMisfire;
+		strconcat(sizeof(sndNameMisfire), sndNameMisfire, m_sSndShotCurrent.c_str(), "Misfire");
+		if (m_sounds.FindSoundItem(sndNameMisfire, false))
+		{
+			m_sounds.PlaySound(sndNameMisfire, get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
+			return;
+		}
+	}
+
+	m_sounds.PlaySound(m_sSndShotCurrent.c_str(), get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
+}
+
 
 void CWeaponMagazined::OnShot()
 {
+	if (psActorFlags.test(AF_WPN_ZOOM_OUT_SHOOT))
+	{
+		if (IsOutScopeAfterShot())
+			OnZoomOut();
+	}
 	// Если актор бежит - останавливаем его
 	if (ParentIsActor() && GameConstants::GetStopActorIfShoot())
 		Actor()->set_state_wishful(Actor()->get_state_wishful() & (~mcSprint));
@@ -1123,7 +1185,7 @@ void CWeaponMagazined::OnShot()
 	if (ParentIsActor())
 	{
 		luabind::functor<void> funct;
-		if (ai().script_engine().functor("mfs_functions.on_actor_shoot", funct))
+		if (ai().script_engine().functor("lfo_weapons.on_actor_shooting", funct))
 			funct();
 
 		if (auto mag_shot_snd = m_sounds.FindSoundItem("sndMagShot", false))
@@ -1275,6 +1337,13 @@ void CWeaponMagazined::OnAnimationEnd(u32 state)
 			{
 				m_magazine.push_back(FirstBulletInGun);
 				iAmmoElapsed++;
+			}
+
+			if (ParentIsActor())
+			{
+				luabind::functor<void> funct;
+				if (ai().script_engine().functor("lfo_weapons.on_actor_reloading", funct))
+					funct();
 			}
 
 			SwitchState(eIdle);
@@ -1561,7 +1630,7 @@ void CWeaponMagazined::switch2_Empty()
 {
 	OnZoomOut();
 
-	if (m_bAutoreloadEnabled)
+	if (psActorFlags2.test(AF_WPN_RELOAD_TYPE))
 	{
 		if (!TryReload())
 		{
@@ -2012,6 +2081,11 @@ bool CWeaponMagazined::DetachScope(const char* item_section_name, bool b_spawn_i
 		{
 			m_cur_scope = NULL;
 			m_cur_scope_bone = NULL;
+			m_cur_scope_bone_aim = NULL;
+			m_cur_scope_bone_part = NULL;
+			m_cur_scope_bone_aim_part = NULL;
+			m_cur_scope_show_bone_rail = NULL;
+			m_cur_scope_hide_bone_rail = NULL;
 			m_bAltZoomActive = false;
 			detached = true;
 		}
@@ -2034,6 +2108,8 @@ bool CWeaponMagazined::Detach(const char* item_section_name, bool b_spawn_item)
 		UpdateAltScope();
 		UpdateAddonsVisibility();
 		InitAddons();
+		UpdateHudAltAimHud();
+		UpdateHudAltAimHudMode2();
 
 		return CInventoryItemObject::Detach(item_section_name, b_spawn_item);
 	}
@@ -2120,8 +2196,29 @@ void CWeaponMagazined::InitAddons()
 
 			if (pSettings->line_exist(m_scopes[m_cur_scope], "bones"))
 			{
-				pcstr ScopeBone = pSettings->r_string(m_scopes[m_cur_scope], "bones");
+				// BONE FOR SCOPE IDLE MODEL
+				pcstr ScopeBone = pSettings->r_string(m_scopes[m_cur_scope], "scope_bones");
 				m_cur_scope_bone = ScopeBone;
+
+				// BONE FOR SCOPE AIM MODEL
+				pcstr ScopeBoneAim = pSettings->r_string(m_scopes[m_cur_scope], "scope_bones_aim");
+				m_cur_scope_bone_aim = ScopeBoneAim;
+
+				// BONE FOR SCOPE IDLE MODEL
+				pcstr ScopeBonePart = pSettings->r_string(m_scopes[m_cur_scope], "scope_bones_part");
+				m_cur_scope_bone_part = ScopeBonePart;
+
+				// BONE FOR SCOPE AIM MODEL
+				pcstr ScopeBoneAimPart = pSettings->r_string(m_scopes[m_cur_scope], "scope_bones_part_aim");
+				m_cur_scope_bone_aim_part = ScopeBoneAimPart;
+
+				// BONE FOR Picatinny RAILS
+				pcstr ScopeShowBoneRail = pSettings->r_string(m_scopes[m_cur_scope], "scope_show_bones_rail");
+				m_cur_scope_show_bone_rail = ScopeShowBoneRail;
+
+				// BONE FOR Picatinny RAILS
+				pcstr ScopeHideBoneRail = pSettings->r_string(m_scopes[m_cur_scope], "scope_hide_bones_rail");
+				m_cur_scope_hide_bone_rail = ScopeHideBoneRail;
 			}
 
 			if (m_sScopeAttachSection.size() && pSettings->line_exist(m_sScopeAttachSection, "attach_hud_visual"))
@@ -2144,8 +2241,8 @@ void CWeaponMagazined::InitAddons()
 		if (bIsSecondVPZoomPresent())
 			m_zoom_params.m_fSecondVPFovFactor = 0.0f;
 
-		if ( IsZoomEnabled() )
-			m_zoom_params.m_fIronSightZoomFactor = pSettings->r_float( cNameSect(), "scope_zoom_factor" );
+		if (IsZoomEnabled())
+			m_zoom_params.m_fIronSightZoomFactor = pSettings->r_float(cNameSect(), "scope_zoom_factor");
 	}
 
 	if (IsSilencerAttached() && SilencerAttachable())
@@ -2243,6 +2340,9 @@ void CWeaponMagazined::PlayAnimShow()
 		m_opened = true;
 
 	HUD_VisualBulletUpdate();
+	UpdateCheckWeaponHaveLaser();
+	UpdateHudAltAimHud();
+	UpdateHudAltAimHudMode2();
 
 	if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_SHOW_EMPTY))
 		PlayHUDMotion("anm_show_empty", FALSE, this, GetState());
@@ -2255,6 +2355,10 @@ void CWeaponMagazined::PlayAnimShow()
 void CWeaponMagazined::PlayAnimHide()
 {
 	VERIFY(GetState()==eHiding);
+
+	UpdateCheckWeaponHaveLaser();
+	UpdateHudAltAimHud();
+	UpdateHudAltAimHudMode2();
 
 	if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_HIDE_EMPTY))
 		PlayHUDMotion("anm_hide_empty", TRUE, this, GetState());
@@ -2631,8 +2735,44 @@ void CWeaponMagazined::OnZoomIn			()
 {
 	inherited::OnZoomIn();
 
+	shared_str cur_scope_sect = (m_sScopeAttachSection.size() ? m_sScopeAttachSection : (m_eScopeStatus == ALife::eAddonAttachable) ? m_scopes[m_cur_scope].c_str() : "scope");
+
+	//UpdateAltAimZoomFactor2();
+
+	bool UseScopeAimScript = false;
+	if (pSettings->line_exist(cur_scope_sect, "scope_use_aim_effect"))
+		UseScopeAimScript = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "scope_use_aim_effect", false);
+
+	bool UseScopeNVGScript = false;
+	if (pSettings->line_exist(cur_scope_sect, "scope_use_nightvision"))
+		UseScopeNVGScript = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "scope_use_nightvision", false);
+
+
 	if(GetState() == eIdle && !IsPending())
 		PlayAnimIdle();
+
+	luabind::functor<void> funct;
+
+	if (psActorFlags2.test(AF_LFO_WEAPON_AIM_CAM_EFF))
+	{
+		if (ai().script_engine().functor("lfo_weapons.on_actor_aiming", funct))
+			funct();
+
+		if (UseScopeAimScript)
+		{
+			if (ai().script_engine().functor("lfo_weapons.on_actor_aiming_sniper", funct))
+				funct();
+		}
+	}
+
+	if (lfo_scope_type != 3)
+	{
+		if (UseScopeNVGScript)
+		{
+			if (ai().script_engine().functor("lfo_weapons.on_actor_scope_nvg_on", funct))
+				funct();
+		}
+	}
 
 	//Alundaio: callback not sure why vs2013 gives error, it's fine
 	CGameObject* object = smart_cast<CGameObject*>(H_Parent());
@@ -2664,11 +2804,38 @@ void CWeaponMagazined::OnZoomOut		()
 
 	inherited::OnZoomOut	();
 
+	bool UseScopeAimScript = true;
+	bool UseScopeNVGScript = true;
+
 	if (GetState() == eFire && !IsPending())
 		PlayAnimAimEnd		();
 
 	if(GetState() == eIdle && !IsPending())
 		PlayAnimIdle		();
+
+	luabind::functor<void> funct;
+
+	if (psActorFlags2.test(AF_LFO_WEAPON_AIM_CAM_EFF))
+	{
+		if (ai().script_engine().functor("lfo_weapons.on_actor_not_aiming", funct))
+			funct();
+
+		if (UseScopeAimScript)
+		{
+			if (ai().script_engine().functor("lfo_weapons.on_actor_not_aiming_sniper", funct))
+				funct();
+		}
+	}
+
+	if (lfo_scope_type != 3)
+	{
+		if (UseScopeNVGScript)
+		{
+			if (ai().script_engine().functor("lfo_weapons.on_actor_scope_nvg_off", funct))
+				funct();
+		}
+	}
+
 
 	//Alundaio
 	CGameObject* object = smart_cast<CGameObject*>(H_Parent());

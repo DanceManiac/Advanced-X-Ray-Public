@@ -405,12 +405,12 @@ void hud_item_measures::load(const shared_str& sect_name, IKinematics* K)
 		xr_strcpy(val_name, "gl_hud_offset_rot");
 	m_hands_offset[1][2] = READ_IF_EXISTS(pSettings, r_fvector3, sect_name, val_name, Fvector{});
 
-	strconcat					(sizeof(val_name),val_name,"aim_alt_hud_offset_pos",_prefix);
+	strconcat					(sizeof(val_name),val_name,"aim_hud_offset_alt_pos",_prefix);
 	if (is_16x9 && !pSettings->line_exist(sect_name, val_name))
 		xr_strcpy(val_name, "aim_alt_hud_offset_pos");
 	m_hands_offset[0][3]		= READ_IF_EXISTS(pSettings, r_fvector3, sect_name, val_name, m_hands_offset[0][1]);
 
-	strconcat					(sizeof(val_name),val_name,"aim_alt_hud_offset_rot",_prefix);
+	strconcat					(sizeof(val_name),val_name,"aim_hud_offset_alt_rot",_prefix);
 	if (is_16x9 && !pSettings->line_exist(sect_name, val_name))
 		xr_strcpy(val_name, "aim_alt_hud_offset_rot");
 	m_hands_offset[1][3]		= READ_IF_EXISTS(pSettings, r_fvector3, sect_name, val_name, m_hands_offset[1][1]);
@@ -1360,7 +1360,10 @@ u32 player_hud::script_anim_play(u8 hand, LPCSTR section, LPCSTR anm_name, bool 
 		m_bStopAtEndScriptAnimIsRunning = false;
 	}
 
-	updateMovementLayerState();
+	if (psActorFlags3.test(AF_LFO_WPN_MOVEMENT_LAYER))
+	{
+		updateMovementLayerState();
+	}
 
 	return length;
 }
@@ -1526,7 +1529,10 @@ void player_hud::StopScriptAnim()
 	script_anim_part = u8(-1);
 	script_anim_item_model = nullptr;
 
-	updateMovementLayerState();
+	if (psActorFlags3.test(AF_LFO_WPN_MOVEMENT_LAYER))
+	{
+		updateMovementLayerState();
+	}
 
 	if (part != 2 && !m_attached_items[part])
 		re_sync_anim(part + 1);
@@ -1684,7 +1690,11 @@ void player_hud::attach_item(CHudItem* item)
 
 		item->on_a_hud_attach();
 
-		updateMovementLayerState();
+		if (psActorFlags3.test(AF_LFO_WPN_MOVEMENT_LAYER))
+		{
+			updateMovementLayerState();
+		}
+
 	}
 	pi->m_parent_hud_item							= item;
 }

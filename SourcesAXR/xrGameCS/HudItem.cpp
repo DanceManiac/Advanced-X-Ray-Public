@@ -295,7 +295,10 @@ void CHudItem::OnStateSwitch(u32 S)
 			PlayAnimSprintEnd();
 		} break;
 	}
-	g_player_hud->updateMovementLayerState();
+	if (psActorFlags3.test(AF_LFO_WPN_MOVEMENT_LAYER))
+	{
+		g_player_hud->updateMovementLayerState();
+	}
 }
 
 void CHudItem::OnAnimationEnd(u32 state)

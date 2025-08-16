@@ -292,10 +292,16 @@ void CShootingObject::LoadShellParticles (LPCSTR section, LPCSTR prefix)
 	string256 full_name;
 	strconcat(sizeof(full_name),full_name, prefix, "shell_particles");
 
-	if(pSettings->line_exist(section,full_name)) 
+	if (!psActorFlags3.test(AF_LFO_SHOT_SHELL_ANIMATIONS))
 	{
-		m_sShellParticles	= pSettings->r_string	(section,full_name);
-		vLoadedShellPoint	= pSettings->r_fvector3	(section,strconcat(sizeof(full_name),full_name, prefix, "shell_point"));
+		string256 full_name;
+		strconcat(sizeof(full_name), full_name, prefix, "shell_particles");
+
+		if (pSettings->line_exist(section, full_name))
+		{
+			m_sShellParticles = pSettings->r_string(section, full_name);
+			vLoadedShellPoint = pSettings->r_fvector3(section, strconcat(sizeof(full_name), full_name, prefix, "shell_point"));
+		}
 	}
 }
 
