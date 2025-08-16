@@ -1,0 +1,15 @@
+#include "common.h"
+
+uniform	sampler2D s_hud_acid;
+uniform float4 hud_acid_params; // x=intensity
+
+float4 main(p_screen I) : COLOR
+{
+	float2	texcoord 				= I.tc0;
+	float intensity = (sin(timers.x * 3.0) * hud_acid_params.x + hud_acid_params.x);
+	float4	acid_texture 		= tex2D(s_hud_acid, texcoord);
+	float3 	scene 					= tex2D(s_image, I.tc0).xyz;
+	scene = lerp(scene, acid_texture.xyz, acid_texture.w * intensity);
+
+	return float4(scene, 1.0f);
+}

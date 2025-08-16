@@ -1,0 +1,90 @@
+/*
+	Parallax
+		Works ok with most of lenses
+			Thanks Gaz1k for SHITTY LENSES IN YOUR STCOP KURWA MAĆ JEBAŃCU TY RUDY
+				LVutner
+
+*/
+
+#include "common.h"
+
+
+
+#if defined(ALLOW_AMD_RETICLE_FIX) || defined(USE_AMD_RETICLE_FIX)
+struct 	v2p
+{
+ 	float2 	tc0: 		TEXCOORD0;	// base
+// 	float2 	tc1: 		TEXCOORD1;	// lmap
+  	float4	c0:		COLOR0;		// sun
+};
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// Pixel
+float4 main( v2p I ) : SV_Target
+{
+//	float4	t_base 	= tex2D	(s_base,I.tc0);
+	float4	t_base 	= s_base.Sample( smp_base, I.tc0 );
+
+	// out
+	return  float4	(t_base.r,t_base.g,t_base.b,t_base.a * I.c0.a);
+}
+
+#endif
+#if !defined(ALLOW_AMD_RETICLE_FIX) || defined(USE_AMD_RETICLE_FIX)
+struct 	v2p
+{
+ 	float2 tc0		: TEXCOORD0;	// base
+  	float4 c0		: COLOR0;		// sun
+	float4 pos2d	: SV_Position;
+};
+
+float resize(float input, float factor, float offset)
+{
+	return (input - 0.5f + offset) / factor + 0.5f - offset;
+}
+float4 main( v2p I ) : SV_Target
+{
+	//Texcoordinates of screen
+	float2 screen_tc = I.pos2d.xy / screen_res.xy;
+
+	//Get base texture size
+	uint width, height;
+	s_base.GetDimensions(width, height);
+	
+	
+/*
+
+	//Get mark texcoord
+	float2 mark_tc = screen_tc;
+	mark_tc -= float2(0.5, 0.5);	
+	mark_tc.x *= screen_res.x / width;				
+	mark_tc.y *= screen_res.y / height;	
+	mark_tc += float2(0.5, 0.5);
+*/
+
+	//Get mark texcoord
+	float2 mark_tc = screen_tc;
+	mark_tc -= float2(0.5, 0.5);	
+	mark_tc.x *= screen_res.x / width;				
+	mark_tc.y *= screen_res.y / height;	
+	
+	mark_tc.xy *= 2.0;
+	
+	mark_tc += float2(0.5, 0.5);
+	
+	
+	//Sample mark texture
+	float4 t_base = s_base.Sample(smp_rtlinear,mark_tc);
+	
+	//Output
+	return float4(t_base.rgb, (t_base.a * I.c0.a));
+}
+
+#endif
+
+
+
+
+
+
+

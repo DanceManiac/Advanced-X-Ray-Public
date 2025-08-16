@@ -1,0 +1,80 @@
+#include "common.h"
+
+#define SEARCH_ITTERATIONS 2
+
+float4 main(float2 I : TEXCOORD0) : SV_Target
+{
+	float4 Color = s_base.Sample(smp_base, I);
+
+	if (Color.w > 0.05f)
+		return Color;
+	
+	float blurSizeX = 0.0025f * 0.25f;
+	float blurSizeY = 0.0025f * 0.25f;
+	
+//	float3 glow_color = float3(127.f / 255.f, 127.f / 255.f, 160.f / 255.f);
+	float3 glow_color = float3(127.f / 255.f, 127.f / 255.f, 160.f / 255.f);
+	
+	const float l4 = 0.06f;
+	const float l3 = 0.12f;
+	const float l2 = 0.16f;
+	const float l1 = 0.18f;
+	
+	const float l4_tc_offset = 4.0f;
+	const float l3_tc_offset = 3.0f;
+	const float l2_tc_offset = 2.0f;
+	const float l1_tc_offset = 1.0f;
+	
+	const float l4_tc_offset_diag = 3.2f;
+	const float l3_tc_offset_diag = 2.4f;
+	const float l2_tc_offset_diag = 1.6f;
+	const float l1_tc_offset_diag = 0.8f;
+	
+	Color = 0.0f;
+	
+    {
+		Color += s_base.Sample(smp_base, float2(I.x - l4_tc_offset_diag * blurSizeX, I.y - l4_tc_offset_diag * blurSizeY)) * l4;
+		Color += s_base.Sample(smp_base, float2(I.x - l3_tc_offset_diag * blurSizeX, I.y - l3_tc_offset_diag * blurSizeY)) * l3;
+		Color += s_base.Sample(smp_base, float2(I.x - l2_tc_offset_diag * blurSizeX, I.y - l2_tc_offset_diag * blurSizeY)) * l2;
+		Color += s_base.Sample(smp_base, float2(I.x - l1_tc_offset_diag * blurSizeX, I.y - l1_tc_offset_diag * blurSizeY)) * l1;
+		Color += s_base.Sample(smp_base, float2(I.x + l1_tc_offset_diag * blurSizeX, I.y + l1_tc_offset_diag * blurSizeY)) * l1;
+		Color += s_base.Sample(smp_base, float2(I.x + l2_tc_offset_diag * blurSizeX, I.y + l2_tc_offset_diag * blurSizeY)) * l2;
+		Color += s_base.Sample(smp_base, float2(I.x + l3_tc_offset_diag * blurSizeX, I.y + l3_tc_offset_diag * blurSizeY)) * l3;
+		Color += s_base.Sample(smp_base, float2(I.x + l4_tc_offset_diag * blurSizeX, I.y + l4_tc_offset_diag * blurSizeY)) * l4;
+	}
+	
+    {
+		Color += s_base.Sample(smp_base, float2(I.x - l4_tc_offset_diag * blurSizeX, I.y + l4_tc_offset_diag * blurSizeY)) * l4;
+		Color += s_base.Sample(smp_base, float2(I.x - l3_tc_offset_diag * blurSizeX, I.y + l3_tc_offset_diag * blurSizeY)) * l3;
+		Color += s_base.Sample(smp_base, float2(I.x - l2_tc_offset_diag * blurSizeX, I.y + l2_tc_offset_diag * blurSizeY)) * l2;
+		Color += s_base.Sample(smp_base, float2(I.x - l1_tc_offset_diag * blurSizeX, I.y + l1_tc_offset_diag * blurSizeY)) * l1;
+		Color += s_base.Sample(smp_base, float2(I.x + l1_tc_offset_diag * blurSizeX, I.y - l1_tc_offset_diag * blurSizeY)) * l1;
+		Color += s_base.Sample(smp_base, float2(I.x + l2_tc_offset_diag * blurSizeX, I.y - l2_tc_offset_diag * blurSizeY)) * l2;
+		Color += s_base.Sample(smp_base, float2(I.x + l3_tc_offset_diag * blurSizeX, I.y - l3_tc_offset_diag * blurSizeY)) * l3;
+		Color += s_base.Sample(smp_base, float2(I.x + l4_tc_offset_diag * blurSizeX, I.y - l4_tc_offset_diag * blurSizeY)) * l4;
+	}
+
+    {
+		Color += s_base.Sample(smp_base, float2(I.x - l4_tc_offset * blurSizeX, I.y)) * l4;
+		Color += s_base.Sample(smp_base, float2(I.x - l3_tc_offset * blurSizeX, I.y)) * l3;
+		Color += s_base.Sample(smp_base, float2(I.x - l2_tc_offset * blurSizeX, I.y)) * l2;
+		Color += s_base.Sample(smp_base, float2(I.x - l1_tc_offset * blurSizeX, I.y)) * l1;
+		Color += s_base.Sample(smp_base, float2(I.x + l1_tc_offset * blurSizeX, I.y)) * l1;
+		Color += s_base.Sample(smp_base, float2(I.x + l2_tc_offset * blurSizeX, I.y)) * l2;
+		Color += s_base.Sample(smp_base, float2(I.x + l3_tc_offset * blurSizeX, I.y)) * l3;
+		Color += s_base.Sample(smp_base, float2(I.x + l4_tc_offset * blurSizeX, I.y)) * l4;
+	}
+	
+    {
+		Color += s_base.Sample(smp_base, float2(I.x, I.y + l4_tc_offset * blurSizeY)) * l4;
+		Color += s_base.Sample(smp_base, float2(I.x, I.y + l3_tc_offset * blurSizeY)) * l3;
+		Color += s_base.Sample(smp_base, float2(I.x, I.y + l2_tc_offset * blurSizeY)) * l2;
+		Color += s_base.Sample(smp_base, float2(I.x, I.y + l1_tc_offset * blurSizeY)) * l1;
+		Color += s_base.Sample(smp_base, float2(I.x, I.y - l1_tc_offset * blurSizeY)) * l1;
+		Color += s_base.Sample(smp_base, float2(I.x, I.y - l2_tc_offset * blurSizeY)) * l2;
+		Color += s_base.Sample(smp_base, float2(I.x, I.y - l3_tc_offset * blurSizeY)) * l3;
+		Color += s_base.Sample(smp_base, float2(I.x, I.y - l4_tc_offset * blurSizeY)) * l4;
+	}
+	
+    return float4(glow_color, Color.w * 255.f / 255.f);
+}

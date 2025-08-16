@@ -1,0 +1,60 @@
+#include "common.h"
+#include "sload.h"
+
+Texture2D s_base_rust2;
+Texture2D s_base_rust2_bump;
+
+float4 m_condition_params;
+
+f_deffer main (p_bumped I)
+{
+	//Initialize MRT struct
+	f_deffer O;
+
+	float tile_factor = 1.0;	//8.0;
+	
+	//Sample textures
+	float3 albedo_map = s_base.Sample(smp_base, I.tcdh.xy).xyz; //Albedo map
+	float4 bump_map = s_bump.Sample(smp_base, I.tcdh.xy); //Bump map
+	float4 bumpx_map = s_bumpX.Sample(smp_base, I.tcdh.xy); //Error map
+	float4 rust2_albedo_map = s_base_rust2.Sample(smp_base, I.tcdh.xy * tile_factor); //rust2 albedo map
+	float4 rust2_bump_map = s_base_rust2_bump.Sample(smp_base, I.tcdh.xy * tile_factor); //rust2 albedo map
+
+	//rust2 mask
+	float rust2_mask = saturate(1.0-m_condition_params.x) * rust2_albedo_map.w;
+
+	//Albedo mix
+	albedo_map = lerp(albedo_map, rust2_albedo_map.xyz, rust2_mask);
+
+	//Normal mapping
+	float3 normal;
+	normal.xy = bump_map.wz * 2.0 - 1.0;
+	normal.z = sqrt(1.0 - saturate(dot(normal.xy, normal.xy)));
+	
+	//rust2 normal mapping
+	float3 rust2_normal;
+	rust2_normal.xy = rust2_bump_map.wz * 2.0 - 1.0;
+	rust2_normal.z = sqrt(1.0 - saturate(dot(rust2_normal.xy, rust2_normal.xy)));
+	
+	//Blending
+	normal = normalize(float3(normal.xy + rust2_normal.xy * rust2_mask, normal.z));
+	
+	//Tangent to view
+	normal.xyz = normalize(mul(float3x3(I.M1,I.M2,I.M3), normal.xyz)); //Rotate normals
+
+	//Specular
+	float specular = lerp(bump_map.x, rust2_bump_map.x, rust2_mask);
+
+	//Hemi light
+	float hemi_light = I.position.w;
+	
+	//Material ID
+	float material_id = 0.3; //Static MID
+	
+	//G-Buffer output
+	O = pack_gbuffer(
+	float4(normal, hemi_light),
+	float4(I.position.xyz, material_id),
+	float4(albedo_map.xyz, specular));
+	return O;
+}

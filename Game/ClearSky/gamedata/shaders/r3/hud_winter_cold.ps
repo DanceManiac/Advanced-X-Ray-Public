@@ -1,0 +1,29 @@
+#include "common.h"
+#include "hud_mask_common.h"
+
+Texture2D s_hud_cold;
+uniform float4 hud_cold_params; // x=intensity
+
+float4 main(p_screen I) : SV_Target
+{
+	//Sample cold texture
+	float4 cold_tex = s_hud_cold.Sample(smp_nofilter,I.tc0);
+
+	// Calculate the interpolated intensity
+    float intensity = smoothstep(0.5, 1.0, hud_cold_params.x);
+	
+	//Prepare refracted texcoord
+    float4 refraction = float4(1.0, 1.0, 1.0, 1.0) + cold_tex.xyxy * intensity;	
+    float4 refr_tc = float4(I.tc0.xy, 1.0, 1.0);
+    refr_tc *= refraction;
+    refr_tc.xy /= refr_tc.w;
+	
+	//Sample scene with refracted texcoord
+	float3 image = s_image.Sample(smp_nofilter, refr_tc.xy).xyz;
+
+	//Mix
+	image = lerp(image, cold_tex.w, cold_tex.w * intensity);
+	
+	//Output
+	return float4(image, 1.0);
+}

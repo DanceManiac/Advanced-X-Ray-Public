@@ -1,0 +1,52 @@
+#include "common.h"
+
+struct 	v2p
+{
+ 	float2 	tc0: 		TEXCOORD0;	// base
+  	half4	c0:			COLOR0;		// sun.(fog*fog)
+};
+
+//uniform float4 screen_res;
+uniform sampler2D s_vp2;
+
+float  resize(float input, float factor, float offset)
+{
+	return (input-0.5f+offset) / factor+0.5f-offset;
+}
+
+#define NV_COLOR float3(0.4,1.0,0.6)
+#define NV_BRIGHTNESS 10.0
+#define FLICKERING_FREQ 60.0
+#define NOISE_INTENSITY 0.15
+
+half4 main( v2p I )	: COLOR
+{
+    float aspect_ratio = screen_res.x / screen_res.y;
+
+	//Sample texture with new TC
+	float4 lens = tex2D(s_base, I.tc0);
+
+	//Prepare secondary viewport
+	I.tc0.x = resize(I.tc0.x, aspect_ratio, 0); //Resize to fit the lens
+	float4 viewport = tex2D(s_vp2, I.tc0);
+
+    float lum = dot(viewport.rgb, float3( 0.3f, 0.38f, 0.22f)*NV_BRIGHTNESS );  //instead of float3 use LUMINANCE_floatTOR in stalker
+    viewport.rgb = NV_COLOR.rgb*lum;
+    
+    //cheap noise function
+    float noise  = frac(sin(dot(I.tc0, float2(12.0, 78.0) + (timers.x*1.17f) )) * 43758.0); 
+    
+    //////////////////////////////////////////////////////////////////////////////////////////
+    viewport += noise * NOISE_INTENSITY; 
+    viewport += 0.0125 * sin(timers.x*FLICKERING_FREQ);   
+
+	//Fix "freezed" scene in lens
+	if (!isSecondVPActive()) 
+	{
+		viewport.rgb /= 100.f;
+	}
+
+	//Mix viewport with scope texture
+	half3 final = lerp(viewport, lens, lens.a);
+	return half4(final.r, final.g, final.b, m_hud_params.x);
+}

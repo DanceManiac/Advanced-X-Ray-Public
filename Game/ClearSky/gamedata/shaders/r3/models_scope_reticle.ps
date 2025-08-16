@@ -1,0 +1,207 @@
+/*
+	=====================================================================
+	Addon      : Shader 3D scopes
+	Link       : https://www.moddb.com/mods/stalker-anomaly/addons/shader-3d-scopes
+	Authors    : LVutner, party_50
+	Date       : 01.03.2024
+	Last Edit  : 12.03.2024
+	=====================================================================
+*/
+
+#include "common.h"
+#include "nv_utils.h"
+
+Texture2D s_prev_frame;
+
+//float4 m_hud_params;
+float4 ogse_c_screen;
+uniform float4 shader_param_6;
+uniform float4 markswitch_current;
+uniform float4 markswitch_color;
+
+struct vf
+{
+    float2 tc0 : TEXCOORD0;
+    float3 v_pos : TEXCOORD1;
+    float3 v_nrm : TEXCOORD2;
+    float4 hpos : SV_Position;
+};
+
+float3x3 cotangent_frame(float3 N, float3 P, float2 uv)
+{
+    float3 dp1 = ddx(P);
+    float3 dp2 = ddy(P);
+    float2 duv1 = ddx(uv);
+    float2 duv2 = ddy(uv);
+
+    float3 dp2perp = cross(dp2, N);
+    float3 dp1perp = cross(N, dp1);
+    float3 T = dp2perp * duv1.x + dp1perp * duv2.x;
+    float3 B = dp2perp * duv1.y + dp1perp * duv2.y;
+
+    float invmax = rsqrt(max(dot(T, T), dot(B, B)));
+    return float3x3(T * invmax, B * invmax, N);
+}
+
+float4 sample_shadow(float2 tc, float shadow_width)
+{
+	float a = smoothstep(0.5 - shadow_width, 0.5, distance(tc, float2(0.5, 0.5))); 
+	return float4(0, 0, 0, a);
+}
+
+float2 project(float2 tc, float2 tangent, float distance, float size)
+{
+    float2 parallax_tc = tc - tangent * distance;
+	parallax_tc.x = (parallax_tc.x + (size - 1) / 2) / size;
+	parallax_tc.y = (parallax_tc.y + (size - 1) / 2) / size;
+    return parallax_tc;
+}
+
+float3 chroma_sample(float2 lens_tc, float2 back_tc, float power)
+{
+	float2 d = lens_tc - 0.5;
+	d = sign(d) * pow(abs(d), 4.0) * power;
+    
+	return float3(
+		s_prev_frame.Sample(smp_rtlinear, back_tc - d).x,
+		s_prev_frame.Sample(smp_rtlinear, back_tc).y,
+		s_prev_frame.Sample(smp_rtlinear, back_tc + d).z
+    );
+}
+
+float3 apply_nvg(float2 tc, float3 img)
+{
+	img = BlackandWhite(img);
+	img = Brightness(img, 0.5, 5);
+	img = clamp(img, 0, 1);
+	img = LevelsPass(img);
+	img = Grain2(img, tc);
+	img = Grain1(img, tc);
+	return img;
+}
+
+float2 fisheye_shift(float2 uv, float progress, float2 center)
+{
+	uv -= center;
+    
+	float ratio = 1;
+	float pUvX = pow(uv.x * ratio, 2);
+	float pUvY = pow(uv.y, 2);
+	float pSum = pUvX + pUvY;
+	float multiplier = 10 * (1 - progress);
+	float strength = 1 - multiplier * pSum;
+	uv *= strength;
+    
+	uv += center;
+	return uv;
+}
+
+float2 fisheye(float2 tc, float2 tangent)
+{
+	float FISHEYE_STRENGTH = -0.3;
+	float FISHEYE_PROJECT = 2;
+
+	float fish_power = 1 + FISHEYE_STRENGTH * length(tangent);
+	float2 fished = fisheye_shift(tc, fish_power, project(float2(0.5, 0.5), tangent, FISHEYE_PROJECT, 1.0));
+	return fished - tc;
+}
+
+float current_lum()
+{
+	float lum_min = 0.85;
+	float lum_max = 3;
+	float lum = s_tonemap.Load(int3(0, 0, 0)).x;
+	return clamp(1 - (lum - lum_min) / (lum_max - lum_min), 0, 1);
+}
+
+float4 rgba_blend(float4 b, float4 a)
+{
+	float na = a.a + b.a * (1 - a.a);
+	float3 nc = na > 0 ? (a.rgb * a.a + b.rgb * b.a * (1 - a.a)) / na : float3(0, 0, 0);
+	return float4(nc, na);
+}
+
+float4 main(vf I) : SV_Target
+{
+	int TYPE = shader_param_6.x;
+	float IMAGE_PROJECT = 0.4;
+	float IMAGE_SIZE = 1.1;
+	float RETICLE_PROJECT = 10;
+	float RETICLE_SIZE = shader_param_6.z;
+	float SHADOW_PROJECT = shader_param_6.w;
+	float SHADOW_SIZE = 0.3;
+	float SHADOW_WIDTH = 0.2;
+	float FFP_MIN_ZOOM = shader_param_6.y;
+	float CHROMA_POWER = 0.02;
+	
+    float3 V = -I.v_pos;
+    float3x3 TBN = cotangent_frame(I.v_nrm, I.v_pos, I.tc0.xy);
+    float3 V_tangent = normalize(float3(dot(V, TBN[0]), dot(V, TBN[1]), dot(V, TBN[2])));
+	
+	// Sight reticle
+	float reticle_zoom = FFP_MIN_ZOOM > 0 ? max(FFP_MIN_ZOOM / ogse_c_screen.x, 1) : 1;
+    float4 mark_texture = s_base.Sample(smp_rtlinear, project(I.tc0, V_tangent.xy, RETICLE_PROJECT, RETICLE_SIZE * reticle_zoom) + fisheye(I.tc0, V_tangent.xy) / reticle_zoom);
+	
+	// 1P59 Giperon reticle
+	if (TYPE == 2)
+	{
+		float finder = s_base.Sample(smp_rtlinear, project(I.tc0, V_tangent.xy, RETICLE_PROJECT, RETICLE_SIZE) + fisheye(I.tc0, V_tangent.xy)).g;
+		float reticle = mark_texture.r;
+		float angle = -3.14159265359 * (reticle_zoom - 1 + 0.135) / 2.69;
+		float2 tc = project(I.tc0, V_tangent.xy, RETICLE_PROJECT, RETICLE_SIZE) - 0.5;
+		tc = float2(tc.x * cos(angle) - tc.y * sin(angle), tc.x * sin(angle) + tc.y * cos(angle));
+		tc += 0.5;
+		float numbers = s_base.Sample(smp_rtlinear, tc + fisheye(I.tc0, V_tangent.xy)).b;
+		mark_texture = float4(0, 0, 0, max(numbers, max(finder, reticle)));
+	}
+
+	// Sun illuminated ACOG reticle
+	if (TYPE == 3)
+	{
+		float3 black = float3(0, 0, 0);
+		float3 color = float3(1, 0.2, 0.2);
+		float3 text = float3(0.3, 0.3, 0.3);
+		float tritium_lum = 0.2;
+		float lum = current_lum();
+		mark_texture = rgba_blend(rgba_blend(float4(black, mark_texture.r), float4(color, mark_texture.g * max(tritium_lum, lum))), float4(text, mark_texture.b * lum));
+	}
+	
+	// LED illuminated reticle
+	if (TYPE == 2 || TYPE == 4)
+	{
+		mark_texture = float4(markswitch_color.rgb, mark_texture.a);
+	}
+	
+	// Masked LED illuminated reticle
+	if (TYPE == 5)
+	{
+		float3 black = float3(0, 0, 0);
+		mark_texture = rgba_blend(float4(black, mark_texture.r), float4(markswitch_color.rgb, mark_texture.g));
+	}
+	
+	// Sight bound
+    float4 mark_shadow = sample_shadow(project(I.tc0, V_tangent.xy, RETICLE_PROJECT, RETICLE_SIZE), 0);
+	
+	// Parallax shadow
+	float4 shadow_texture = sample_shadow(project(I.tc0, V_tangent.xy, -SHADOW_PROJECT, SHADOW_SIZE), SHADOW_WIDTH);
+	
+	// Back image
+	float2 screen_tc = I.hpos.xy * screen_res.zw;
+	float zoom = lerp(1, IMAGE_SIZE, m_hud_params.x);
+	float shift = lerp(0, IMAGE_PROJECT, m_hud_params.x);
+	float2 scope_tc = (1.0 / zoom) * (screen_tc.xy - 0.5) + 0.5;
+	V_tangent.x = V_tangent.x / screen_res.x * screen_res.y;
+	scope_tc = scope_tc + V_tangent.xy * shift;
+	float3 back = chroma_sample(I.tc0, scope_tc, CHROMA_POWER);
+	
+	// NV
+	if (TYPE == 1)
+		back = apply_nvg(scope_tc, back);
+
+	float3 final_scope = back;
+	final_scope = lerp(final_scope, shadow_texture.xyz, shadow_texture.w);
+	final_scope = lerp(final_scope, mark_texture.xyz, mark_texture.w);
+	final_scope = lerp(final_scope, mark_shadow.xyz, mark_shadow.w);
+
+	return float4(final_scope, 1.0);
+}

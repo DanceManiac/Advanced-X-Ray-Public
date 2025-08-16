@@ -1,0 +1,60 @@
+#include "common.h"
+
+#define NV_COLOR float3(0.4,1.0,0.6)
+#define NV_BRIGHTNESS 12.0
+#define FLICKERING_FREQ 60.0
+#define NOISE_INTENSITY 0.15
+
+//uniform float4 screen_res;
+Texture2D s_vp2;
+
+float resize(float input, float factor, float offset)
+{
+	return (input - 0.5f + offset) / factor + 0.5f - offset;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+float4 main	(p_flat I, float4 pos2d : SV_Position,float2 tc0: TEXCOORD0): SV_Target
+{
+	float4 t_base = s_base.Sample(smp_base, tc0); // Текстура сетки
+	tc0.x = resize(tc0.x, screen_res.x / screen_res.y, 0);
+
+	float4	t_vp2	 = s_vp2.Sample(smp_base, tc0);
+
+	float fisheye_strength =  0.035;
+	float amount = .0025;
+    float aspectRatio = screen_res.x / screen_res.y;
+       
+    float2 coords = tc0;
+    coords = (coords - 0.5) * 2.0;		
+
+    float2 intensity = (fisheye_strength * aspectRatio, fisheye_strength * aspectRatio);    
+    float2 realCoordOffs = (1.0 - coords.yx * coords.yx) * intensity.yx * (coords.xy); 
+	//fast ca by cjayho
+	float2 offset_fringe	= distance( float2( .5, .5 ), tc0 ) * float2( amount, amount );
+
+	t_vp2.r	= s_vp2.Sample(smp_base, tc0 - realCoordOffs + offset_fringe).r; 
+	t_vp2.g	= s_vp2.Sample(smp_base, tc0 - realCoordOffs ).g; 
+	t_vp2.b	= s_vp2.Sample(smp_base, tc0 - realCoordOffs - offset_fringe).b; 
+
+
+    float lum = dot(t_vp2.rgb, float3( 0.3f, 0.38f, 0.22f)*NV_BRIGHTNESS );  //instead of float3 use LUMINANCE_floatTOR in stalker
+    t_vp2.rgb = NV_COLOR.rgb*lum;
+    
+    //cheap noise function
+    float noise  = frac(sin(dot(tc0, float2(12.0, 78.0) + (timers.x*1.17f) )) * 43758.0); 
+    
+    //////////////////////////////////////////////////////////////////////////////////////////
+    t_vp2 += noise * NOISE_INTENSITY; 
+    t_vp2 += 0.0125 * sin(timers.x*FLICKERING_FREQ);   
+
+	
+	if (!isSecondVPActive()) 
+	{
+		t_vp2.rgb /= 100; //KRodin: чтобы изображение во втором вьюпорте не застывало после его отключения - просто затемним его в 100 раз.
+	}	
+	
+	float3 final = lerp(t_vp2, t_base, t_base.a); // Сетку с вьюпортом
+	return float4(final.r, final.g, final.b, m_hud_params.x);
+}
