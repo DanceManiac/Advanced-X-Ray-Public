@@ -2518,7 +2518,10 @@ BOOL CWeapon::IsMisfire() const
 }
 void CWeapon::Reload()
 {
-	OnZoomOut();
+	if (!psActorFlags3.test(AF_LFO_WPN_AIM_RELOADS))
+	{
+		OnZoomOut();
+	}
 
 	if (ParentIsActor() && !GameConstants::GetReloadIfSprint())
 	{
