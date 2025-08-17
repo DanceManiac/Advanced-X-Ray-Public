@@ -44,6 +44,17 @@ protected:
 	CUIStatic*				m_qmark;
 	Fvector2				m_qmark_pos;
 
+	CUIStatic*				m_mark;
+	CUIStatic*				m_mark_ammo_up;
+	CUIStatic*				m_mark_ammo_tracer;
+	CUIStatic*				m_mark_small;
+	CUIStatic*				m_mark_fallout;
+	Fvector2				m_mark_pos;
+	Fvector2				m_mark_ammo_up_pos;
+	Fvector2				m_mark_ammo_tracer_pos;
+	Fvector2				m_mark_small_pos;
+	Fvector2				m_mark_fallout_pos;
+
 	virtual void			UpdateItemText			();
 			void			init					();
 public:
@@ -94,6 +105,11 @@ public:
 				bool		m_with_custom_text;
 				bool		m_has_upgrade;
 				bool		m_is_quest;
+				bool		m_mark_item_fallout;
+				bool		m_mark_item;
+				bool		m_mark_item_ammo_up;
+				bool		m_mark_item_ammo_tracer;
+				bool		m_mark_item_small;
 };
 
 class CUIDragItem: public CUIWindow, public pureRender, public pureFrame

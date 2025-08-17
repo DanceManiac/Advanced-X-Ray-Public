@@ -2218,6 +2218,7 @@
     <ClInclude Include="ui\UIWpnParams.h" />
     <ClInclude Include="ui\UIXmlInit.h" />
     <ClInclude Include="ui\UIArtefactParams.h" />
+	<ClInclude Include="ui\UIAmmoParams.h" />
     <ClInclude Include="ui\ui_arrow.h" />
     <ClInclude Include="ui\UI_IB_Static.h" />
     <ClInclude Include="ui\xrUIXmlParser.h" />
@@ -9115,6 +9116,7 @@
     </ClCompile>
     <ClCompile Include="ui\UIXmlInit.cpp" />
     <ClCompile Include="ui\UIArtefactParams.cpp" />
+	<ClCompile Include="ui\UIAmmoParams.cpp" />
     <ClCompile Include="ui\ui_arrow.cpp" />
     <ClCompile Include="ui\UI_IB_Static.cpp" />
     <ClCompile Include="ui\xrUIXmlParser.cpp" />

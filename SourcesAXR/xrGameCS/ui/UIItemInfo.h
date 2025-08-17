@@ -16,6 +16,7 @@ class CUIOutfitItemInfo;
 class CUIBoosterInfo;
 class CUICellItem;
 class CUIInventoryItem;
+class CUIAmmoParams;
 
 class CUIItemInfo: public CUIWindow
 {
@@ -46,6 +47,7 @@ public:
 	void				TryAddUpgradeInfo	(CInventoryItem& pInvItem);
 	void				TryAddBoosterInfo	(CInventoryItem& pInvItem);
 	void				TryAddItemInfo		(CInventoryItem& pInvItem);
+	void				TryAddAmmoInfo		(CInventoryItem& pInvItem);
 
 	void				ResetInventoryItem	();
 	
@@ -68,6 +70,7 @@ public:
 	CUIOutfitItem*			UIOutfitItem;
 	CUIBoosterInfo*			UIBoosterInfo;
 	CUIInventoryItem*		UIInventoryItem;
+	CUIAmmoParams*			UIAmmoParams;
 
 	Fvector2			UIItemImageSize; 
 	CUIStatic*			UIItemImage;

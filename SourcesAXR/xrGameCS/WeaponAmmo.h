@@ -4,7 +4,7 @@
 
 struct SCartridgeParam
 {
-	float	kDist, kDisp, kHit/*, kCritical*/, kImpulse, kAP, kAirRes;
+	float kDist, kDisp, kHit, kCritical, kImpulse, kAP, isUP, kAirRes;
 	int		buckShot;
 	float	impair;
 	float	fWallmarkSize;
@@ -15,6 +15,7 @@ struct SCartridgeParam
 		kDist = kDisp = kHit = kImpulse = 1.0f;
 //		kCritical = 0.0f;
 		kAP       = 0.0f;
+		isUP		= false;
 		kAirRes   = 0.0f;
 		buckShot  = 1;
 		impair    = 1.0f;

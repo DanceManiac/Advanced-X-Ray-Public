@@ -23,8 +23,8 @@ CCartridge::CCartridge()
 
 void CCartridge::Load(LPCSTR section, u8 LocalAmmoType) 
 {
-	m_ammoSect				= section;
-	m_LocalAmmoType			= LocalAmmoType;
+	m_ammoSect					= section;
+	m_LocalAmmoType				= LocalAmmoType;
 	param_s.kDist				= pSettings->r_float(section, "k_dist");
 	param_s.kDisp				= pSettings->r_float(section, "k_disp");
 	param_s.kHit				= pSettings->r_float(section, "k_hit");
@@ -34,6 +34,7 @@ void CCartridge::Load(LPCSTR section, u8 LocalAmmoType)
 	param_s.kAP					= pSettings->r_float(section, "k_ap");
 	param_s.u8ColorID			= READ_IF_EXISTS(pSettings, r_u8, section, "tracer_color_ID", 0);
 	
+
 	if (pSettings->line_exist(section, "k_air_resistance"))
 		param_s.kAirRes			=  pSettings->r_float(section, "k_air_resistance");
 	else
@@ -106,6 +107,8 @@ void CWeaponAmmo::Load(LPCSTR section)
 	//m_kPierce				= pSettings->r_float(section, "k_pierce");
 	cartridge_param.kAP			= pSettings->r_float(section, "k_ap");
 	cartridge_param.u8ColorID	= READ_IF_EXISTS(pSettings, r_u8, section, "tracer_color_ID", 0);
+
+	cartridge_param.isUP = READ_IF_EXISTS(pSettings, r_bool, section, "mark_ammo_up", false);
 
 	if (pSettings->line_exist(section, "k_air_resistance"))
 		cartridge_param.kAirRes		= pSettings->r_float(section, "k_air_resistance");

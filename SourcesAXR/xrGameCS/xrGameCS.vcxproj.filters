@@ -6642,6 +6642,9 @@
     <ClInclude Include="ui\UIArtefactParams.h">
       <Filter>UI\Common\UIItemInfo</Filter>
     </ClInclude>
+    <ClInclude Include="ui\UIAmmoParams.h">
+      <Filter>UI\Common\UIItemInfo</Filter>
+    </ClInclude>
     <ClInclude Include="ui\UIBoosterInfo.h">
       <Filter>UI\Common\UIItemInfo</Filter>
     </ClInclude>
@@ -10245,6 +10248,9 @@
       <Filter>UI\Common\PDA\logs\News</Filter>
     </ClCompile>
     <ClCompile Include="ui\UIArtefactParams.cpp">
+      <Filter>UI\Common\UIItemInfo</Filter>
+    </ClCompile>
+	<ClCompile Include="ui\UIAmmoParams.cpp">
       <Filter>UI\Common\UIItemInfo</Filter>
     </ClCompile>
     <ClCompile Include="ui\UIBoosterInfo.cpp">

@@ -33,6 +33,7 @@
 #include "../AntigasFilter.h"
 #include "../RepairKit.h"
 #include "../CustomBackpack.h"
+#include "UIAmmoParams.h"
 
 extern const LPCSTR g_inventory_upgrade_xml;
 
@@ -55,6 +56,7 @@ CUIItemInfo::CUIItemInfo()
 	UIName						= NULL;
 	UIBackground				= NULL;
 	m_pInvItem					= NULL;
+	UIAmmoParams				= NULL;
 	m_b_FitToHeight				= false;
 	m_complex_desc				= false;
 }
@@ -68,6 +70,7 @@ CUIItemInfo::~CUIItemInfo()
 	xr_delete	(UIOutfitItem);
 	xr_delete	(UIBoosterInfo);
 	xr_delete	(UIInventoryItem);
+	xr_delete	(UIAmmoParams);
 }
 
 void CUIItemInfo::InitItemInfo(LPCSTR xml_name)
@@ -140,6 +143,8 @@ void CUIItemInfo::InitItemInfo(LPCSTR xml_name)
 		UIArtefactParams->InitFromXml	(uiXml);
 		UIBoosterInfo					= xr_new<CUIBoosterInfo>();
 		UIBoosterInfo->InitFromXml		(uiXml);
+		UIAmmoParams					= xr_new<CUIAmmoParams>();
+		UIAmmoParams->InitFromXml(uiXml);
 
 		if ( ai().get_alife() ) // (-designer)
 		{
@@ -319,6 +324,7 @@ void CUIItemInfo::InitItem(CUICellItem* pCellItem, CInventoryItem* pCompareItem,
 		TryAddUpgradeInfo					(*pInvItem);
 		TryAddBoosterInfo					(*pInvItem);
 		TryAddItemInfo						(*pInvItem);
+		TryAddAmmoInfo						(*pInvItem);
 
 		if(m_b_FitToHeight)
 		{
@@ -562,6 +568,16 @@ void CUIItemInfo::TryAddItemInfo(CInventoryItem& pInvItem)
 	{
 		UIInventoryItem->SetInfo(pInvItem);
 		UIDesc->AddWindow(UIInventoryItem, false);
+	}
+}
+
+void CUIItemInfo::TryAddAmmoInfo(CInventoryItem& pInvItem)
+{
+	CWeaponAmmo* ammo = smart_cast<CWeaponAmmo*>(&pInvItem);
+	if (ammo && UIAmmoParams)
+	{
+		UIAmmoParams->SetInfo(ammo);
+		UIDesc->AddWindow(UIAmmoParams, false);
 	}
 }
 

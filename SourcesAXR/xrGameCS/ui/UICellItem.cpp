@@ -48,6 +48,17 @@ CUICellItem::CUICellItem()
 	m_has_upgrade		= false;
 	m_is_quest			= false;
 	
+	m_mark					= nullptr;
+	m_mark_small			= nullptr;
+	m_mark_ammo_up			= nullptr;
+	m_mark_ammo_tracer		= nullptr;
+	m_mark_fallout			= nullptr;
+	m_mark_item				= false;
+	m_mark_item_small		= false;
+	m_mark_item_ammo_up		= false;
+	m_mark_item_ammo_tracer = false;
+	m_mark_item_fallout		= false;
+
 	init();
 }
 
@@ -73,6 +84,43 @@ void CUICellItem::init()
 		
 	if (m_text				= UIHelper::CreateStatic(uiXml, "cell_item_text", this, false))
 		m_text->Show		( false );
+
+	
+	m_mark								= xr_new<CUIStatic>();
+	m_mark->SetAutoDelete				( true );
+	AttachChild							( m_mark );
+	CUIXmlInit::InitStatic				( uiXml, "cell_item_mark", 0, m_mark );
+	m_mark_pos							= m_mark->GetWndPos();
+	m_mark->Show						( false );
+
+	m_mark_small						= xr_new<CUIStatic>();
+	m_mark_small->SetAutoDelete			( true );
+	AttachChild							( m_mark_small );
+	CUIXmlInit::InitStatic				( uiXml, "cell_item_mark_small", 0, m_mark_small );
+	m_mark_small_pos					= m_mark_small->GetWndPos();
+	m_mark_small->Show					( false );
+
+	m_mark_ammo_up						= xr_new<CUIStatic>();
+    m_mark_ammo_up->SetAutoDelete		(true);
+    AttachChild							(m_mark_ammo_up);
+    CUIXmlInit::InitStatic				(uiXml, "cell_mark_item_ammo_up", 0, m_mark_ammo_up);
+    m_mark_ammo_up_pos					= m_mark_ammo_up->GetWndPos();
+    m_mark_ammo_up->Show				(false);
+
+    m_mark_ammo_tracer					= xr_new<CUIStatic>();
+    m_mark_ammo_tracer->SetAutoDelete	(true);
+    AttachChild							(m_mark_ammo_tracer);
+    CUIXmlInit::InitStatic				(uiXml, "cell_mark_item_ammo_tracer", 0, m_mark_ammo_tracer);
+    m_mark_ammo_tracer_pos				= m_mark_ammo_tracer->GetWndPos();
+    m_mark_ammo_tracer->Show			(false);
+
+	m_mark_fallout						= xr_new<CUIStatic>();
+	m_mark_fallout->SetAutoDelete		(true);
+	AttachChild							(m_mark_fallout);
+	CUIXmlInit::InitStatic				(uiXml, "cell_item_mark_fallout", 0, m_mark_fallout);
+	m_mark_fallout_pos					= m_mark_fallout->GetWndPos();
+	m_mark_fallout->Show				(false);
+
 
 	if (m_custom_text		= UIHelper::CreateStatic(uiXml, "cell_item_custom_text", this, false))
 	{
@@ -146,13 +194,19 @@ void CUICellItem::Update()
 void CUICellItem::UpdateIndicators()
 {
 	PIItem item = (PIItem)m_pData;
+	CWeaponAmmo* ammo = smart_cast<CWeaponAmmo*>(item);
 	if ( item )
 	{
 		m_has_upgrade	= item->has_any_upgrades();
 		m_is_quest		= item->IsQuestItem();
 		
 		if (m_custom_text)
-			m_with_custom_text = item->m_custom_text!=nullptr;
+			m_with_custom_text			= item->m_custom_text!=nullptr;
+			m_mark_item					= item->is_marked_item();
+			m_mark_item_small			= item->is_marked_item();
+			m_mark_item_fallout			= item->is_marked_item_fallout();
+			m_mark_item_ammo_up			= ammo && ammo->cartridge_param.isUP;
+			m_mark_item_ammo_tracer		= ammo && ammo->m_tracer;
 
 //		Fvector2 size      = GetWndSize();
 //		Fvector2 up_size = m_upgrade->GetWndSize();
@@ -167,6 +221,59 @@ void CUICellItem::UpdateIndicators()
 			}
 			m_upgrade->SetWndPos	(pos);
 		}
+
+
+		if (m_mark_item)
+		{
+			pos.set(m_mark_pos);
+			Fvector2 size = GetWndSize();
+			Fvector2 up_size = m_mark->GetWndSize();
+			pos.x = size.x - up_size.x - 4.0f;
+			pos.y = size.y - up_size.y - 4.0f;
+			m_mark->SetWndPos(pos);
+		}
+
+		if (m_mark_item_ammo_up)
+		{
+			pos.set(m_mark_ammo_up_pos);
+			Fvector2 size = GetWndSize();
+			Fvector2 up_size = m_mark_ammo_up->GetWndSize();
+			pos.x = size.x - up_size.x - 4.0f;
+			pos.y = size.y - up_size.y - 4.0f;
+			m_mark_ammo_up->SetWndPos(pos);
+		}
+
+		if (m_mark_item_ammo_tracer)
+		{
+			pos.set(m_mark_ammo_tracer_pos);
+			Fvector2 size = GetWndSize();
+			Fvector2 up_size = m_mark_ammo_tracer->GetWndSize();
+			pos.x = size.x - up_size.x - 4.0f;
+			pos.y = size.y - up_size.y - 4.0f;
+			m_mark_ammo_tracer->SetWndPos(pos);
+		}
+
+		if (m_mark_item_small)
+		{
+			pos.set(m_mark_small_pos);
+			Fvector2 size = GetWndSize();
+			Fvector2 up_size = m_mark_small->GetWndSize();
+			pos.x = size.x - up_size.x - 4.0f;
+			pos.y = size.y - up_size.y - 4.0f;
+			m_mark_small->SetWndPos(pos);
+		}
+
+		if (m_mark_item_fallout)
+		{
+			pos.set(m_mark_fallout_pos);
+			Fvector2 size = GetWndSize();
+			Fvector2 up_size = m_mark_fallout->GetWndSize();
+			pos.x = size.x - up_size.x - 4.0f;
+			pos.y = size.y - up_size.y - 4.0f;
+			m_mark_fallout->SetWndPos(pos);
+		}
+
+
 		if (m_is_quest && m_qmark)
 		{
 			pos.set(m_qmark_pos);
@@ -211,6 +318,13 @@ void CUICellItem::UpdateIndicators()
 		m_upgrade->Show			(m_has_upgrade);
 	if (m_qmark)
 		m_qmark->Show			(m_is_quest);
+
+	m_mark->Show(m_mark_item);
+	m_mark_small->Show(m_mark_item_small);
+	m_mark_ammo_up->Show(m_mark_item_ammo_up);
+	m_mark_ammo_tracer->Show(m_mark_item_ammo_tracer);
+	m_mark_fallout->Show(m_mark_item_fallout);
+
 	if (m_custom_text)
 		m_custom_text->Show		(m_with_custom_text);
 }
