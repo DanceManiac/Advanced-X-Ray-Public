@@ -80,6 +80,7 @@ enum
 	AF_LFO_WEATHER_ICONS = (1 << 11),
 	AF_LFO_AMMO_ICONS = (1 << 12),
 	AF_LFO_WPN_AIM_RELOADS = (1 << 13),
+	AF_LFO_WPN_OVERHEAT_LIGHTS = (1 << 14),
 };
 
 extern Flags32 psActorFlags;

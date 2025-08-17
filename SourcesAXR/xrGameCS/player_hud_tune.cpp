@@ -590,6 +590,16 @@ void player_hud::SaveCfg(const int idx) const
 				.c_str());
 		}
 
+		pWpnCfg.w_string(wpn_sect_name,
+			"overheat_attach_offset",
+			make_string("%f,%f,%f", Wpn->overheat_attach_offset.x, Wpn->overheat_attach_offset.y, Wpn->overheat_attach_offset.z)
+			.c_str());
+
+		pWpnCfg.w_string(wpn_sect_name,
+			"overheat_omni_attach_offset",
+			make_string("%f,%f,%f", Wpn->overheat_omni_attach_offset.x, Wpn->overheat_omni_attach_offset.y, Wpn->overheat_omni_attach_offset.z)
+			.c_str());
+
 		if (Wpn->m_weapon_attaches.size())
 			SaveAttachesCfg(Wpn->cNameSect().c_str(), Wpn);
 	}

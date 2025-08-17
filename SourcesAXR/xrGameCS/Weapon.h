@@ -77,6 +77,7 @@ public:
 	void					LoadTacticalTorchParams(LPCSTR section);
 	void					LoadTacticalTorchLightParams(LPCSTR section);
 	void					LoadGrenadeLauncherParams(LPCSTR section);
+	void					LoadOverheatLightParams(LPCSTR section);
 	void					GetZoomData(const float scope_factor, float& delta, float& min_zoom_factor);
 	void					ZoomDynamicMod(bool bIncrement, bool bForceLimit);
 	void					UpdateAltScope();
@@ -311,6 +312,7 @@ protected:
 	shared_str		m_sWpn_flashlight_cone_bone;
 	shared_str		m_sHud_wpn_laser_ray_bone;
 	shared_str		m_sHud_wpn_flashlight_cone_bone;
+	shared_str		m_sWpn_overheating_bone;
 
 	xr_vector<shared_str> m_all_scope_bones;
 	shared_str		m_cur_scope_bone;
@@ -338,6 +340,7 @@ protected:
 	RStringVec		m_defShownBonesScopePermanent;
 	RStringVec		m_defHiddenBonesScopePermanent;
 	RStringVec		m_defHiddenBonesScopePermanent2;
+	RStringVec		m_defOverheatinBarrel;
 
 public:
 
@@ -801,16 +804,38 @@ public:
 
 private:
 	bool has_flashlight;
-	shared_str flashlight_attach_bone;
-	ref_light flashlight_render;
-	ref_light flashlight_omni;
-	ref_glow flashlight_glow;
-	CLAItem* flashlight_lanim;
+	shared_str	flashlight_attach_bone;
+	ref_light	flashlight_render;
+	ref_light	flashlight_omni;
+	ref_glow	flashlight_glow;
+	CLAItem*	flashlight_lanim;
+
+	ref_light	overheat_render;
+	ref_light	overheat_omni;
+	ref_glow	overheat_glow;
+	ref_light	overheat_light;
+
+	shared_str overheat_attach_bone;
+
+	bool		m_bLightsEnabled;
+	bool		m_bGlowEnabled;
+	bool		m_bOverheatGlowEnabled;
+	bool		m_bVolumetricLights;
+	float		m_fVolumetricQuality;
+	float		m_fVolumetricDistance;
+	float		m_fVolumetricIntensity;
+	float		fBrightness{ 0.25f };
+	int			m_iLightType;
+	CLAItem*	light_lanim;
+
+
 	float flashlight_fBrightness{ 1.f };
 
 	void UpdateFlashlight();
+	void UpdateOverheatLights();
 public:
 	Fvector flashlight_attach_offset, flashlight_omni_attach_offset, flashlight_world_attach_offset, flashlight_omni_world_attach_offset;
+	Fvector overheat_attach_offset, overheat_omni_attach_offset, overheat_world_attach_offset, overheat_omni_world_attach_offset;
 
 	void SwitchFlashlight(bool on);
 	void DestroyFlashlightLight() { if (flashlight_render) flashlight_render.destroy(); }

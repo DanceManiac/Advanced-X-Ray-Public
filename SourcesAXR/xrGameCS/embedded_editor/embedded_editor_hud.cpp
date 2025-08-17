@@ -95,6 +95,10 @@ void ShowHudEditor(bool& show)
 
 		if (Wpn)
 		{
+			ImGui::Text(u8"Hud Overheating");
+			ImGui::DragFloat3("overheat_attach_offset 0", (float*)&Wpn->overheat_attach_offset, drag_intensity, NULL, NULL, "%.6f");
+			ImGui::DragFloat3("overheat_omni_attach_offset 0", (float*)&Wpn->overheat_omni_attach_offset, drag_intensity, NULL, NULL, "%.6f");
+
 			// Laser light offsets
 			if (Wpn->LaserAttachable())
 			{

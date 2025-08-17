@@ -257,6 +257,9 @@ CWeapon::~CWeapon		()
 	flashlight_render.destroy();
 	flashlight_omni.destroy();
 	flashlight_glow.destroy();
+	overheat_glow.destroy();
+	overheat_omni.destroy();
+	overheat_render.destroy();
 }
 
 void CWeapon::Hit					(SHit* pHDS)
@@ -441,11 +444,12 @@ void CWeapon::ForceUpdateFireParticles()
 	}
 }
 
-LPCSTR wpn_scope_def_bone = "wpn_scope";
-LPCSTR wpn_silencer_def_bone = "wpn_silencer";
-LPCSTR wpn_launcher_def_bone = "wpn_launcher";
-LPCSTR wpn_laser_def_bone = "wpn_laser";
-LPCSTR wpn_torch_def_bone = "wpn_torch";
+LPCSTR wpn_scope_def_bone		= "wpn_scope";
+LPCSTR wpn_silencer_def_bone	= "wpn_silencer";
+LPCSTR wpn_launcher_def_bone	= "wpn_launcher";
+LPCSTR wpn_laser_def_bone		= "wpn_laser";
+LPCSTR wpn_torch_def_bone		= "wpn_torch";
+LPCSTR wpn_overheat_def_bone	= "overheat_barrel";
 
 void CWeapon::Load		(LPCSTR section)
 {
@@ -666,6 +670,7 @@ void CWeapon::Load		(LPCSTR section)
 	LoadGrenadeLauncherParams(section);
 	LoadLaserDesignatorParams(section);
 	LoadTacticalTorchParams(section);
+	LoadOverheatLightParams(section);
 
 	UpdateAltScope();
 	InitAddons();
@@ -769,6 +774,7 @@ void CWeapon::Load		(LPCSTR section)
 	LoadBoneNames(section, "def_hide_bones_with_scopes", m_defHiddenBonesScope);
 	LoadBoneNames(section, "hide_bones_override_when_silencer_attached", m_defSilHiddenBones);
 	LoadBoneNames(section, "def_animated_3d_shell_bones", m_defShellBones);
+	LoadBoneNames(section, "overheat_barrel_bones", m_defOverheatinBarrel);
 
 	if (pSettings->line_exist(section, "scopes_sect"))
 	{
@@ -883,7 +889,6 @@ void CWeapon::Load		(LPCSTR section)
 		m_zoom_params.m_fSecondVPFovFactor = 0.0f;
 		m_zoom_params.m_f3dZoomFactor = 0.0f;
 	}
-
 }
 
 void CWeapon::ProcessBlendCamParams(LPCSTR params, BlendCamParams& cam_params)
@@ -1797,6 +1802,7 @@ void CWeapon::UpdateCL		()
 	UpdateLight				();
 	UpdateLaser				();
 	UpdateFlashlight		();
+	UpdateOverheatLights	();
 	UpdateAddonsBlocks		();
 
 	UpdateGLAttached();
@@ -2669,6 +2675,20 @@ void CWeapon::UpdateHUDAddonsVisibility()
 		}
 	}
 
+	for (const shared_str& bone : m_defOverheatinBarrel)
+	{
+		if (m_fWeaponOverheating >= 0.5f)
+		{
+		//	Msg("!NO OVERHEATING SHOW BONES");
+			SetBoneVisible(bone, TRUE);
+		}
+		else
+		{
+		//	Msg("!NO OVERHEATING HIDE BONES");
+			SetBoneVisible(bone, FALSE);
+		}
+	}
+
 	for (const shared_str& bone : m_defShellBones)
 	{
 		if (psActorFlags3.test(AF_LFO_SHOT_SHELL_ANIMATIONS))
@@ -2757,7 +2777,6 @@ void CWeapon::UpdateHUDAddonsVisibility()
 	{
 		if (WeaponHavePermanentScope2)
 		{
-
 			if (!IsZoomed() && GetZRotatingFactor() < .9f)
 			{
 				SetBoneVisible(bone, FALSE);
@@ -2804,7 +2823,6 @@ void CWeapon::UpdateHUDAddonsVisibility()
 	if (pSettings->line_exist(m_section_id.c_str(), "enable_alternative_aim_ironsight"))
 		//	WeaponNeedAltAimBoneIronsight = READ_IF_EXISTS(pSettings, r_bool, m_section_id, "enable_alternative_aim_ironsight", false);
 		WeaponNeedAltAimBoneIronsight = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "enable_alternative_aim_ironsight", false);
-
 
 	if (!IsZoomed() && GetZRotatingFactor() < .9f)
 		//	if (!IsZoomed() && !IsRotatingFromZoom())
@@ -3433,7 +3451,6 @@ void CWeapon::OnZoomIn()
 		UpdateAltAimZoomFactor();
 		UpdateHudAltAimHud();
 		UpdateHudAltAimHudMode2();
-
 
 		if (IsGrenadeMode())
 		{
@@ -4888,4 +4905,163 @@ void CWeapon::UpdateAimFOV()
 		m_zoom_params.m_fCurrentZoomFactor = CurrentZoomFactor();
 	}
 
+}
+
+void CWeapon::LoadOverheatLightParams(LPCSTR section)
+{
+	if (psActorFlags3.test(AF_LFO_WPN_OVERHEAT_LIGHTS))
+	{
+		m_bLightsEnabled = READ_IF_EXISTS(pSettings, r_string, section, "overheat_light_enabled", false);
+		m_sWpn_overheating_bone = READ_IF_EXISTS(pSettings, r_string, section, "overheat_attach_bone", wpn_overheat_def_bone);
+
+		overheat_attach_bone = READ_IF_EXISTS(pSettings, r_string, section, "overheat_light_bone", m_sWpn_overheating_bone);
+		overheat_attach_offset = READ_IF_EXISTS(pSettings, r_fvector3, section, "overheat_attach_offset", Fvector3().set(0.f, 0.f, 0.f));
+		overheat_omni_attach_offset = READ_IF_EXISTS(pSettings, r_fvector3, section, "overheat_omni_attach_offset", Fvector3().set(0.f, 0.f, 0.f));
+		overheat_world_attach_offset = READ_IF_EXISTS(pSettings, r_fvector3, section, "overheat_world_attach_offset", Fvector3().set(0.f, 0.f, 0.f));
+		overheat_omni_world_attach_offset = READ_IF_EXISTS(pSettings, r_fvector3, section, "overheat_omni_world_attach_offset", Fvector3().set(0.f, 0.f, 0.f));
+
+		if (!overheat_light)
+		{
+			overheat_light = ::Render->light_create();
+			overheat_light->set_shadow(READ_IF_EXISTS(pSettings, r_string, section, "overheat_light_shadow", false));
+
+			if (psActorFlags.test(HUD_ITEM_VOL_LIGHTS))
+			{
+				m_bVolumetricLights = READ_IF_EXISTS(pSettings, r_bool, section, "overheat_volumetric_lights", false);
+				m_fVolumetricQuality = READ_IF_EXISTS(pSettings, r_float, section, "overheat_volumetric_quality", 1.0f);
+				m_fVolumetricDistance = READ_IF_EXISTS(pSettings, r_float, section, "overheat_volumetric_distance", 0.3f);
+				m_fVolumetricIntensity = READ_IF_EXISTS(pSettings, r_float, section, "overheat_volumetric_intensity", 0.5f);
+			}
+
+			m_iLightType = READ_IF_EXISTS(pSettings, r_u8, section, "overheat_light_type", 1);
+			light_lanim = LALib.FindItem(READ_IF_EXISTS(pSettings, r_string, section, "overheat_color_animator", ""));
+
+			const Fcolor clr = READ_IF_EXISTS(pSettings, r_fcolor, section, "overheat_light_color", (Fcolor{ 1.0f, 0.0f, 0.0f, 1.0f }));
+
+			fBrightness = clr.intensity();
+			overheat_light->set_color(clr);
+
+			const float range = READ_IF_EXISTS(pSettings, r_float, section, "overheat_light_range", 1.f);
+
+			overheat_render = ::Render->light_create();
+			overheat_render->set_type(IRender_Light::SPOT);
+			overheat_render->set_shadow(true);
+
+			overheat_light->set_range(range);
+			overheat_light->set_hud_mode(true);
+			overheat_light->set_type((IRender_Light::LT)m_iLightType);
+			overheat_light->set_cone(deg2rad(READ_IF_EXISTS(pSettings, r_float, section, "overheat_light_spot_angle", 1.f)));
+			overheat_light->set_texture(READ_IF_EXISTS(pSettings, r_string, section, "overheat_light_spot_texture", nullptr));
+
+			if (psActorFlags.test(HUD_ITEM_VOL_LIGHTS))
+			{
+				overheat_light->set_volumetric(m_bVolumetricLights);
+				overheat_light->set_volumetric_quality(m_fVolumetricQuality);
+				overheat_light->set_volumetric_distance(m_fVolumetricDistance);
+				overheat_light->set_volumetric_intensity(m_fVolumetricIntensity);
+			}
+
+			m_bOverheatGlowEnabled = READ_IF_EXISTS(pSettings, r_string, section, "overheat_glow_enabled", false);
+
+			if (!overheat_glow && m_bOverheatGlowEnabled)
+			{
+				overheat_glow = ::Render->glow_create();
+				overheat_glow->set_texture(READ_IF_EXISTS(pSettings, r_string, section, "overheat_glow_texture", nullptr));
+				overheat_glow->set_color(clr);
+				overheat_glow->set_radius(READ_IF_EXISTS(pSettings, r_float, section, "overheat_glow_radius", 0.3f));
+			}
+		}
+	}
+}
+
+void CWeapon::UpdateOverheatLights()
+{
+	if (psActorFlags3.test(AF_LFO_WPN_OVERHEAT_LIGHTS))
+	{
+		if (overheat_light && m_fWeaponOverheating >= 0.5f)
+		{
+			const u32 state = GetState();
+			auto io = smart_cast<CInventoryOwner*>(H_Parent());
+
+			if (!overheat_light->get_active() && (state == eShowing || state == eIdle))
+			{
+				//Fvector overheat_pos, overheat_pos_omni, overheat_dir, overheat_dir_omni;
+				Fvector overheat_pos = get_LastFP(), overheat_dir = get_LastFD();
+
+				//	Msg("!OVERHEATING LIGHT");
+				overheat_light->set_active(true);
+				overheat_glow->set_active(true);
+
+				if (GetHUDmode())
+				{
+					if (overheat_attach_bone.size())
+					{
+					//	Msg("!OVERHEATING UPDATE BONE");
+						overheat_dir = get_LastFD();
+						GetBoneOffsetPosDir(overheat_attach_bone, overheat_pos, overheat_dir, overheat_attach_offset);
+						CorrectDirFromWorldToHud(overheat_dir);
+					}
+				}
+				else
+				{
+					overheat_dir = get_LastFD();
+					XFORM().transform_tiny(overheat_pos, overheat_world_attach_offset);
+				}
+
+				Fmatrix overheatXForm;
+				overheatXForm.identity();
+				overheatXForm.k.set(overheat_dir);
+				Fvector::generate_orthonormal_basis_normalized(overheatXForm.k, overheatXForm.j, overheatXForm.i);
+				overheat_render->set_position(overheat_pos);
+				overheat_render->set_rotation(overheatXForm.k, overheatXForm.i);
+
+				if (!overheat_light->get_active() && (state == eShowing || state == eIdle))
+				{
+					overheat_light->set_active(true);
+
+					if (overheat_glow && !overheat_glow->get_active() && m_bGlowEnabled)
+						overheat_glow->set_active(true);
+				}
+				else if (overheat_light->get_active() && (state == eHiding || state == eHidden))
+				{
+					overheat_light->set_active(false);
+
+					if (overheat_glow && overheat_glow->get_active() && m_bGlowEnabled)
+						overheat_glow->set_active(false);
+				}
+			}
+
+			if (overheat_light->get_active() && HudItemData())
+			{
+				if (GetHUDmode())
+				{
+					firedeps fd;
+					HudItemData()->setup_firedeps(fd);
+					overheat_light->set_position(fd.vLastFP2);
+
+					if (overheat_glow && overheat_glow->get_active())
+						overheat_glow->set_position(fd.vLastFP2);
+				}
+
+				// calc color animator
+				if (light_lanim)
+				{
+					int frame{};
+					u32 clr = light_lanim->CalculateRGB(Device.fTimeGlobal, frame);
+					Fcolor fclr;
+					fclr.set(clr);
+					overheat_light->set_color(fclr);
+				}
+			}
+		}
+
+		if (overheat_light && m_fWeaponOverheating <= 0.4f)
+		{
+		//	Msg("!NO OVERHEATING LIGHT DISABLED");
+			overheat_light->set_active(false);
+
+			if (overheat_glow && overheat_glow->get_active() && m_bOverheatGlowEnabled)
+				overheat_glow->set_active(false);
+		}
+	}
 }

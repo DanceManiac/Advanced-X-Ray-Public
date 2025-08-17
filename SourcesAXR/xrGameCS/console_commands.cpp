@@ -2809,7 +2809,7 @@ CMD4(CCC_Integer,			"hit_anims_tune",						&tune_hit_anims,		0, 1);
 	CMD3(CCC_Mask,			"g_lfo_ui_weather_icons",					&psActorFlags3, AF_LFO_WEATHER_ICONS);
 	CMD3(CCC_Mask,			"g_lfo_hud_patron_icon",					&psActorFlags3, AF_LFO_AMMO_ICONS);
 	CMD3(CCC_Mask,			"g_lfo_wpn_aim_reload",						&psActorFlags3, AF_LFO_WPN_AIM_RELOADS);
-
+	CMD3(CCC_Mask,			"g_lfo_wpn_overheat_lights",				&psActorFlags3, AF_LFO_WPN_OVERHEAT_LIGHTS);
 #ifdef DEBUG
 	CMD1(CCC_LuaHelp,				"lua_help");
 	//CMD1(CCC_ShowSmartCastStats,	"show_smart_cast_stats");
