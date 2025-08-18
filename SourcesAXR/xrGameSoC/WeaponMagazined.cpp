@@ -404,6 +404,41 @@ void CWeaponMagazined::EngineMotionMarksUpdate(u32 state, const motion_marks& M)
 			FlashlightSwitchAction = false;
 		}
 	}
+	else if ((xr_strcmp(M.name.c_str(), "pistol_reload") == 0))
+	{
+		if (!GetHUDmode() || bullets_bones.empty())
+			return;
+
+		u8 bullets_to_show = iMagazineSize;
+
+		if (!unlimited_ammo())
+		{
+			u8 available = GetAvailableCartridgesToLoad(true);
+			bullets_to_show = (available >= iMagazineSize) ? iMagazineSize : (available + iAmmoElapsed);
+		}
+
+		for (size_t i = 0; i < bullets_bones.size(); ++i)
+		{
+			u16 bone_id = HudItemData()->m_model->LL_BoneID(bullets_bones[i]);
+
+			if (bone_id == BI_NONE)
+				continue;
+
+			bool should_show = (i >= (bullets_bones.size() - bullets_to_show));
+			HudItemData()->set_bone_visible(bullets_bones[i], should_show);
+
+			string64 spring_bone_name{};
+			strconcat(sizeof(spring_bone_name), spring_bone_name, "prujina", std::to_string(i + 1).c_str());
+
+			u16 spring_bone_id = HudItemData()->m_model->LL_BoneID(spring_bone_name);
+
+			if (spring_bone_id != BI_NONE)
+			{
+				bool spring_visible = !(i >= (bullets_bones.size() - bullets_to_show));
+				HudItemData()->set_bone_visible(spring_bone_name, spring_visible);
+			}
+		}
+	}
 }
 
 void CWeaponMagazined::OnMotionMark(u32 state, const motion_marks& M)
@@ -445,6 +480,32 @@ bool CWeaponMagazined::TryReload()
 			return				true;
 		}
 
+		if (GetHUDmode() && !bullets_bones.empty())
+		{
+			u8 visible_bullets = iAmmoElapsed;
+
+			for (size_t i = 0; i < bullets_bones.size(); ++i)
+			{
+				u16 bone_id = HudItemData()->m_model->LL_BoneID(bullets_bones[i]);
+				if (bone_id == BI_NONE)
+					continue;
+
+				bool should_show = (i < visible_bullets);
+				HudItemData()->set_bone_visible(bullets_bones[i], should_show);
+
+				string64 spring_bone_name{};
+				strconcat(sizeof(spring_bone_name), spring_bone_name, "prujina", std::to_string(i + 1).c_str());
+
+				u16 spring_bone_id = HudItemData()->m_model->LL_BoneID(spring_bone_name);
+
+				if (spring_bone_id != BI_NONE)
+				{
+					bool spring_visible = !(i < visible_bullets);
+					HudItemData()->set_bone_visible(spring_bone_name, spring_visible);
+				}
+			}
+		}
+
 		if (m_pAmmo || unlimited_ammo())
 		{
 			SetPending(TRUE);
@@ -456,6 +517,7 @@ bool CWeaponMagazined::TryReload()
 			for (u32 i = 0; i < m_ammoTypes.size(); ++i)
 			{
 				m_pAmmo = smart_cast<CWeaponAmmo*>(m_pInventory->GetAny(*m_ammoTypes[i]));
+
 				if (m_pAmmo)
 				{
 					m_set_next_ammoType_on_reload = i;
