@@ -55,6 +55,9 @@ void CWeaponShotgun::Load	(LPCSTR section)
 		if (WeaponSoundExist(section, "snd_reload_misfire", true))
 			m_sounds.LoadSound(section, "snd_reload_misfire", "sndReloadMisfire", false, m_eSoundOpen);
 
+		if (WeaponSoundExist(section, "snd_reload_misfire_empty", true))
+			m_sounds.LoadSound(section, "snd_reload_misfire_empty", "sndReloadMisfireEmpty", false, m_eSoundOpen);
+
 		m_sounds.LoadSound(section, "snd_close_weapon", "m_sndClose_2", false, m_eSoundClose_2);
 
 		if (WeaponSoundExist(section, "snd_close_weapon_empty,", true))
@@ -325,7 +328,7 @@ void CWeaponShotgun::switch2_StartReload()
 	if (!IsMisfire())
 		PlaySound((iAmmoElapsed == 0 && m_sounds.FindSoundItem("sndOpenEmpty", false)) ? "sndOpenEmpty" : "sndOpen", get_LastFP());
 	else
-		PlaySound("sndReloadMisfire", get_LastFP());
+		PlaySound((iAmmoElapsed == 1 && m_sounds.FindSoundItem("sndReloadMisfireEmpty", false)) ? "sndReloadMisfireEmpty" : "sndReloadMisfire", get_LastFP());
 
 	PlayAnimOpenWeapon	();
 	SetPending(TRUE);
@@ -367,7 +370,12 @@ void CWeaponShotgun::PlayAnimOpenWeapon()
 	VERIFY(GetState()==eReload);
 
 	if (IsMisfire())
-		PlayHUDMotionIfExists({ "anm_reload_misfire", "anm_close", "anim_close_weapon" }, true, GetState());
+	{
+		if (iAmmoElapsed == 1)
+			PlayHUDMotionIfExists({ "anm_reload_misfire_empty", "anm_reload_misfire", "anm_close", "anim_close_weapon" }, true, GetState());
+		else
+			PlayHUDMotionIfExists({ "anm_reload_misfire", "anm_close", "anim_close_weapon" }, true, GetState());
+	}
 	else if (iAmmoElapsed == 0)
 		PlayHUDMotionIfExists({ "anm_open_empty", "anm_open_weapon", "anm_open", "anim_open_weapon" }, false, GetState());
 	else

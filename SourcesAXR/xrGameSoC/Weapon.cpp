@@ -29,6 +29,7 @@
 #include "../xrEngine/igame_persistent.h"
 #include "GamePersistent.h"
 #include "weaponBinocularsVision.h"
+#include "WeaponMagazinedWGrenade.h"
 #include "ui/UIXmlInit.h"
 #include "ui/UIWindow.h"
 #include "Torch.h"
@@ -2232,7 +2233,7 @@ BOOL CWeapon::CheckForMisfire	()
 	float mp = GetConditionMisfireProbability();
 	mp += m_fOverheatingMisfire * m_fWeaponOverheating;
 
-	if (rnd < mp)
+	if ((rnd < mp) && (!m_bMisfireBulletRemove || iAmmoElapsed > 1))
 	{
 		FireEnd();
 
@@ -3321,16 +3322,25 @@ const char* CWeapon::GetAnimAimName()
 	{
 		const u32 state = pActor->get_state();
 
+		CWeaponMagazinedWGrenade* wpn_wgrenade = smart_cast<CWeaponMagazinedWGrenade*>(this);
+
+		bool magazine_empty = false;
+
+		if (wpn_wgrenade && wpn_wgrenade->IsGrenadeMode())
+			magazine_empty = wpn_wgrenade->IsMainMagazineEmpty();
+		else
+			magazine_empty = IsMagazineEmpty();
+
 		if (state && state & mcAnyMove)
 		{
 			if (IsScopeAttached() && m_bUseScopeAimMoveAnims)
-				return strconcat(sizeof(guns_aim_anm), guns_aim_anm, GenerateAimAnimName("anm_idle_aim_scope_moving"), (IsMisfire()) ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : "");
+				return strconcat(sizeof(guns_aim_anm), guns_aim_anm, GenerateAimAnimName("anm_idle_aim_scope_moving"), (IsMisfire()) ? "_jammed" : (magazine_empty) ? "_empty" : "");
 			else
 			{
 				if (m_bUseAimAnmDirDependency)
-					return strconcat(sizeof(guns_aim_anm), guns_aim_anm, GenerateAimAnimName("anm_idle_aim_moving"), (state & mcFwd) ? "_forward" : ((state & mcBack) ? "_back" : ""), (state & mcLStrafe) ? "_left" : ((state & mcRStrafe) ? "_right" : ""), (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
+					return strconcat(sizeof(guns_aim_anm), guns_aim_anm, GenerateAimAnimName("anm_idle_aim_moving"), (state & mcFwd) ? "_forward" : ((state & mcBack) ? "_back" : ""), (state & mcLStrafe) ? "_left" : ((state & mcRStrafe) ? "_right" : ""), (IsMisfire() ? "_jammed" : (magazine_empty) ? "_empty" : ""));
 				else
-					return strconcat(sizeof(guns_aim_anm), guns_aim_anm, GenerateAimAnimName("anm_idle_aim_moving"), (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
+					return strconcat(sizeof(guns_aim_anm), guns_aim_anm, GenerateAimAnimName("anm_idle_aim_moving"), (IsMisfire() ? "_jammed" : (magazine_empty) ? "_empty" : ""));
 			}
 		}
 	}

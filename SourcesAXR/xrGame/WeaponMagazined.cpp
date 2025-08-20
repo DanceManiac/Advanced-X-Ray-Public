@@ -498,7 +498,7 @@ bool CWeaponMagazined::TryReload()
 
 		m_pCurrentAmmo = smart_cast<CWeaponAmmo*>(m_pInventory->GetAny( m_ammoTypes[m_ammoType].c_str() ));
 		
-		if (IsMisfire())
+		if (IsMisfire() && !IsGrenadeMode())
 		{
 			SetPending			(TRUE);
 			SwitchState			(eUnMisfire);

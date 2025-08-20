@@ -500,7 +500,7 @@ bool CWeaponMagazined::TryReload()
 		else
 			m_pCurrentAmmo = NULL;
 
-		if (IsMisfire())
+		if (IsMisfire() && !IsGrenadeMode())
 		{
 			SetPending			(TRUE);
 			SwitchState			(eUnMisfire);
