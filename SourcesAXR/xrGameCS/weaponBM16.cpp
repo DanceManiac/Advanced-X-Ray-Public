@@ -13,11 +13,25 @@ CWeaponBM16::~CWeaponBM16()
 void CWeaponBM16::Load	(LPCSTR section)
 {
 	inherited::Load		(section);
-	m_sounds.LoadSound	(section, "snd_reload_1", "sndReload1", true, m_eSoundShot);
+	m_sounds.LoadSound	(section, "snd_reload_1", "sndReload1", true, m_eSoundReload);
+	m_sounds.LoadSound	(section, "snd_reload_misfire_0", "sndReloadMisfire0", true, m_eSoundReload);
+	m_sounds.LoadSound	(section, "snd_reload_misfire_1", "sndReloadMisfire1", true, m_eSoundReload);
 }
 
 void CWeaponBM16::PlayReloadSound()
 {
+	if (IsMisfire())
+	{
+		string128 sndUnmisName{};
+		strconcat(sizeof(sndUnmisName), sndUnmisName, "sndReloadMisfire", std::to_string(m_magazine.size()).c_str());
+
+		if (m_sounds.FindSoundItem(sndUnmisName, false))
+		{
+			PlaySound(sndUnmisName, get_LastFP());
+			return;
+		}
+	}
+
 	bool b_single_bullet = ((m_magazine.size() == 1 || !HaveCartridgeInInventory(2)) &&
 		(m_set_next_ammoType_on_reload == u32(-1) || m_ammoType == m_set_next_ammoType_on_reload));
 
@@ -145,6 +159,18 @@ void CWeaponBM16::PlayAnimBore()
 
 void CWeaponBM16::PlayAnimReload()
 {
+	if (IsMisfire())
+	{
+		string128 anmUnmisName{};
+		strconcat(sizeof(anmUnmisName), anmUnmisName, "anm_reload", isHUDAnimationExist("anm_reload_misfire", true) ? "_misfire" : "_jammed", "_", std::to_string(m_magazine.size()).c_str());
+
+		if (isHUDAnimationExist(anmUnmisName))
+		{
+			PlayHUDMotionIfExists({ anmUnmisName, "anm_reload_2" }, true, GetState());
+			return;
+		}
+	}
+
 	bool b_single_bullet = ((m_magazine.size() == 1 || !HaveCartridgeInInventory(2)) &&
 		(m_set_next_ammoType_on_reload == u32(-1) || m_ammoType == m_set_next_ammoType_on_reload));
 

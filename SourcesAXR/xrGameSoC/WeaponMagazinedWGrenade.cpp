@@ -1413,19 +1413,21 @@ void CWeaponMagazinedWGrenade::switch2_Unmis()
 
 	if (GrenadeLauncherAttachable() && IsGrenadeLauncherAttached())
 	{
-		if (m_sounds.FindSoundItem("sndReloadMisfire", false) && (isHUDAnimationExist("anm_reload_w_gl_misfire") || isHUDAnimationExist("anm_reload_misfire_w_gl")))
+		if ((iAmmoElapsed == 1) && m_sounds.FindSoundItem("sndReloadMisfireEmpty", false) && isHUDAnimationExist("anm_reload_misfire_empty_w_gl"))
+			PlaySound("sndReloadMisfireEmpty", get_LastFP());
+		else if ((iAmmoElapsed == 1) && m_sounds.FindSoundItem("sndReloadJammedEmpty", false) && isHUDAnimationExist("anm_reload_jammed_empty_w_gl"))
+			PlaySound("sndReloadJammedEmpty", get_LastFP());
+		else if (m_sounds.FindSoundItem("sndReloadMisfire", false) && (isHUDAnimationExist("anm_reload_w_gl_misfire") || isHUDAnimationExist("anm_reload_misfire_w_gl")))
 			PlaySound("sndReloadMisfire", get_LastFP());
 		else if (m_sounds.FindSoundItem("sndReloadEmpty", false) && (isHUDAnimationExist("anm_reload_w_gl_empty") || isHUDAnimationExist("anm_reload_empty_w_gl")))
 			PlaySound("sndReloadEmpty", get_LastFP());
 		else
 			PlaySound("sndReload", get_LastFP());
 
-		if (isHUDAnimationExist("anm_reload_w_gl_misfire") || isHUDAnimationExist("anm_reload_misfire_w_gl"))
-			PlayHUDMotionIfExists({ "anm_reload_w_gl_misfire", "anm_reload_misfire_w_gl" }, true, GetState());
-		else if (isHUDAnimationExist("anm_reload_w_gl_empty") || isHUDAnimationExist("anm_reload_empty_w_gl"))
-			PlayHUDMotionIfExists({ "anm_reload_w_gl_empty", "anm_reload_empty_w_gl" }, true, GetState());
-		else
-			PlayHUDMotionIfExists({ "anim_reload_gl", "anm_reload_w_gl" }, true, GetState());
+		string128 anmUnmisName{};
+		strconcat(sizeof(anmUnmisName), anmUnmisName, "anm_reload", isHUDAnimationExist("anm_reload_misfire") ? "_misfire" : "_jammed", (iAmmoElapsed == 1) ? "_empty" : "", "_w_gl");
+
+		PlayHUDMotionIfExists({ anmUnmisName, "anm_reload_misfire_w_gl", "anim_reload_gl", "anm_reload_w_gl" }, true, GetState());
 	}
 	else
 		inherited::switch2_Unmis();

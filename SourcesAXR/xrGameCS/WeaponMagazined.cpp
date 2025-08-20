@@ -522,7 +522,7 @@ bool CWeaponMagazined::TryReload()
 		}
 		*/
 
-		if (IsMisfire())
+		if (IsMisfire() && !IsGrenadeMode())
 		{
 			SetPending			(TRUE);
 			SwitchState			(eUnMisfire);
