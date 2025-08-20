@@ -115,9 +115,9 @@ void CWeaponMagazined::Load	(LPCSTR section)
 	if (WeaponSoundExist(section, "snd_shoot_actor", true))
 	{
 		m_sounds.LoadSound(section, "snd_shoot_actor", "sndShotActor", false, m_eSoundShot);
-		m_sounds.LoadSound(section, "snd_shoot_last_actor", "sndShotActorLast", false, m_eSoundShot);
+		m_sounds.LoadSound(section, "snd_shoot_actor_last", "sndShotActorLast", false, m_eSoundShot);
 		m_sounds.LoadSound(section, "snd_silncer_shoot_actor", "sndSilencerShotActor", false, m_eSoundShot);
-		m_sounds.LoadSound(section, "snd_silncer_shoot_last_actor", "sndSilencerShotActorLast", false, m_eSoundShot);
+		m_sounds.LoadSound(section, "snd_silncer_shoot_actor", "sndSilencerShotActorLast", false, m_eSoundShot);
 	}
 	//-Alundaio
 
@@ -127,20 +127,32 @@ void CWeaponMagazined::Load	(LPCSTR section)
 	if (m_bIndoorSoundsEnabled)
 	{
 		m_sounds.LoadSound(section, "snd_shoot_indoor", "sndShotIndoor", false, m_eSoundShot);
-		m_sounds.LoadSound(section, "snd_shoot_last_indoor", "sndShotLastIndoor", false, m_eSoundShot);
+		m_sounds.LoadSound(section, "snd_shoot_indoor_last", "sndShotLastIndoor", false, m_eSoundShot);
 		m_sounds.LoadSound(section, "snd_silncer_shoot_indoor", "sndSilencerShotIndoor", false, m_eSoundShot);
-		m_sounds.LoadSound(section, "snd_silncer_shoot_last_indoor", "sndSilencerShotLastIndoor", false, m_eSoundShot);
+		m_sounds.LoadSound(section, "snd_silncer_shoot_indoor_last", "sndSilencerShotLastIndoor", false, m_eSoundShot);
 
 		if (WeaponSoundExist(section, "snd_shoot_actor", true))
 		{
 			m_sounds.LoadSound(section, "snd_shoot_actor_indoor", "sndShotActorIndoor", false, m_eSoundShot);
-			m_sounds.LoadSound(section, "snd_shoot_last_actor_indoor", "sndShotActorLastIndoor", false, m_eSoundShot);
+			m_sounds.LoadSound(section, "snd_shoot_actor_indoor_last", "sndShotActorLastIndoor", false, m_eSoundShot);
 			m_sounds.LoadSound(section, "snd_silncer_shoot_actor_indoor", "sndSilencerShotActorIndoor", false, m_eSoundShot);
-			m_sounds.LoadSound(section, "snd_silncer_shoot_last_actor_indoor", "sndSilencerShotActorLastIndoor", false, m_eSoundShot);
+			m_sounds.LoadSound(section, "snd_silncer_shoot_actor_indoor_last", "sndSilencerShotActorLastIndoor", false, m_eSoundShot);
 		}
 	}
 
 	m_sSndShotCurrent = IsSilencerAttached() ? "sndSilencerShot" : "sndShot";
+
+	if (WeaponSoundExist(section, "snd_inspect_weapon", true))
+		m_sounds.LoadSound(section, "snd_inspect_weapon",		"sndInspectWeapon", false, m_eSoundEmptyClick);
+
+	if (WeaponSoundExist(section, "snd_inspect_weapon_empty", true))
+		m_sounds.LoadSound(section, "snd_inspect_weapon_empty", "sndInspectWeaponEmpty", false, m_eSoundEmptyClick);
+
+	if (WeaponSoundExist(section, "snd_inspect_weapon_gl", true))
+		m_sounds.LoadSound(section, "snd_inspect_weapon_gl", "sndInspectWeaponGl", false, m_eSoundEmptyClick);
+
+	if (WeaponSoundExist(section, "snd_inspect_weapon_empty_gl", true))
+		m_sounds.LoadSound(section, "snd_inspect_weapon_empty_gl", "sndInspectWeaponEmptyGl", false, m_eSoundEmptyClick);
 
 	m_sounds.LoadSound(section,"snd_empty",			"sndEmptyClick",	false,	m_eSoundEmptyClick	);
 	m_sounds.LoadSound(section,"snd_reload",		"sndReload",		true,	m_eSoundReload		);
@@ -201,7 +213,7 @@ void CWeaponMagazined::Load	(LPCSTR section)
 		if(pSettings->line_exist(section, "silencer_smoke_particles"))
 			m_sSilencerSmokeParticles = pSettings->r_string(section, "silencer_smoke_particles");
 		
-		m_sounds.LoadSound(section,"snd_silncer_shot", "sndSilencerShot", false, m_eSoundShot);
+		m_sounds.LoadSound(section,"snd_silncer_shoot", "sndSilencerShot", false, m_eSoundShot);
 	}
 
 	if (WeaponSoundExist(section, "snd_aim_up", true))
@@ -946,6 +958,14 @@ void CWeaponMagazined::UpdateSounds	()
 		m_sounds.SetPosition("sndAimUp", P);
 	if (m_sounds.FindSoundItem("sndAimDown", false))
 		m_sounds.SetPosition("sndAimDown", P);
+	if (WeaponSoundExist(m_section_id.c_str(), "sndInspectWeapon"))
+		m_sounds.SetPosition("sndInspectWeapon", P);
+	if (WeaponSoundExist(m_section_id.c_str(), "sndInspectWeaponEmpty"))
+		m_sounds.SetPosition("sndInspectWeaponEmpty", P);
+	if (WeaponSoundExist(m_section_id.c_str(), "sndInspectWeaponGl"))
+		m_sounds.SetPosition("sndInspectWeaponGl", P);
+	if (WeaponSoundExist(m_section_id.c_str(), "sndInspectWeaponEmptyGl"))
+		m_sounds.SetPosition("sndInspectWeaponEmptyGl", P);
 
 //. nah	m_sounds.SetPosition("sndShot", P);
 	m_sounds.SetPosition("sndReload", P);
@@ -1773,6 +1793,46 @@ bool CWeaponMagazined::Action(s32 cmd, u32 flags)
 				}
 		} 
 		return true;
+	case kWPN_INSPECT:
+	{
+		if (flags & CMD_START)
+		{
+			if (isHUDAnimationExist("anm_inspect_weapon") && (!IsMisfire()))
+			{
+				if (iAmmoElapsed == 0)
+				{
+					if (IsGrenadeLauncherAttached() && isHUDAnimationExist("anm_inspect_weapon_empty_gl"))
+					{
+						PlayHUDMotion("anm_inspect_weapon_empty_gl", FALSE, this, GetState());
+						PlaySound("sndInspectWeaponEmptyGl", get_LastFP());
+						//Msg("Weapon Inspect Empty GL");
+					}
+					else
+					{
+						PlayHUDMotion("anm_inspect_weapon_empty", FALSE, this, GetState());
+						PlaySound("sndInspectWeaponEmpty", get_LastFP());
+						//Msg("Weapon Inspect Empty");
+					}
+				}
+				else
+				{
+					if (IsGrenadeLauncherAttached() && isHUDAnimationExist("anm_inspect_weapon_gl"))
+					{
+						PlayHUDMotion("anm_inspect_weapon_gl", FALSE, this, GetState());
+						PlaySound("sndInspectWeaponGl", get_LastFP());
+						//Msg("Weapon Inspect GL");
+					}
+					else
+					{
+						PlayHUDMotion("anm_inspect_weapon", FALSE, this, GetState());
+						PlaySound("sndInspectWeapon", get_LastFP());
+						//Msg("Weapon Inspect");
+					}
+				}
+			}
+		};
+	}
+	return true;
 	case kWPN_FIREMODE_PREV:
 		{
 			if(flags&CMD_START) 
