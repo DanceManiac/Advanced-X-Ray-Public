@@ -443,7 +443,7 @@ void ShowWeatherEditor(bool& show)
 	}
 
 	// LFO Stuff
-	ImGui::Text(u8"st_weather_editor_weather_effects");
+	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_weather_effects").c_str()).c_str());
 
 	if (ImGui::SliderFloat("weather_air_temperature", &cur->m_fAirTemperature, -50.0f, 50.0f))
 		changed = true;
@@ -460,7 +460,7 @@ void ShowWeatherEditor(bool& show)
 	if (ImGui::SliderFloat("weather_effects_snow_layer", &cur->m_fWinterSnowLayer, 1.0f, 0.00f))
 		changed = true;
 
-	ImGui::Text(u8"st_weather_editor_fallout_effects");
+	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_fallout_effects").c_str()).c_str());
 
 	if (ImGui::SliderFloat("fallout_effects_acid", &cur->m_fWindVolumeFalloutAcid, 0.0f, 2.00f))
 		changed = true;
