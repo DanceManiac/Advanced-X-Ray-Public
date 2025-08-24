@@ -336,7 +336,7 @@ void hud_item_measures::load(const shared_str& sect_name, IKinematics* K)
 	{
 		bone_name				= pSettings->r_string(sect_name, "fire_bone");
 		m_fire_bone				= K->LL_BoneID(bone_name);
-		R_ASSERT4				(m_fire_bone != BI_NONE, "!![%s] bone [%s] not found in weapon [%s]", bone_name.c_str(), sect_name.c_str());
+		R_MSG					(m_fire_bone != BI_NONE, "!Bone [%s] not found in weapon [%s]", bone_name.c_str(), sect_name.c_str());
 		m_fire_point_offset		= pSettings->r_fvector3(sect_name, "fire_point");
 	}
 	else
@@ -348,7 +348,7 @@ void hud_item_measures::load(const shared_str& sect_name, IKinematics* K)
 	{
 		bone_name				= pSettings->r_string(sect_name, "fire_bone2");
 		m_fire_bone2			= K->LL_BoneID(bone_name);
-		R_ASSERT4				(m_fire_bone2 != BI_NONE, "!![%s] bone [%s] not found in weapon [%s]", bone_name.c_str(), sect_name.c_str());
+		R_MSG					(m_fire_bone2 != BI_NONE, "!Bone [%s] not found in weapon [%s]", bone_name.c_str(), sect_name.c_str());
 		m_fire_point2_offset	= pSettings->r_fvector3(sect_name, "fire_point2");
 	}
 	else
@@ -360,7 +360,7 @@ void hud_item_measures::load(const shared_str& sect_name, IKinematics* K)
 	{
 		bone_name				= pSettings->r_string(sect_name, "shell_bone");
 		m_shell_bone			= K->LL_BoneID(bone_name);
-		R_ASSERT4				(m_shell_bone != BI_NONE, "!![%s] bone [%s] not found in weapon [%s]", bone_name.c_str(), sect_name.c_str());
+		R_MSG					(m_shell_bone != BI_NONE, "!Bone [%s] not found in weapon [%s]", bone_name.c_str(), sect_name.c_str());
 		m_shell_point_offset	= pSettings->r_fvector3(sect_name, "shell_point");
 	}
 	else
@@ -373,7 +373,7 @@ void hud_item_measures::load(const shared_str& sect_name, IKinematics* K)
 	{
 		bone_name				= pSettings->r_string(sect_name, overheating_bone_var);
 		m_overheating_smoke_bone = K->LL_BoneID(bone_name);
-		R_ASSERT4				(m_overheating_smoke_bone != BI_NONE, "!![%s] bone [%s] not found in weapon [%s]", bone_name.c_str(), sect_name.c_str());
+		R_MSG					(m_overheating_smoke_bone != BI_NONE, "!Bone [%s] not found in weapon [%s]", bone_name.c_str(), sect_name.c_str());
 		m_overheating_smoke_offset = pSettings->r_fvector3(sect_name, overheating_bone_var);
 	}
 	else
