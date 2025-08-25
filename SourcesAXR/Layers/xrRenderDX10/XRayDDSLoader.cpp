@@ -231,7 +231,7 @@ void XRayDDSLoader::Clear()
 	m_data = 0;
 }
 
-void XRayDDSLoader::To(ID3D11Texture2D*& Texture, bool bStaging)
+void XRayDDSLoader::To(ID3D11Texture2D*& Texture, bool bStaging, LPCSTR fRName)
 {
 	D3D11_TEXTURE2D_DESC desc;
 	FillMemory(&desc, sizeof(desc), 0);
@@ -308,7 +308,13 @@ void XRayDDSLoader::To(ID3D11Texture2D*& Texture, bool bStaging)
 			ptr += subdata[i + d * m_mips].SysMemSlicePitch;
 		}
 	}
+
+#ifdef DEBUG
 	R_CHK(HW.pDevice->CreateTexture2D(&desc, subdata, &Texture));
+#else
+	R_MSG(!HW.pDevice->CreateTexture2D(&desc, subdata, &Texture), "![XRayDDSLoader]: Can`t create 2D texture: [%s]!", fRName);
+#endif
+
 	if (m_px == TPF_R8G8B8)
 	{
 		xr_free(ptr_free);

@@ -438,7 +438,7 @@ _DDS_CUBE:
 			ret_msize				= calc_texture_size(img_loaded_lod, mip_cnt, img_size);
 #else
 			ID3D11Texture2D* ptr = 0;
-			TextureLoader.To(ptr, bStaging);
+			TextureLoader.To(ptr, bStaging, fRName);
 			ret_msize = TextureLoader.GetSizeInMemory();
 			pTexture2D = ptr;
 #endif
@@ -505,7 +505,7 @@ _DDS_2D:
 			ret_msize				= calc_texture_size(img_loaded_lod, mip_cnt, img_size);
 #else
 		ID3D11Texture2D* ptr = 0;
-		TextureLoader.To(ptr, bStaging);
+		TextureLoader.To(ptr, bStaging, fRName);
 		ret_msize = TextureLoader.GetSizeInMemory();
 		pTexture2D = ptr;
 #endif
