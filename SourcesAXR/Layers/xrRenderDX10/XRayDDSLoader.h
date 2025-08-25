@@ -322,7 +322,7 @@ private:
 public:
 	XRayDDSLoader();
 	~XRayDDSLoader();
-	void To(ID3D11Texture2D*& Texture, bool bStaging);
+	void To(ID3D11Texture2D*& Texture, bool bStaging, LPCSTR fRName);
 	void Clear();
 	bool Load(const char*file_name);
 	inline size_t GetSizeInMemory() const
