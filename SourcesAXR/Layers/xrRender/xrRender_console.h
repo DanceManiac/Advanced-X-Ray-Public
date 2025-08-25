@@ -35,6 +35,9 @@ extern ECORE_API	xr_token	qminmax_sm_token[];
 extern ECORE_API	u32			r2_aa_mode;
 extern ECORE_API	xr_token	r2_aa_mode_token[];
 
+extern ECORE_API	u32			r2_raindrop_mode;
+extern ECORE_API	xr_token	r2_raindrop_mode_token[];
+
 extern ECORE_API	u32			ps_r_aa_quality;
 extern ECORE_API	xr_token	qaa_token[];
 
@@ -80,6 +83,10 @@ extern ECORE_API	Flags32		ps_r1_flags;			// r1-only
 extern ECORE_API	float		ps_r1_fog_luminance;	//1.f r1-only
 extern ECORE_API	int			ps_r1_SoftwareSkinning;	// r1-only
 
+extern ECORE_API float			ps_r2_aref_strength;
+
+extern ECORE_API	Flags32		ps_r2_new_ls_flags;
+
 enum
 {
 	R1FLAG_DLIGHTS				= (1<<0),
@@ -93,6 +100,8 @@ extern ECORE_API	float		ps_r2_ssaLOD_A;
 extern ECORE_API	float		ps_r2_ssaLOD_B;
 
 // R2-specific
+extern ECORE_API Flags32		ps_r2_ls_flags_amd;			// r2-only
+extern ECORE_API Flags32		ps_r2_ls_flags_n;			// r2-only
 extern ECORE_API Flags32		ps_r2_ls_flags;				// r2-only
 extern ECORE_API Flags32		ps_r2_ls_flags_ext;
 extern ECORE_API float			ps_r2_df_parallax_h;		// r2-only
@@ -242,6 +251,14 @@ enum
 
 enum
 {
+	R3FLAG_WET_HANDS = (1 << 0),
+	R2FLAG_RAINBOWS = (1 << 1),
+	R3FLAG_CLOUD_SHADOWS = (1 << 2),
+	R3FLAG_SSS_CONTACT_SHADOWS = (1 << 3),
+};
+
+enum
+{
 	R2FLAGEXT_SSAO_BLUR				= (1<<0),
 	R2FLAGEXT_SSAO_OPT_DATA			= (1<<1),
 	R2FLAGEXT_SSAO_HALF_DATA		= (1<<2),
@@ -253,7 +270,8 @@ enum
 	R2FLAGEXT_SUN_ZCULLING			= (1<<8),
 	R2FLAGEXT_SUN_OLD				= (1<<9),
 	R2FLAGEXT_SSAO_SSDO				= (1<<10),
-	R2FLAG_EXP_MT_DETAILS			= (1<<11),
+	R2FLAGEXT_SSAO_SSDO_SSS			= (1<<11),
+	R2FLAG_EXP_MT_DETAILS			= (1<<12),
 };
 
 //ogse sunshafts
@@ -288,6 +306,13 @@ enum
 	R2FLAG_RAIN_DROPS			= (1<<3),
 	R_FLAG_CHROMATIC_ABERRATION = (1<<4),
 	R_FLAG_FILM_GRAIN			= (1<<5),
+	R2FLAG_FALLOUT_RAIN			= (1<<6),
+	R_FLAG_HUD_NVG_OVERLAY		= (1<<7),
+};
+
+enum
+{
+	R3FLAG_AMD_DX9_COMPATIBILITY = (1 << 0),
 };
 
 extern ECORE_API Flags32 ps_r_textures_flags;
@@ -324,6 +349,7 @@ enum
 	R4FLAG_SS_BLOOM				= (1 << 12),
 	R4FLAG_SS_BLOOM_MASK_DIRT	= (1 << 13),
 	R4FLAG_ES_ACES_TONEMAPPING  = (1 << 14),
+	R3FLAG_PUDDLE				= (1 << 15),
 };
 
 extern ECORE_API Flags32		ps_r__common_flags;

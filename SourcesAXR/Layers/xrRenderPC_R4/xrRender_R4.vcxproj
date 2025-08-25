@@ -683,8 +683,11 @@
     <ClInclude Include="blender_film_grain.h" />
     <ClInclude Include="blender_fxaa.h" />
     <ClInclude Include="blender_hud_bleeding.h" />
+    <ClInclude Include="blender_hud_infections.h" />
+    <ClInclude Include="blender_hud_fallout_effects.h" />
     <ClInclude Include="blender_hud_blood.h" />
-    <ClInclude Include="blender_hud_frost.h" />
+	<ClInclude Include="blender_hud_effects_winter.h" />
+	<ClInclude Include="blender_hud_effects_weather.h" />
     <ClInclude Include="blender_hud_intoxication.h" />
     <ClInclude Include="blender_hud_mask.h" />
     <ClInclude Include="blender_hud_stamina.h" />
@@ -850,6 +853,9 @@
     <ClCompile Include="..\xrRender\rendertarget_phase_dof.cpp" />
     <ClCompile Include="..\xrRender\rendertarget_phase_film_grain.cpp" />
     <ClCompile Include="..\xrRender\rendertarget_phase_hud_effects.cpp" />
+	<ClCompile Include="..\xrRender\rendertarget_phase_hud_effects_winter.cpp" />
+	<ClCompile Include="..\xrRender\rendertarget_phase_hud_effects_weather.cpp" />
+    <ClCompile Include="..\xrRender\rendertarget_phase_hud_effects_fallout.cpp" />
     <ClCompile Include="..\xrRender\rendertarget_phase_hud_mask.cpp" />
     <ClCompile Include="..\xrRender\rendertarget_phase_lut.cpp" />
     <ClCompile Include="..\xrRender\rendertarget_phase_nightvision.cpp" />
@@ -906,8 +912,11 @@
     <ClCompile Include="blender_film_grain.cpp" />
     <ClCompile Include="blender_fxaa.cpp" />
     <ClCompile Include="blender_hud_bleeding.cpp" />
+    <ClCompile Include="blender_hud_infections.cpp" />
+    <ClCompile Include="blender_hud_fallout_effects.cpp" />
     <ClCompile Include="blender_hud_blood.cpp" />
-    <ClCompile Include="blender_hud_frost.cpp" />
+	<ClCompile Include="blender_hud_effects_winter.cpp" />
+	<ClCompile Include="blender_hud_effects_weather.cpp" />
     <ClCompile Include="blender_hud_intoxication.cpp" />
     <ClCompile Include="blender_hud_mask.cpp" />
     <ClCompile Include="blender_hud_stamina.cpp" />

@@ -13,7 +13,7 @@ void CBlender_FilmGrain::Compile(CBlender_Compile& C)
 	switch (C.iElement)
 	{
 	case 0:	// Vignette
-		C.r_Pass("stub_screen_space", "film_grain", false, FALSE, FALSE);
+		C.r_Pass("stub_screen_space", "hud_film_grain", false, FALSE, FALSE);
 		C.r_dx10Texture("s_image", r2_RT_generic0);
 		C.r_End();
 		break;

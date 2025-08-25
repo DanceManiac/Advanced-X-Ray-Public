@@ -2,7 +2,10 @@
 
 #include "blender_nightvision.h"
 
-CBlender_nightvision::CBlender_nightvision() { description.CLS = 0; }
+CBlender_nightvision::CBlender_nightvision() 
+{ 
+	description.CLS = 0; 
+}
 
 CBlender_nightvision::~CBlender_nightvision()
 {
@@ -39,5 +42,29 @@ void CBlender_nightvision::Compile(CBlender_Compile& C)
 			C.r_dx10Sampler("smp_rtlinear");
 			C.r_End();
 		} break;	
+	}
+}
+
+CBlender_nightvision_hud_texture::CBlender_nightvision_hud_texture() 
+{ 
+	description.CLS = 0; 
+}
+
+CBlender_nightvision_hud_texture::~CBlender_nightvision_hud_texture() 
+{
+}
+
+void CBlender_nightvision_hud_texture::Compile(CBlender_Compile& C)
+{
+	IBlender::Compile(C);
+	switch (C.iElement)
+	{
+	case 0:
+		C.r_Pass("stub_screen_space", "hud_nightvision_texture", FALSE, FALSE, FALSE);
+		C.r_dx10Texture("s_image", r2_RT_generic0);
+		C.r_dx10Texture("s_nightvision_hud_texture", "shaders\\hud_mask\\hud_mask_nightvisions");
+		C.r_dx10Sampler("smp_rtlinear");
+		C.r_End();
+		break;
 	}
 }

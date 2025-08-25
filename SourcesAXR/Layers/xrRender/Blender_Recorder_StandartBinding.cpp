@@ -410,6 +410,14 @@ static class cl_blend_mode : public R_constant_setup //--#SM+#--
 	virtual void setup(R_constant* C) { RCache.set_c(C, g_pGamePersistent->m_pGShaderConstants->m_blender_mode); }
 } binder_blend_mode;
 
+static class cl_m_condition_params : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, g_pGamePersistent->m_pGShaderConstants->m_condition_params);
+	}
+}	binder_m_condition_params;
+
 static class cl_screen_res : public R_constant_setup		
 {	
 	virtual void setup	(R_constant* C)
@@ -911,6 +919,7 @@ void	CBlender_Compile::SetMapping	()
 	r_Constant("m_script_params", &binder_script_params); //--#SM+#--
 	r_Constant("m_blender_mode", &binder_blend_mode);	//--#SM+#--
 	r_Constant("svp_screen_res", &binder_spv_screen_res);
+	r_Constant("m_condition_params", &binder_m_condition_params);
 
 	// matrices
 	r_Constant				("m_W",				&binder_w);

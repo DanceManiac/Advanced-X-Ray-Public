@@ -353,7 +353,7 @@ void					CRender::create					()
 	o.dx11_sss_addon_enabled = ps_r4_shaders_flags.test(R4FLAG_SSS_ADDON);
 	o.dx11_es_addon_enabled = ps_r4_shaders_flags.test(R4FLAG_ES_ADDON);
 
-	o.dx11_es_addon_enabled ? Console->Execute("shaders_preset es_shaders_preset") : Console->Execute("shaders_preset original_shaders_preset");
+	//o.dx11_es_addon_enabled ? Console->Execute("shaders_preset es_shaders_preset") : Console->Execute("shaders_preset original_shaders_preset");
 
 	o.dx11_es_aces_tonemapping	= ps_r4_shaders_flags.test(R4FLAG_ES_ACES_TONEMAPPING);
 
@@ -1390,6 +1390,54 @@ HRESULT	CRender::shader_compile			(
 		sh_name[len]='0'; ++len;
 	}
 
+	if (RImplementation.o.advancedpp && ps_r2_ls_flags.test(R3FLAG_WET_HANDS))
+	{
+		defines[def_it].Name = "ALLOW_WET_HANDS";
+		defines[def_it].Definition = "1";
+		def_it++;
+		sh_name[len] = '1'; ++len;
+	}
+	else
+	{
+		sh_name[len] = '0'; ++len;
+	}
+
+	if (RImplementation.o.advancedpp && ps_r2_ls_flags.test(R3FLAG_CLOUD_SHADOWS))
+	{
+		defines[def_it].Name = "ALLOW_CLOUD_SHADOWS";
+		defines[def_it].Definition = "1";
+		def_it++;
+		sh_name[len] = '1'; ++len;
+	}
+	else
+	{
+		sh_name[len] = '0'; ++len;
+	}
+
+	if (RImplementation.o.advancedpp && ps_r2_ls_flags_amd.test(R3FLAG_AMD_DX9_COMPATIBILITY))
+	{
+		defines[def_it].Name = "ALLOW_AMD_RETICLE_FIX";
+		defines[def_it].Definition = "1";
+		def_it++;
+		sh_name[len] = '1'; ++len;
+	}
+	else
+	{
+		sh_name[len] = '0'; ++len;
+	}
+
+	if (RImplementation.o.advancedpp && ps_r2_ls_flags.test(R2FLAG_RAINBOWS))
+	{
+		defines[def_it].Name = "ALLOW_RAINBOW";
+		defines[def_it].Definition = "1";
+		def_it++;
+		sh_name[len] = '1'; ++len;
+	}
+	else
+	{
+		sh_name[len] = '0'; ++len;
+	}
+
 	if (RImplementation.o.advancedpp && ps_r2_ls_flags.test(R2FLAG_STEEP_PARALLAX))
 	{
 		defines[def_it].Name		=	"ALLOW_STEEPPARALLAX";
@@ -1540,6 +1588,18 @@ HRESULT	CRender::shader_compile			(
 	{
 		sh_name[len] = '0';
 		++len;
+	}
+
+	if (o.dx11_sss_addon_enabled && ps_r2_ls_flags.test(R3FLAG_SSS_CONTACT_SHADOWS))
+	{
+		defines[def_it].Name = "ALLOW_CONTACT_SHADOWS";
+		defines[def_it].Definition = "1";
+		def_it++;
+		sh_name[len] = '1'; ++len;
+	}
+	else
+	{
+		sh_name[len] = '0'; ++len;
 	}
 
 	if (o.dx11_sss_addon_enabled && ps_r4_ss_grass_collision)
@@ -1732,6 +1792,18 @@ HRESULT	CRender::shader_compile			(
 	{
 		sh_name[len] = '0';
 		++len;
+	}
+
+	if (o.dx11_sss_addon_enabled && o.dx11_ss_puddles_allways)
+	{
+		defines[def_it].Name = "ALLOW_PUDDLE";
+		defines[def_it].Definition = "1";
+		def_it++;
+		sh_name[len] = '0' + char(o.dx11_ss_puddles_allways); ++len;
+	}
+	else
+	{
+		sh_name[len] = '0'; ++len;
 	}
 
 	if (o.dx11_sss_addon_enabled && ps_ssfx_water_parallax_quality.x > 0)

@@ -284,6 +284,40 @@ void	CRenderTarget::phase_combine	()
 		t_envmap_0->surface_set		(e0);	_RELEASE(e0);
 		t_envmap_1->surface_set		(e1);	_RELEASE(e1);
 	
+
+		//Nightvision Boost Light START
+		if (g_pGamePersistent->GetActor())
+		{
+			bool	NightVisionEnabled = g_pGamePersistent->GetActorNightvision();
+			bool	IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
+			int		NightVisionType = g_pGamePersistent->GetNightvisionType();
+
+			if (IsActorAlive && NightVisionEnabled)
+			{
+				if (NightVisionType > 0 && ps_r__ShaderNVG == 1)
+				{
+					envclr.x += 0.55;		//1.75;
+					envclr.y += 0.55;		//1.75;
+					envclr.z += 0.55;		//1.75;
+
+					ambclr.x += 0.25;		//0.75;
+					ambclr.y += 0.25;		//0.75;
+					ambclr.z += 0.25;		//0.75;
+				}
+
+				if (ps_r__ShaderNVG == 0)
+				{
+					envclr.x += 0.1;		//1.75;
+					envclr.y += 0.1;		//1.75;
+					envclr.z += 0.1;		//1.75;
+
+					ambclr.x += 0.05;		//0.75;
+					ambclr.y += 0.05;		//0.75;
+					ambclr.z += 0.05;		//0.75;
+				}
+			}
+		}
+
 		// Draw
 		RCache.set_Element			(s_combine->E[0]	);
 		//RCache.set_Geometry			(g_combine_VP		);
@@ -501,6 +535,7 @@ void	CRenderTarget::phase_combine	()
 		bool IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
 		int NightVisionType = g_pGamePersistent->GetNightvisionType();
 		bool NightVisionEnabled = g_pGamePersistent->GetActorNightvision();
+		bool ActorIsInHideout = g_pGamePersistent->IsActorInHideout();
 
 		if (ps_r2_postscreen_flags.test(R_FLAG_HUD_DYN_EFFECTS) && IsActorAlive)
 		{
@@ -508,6 +543,22 @@ void	CRenderTarget::phase_combine	()
 			phase_hud_power();
 			phase_hud_bleeding();
 			phase_hud_intoxication();
+			phase_hud_infections();
+
+
+			if (!ActorIsInHideout)
+			{
+
+				if (ps_r2_postscreen_flags.test(R_FLAG_CHROMATIC_ABERRATION))
+					phase_chrom_aberration_acid();
+
+				if (ps_r2_postscreen_flags.test(R2FLAG_FALLOUT_RAIN))
+				{
+					phase_hud_acid_rain();
+					phase_hud_radiation_rain();
+					phase_hud_rainfall_acid();
+				}
+			}
 
 			// Chromatic Aberration
 			if (ps_r2_postscreen_flags.test(R_FLAG_CHROMATIC_ABERRATION))
@@ -516,14 +567,43 @@ void	CRenderTarget::phase_combine	()
 
 		if (ps_r2_postscreen_flags.test(R_FLAG_HUD_MASK) && HudGlassEnabled && IsActorAlive)
 		{
+			if (ps_r2_postscreen_flags.test(R2FLAG_RAIN_DROPS))
+			{
+				if (r2_raindrop_mode == 1)
+				{
+					phase_hud_rainfall();
+				}
+
+				if (r2_raindrop_mode == 3)
+				{
+					phase_hud_rainfall();
+				}
+			}
+
+			if (r2_raindrop_mode == 4)
+			{
+				phase_hud_snowfall();
+			}
+
 			phase_hud_mask();
+			phase_hud_cold();
 			phase_hud_frost();
+			phase_hud_sweated();
 		}
 
 		if (IsActorAlive && NightVisionEnabled && NightVisionType > 0 && ps_r__ShaderNVG == 1)
+		{
 			phase_nightvision();
+
+			if (ps_r2_postscreen_flags.test(R_FLAG_HUD_NVG_OVERLAY))
+			{
+				phase_nightvision_hud_texture();
+			}
+		}
 		else
+		{
 			g_pGamePersistent->devices_shader_data.nightvision_lum_factor = 0.0f;
+		}
 	}
 
 	// PP enabled ?
@@ -531,8 +611,18 @@ void	CRenderTarget::phase_combine	()
 	BOOL	PP_Complex		= u_need_PP	() | (BOOL)RImplementation.m_bMakeAsyncSS;
 	if (_menu_pp)			PP_Complex	= FALSE;
 
-	if (ps_r2_postscreen_flags.test(R2FLAG_RAIN_DROPS) && !bWinterMode)
-		PhaseRainDrops();
+	if (ps_r2_postscreen_flags.test(R2FLAG_RAIN_DROPS))
+	{
+		if (r2_raindrop_mode == 2)
+		{
+			PhaseRainDrops();
+		}
+
+		if (r2_raindrop_mode == 3)
+		{
+			PhaseRainDrops();
+		}
+	}
 			
    // HOLGER - HACK
    PP_Complex = TRUE;

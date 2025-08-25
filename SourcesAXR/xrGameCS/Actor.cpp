@@ -1137,6 +1137,7 @@ void CActor::UpdateCL	()
 
 	SetZoomAimingMode		(false);
 	CWeapon* pWeapon		= smart_cast<CWeapon*>(inventory().ActiveItem());	
+	CEnvDescriptorMixer& envdesc = *g_pGamePersistent->Environment().CurrentEnv;
 
 	cam_Update(float(Device.dwTimeDelta)/1000.0f, currentFOV());
 
@@ -1198,6 +1199,8 @@ void CActor::UpdateCL	()
 				g_pGamePersistent->m_pGShaderConstants->hud_params.y = pWeapon->GetSecondVPFov(); //--#SM+#--
 				g_pGamePersistent->m_pGShaderConstants->hud_params.z = bUseMark; //--#SM+#--
 				g_pGamePersistent->m_pGShaderConstants->m_blender_mode.x = bNVEnbl;  //--#SM+#--
+				//	g_pGamePersistent->m_pGShaderConstants->m_condition_params.x = pWeapon->GetCondition(); //LVutner RUST SHADER		
+				g_pGamePersistent->m_pGShaderConstants->m_condition_params.x = envdesc.m_fWinterSnowLayer;
 			}
 		}
 
@@ -1429,12 +1432,15 @@ void CActor::shedule_Update	(u32 DT)
 	inherited::shedule_Update	(DT);
 
 	//эффектор включаемый при ходьбе
-	if (!pCamBobbing)
+	if (!psActorFlags.test(AF_NO_HEAD_BOBBING))
 	{
-		pCamBobbing = xr_new<CEffectorBobbing>	();
-		Cameras().AddCamEffector			(pCamBobbing);
+		if (!pCamBobbing)
+		{
+			pCamBobbing = xr_new<CEffectorBobbing>	();
+			Cameras().AddCamEffector			(pCamBobbing);
+		}
+		pCamBobbing->SetState						(mstate_real, conditions().IsLimping(), IsZoomAimingMode());
 	}
-	pCamBobbing->SetState						(mstate_real, conditions().IsLimping(), IsZoomAimingMode());
 
 	//звук тяжелого дыхания при уталости и хромании
 	if(this==Level().CurrentControlEntity() )

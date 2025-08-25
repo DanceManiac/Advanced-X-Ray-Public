@@ -762,6 +762,12 @@
     <ClInclude Include="blender_hud_bleeding.h">
       <Filter>Shading templates</Filter>
     </ClInclude>
+    <ClInclude Include="blender_hud_infections.h">
+      <Filter>Shading templates</Filter>
+    </ClInclude>
+    <ClInclude Include="blender_hud_fallout_effects.h">
+      <Filter>Shading templates</Filter>
+    </ClInclude>
     <ClInclude Include="blender_nightvision.h">
       <Filter>Shading templates</Filter>
     </ClInclude>
@@ -789,14 +795,17 @@
     <ClInclude Include="blender_lut.h">
       <Filter>Shading templates</Filter>
     </ClInclude>
+    <ClInclude Include="blender_hud_effects_winter.h">
+      <Filter>Shading templates</Filter>
+    </ClInclude>
+    <ClInclude Include="blender_hud_effects_weather.h">
+      <Filter>Shading templates</Filter>
+    </ClInclude>
     <ClInclude Include="..\xrRenderDX10\dds.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="..\xrRenderDX10\XRayDDSLoader.h">
       <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="blender_hud_frost.h">
-      <Filter>Shading templates</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1448,10 +1457,25 @@
     <ClCompile Include="..\xrRender\rendertarget_phase_hud_effects.cpp">
       <Filter>Core_Target</Filter>
     </ClCompile>
+	<ClCompile Include="..\xrRender\rendertarget_phase_hud_effects_winter.cpp">
+      <Filter>Core_Target</Filter>
+    </ClCompile>
+	<ClCompile Include="..\xrRender\rendertarget_phase_hud_effects_weather.cpp">
+      <Filter>Core_Target</Filter>
+    </ClCompile>
+    <ClCompile Include="..\xrRender\rendertarget_phase_hud_effects_fallout.cpp">
+      <Filter>Core_Target</Filter>
+    </ClCompile>
     <ClCompile Include="blender_hud_stamina.cpp">
       <Filter>Shading templates</Filter>
     </ClCompile>
     <ClCompile Include="blender_hud_bleeding.cpp">
+      <Filter>Shading templates</Filter>
+    </ClCompile>
+    <ClCompile Include="blender_hud_infections.cpp">
+      <Filter>Shading templates</Filter>
+    </ClCompile>
+    <ClCompile Include="blender_hud_fallout_effects.cpp">
       <Filter>Shading templates</Filter>
     </ClCompile>
     <ClCompile Include="..\xrRender\rendertarget_phase_hud_mask.cpp">
@@ -1514,7 +1538,10 @@
     <ClCompile Include="..\xrRenderDX10\XRayDDSLoader.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="blender_hud_frost.cpp">
+    <ClCompile Include="blender_hud_effects_winter.cpp">
+      <Filter>Shading templates</Filter>
+    </ClCompile>
+    <ClCompile Include="blender_hud_effects_weather.cpp">
       <Filter>Shading templates</Filter>
     </ClCompile>
   </ItemGroup>

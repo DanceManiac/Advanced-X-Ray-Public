@@ -23,7 +23,6 @@
 #include "blender_hud_stamina.h"
 #include "blender_hud_bleeding.h"
 #include "blender_hud_intoxication.h"
-#include "blender_hud_frost.h"
 #include "blender_nightvision.h"
 #include "blender_blur.h"
 #include "blender_pp_bloom.h"
@@ -32,6 +31,10 @@
 #include "blender_film_grain.h"
 #include "blender_cut.h"
 #include "blender_lut.h"
+#include "blender_hud_infections.h"
+#include "blender_hud_fallout_effects.h"
+#include "blender_hud_effects_winter.h"
+#include "blender_hud_effects_weather.h"
 
 #include "../xrRender/dxRenderDeviceRender.h"
 
@@ -378,6 +381,8 @@ CRenderTarget::CRenderTarget		()
 	b_dof					= xr_new<CBlender_dof>				();
 	//Chromatic Aberration
 	b_chromatic_aberration	= xr_new<CBlender_ChromaticAberration>();
+	//Chromatic Aberration " FOR ACID RAIN"
+	b_chromatic_aberration2 = xr_new<CBlender_ChromaticAberration2>();
 	//Film Grain
 	b_film_grain			= xr_new<CBlender_FilmGrain>		();
 	// STCoP Engine
@@ -392,6 +397,16 @@ CRenderTarget::CRenderTarget		()
 	b_ssfx_bloom_lens		= xr_new<CBlender_ssfx_bloom_lens>	();
 	b_ssfx_bloom_downsample = xr_new<CBlender_ssfx_bloom_downsample>();
 	b_ssfx_bloom_upsample	= xr_new<CBlender_ssfx_bloom_upsample>();
+
+	b_hud_cold					= xr_new<CBlender_Hud_Cold>					();
+	b_hud_snowfall				= xr_new<CBlender_Hud_Snowfall>				();
+	b_hud_rainfall				= xr_new<CBlender_Hud_Rainfall>				();
+	b_hud_rainfall_acid			= xr_new<CBlender_Hud_Rainfall_Acid>		();
+	b_hud_sweated				= xr_new<CBlender_Hud_Sweated>				();
+	b_hud_acid_rain				= xr_new<CBlender_Hud_Acid_Rain>			();
+	b_hud_radiation_rain		= xr_new<CBlender_Hud_Radiation_Rain>		();
+	b_hud_infections			= xr_new<CBlender_Hud_Infections>			();
+	b_nightvision_hud_texture	= xr_new<CBlender_nightvision_hud_texture>	();
 
 	// HDAO
 	b_hdao_cs               = xr_new<CBlender_CS_HDAO>			();
@@ -608,15 +623,32 @@ CRenderTarget::CRenderTarget		()
 	//Anomaly DoF
 	s_dof.create(b_dof, "r3\\dof");
 	//Chromatic Aberration
-	s_chromatic_aberration.create(b_chromatic_aberration, "r3\\chromatic_aberration");
+	s_chromatic_aberration.create(b_chromatic_aberration, "r3\\hud_chromatic_aberration");
+	//Chromatic Aberration
+	s_chromatic_aberration2.create(b_chromatic_aberration2, "r3\\hud_chromatic_aberration_acid");
 	//Film Grain
-	s_film_grain.create(b_film_grain, "r3\\film_grain");
+	s_film_grain.create(b_film_grain, "r3\\hud_film_grain");
 	// STCoP Engine
 	s_cut.create(b_cut, "r3\\cut");
 	// Anomaly lut
 	s_lut.create(b_lut, "r3\\lut");
 	// OGSE Flares
 	s_flare.create("effects\\lensflare", "shaders\\lensflare");
+
+	//Hud Infections
+	s_hud_infections.create(b_hud_infections, "r3\\hud_infections");
+	//Hud Acid Rain
+	s_hud_acid_rain.create(b_hud_acid_rain, "r3\\hud_fallout_acid_rain");
+	//Hud Acid Rain
+	s_hud_radiation_rain.create(b_hud_radiation_rain, "r3\\hud_fallout_radiation_rain");
+	//Hud Nightvision Overlay Texture
+	s_nightvision_hud_texture.create(b_nightvision_hud_texture, "r3\\hud_nightvision_texture");
+
+	s_hud_cold.create(b_hud_cold, "r3\\hud_winter_cold");
+	s_hud_snowfall.create(b_hud_snowfall, "r3\\hud_winter_snowfall");
+	s_hud_rainfall.create(b_hud_rainfall, "r3\\hud_weather_rainfall");
+	s_hud_rainfall_acid.create(b_hud_rainfall_acid, "r3\\hud_weather_rainfall_acid");
+	s_hud_sweated.create(b_hud_sweated, "r3\\hud_weather_sweat");
 
 	// DIRECT (spot)
 	D3DFORMAT						depth_format	= (D3DFORMAT)RImplementation.o.HW_smap_FORMAT;
@@ -1279,6 +1311,17 @@ CRenderTarget::~CRenderTarget	()
 	xr_delete					(b_ssfx_bloom_lens		); // SSS Bloom Lens
 	xr_delete					(b_ssfx_bloom_downsample); // SSS Bloom Blur
 	xr_delete					(b_ssfx_bloom_upsample	); // SSS Bloom Blur
+
+	xr_delete					(b_hud_infections		); //Hud Infections
+	xr_delete					(b_hud_cold				); //Hud Cold Wind
+	xr_delete					(b_hud_snowfall			); //Hud Snowfall
+	xr_delete					(b_hud_rainfall			); //Hud Rainfall ALTERNATIVE DROPS
+	xr_delete					(b_hud_rainfall_acid	); //Hud Rainfall ALTERNATIVE DROPS ACID
+	xr_delete					(b_hud_sweated			); //Hud Sweated
+	xr_delete					(b_chromatic_aberration2); //Chromatic Aberration
+	xr_delete					(b_hud_acid_rain		); //Hud Acid Rain
+	xr_delete					(b_hud_radiation_rain	); //Hud Radiation Rain
+	xr_delete					(b_nightvision_hud_texture); //Hud Nightvision Overlay Texture
 
    if( RImplementation.o.dx10_msaa )
    {

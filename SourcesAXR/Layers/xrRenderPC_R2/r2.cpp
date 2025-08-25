@@ -932,6 +932,30 @@ HRESULT	CRender::shader_compile			(
 		sh_name[len]='0'; ++len;
 	}
 
+	if (RImplementation.o.advancedpp && ps_r2_ls_flags.test(R2FLAG_RAINBOWS))
+	{
+		defines[def_it].Name = "ALLOW_RAINBOW";
+		defines[def_it].Definition = "1";
+		def_it++;
+		sh_name[len] = '1'; ++len;
+	}
+	else
+	{
+		sh_name[len] = '0'; ++len;
+	}
+
+	if (RImplementation.o.advancedpp && ps_r2_ls_flags.test(R2FLAG_RAINBOWS))
+	{
+		defines[def_it].Name = "ALLOW_RAINBOW";
+		defines[def_it].Definition = "1";
+		def_it++;
+		sh_name[len] = '1'; ++len;
+	}
+	else
+	{
+		sh_name[len] = '0'; ++len;
+	}
+
 	if (RImplementation.o.advancedpp && ps_r2_ls_flags.test(R2FLAG_DOF))
 	{
 		defines[def_it].Name		=	"USE_DOF";
@@ -1015,6 +1039,31 @@ HRESULT	CRender::shader_compile			(
 		sh_name[len] = '0'; ++len;
 	}
 	
+	if (RImplementation.o.advancedpp && ps_r2_ls_flags_amd.test(R3FLAG_AMD_DX9_COMPATIBILITY))
+	{
+		defines[def_it].Name = "ALLOW_AMD_RETICLE_FIX";
+		defines[def_it].Definition = "1";
+		def_it++;
+		sh_name[len] = '1'; ++len;
+	}
+	else
+	{
+		sh_name[len] = '0'; ++len;
+	}
+
+	if (RImplementation.o.advancedpp && ps_r2_ls_flags_amd.test(R3FLAG_AMD_DX9_COMPATIBILITY))
+	{
+		defines[def_it].Name = "ALLOW_AMD_RETICLE_FIX";
+		defines[def_it].Definition = "1";
+		def_it++;
+		sh_name[len] = '1'; ++len;
+	}
+	else
+	{
+		sh_name[len] = '0'; ++len;
+	}
+
+
 	// Puddles
 	defines[def_it].Name = "USE_PUDDLES";
 	defines[def_it].Definition = "1";

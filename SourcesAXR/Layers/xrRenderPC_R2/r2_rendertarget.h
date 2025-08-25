@@ -39,7 +39,15 @@ public:
 	IBlender*					b_hud_blood;
 	IBlender*					b_hud_power;
 	IBlender*					b_hud_bleeding;
+	IBlender*					b_hud_infections;
 	IBlender*					b_hud_intoxication;
+	IBlender*					b_hud_acid_rain;
+	IBlender*					b_hud_radiation_rain;
+	IBlender*					b_hud_cold;
+	IBlender*					b_hud_snowfall;
+	IBlender*					b_hud_rainfall;
+	IBlender*					b_hud_rainfall_acid;
+	IBlender*					b_hud_sweated;
 	IBlender*					b_hud_frost;
 
 #ifdef DEBUG
@@ -127,8 +135,19 @@ private:
 	ref_shader					s_hud_bleeding;
 	//Hud Intoxication
 	ref_shader					s_hud_intoxication;
+	//Hud Acid Rain
+	ref_shader					s_hud_acid_rain;
+	//Hud Radiation Rain
+	ref_shader					s_hud_radiation_rain;
+	//Hud Infections
+	ref_shader					s_hud_infections;
 	//Hud Frost
 	ref_shader					s_hud_frost;
+	ref_shader					s_hud_cold;
+	ref_shader					s_hud_snowfall;
+	ref_shader					s_hud_rainfall;
+	ref_shader					s_hud_rainfall_acid;
+	ref_shader					s_hud_sweated;
 	
 	// Water
 	ref_shader					s_water;
@@ -271,8 +290,16 @@ public:
 	void						phase_hud_blood			();
 	void						phase_hud_power			();
 	void						phase_hud_bleeding		();
+	void						phase_hud_infections	();
 	void						phase_hud_intoxication	();
+	void						phase_hud_acid_rain		();
+	void						phase_hud_radiation_rain();
 	void						phase_hud_frost			();
+	void						phase_hud_cold			();
+	void						phase_hud_snowfall		();
+	void						phase_hud_rainfall		();
+	void						phase_hud_rainfall_acid	();
+	void						phase_hud_sweated		();
 	void						shadow_direct			(light* L, u32 dls_phase);
 
 	bool						need_to_render_sunshafts();

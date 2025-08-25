@@ -267,18 +267,51 @@ void	CRenderTarget::phase_combine	()
 	if (!_menu_pp && g_pGamePersistent->GetActor() && g_pGamePersistent->IsCamFirstEye())
 	{
 		bool IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
+		bool ActorIsInHideout = g_pGamePersistent->IsActorInHideout();
+
 		if (ps_r2_postscreen_flags.test(R_FLAG_HUD_DYN_EFFECTS) && IsActorAlive)
 		{
 			phase_hud_blood();
 			phase_hud_power();
 			phase_hud_bleeding();
-			phase_hud_intoxication();
+			phase_hud_infections();
+		}
+
+
+		if (!ActorIsInHideout)
+		{
+
+			if (ps_r2_postscreen_flags.test(R2FLAG_FALLOUT_RAIN))
+			{
+				phase_hud_acid_rain();
+				phase_hud_radiation_rain();
+			}
 		}
 
 		if (ps_r2_postscreen_flags.test(R_FLAG_HUD_MASK) && HudGlassEnabled && IsActorAlive)
 		{
+			if (ps_r2_postscreen_flags.test(R2FLAG_RAIN_DROPS))
+			{
+				if (r2_raindrop_mode == 1)
+				{
+					phase_hud_rainfall();
+				}
+
+				if (r2_raindrop_mode == 3)
+				{
+					phase_hud_rainfall();
+				}
+			}
+
+			if (r2_raindrop_mode == 4)
+			{
+				phase_hud_snowfall();
+			}
+
 			phase_hud_mask();
+			phase_hud_cold();
 			phase_hud_frost();
+			phase_hud_sweated();
 		}
 	}
 	
@@ -287,8 +320,18 @@ void	CRenderTarget::phase_combine	()
 	BOOL	PP_Complex		= u_need_PP	() | (BOOL)RImplementation.m_bMakeAsyncSS;
 	if (_menu_pp)			PP_Complex	= FALSE;
 
-	if (ps_r2_postscreen_flags.test(R2FLAG_RAIN_DROPS) && !bWinterMode)
-		PhaseRainDrops();
+	if (ps_r2_postscreen_flags.test(R2FLAG_RAIN_DROPS))
+	{
+		if (r2_raindrop_mode == 2)
+		{
+			PhaseRainDrops();
+		}
+
+		if (r2_raindrop_mode == 3)
+		{
+			PhaseRainDrops();
+		}
+	}
 	
 	if(Puddles->m_bLoaded)
 		phase_puddles();

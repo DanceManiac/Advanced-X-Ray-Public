@@ -7,6 +7,7 @@
 #include "../../build_config_defines.h"
 
 // SSR quality option
+/*
 u32			dt_ssr_samp = 2;
 xr_token							qdt_ssr_samp_token[] = {
 	{ "dtssr_off",					0												},
@@ -16,6 +17,28 @@ xr_token							qdt_ssr_samp_token[] = {
 	{ "dtssr_high",					4												},
 	{ 0,							0												}
 };
+*/
+u32			dt_ssr_samp = 1;
+xr_token							qdt_ssr_samp_token[] = {
+	{ "dtssr_off",					0												},
+	{ "shader_ssr_off",				0												},
+	{ "shader_ssr_on",				1												},/*
+	{ "dtssr_low",					2												},
+	{ "dtssr_medium",				3												},
+	{ "dtssr_high",					4												},*/
+	{ 0,							0												}
+
+};
+
+// Rain Drop Modes
+u32			r2_raindrop_mode = 1;
+xr_token							r2_raindrop_mode_token[] = {
+	{ "opt_raindrops_v1",			1												},
+	{ "opt_raindrops_v2",			2												},
+	{ "opt_raindrops_combined",		3												},
+	{ "opt_snowflakes",				4												},
+	{ 0,							0												}
+};
 
 // AA Modes
 u32			r2_aa_mode = 1;
@@ -23,9 +46,9 @@ xr_token							r2_aa_mode_token[] = {
 	{ "opt_noaa",					1												},
 	{ "opt_fxaa",					2												},
 	{ "opt_dlaa",					3												},
-#ifdef USE_DX11
-	{ "opt_smaa",					4												},
-#endif
+//#ifdef USE_DX11
+//	{ "opt_smaa",					4												},
+//#endif
 	{ 0,							0												}
 };
 
@@ -57,12 +80,25 @@ xr_token qsmapsize_token[] =
 
 u32			ps_Preset				=	2	;
 xr_token							qpreset_token							[ ]={
-	{ "Minimum",					0											},
-	{ "Low",						1											},
-	{ "Default",					2											},
-	{ "High",						3											},
-	{ "Extreme",					4											},
-	{ 0,							0											}
+	{ "renderer_presets_minimum",					0											},
+	{ "renderer_presets_low",						1											},
+	{ "renderer_presets_medium",					2											},
+	{ "renderer_presets_medium_bright",				4											},
+	{ "renderer_presets_medium_winter",				5											},
+	{ "renderer_presets_medium_winter_bright",		6											},
+	{ "renderer_presets_high",						7											},
+	{ "renderer_presets_high_bright",				8											},
+	{ "renderer_presets_high_winter",				9											},
+	{ "renderer_presets_high_winter_bright",		0											},
+	{ "renderer_presets_maximum",					10											},
+	{ "renderer_presets_maximum_bright",			11											},
+	{ "renderer_presets_maximum_winter",			12											},
+	{ "renderer_presets_maximum_winter_bright",		13											},
+	{ "renderer_presets_extrem",					14											},
+	{ "renderer_presets_extrem_bright",				15											},
+	{ "renderer_presets_extrem_winter",				16											},
+	{ "renderer_presets_extrem_winter_bright",		17											},
+	{ 0,											0											}
 };
 
 u32			ps_r_ssao_mode			=	2;
@@ -72,6 +108,7 @@ xr_token							qssao_mode_token						[ ]={
 	{ "hdao",						2											},
 	{ "hbao",						3											},
 	{ "ssdo",						4											},
+//	{ "ssdo_sss",					5											},
 	{ 0,							0											}
 };
 
@@ -166,9 +203,13 @@ xr_token lowland_fog_type_token[] = {
 //Пресет настроек для шейдеров
 u32 ps_ShaderPreset = 0;
 xr_token							qshader_preset_token[] = {
-	{"original_shaders_preset",		0												},
-	{"es_shaders_preset",			1												},
-	{ 0,							0												}
+	{"original_shaders_preset",				0												},
+	{"es_shaders_preset",					1												},
+	{"lfo_shaders_preset",					2												},
+	{"lfo_shaders_preset_bright",			3												},
+	{"lfo_shaders_preset_winter",			4												},
+	{"lfo_shaders_preset_winter_bright",	5												},
+	{ 0,									0												}
 };
 
 u32 ps_r_panorama_scr_size = 2048;
@@ -201,7 +242,7 @@ int			ps_r__LightSleepFrames		= 10	;
 
 float		ps_r__Detail_l_ambient		= 0.9f	;
 float		ps_r__Detail_l_aniso		= 0.25f	;
-float		ps_r__Detail_density		= 0.3f	;
+float		ps_r__Detail_density		= 0.1f	;
 float		ps_r__Detail_rainbow_hemi	= 0.75f	;
 
 float		ps_r__Tree_w_rot			= 10.0f	;
@@ -263,6 +304,19 @@ Flags32		ps_r2_ls_flags				= { R2FLAG_SUN
 	|R2FLAG_TONEMAP
 	|R2FLAG_EXP_MT_DETAILS
 	};	// r2-only
+
+Flags32	ps_r2_ls_flags_n =
+{
+	R3FLAG_WET_HANDS
+	| R2FLAG_RAINBOWS
+	| R3FLAG_CLOUD_SHADOWS
+	| R3FLAG_SSS_CONTACT_SHADOWS
+};	// r2-only
+
+Flags32	ps_r2_ls_flags_amd =
+{
+	R3FLAG_AMD_DX9_COMPATIBILITY
+};	// r2-only
 
 Flags32		ps_r2_ls_flags_ext			= {
 		/*R2FLAGEXT_SSAO_OPT_DATA |*/ R2FLAGEXT_SSAO_HALF_DATA
@@ -359,11 +413,16 @@ float		ps_r2_rain_drops_speed = 1.25f;
 
 Flags32		ps_r2_ls_flags_2 = { 0 };
 Flags32		ps_actor_shadow_flags = { 0 };
+Flags32		ps_r2_new_ls_flags = { 0 };
 
 Flags32		ps_r2_postscreen_flags = { R_FLAG_HUD_MASK
 	| R_FLAG_HUD_DYN_EFFECTS
 	| R2FLAG_RAIN_DROPS
 	| R_FLAG_CHROMATIC_ABERRATION
+};
+
+Flags32		ps_r2_new_postscreen_flags = {
+			R2FLAG_FALLOUT_RAIN
 };
 
 Flags32		ps_r_textures_flags = { R3_NO_RAM_TEXTURES };
@@ -726,11 +785,24 @@ public:
 		string_path		cmd;
 		
 		switch	(*value)	{
-			case 0:		xr_strcpy(_cfg, "rspec_minimum.ltx");	break;
-			case 1:		xr_strcpy(_cfg, "rspec_low.ltx");		break;
-			case 2:		xr_strcpy(_cfg, "rspec_default.ltx");	break;
-			case 3:		xr_strcpy(_cfg, "rspec_high.ltx");		break;
-			case 4:		xr_strcpy(_cfg, "rspec_extreme.ltx");	break;
+		case 0:		xr_strcpy(_cfg, "renderer_preset\\lfo_renderer_presets\\renderer_presets_1_minimum.ltx");				break;
+		case 1:		xr_strcpy(_cfg, "renderer_preset\\lfo_renderer_presets\\renderer_presets_2_low.ltx");					break;
+		case 2:		xr_strcpy(_cfg, "renderer_preset\\lfo_renderer_presets\\renderer_presets_3_medium.ltx");				break;
+		case 3:		xr_strcpy(_cfg, "renderer_preset\\lfo_renderer_presets\\renderer_presets_3_medium_bright.ltx");			break;
+		case 4:		xr_strcpy(_cfg, "renderer_preset\\lfo_renderer_presets\\renderer_presets_3_medium_winter.ltx");			break;
+		case 5:		xr_strcpy(_cfg, "renderer_preset\\lfo_renderer_presets\\renderer_presets_3_medium_winter_bright.ltx");	break;
+		case 6:		xr_strcpy(_cfg, "renderer_preset\\lfo_renderer_presets\\renderer_presets_4_high.ltx");					break;
+		case 7:		xr_strcpy(_cfg, "renderer_preset\\lfo_renderer_presets\\renderer_presets_4_high_bright.ltx");			break;
+		case 8:		xr_strcpy(_cfg, "renderer_preset\\lfo_renderer_presets\\renderer_presets_4_high_winter.ltx");			break;
+		case 9:		xr_strcpy(_cfg, "renderer_preset\\lfo_renderer_presets\\renderer_presets_4_high_winter_bright.ltx");	break;
+		case 10:	xr_strcpy(_cfg, "renderer_preset\\lfo_renderer_presets\\renderer_presets_5_maximum.ltx");				break;
+		case 11:	xr_strcpy(_cfg, "renderer_preset\\lfo_renderer_presets\\renderer_presets_5_maximum_bright.ltx");		break;
+		case 12:	xr_strcpy(_cfg, "renderer_preset\\lfo_renderer_presets\\renderer_presets_5_maximum_winter.ltx");		break;
+		case 13:	xr_strcpy(_cfg, "renderer_preset\\lfo_renderer_presets\\renderer_presets_5_maximum_winter_bright.ltx");	break;
+		case 14:	xr_strcpy(_cfg, "renderer_preset\\lfo_renderer_presets\\renderer_presets_6_extrem.ltx");				break;
+		case 15:	xr_strcpy(_cfg, "renderer_preset\\lfo_renderer_presets\\renderer_presets_6_extrem_bright.ltx");			break;
+		case 16:	xr_strcpy(_cfg, "renderer_preset\\lfo_renderer_presets\\renderer_presets_6_extrem_winter.ltx");			break;
+		case 17:	xr_strcpy(_cfg, "renderer_preset\\lfo_renderer_presets\\renderer_presets_6_extrem_winter_bright.ltx");	break;
 		}
 		FS.update_path			(_cfg,"$game_config$",_cfg);
 		strconcat				(sizeof(cmd),cmd,"cfg_load", " ", _cfg);
@@ -748,7 +820,7 @@ public:
 	{
 		CCC_Token::Execute	(args);
 		string256		file_name;
-		string_path		_cfg = "mfs_team\\color_drag_settings\\";
+		string_path		_cfg = "renderer_preset\\colour_presets\\";
 		string_path		cmd;
 
 		strconcat(sizeof(file_name), file_name, args, ".ltx");
@@ -1007,8 +1079,12 @@ public:
 
 		switch (*value)
 		{
-		case 0: xr_strcpy(_cfg, "mfs_team\\shaders_presets\\shaders_original_preset.ltx"); break;
-		case 1: xr_strcpy(_cfg, "mfs_team\\shaders_presets\\shaders_enchanted_preset.ltx"); break;
+		case 0: xr_strcpy(_cfg, "renderer_preset\\lfo_renderer_presets\\shaders_presets\\shaders_original_preset.ltx"); break;
+		case 1: xr_strcpy(_cfg, "renderer_preset\\lfo_renderer_presets\\shaders_presets\\shaders_enchanted_preset.ltx"); break;
+		case 2: xr_strcpy(_cfg, "renderer_preset\\lfo_renderer_presets\\shaders_presets\\shaders_lfo_preset.ltx"); break;
+		case 3: xr_strcpy(_cfg, "renderer_preset\\lfo_renderer_presets\\shaders_presets\\shaders_lfo_preset_bright.ltx"); break;
+		case 4: xr_strcpy(_cfg, "renderer_preset\\lfo_renderer_presets\\shaders_presets\\shaders_lfo_preset_winter.ltx"); break;
+		case 5: xr_strcpy(_cfg, "renderer_preset\\lfo_renderer_presets\\shaders_presets\\shaders_lfo_preset_winter_bright.ltx"); break;
 		}
 		FS.update_path(_cfg, "$game_config$", _cfg);
 		strconcat(sizeof(cmd), cmd, "cfg_load", " ", _cfg);
@@ -1053,11 +1129,11 @@ void		xrRender_initconsole	()
 
 	Fvector	tw_min,tw_max;
 	
-	CMD4(CCC_Float,		"r__geometry_lod",		&ps_r__LOD,					0.1f,   3.f		); //AVO: extended from 1.2f to 3.f
+	CMD4(CCC_Float,		"r__geometry_lod",		&ps_r__LOD, 0.1f, !bDeveloperMode ? 3.f : 5.f); //AVO: extended from 1.2f to 3.f
 //.	CMD4(CCC_Float,		"r__geometry_lod_pow",	&ps_r__LOD_Power,			0,		2		);
 
 //.	CMD4(CCC_Float,		"r__detail_density",	&ps_r__Detail_density,		.05f,	0.99f	);
-	CMD4(CCC_Float,		"r__detail_density",	&ps_current_detail_density, 0.3f, 1.5f		);
+	CMD4(CCC_Float,		"r__detail_density",	&ps_current_detail_density, 0.1f, 1.5f		);
 	CMD4(CCC_Float,		"r__detail_scale",		&ps_current_detail_scale,	0.2f, 1.6f		);
 
 #ifdef DEBUG
@@ -1142,6 +1218,12 @@ void		xrRender_initconsole	()
 	//tw_max.set(1, 1, 1);
 
 	//CMD4(CCC_Vector3,	"r_color_grading_es",	&ps_r2_img_cg,				tw_min, tw_max);
+
+#ifdef USE_DX11
+	CMD3(CCC_Mask, "r2_fallout_rain_effects", &ps_r2_postscreen_flags, R2FLAG_FALLOUT_RAIN);
+#endif
+
+	CMD3(CCC_Mask, "r__shader_nvg_overlay", &ps_r2_postscreen_flags, R_FLAG_HUD_NVG_OVERLAY);
 
 	CMD3(CCC_Mask,		"r2_raindrops",			&ps_r2_postscreen_flags,	R2FLAG_RAIN_DROPS	);
 	CMD4(CCC_Float,		"r2_rain_drops_intensity",	&ps_r2_rain_drops_intensity, 0.f,	1.f	);
@@ -1278,6 +1360,8 @@ void		xrRender_initconsole	()
 	// AA Mode
 	CMD3(CCC_Token,		"r2_aa_mode",					&r2_aa_mode,				r2_aa_mode_token);
 
+	CMD3(CCC_Token,		"r2_raindrops_mode",			&r2_raindrop_mode,			r2_raindrop_mode_token);
+
 	//Refactor
 	Fvector4 twb_min = { 0.f, 0.f, 0.f, 0.f };
 	Fvector4 twb_max = { 1.f, 1.f, 1.f, 1.f };
@@ -1325,11 +1409,25 @@ void		xrRender_initconsole	()
 	CMD1(CCC_Fog_Reload,"r3_fog_reload");
 #endif	//	DEBUG
 #endif	//	(RENDER == R_R4)
-
+	/*
 	CMD3(CCC_Mask,		"r3_dynamic_wet_surfaces",		&ps_r2_ls_flags,			R3FLAG_DYN_WET_SURF);
 	CMD4(CCC_Float,		"r3_dynamic_wet_surfaces_near",	&ps_r3_dyn_wet_surf_near,	10,	70		);
 	CMD4(CCC_Float,		"r3_dynamic_wet_surfaces_far",	&ps_r3_dyn_wet_surf_far,	30,	300		);
 	CMD4(CCC_Integer,	"r3_dynamic_wet_surfaces_sm_res",&ps_r3_dyn_wet_surf_sm_res,64,	2048	);
+	*/
+
+	CMD3(CCC_Mask, "r3_dynamic_wet_surfaces_hand", &ps_r2_ls_flags_n, R3FLAG_WET_HANDS);					// Need restart
+	CMD3(CCC_Mask, "r2_rainbow", &ps_r2_ls_flags_n, R2FLAG_RAINBOWS);					// Need restart
+	CMD3(CCC_Mask, "r3_cloud_shadows", &ps_r2_ls_flags_n, R3FLAG_CLOUD_SHADOWS);				// Need restart
+	CMD3(CCC_Mask, "r3_sss_contact_shadows", &ps_r2_ls_flags_n, R3FLAG_SSS_CONTACT_SHADOWS);		// Need restart
+	CMD3(CCC_Mask, "renderer_amd_dx9_compatibility", &ps_r2_ls_flags_amd, R3FLAG_AMD_DX9_COMPATIBILITY);				// Need restart
+
+	CMD3(CCC_Mask, "r3_dynamic_wet_surfaces", &ps_r2_ls_flags, R3FLAG_DYN_WET_SURF);
+	CMD4(CCC_Float, "r3_dynamic_wet_surfaces_near", &ps_r3_dyn_wet_surf_near, 10, 70);
+	CMD4(CCC_Float, "r3_dynamic_wet_surfaces_far", &ps_r3_dyn_wet_surf_far, 30, 100);	//300
+	CMD4(CCC_Integer, "r3_dynamic_wet_surfaces_sm_res", &ps_r3_dyn_wet_surf_sm_res, 64, 2048);
+
+
 
 	CMD3(CCC_Mask,			"r3_volumetric_smoke",			&ps_r2_ls_flags,			R3FLAG_VOLUMETRIC_SMOKE);
 	CMD1(CCC_memory_stats,	"render_memory_stats" );
@@ -1434,6 +1532,9 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Float,			"r2_aref_strength",				&ps_r2_aref_strength,		10.0f,	450.f);
 	CMD4(CCC_Vector4,		"r4_normal_strength",			&ps_r4_normal_strength,		Fvector4().set(0.1f, 0.1f, 0.1f, 0.1f), Fvector4().set(1.0f, 1.0f, 1.0f, 1.0f));
 	CMD4(CCC_Float,			"r4_water_waves_koef",			&ps_r4_sss_water_waves_koef,0.0f,	0.5f);
+
+	CMD3(CCC_Mask,			"r3_puddle",					&ps_r4_shaders_flags,		R3FLAG_PUDDLE);					//Need restart
+
 //	CMD3(CCC_Mask,		"r2_sun_ignore_portals",		&ps_r2_ls_flags,			R2FLAG_SUN_IGNORE_PORTALS);
 }
 

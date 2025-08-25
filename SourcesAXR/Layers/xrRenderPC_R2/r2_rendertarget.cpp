@@ -19,7 +19,10 @@
 #include "blender_hud_stamina.h"
 #include "blender_hud_bleeding.h"
 #include "blender_hud_intoxication.h"
-#include "blender_hud_frost.h"
+#include "blender_hud_infections.h"
+#include "blender_hud_fallout_effects.h"
+#include "blender_hud_effects_winter.h"
+#include "blender_hud_effects_weather.h"
 
 #include "../xrRender/dxRenderDeviceRender.h"
 
@@ -240,6 +243,15 @@ CRenderTarget::CRenderTarget		()
 	//HUD FROST
 	b_hud_frost						= xr_new<CBlender_Hud_Frost>			();
 
+	b_hud_acid_rain					= xr_new<CBlender_Hud_Acid_Rain>		();
+	b_hud_radiation_rain			= xr_new<CBlender_Hud_Radiation_Rain>	();
+	b_hud_infections				= xr_new<CBlender_Hud_Infections>		();
+	b_hud_cold						= xr_new<CBlender_Hud_Cold>				();
+	b_hud_snowfall					= xr_new<CBlender_Hud_Snowfall>			();
+	b_hud_rainfall					= xr_new<CBlender_Hud_Rainfall>			();
+	b_hud_rainfall_acid				= xr_new<CBlender_Hud_Rainfall_Acid>	();
+	b_hud_sweated					= xr_new<CBlender_Hud_Sweated>			();
+
 	//	NORMAL
 	{
 		u32		w=Device.dwWidth, h=Device.dwHeight;
@@ -418,6 +430,16 @@ CRenderTarget::CRenderTarget		()
 	//Hud Intoxication
 	s_hud_frost.create(b_hud_frost, "r2\\hud_frost");
 		
+	s_hud_acid_rain.create(b_hud_acid_rain, "r2\\hud_fallout_acid_rain");
+	s_hud_radiation_rain.create(b_hud_radiation_rain, "r2\\hud_fallout_radiation_rain");
+	s_hud_infections.create(b_hud_infections, "r2\\hud_infections");
+	s_hud_cold.create(b_hud_cold, "r2\\hud_winter_cold");
+	s_hud_snowfall.create(b_hud_snowfall, "r2\\hud_winter_snowfall");
+	s_hud_rainfall.create(b_hud_rainfall, "r2\\hud_weather_rainfall");
+	s_hud_rainfall_acid.create(b_hud_rainfall_acid, "r2\\hud_weather_rainfall_acid");
+	s_hud_sweated.create(b_hud_cold, "r2\\hud_weather_sweat");
+
+
 	//SSAO
 	if (RImplementation.o.ssao_blur_on)
 	{
@@ -712,7 +734,15 @@ CRenderTarget::~CRenderTarget	()
 	xr_delete					(b_hud_power			); //Hud Stamina
 	xr_delete					(b_hud_bleeding			); //Hud Bleeding
 	xr_delete					(b_hud_intoxication		); //Hud Intoxication
+	xr_delete					(b_hud_acid_rain		); //Hud Acid Rain
+	xr_delete					(b_hud_radiation_rain	); //Hud Acid Rain
+	xr_delete					(b_hud_infections		); //Hud Infections
 	xr_delete					(b_hud_frost			); //Hud Frost
+	xr_delete					(b_hud_cold				); //Hud Cold Wind
+	xr_delete					(b_hud_snowfall			); //Hud Snowfall
+	xr_delete					(b_hud_rainfall			); //Hud Rainfall ALTERNATIVE DROPS
+	xr_delete					(b_hud_rainfall_acid	); //Hud Rainfall ALTERNATIVE DROPS ACID
+	xr_delete					(b_hud_sweated			); //Hud Sweated
 }
 
 void CRenderTarget::reset_light_marker( bool bResetStencil)

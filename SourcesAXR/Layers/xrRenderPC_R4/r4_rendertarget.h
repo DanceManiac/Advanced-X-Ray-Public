@@ -59,14 +59,24 @@ public:
 	IBlender*					b_hud_bleeding;
 	IBlender*					b_hud_intoxication;
 	IBlender*					b_hud_frost;
+	IBlender*					b_hud_cold;
+	IBlender*					b_hud_snowfall;
+	IBlender*					b_hud_rainfall;
+	IBlender*					b_hud_rainfall_acid;
+	IBlender*					b_hud_sweated;
 	IBlender*					b_nightvision;
 	IBlender*					b_blur;
 	IBlender*					b_pp_bloom;
 	IBlender*					b_dof;
 	IBlender* 					b_chromatic_aberration;
+	IBlender*					b_chromatic_aberration2;
 	IBlender*					b_film_grain;
 	IBlender*					b_cut;
 	IBlender*					b_lut;
+	IBlender*					b_hud_infections;
+	IBlender*					b_hud_acid_rain;
+	IBlender*					b_hud_radiation_rain;
+	IBlender*					b_nightvision_hud_texture;
 
     // compute shader for hdao
     IBlender*                   b_hdao_cs;
@@ -234,6 +244,17 @@ private:
 	ref_shader					s_lut;
 	//OGSE Flares
 	ref_shader					s_flare;
+
+	ref_shader					s_hud_cold;
+	ref_shader					s_hud_snowfall;
+	ref_shader					s_hud_rainfall;
+	ref_shader					s_hud_rainfall_acid;
+	ref_shader					s_hud_sweated;
+	ref_shader					s_chromatic_aberration2;
+	ref_shader					s_hud_infections;
+	ref_shader					s_hud_acid_rain;
+	ref_shader					s_hud_radiation_rain;
+	ref_shader					s_nightvision_hud_texture;
 
 	ref_rt						rt_blur_h_2;
 	ref_rt						rt_blur_2;
@@ -414,6 +435,18 @@ public:
 	void						phase_cut				();
 	void						phase_lut				();
 	void						phase_flares			();
+
+	void						phase_hud_infections	();
+	void						phase_hud_acid_rain		();
+	void						phase_hud_radiation_rain();
+	void						phase_nightvision_hud_texture();
+	void						phase_hud_cold			();
+	void						phase_hud_snowfall		();
+	void						phase_hud_rainfall		();
+	void						phase_hud_rainfall_acid	();
+	void						phase_hud_sweated		();
+	void						phase_chrom_aberration_acid();
+
 	void						render_flare			(light* L);
 
 	void						phase_sunshafts			();
