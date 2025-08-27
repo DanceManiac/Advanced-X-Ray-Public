@@ -523,7 +523,7 @@ ENGINE_API BOOL r2_sun_static = TRUE;
 ENGINE_API BOOL r2_advanced_pp = FALSE;	//	advanced post process and effects
 
 // Ascii1457's Screen Space Shaders
-ENGINE_API Fvector3 ps_ssfx_shadow_cascades = { 1.f, 40.f, 160.f };
+ENGINE_API Fvector3 ps_ssfx_shadow_cascades = { 20.f, 40.f, 160.f };
 ENGINE_API Fvector4 ps_ssfx_grass_shadows = { 3.0f, .25f, 30.0f, .0f };
 ENGINE_API Fvector4 ps_ssfx_grass_interactive = { 1.0f, 8.f, 2000.0f, 1.0f };
 ENGINE_API Fvector4 ps_ssfx_int_grass_params_1 = { 1.0f, 1.0f, 1.0f, 25.0f };
@@ -572,7 +572,7 @@ ENGINE_API Fvector4 ps_ssfx_terrain_pom = { 12, 20, 0.04f, 1.0f }; // Samples, R
 ENGINE_API int ps_ssfx_terrain_pom_refine = 0;
 
 ENGINE_API float ps_r3_dyn_wet_surf_near = 10.f; // 10.0f
-ENGINE_API float ps_r3_dyn_wet_surf_far = 100.f; // 30.0f
+ENGINE_API float ps_r3_dyn_wet_surf_far = 300.f; // 30.0f
 ENGINE_API int ps_r3_dyn_wet_surf_sm_res = 256; // 256
 
 // Fog Clamping
