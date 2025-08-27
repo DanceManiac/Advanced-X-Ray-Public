@@ -216,7 +216,7 @@ float		ps_r__WallmarkSHIFT_V		= 0.0001f;
 
 float		ps_r__GLOD_ssa_start		= 256.f	;
 float		ps_r__GLOD_ssa_end			=  64.f	;
-float		ps_r__LOD					=  0.75f	;
+float		ps_r__LOD					= READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "r__tf_mipbias", 0.75f);
 //. float		ps_r__LOD_Power				=  1.5f	;
 float		ps_r__ssaDISCARD			=  3.5f	;					//RO
 float		ps_r__ssaDONTSORT			=  32.f	;					//RO
@@ -1053,7 +1053,7 @@ void		xrRender_initconsole	()
 
 	Fvector	tw_min,tw_max;
 	
-	CMD4(CCC_Float,		"r__geometry_lod",		&ps_r__LOD,					0.1f,   3.f		); //AVO: extended from 1.2f to 3.f
+	CMD4(CCC_Float,		"r__geometry_lod",		&ps_r__LOD,					0.1f,   10.f	);
 //.	CMD4(CCC_Float,		"r__geometry_lod_pow",	&ps_r__LOD_Power,			0,		2		);
 
 //.	CMD4(CCC_Float,		"r__detail_density",	&ps_r__Detail_density,		.05f,	0.99f	);
