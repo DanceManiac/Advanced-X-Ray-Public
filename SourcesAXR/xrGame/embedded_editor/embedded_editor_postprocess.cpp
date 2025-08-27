@@ -21,7 +21,6 @@
 xr_vector<SPPEffect> m_effects{};
 xr_vector<shared_str> m_sections_vec{};
 int m_current_effect = -1;
-CInifile pIni(nullptr, false, false, true);
 
 struct SCustomEffector
 {
@@ -392,6 +391,7 @@ void SaveEffect(SPPEffect& eff)
     string256 file_name = "postprocess_new.ltx";
 
     FS.update_path(fname, "$app_data_root$", make_string("PostprocessEditor\\%s", file_name).c_str());
+    CInifile pIni(fname, false, true, true);
 
     if (!fis_zero(eff.m_fShootEffectorFactor))
         pIni.w_float(eff.section.c_str(), "shoot_effector_factor", eff.m_fShootEffectorFactor);
@@ -469,9 +469,6 @@ void SaveEffect(SPPEffect& eff)
     pIni.w_u32(eff.section.c_str(), "cam_eff_cyclic", eff.m_CamEffectCyclic);
     pIni.w_bool(eff.section.c_str(), "cam_eff_hud_affect", eff.m_bHudAffect);
     pIni.w_bool(eff.section.c_str(), "random_cam_effects", eff.random_cam_effects);
-
-    pIni.save_at_end(TRUE);
-    pIni.save_as(fname);
 }
 
 void ShowPostprocessEditor(bool& show)
