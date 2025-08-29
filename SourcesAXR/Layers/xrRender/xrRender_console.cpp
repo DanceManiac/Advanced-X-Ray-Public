@@ -513,7 +513,7 @@ extern ENGINE_API Fvector4 ps_ssfx_il_setup1;
 extern ENGINE_API int ps_ssfx_ao_quality;
 extern ENGINE_API Fvector4 ps_ssfx_ao;
 extern ENGINE_API Fvector4 ps_ssfx_ao_setup1;
-extern ENGINE_API Fvector3 ps_ssfx_water_parallax_quality;
+//extern ENGINE_API Fvector3 ps_ssfx_water_parallax_quality;
 extern ENGINE_API int ps_ssfx_terrain_grass_align;			// Grass align
 extern ENGINE_API float ps_ssfx_terrain_grass_slope;		// Grass slope limit // Recommended 0.3f
 extern ENGINE_API int ps_ssfx_bloom_from_weather;
@@ -1512,7 +1512,7 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Integer,		"ssfx_ao_quality",				&ps_ssfx_ao_quality,		2, 8);
 	CMD4(CCC_Vector4,		"ssfx_ao",						&ps_ssfx_ao,				Fvector4().set(0, 0, 0, 0), Fvector4().set(8, 10, 1, 10));
 	CMD4(CCC_Vector4,		"ssfx_ao_setup1",				&ps_ssfx_ao_setup1,			Fvector4().set(0, 0, 0, 0), Fvector4().set(300, 1, 1, 1));
-	CMD4(CCC_Vector3,		"ssfx_water_parallax",			&ps_ssfx_water_parallax_quality, Fvector3().set(0.0f, 0.0f, 0.0f), Fvector3().set(3.0f, 2.0f, 1.0f));
+	//CMD4(CCC_Vector3,		"ssfx_water_parallax",			&ps_ssfx_water_parallax_quality, Fvector3().set(0.0f, 0.0f, 0.0f), Fvector3().set(3.0f, 2.0f, 1.0f));
 	CMD4(CCC_Integer,		"ssfx_terrain_grass_align",		&ps_ssfx_terrain_grass_align, 0, 1);
 	CMD4(CCC_Float,			"ssfx_terrain_grass_slope",		&ps_ssfx_terrain_grass_slope, 0, 1);
 	CMD4(CCC_Integer,		"ssfx_bloom_from_weather",		&ps_ssfx_bloom_from_weather, 0, 1);
