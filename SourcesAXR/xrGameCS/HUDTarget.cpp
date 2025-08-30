@@ -59,8 +59,11 @@ CHUDTarget::CHUDTarget	()
 	fuzzyShowInfo		= 0.f;
 	PP.RQ.range			= 0.f;
 
-	hShader->create("hud\\cursor", "ui\\cursor");
-	hShaderCrosshairBuild->create("hud\\cursor", "ui\\crosshair_build");
+	hShader->create("hud\\cursor", "shaders\\ui_cursor\\crosshair_cursor");
+	hShaderCrosshairBuild->create("hud\\cursor", "shaders\\ui_cursor\\crosshair_build");
+	hShaderCrosshairLFOa->create("hud\\cursor", "shaders\\ui_cursor\\crosshair_lfo_1");
+	hShaderCrosshairLFOb->create("hud\\cursor", "shaders\\ui_cursor\\crosshair_lfo_2");
+	hShaderCrosshairLFOc->create("hud\\cursor", "shaders\\ui_cursor\\crosshair_lfo_3");
 
 	PP.RQ.set				(NULL, 0.f, -1);
 
@@ -343,7 +346,7 @@ void CHUDTarget::Render()
 		return;
 
 	//отрендерить кружочек или крестик
-	if (!m_bShowCrosshair &&  crosshair_type == 1 || crosshair_type == 2 || crosshair_type == 3)
+	if (!m_bShowCrosshair && crosshair_type == 1 || crosshair_type == 2 || crosshair_type == 3 || crosshair_type == 4 || crosshair_type == 5 || crosshair_type == 6)
 	{
 		UIRender->StartPrimitive(6, IUIRender::ptTriList, UI().m_currentPointType);
 
@@ -362,7 +365,16 @@ void CHUDTarget::Render()
 		if (crosshair_type == 2)
 			UIRender->SetShader(*hShaderCrosshairBuild);
 
-		if (!m_bShowCrosshair &&  crosshair_type == 1 || crosshair_type == 3)
+		if (crosshair_type == 3)
+			UIRender->SetShader(*hShaderCrosshairLFOa);
+
+		if (crosshair_type == 4)
+			UIRender->SetShader(*hShaderCrosshairLFOb);
+
+		if (crosshair_type == 5)
+			UIRender->SetShader(*hShaderCrosshairLFOc);
+
+		if (!m_bShowCrosshair && crosshair_type == 1 || crosshair_type == 6)
 			UIRender->SetShader(*hShader);
 
 		UIRender->FlushPrimitive();
