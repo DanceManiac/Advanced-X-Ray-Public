@@ -2566,6 +2566,7 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask, "g_alternativ_global_map", &psActorFlags3, AF_ALTERNATIV_GLOBAL_MAP);
 	CMD3(CCC_Mask, "g_lfo_hud_postprocess", &psActorFlags3, AF_LFO_POSTPROCESS);
 	CMD3(CCC_Mask, "g_lfo_extra_zone_particles", &psActorFlags3, AF_LFO_PARTICLES);
+	CMD3(CCC_Mask, "g_lfo_no_npc_indicators", &psActorFlags2, AF_LFO_NO_AI_INDICATORS);
 
 	CMD3(CCC_Token, "g_lfo_scope_type", &lfo_scope_type, lfo_scope_type_token);
 
@@ -2585,6 +2586,7 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask, "hud_clock", &psHUD_Flags, HUD_LFO_CLOCK_ON_HUD);
 	CMD3(CCC_Mask, "hud_temperature", &psHUD_Flags, HUD_LFO_TEMPERATURE_ON_HUD);
 	CMD3(CCC_Mask, "hud_lfo_indicators", &psHUD_Flags, HUD_AF_INDICATORS);
+	CMD3(CCC_Mask, "hud_lfo_quickslots", &psHUD_Flags, HUD_AF_SHOW_QUICKSLOTS);
 
 	psHUD_Flags.set(HUD_CROSSHAIR,					true);
 	psHUD_Flags.set(HUD_WEAPON,						true);
@@ -2601,7 +2603,7 @@ void CCC_RegisterCommands()
 	psHUD_Flags.set(HUD_LFO_CLOCK_ON_HUD,			true);
 	psHUD_Flags.set(HUD_LFO_TEMPERATURE_ON_HUD,		true);
 	psHUD_Flags.set(HUD_AF_INDICATORS,				true);
-
+	psHUD_Flags.set(HUD_AF_SHOW_QUICKSLOTS,			true);
 
 	CMD3(CCC_Mask,				"hud_crosshair",		&psHUD_Flags,	HUD_CROSSHAIR);
 	CMD3(CCC_Mask,				"hud_crosshair_dist",	&psHUD_Flags,	HUD_CROSSHAIR_DIST);

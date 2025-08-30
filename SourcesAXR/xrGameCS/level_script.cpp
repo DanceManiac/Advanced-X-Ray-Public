@@ -1295,6 +1295,11 @@ bool game_use_lfo_weather_icons() {
 	return !!psActorFlags3.test(AF_LFO_WEATHER_ICONS);
 }
 
+// UI NPC MAP INDICATORS
+bool game_use_lfo_no_npc_indicators() {
+	return !!psActorFlags2.test(AF_LFO_NO_AI_INDICATORS);
+}
+
 // WEATHER WINTER MODE ACTIVE
 bool is_winter_mode()
 {
@@ -1479,6 +1484,7 @@ void CLevel::script_register(lua_State *L)
 		def("use_extra_pda_ui",					&game_use_extra_pda_ui),
 		def("use_dev_full_main_menu",			&game_use_dev_full_main_menu),
 		def("use_lfo_weather_icons",			&game_use_lfo_weather_icons),
+		def("use_lfo_no_npc_indicators",		&game_use_lfo_no_npc_indicators),
 
 		/* YZX */
 		def("actor_in_hideout", 				&actor_in_hideout),

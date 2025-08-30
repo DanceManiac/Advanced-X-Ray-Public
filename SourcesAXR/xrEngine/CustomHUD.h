@@ -25,6 +25,7 @@ ENGINE_API extern Flags32 psHUD_Flags;
 #define HUD_LFO_CLOCK_ON_HUD		(1<<20)
 #define HUD_LFO_TEMPERATURE_ON_HUD	(1<<21)
 #define HUD_AF_INDICATORS			(1<<22)
+#define HUD_AF_SHOW_QUICKSLOTS		(1<<23)
 
 class ENGINE_API IRender_Visual;
 class CUI;

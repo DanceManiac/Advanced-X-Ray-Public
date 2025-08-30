@@ -68,7 +68,12 @@ void CUIHudStatesWnd::InitFromXml( CUIXml& xml, LPCSTR path )
 	m_back_hud_lfo_temp			= UIHelper::CreateStatic(xml, "background_lfo_base_c", this);
 	m_back_hud_lfo_stamina		= UIHelper::CreateStatic(xml, "background_lfo_stamina", this);
 	m_back_hud_lfo_bleeding		= UIHelper::CreateStatic(xml, "background_lfo_bleeding", this);
-	m_back_hud_lfo_quickslots   = UIHelper::CreateStatic(xml, "background_lfo_quickslots", this);
+
+	if (psHUD_Flags.test(HUD_AF_SHOW_QUICKSLOTS))
+	{
+		m_back_hud_lfo_quickslots   = UIHelper::CreateStatic(xml, "background_lfo_quickslots", this);
+	}
+
 	m_back_hud_lfo_anomaly		= UIHelper::CreateStatic(xml, "background_lfo_anomaly_indicator", this);
 
 	if (psHUD_Flags.test(HUD_AF_INDICATORS))

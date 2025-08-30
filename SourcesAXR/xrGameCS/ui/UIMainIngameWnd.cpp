@@ -364,26 +364,31 @@ void CUIMainIngameWnd::Init()
 	AttachChild								(m_ui_hud_states);
 	m_ui_hud_states->InitFromXml			(uiXml, "hud_states");
 
-
-	for (int i = 0; i < 6; i++)
+	if (psHUD_Flags.test(HUD_AF_SHOW_QUICKSLOTS))
 	{
-		m_quick_slots_icons.push_back(xr_new<CUIStatic>());
-		m_quick_slots_icons.back()->SetAutoDelete(true);
-		AttachChild(m_quick_slots_icons.back());
-		string32 path;
-		xr_sprintf(path, "quick_slot%d", i);
-		CUIXmlInit::InitStatic(uiXml, path, 0, m_quick_slots_icons.back());
-		xr_sprintf(path, "%s:counter", path);
-		UIHelper::CreateStatic(uiXml, path, m_quick_slots_icons.back());
+		for (int i = 0; i < 6; i++)
+		{
+			m_quick_slots_icons.push_back(xr_new<CUIStatic>());
+			m_quick_slots_icons.back()->SetAutoDelete(true);
+			AttachChild(m_quick_slots_icons.back());
+			string32 path;
+			xr_sprintf(path, "quick_slot%d", i);
+			CUIXmlInit::InitStatic(uiXml, path, 0, m_quick_slots_icons.back());
+			xr_sprintf(path, "%s:counter", path);
+			UIHelper::CreateStatic(uiXml, path, m_quick_slots_icons.back());
+		}
+		m_QuickSlotText1 = UIHelper::CreateStatic(uiXml, "quick_slot0_text", this);
+		m_QuickSlotText2 = UIHelper::CreateStatic(uiXml, "quick_slot1_text", this);
+		m_QuickSlotText3 = UIHelper::CreateStatic(uiXml, "quick_slot2_text", this);
+		m_QuickSlotText4 = UIHelper::CreateStatic(uiXml, "quick_slot3_text", this);
+		m_QuickSlotText5 = UIHelper::CreateStatic(uiXml, "quick_slot5_text", this);
+		m_QuickSlotText6 = UIHelper::CreateStatic(uiXml, "quick_slot6_text", this);
 	}
-	m_QuickSlotText1 = UIHelper::CreateStatic(uiXml, "quick_slot0_text", this);
-	m_QuickSlotText2 = UIHelper::CreateStatic(uiXml, "quick_slot1_text", this);
-	m_QuickSlotText3 = UIHelper::CreateStatic(uiXml, "quick_slot2_text", this);
-	m_QuickSlotText4 = UIHelper::CreateStatic(uiXml, "quick_slot3_text", this);
-	m_QuickSlotText5 = UIHelper::CreateStatic(uiXml, "quick_slot5_text", this);
-	m_QuickSlotText6 = UIHelper::CreateStatic(uiXml, "quick_slot6_text", this);
 
-	HUD_SOUND_ITEM::LoadSound				("maingame_ui", "snd_new_contact", m_contactSnd, SOUND_TYPE_IDLE);
+	if (!psActorFlags2.test(AF_LFO_NO_AI_INDICATORS))
+	{
+		HUD_SOUND_ITEM::LoadSound				("maingame_ui", "snd_new_contact", m_contactSnd, SOUND_TYPE_IDLE);
+	}
 }
 
 float UIStaticDiskIO_start_time = 0.0f;
@@ -986,18 +991,24 @@ void CUIMainIngameWnd::DrawMainIndicatorsForInventory()
 	if (!pActor)
 		return;
 
-	UpdateQuickSlots();
 	UpdateBoosterIndicators(pActor->conditions().GetCurBoosterInfluences());
 
-	for (int i = 0; i < 6; i++)
-		m_quick_slots_icons[i]->Draw();
+	if (psHUD_Flags.test(HUD_AF_SHOW_QUICKSLOTS))
+	{
+		UpdateQuickSlots();
 
-	m_QuickSlotText1->Draw();
-	m_QuickSlotText2->Draw();
-	m_QuickSlotText3->Draw();
-	m_QuickSlotText4->Draw();
-	m_QuickSlotText5->Draw();
-	m_QuickSlotText6->Draw();
+		for (int i = 0; i < 6; i++)
+			m_quick_slots_icons[i]->Draw();
+
+		m_QuickSlotText1->Draw();
+		m_QuickSlotText2->Draw();
+		m_QuickSlotText3->Draw();
+		m_QuickSlotText4->Draw();
+		m_QuickSlotText5->Draw();
+		m_QuickSlotText6->Draw();
+
+	}
+
 
 	if (m_ind_boost_psy->IsShown())
 	{
@@ -1314,7 +1325,10 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 	if (!pActor)
 		return;
 
-	UpdateQuickSlots();
+	if (psHUD_Flags.test(HUD_AF_SHOW_QUICKSLOTS))
+	{
+		UpdateQuickSlots();
+	}
 
 	// ----------------------------------------------------------------------------------------------------------------
 	// Bleeding icon

@@ -73,7 +73,7 @@ void CUIZoneMap::Init()
 	xml_init.InitStatic				(uiXml, "minimap:compass", 0, &m_compass);
 	m_background.AttachChild(&m_compass);
 
-	if ( IsGameTypeSingle() )
+	if ( IsGameTypeSingle() && (!psActorFlags2.test(AF_LFO_NO_AI_INDICATORS)))
 	{
 		xml_init.InitStatic			(uiXml, "minimap:static_counter", 0, &m_Counter);
 		m_background.AttachChild	(&m_Counter);
