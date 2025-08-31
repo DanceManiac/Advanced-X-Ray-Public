@@ -1357,6 +1357,7 @@ void CWeapon::LoadCurrentScopeParams(LPCSTR section)
 	if (lfo_scope_type != 4)//LFO 3d Scopes
 	{
 		m_zoom_params.m_fScopeZoomFactor = pSettings->r_float(section, "scope_zoom_factor");
+
 		Load3DScopeParams(section);
 
 		if (bIsSecondVPZoomPresent())
@@ -2744,11 +2745,25 @@ void CWeapon::UpdateHUDAddonsVisibility()
 				{
 					if (!IsScopeAttached())
 					{
-						SetBoneVisible(bone, TRUE);
+						if (!IsScopeAttached())
+						{
+							SetBoneVisible(bone, TRUE);
+						}
+						else
+						{
+							SetBoneVisible(bone, FALSE);
+						}
 					}
 					else
 					{
-						SetBoneVisible(bone, FALSE);
+						if (IsGrenadeMode())
+						{
+							SetBoneVisible(bone, TRUE);
+						}
+						else
+						{
+							SetBoneVisible(bone, FALSE);
+						}
 					}
 				}
 			}
@@ -2760,11 +2775,25 @@ void CWeapon::UpdateHUDAddonsVisibility()
 			{
 				if (!IsZoomed() && GetZRotatingFactor() < .9f)
 				{
-					SetBoneVisible(bone, TRUE);
+					if (!IsScopeAttached())
+					{
+						SetBoneVisible(bone, TRUE);
+					}
+					else
+					{
+						SetBoneVisible(bone, FALSE);
+					}
 				}
 				else
 				{
-					SetBoneVisible(bone, FALSE);
+					if (IsGrenadeMode())
+					{
+						SetBoneVisible(bone, TRUE);
+					}
+					else
+					{
+						SetBoneVisible(bone, FALSE);
+					}
 				}
 			}
 		}
@@ -2935,6 +2964,37 @@ void CWeapon::UpdateHUDAddonsVisibility()
 						if (m_cur_scope_bone_aim_part != NULL)
 							SetBoneVisible(m_cur_scope_bone_aim_part, TRUE);
 					}
+					else
+					{
+						// BONE FOR SCOPE IDLE MODEL
+						if (m_cur_scope_bone != NULL)
+							SetBoneVisible(m_cur_scope_bone, TRUE);
+
+						if (m_cur_scope_bone_part != NULL)
+							SetBoneVisible(m_cur_scope_bone_part, TRUE);
+
+						// BONE FOR SCOPE AIM MODEL
+						if (m_cur_scope_bone_aim != NULL)
+							SetBoneVisible(m_cur_scope_bone_aim, FALSE);
+
+						if (m_cur_scope_bone_aim_part != NULL)
+							SetBoneVisible(m_cur_scope_bone_aim_part, FALSE);
+						else
+							// BONE FOR SCOPE IDLE MODEL
+							if (m_cur_scope_bone != NULL)
+								SetBoneVisible(m_cur_scope_bone, FALSE);
+
+						if (m_cur_scope_bone_part != NULL)
+							SetBoneVisible(m_cur_scope_bone_part, FALSE);
+
+						// BONE FOR SCOPE AIM MODEL
+						if (m_cur_scope_bone_aim != NULL)
+							SetBoneVisible(m_cur_scope_bone_aim, FALSE);
+
+						if (m_cur_scope_bone_aim_part != NULL)
+							SetBoneVisible(m_cur_scope_bone_aim_part, FALSE);
+						//}
+					}
 
 					if (UseScopeAltAimBoneIronsight)
 					{
@@ -2946,23 +3006,41 @@ void CWeapon::UpdateHUDAddonsVisibility()
 						if (m_cur_scope_bone_aim != NULL)
 							SetBoneVisible(m_cur_scope_bone_aim, FALSE);
 					}
-
 				}
 				else
 				{
-					// BONE FOR SCOPE IDLE MODEL
-					if (m_cur_scope_bone != NULL)
-						SetBoneVisible(m_cur_scope_bone, FALSE);
+					if (IsGrenadeMode())
+					{
+						// BONE FOR SCOPE IDLE MODEL
+						if (m_cur_scope_bone != NULL)
+							SetBoneVisible(m_cur_scope_bone, TRUE);
 
-					if (m_cur_scope_bone_part != NULL)
-						SetBoneVisible(m_cur_scope_bone_part, FALSE);
+						if (m_cur_scope_bone_part != NULL)
+							SetBoneVisible(m_cur_scope_bone_part, FALSE);
 
-					// BONE FOR SCOPE AIM MODEL
-					if (m_cur_scope_bone_aim != NULL)
-						SetBoneVisible(m_cur_scope_bone_aim, TRUE);
+						// BONE FOR SCOPE AIM MODEL
+						if (m_cur_scope_bone_aim != NULL)
+							SetBoneVisible(m_cur_scope_bone_aim,FALSE);
 
-					if (m_cur_scope_bone_aim_part != NULL)
-						SetBoneVisible(m_cur_scope_bone_aim_part, TRUE);
+						if (m_cur_scope_bone_aim_part != NULL)
+							SetBoneVisible(m_cur_scope_bone_aim_part, FALSE);
+					}
+					else
+					{
+						// BONE FOR SCOPE IDLE MODEL
+						if (m_cur_scope_bone != NULL)
+							SetBoneVisible(m_cur_scope_bone, FALSE);
+
+						if (m_cur_scope_bone_part != NULL)
+							SetBoneVisible(m_cur_scope_bone_part, FALSE);
+
+						// BONE FOR SCOPE AIM MODEL
+						if (m_cur_scope_bone_aim != NULL)
+							SetBoneVisible(m_cur_scope_bone_aim, TRUE);
+
+						if (m_cur_scope_bone_aim_part != NULL)
+							SetBoneVisible(m_cur_scope_bone_aim_part, TRUE);
+					}
 				}
 			}
 			else
@@ -3419,6 +3497,7 @@ void CWeapon::OnZoomIn()
 	}
 
 	m_zoom_params.m_bIsZoomModeNow = true;
+
 	if (bIsSecondVPZoomPresent() && m_zoom_params.m_bUseDynamicZoom && IsScopeAttached())
 	{
 		if (LastZoomFactor)
@@ -4197,8 +4276,6 @@ void CWeapon::UpdateSecondVP(bool bInGrenade)
 																	// больше чем 0)
 	bool bCond_3 = pActor->cam_Active() == pActor->cam_FirstEye();	// Мы должны быть от 1-го лица	
 
-
-
 	Device.m_SecondViewport.SetSVPActive(bCond_1 && bCond_2 && bCond_3 /*&& !bInGrenade*/);
 }
 
@@ -4726,7 +4803,6 @@ void CWeapon::UpdateAltAimZoomFactor2()	//FOR NONE SCOPED WEAPONS
 					funct();
 
 				m_zoom_params.m_fScopeZoomFactor = pSettings->r_float(cNameSect(), "scope_zoom_factor");
-
 			}
 		}
 	}
