@@ -126,6 +126,7 @@ public:
 	float							m_fConstNarcotismRestoreSpeed;
 	float 							m_fConstPsyHealthRestoreSpeed;
 	float							m_fConstFrostbiteRestoreSpeed;
+	float							m_fConstInfectionRestoreSpeed;
 	float							m_fConstAdditionalWeight;
 	float							m_fConstTrailLightRange;
 	float							m_fConstVolumetricDistance;

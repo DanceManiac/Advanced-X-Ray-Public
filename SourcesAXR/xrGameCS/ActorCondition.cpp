@@ -841,7 +841,8 @@ void CActorCondition::UpdateInfection()
 		if (m_fInfection <= 0.f && !GodMode() && object().g_Alive()) //skyloader: kill actor
 			object().KillEntity(object().ID());
 		else
-			clamp(m_fInfection, 0.0f, 1.0f);
+			//clamp(m_fInfection, 0.0f, 1.0f);
+			clamp(m_fInfection, 1.0f, 0.0f);
 
 			Msg("Update m_fInfection: %f", m_fInfection);
 	}
@@ -1059,6 +1060,7 @@ void CActorCondition::ChangeInfection(float value)
 {
 	m_fInfection += value;
 	clamp(m_fInfection, 0.0f, 1.0f);
+//		clamp(m_fInfection, 1.0f, 0.0f);
 }
 
 //M.F.S. Team Thirst

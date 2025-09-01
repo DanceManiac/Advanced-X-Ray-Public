@@ -22,7 +22,6 @@
 #include "UITextBanner.h"
 #include "UIMultiTextStatic.h"
 #include "UIAnimatedStatic.h"
-#include "uixmlinit.h"
 #include "UIListBox.h" //#include "UIScrollView.h"
 #include "UIComboBox.h"
 #include "UITrackBar.h"

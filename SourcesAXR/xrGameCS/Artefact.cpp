@@ -99,8 +99,7 @@ void CArtefact::Load(LPCSTR section)
 			m_iAfRank = 5;
 	}
 
-//	m_fInfectionRestoreSpeed			= pSettings->r_float(section, "infection_restore_speed") * m_iAfRank;
-	m_fInfectionRestoreSpeed			= READ_IF_EXISTS(pSettings, r_float, section, "infection_restore_speed", 0.f) * m_iAfRank;
+	m_fConstInfectionRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "infection_restore_speed",		0.f) * m_iAfRank;
 	m_fConstHealthRestoreSpeed			= READ_IF_EXISTS(pSettings, r_float, section, "health_restore_speed",			0.f) * m_iAfRank;
 	m_fConstRadiationRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "radiation_restore_speed",		0.f);
 	m_fConstSatietyRestoreSpeed			= READ_IF_EXISTS(pSettings, r_float, section, "satiety_restore_speed",			0.f) * m_iAfRank;
@@ -142,6 +141,7 @@ void CArtefact::Load(LPCSTR section)
 	m_fNarcotismRestoreSpeed = m_fConstNarcotismRestoreSpeed;
 	m_fPsyHealthRestoreSpeed = m_fConstPsyHealthRestoreSpeed;
 	m_fFrostbiteRestoreSpeed = m_fConstFrostbiteRestoreSpeed;
+	m_fInfectionRestoreSpeed = m_fConstInfectionRestoreSpeed;
 	m_additional_weight = m_fConstAdditionalWeight;
 	m_fJumpSpeed = m_fConstJumpSpeed;
 	m_fWalkAccel = m_fConstWalkAccel;
@@ -272,6 +272,7 @@ void CArtefact::save(NET_Packet &packet)
 	save_data(m_fNarcotismRestoreSpeed, packet);
 	save_data(m_fPsyHealthRestoreSpeed, packet);
 	save_data(m_fFrostbiteRestoreSpeed, packet);
+	save_data(m_fInfectionRestoreSpeed, packet);
 	save_data(m_additional_weight, packet);
 	save_data(m_fJumpSpeed, packet);
 	save_data(m_fWalkAccel, packet);
@@ -298,6 +299,7 @@ void CArtefact::load(IReader &packet)
 	load_data(m_fNarcotismRestoreSpeed, packet);
 	load_data(m_fPsyHealthRestoreSpeed, packet);
 	load_data(m_fFrostbiteRestoreSpeed, packet);
+	load_data(m_fInfectionRestoreSpeed, packet);
 	load_data(m_additional_weight, packet);
 	load_data(m_fJumpSpeed, packet);
 	load_data(m_fWalkAccel, packet);
@@ -386,6 +388,8 @@ void CArtefact::UpdateDegradation()
 		m_fPsyHealthRestoreSpeed = (m_fConstPsyHealthRestoreSpeed / 100) * percent;
 	if (m_fFrostbiteRestoreSpeed > 0.0f && m_fConstFrostbiteRestoreSpeed > 0.0f)
 		m_fFrostbiteRestoreSpeed = (m_fConstFrostbiteRestoreSpeed / 100) * percent;
+	if (m_fInfectionRestoreSpeed > 0.0f && m_fConstInfectionRestoreSpeed > 0.0f)
+		m_fInfectionRestoreSpeed = (m_fConstInfectionRestoreSpeed / 100) * percent;
 	if (m_additional_weight > 0.0f && m_fConstAdditionalWeight > 0.0f)
 		m_additional_weight = (m_fConstAdditionalWeight / 100) * percent;
 	if (m_fJumpSpeed > 1.f && m_fConstJumpSpeed > 1.f)
@@ -980,6 +984,10 @@ float CArtefact::GetRestoreByType(ALife::EConditionRestoreType type) const
 		case ALife::eFrostbiteRestoreSpeed:
 		{
 			res = m_fFrostbiteRestoreSpeed;
+		}break;
+		case ALife::eInfectionRestoreSpeed:
+		{
+			res = m_fInfectionRestoreSpeed;
 		}break;
 		default:
 		{

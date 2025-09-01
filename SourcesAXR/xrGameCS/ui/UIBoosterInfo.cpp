@@ -82,8 +82,8 @@ LPCSTR quick_eat_influence_caption[] =
 	"ui_inv_drugs",
 	"ui_inv_narcotism",
 	"ui_inv_withdrawal",
-
-	"ui_inv_frostbite"
+	"ui_inv_frostbite",
+	"ui_inv_infection"
 };
 
 LPCSTR ef_quick_eat_nodes_names[] =
@@ -141,7 +141,8 @@ LPCSTR ef_boosters_values_names[] =
 	"boost_explosion_immunity",
 	"boost_strike_immunity",
 	"boost_fire_wound_immunity",
-	"boost_wound_immunity"
+	"boost_wound_immunity",
+	"boost_frostbite_restore"
 };
 
 LPCSTR boost_influence_caption[] =

@@ -27,6 +27,7 @@ protected:
 	UIArtefactParamItem*	m_fWalkAccel;
 	UIArtefactParamItem*	m_iArtefactRank;
 	UIArtefactParamItem*	m_fChargeLevel;
+	UIArtefactParamItem*	m_fInfectionRestoreSpeed;
 
 }; // class CUIArtefactParams
 

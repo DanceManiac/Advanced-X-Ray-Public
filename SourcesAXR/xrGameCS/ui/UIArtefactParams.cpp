@@ -248,7 +248,7 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 		{
 			continue;
 		}
-		if (i == ALife::eRadiationRestoreSpeed || i == ALife::eIntoxicationRestoreSpeed || i == ALife::eSleepenessRestoreSpeed || i == ALife::eAlcoholismRestoreSpeed || i == ALife::eFrostbiteRestoreSpeed)
+		if (i == ALife::eRadiationRestoreSpeed || i == ALife::eIntoxicationRestoreSpeed || i == ALife::eSleepenessRestoreSpeed || i == ALife::eAlcoholismRestoreSpeed || i == ALife::eFrostbiteRestoreSpeed /* || i == ALife::eInfectionRestoreSpeed */)
 			m_restore_item[i]->SetValue(val, 1);
 		else
 			m_restore_item[i]->SetValue(val, 2);

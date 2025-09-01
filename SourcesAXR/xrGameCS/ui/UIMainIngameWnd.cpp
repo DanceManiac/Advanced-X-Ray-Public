@@ -187,7 +187,6 @@ void CUIMainIngameWnd::Init()
 	m_ind_boost_narcotism	= UIHelper::CreateStatic(uiXml, "indicator_booster_narcotism", this);
 	m_ind_boost_withdrawal	= UIHelper::CreateStatic(uiXml, "indicator_booster_withdrawal", this);
 	m_ind_boost_frostbite	= UIHelper::CreateStatic(uiXml, "indicator_booster_frostbite", this);
-	m_ind_infection			= UIHelper::CreateStatic(uiXml, "indicator_infection", this);
 
 	m_ind_bleeding			= UIHelper::CreateStatic(uiXml, "indicator_bleeding", this);
 	m_ind_radiation			= UIHelper::CreateStatic(uiXml, "indicator_radiation", this);
