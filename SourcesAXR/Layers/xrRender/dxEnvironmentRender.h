@@ -40,11 +40,16 @@ public:
 	virtual void OnDeviceCreate(CEnvDescriptor &owner);
 	virtual void OnDeviceDestroy();
 
+	virtual void OnPrepare(CEnvDescriptor& owner);
+	virtual void OnUnload(CEnvDescriptor& owner);
+
 	virtual void Copy(IEnvDescriptorRender &_in);
 private:
 	ref_texture			sky_texture		;
 	ref_texture			sky_texture_env	;
 	ref_texture			clouds_texture	;
+
+	bool				b_textures_loaded{};
 };
 
 class dxEnvDescriptorMixerRender : public IEnvDescriptorMixerRender

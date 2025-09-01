@@ -367,42 +367,71 @@ IC bool lb_env_pred(const CEnvDescriptor* x, float val)
 void CEnvironment::SelectEnv(EnvVec* envs, CEnvDescriptor*& e, float gt)
 {
 	EnvIt env		= std::lower_bound(envs->begin(),envs->end(),gt,lb_env_pred);
-	if (env==envs->end()){
+	if (env==envs->end())
+	{
 		e			= envs->front();
-	}else{
+	}
+	else
+	{
 		e			= *env;
 	}
+
+	e->on_prepare();
 }
 
 void CEnvironment::SelectEnvs(EnvVec* envs, CEnvDescriptor*& e0, CEnvDescriptor*& e1, float gt)
 {
 	EnvIt env		= std::lower_bound(envs->begin(),envs->end(),gt,lb_env_pred);
-	if (env==envs->end()){
+	
+	if (env==envs->end())
+	{
 		e0			= *(envs->end()-1);
 		e1			= envs->front();
-	}else{
-		e1			= *env;
-		if (env==envs->begin())	e0 = *(envs->end()-1);
-		else					e0 = *(env-1);
 	}
+	else
+	{
+		e1			= *env;
+
+		if (env==envs->begin())
+			e0 = *(envs->end()-1);
+		else
+			e0 = *(env-1);
+	}
+
+	e0->on_prepare();
+	e1->on_prepare();
 }
 
 void CEnvironment::SelectEnvs(float gt)
 {
 	VERIFY				(CurrentWeather);
-    if ((Current[0]==Current[1])&&(Current[0]==0)){
+    if ((Current[0]==Current[1])&&(Current[0]==0))
+	{
 		VERIFY			(!bWFX);
 		// first or forced start
 		SelectEnvs		(CurrentWeather,Current[0],Current[1],gt);
-    }else{
-		bool bSelect	= false;
-		if (Current[0]->exec_time>Current[1]->exec_time){
+    }
+	else
+	{
+		bool bSelect;
+
+		if (Current[0]->exec_time>Current[1]->exec_time)
+		{
 			// terminator
 			bSelect		= (gt>Current[1]->exec_time)&&(gt<Current[0]->exec_time);
-		}else{
+		}
+		else
+		{
 			bSelect		= (gt>Current[1]->exec_time);
 		}
-		if (bSelect){
+
+		if (bSelect)
+		{
+			if (Current[0])
+			{
+				Current[0]->on_unload();
+			}
+
 			Current[0]	= Current[1];
 			SelectEnv	(CurrentWeather,Current[1],gt);
 #ifdef WEATHER_LOGGING

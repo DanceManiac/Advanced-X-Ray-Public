@@ -712,6 +712,17 @@ void CEnvDescriptor::on_device_destroy	()
 	*/
 }
 
+void CEnvDescriptor::on_prepare()
+{
+	Msg("CEnvDescriptor::on_prepare call");
+	m_pDescriptor->OnPrepare(*this);
+}
+
+void CEnvDescriptor::on_unload()
+{
+	m_pDescriptor->OnUnload(*this);
+}
+
 //-----------------------------------------------------------------------------
 // Environment Mixer
 //-----------------------------------------------------------------------------
