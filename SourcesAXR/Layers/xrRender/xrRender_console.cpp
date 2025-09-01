@@ -370,7 +370,7 @@ Flags32		ps_r_textures_flags = { R3_NO_RAM_TEXTURES };
 
 int ps_force_enable_lens_flares = 0;
 
-float ps_r2_gloss_factor = READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "gloss_factor", 10.0f);
+float ps_r2_gloss_factor = READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "gloss_factor", 0.001f);
 float ps_r2_gloss_min = READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "gloss_min", 0.0f);
 
 Fvector4 ps_pp_bloom_thresh = { .7, .8f, .9f, .0f };
