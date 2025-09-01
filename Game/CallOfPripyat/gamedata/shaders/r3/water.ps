@@ -38,132 +38,22 @@ Texture2D	s_nmap;
 Texture2D	s_bluenoise;
 Texture2D	s_rainsplash;
 Texture2D	s_watercaustics;
-Texture2D	s_wind;
-Texture2D	s_water_height;
 
 uniform float4 ssfx_is_underground;
-uniform float3 ssfx_water_parallax; // Water parallax: Quality, Distortion, Parallax Height
-uniform float4 wind_params;
-uniform float4 ssfx_wind_anim;
 
 //float3	water_intensity; // Unused?
 
-static const int q_parallax[4] =
-{
-	0,
-	8,
-	16,
-	32
-};
-
-
-float3 Water_DoParallax(float2 tc, float2 tc_step, float _step, Texture2D height_tex, float height_scale)
-{
-	// Init vars to store steps
-	float curr_step = 0;
-	float2 parallax_tc = tc;
-	
-	// Store the previous & current sample to do the POM calc later
-	float prev_Height = 0;
-	float curr_Height = 0;
-	
-	float prev_Sam = 0;
-	float curr_Sam = 0;
-
-	do // Basic Step Parallax
-	{
-		// Save previous data ( Used for interpolation and final height )
-		prev_Height = curr_Height;
-		prev_Sam = curr_Sam;
-
-		// Step TexCoor
-		parallax_tc -= tc_step;
-		curr_step += _step;
-
-		// Sample
-		curr_Sam = height_tex.SampleLevel(smp_base, parallax_tc * height_scale, 0).x;
-
-		curr_Height = 1.0f - curr_Sam;
-
-	} while(curr_Height > curr_step);
-
-	// [ POM ] Interpolation between the previous offset and the current offset
-	float currentDiff = curr_Height - curr_step;
-	float ratio = currentDiff / (currentDiff - saturate(prev_Height - curr_step + _step));
-
-	// Final TexCoor
-	return float3(lerp(parallax_tc, parallax_tc + tc_step, ratio), curr_Sam);
-
-}
-
 float4 main( vf I ) : SV_Target
 {
-	// Wind data
-	float r = wind_params.x + 1.57079f;
-	float2 Wind_Dir = float2(cos(r),sin(r));
-	float Wind_Int = saturate(wind_params.y * wind_params.w);
-
-	// Waves speed
-	float TimeSpeed = clamp(0.97f * Wind_Int, 0.1f, 0.97f);
-	
 	// 3d view space pos reconstruction math
 	float3 Pv = float3(I.tctexgen.z * (I.hpos.xy * pos_decompression_params.zw - pos_decompression_params.xy), I.tctexgen.z);
 
-	float dist_att = 1.0 - smoothstep(2000.f * 0.6f, 2000.f, Pv.z); // 2000 metres for parallax distance
-	
-// PARALLAX -------------------------------------------------------------------
-#if SSFX_WATER_PARALLAX > 0
-
-	float3 eye = normalize(mul(float3x3(I.M1.x, I.M2.x, I.M3.x,
-		I.M1.y, I.M2.y, I.M3.y,
-		I.M1.z, I.M2.z, I.M3.z), -I.v2point_w.xyz));
-
-	float view_angle = abs(dot(float3(0.0, 0.0, 1.0), eye));
-
-	// Dynamic steps
-	float _step = rcp(lerp(q_parallax[SSFX_WATER_PARALLAX], 1, view_angle)); // 1.0 / Step Qty
-
-	_step = dist_att <= 0 ? 1 : _step;
-
-	// View direction + bias to try to minimize issues with some slopes.
-	float2 viewdir = eye.xy / eye.z;
-
-	// Offset direction
-	float2 tc_step = _step * viewdir * clamp(ssfx_water_parallax.z * Wind_Int, 0.015f, ssfx_water_parallax.z); // G_SSR_PARALLAX_HEIGHT
-
-	// Calc Parallax
-	float3 tc_parallax = Water_DoParallax(I.tbase , tc_step, _step, s_water_height, 0.35f); // 0.35f
-
-#else
-
-	// TCs
-	float2 tc_parallax = I.tbase + (ssfx_wind_anim.ww * float2(0.065f, 0.445f) * TimeSpeed);
-
-#endif
-
 	// Normal Textures
-	float3	n_tc = 0;
-	n_tc.xy = tc_parallax.xy;
+	float3 n0 = s_nmap.Sample(smp_base, I.tnorm0.xy * (2.5f / 1.5f) + float2( timers.x * 0.01f, 0.0f) );
+	float3 n1 = s_nmap.Sample(smp_base, I.tnorm0.zw * (1.5f / 1.5f) + float2(-timers.x * 0.01f, 0.2f) );
+	float3	basenormal	= (((n0 * 2 - 1) + (n1 * 2 - 1)) / 2.0f);
 	
-#if SSFX_WATER_PARALLAX > 0
-	n_tc.z = tc_parallax.z;
-#endif
-	
-	float3	n0	= s_nmap.Sample(smp_base, n_tc.xy + (ssfx_wind_anim.ww * float2(0.23f, 0.10f) * TimeSpeed) ).rgb;
-	float3	n1	= s_nmap.Sample(smp_base, n_tc.xy - (ssfx_wind_anim.ww * float2(0.21f, 0.28f) * TimeSpeed) ).rgb;
-
-	// Wind Layer
-	float2 wind_layer = s_wind.Sample(smp_base, n_tc.xy * 0.1f + (Wind_Dir * Wind_Int * ssfx_wind_anim.ww * 0.1f)).rg;
-	n0.xy = lerp(n0.xy, wind_layer.xy, 0.1f * Wind_Int); //dist_att
-
-	// Waves Normal
-	float3 Waves_Normal = n0 * 2.0f - 1.0f;
-	Waves_Normal.xy += float2(0.095f, 0.088f);
-
-	float2 Wave_Int = 0;
-	Wave_Int.x = clamp(0.1f * Wind_Int, 0.03f, 0.1f);
-	Wave_Int.y = clamp(0.2f * Wind_Int, 0.1f, 0.2f);
-	Waves_Normal = normalize(float3(Waves_Normal.xy * Wave_Int.xy * ssfx_water_parallax.y, Waves_Normal.z)); // G_SSR_WATER_DISTORTION
+	basenormal += float3(0.1f, 0.1f, 0.1f); // Offset the normal to "center" the textures again
 	
 	// Load Data
 	float2 PosTc = I.tctexgen.xy / I.tctexgen.z;
@@ -181,16 +71,14 @@ float4 main( vf I ) : SV_Target
 	float RainInt = clamp(rain_params.x * 1.6f, 0.65f * is_raining, 1.0f);
 	
 	// Ripples normal
-	float2 Ripples = ssfx_rain_ripples( s_rainsplash, n_tc.xy * 0.6f, float3(RainInt, 1.25f /*G_SSR_WATER_RIPPLES*/, 15.0f), _P.z); // 0.6f // G_SSR_WATER_RIPPLES
-	Waves_Normal += float3(Ripples, 0) * is_raining;
+	float2 Ripples = ssfx_rain_ripples( s_rainsplash, (w_s.xz + eye_position.xz) * 0.13f, float3(RainInt, G_SSR_WATER_RAIN, 15.0f), _P.z);
+	basenormal += float3(Ripples, 0) * is_raining;
 	
 	// Water wave intensity
-	float3 Navg = ((n0 + n1) * 0.5) * 2.0f - 1.0f;
-	Navg += float3(0.1f, 0.1f, 0.1f) + float3(Ripples, 0) * is_raining;
-	Navg.xy *= 0.5f;
+	float3 Navg = normalize(float3(basenormal.x * G_SSR_WATER_WAVES, basenormal.y * G_SSR_WATER_WAVES, basenormal.z));
 		
 	// Refractions normal ( Used by shadows and refraction )
-	float2 N_Scr = Waves_Normal; //G_SSR_WATER_REFRACTION
+	float2 N_Scr = normalize(float3(basenormal.x * G_SSR_WATER_REFRACTION, basenormal.y * G_SSR_WATER_REFRACTION, basenormal.z));
 	
 	// Discard refractions from things above the water ( Like weapons )
 	float Refraction_Discard = Pv.z < SSFX_get_depth(PosTc + N_Scr, 0);
@@ -222,7 +110,7 @@ float4 main( vf I ) : SV_Target
 #ifdef NEED_REFLECTIONS
 	
 	// Blue Noise & Normal for noise
-	float3 NN = normalize(float3(Waves_Normal.x * 0.15f, Waves_Normal.y * 0.15f, Waves_Normal.z));
+	float3 NN = normalize(float3(basenormal.x * 0.15f, basenormal.y * 0.15f, basenormal.z));
 	float blue_noise = s_bluenoise.Sample(smp_linear, I.tbase * float2(0.05f, 0.05f) + NN).b * 1.5f;
 	
 	// Compute reflection bounce
@@ -277,7 +165,7 @@ float4 main( vf I ) : SV_Target
 #endif
 
 	// Normal for the base texture...
-	float2 N_Tex = Waves_Normal;
+	float2 N_Tex = normalize(float3(basenormal.x * G_SSR_WATER_TEX_DISTORTION, basenormal.y * G_SSR_WATER_TEX_DISTORTION, basenormal.z));
 
 	// Get Position with Refraction discard
 	float3 _P2 = SSFX_get_position(PosTc + Refraction_UV, 0);

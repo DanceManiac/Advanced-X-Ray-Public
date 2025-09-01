@@ -22,7 +22,6 @@ extern ENGINE_API int ps_ssfx_il_quality;
 extern ENGINE_API int ps_ssfx_ao_quality;
 extern ENGINE_API int ps_ssfx_terrain_pom_refine;
 extern ENGINE_API int ps_ssfx_pom_refine;
-extern ENGINE_API Fvector3 ps_ssfx_water_parallax_quality;
 
 //////////////////////////////////////////////////////////////////////////
 class CGlow				: public IRender_Glow
@@ -1050,7 +1049,6 @@ HRESULT	CRender::shader_compile			(
 	char							c_rain_quality	[32];
 	char							c_ssfx_il		[32];
 	char							c_ssfx_ao		[32];
-	char							c_ssfx_water_parallax[32];
 	char							c_ssfx_terrain_pom_refine[32];
 	char							c_ssfx_pom_refine[32];
 
@@ -1727,21 +1725,6 @@ HRESULT	CRender::shader_compile			(
 		defines[def_it].Definition = "1";
 		def_it++;
 		sh_name[len] = '0' + char(o.dx11_ss_puddles); ++len;
-	}
-	else
-	{
-		sh_name[len] = '0';
-		++len;
-	}
-
-	if (o.dx11_sss_addon_enabled && ps_ssfx_water_parallax_quality.x > 0)
-	{
-		xr_sprintf(c_ssfx_water_parallax, "%d", u8(_min(_max(ps_ssfx_water_parallax_quality.x, 0.0f), 3.0f)));
-		defines[def_it].Name = "SSFX_WATER_PARALLAX";
-		defines[def_it].Definition = c_ssfx_water_parallax;
-		def_it++;
-		xr_strcat(sh_name, c_ssfx_water_parallax);
-		len += xr_strlen(c_ssfx_water_parallax);
 	}
 	else
 	{
