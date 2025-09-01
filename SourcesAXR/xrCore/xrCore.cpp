@@ -119,6 +119,7 @@ void xrCore::_initialize	(LPCSTR _ApplicationName, LogCallback cb, BOOL init_fs,
         Msg("'%s %s' build %d, ver. %s, M.F.S. Team %s\n", "Advanced X-Ray", GAME_PLATFORM, build_id, GAME_VERSION, build_date);
         Msg("M.F.S. Team VK: https://vk.com/mfs_studio");
 		Msg("M.F.S. Team Discord: https://discord.gg/AFPqkfBfQs \n");
+		Msg("LFO Discord: https://discord.gg/yvMskFkaeP \n");
 
 #ifdef PROTECT_CBT
 		UserAccessData loadedData;
