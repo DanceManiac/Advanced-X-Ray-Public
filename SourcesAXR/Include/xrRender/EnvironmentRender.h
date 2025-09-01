@@ -17,6 +17,9 @@ public:
 
 	virtual void OnDeviceCreate(CEnvDescriptor &owner) = 0;
 	virtual void OnDeviceDestroy() = 0;
+
+	virtual void OnPrepare(CEnvDescriptor& owner) = 0;
+	virtual void OnUnload(CEnvDescriptor& owner) = 0;
 };
 
 class IEnvDescriptorMixerRender

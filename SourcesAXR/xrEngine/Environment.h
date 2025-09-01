@@ -239,6 +239,9 @@ public:
 	void				on_device_create	();
 	void				on_device_destroy	();
 
+	void				on_prepare			();
+	void				on_unload			();
+
 	shared_str			m_identifier;
 };
 
