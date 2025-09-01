@@ -171,6 +171,7 @@ public:
 
 	CUILines*		m_pLines;
 
+	shared_str		TextureName() const { return m_texName; }
 	shared_str		m_stat_hint_text;
 protected:
 	bool			m_bEnableTextHighlighting;
@@ -197,7 +198,8 @@ protected:
 	Fvector2		m_TextureOffset;
 	Fvector2		m_BaseTextureOffset;
 
-	Frect	m_ClipRect;
+	Frect			m_ClipRect;
+	shared_str		m_texName;
 public:
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION

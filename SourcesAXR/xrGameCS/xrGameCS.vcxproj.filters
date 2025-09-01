@@ -7394,6 +7394,9 @@
     <ClInclude Include="embedded_editor\embedded_editor_ui.h">
       <Filter>EmbeddedEditor</Filter>
     </ClInclude>
+    <ClInclude Include="embedded_editor\embedded_editor_ui_old.h">
+      <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
     <ClInclude Include="GlobalAchievements.h" />
     <ClInclude Include="ui\UI3dStatic.h">
       <Filter>UI\UIWindows\Static</Filter>
@@ -11057,6 +11060,9 @@
       <Filter>AI\AMonsters\common\components</Filter>
     </ClCompile>
     <ClCompile Include="embedded_editor\embedded_editor_ui.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_ui_old.cpp">
       <Filter>EmbeddedEditor</Filter>
     </ClCompile>
     <ClCompile Include="GlobalAchievements.cpp" />

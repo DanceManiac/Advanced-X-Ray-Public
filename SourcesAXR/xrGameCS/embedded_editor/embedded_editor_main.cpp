@@ -11,6 +11,7 @@
 #include "embedded_editor_pos_informer.h"
 #include "embedded_editor_spawner.h"
 #include "embedded_editor_ui.h"
+#include "embedded_editor_ui_old.h"
 #include "../../build_config_defines.h"
 #include <addons/imguinodegrapheditor/imguinodegrapheditor.h>
 #include <dinput.h>
@@ -28,6 +29,7 @@ bool show_ppe_editor = false;
 bool show_position_informer = false;
 bool show_spawn_menu = false;
 bool show_ui_editor = false;
+bool show_ui_editor_old = false;
 /*bool show_info_window = false;
 bool show_prop_window = false;
 bool show_restr_window = false;
@@ -81,6 +83,8 @@ void ShowMain()
         show_spawn_menu = !show_spawn_menu;
     if (ImGui::Button(toUtf8(CStringTable().translate("st_editor_imgui_ui_debugger").c_str()).c_str()))
         show_ui_editor = !show_ui_editor;
+    if (ImGui::Button(toUtf8(CStringTable().translate("st_editor_imgui_ui").c_str()).c_str()))
+        show_ui_editor_old = !show_ui_editor_old;
 
     if (psDeviceFlags.test(rsR1))
     {
@@ -145,6 +149,9 @@ void ShowEditor()
     }
     if (show_ui_editor)
         ShowUIEditor(show_ui_editor);
+
+    if (show_ui_editor_old)
+        ShowUIEditor_Old(show_ui_editor_old);
     /*if (show_prop_window)
         ShowPropEditor(show_prop_window);
 	if (show_lua_binder)
