@@ -117,7 +117,12 @@ void CWeaponMagazined::Load	(LPCSTR section)
 		m_sounds.LoadSound(section, "snd_shoot_actor", "sndShotActor", false, m_eSoundShot);
 		m_sounds.LoadSound(section, "snd_shoot_actor_last", "sndShotActorLast", false, m_eSoundShot);
 		m_sounds.LoadSound(section, "snd_silncer_shoot_actor", "sndSilencerShotActor", false, m_eSoundShot);
-		m_sounds.LoadSound(section, "snd_silncer_shoot_actor", "sndSilencerShotActorLast", false, m_eSoundShot);
+		m_sounds.LoadSound(section, "snd_silncer_shoot_actor_last", "sndSilencerShotActorLast", false, m_eSoundShot);
+
+		m_sounds.LoadSound(section, "snd_shoot_actor_hip", "sndShotActorh", false, m_eSoundShot);
+		m_sounds.LoadSound(section, "snd_shoot_actor_hip_last", "sndShotActorhLasth", false, m_eSoundShot);
+		m_sounds.LoadSound(section, "snd_silncer_shoot_actor_hip", "sndSilencerShotActorh", false, m_eSoundShot);
+		m_sounds.LoadSound(section, "snd_silncer_shoot_actor_hip_last", "sndSilencerShotActorhLasth", false, m_eSoundShot);
 	}
 	//-Alundaio
 
@@ -137,6 +142,12 @@ void CWeaponMagazined::Load	(LPCSTR section)
 			m_sounds.LoadSound(section, "snd_shoot_actor_indoor_last", "sndShotActorLastIndoor", false, m_eSoundShot);
 			m_sounds.LoadSound(section, "snd_silncer_shoot_actor_indoor", "sndSilencerShotActorIndoor", false, m_eSoundShot);
 			m_sounds.LoadSound(section, "snd_silncer_shoot_actor_indoor_last", "sndSilencerShotActorLastIndoor", false, m_eSoundShot);
+
+			m_sounds.LoadSound(section, "snd_shoot_actor_hip_indoor", "sndShotActorhIndoorh", false, m_eSoundShot);
+			m_sounds.LoadSound(section, "snd_shoot_actor_hip_indoor_last", "sndShotActorhLasthIndoorh", false, m_eSoundShot);
+			m_sounds.LoadSound(section, "snd_silncer_shoot_actor_hip_indoor", "sndSilencerShotActorhIndoorh", false, m_eSoundShot);
+			m_sounds.LoadSound(section, "snd_silncer_shoot_actor_hip_indoor_last", "sndSilencerShotActorhLasthIndoorh", false, m_eSoundShot);
+
 		}
 	}
 
@@ -1296,8 +1307,19 @@ void CWeaponMagazined::OnShot()
 		}
 
 		string128 sndName;
-		strconcat(sizeof(sndName), sndName, m_sSndShotCurrent.c_str(), "Actor", (iAmmoElapsed == 1) ? "Last" : "", bIndoor ? "Indoor" : "");
-		
+
+		if (IsZoomed())
+		{
+			strconcat(sizeof(sndName), sndName, m_sSndShotCurrent.c_str(), "Actor", (iAmmoElapsed == 1) ? "Last" : "", bIndoor ? "Indoor" : "");
+
+		//	Msg("AIM SHOOT");
+		}
+		else
+		{
+			strconcat(sizeof(sndName), sndName, m_sSndShotCurrent.c_str(), "Actorh", (iAmmoElapsed == 1) ? "Lasth" : "", bIndoor ? "Indoorh" : "");
+		//	Msg("NO AIM SHOOT");
+		}
+
 		if (m_sounds.FindSoundItem(sndName, false))
 		{
 			m_sounds.PlaySound(sndName, get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
@@ -1329,6 +1351,33 @@ void CWeaponMagazined::OnShot()
 				return;
 			}
 		}
+
+		if (char* indoorPosHip = strstr(sndName, "Indoorh"))
+		{
+			string128 noIndoor{};
+			strncpy(noIndoor, sndName, indoorPosHip - sndName);
+			strcat(noIndoor, indoorPosHip + strlen("Indoorh"));
+
+			if (m_sounds.FindSoundItem(noIndoor, false))
+			{
+				m_sounds.PlaySound(noIndoor, get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
+				return;
+			}
+		}
+
+		if (char* lastPosHip = strstr(sndName, "Lasth"))
+		{
+			string128 noLast{};
+			strncpy(noLast, sndName, lastPosHip - sndName);
+			strcat(noLast, lastPosHip + strlen("Lasth"));
+
+			if (m_sounds.FindSoundItem(noLast, false))
+			{
+				m_sounds.PlaySound(noLast, get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
+				return;
+			}
+		}
+
 	}
 
 	string128 sndName;
