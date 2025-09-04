@@ -74,7 +74,10 @@ void CSE_ALifeItemWeapon::script_register(lua_State *L)
 			value("eWeaponAddonTacticalTorch", int(CSE_ALifeItemWeapon::EWeaponAddonState::eWeaponAddonTacticalTorch)),
             value("eAddonAttachable", int(CSE_ALifeItemWeapon::EWeaponAddonStatus::eAddonAttachable)),
             value("eAddonDisabled", int(CSE_ALifeItemWeapon::EWeaponAddonStatus::eAddonDisabled)),
-            value("eAddonPermanent", int(CSE_ALifeItemWeapon::EWeaponAddonStatus::eAddonPermanent))
+            value("eAddonPermanent", int(CSE_ALifeItemWeapon::EWeaponAddonStatus::eAddonPermanent)),
+			value("eWeaponAddonStock", int(CSE_ALifeItemWeapon::EWeaponAddonState::eWeaponAddonStock)),
+			value("eWeaponAddonGrip", int(CSE_ALifeItemWeapon::EWeaponAddonState::eWeaponAddonGrip)),
+			value("eWeaponAddonGripv", int(CSE_ALifeItemWeapon::EWeaponAddonState::eWeaponAddonGripv))
         ]
 	];
 }

@@ -13,7 +13,6 @@
 #include "../Torch.h"
 #include "../AnomalyDetector.h"
 #include "../ArtefactContainer.h"
-#include "../Weapon.h"
 
 #define INV_BACKGR_ICON_NAME "__bgr_icon"  // Ќазвание CUIStatic иконки, которое используетс€ дл€ определени€ пор€дка отрисовки аддонов оружи€ --#SM+#--
 
@@ -255,6 +254,9 @@ CUIWeaponCellItem::CUIWeaponCellItem(CWeapon* itm)
 	m_addons[eLauncher]		= nullptr;
 	m_addons[eLaser]		= nullptr;
 	m_addons[eTorch]		= nullptr;
+	m_addons[eStock]		= nullptr;
+	m_addons[eGrip]			= nullptr;
+	m_addons[eGripv]		= nullptr;
 
 	if(itm->SilencerAttachable())
 		m_addon_offset[eSilencer].set(object()->GetSilencerX(), object()->GetSilencerY());
@@ -270,6 +272,15 @@ CUIWeaponCellItem::CUIWeaponCellItem(CWeapon* itm)
 
 	if (itm->TacticalTorchAttachable())
 		m_addon_offset[eTorch].set(object()->GetTacticalTorchX(), object()->GetTacticalTorchY());
+
+	if (itm->StockAttachable())
+		m_addon_offset[eStock].set(object()->GetStockX(), object()->GetStockY());
+
+	if (itm->GripAttachable())
+		m_addon_offset[eGrip].set(object()->GetGripX(), object()->GetGripY());
+
+	if (itm->GripvAttachable())
+		m_addon_offset[eGripv].set(object()->GetGripvX(), object()->GetGripvY());
 }
 
 #include "../xrServerEntitiesCS/object_broker.h"
@@ -290,6 +301,21 @@ bool CUIWeaponCellItem::is_silencer()
 bool CUIWeaponCellItem::is_launcher()
 {
 	return object()->GrenadeLauncherAttachable()&&object()->IsGrenadeLauncherAttached();
+}
+
+bool CUIWeaponCellItem::is_stock()
+{
+	return object()->StockAttachable() && object()->IsStockAttached();
+}
+
+bool CUIWeaponCellItem::is_grip()
+{
+	return object()->GripAttachable() && object()->IsGripAttached();
+}
+
+bool CUIWeaponCellItem::is_gripv()
+{
+	return object()->GripvAttachable() && object()->IsGripvAttached();
 }
 
 bool CUIWeaponCellItem::is_laser()
@@ -348,6 +374,15 @@ void CUIWeaponCellItem::RefreshOffset()
 
 	if(object()->GrenadeLauncherAttachable())
 		m_addon_offset[eLauncher].set(object()->GetGrenadeLauncherX(), object()->GetGrenadeLauncherY());
+
+	if (object()->StockAttachable())
+		m_addon_offset[eStock].set(object()->GetStockX(), object()->GetStockY());
+
+	if (object()->GripAttachable())
+		m_addon_offset[eGrip].set(object()->GetGripX(), object()->GetGripY());
+
+	if (object()->GripvAttachable())
+		m_addon_offset[eGripv].set(object()->GetGripvX(), object()->GetGripvY());
 
 	if (object()->LaserAttachable())
 		m_addon_offset[eLaser].set(object()->GetLaserDesignatorX(), object()->GetLaserDesignatorY());
@@ -456,6 +491,58 @@ void CUIWeaponCellItem::Update()
 		}
 	}
 
+	if (object()->GripAttachable()) {
+		if (object()->IsGripAttached())
+		{
+			if (!GetIcon(eGrip) || bForceReInitAddons)
+			{
+				CreateIcon(eGrip, object()->GetGripName());
+				RefreshOffset();
+				InitAddon(GetIcon(eGrip), *object()->GetGripName(), m_addon_offset[eGrip], Heading());
+			}
+		}
+		else
+		{
+			if (m_addons[eGrip])
+				DestroyIcon(eGrip);
+		}
+	}
+
+	if (object()->GripvAttachable()) {
+		if (object()->IsGripvAttached())
+		{
+			if (!GetIcon(eGripv) || bForceReInitAddons)
+			{
+				CreateIcon(eGripv, object()->GetGripvName());
+				RefreshOffset();
+				InitAddon(GetIcon(eGripv), *object()->GetGripvName(), m_addon_offset[eGripv], Heading());
+			}
+		}
+		else
+		{
+			if (m_addons[eGripv])
+				DestroyIcon(eGripv);
+		}
+	}
+
+	if (object()->StockAttachable())
+	{
+		if (object()->IsStockAttached())
+		{
+			if (!GetIcon(eStock) || bForceReInitAddons)
+			{
+				CreateIcon(eStock, object()->GetStockName());
+				RefreshOffset();
+				InitAddon(GetIcon(eStock), *object()->GetStockName(), m_addon_offset[eStock], Heading());
+			}
+		}
+		else
+		{
+			if (m_addons[eStock])
+				DestroyIcon(eStock);
+		}
+	}
+
 	if (object()->LaserAttachable())
 	{
 		if (object()->IsLaserAttached())
@@ -508,6 +595,18 @@ void CUIWeaponCellItem::SetColor( u32 color )
 	{
 		m_addons[eLauncher]->SetColor( color );
 	}
+	if (m_addons[eStock])
+	{
+		m_addons[eStock]->SetColor(color);
+	}
+	if (m_addons[eGrip])
+	{
+		m_addons[eGrip]->SetColor(color);
+	}
+	if (m_addons[eGripv])
+	{
+		m_addons[eGripv]->SetColor(color);
+	}
 	if (m_addons[eLaser])
 	{
 		m_addons[eLaser]->SetColor(color);
@@ -528,6 +627,15 @@ void CUIWeaponCellItem::OnAfterChild(CUIDragDropListEx* parent_list)
 
 	if(is_launcher() && GetIcon(eLauncher))
 		InitAddon	(GetIcon(eLauncher), *object()->GetGrenadeLauncherName(),m_addon_offset[eLauncher], parent_list->GetVerticalPlacement());
+
+	if (is_stock() && GetIcon(eStock))
+		InitAddon(GetIcon(eStock), *object()->GetStockName(), m_addon_offset[eStock], parent_list->GetVerticalPlacement());
+
+	if (is_grip() && GetIcon(eGrip))
+		InitAddon(GetIcon(eGrip), *object()->GetGripName(), m_addon_offset[eGrip], parent_list->GetVerticalPlacement());
+
+	if (is_gripv() && GetIcon(eGripv))
+		InitAddon(GetIcon(eGripv), *object()->GetGripvName(), m_addon_offset[eGripv], parent_list->GetVerticalPlacement());
 
 	if (is_laser() && GetIcon(eLaser))
 		InitAddon	(GetIcon(eLaser), *object()->GetLaserName(), m_addon_offset[eLaser], parent_list->GetVerticalPlacement());
@@ -744,6 +852,69 @@ CUIDragItem* CUIWeaponCellItem::CreateDragItem()
 
 		s->SetColor		(i->wnd()->GetTextureColor());
 		i->wnd			()->AttachChild(s);
+	}
+
+	if (GetIcon(eStock))
+	{
+		s = xr_new<CUIStatic>(); s->SetAutoDelete(true);
+		s->SetShader(InventoryUtilities::GetEquipmentIconsShader());
+		InitAddon(s, *object()->GetStockName(), m_addon_offset[eStock], false, true, is_scope(), is_silencer(), is_launcher());
+
+
+		if (pSettings->line_exist(object()->GetSilencerName(), "icons_texture"))
+		{
+			LPCSTR icons_texture = pSettings->r_string(object()->GetSilencerName(), "icons_texture");
+			s->SetShader(InventoryUtilities::GetCustomIconTextureShader(icons_texture));
+		}
+		else
+		{
+			s->SetShader(InventoryUtilities::GetEquipmentIconsShader());
+		}
+
+		s->SetColor(i->wnd()->GetColor());
+		i->wnd()->AttachChild(s);
+	}
+
+	if (GetIcon(eGrip))
+	{
+		s = xr_new<CUIStatic>(); s->SetAutoDelete(true);
+		s->SetShader(InventoryUtilities::GetEquipmentIconsShader());
+		InitAddon(s, *object()->GetGripName(), m_addon_offset[eGrip], false, true, is_scope(), is_silencer(), is_launcher());
+
+
+		if (pSettings->line_exist(object()->GetSilencerName(), "icons_texture"))
+		{
+			LPCSTR icons_texture = pSettings->r_string(object()->GetSilencerName(), "icons_texture");
+			s->SetShader(InventoryUtilities::GetCustomIconTextureShader(icons_texture));
+		}
+		else
+		{
+			s->SetShader(InventoryUtilities::GetEquipmentIconsShader());
+		}
+
+		s->SetColor(i->wnd()->GetColor());
+		i->wnd()->AttachChild(s);
+	}
+
+	if (GetIcon(eGripv))
+	{
+		s = xr_new<CUIStatic>(); s->SetAutoDelete(true);
+		s->SetShader(InventoryUtilities::GetEquipmentIconsShader());
+		InitAddon(s, *object()->GetGripvName(), m_addon_offset[eGripv], false, true, is_scope(), is_silencer(), is_launcher());
+
+
+		if (pSettings->line_exist(object()->GetSilencerName(), "icons_texture"))
+		{
+			LPCSTR icons_texture = pSettings->r_string(object()->GetSilencerName(), "icons_texture");
+			s->SetShader(InventoryUtilities::GetCustomIconTextureShader(icons_texture));
+		}
+		else
+		{
+			s->SetShader(InventoryUtilities::GetEquipmentIconsShader());
+		}
+
+		s->SetColor(i->wnd()->GetColor());
+		i->wnd()->AttachChild(s);
 	}
 
 	return				i;

@@ -499,11 +499,14 @@ CSE_ALifeItemWeapon::CSE_ALifeItemWeapon	(LPCSTR caSection) : CSE_ALifeItem(caSe
 
 	m_addon_flags.zero			();
 
-	m_scope_status				=	(EWeaponAddonStatus)pSettings->r_s32(s_name,"scope_status");
-	m_silencer_status			=	(EWeaponAddonStatus)pSettings->r_s32(s_name,"silencer_status");
-	m_grenade_launcher_status	=	(EWeaponAddonStatus)pSettings->r_s32(s_name,"grenade_launcher_status");
-	m_laser_designator_status	=	(EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, s_name, "laser_designator_status", 0);
-	m_tactical_torch_status		=	(EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, s_name, "tactical_torch_status", 0);
+	m_scope_status				= (EWeaponAddonStatus)pSettings->r_s32(s_name,"scope_status");
+	m_silencer_status			= (EWeaponAddonStatus)pSettings->r_s32(s_name,"silencer_status");
+	m_grenade_launcher_status	= (EWeaponAddonStatus)pSettings->r_s32(s_name,"grenade_launcher_status");
+	m_grip_status				= (EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, s_name, "grip_h_status", 0);
+	m_gripv_status				= (EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, s_name, "grip_v_status", 0);
+	m_stock_status				= (EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, s_name, "stock_status", 0);
+	m_laser_designator_status	= (EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, s_name, "laser_designator_status", 0);
+	m_tactical_torch_status		= (EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, s_name, "tactical_torch_status", 0);
 	m_ef_main_weapon_type		= READ_IF_EXISTS(pSettings,r_u32,caSection,"ef_main_weapon_type",u32(-1));
 	m_ef_weapon_type			= READ_IF_EXISTS(pSettings,r_u32,caSection,"ef_weapon_type",u32(-1));
 }
@@ -531,7 +534,7 @@ void CSE_ALifeItemWeapon::UPDATE_Read(NET_Packet	&tNetPacket)
 	tNetPacket.r_float_q8		(m_fCondition,0.0f,1.0f);
 	tNetPacket.r_u8				(wpn_flags);
 	tNetPacket.r_u16			(a_elapsed);
-	tNetPacket.r_u8				(m_addon_flags.flags);
+	tNetPacket.r_u16			(m_addon_flags.flags);
 	tNetPacket.r_u8				(ammo_type);
 	tNetPacket.r_u8				(wpn_state);
 	tNetPacket.r_u8				(m_bZoom);
@@ -545,9 +548,9 @@ void CSE_ALifeItemWeapon::UPDATE_Write(NET_Packet	&tNetPacket)
 	inherited::UPDATE_Write		(tNetPacket);
 
 	tNetPacket.w_float_q8		(m_fCondition,0.0f,1.0f);
-	tNetPacket.w_u8				(wpn_flags);
+	tNetPacket.w_u8			(wpn_flags);
 	tNetPacket.w_u16			(a_elapsed);
-	tNetPacket.w_u8				(m_addon_flags.get());
+	tNetPacket.w_u16			(m_addon_flags.get());
 	tNetPacket.w_u8				(ammo_type);
 	tNetPacket.w_u8				(wpn_state);
 	tNetPacket.w_u8				(m_bZoom);
@@ -562,7 +565,7 @@ void CSE_ALifeItemWeapon::STATE_Read(NET_Packet	&tNetPacket, u16 size)
 	tNetPacket.r_u8				(wpn_state);
 	
 	if (m_wVersion > 40)
-		tNetPacket.r_u8			(m_addon_flags.flags);
+		tNetPacket.r_u16		(m_addon_flags.flags);
 
 	if (m_wVersion > 46)
 		tNetPacket.r_u8			(ammo_type);
@@ -580,7 +583,7 @@ void CSE_ALifeItemWeapon::STATE_Write		(NET_Packet	&tNetPacket)
 	tNetPacket.w_u16			(a_current);
 	tNetPacket.w_u16			(a_elapsed);
 	tNetPacket.w_u8				(wpn_state);
-	tNetPacket.w_u8				(m_addon_flags.get());
+	tNetPacket.w_u16			(m_addon_flags.get());
 	tNetPacket.w_u8				(ammo_type);
 	tNetPacket.w_u8				(a_elapsed_grenades.pack_to_byte());
 	tNetPacket.w_u8				(cur_scope);
@@ -662,6 +665,15 @@ void CSE_ALifeItemWeapon::FillProps			(LPCSTR pref, PropItemVec& items)
 
 	if (m_tactical_torch_status == ALife::eAddonAttachable)
 		PHelper().CreateFlag8	(items, PrepareKey(pref, *s_name, "Addons\\TacticalTorch"), &m_addon_flags, eWeaponAddonTacticalTorch);
+
+	if (m_stock_designator_status == ALife::eAddonAttachable)
+		PHelper().CreateFlag8(items, PrepareKey(pref, *s_name, "Addons\\Stock"), &m_addon_flags, eWeaponAddonStock);
+
+	if (m_grip_status == ALife::eAddonAttachable)
+		PHelper().CreateFlag8(items, PrepareKey(pref, *s_name, "Addons\\Grip"), &m_addon_flags, eWeaponAddonGrip);
+
+	if (m_gripv_status == ALife::eAddonAttachable)
+		PHelper().CreateFlag8(items, PrepareKey(pref, *s_name, "Addons\\Gripv"), &m_addon_flags, eWeaponAddonGripv);
 }
 #endif // #ifndef XRGAME_EXPORTS
 

@@ -140,6 +140,9 @@ CWeapon::CWeapon()
 	m_bBlockSilencerWithGL	= false;
 	m_bLaserBlockedByAddon	= false;
 	m_bFlashlightBlockedByAddon = false;
+	m_bStockBlockedByAddon = false;
+	m_bGripHBlockedByAddon = false;
+	m_bGripVBlockedByAddon = false;
 
 	m_fOverheatingSubRpm	= 0.0f;
 	m_fOverheatingMisfire	= 0.0f;
@@ -452,6 +455,9 @@ LPCSTR wpn_launcher_def_bone	= "wpn_launcher";
 LPCSTR wpn_laser_def_bone		= "wpn_laser";
 LPCSTR wpn_torch_def_bone		= "wpn_torch";
 LPCSTR wpn_overheat_def_bone	= "overheat_barrel";
+LPCSTR wpn_stock_def_bone		= "wpn_stock";
+LPCSTR wpn_grip_def_bone		= "wpn_grip_horizontal";
+LPCSTR wpn_gripv_def_bone		= "wpn_grip_vertical";
 
 void CWeapon::Load		(LPCSTR section)
 {
@@ -645,10 +651,13 @@ void CWeapon::Load		(LPCSTR section)
 		}
 	}
 
-	m_eSilencerStatus		 = (ALife::EWeaponAddonStatus)pSettings->r_s32(section,"silencer_status");
-	m_eGrenadeLauncherStatus = (ALife::EWeaponAddonStatus)pSettings->r_s32(section,"grenade_launcher_status");
-	m_eLaserDesignatorStatus = (ALife::EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, section, "laser_designator_status", 0);
-	m_eTacticalTorchStatus	 = (ALife::EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, section, "tactical_torch_status", 0);
+	m_eSilencerStatus			= (ALife::EWeaponAddonStatus)pSettings->r_s32(section,"silencer_status");
+	m_eGrenadeLauncherStatus	= (ALife::EWeaponAddonStatus)pSettings->r_s32(section,"grenade_launcher_status");
+	m_eLaserDesignatorStatus	= (ALife::EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, section, "laser_designator_status", 0);
+	m_eTacticalTorchStatus		= (ALife::EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, section, "tactical_torch_status", 0);
+	m_eStockStatus				= (ALife::EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, section, "stock_status", 0);
+	m_eGripStatus				= (ALife::EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, section, "grip_h_status", 0);
+	m_eGripvStatus				= (ALife::EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, section, "grip_v_status", 0);
 
 	m_zoom_params.m_bZoomEnabled		= !!pSettings->r_bool(section,"zoom_enabled");
 
@@ -673,6 +682,9 @@ void CWeapon::Load		(LPCSTR section)
 	LoadLaserDesignatorParams(section);
 	LoadTacticalTorchParams(section);
 	LoadOverheatLightParams(section);
+	LoadStockParams(section);
+	LoadGripParams(section);
+	LoadGripvParams(section);
 
 	UpdateAltScope();
 	InitAddons();
@@ -709,6 +721,7 @@ void CWeapon::Load		(LPCSTR section)
 	m_u8TracerColorID		= READ_IF_EXISTS(pSettings, r_u8, section, "tracers_color_ID", u8(-1));
 
 	m_bBlockSilencerWithGL	= READ_IF_EXISTS(pSettings, r_bool, section, "block_sil_if_gl", false);
+	m_bBlockGripWithGrip	= READ_IF_EXISTS(pSettings, r_bool, section, "grip_block_grip", false);
 
 	m_fWeaponOverheatingInc = READ_IF_EXISTS(pSettings, r_float, section, "overheating_shot_inc", 0.0f);
 	m_fWeaponOverheatingDec = READ_IF_EXISTS(pSettings, r_float, section, "overheating_shot_dec", m_fWeaponOverheatingInc);
@@ -737,6 +750,21 @@ void CWeapon::Load		(LPCSTR section)
 		m_sWpn_launcher_bone = pSettings->r_string(section, "launcher_bone");
 	else
 		m_sWpn_launcher_bone = wpn_launcher_def_bone;
+
+	if (pSettings->line_exist(section, "stock_bone"))
+		m_sWpn_stock_bone = pSettings->r_string(section, "stock_bone");
+	else
+		m_sWpn_stock_bone = wpn_stock_def_bone;
+
+	if (pSettings->line_exist(section, "grip_h_bone"))
+		m_sWpn_grip_bone = pSettings->r_string(section, "grip_h_bone");
+	else
+		m_sWpn_grip_bone = wpn_grip_def_bone;
+
+	if (pSettings->line_exist(section, "grip_v_bone"))
+		m_sWpn_gripv_bone = pSettings->r_string(section, "grip_v_bone");
+	else
+		m_sWpn_gripv_bone = wpn_gripv_def_bone;
 
 	//Кости самих аддонов
 	m_sWpn_laser_bone = READ_IF_EXISTS(pSettings, r_string, section, "laser_attach_bone", wpn_laser_def_bone);
@@ -777,6 +805,8 @@ void CWeapon::Load		(LPCSTR section)
 	LoadBoneNames(section, "hide_bones_override_when_silencer_attached", m_defSilHiddenBones);
 	LoadBoneNames(section, "def_animated_3d_shell_bones", m_defShellBones);
 	LoadBoneNames(section, "overheat_barrel_bones", m_defOverheatinBarrel);
+	LoadBoneNames(section, "stock_default_bones", m_deleteStockBone);
+
 
 	if (pSettings->line_exist(section, "scopes_sect"))
 	{
@@ -999,6 +1029,99 @@ void CWeapon::LoadSilencerParams(LPCSTR section)
 	{
 		m_sSilencerName = READ_IF_EXISTS(pSettings, r_string, section, "silencer_name", "");
 		m_sSilencerAttachSection = READ_IF_EXISTS(pSettings, r_string, section, "silencer_attach_sect", "");
+	}
+}
+
+void CWeapon::LoadGripParams(LPCSTR section)
+{
+	if (m_eGripStatus == ALife::eAddonAttachable)
+	{
+		if (pSettings->line_exist(section, "grip_h_attach_sect"))
+		{
+			m_sGripAttachSection = pSettings->r_string(section, "grip_h_attach_sect");
+			m_sGripName = pSettings->r_string(m_sGripAttachSection, "grip_h_name");
+
+			m_iGripX = pSettings->r_s32(m_sGripAttachSection, "grip_h_x");
+			m_iGripY = pSettings->r_s32(m_sGripAttachSection, "grip_h_y");
+		}
+		else
+		{
+			m_sGripName = pSettings->r_string(section, "grip_h_name");
+
+			m_iGripX = pSettings->r_s32(section, "grip_h_x");
+			m_iGripY = pSettings->r_s32(section, "grip_h_y");
+		}
+	}
+	else if (m_eGripStatus == ALife::eAddonPermanent)
+	{
+		m_sGripName = READ_IF_EXISTS(pSettings, r_string, section, "grip_h_name", "");
+		m_sGripAttachSection = READ_IF_EXISTS(pSettings, r_string, section, "grip_h_attach_sect", "");
+	}
+}
+
+void CWeapon::LoadGripvParams(LPCSTR section)
+{
+	if (m_eGripvStatus == ALife::eAddonAttachable)
+	{
+		if (pSettings->line_exist(section, "grip_v_attach_sect"))
+		{
+			m_sGripvAttachSection = pSettings->r_string(section, "grip_v_attach_sect");
+			m_sGripvName = pSettings->r_string(m_sGripvAttachSection, "grip_v_name");
+
+			m_iGripvX = pSettings->r_s32(m_sGripvAttachSection, "grip_v_x");
+			m_iGripvY = pSettings->r_s32(m_sGripvAttachSection, "grip_v_y");
+		}
+		else
+		{
+			m_sGripvName = pSettings->r_string(section, "grip_v_name");
+
+			m_iGripvX = pSettings->r_s32(section, "grip_v_x");
+			m_iGripvY = pSettings->r_s32(section, "grip_v_y");
+		}
+	}
+	else if (m_eGripvStatus == ALife::eAddonPermanent)
+	{
+		m_sGripvName = READ_IF_EXISTS(pSettings, r_string, section, "grip_v_name", "");
+		m_sGripvAttachSection = READ_IF_EXISTS(pSettings, r_string, section, "grip_v_attach_sect", "");
+	}
+}
+
+void CWeapon::LoadStockParams(LPCSTR section)
+{
+	if (m_eStockStatus == ALife::eAddonAttachable)
+	{
+		if (pSettings->line_exist(section, "stock_attach_sects"))
+		{
+			LPCSTR stock_sects = pSettings->r_string(section, "stock_attach_sects");
+			string128 single_sect;
+			int count = _GetItemCount(stock_sects);
+
+			for (int i = 0; i < count; ++i)
+			{
+				_GetItem(stock_sects, i, single_sect);
+				m_availableStocks.push_back(single_sect);
+			}
+
+			if (!m_availableStocks.empty() && !m_sStockAttachSection)
+			{
+				m_sStockAttachSection = m_availableStocks[0];
+				m_sStockName = pSettings->r_string(m_sStockAttachSection, "stock_name");
+				m_iStockX = pSettings->r_s32(m_sStockAttachSection, "stock_x");
+				m_iStockY = pSettings->r_s32(m_sStockAttachSection, "stock_y");
+			}
+		}
+		else if (pSettings->line_exist(section, "stock_name"))
+		{
+			m_sStockName = pSettings->r_string(section, "stock_name");
+
+			m_iStockX = pSettings->r_s32(section, "stock_x");
+			m_iStockY = pSettings->r_s32(section, "stock_y");
+		}
+	}
+	else if (m_eStockStatus == ALife::eAddonPermanent)
+	{
+		m_sStockName = READ_IF_EXISTS(pSettings, r_string, section, "stock_name", "");
+		m_sStockAttachSection = READ_IF_EXISTS(pSettings, r_string, section, "stock_attach_sect", "");
 	}
 }
 
@@ -1505,7 +1628,7 @@ void CWeapon::net_Export(NET_Packet& P)
 	u8 need_upd				= IsUpdating() ? 1 : 0;
 	P.w_u8					(need_upd);
 	P.w_u16					(u16(iAmmoElapsed));
-	P.w_u8					(m_flagsAddOnState);
+	P.w_u16					(m_flagsAddOnState);
 	P.w_u8					((u8)m_ammoType);
 	P.w_u8					((u8)GetState());
 	P.w_u8					((u8)IsZoomed());
@@ -1526,8 +1649,8 @@ void CWeapon::net_Import(NET_Packet& P)
 	u16 ammo_elapsed = 0;
 	P.r_u16					(ammo_elapsed);
 
-	u8						NewAddonState;
-	P.r_u8					(NewAddonState);
+	u16						NewAddonState;
+	P.r_u16					(NewAddonState);
 
 	m_flagsAddOnState		= NewAddonState;
 	UpdateAddonsVisibility	();
@@ -1587,6 +1710,15 @@ void CWeapon::save(NET_Packet &output_packet)
 	save_data		(m_sLaserAttachSection,			output_packet);
 	save_data		(m_sTacticalTorchName,			output_packet);
 	save_data		(m_sTacticalTorchAttachSection,	output_packet);
+
+	/*		*/
+	save_data		(m_sStockName,					output_packet);
+	save_data		(m_sStockAttachSection,			output_packet);
+	save_data		(m_sGripName,					output_packet);
+	save_data		(m_sGripAttachSection,			output_packet);
+	save_data		(m_sGripvName,					output_packet);
+	save_data		(m_sGripvAttachSection,			output_packet);
+
 }
 
 void CWeapon::load(IReader &input_packet)
@@ -1611,6 +1743,15 @@ void CWeapon::load(IReader &input_packet)
 	load_data		(m_sLaserAttachSection,			input_packet);
 	load_data		(m_sTacticalTorchName,			input_packet);
 	load_data		(m_sTacticalTorchAttachSection, input_packet);
+
+	/*		*/
+	load_data		(m_sStockName,					input_packet);
+	load_data		(m_sStockAttachSection,			input_packet);
+	load_data		(m_sGripName,					input_packet);
+	load_data		(m_sGripAttachSection,			input_packet);
+	load_data		(m_sGripvName,					input_packet);
+	load_data		(m_sGripvAttachSection,			input_packet);
+
 }
 
 
@@ -1620,7 +1761,7 @@ void CWeapon::OnEvent(NET_Packet& P, u16 type)
 	{
 	case GE_ADDON_CHANGE:
 		{
-			P.r_u8					(m_flagsAddOnState);
+			P.r_u16					(m_flagsAddOnState);
 			InitAddons();
 			UpdateAddonsVisibility();
 		}break;
@@ -2063,6 +2204,27 @@ void CWeapon::UpdateAddonsBlocks()
 	}
 	else
 		m_bLaserBlockedByAddon = false;
+
+
+	if (IsGripAttached())
+	{
+		if (m_sGripAttachSection.size())
+			m_bGripVBlockedByAddon = READ_IF_EXISTS(pSettings, r_bool, m_sGripAttachSection, "block_grip", false);
+		else
+			m_bGripVBlockedByAddon = READ_IF_EXISTS(pSettings, r_bool, cNameSect(), "grip_vertical_block_grip_horizontal", false);
+	}
+	else
+		m_bGripVBlockedByAddon = false;
+
+	if (IsGripvAttached())
+	{
+		if (m_sGripvAttachSection.size())
+			m_bGripHBlockedByAddon = READ_IF_EXISTS(pSettings, r_bool, m_sGripvAttachSection, "block_grip", false);
+		else
+			m_bGripHBlockedByAddon = READ_IF_EXISTS(pSettings, r_bool, cNameSect(), "grip_horizontal_block_grip_vertical", false);
+	}
+	else
+		m_bGripHBlockedByAddon = false;
 }
 
 void CWeapon::EnableActorNVisnAfterZoom()
@@ -2580,6 +2742,27 @@ bool CWeapon::IsTacticalTorchAttached() const
 		ALife::eAddonPermanent == m_eTacticalTorchStatus;
 }
 
+bool CWeapon::IsStockAttached() const
+{
+	return (ALife::eAddonAttachable == m_eStockStatus &&
+		0 != (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonStock)) ||
+		ALife::eAddonPermanent == m_eStockStatus;
+}
+
+bool CWeapon::IsGripAttached() const
+{
+	return (ALife::eAddonAttachable == m_eGripStatus &&
+		0 != (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonGrip)) ||
+		ALife::eAddonPermanent == m_eGripStatus;
+}
+
+bool CWeapon::IsGripvAttached() const
+{
+	return (ALife::eAddonAttachable == m_eGripvStatus &&
+		0 != (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonGripv)) ||
+		ALife::eAddonPermanent == m_eGripvStatus;
+}
+
 bool CWeapon::GrenadeLauncherAttachable()
 {
 	return (ALife::eAddonAttachable == m_eGrenadeLauncherStatus);
@@ -2599,6 +2782,18 @@ bool CWeapon::LaserAttachable()
 bool CWeapon::TacticalTorchAttachable()
 {
 	return (ALife::eAddonAttachable == m_eTacticalTorchStatus);
+}
+bool CWeapon::StockAttachable()
+{
+	return (ALife::eAddonAttachable == m_eStockStatus);
+}
+bool CWeapon::GripAttachable()
+{
+	return (ALife::eAddonAttachable == m_eGripStatus);
+}
+bool CWeapon::GripvAttachable()
+{
+	return (ALife::eAddonAttachable == m_eGripvStatus);
 }
 
 void CWeapon::HUD_VisualBulletUpdate(bool force, int force_idx)
@@ -2688,6 +2883,18 @@ void CWeapon::UpdateHUDAddonsVisibility()
 		else
 		{
 		//	Msg("!NO OVERHEATING HIDE BONES");
+			SetBoneVisible(bone, FALSE);
+		}
+	}
+
+	for (const shared_str& bone : m_deleteStockBone)
+	{
+		if (!IsStockAttached())
+		{
+			SetBoneVisible(bone, TRUE);
+		}
+		else
+		{
 			SetBoneVisible(bone, FALSE);
 		}
 	}
@@ -3112,6 +3319,39 @@ void CWeapon::UpdateHUDAddonsVisibility()
 	else if (m_eGrenadeLauncherStatus == ALife::eAddonPermanent && !m_sGrenadeLauncherAttachSection.size())
 		SetBoneVisible(m_sWpn_launcher_bone, TRUE);
 
+	if (StockAttachable())
+	{
+		SetBoneVisible(m_sWpn_stock_bone, IsStockAttached() && !m_sStockAttachSection.size());
+	}
+	if (m_eStockStatus == ALife::eAddonDisabled || m_sStockAttachSection.size())
+	{
+		SetBoneVisible(m_sWpn_stock_bone, FALSE);
+	}
+	else if (m_eStockStatus == ALife::eAddonPermanent && !m_sStockAttachSection.size())
+		SetBoneVisible(m_sWpn_stock_bone, TRUE);
+
+	if (GripAttachable())
+	{
+		SetBoneVisible(m_sWpn_grip_bone, IsGripAttached() && !m_sGripAttachSection.size());
+	}
+	if (m_eGripStatus == ALife::eAddonDisabled || m_sGripAttachSection.size())
+	{
+		SetBoneVisible(m_sWpn_grip_bone, FALSE);
+	}
+	else if (m_eGripStatus == ALife::eAddonPermanent && !m_sGripAttachSection.size())
+		SetBoneVisible(m_sWpn_grip_bone, TRUE);
+
+	if (GripvAttachable())
+	{
+		SetBoneVisible(m_sWpn_gripv_bone, IsGripvAttached() && !m_sGripvAttachSection.size());
+	}
+	if (m_eGripvStatus == ALife::eAddonDisabled || m_sGripvAttachSection.size())
+	{
+		SetBoneVisible(m_sWpn_gripv_bone, FALSE);
+	}
+	else if (m_eGripvStatus == ALife::eAddonPermanent && !m_sGripvAttachSection.size())
+		SetBoneVisible(m_sWpn_gripv_bone, TRUE);
+
 	if (LaserAttachable())
 	{
 		SetBoneVisible(m_sWpn_laser_bone, IsLaserAttached() && !m_sLaserAttachSection.size());
@@ -3369,6 +3609,68 @@ void CWeapon::UpdateAddonsVisibility(IKinematics* visual)
 	{
 		pWeaponVisual->LL_SetBoneVisible(bone_id, FALSE, TRUE);
 		//		Log("gl", pWeaponVisual->LL_GetBoneVisible			(bone_id));
+	}
+
+	bone_id = pWeaponVisual->LL_BoneID(m_sWpn_grip_bone);
+	if (GripAttachable())
+	{
+		if (IsGripAttached() && !m_sGripAttachSection.size())
+		{
+			if (!pWeaponVisual->LL_GetBoneVisible(bone_id))
+				pWeaponVisual->LL_SetBoneVisible(bone_id, TRUE, TRUE);
+		}
+		else
+		{
+			if (bone_id != BI_NONE && pWeaponVisual->LL_GetBoneVisible(bone_id))
+				pWeaponVisual->LL_SetBoneVisible(bone_id, FALSE, TRUE);
+		}
+	}
+	if ((m_eGripStatus == ALife::eAddonDisabled || m_sGripAttachSection.size()) && bone_id != BI_NONE &&
+		pWeaponVisual->LL_GetBoneVisible(bone_id))
+	{
+		pWeaponVisual->LL_SetBoneVisible(bone_id, FALSE, TRUE);
+		//		Log("gl", pWeaponVisual->LL_GetBoneVisible			(bone_id));
+	}
+
+	bone_id = pWeaponVisual->LL_BoneID(m_sWpn_gripv_bone);
+	if (GripvAttachable())
+	{
+		if (IsGripvAttached() && !m_sGripvAttachSection.size())
+		{
+			if (!pWeaponVisual->LL_GetBoneVisible(bone_id))
+				pWeaponVisual->LL_SetBoneVisible(bone_id, TRUE, TRUE);
+		}
+		else
+		{
+			if (bone_id != BI_NONE && pWeaponVisual->LL_GetBoneVisible(bone_id))
+				pWeaponVisual->LL_SetBoneVisible(bone_id, FALSE, TRUE);
+		}
+	}
+	if ((m_eGripvStatus == ALife::eAddonDisabled || m_sGripvAttachSection.size()) && bone_id != BI_NONE &&
+		pWeaponVisual->LL_GetBoneVisible(bone_id))
+	{
+		pWeaponVisual->LL_SetBoneVisible(bone_id, FALSE, TRUE);
+		//		Log("gl", pWeaponVisual->LL_GetBoneVisible			(bone_id));
+	}
+
+	bone_id = pWeaponVisual->LL_BoneID(m_sWpn_stock_bone);
+	if (StockAttachable())
+	{
+		if (IsStockAttached() && !m_sStockAttachSection.size())
+		{
+			if (!pWeaponVisual->LL_GetBoneVisible(bone_id))
+				pWeaponVisual->LL_SetBoneVisible(bone_id, TRUE, TRUE);
+		}
+		else
+		{
+			if (bone_id != BI_NONE && pWeaponVisual->LL_GetBoneVisible(bone_id))
+				pWeaponVisual->LL_SetBoneVisible(bone_id, FALSE, TRUE);
+		}
+	}
+	if ((m_eStockStatus == ALife::eAddonDisabled || m_sStockAttachSection.size()) && bone_id != BI_NONE && pWeaponVisual->LL_GetBoneVisible(bone_id))
+	{
+		pWeaponVisual->LL_SetBoneVisible(bone_id, FALSE, TRUE);
+		//		Log("laser", pWeaponVisual->LL_GetBoneVisible	(bone_id));
 	}
 
 	bone_id = pWeaponVisual->LL_BoneID(m_sWpn_laser_bone);
@@ -4011,7 +4313,19 @@ float CWeapon::Weight() const
 	if (IsTacticalTorchAttached() && GetTacticalTorchName().size()) {
 		res += pSettings->r_float(GetTacticalTorchName(), "inv_weight");
 	}
-	
+	if (IsStockAttached() && GetStockName().size())
+	{
+		res += pSettings->r_float(GetStockName(), "inv_weight");
+	}
+	if (IsGripvAttached() && GetGripvName().size())
+	{
+		res += pSettings->r_float(GetGripvName(), "inv_weight");
+	}
+	if (IsGripvAttached() && GetGripvName().size())
+	{
+		res += pSettings->r_float(GetGripvName(), "inv_weight");
+	}
+
 	res += GetMagazineWeight(m_magazine);
 
 	return res;
@@ -4240,7 +4554,16 @@ u32 CWeapon::Cost() const
 	if (IsTacticalTorchAttached() && GetTacticalTorchName().size()) {
 		res += pSettings->r_u32(GetTacticalTorchName(), "cost");
 	}
-	
+	if (IsStockAttached() && GetStockName().size()) {
+		res += pSettings->r_u32(GetStockName(), "cost");
+	}
+	if (IsGripAttached() && GetGripName().size()) {
+		res += pSettings->r_u32(GetGripName(), "cost");
+	}
+	if (IsGripvAttached() && GetGripvName().size()) {
+		res += pSettings->r_u32(GetGripvName(), "cost");
+	}
+
 	if(iAmmoElapsed)
 	{
 		float w		= pSettings->r_float(m_ammoTypes[m_ammoType].c_str(),"cost");
@@ -4297,14 +4620,41 @@ const char* CWeapon::GetAnimAimName()
 
 		if (state && state & mcAnyMove)
 		{
-			if (IsScopeAttached() && m_bUseScopeAimMoveAnims)
-				return strconcat(sizeof(guns_aim_anm), guns_aim_anm, GenerateAimAnimName("anm_idle_aim_scope_moving"), (IsMisfire()) ? "_jammed" : (magazine_empty) ? "_empty" : "");
+			if (IsGripAttached())
+			{
+				if (IsScopeAttached() && m_bUseScopeAimMoveAnims)
+					return strconcat(sizeof(guns_aim_anm), guns_aim_anm, GenerateAimAnimName("anm_idle_aim_scope_moving_grip_h"), (IsMisfire()) ? "_jammed" : (magazine_empty) ? "_empty" : "");
+				else
+				{
+					if (m_bUseAimAnmDirDependency)
+						return strconcat(sizeof(guns_aim_anm), guns_aim_anm, GenerateAimAnimName("anm_idle_aim_moving_grip_h"), (state & mcFwd) ? "_forward" : ((state & mcBack) ? "_back" : ""), (state & mcLStrafe) ? "_left" : ((state & mcRStrafe) ? "_right" : ""), (IsMisfire() ? "_jammed" : (magazine_empty) ? "_empty" : ""));
+					else
+						return strconcat(sizeof(guns_aim_anm), guns_aim_anm, GenerateAimAnimName("anm_idle_aim_moving_grip_h"), (IsMisfire() ? "_jammed" : (magazine_empty) ? "_empty" : ""));
+				}
+			}
+			else if (IsGripvAttached())
+			{
+				if (IsScopeAttached() && m_bUseScopeAimMoveAnims)
+					return strconcat(sizeof(guns_aim_anm), guns_aim_anm, GenerateAimAnimName("anm_idle_aim_scope_moving_grip_v"), (IsMisfire()) ? "_jammed" : (magazine_empty) ? "_empty" : "");
+				else
+				{
+					if (m_bUseAimAnmDirDependency)
+						return strconcat(sizeof(guns_aim_anm), guns_aim_anm, GenerateAimAnimName("anm_idle_aim_moving_grip_v"), (state & mcFwd) ? "_forward" : ((state & mcBack) ? "_back" : ""), (state & mcLStrafe) ? "_left" : ((state & mcRStrafe) ? "_right" : ""), (IsMisfire() ? "_jammed" : (magazine_empty) ? "_empty" : ""));
+					else
+						return strconcat(sizeof(guns_aim_anm), guns_aim_anm, GenerateAimAnimName("anm_idle_aim_moving_grip_v"), (IsMisfire() ? "_jammed" : (magazine_empty) ? "_empty" : ""));
+				}
+			}
 			else
 			{
-				if (m_bUseAimAnmDirDependency)
-					return strconcat(sizeof(guns_aim_anm), guns_aim_anm, GenerateAimAnimName("anm_idle_aim_moving"), (state & mcFwd) ? "_forward" : ((state & mcBack) ? "_back" : ""), (state & mcLStrafe) ? "_left" : ((state & mcRStrafe) ? "_right" : ""), (IsMisfire() ? "_jammed" : (magazine_empty) ? "_empty" : ""));
+				if (IsScopeAttached() && m_bUseScopeAimMoveAnims)
+					return strconcat(sizeof(guns_aim_anm), guns_aim_anm, GenerateAimAnimName("anm_idle_aim_scope_moving"), (IsMisfire()) ? "_jammed" : (magazine_empty) ? "_empty" : "");
 				else
-					return strconcat(sizeof(guns_aim_anm), guns_aim_anm, GenerateAimAnimName("anm_idle_aim_moving"), (IsMisfire() ? "_jammed" : (magazine_empty) ? "_empty" : ""));
+				{
+					if (m_bUseAimAnmDirDependency)
+						return strconcat(sizeof(guns_aim_anm), guns_aim_anm, GenerateAimAnimName("anm_idle_aim_moving"), (state & mcFwd) ? "_forward" : ((state & mcBack) ? "_back" : ""), (state & mcLStrafe) ? "_left" : ((state & mcRStrafe) ? "_right" : ""), (IsMisfire() ? "_jammed" : (magazine_empty) ? "_empty" : ""));
+					else
+						return strconcat(sizeof(guns_aim_anm), guns_aim_anm, GenerateAimAnimName("anm_idle_aim_moving"), (IsMisfire() ? "_jammed" : (magazine_empty) ? "_empty" : ""));
+				}
 			}
 		}
 	}

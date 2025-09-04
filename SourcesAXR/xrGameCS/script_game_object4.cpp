@@ -25,7 +25,6 @@
 #include "Car.h"
 #include "helicopter.h"
 #include "InventoryOwner.h"
-#include "inventoryBox.h"
 #include "CustomZone.h"
 #include "TorridZone.h"
 #include "MosquitoBald.h"
@@ -50,11 +49,12 @@
 #include "medkit.h"
 #include "antirad.h"
 #include "BottleItem.h"
-#include "eatable_item.h"
 #include "CustomDetector.h"
 #include "AnomalyDetector.h"
-#include "Torch.h"
 #include "AntigasFilter.h"
+#include "WeaponAddonStock1.h"
+#include "WeaponAddonGripHorizontal.h"
+#include "WeaponAddonGripVertical.h"
 
 class CWeapon;
 
@@ -383,6 +383,9 @@ TEST_OBJECT_CLASS(CScriptGameObject::IsHelmet,			CHelmet)
 TEST_OBJECT_CLASS(CScriptGameObject::IsScope,			CScope)
 TEST_OBJECT_CLASS(CScriptGameObject::IsSilencer,		CSilencer)
 TEST_OBJECT_CLASS(CScriptGameObject::IsGrenadeLauncher, CGrenadeLauncher)
+TEST_OBJECT_CLASS(CScriptGameObject::IsStock,			CStock)
+TEST_OBJECT_CLASS(CScriptGameObject::IsGrip,			CHorGrip)
+TEST_OBJECT_CLASS(CScriptGameObject::IsGripv,			CVerGrip)
 TEST_OBJECT_CLASS(CScriptGameObject::IsLaserDesignator, CLaserDesignator)
 TEST_OBJECT_CLASS(CScriptGameObject::IsTacticalTorch,	CTacticalTorch)
 TEST_OBJECT_CLASS(CScriptGameObject::IsWeaponMagazined, CWeaponMagazined)

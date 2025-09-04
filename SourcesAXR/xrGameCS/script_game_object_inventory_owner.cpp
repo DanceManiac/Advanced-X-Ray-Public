@@ -1289,6 +1289,39 @@ int CScriptGameObject::Weapon_Silencer_Status()
 	return (int)weapon->get_SilencerStatus();
 }
 
+int CScriptGameObject::Weapon_Grip_Status()
+{
+	CWeapon* weapon = smart_cast<CWeapon*>(&object());
+	if (!weapon)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CWeapon : cannot access class member Weapon_Grip_Status!");
+		return								(false);
+	}
+	return (int)weapon->get_GripStatus();
+}
+
+int CScriptGameObject::Weapon_Gripv_Status()
+{
+	CWeapon* weapon = smart_cast<CWeapon*>(&object());
+	if (!weapon)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CWeapon : cannot access class member Weapon_Gripv_Status!");
+		return								(false);
+	}
+	return (int)weapon->get_GripvStatus();
+}
+
+int CScriptGameObject::Weapon_Stock_Status()
+{
+	CWeapon* weapon = smart_cast<CWeapon*>(&object());
+	if (!weapon)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CWeapon : cannot access class member Weapon_Stock_Status!");
+		return								(false);
+	}
+	return (int)weapon->get_StockStatus();
+}
+
 int CScriptGameObject::Weapon_LaserDesignator_Status()
 {
 	CWeapon* weapon = smart_cast<CWeapon*>(&object());
@@ -1342,6 +1375,39 @@ bool CScriptGameObject::Weapon_IsSilencerAttached()
 		return								(false);
 	}
 	return weapon->IsSilencerAttached();
+}
+
+bool CScriptGameObject::Weapon_IsGripAttached()
+{
+	CWeapon* weapon = smart_cast<CWeapon*>(&object());
+	if (!weapon)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CWeapon : cannot access class member Weapon_IsGripAttached!");
+		return								(false);
+	}
+	return weapon->IsGripAttached();
+}
+
+bool CScriptGameObject::Weapon_IsGripvAttached()
+{
+	CWeapon* weapon = smart_cast<CWeapon*>(&object());
+	if (!weapon)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CWeapon : cannot access class member Weapon_IsGripvAttached!");
+		return								(false);
+	}
+	return weapon->IsGripvAttached();
+}
+
+bool CScriptGameObject::Weapon_IsStockAttached()
+{
+	CWeapon* weapon = smart_cast<CWeapon*>(&object());
+	if (!weapon)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CWeapon : cannot access class member Weapon_IsStockAttached!");
+		return								(false);
+	}
+	return weapon->IsStockAttached();
 }
 
 bool CScriptGameObject::Weapon_IsLaserDesignatorAttached()

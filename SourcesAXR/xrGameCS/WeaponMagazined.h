@@ -181,22 +181,34 @@ protected:
 	virtual bool	AllowFireWhileWorking() {return false;}
 
 	//виртуальные функции для проигрывания анимации HUD
-	virtual void	PlayAnimShow		();
-	virtual void	PlayAnimHide		();
-	virtual void	PlayAnimReload		();
-	virtual void	PlayAnimIdle		();
-	virtual void	PlayAnimShoot		();
-	virtual bool	PlayAnimFakeShoot	();
-	virtual void	PlayReloadSound		();
-	virtual void	PlayAnimAim			();
-	virtual void	PlayAnimBore		();
-	virtual void	PlayAnimIdleSprint	();
-	virtual void	PlayAnimIdleMoving	();
-	virtual void	PlayAnimFireMode	();
-	virtual void	PlayAnimLaserSwitch	();
-	virtual void	PlayAnimFlashlightSwitch();
-	virtual bool	PlayAnimAimEnd		();
-	virtual void	PlayAnimDeviceSwitch() override;
+	virtual void	PlayAnimShow					();
+	virtual void	PlayAnimHide					();
+	virtual void	PlayAnimReload					();
+	virtual void	PlayAnimIdle					();
+	virtual void	PlayAnimShoot					();
+	virtual void	PlayAnimShootHorGrip			();
+	virtual void	PlayAnimShootVerGrip			();
+	virtual bool	PlayAnimFakeShoot				();
+	virtual void	PlayReloadSound					();
+	virtual void	PlayAnimAim						();
+	virtual void	PlayAnimAimHorGrip				();
+	virtual void	PlayAnimAimVerGrip				();
+	virtual void	PlayAnimBore					();
+	virtual void	PlayAnimIdleSprint				();
+	virtual void	PlayAnimIdleMoving				();
+	virtual void	PlayAnimFireMode				();
+	virtual void	PlayAnimFireModeGrip			();
+	virtual void	PlayAnimFireModeGripV			();
+	virtual void	PlayAnimLaserSwitch				();
+	virtual void	PlayAnimLaserSwitchGrip			();
+	virtual void	PlayAnimLaserSwitchGripV		();
+	virtual void	PlayAnimFlashlightSwitch		();
+	virtual void	PlayAnimFlashlightSwitchGrip	();
+	virtual void	PlayAnimFlashlightSwitchGripV	();
+	virtual bool	PlayAnimAimEnd					();
+	//virtual bool	PlayAnimAimEndHorGrip			();
+	//virtual bool	PlayAnimAimEndVerGrip			();
+	virtual void	PlayAnimDeviceSwitch			() override;
 
 protected:
 

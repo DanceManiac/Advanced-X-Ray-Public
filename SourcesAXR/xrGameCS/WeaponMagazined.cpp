@@ -9,6 +9,9 @@
 #include "GrenadeLauncher.h"
 #include "LaserDesignator.h"
 #include "TacticalTorch.h"
+#include "WeaponAddonStock1.h"
+#include "WeaponAddonGripHorizontal.h"
+#include "WeaponAddonGripVertical.h"
 #include "inventory.h"
 #include "xrserver_objects_alife_items.h"
 #include "ActorEffector.h"
@@ -181,9 +184,8 @@ void CWeaponMagazined::Load	(LPCSTR section)
 		m_sounds.LoadSound(section, "snd_inspect_weapon_misfire_gl_used", "sndInspectWeaponMisfireGlUsed", false, m_eSoundEmptyClick);
 
 
-	m_sounds.LoadSound(section,"snd_empty",			"sndEmptyClick",	false,	m_eSoundEmptyClick	);
-	m_sounds.LoadSound(section,"snd_reload",		"sndReload",		true,	m_eSoundReload		);
-	m_sounds.LoadSound(section, "snd_reflect",		"sndReflect",		true,	m_eSoundReflect		);
+	m_sounds.LoadSound(section,"snd_empty",				"sndEmptyClick",		false,	m_eSoundEmptyClick);
+	m_sounds.LoadSound(section, "snd_reflect", "sndReflect", true, m_eSoundReflect);
 
 	if (WeaponSoundExist(section, "snd_changefiremode", true))
 		m_sounds.LoadSound(section, "snd_changefiremode", "sndFireModes", false, m_eSoundEmptyClick	);
@@ -204,16 +206,45 @@ void CWeaponMagazined::Load	(LPCSTR section)
 	if (WeaponSoundExist(section, "snd_close", true))
 		m_sounds.LoadSound(section, "snd_close", "sndClose", false, m_eSoundClose);
 
+	m_sounds.LoadSound(section, "snd_reload_grip_h", "sndReloadGripH", true, m_eSoundReload);
+	m_sounds.LoadSound(section, "snd_reload_grip_v", "sndReloadGripV", true, m_eSoundReload);
+	m_sounds.LoadSound(section, "snd_reload", "sndReload", true, m_eSoundReload);
+
 	if (WeaponSoundExist(section, "snd_reload_empty", true))
 		m_sounds.LoadSound(section, "snd_reload_empty", "sndReloadEmpty", true, m_eSoundReload);
+	if (WeaponSoundExist(section, "snd_reload_empty_grip_h", true))
+		m_sounds.LoadSound(section, "snd_reload_empty_grip_h", "sndReloadEmptyGripH", true, m_eSoundReload);
+	if (WeaponSoundExist(section, "snd_reload_empty_grip_v", true))
+		m_sounds.LoadSound(section, "snd_reload_empty_grip_v", "sndReloadEmptyGripV", true, m_eSoundReload);
+
 	if (WeaponSoundExist(section, "snd_reload_misfire", true))
 		m_sounds.LoadSound(section, "snd_reload_misfire", "sndReloadMisfire", true, m_eSoundReload);
-	if (WeaponSoundExist(section, "snd_reload_jammed", true))
-		m_sounds.LoadSound(section, "snd_reload_jammed", "sndReloadJammed", true, m_eSoundReload);
+	if (WeaponSoundExist(section, "snd_reload_misfire_grip_h", true))
+		m_sounds.LoadSound(section, "snd_reload_misfire_grip_h", "sndReloadMisfireGripH", true, m_eSoundReload);
+	if (WeaponSoundExist(section, "snd_reload_misfire_grip_v", true))
+		m_sounds.LoadSound(section, "snd_reload_misfire_grip_v", "sndReloadMisfireGripV", true, m_eSoundReload);
+
 	if (WeaponSoundExist(section, "snd_reload_misfire_empty", true))
 		m_sounds.LoadSound(section, "snd_reload_misfire_empty", "sndReloadMisfireEmpty", true, m_eSoundReload);
+	if (WeaponSoundExist(section, "snd_reload_misfire_empty_grip_h", true))
+		m_sounds.LoadSound(section, "snd_reload_misfire_empty_grip_h", "sndReloadMisfireEmptyGripH", true, m_eSoundReload);
+	if (WeaponSoundExist(section, "snd_reload_misfire_empty_grip_v", true))
+		m_sounds.LoadSound(section, "snd_reload_misfire_empty_grip_v", "sndReloadMisfireEmptyGripV", true, m_eSoundReload);
+
+	if (WeaponSoundExist(section, "snd_reload_jammed", true))
+		m_sounds.LoadSound(section, "snd_reload_jammed", "sndReloadJammed", true, m_eSoundReload);
+	if (WeaponSoundExist(section, "snd_reload_jammed_grip_h", true))
+		m_sounds.LoadSound(section, "snd_reload_jammed_grip_h", "sndReloadJammedGripH", true, m_eSoundReload);
+	if (WeaponSoundExist(section, "snd_reload_jammed_grip_v", true))
+		m_sounds.LoadSound(section, "snd_reload_jammed_grip_v", "sndReloadJammedGripV", true, m_eSoundReload);
+
 	if (WeaponSoundExist(section, "snd_reload_jammed_empty", true))
 		m_sounds.LoadSound(section, "snd_reload_jammed_empty", "sndReloadJammedEmpty", true, m_eSoundReload);
+	if (WeaponSoundExist(section, "snd_reload_jammed_empty_grip_h", true))
+		m_sounds.LoadSound(section, "snd_reload_jammed_empty_grip_h", "sndReloadJammedEmptyGripH", true, m_eSoundReload);
+	if (WeaponSoundExist(section, "snd_reload_jammed_empty_grip_v", true))
+		m_sounds.LoadSound(section, "snd_reload_jammed_empty_grip_v", "sndReloadJammedEmptyGripV", true, m_eSoundReload);
+
 	if (WeaponSoundExist(section, "snd_pump_gun", true))
 		m_sounds.LoadSound(section, "snd_pump_gun", "sndPumpGun", true, m_eSoundReload);
 
@@ -1256,8 +1287,19 @@ void CWeaponMagazined::OnShot()
 	AddShotEffector				();
 
 	// Animation
-	PlayAnimShoot				();
-	
+	if (IsGripAttached())
+	{
+		PlayAnimShootHorGrip();
+	}
+	else if (IsGripvAttached())
+	{
+		PlayAnimShootVerGrip();
+	}
+	else
+	{
+		PlayAnimShoot();
+	}
+
 	HUD_VisualBulletUpdate();
 
 	// Shell Drop
@@ -1594,7 +1636,20 @@ void CWeaponMagazined::switch2_ChangeFireMode()
 		return;
 
 	FireEnd();
-	PlayAnimFireMode();
+
+	if (IsGripAttached())
+	{
+		PlayAnimFireModeGrip();
+	}
+	else if (IsGripvAttached())
+	{
+		PlayAnimFireModeGripV();
+	}
+	else
+	{
+		PlayAnimFireMode();
+	}
+
 	SetPending(TRUE);
 }
 
@@ -1606,6 +1661,8 @@ void CWeaponMagazined::PlayAnimFireMode()
 		det->PlayDetectorAnimation(true, eDetAction, "anm_firemode");
 
 	string_path guns_firemode_anm{};
+
+	// Msg("ANIMS CHANGE FIRE MODE WITHOUD GRIP ATTACHED");
 
 	if (isHUDAnimationExist("anm_changefiremode"))
 	{
@@ -1651,6 +1708,116 @@ void CWeaponMagazined::PlayAnimFireMode()
 	}
 }
 
+void CWeaponMagazined::PlayAnimFireModeGrip()
+{
+	auto det = smart_cast<CCustomDetector*>(g_actor->inventory().ItemFromSlot(DETECTOR_SLOT));
+
+	if (auto det = smart_cast<CCustomDetector*>(g_actor->inventory().ItemFromSlot(DETECTOR_SLOT)); g_actor->IsDetectorActive())
+		det->PlayDetectorAnimation(true, eDetAction, "anm_firemode");
+
+	string_path guns_firemode_anm{};
+
+	//Msg("ANIMS CHANGE FIRE MODE WITH GRIP ATTACHED");
+
+	if (isHUDAnimationExist("anm_changefiremode_grip"))
+	{
+		strconcat(sizeof(guns_firemode_anm), guns_firemode_anm, "anm_changefiremode_grip", (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
+
+		PlayHUDMotionIfExists({ guns_firemode_anm, "anm_changefiremode_grip" }, true, GetState());
+		return;
+	}
+
+	strconcat(sizeof(guns_firemode_anm), guns_firemode_anm, "anm_changefiremode_grip_from_", (m_iCurFireMode == 0) ? "a_to_1" : (m_iCurFireMode == 1) ? (m_aFireModes.size() == 3) ? "1_to_2" : "1_to_a" : (m_iCurFireMode == 2) ? "2_to_a" : "a_to_1");
+
+	string64 guns_aim_anm_full;
+	strconcat(sizeof(guns_aim_anm_full), guns_aim_anm_full, guns_firemode_anm, (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
+
+	if (isHUDAnimationExist(guns_aim_anm_full))
+	{
+		PlayHUDMotionNew(guns_aim_anm_full, true, GetState());
+		return;
+	}
+	else if (guns_aim_anm_full && strstr(guns_aim_anm_full, "_jammed"))
+	{
+		char new_guns_aim_anm[256];
+		strcpy(new_guns_aim_anm, guns_aim_anm_full);
+		new_guns_aim_anm[strlen(guns_aim_anm_full) - strlen("_jammed")] = '\0';
+
+		if (isHUDAnimationExist(new_guns_aim_anm))
+		{
+			PlayHUDMotionNew(new_guns_aim_anm, true, GetState());
+			return;
+		}
+	}
+	else if (guns_aim_anm_full && strstr(guns_aim_anm_full, "_empty"))
+	{
+		char new_guns_aim_anm[256];
+		strcpy(new_guns_aim_anm, guns_aim_anm_full);
+		new_guns_aim_anm[strlen(guns_aim_anm_full) - strlen("_empty")] = '\0';
+
+		if (isHUDAnimationExist(new_guns_aim_anm))
+		{
+			PlayHUDMotionNew(new_guns_aim_anm, true, GetState());
+			return;
+		}
+	}
+}
+
+void CWeaponMagazined::PlayAnimFireModeGripV()
+{
+	auto det = smart_cast<CCustomDetector*>(g_actor->inventory().ItemFromSlot(DETECTOR_SLOT));
+
+	if (auto det = smart_cast<CCustomDetector*>(g_actor->inventory().ItemFromSlot(DETECTOR_SLOT)); g_actor->IsDetectorActive())
+		det->PlayDetectorAnimation(true, eDetAction, "anm_firemode");
+
+	string_path guns_firemode_anm{};
+
+	//Msg("ANIMS CHANGE FIRE MODE WITH GRIPv ATTACHED");
+
+	if (isHUDAnimationExist("anm_changefiremode_grip_v"))
+	{
+		strconcat(sizeof(guns_firemode_anm), guns_firemode_anm, "anm_changefiremode_grip_v", (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
+
+		PlayHUDMotionIfExists({ guns_firemode_anm, "anm_changefiremode_grip_v" }, true, GetState());
+		return;
+	}
+
+	strconcat(sizeof(guns_firemode_anm), guns_firemode_anm, "anm_changefiremode_grip_v_from_", (m_iCurFireMode == 0) ? "a_to_1" : (m_iCurFireMode == 1) ? (m_aFireModes.size() == 3) ? "1_to_2" : "1_to_a" : (m_iCurFireMode == 2) ? "2_to_a" : "a_to_1");
+
+	string64 guns_aim_anm_full;
+	strconcat(sizeof(guns_aim_anm_full), guns_aim_anm_full, guns_firemode_anm, (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
+
+	if (isHUDAnimationExist(guns_aim_anm_full))
+	{
+		PlayHUDMotionNew(guns_aim_anm_full, true, GetState());
+		return;
+	}
+	else if (guns_aim_anm_full && strstr(guns_aim_anm_full, "_jammed"))
+	{
+		char new_guns_aim_anm[256];
+		strcpy(new_guns_aim_anm, guns_aim_anm_full);
+		new_guns_aim_anm[strlen(guns_aim_anm_full) - strlen("_jammed")] = '\0';
+
+		if (isHUDAnimationExist(new_guns_aim_anm))
+		{
+			PlayHUDMotionNew(new_guns_aim_anm, true, GetState());
+			return;
+		}
+	}
+	else if (guns_aim_anm_full && strstr(guns_aim_anm_full, "_empty"))
+	{
+		char new_guns_aim_anm[256];
+		strcpy(new_guns_aim_anm, guns_aim_anm_full);
+		new_guns_aim_anm[strlen(guns_aim_anm_full) - strlen("_empty")] = '\0';
+
+		if (isHUDAnimationExist(new_guns_aim_anm))
+		{
+			PlayHUDMotionNew(new_guns_aim_anm, true, GetState());
+			return;
+		}
+	}
+}
+
 void CWeaponMagazined::switch2_LaserSwitch()
 {
 	if (GetState() != eLaserSwitch)
@@ -1659,7 +1826,20 @@ void CWeaponMagazined::switch2_LaserSwitch()
 	LaserSwitchAction = true;
 
 	FireEnd();
-	PlayAnimLaserSwitch();
+
+	if (IsGripAttached())
+	{
+		PlayAnimLaserSwitchGrip();
+	}
+	else if (IsGripvAttached())
+	{
+		PlayAnimLaserSwitchGripV();
+	}
+	else 
+	{
+		PlayAnimLaserSwitch();
+	}
+
 	SetPending(TRUE);
 }
 
@@ -1671,7 +1851,20 @@ void CWeaponMagazined::switch2_FlashlightSwitch()
 	FlashlightSwitchAction = true;
 
 	FireEnd();
-	PlayAnimFlashlightSwitch();
+
+	if (IsGripAttached())
+	{
+		PlayAnimFlashlightSwitchGrip();
+	}
+	else if (IsGripvAttached())
+	{
+		PlayAnimFlashlightSwitchGripV();
+	}
+	else
+	{
+		PlayAnimLaserSwitch();
+	}
+
 	SetPending(TRUE);
 }
 
@@ -1711,10 +1904,154 @@ void CWeaponMagazined::PlayAnimLaserSwitch()
 	}
 }
 
+void CWeaponMagazined::PlayAnimLaserSwitchGrip()
+{
+	string_path guns_device_switch_anm{};
+	strconcat(sizeof(guns_device_switch_anm), guns_device_switch_anm, "anm_laser_grip_h", !IsLaserOn() ? "_on" : "_off", (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
+
+	if (isHUDAnimationExist(guns_device_switch_anm))
+	{
+		PlayHUDMotionNew(guns_device_switch_anm, true, GetState());
+		return;
+	}
+	else if (guns_device_switch_anm && strstr(guns_device_switch_anm, "_jammed"))
+	{
+		char new_guns_aim_anm[256];
+		strcpy(new_guns_aim_anm, guns_device_switch_anm);
+		new_guns_aim_anm[strlen(guns_device_switch_anm) - strlen("_jammed")] = '\0';
+
+		if (isHUDAnimationExist(new_guns_aim_anm))
+		{
+			PlayHUDMotionNew(new_guns_aim_anm, true, GetState());
+			return;
+		}
+	}
+	else if (guns_device_switch_anm && strstr(guns_device_switch_anm, "_empty"))
+	{
+		char new_guns_aim_anm[256];
+		strcpy(new_guns_aim_anm, guns_device_switch_anm);
+		new_guns_aim_anm[strlen(guns_device_switch_anm) - strlen("_empty")] = '\0';
+
+		if (isHUDAnimationExist(new_guns_aim_anm))
+		{
+			PlayHUDMotionNew(new_guns_aim_anm, true, GetState());
+			return;
+		}
+	}
+}
+
+void CWeaponMagazined::PlayAnimLaserSwitchGripV()
+{
+	string_path guns_device_switch_anm{};
+	strconcat(sizeof(guns_device_switch_anm), guns_device_switch_anm, "anm_laser_grip_v", !IsLaserOn() ? "_on" : "_off", (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
+
+	if (isHUDAnimationExist(guns_device_switch_anm))
+	{
+		PlayHUDMotionNew(guns_device_switch_anm, true, GetState());
+		return;
+	}
+	else if (guns_device_switch_anm && strstr(guns_device_switch_anm, "_jammed"))
+	{
+		char new_guns_aim_anm[256];
+		strcpy(new_guns_aim_anm, guns_device_switch_anm);
+		new_guns_aim_anm[strlen(guns_device_switch_anm) - strlen("_jammed")] = '\0';
+
+		if (isHUDAnimationExist(new_guns_aim_anm))
+		{
+			PlayHUDMotionNew(new_guns_aim_anm, true, GetState());
+			return;
+		}
+	}
+	else if (guns_device_switch_anm && strstr(guns_device_switch_anm, "_empty"))
+	{
+		char new_guns_aim_anm[256];
+		strcpy(new_guns_aim_anm, guns_device_switch_anm);
+		new_guns_aim_anm[strlen(guns_device_switch_anm) - strlen("_empty")] = '\0';
+
+		if (isHUDAnimationExist(new_guns_aim_anm))
+		{
+			PlayHUDMotionNew(new_guns_aim_anm, true, GetState());
+			return;
+		}
+	}
+}
+
 void CWeaponMagazined::PlayAnimFlashlightSwitch()
 {
 	string_path guns_device_switch_anm{};
 	strconcat(sizeof(guns_device_switch_anm), guns_device_switch_anm, "anm_torch", !IsFlashlightOn() ? "_on" : "_off", (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
+
+	if (isHUDAnimationExist(guns_device_switch_anm))
+	{
+		PlayHUDMotionNew(guns_device_switch_anm, true, GetState());
+		return;
+	}
+	else if (guns_device_switch_anm && strstr(guns_device_switch_anm, "_jammed"))
+	{
+		char new_guns_aim_anm[256];
+		strcpy(new_guns_aim_anm, guns_device_switch_anm);
+		new_guns_aim_anm[strlen(guns_device_switch_anm) - strlen("_jammed")] = '\0';
+
+		if (isHUDAnimationExist(new_guns_aim_anm))
+		{
+			PlayHUDMotionNew(new_guns_aim_anm, true, GetState());
+			return;
+		}
+	}
+	else if (guns_device_switch_anm && strstr(guns_device_switch_anm, "_empty"))
+	{
+		char new_guns_aim_anm[256];
+		strcpy(new_guns_aim_anm, guns_device_switch_anm);
+		new_guns_aim_anm[strlen(guns_device_switch_anm) - strlen("_empty")] = '\0';
+
+		if (isHUDAnimationExist(new_guns_aim_anm))
+		{
+			PlayHUDMotionNew(new_guns_aim_anm, true, GetState());
+			return;
+		}
+	}
+}
+
+void CWeaponMagazined::PlayAnimFlashlightSwitchGrip()
+{
+	string_path guns_device_switch_anm{};
+	strconcat(sizeof(guns_device_switch_anm), guns_device_switch_anm, "anm_torch_grip_h", !IsFlashlightOn() ? "_on" : "_off", (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
+
+	if (isHUDAnimationExist(guns_device_switch_anm))
+	{
+		PlayHUDMotionNew(guns_device_switch_anm, true, GetState());
+		return;
+	}
+	else if (guns_device_switch_anm && strstr(guns_device_switch_anm, "_jammed"))
+	{
+		char new_guns_aim_anm[256];
+		strcpy(new_guns_aim_anm, guns_device_switch_anm);
+		new_guns_aim_anm[strlen(guns_device_switch_anm) - strlen("_jammed")] = '\0';
+
+		if (isHUDAnimationExist(new_guns_aim_anm))
+		{
+			PlayHUDMotionNew(new_guns_aim_anm, true, GetState());
+			return;
+		}
+	}
+	else if (guns_device_switch_anm && strstr(guns_device_switch_anm, "_empty"))
+	{
+		char new_guns_aim_anm[256];
+		strcpy(new_guns_aim_anm, guns_device_switch_anm);
+		new_guns_aim_anm[strlen(guns_device_switch_anm) - strlen("_empty")] = '\0';
+
+		if (isHUDAnimationExist(new_guns_aim_anm))
+		{
+			PlayHUDMotionNew(new_guns_aim_anm, true, GetState());
+			return;
+		}
+	}
+}
+
+void CWeaponMagazined::PlayAnimFlashlightSwitchGripV()
+{
+	string_path guns_device_switch_anm{};
+	strconcat(sizeof(guns_device_switch_anm), guns_device_switch_anm, "anm_torch_grip_v", !IsFlashlightOn() ? "_on" : "_off", (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
 
 	if (isHUDAnimationExist(guns_device_switch_anm))
 	{
@@ -1832,13 +2169,36 @@ void CWeaponMagazined::PlayReloadSound()
 		}
 		else
 		{
-			if (iAmmoElapsed == 0)
-				if (m_sounds.FindSoundItem("sndReloadEmpty", false) && psWpnAnimsFlag.test(ANM_RELOAD_EMPTY))
-					PlaySound("sndReloadEmpty", get_LastFP());
+			if (IsGripAttached())
+			{
+				if (iAmmoElapsed == 0)
+					if (m_sounds.FindSoundItem("sndReloadEmptyGripH", false) && psWpnAnimsFlag.test(ANM_RELOAD_EMPTY))
+						PlaySound("sndReloadEmptyGripH", get_LastFP());
+					else
+						PlaySound("sndReloadGripH", get_LastFP());
 				else
-					PlaySound("sndReload", get_LastFP());
+					PlaySound("sndReloadGripH", get_LastFP());
+			}
+			else if (IsGripvAttached())
+			{
+				if (iAmmoElapsed == 0)
+					if (m_sounds.FindSoundItem("sndReloadEmptyGripV", false) && psWpnAnimsFlag.test(ANM_RELOAD_EMPTY))
+						PlaySound("sndReloadEmptyGripV", get_LastFP());
+					else
+						PlaySound("sndReloadGripV", get_LastFP());
+				else
+					PlaySound("sndReloadGripV", get_LastFP());
+			}
 			else
+			{
+				if (iAmmoElapsed == 0)
+					if (m_sounds.FindSoundItem("sndReloadEmpty", false) && psWpnAnimsFlag.test(ANM_RELOAD_EMPTY))
+						PlaySound("sndReloadEmpty", get_LastFP());
+					else
+						PlaySound("sndReload", get_LastFP());
+				else
 				PlaySound("sndReload", get_LastFP());
+			}
 		}
 	}
 }
@@ -1874,25 +2234,82 @@ void CWeaponMagazined::switch2_Unmis()
 
 	if (m_sounds_enabled)
 	{
-		if ((iAmmoElapsed == 1) && m_sounds.FindSoundItem("sndReloadMisfireEmpty", false) && isHUDAnimationExist("anm_reload_misfire_empty"))
-			PlaySound("sndReloadMisfireEmpty", get_LastFP());
-		else if ((iAmmoElapsed == 1) && m_sounds.FindSoundItem("sndReloadJammedEmpty", false) && isHUDAnimationExist("anm_reload_jammed_empty"))
-			PlaySound("sndReloadJammedEmpty", get_LastFP());
-		else if (m_sounds.FindSoundItem("sndReloadMisfire", false) && isHUDAnimationExist("anm_reload_misfire"))
-			PlaySound("sndReloadMisfire", get_LastFP());
-		else if (m_sounds.FindSoundItem("sndReloadJammed", false) && isHUDAnimationExist("anm_reload_jammed"))
-			PlaySound("sndReloadJammed", get_LastFP());
+		if (IsGripAttached())
+		{
+			if ((iAmmoElapsed == 1) && m_sounds.FindSoundItem("sndReloadMisfireEmptyGripH", false) && isHUDAnimationExist("anm_reload_misfire_empty_grip_h"))
+				PlaySound("sndReloadMisfireEmptyGripH", get_LastFP());
+			else if ((iAmmoElapsed == 1) && m_sounds.FindSoundItem("sndReloadJammedEmptyGripH", false) && isHUDAnimationExist("anm_reload_jammed_empty_grip_h"))
+				PlaySound("sndReloadJammedEmptyGripH", get_LastFP());
+			else if (m_sounds.FindSoundItem("sndReloadMisfireGripH", false) && isHUDAnimationExist("anm_reload_misfire_grip_h"))
+				PlaySound("sndReloadMisfireGripH", get_LastFP());
+			else if (m_sounds.FindSoundItem("sndReloadJammedGripH", false) && isHUDAnimationExist("anm_reload_jammed_grip_h"))
+				PlaySound("sndReloadJammedGripH", get_LastFP());
+			else
+				PlayReloadSound();
+		}
+		else if (IsGripvAttached()) 
+		{
+			if ((iAmmoElapsed == 1) && m_sounds.FindSoundItem("sndReloadMisfireEmptyGripV", false) && isHUDAnimationExist("anm_reload_misfire_empty_grip_v"))
+				PlaySound("sndReloadMisfireEmptyGripV", get_LastFP());
+			else if ((iAmmoElapsed == 1) && m_sounds.FindSoundItem("sndReloadJammedEmptyGripV", false) && isHUDAnimationExist("anm_reload_jammed_empty_grip_v"))
+				PlaySound("sndReloadJammedEmptyGripV", get_LastFP());
+			else if (m_sounds.FindSoundItem("sndReloadMisfire", false) && isHUDAnimationExist("anm_reload_misfire_grip_v"))
+				PlaySound("sndReloadMisfireGripV", get_LastFP());
+			else if (m_sounds.FindSoundItem("sndReloadJammedGripV", false) && isHUDAnimationExist("anm_reload_jammed_grip_v"))
+				PlaySound("sndReloadJammedGripV", get_LastFP());
+			else
+				PlayReloadSound();
+		}
 		else
-			PlayReloadSound();
+		{
+			if ((iAmmoElapsed == 1) && m_sounds.FindSoundItem("sndReloadMisfireEmpty", false) && isHUDAnimationExist("anm_reload_misfire_empty"))
+				PlaySound("sndReloadMisfireEmpty", get_LastFP());
+			else if ((iAmmoElapsed == 1) && m_sounds.FindSoundItem("sndReloadJammedEmpty", false) && isHUDAnimationExist("anm_reload_jammed_empty"))
+				PlaySound("sndReloadJammedEmpty", get_LastFP());
+			else if (m_sounds.FindSoundItem("sndReloadMisfire", false) && isHUDAnimationExist("anm_reload_misfire"))
+				PlaySound("sndReloadMisfire", get_LastFP());
+			else if (m_sounds.FindSoundItem("sndReloadJammed", false) && isHUDAnimationExist("anm_reload_jammed"))
+				PlaySound("sndReloadJammed", get_LastFP());
+			else
+				PlayReloadSound();
+		}
 	}
 
 	string128 anmUnmisName{};
-	strconcat(sizeof(anmUnmisName), anmUnmisName, "anm_reload", isHUDAnimationExist("anm_reload_misfire") ? "_misfire" : "_jammed", (iAmmoElapsed == 1) ? "_empty" : "");
+
+	if (IsGripAttached())
+	{
+	//	Msg("RELOAD ANIMATION: GRIP");
+
+	strconcat(sizeof(anmUnmisName), anmUnmisName, "anm_reload_grip_h", isHUDAnimationExist("anm_reload_grip_h_misfire") ? "_misfire" : "_jammed", (iAmmoElapsed == 1) ? "_empty" : "");
 
 	if (isHUDAnimationExist(anmUnmisName))
-		PlayHUDMotionIfExists({ anmUnmisName, "anm_reload" }, true, GetState());
+		PlayHUDMotionIfExists({ anmUnmisName, "anm_reload_grip_h" }, true, GetState());
 	else
 		PlayAnimReload();
+	}
+	else if (IsGripvAttached())
+	{
+		//	Msg("RELOAD ANIMATION: GRIP V");
+
+		strconcat(sizeof(anmUnmisName), anmUnmisName, "anm_reload_grip_v", isHUDAnimationExist("anm_reload_grip_v_misfire") ? "_misfire" : "_jammed", (iAmmoElapsed == 1) ? "_empty" : "");
+
+		if (isHUDAnimationExist(anmUnmisName))
+			PlayHUDMotionIfExists({ anmUnmisName, "anm_reload_grip_v" }, true, GetState());
+		else
+			PlayAnimReload();
+	}
+	else
+	{
+	//	Msg("RELOAD ANIMATION: NO GRIP");
+
+		strconcat(sizeof(anmUnmisName), anmUnmisName, "anm_reload", isHUDAnimationExist("anm_reload_misfire") ? "_misfire" : "_jammed", (iAmmoElapsed == 1) ? "_empty" : "");
+
+		if (isHUDAnimationExist(anmUnmisName))
+			PlayHUDMotionIfExists({ anmUnmisName, "anm_reload" }, true, GetState());
+		else
+			PlayAnimReload();
+	}
 }
 
 void CWeaponMagazined::switch2_Hidden()
@@ -2014,6 +2431,9 @@ bool CWeaponMagazined::CanAttach(PIItem pIItem)
 	CGrenadeLauncher*	pGrenadeLauncher = smart_cast<CGrenadeLauncher*>(pIItem);
 	CLaserDesignator*	pLaser = smart_cast<CLaserDesignator*>(pIItem);
 	CTacticalTorch*		pTacticalTorch = smart_cast<CTacticalTorch*>(pIItem);
+	CStock*				pStock = smart_cast<CStock*>(pIItem);
+	CHorGrip*			pHGrip = smart_cast<CHorGrip*>(pIItem);
+	CVerGrip*			pVGrip = smart_cast<CVerGrip*>(pIItem);
 
 	if (pScope &&
 		m_eScopeStatus == ALife::eAddonAttachable &&
@@ -2036,62 +2456,81 @@ bool CWeaponMagazined::CanAttach(PIItem pIItem)
 		}
 		return false;
 	}
-	else if(pSilencer &&
-			m_eSilencerStatus == ALife::eAddonAttachable &&
-			(m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonSilencer) == 0 &&
-			(m_sSilencerName == pIItem->object().cNameSect()) )
-			{
-				if (m_bBlockSilencerWithGL && IsGrenadeLauncherAttached())
-					return false;
+	else if(pSilencer && m_eSilencerStatus == ALife::eAddonAttachable && (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonSilencer) == 0 && (m_sSilencerName == pIItem->object().cNameSect()) )
+	{
+		if (m_bBlockSilencerWithGL && IsGrenadeLauncherAttached())
+			return false;
 
+		return true;
+	}
+	else if (pGrenadeLauncher && m_eGrenadeLauncherStatus == ALife::eAddonAttachable && (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher) == 0 && (m_sGrenadeLauncherName  == pIItem->object().cNameSect()) )
+	{
+		if (IsGripvAttached() || IsGripAttached()) // !!! NEED CHECK LATER NEED GL DEACTIVATED WHEN GRIP IS INSTALLED
+			return false;
+
+		return true;
+	}
+	else if (pHGrip && m_eGripStatus == ALife::eAddonAttachable && (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonGrip) == 0 && (m_sGripName == pIItem->object().cNameSect()))
+	{
+		if (IsGripAttached() || IsGrenadeLauncherAttached())
+			return false;
+
+		return true;
+	}
+	else if (pVGrip && m_eGripvStatus == ALife::eAddonAttachable && (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonGripv) == 0 && (m_sGripvName == pIItem->object().cNameSect()))
+	{
+		if (IsGripAttached() || IsGrenadeLauncherAttached())
+			return false;
+
+		return true;
+	}
+	else if (pStock && m_eStockStatus == ALife::eAddonAttachable && (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonStock) == 0)
+	{
+		if (m_bStockBlockedByAddon)
+			return false;
+
+		for (const auto& stock_sect : m_availableStocks)
+		{
+			shared_str stock_name = pSettings->r_string(stock_sect, "stock_name");
+			if (stock_name == pIItem->object().cNameSect())
+			{
 				return true;
 			}
-	else if (pGrenadeLauncher &&
-			m_eGrenadeLauncherStatus == ALife::eAddonAttachable &&
-			(m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher) == 0 &&
-			(m_sGrenadeLauncherName  == pIItem->object().cNameSect()) )
-			{
-				if (m_bBlockSilencerWithGL && IsSilencerAttached())
-					return false;
+		}
 
+		return false;
+	}
+	else if (pLaser && m_eLaserDesignatorStatus == ALife::eAddonAttachable && (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator) == 0)
+	{
+		if (m_bLaserBlockedByAddon)
+			return false;
+
+		for (const auto& laser_sect : m_availableLasers)
+		{
+			shared_str laser_name = pSettings->r_string(laser_sect, "laser_designator_name");
+			if (laser_name == pIItem->object().cNameSect())
+			{
 				return true;
 			}
-	else if (pLaser &&
-			m_eLaserDesignatorStatus == ALife::eAddonAttachable &&
-			(m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator) == 0)
+		}
+
+		return false;
+	}
+	else if (pTacticalTorch && m_eTacticalTorchStatus == ALife::eAddonAttachable && (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch) == 0)
+	{
+		if (m_bFlashlightBlockedByAddon)
+			return false;
+
+		for (const auto& flashlight_sect : m_availableFlashlights)
+		{
+			shared_str flashlight_name = pSettings->r_string(flashlight_sect, "tactical_torch_name");
+			if (flashlight_name == pIItem->object().cNameSect())
 			{
-				if (m_bLaserBlockedByAddon)
-					return false;
-
-				for (const auto& laser_sect : m_availableLasers)
-				{
-					shared_str laser_name = pSettings->r_string(laser_sect, "laser_designator_name");
-					if (laser_name == pIItem->object().cNameSect())
-					{
-						return true;
-					}
-				}
-
-				return false;
+				return true;
 			}
-	else if (pTacticalTorch &&
-			m_eTacticalTorchStatus == ALife::eAddonAttachable &&
-			(m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch) == 0)
-			{
-				if (m_bFlashlightBlockedByAddon)
-					return false;
-
-				for (const auto& flashlight_sect : m_availableFlashlights)
-				{
-					shared_str flashlight_name = pSettings->r_string(flashlight_sect, "tactical_torch_name");
-					if (flashlight_name == pIItem->object().cNameSect())
-					{
-						return true;
-					}
-				}
-
-				return false;
-			}
+		}
+		return false;
+	}
 	else
 		return inherited::CanAttach(pIItem);
 }
@@ -2127,6 +2566,18 @@ bool CWeaponMagazined::CanDetach(const char* item_section_name)
 		0 != (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher) &&
 		(m_sGrenadeLauncherName == item_section_name))
 		return true;
+	else if (m_eGripStatus == ALife::eAddonAttachable &&
+		0 != (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonGrip) &&
+		(m_sGripName == item_section_name))
+		return true;
+	else if (m_eGripvStatus == ALife::eAddonAttachable &&
+		0 != (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonGripv) &&
+		(m_sGripvName == item_section_name))
+		return true;
+	else if (m_eStockStatus == ALife::eAddonAttachable &&
+		0 != (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonStock) &&
+		(m_sStockName == item_section_name))
+		return true;
 	else if (m_eLaserDesignatorStatus == ALife::eAddonAttachable &&
 		0 != (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator) &&
 		(m_sLaserName == item_section_name))
@@ -2148,6 +2599,9 @@ bool CWeaponMagazined::Attach(PIItem pIItem, bool b_send_event)
 	CGrenadeLauncher*	pGrenadeLauncher = smart_cast<CGrenadeLauncher*>(pIItem);
 	CLaserDesignator*	pLaser = smart_cast<CLaserDesignator*>(pIItem);
 	CTacticalTorch*		pTacticalTorch = smart_cast<CTacticalTorch*>(pIItem);
+	CStock*				pStock = smart_cast<CStock*>(pIItem);
+	CHorGrip*			pHGrip = smart_cast<CHorGrip*>(pIItem);
+	CVerGrip*			pVGrip = smart_cast<CVerGrip*>(pIItem);
 
 	if(pScope &&
 		m_eScopeStatus == ALife::eAddonAttachable &&
@@ -2171,21 +2625,57 @@ bool CWeaponMagazined::Attach(PIItem pIItem, bool b_send_event)
 		m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonScope;
 		result = true;
 	}
-	else if(pSilencer &&
-		m_eSilencerStatus == ALife::eAddonAttachable &&
-		(m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonSilencer) == 0 &&
-		(m_sSilencerName == pIItem->object().cNameSect()))
+	else if(pSilencer && m_eSilencerStatus == ALife::eAddonAttachable && (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonSilencer) == 0 && (m_sSilencerName == pIItem->object().cNameSect()))
 	{
 		m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonSilencer;
 		result = true;
 	}
-	else if(pGrenadeLauncher &&
-		m_eGrenadeLauncherStatus == ALife::eAddonAttachable &&
-		(m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher) == 0 &&
-		(m_sGrenadeLauncherName == pIItem->object().cNameSect()))
+	else if(pGrenadeLauncher && m_eGrenadeLauncherStatus == ALife::eAddonAttachable && (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher) == 0 && (m_sGrenadeLauncherName == pIItem->object().cNameSect()))
 	{
 		m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher;
 		result = true;
+	}
+	else if (pHGrip && m_eGripStatus == ALife::eAddonAttachable && (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonGrip) == 0 && (m_sGripName == pIItem->object().cNameSect()))
+	{
+		m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonGrip;
+		result = true;
+	}
+	else if (pVGrip && m_eGripvStatus == ALife::eAddonAttachable && (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonGripv) == 0 && (m_sGripvName == pIItem->object().cNameSect()))
+	{
+		m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonGripv;
+		result = true;
+	}
+	else if (pStock && m_eStockStatus == ALife::eAddonAttachable && (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonStock) == 0)
+	{
+		bool bCompatibleStock = false;
+
+		if (m_sStockName.size() && m_sStockName == pIItem->object().cNameSect())
+		{
+			bCompatibleStock = true;
+		}
+		else
+		{
+			for (const auto& stock_sect : m_availableStocks)
+			{
+				shared_str stock_name = pSettings->r_string(stock_sect, "stock_name");
+				if (stock_name == pIItem->object().cNameSect())
+				{
+					bCompatibleStock = true;
+					m_sStockAttachSection = stock_sect;
+					m_sStockName = stock_name;
+
+					m_iStockX = pSettings->r_s32(stock_sect, "stock_x");
+					m_iStockY = pSettings->r_s32(stock_sect, "stock_y");
+					break;
+				}
+			}
+		}
+
+		if (bCompatibleStock)
+		{
+			m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonStock;
+			result = true;
+		}
 	}
 	else if (pLaser && m_eLaserDesignatorStatus == ALife::eAddonAttachable && (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator) == 0)
 	{
@@ -2309,8 +2799,7 @@ bool CWeaponMagazined::DetachScope(const char* item_section_name, bool b_spawn_i
 
 bool CWeaponMagazined::Detach(const char* item_section_name, bool b_spawn_item)
 {
-	if(		m_eScopeStatus == ALife::eAddonAttachable &&
-			DetachScope(item_section_name, b_spawn_item))
+	if(		m_eScopeStatus == ALife::eAddonAttachable && DetachScope(item_section_name, b_spawn_item))
 	{
 		if ((m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonScope) == 0)
 		{
@@ -2327,8 +2816,7 @@ bool CWeaponMagazined::Detach(const char* item_section_name, bool b_spawn_item)
 
 		return CInventoryItemObject::Detach(item_section_name, b_spawn_item);
 	}
-	else if(m_eSilencerStatus == ALife::eAddonAttachable &&
-			(m_sSilencerName == item_section_name))
+	else if(m_eSilencerStatus == ALife::eAddonAttachable && (m_sSilencerName == item_section_name))
 	{
 		if ((m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonSilencer) == 0)
 		{
@@ -2341,8 +2829,7 @@ bool CWeaponMagazined::Detach(const char* item_section_name, bool b_spawn_item)
 		InitAddons();
 		return CInventoryItemObject::Detach(item_section_name, b_spawn_item);
 	}
-	else if(m_eGrenadeLauncherStatus == ALife::eAddonAttachable &&
-			(m_sGrenadeLauncherName == item_section_name))
+	else if(m_eGrenadeLauncherStatus == ALife::eAddonAttachable && (m_sGrenadeLauncherName == item_section_name))
 	{
 		if ((m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher) == 0)
 		{
@@ -2355,8 +2842,46 @@ bool CWeaponMagazined::Detach(const char* item_section_name, bool b_spawn_item)
 		InitAddons();
 		return CInventoryItemObject::Detach(item_section_name, b_spawn_item);
 	}
-	else if(m_eLaserDesignatorStatus == ALife::eAddonAttachable &&
-			(m_sLaserName == item_section_name))
+	else if (m_eGripStatus == ALife::eAddonAttachable && (m_sGripName == item_section_name))
+	{
+		if ((m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonGrip) == 0)
+		{
+			Msg("ERROR: horizontal grip addon already detached.");
+			return true;
+		}
+		m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonGrip;
+
+		UpdateAddonsVisibility();
+		InitAddons();
+		return CInventoryItemObject::Detach(item_section_name, b_spawn_item);
+	}
+	else if (m_eGripvStatus == ALife::eAddonAttachable && (m_sGripvName == item_section_name))
+	{
+		if ((m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonGripv) == 0)
+		{
+			Msg("ERROR: vertical grip addon already detached.");
+			return true;
+		}
+		m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonGripv;
+
+		UpdateAddonsVisibility();
+		InitAddons();
+		return CInventoryItemObject::Detach(item_section_name, b_spawn_item);
+	}
+	else if (m_eStockStatus == ALife::eAddonAttachable && (m_sStockName == item_section_name))
+	{
+		if ((m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonStock) == 0)
+		{
+			Msg("ERROR: stock addon already detached.");
+			return true;
+		}
+		m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonStock;
+
+		UpdateAddonsVisibility();
+		InitAddons();
+		return CInventoryItemObject::Detach(item_section_name, b_spawn_item);
+	}
+	else if(m_eLaserDesignatorStatus == ALife::eAddonAttachable && (m_sLaserName == item_section_name))
 	{
 		if ((m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator) == 0)
 		{
@@ -2369,8 +2894,7 @@ bool CWeaponMagazined::Detach(const char* item_section_name, bool b_spawn_item)
 		InitAddons();
 		return CInventoryItemObject::Detach(item_section_name, b_spawn_item);
 	}
-	else if(m_eTacticalTorchStatus == ALife::eAddonAttachable &&
-		(m_sTacticalTorchName == item_section_name))
+	else if(m_eTacticalTorchStatus == ALife::eAddonAttachable && (m_sTacticalTorchName == item_section_name))
 	{
 		if ((m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch) == 0)
 		{
@@ -2494,6 +3018,30 @@ void CWeaponMagazined::InitAddons()
 			WeaponAttach().RemoveAttach(m_sGrenadeLauncherAttachSection, m_weapon_attaches);
 	}
 
+	if (m_sGripAttachSection.size() && pSettings->line_exist(m_sGripAttachSection, "attach_hud_visual"))
+	{
+		if (IsGripAttached())
+			WeaponAttach().CreateAttach(m_sGripAttachSection, m_weapon_attaches);
+		else
+			WeaponAttach().RemoveAttach(m_sGripAttachSection, m_weapon_attaches);
+	}
+
+	if (m_sGripvAttachSection.size() && pSettings->line_exist(m_sGripvAttachSection, "attach_hud_visual"))
+	{
+		if (IsGripvAttached())
+			WeaponAttach().CreateAttach(m_sGripvAttachSection, m_weapon_attaches);
+		else
+			WeaponAttach().RemoveAttach(m_sGripvAttachSection, m_weapon_attaches);
+	}
+
+	if (m_sStockAttachSection.size() && pSettings->line_exist(m_sStockAttachSection, "attach_hud_visual"))
+	{
+		if (IsStockAttached())
+			WeaponAttach().CreateAttach(m_sStockAttachSection, m_weapon_attaches);
+		else
+			WeaponAttach().RemoveAttach(m_sStockAttachSection, m_weapon_attaches);
+	}
+
 	if (m_sLaserAttachSection.size() && pSettings->line_exist(m_sLaserAttachSection, "attach_hud_visual"))
 	{
 		if (IsLaserAttached())
@@ -2558,12 +3106,33 @@ void CWeaponMagazined::PlayAnimShow()
 	UpdateHudAltAimHud();
 	UpdateHudAltAimHudMode2();
 
-	if (IsMisfire() && isHUDAnimationExist("anm_show_jammed"))
-		PlayHUDMotion("anm_show_jammed", false, this, GetState());
-	else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_SHOW_EMPTY))
-		PlayHUDMotion("anm_show_empty", FALSE, this, GetState());
+	if (IsGripAttached())
+	{
+		if (IsMisfire() && isHUDAnimationExist("anm_show_grip_h_jammed"))
+			PlayHUDMotion("anm_show_grip_h_jammed", false, this, GetState());
+		else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_SHOW_EMPTY))
+			PlayHUDMotion("anm_show_grip_h_empty", FALSE, this, GetState());
+		else
+			PlayHUDMotion("anm_show_grip_h", FALSE, this, GetState());
+	}
+	else if (IsGripvAttached())
+	{
+		if (IsMisfire() && isHUDAnimationExist("anm_show_grip_v_jammed"))
+			PlayHUDMotion("anm_show_grip_v_jammed", false, this, GetState());
+		else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_SHOW_EMPTY))
+			PlayHUDMotion("anm_show_grip_v_empty", FALSE, this, GetState());
+		else
+			PlayHUDMotion("anm_show_grip_v", FALSE, this, GetState());
+	}
 	else
-		PlayHUDMotion("anm_show", FALSE, this, GetState());
+	{
+		if (IsMisfire() && isHUDAnimationExist("anm_show_jammed"))
+			PlayHUDMotion("anm_show_jammed", false, this, GetState());
+		else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_SHOW_EMPTY))
+			PlayHUDMotion("anm_show_empty", FALSE, this, GetState());
+		else
+			PlayHUDMotion("anm_show", FALSE, this, GetState());
+	}
 }
 
 void CWeaponMagazined::PlayAnimHide()
@@ -2573,12 +3142,34 @@ void CWeaponMagazined::PlayAnimHide()
 	UpdateHudAltAimHud();
 	UpdateHudAltAimHudMode2();
 
-	if (IsMisfire() && isHUDAnimationExist("anm_hide_jammed"))
-		PlayHUDMotion("anm_hide_jammed", true, this, GetState());
-	else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_HIDE_EMPTY))
-		PlayHUDMotion("anm_hide_empty", TRUE, this, GetState());
+	if (IsGripAttached())
+	{
+		if (IsMisfire() && isHUDAnimationExist("anm_hide_grip_h_jammed"))
+			PlayHUDMotion("anm_hide_grip_h_jammed", true, this, GetState());
+		else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_HIDE_EMPTY))
+			PlayHUDMotion("anm_hide_grip_h_empty", TRUE, this, GetState());
+		else
+			PlayHUDMotion("anm_hide_grip_h", TRUE, this, GetState());
+	}
+	else if (IsGripvAttached())
+	{
+		if (IsMisfire() && isHUDAnimationExist("anm_hide_grip_v_jammed"))
+			PlayHUDMotion("anm_hide_grip_v_jammed", true, this, GetState());
+		else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_HIDE_EMPTY))
+			PlayHUDMotion("anm_hide_grip_v_empty", TRUE, this, GetState());
+		else
+			PlayHUDMotion("anm_hide_grip_v", TRUE, this, GetState());
+	}
 	else
-		PlayHUDMotion("anm_hide", TRUE, this, GetState());
+	{
+		if (IsMisfire() && isHUDAnimationExist("anm_hide_jammed"))
+			PlayHUDMotion("anm_hide_jammed", true, this, GetState());
+		else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_HIDE_EMPTY))
+			PlayHUDMotion("anm_hide_empty", TRUE, this, GetState());
+		else
+			PlayHUDMotion("anm_hide", TRUE, this, GetState());
+	}
+
 }
 
 void CWeaponMagazined::PlayAnimBore()
@@ -2588,22 +3179,65 @@ void CWeaponMagazined::PlayAnimBore()
 
 void CWeaponMagazined::PlayAnimIdleSprint()
 {
-	if (IsMisfire() && isHUDAnimationExist("anm_idle_sprint_jammed"))
-		PlayHUDMotion("anm_idle_sprint_jammed", true, nullptr, GetState());
-	else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_SPRINT_EMPTY))
-		PlayHUDMotion("anm_idle_sprint_empty", TRUE, NULL, GetState());
+	if (IsGripAttached())
+	{
+		if (IsMisfire() && isHUDAnimationExist("anm_idle_sprint_grip_h_jammed"))
+			PlayHUDMotion("anm_idle_sprint_grip_h_jammed", true, nullptr, GetState());
+		else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_SPRINT_EMPTY))
+			PlayHUDMotion("anm_idle_sprint_grip_h_empty", TRUE, NULL, GetState());
+		else
+			inherited::PlayAnimIdleSprint();
+	}
+	else if (IsGripvAttached())
+	{
+		if (IsMisfire() && isHUDAnimationExist("anm_idle_sprint_grip_v_jammed"))
+			PlayHUDMotion("anm_idle_sprint_grip_v_jammed", true, nullptr, GetState());
+		else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_SPRINT_EMPTY))
+			PlayHUDMotion("anm_idle_sprint_grip_v_empty", TRUE, NULL, GetState());
+		else
+			inherited::PlayAnimIdleSprint();
+	}
 	else
-		inherited::PlayAnimIdleSprint();
+	{
+		if (IsMisfire() && isHUDAnimationExist("anm_idle_sprint_jammed"))
+			PlayHUDMotion("anm_idle_sprint_jammed", true, nullptr, GetState());
+		else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_SPRINT_EMPTY))
+			PlayHUDMotion("anm_idle_sprint_empty", TRUE, NULL, GetState());
+		else
+			inherited::PlayAnimIdleSprint();
+	}
+
 }
 
 void CWeaponMagazined::PlayAnimIdleMoving()
 {
-	if (IsMisfire() && isHUDAnimationExist("anm_idle_moving_jammed"))
-		PlayHUDMotion("anm_idle_moving_jammed", true, nullptr, GetState());
-	else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_MOVING_EMPTY))
-		PlayHUDMotion("anm_idle_moving_empty", TRUE, NULL, GetState());
+	if (IsGripAttached())
+	{
+		if (IsMisfire() && isHUDAnimationExist("anm_idle_moving_grip_h_jammed"))
+			PlayHUDMotion("anm_idle_moving_grip_h_jammed", true, nullptr, GetState());
+		else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_MOVING_EMPTY))
+			PlayHUDMotion("anm_idle_moving_grip_h_empty", TRUE, NULL, GetState());
+		else
+			inherited::PlayAnimIdleMoving();
+	}
+	else if (IsGripvAttached())
+	{
+		if (IsMisfire() && isHUDAnimationExist("anm_idle_moving_grip_v_jammed"))
+			PlayHUDMotion("anm_idle_moving_grip_v_jammed", true, nullptr, GetState());
+		else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_MOVING_EMPTY))
+			PlayHUDMotion("anm_idle_moving_grip_v_empty", TRUE, NULL, GetState());
+		else
+			inherited::PlayAnimIdleMoving();
+	}
 	else
-		inherited::PlayAnimIdleMoving();
+	{
+		if (IsMisfire() && isHUDAnimationExist("anm_idle_moving_jammed"))
+			PlayHUDMotion("anm_idle_moving_jammed", true, nullptr, GetState());
+		else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_MOVING_EMPTY))
+			PlayHUDMotion("anm_idle_moving_empty", TRUE, NULL, GetState());
+		else
+			inherited::PlayAnimIdleMoving();
+	}
 }
 
 void CWeaponMagazined::PlayAnimReload()
@@ -2622,10 +3256,30 @@ void CWeaponMagazined::PlayAnimReload()
 	}
 	else
 	{
-		if (iAmmoElapsed == 0)
-			PlayHUDMotionIfExists({ "anm_reload_empty", "anm_reload" }, true, GetState());
+		if (IsGripAttached())
+		{
+			//Msg("RELOAD ANIMATION: GRIP");
+			if (iAmmoElapsed == 0)
+				PlayHUDMotionIfExists({ "anm_reload_grip_h_empty", "anm_reload_grip_h" }, true, GetState());
+			else
+				PlayHUDMotion("anm_reload_grip_h", TRUE, this, GetState());
+		}
+		else if (IsGripvAttached())
+		{
+			//Msg("RELOAD ANIMATION: GRIP");
+			if (iAmmoElapsed == 0)
+				PlayHUDMotionIfExists({ "anm_reload_grip_v_empty", "anm_reload_grip_v" }, true, GetState());
+			else
+				PlayHUDMotion("anm_reload_grip_v", TRUE, this, GetState());
+		}
 		else
-			PlayHUDMotion("anm_reload", TRUE, this, GetState());
+		{
+			//Msg("RELOAD ANIMATION: NO GRIP");
+			if (iAmmoElapsed == 0)
+				PlayHUDMotionIfExists({ "anm_reload_empty", "anm_reload" }, true, GetState());
+			else
+				PlayHUDMotion("anm_reload", TRUE, this, GetState());
+		}
 	}
 }
 
@@ -2731,6 +3385,73 @@ void CWeaponMagazined::PlayAnimAim()
 		det->PlayDetectorAnimation(true, eDetAction, GenerateAimAnimName("anm_idle_aim"));
 }
 
+
+void CWeaponMagazined::PlayAnimAimHorGrip()
+{
+	if (m_sounds.FindSoundItem("sndSprintStart", false))
+		m_sounds.StopSound("sndSprintIdle");
+
+	auto det = smart_cast<CCustomDetector*>(g_actor->inventory().ItemFromSlot(DETECTOR_SLOT));
+
+	//Msg("AIM HORIZONTAL GRIP");
+
+	if (const char* guns_aim_anm = GetAnimAimName())
+	{
+		if (isHUDAnimationExist(guns_aim_anm))
+		{
+			PlayHUDMotionNew(guns_aim_anm, true, GetState());
+
+			if (g_actor->IsDetectorActive())
+				det->PlayDetectorAnimation(true, eDetAction, GenerateAimAnimName("anm_idle_aim_moving_grip_h"));
+
+			return;
+		}
+	}
+
+	if (IsMisfire() && isHUDAnimationExist("anm_idle_aim_jammed_grip_h"))
+		PlayHUDMotion("anm_idle_aim_jammed_grip_h", true, nullptr, GetState());
+	else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_AIM_EMPTY))
+		PlayHUDMotion("anm_idle_aim_empty_grip_h", TRUE, NULL, GetState());
+	else
+		PlayHUDMotion("anm_idle_aim_grip_h", TRUE, NULL, GetState());
+
+	if (g_actor->IsDetectorActive())
+		det->PlayDetectorAnimation(true, eDetAction, GenerateAimAnimName("anm_idle_aim_grip_h"));
+}
+
+void CWeaponMagazined::PlayAnimAimVerGrip()
+{
+	if (m_sounds.FindSoundItem("sndSprintStart", false))
+		m_sounds.StopSound("sndSprintIdle");
+
+	auto det = smart_cast<CCustomDetector*>(g_actor->inventory().ItemFromSlot(DETECTOR_SLOT));
+
+	//Msg("AIM VERTICAL GRIP");
+
+	if (const char* guns_aim_anm = GetAnimAimName())
+	{
+		if (isHUDAnimationExist(guns_aim_anm))
+		{
+			PlayHUDMotionNew(guns_aim_anm, true, GetState());
+
+			if (g_actor->IsDetectorActive())
+				det->PlayDetectorAnimation(true, eDetAction, GenerateAimAnimName("anm_idle_aim_moving_grip_v"));
+
+			return;
+		}
+	}
+
+	if (IsMisfire() && isHUDAnimationExist("anm_idle_aim_jammed_grip_v"))
+		PlayHUDMotion("anm_idle_aim_jammed_grip_v", true, nullptr, GetState());
+	else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_AIM_EMPTY))
+		PlayHUDMotion("anm_idle_aim_empty_grip_v", TRUE, NULL, GetState());
+	else
+		PlayHUDMotion("anm_idle_aim_grip_v", TRUE, NULL, GetState());
+
+	if (g_actor->IsDetectorActive())
+		det->PlayDetectorAnimation(true, eDetAction, GenerateAimAnimName("anm_idle_aim_grip_v"));
+}
+
 bool CWeaponMagazined::PlayAnimAimEnd()
 {
 	if (auto det = smart_cast<CCustomDetector*>(g_actor->inventory().ItemFromSlot(DETECTOR_SLOT)); g_actor->IsDetectorActive())
@@ -2782,11 +3503,50 @@ void CWeaponMagazined::PlayAnimIdle()
 		return;
 
 	if (IsZoomed())
-		PlayAnimAim();
+	{
+		if (IsGripAttached())
+		{
+			PlayAnimAimHorGrip();
+		}
+		else if(IsGripvAttached())
+		{
+			PlayAnimAimVerGrip();
+		}
+		else
+		{
+			PlayAnimAim();
+		}
+	}
 	else if (IsMisfire() && isHUDAnimationExist("anm_idle_jammed") && !TryPlayAnimIdle() && !IsRotatingFromZoom())
-		PlayHUDMotion("anm_idle_jammed", true, nullptr, GetState());
+	{
+		if (IsGripAttached())
+		{
+			PlayHUDMotion("anm_idle_jammed_grip_h", true, nullptr, GetState());
+		}
+		else if (IsGripvAttached())
+		{
+			PlayHUDMotion("anm_idle_jammed_grip_v", true, nullptr, GetState());
+		}
+		else
+		{
+			PlayHUDMotion("anm_idle_jammed", true, nullptr, GetState());
+		}
+	}
 	else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_IDLE_EMPTY) && !TryPlayAnimIdle() && !IsRotatingFromZoom())
-		PlayHUDMotion("anm_idle_empty", TRUE, NULL, GetState());
+	{
+		if (IsGripAttached())
+		{
+			PlayHUDMotion("anm_idle_empty_grip_h", TRUE, NULL, GetState());
+		}
+		else if (IsGripvAttached())
+		{
+			PlayHUDMotion("anm_idle_empty_grip_v", TRUE, NULL, GetState());
+		}
+		else
+		{
+			PlayHUDMotion("anm_idle_empty", TRUE, NULL, GetState());
+		}
+	}
 	else
 	{
 		if (IsRotatingFromZoom())
@@ -2806,20 +3566,74 @@ void CWeaponMagazined::PlayAnimShoot()
 		return;
 
 	string256 guns_det_shoot_anm{};
-	strconcat(sizeof(guns_det_shoot_anm), guns_det_shoot_anm, "anm_shoot", (IsZoomed() && !IsRotatingToZoom()) ? "_aim" : "");
+	strconcat(sizeof(guns_det_shoot_anm), guns_det_shoot_anm, "anm_shots", (IsZoomed() && !IsRotatingToZoom()) ? "_aim" : "");
 
 	if (auto det = smart_cast<CCustomDetector*>(g_actor->inventory().ItemFromSlot(DETECTOR_SLOT)); g_actor->IsDetectorActive())
 		det->PlayDetectorAnimation(true, eDetAction, guns_det_shoot_anm);
 
 	string_path guns_shoot_anm{};
-	strconcat(sizeof(guns_shoot_anm), guns_shoot_anm, (isHUDAnimationExist("anm_shoot") ? "anm_shoot" : "anm_shots"), (IsZoomed() && !IsRotatingToZoom()) ? (IsScopeAttached() && m_bUseAimScopeAnims ? "_aim_scope" : "_aim") : "", (iAmmoElapsed == 1) ? "_last" : "", (IsMisfire() ? "_jammed" : IsMagazineEmpty() ? "_empty" : ""), (IsSilencerAttached() && m_bUseSilShotAnim) ? "_sil" : "");
+	strconcat(sizeof(guns_shoot_anm), guns_shoot_anm, (isHUDAnimationExist("anm_shots") ? "anm_shots" : ""), (IsZoomed() && !IsRotatingToZoom()) ? (IsScopeAttached() && m_bUseAimScopeAnims ? "_aim_scope" : "_aim") : "", (iAmmoElapsed == 1) ? "_last" : "", (IsMisfire() ? "_jammed" : IsMagazineEmpty() ? "_empty" : ""), (IsSilencerAttached() && m_bUseSilShotAnim) ? "_sil" : "");
 
 	//HUD_VisualBulletUpdate();
 
+	//Msg("SHOOTING WITHout ATTACHED GRIP");
 	if (iAmmoElapsed == 1)
-		PlayHUDMotionIfExists({ guns_shoot_anm, "anm_shoot_last", "anm_shots_last", "anm_shot_l", "anm_shoot", "anm_shots" }, false, GetState());
+		PlayHUDMotionIfExists({ guns_shoot_anm, "anm_shots_last", "anm_shots" }, false, GetState());
 	else
-		PlayHUDMotionIfExists({ guns_shoot_anm, "anm_shoot", "anm_shots" }, false, GetState());
+		PlayHUDMotionIfExists({ guns_shoot_anm, "anm_shots" }, false, GetState());
+}
+
+
+void CWeaponMagazined::PlayAnimShootHorGrip()
+{
+	VERIFY(GetState() == eFire);
+
+	if ((IsRotatingToZoom() && m_zoom_params.m_fZoomRotationFactor != 0.0f) || (IsRotatingFromZoom() && m_zoom_params.m_fZoomRotationFactor != 1.0f))
+		return;
+
+	string256 guns_det_shoot_anm{};
+	strconcat(sizeof(guns_det_shoot_anm), guns_det_shoot_anm, "anm_shots_grip_h", (IsZoomed() && !IsRotatingToZoom()) ? "_aim" : "");
+
+	if (auto det = smart_cast<CCustomDetector*>(g_actor->inventory().ItemFromSlot(DETECTOR_SLOT)); g_actor->IsDetectorActive())
+		det->PlayDetectorAnimation(true, eDetAction, guns_det_shoot_anm);
+
+	string_path guns_shoot_anm{};
+	strconcat(sizeof(guns_shoot_anm), guns_shoot_anm, (isHUDAnimationExist("anm_shots_grip_h") ? "anm_shots_grip_h" : ""), (IsZoomed() && !IsRotatingToZoom()) ? (IsScopeAttached() && m_bUseAimScopeAnims ? "_aim_scope" : "_aim") : "", (iAmmoElapsed == 1) ? "_last" : "", (IsMisfire() ? "_jammed" : IsMagazineEmpty() ? "_empty" : ""), (IsSilencerAttached() && m_bUseSilShotAnim) ? "_sil" : "");
+
+	//HUD_VisualBulletUpdate();
+
+	//Msg("SHOOTING WITH ATTACHED GRIP");
+	if (iAmmoElapsed == 1)
+		PlayHUDMotionIfExists({ guns_shoot_anm, "anm_shots_grip_h_last", "anm_shots_grip_h" }, false, GetState());
+	else
+		PlayHUDMotionIfExists({ guns_shoot_anm, "anm_shots_grip_h" }, false, GetState());
+}
+
+
+void CWeaponMagazined::PlayAnimShootVerGrip()
+{
+	VERIFY(GetState() == eFire);
+
+	if ((IsRotatingToZoom() && m_zoom_params.m_fZoomRotationFactor != 0.0f) || (IsRotatingFromZoom() && m_zoom_params.m_fZoomRotationFactor != 1.0f))
+		return;
+
+	string256 guns_det_shoot_anm{};
+	strconcat(sizeof(guns_det_shoot_anm), guns_det_shoot_anm, "anm_shots_grip_v", (IsZoomed() && !IsRotatingToZoom()) ? "_aim" : "");
+
+	if (auto det = smart_cast<CCustomDetector*>(g_actor->inventory().ItemFromSlot(DETECTOR_SLOT)); g_actor->IsDetectorActive())
+		det->PlayDetectorAnimation(true, eDetAction, guns_det_shoot_anm);
+
+	string_path guns_shoot_anm{};
+	strconcat(sizeof(guns_shoot_anm), guns_shoot_anm, (isHUDAnimationExist("anm_shots_grip_v") ? "anm_shots_grip_v" : ""), (IsZoomed() && !IsRotatingToZoom()) ? (IsScopeAttached() && m_bUseAimScopeAnims ? "_aim_scope" : "_aim") : "", (iAmmoElapsed == 1) ? "_last" : "", (IsMisfire() ? "_jammed" : IsMagazineEmpty() ? "_empty" : ""), (IsSilencerAttached() && m_bUseSilShotAnim) ? "_sil" : "");
+
+	//HUD_VisualBulletUpdate();
+
+	//Msg("SHOOTING WITH ATTACHED GRIP v");
+	if (iAmmoElapsed == 1)
+		PlayHUDMotionIfExists({ guns_shoot_anm, "anm_shots_grip_v_last", "anm_shots_grip_v" }, false, GetState());
+	else
+		PlayHUDMotionIfExists({ guns_shoot_anm, "anm_shots_grip_v" }, false, GetState());
+
 }
 
 bool CWeaponMagazined::PlayAnimFakeShoot()
@@ -3090,8 +3904,21 @@ void	CWeaponMagazined::OnNextFireMode		()
 {
 	if (!m_bHasDifferentFireModes) return;
 
-	if (isHUDAnimationExist("anm_changefiremode_from_1_to_a") || isHUDAnimationExist("anm_changefiremode"))
-		SwitchState(eFiremodeNext);
+	if (IsGripAttached())
+	{
+		if (isHUDAnimationExist("anm_changefiremode_grip_h_from_1_to_a") || isHUDAnimationExist("anm_changefiremode_grip_h"))
+			SwitchState(eFiremodeNext);
+	}
+	else if (IsGripvAttached())
+	{
+		if (isHUDAnimationExist("anm_changefiremode_grip_v_from_1_to_a") || isHUDAnimationExist("anm_changefiremode_grip_v"))
+			SwitchState(eFiremodeNext);
+	}
+	else
+	{
+		if (isHUDAnimationExist("anm_changefiremode_from_1_to_a") || isHUDAnimationExist("anm_changefiremode"))
+			SwitchState(eFiremodeNext);
+	}
 
 	if (GetState() != eIdle) return;
 	m_iCurFireMode = (m_iCurFireMode+1+m_aFireModes.size()) % m_aFireModes.size();
@@ -3102,8 +3929,21 @@ void	CWeaponMagazined::OnPrevFireMode		()
 {
 	if (!m_bHasDifferentFireModes) return;
 
-	if (isHUDAnimationExist("anm_changefiremode_from_1_to_a") || isHUDAnimationExist("anm_changefiremode"))
-		SwitchState(eFiremodePrev);
+	if (IsGripAttached())
+	{
+		if (isHUDAnimationExist("anm_changefiremode_grip_h_from_1_to_a") || isHUDAnimationExist("anm_changefiremode_grip_h"))
+			SwitchState(eFiremodePrev);
+	}
+	else if (IsGripvAttached())
+	{
+		if (isHUDAnimationExist("anm_changefiremode_grip_v_from_1_to_a") || isHUDAnimationExist("anm_changefiremode_grip_v"))
+			SwitchState(eFiremodePrev);
+	}
+	else
+	{
+		if (isHUDAnimationExist("anm_changefiremode_from_1_to_a") || isHUDAnimationExist("anm_changefiremode"))
+			SwitchState(eFiremodePrev);
+	}
 
 	if (GetState() != eIdle) return;
 	m_iCurFireMode = (m_iCurFireMode-1+m_aFireModes.size()) % m_aFireModes.size();

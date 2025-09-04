@@ -39,7 +39,7 @@ void CWeaponMagazinedWGrenade::Load	(LPCSTR section)
 	CRocketLauncher::Load	(section);
 	
 	SetAnimFlag(ANM_RELOAD_EMPTY_GL,	"anm_reload_empty_w_gl");
-	SetAnimFlag(ANM_SHOT_AIM_GL,		"anm_shots_w_gl_when_aim");
+	SetAnimFlag(ANM_SHOT_AIM_GL,		"anm_shots_with_gl_when_aim");
 	SetAnimFlag(ANM_MISFIRE_GL,			"anm_reload_misfire_w_gl");
 	
 	//// Sounds
@@ -1074,10 +1074,12 @@ void CWeaponMagazinedWGrenade::PlayAnimShoot()
 {
 	if (m_bGrenadeMode)
 	{
-		string_path guns_shoot_anm{};
-		strconcat(sizeof(guns_shoot_anm), guns_shoot_anm, (isHUDAnimationExist("anm_shoot") ? "anm_shoot" : "anm_shots"), (IsZoomed() && !IsRotatingToZoom()) ? "_aim" : "", (IsMisfire() ? "_jammed" : IsMainMagazineEmpty() ? "_empty" : ""), "_g");
+	//	Msg("SHOOTING WITH ATTACHED GL MODE");
 
-		PlayHUDMotionIfExists({ guns_shoot_anm, "anm_shoot_g", "anm_shots_g" }, false, GetState());
+		string_path guns_shoot_anm{};
+		strconcat(sizeof(guns_shoot_anm), guns_shoot_anm, (isHUDAnimationExist("anm_shots") ? "anm_shots" : ""), (IsZoomed() && !IsRotatingToZoom()) ? "_aim" : "", (IsMisfire() ? "_jammed" : IsMainMagazineEmpty() ? "_empty" : ""), "_gl");
+
+		PlayHUDMotionIfExists({ guns_shoot_anm, "anm_shots_gl" }, false, GetState());
 	}
 	else
 	{
@@ -1091,12 +1093,14 @@ void CWeaponMagazinedWGrenade::PlayAnimShoot()
 		if (IsGrenadeLauncherAttached())
 		{
 			string_path guns_shoot_anm{};
-			strconcat(sizeof(guns_shoot_anm), guns_shoot_anm, (isHUDAnimationExist("anm_shoot") ? "anm_shoot" : "anm_shots"), (IsZoomed() && !IsRotatingToZoom()) ? (IsScopeAttached() && m_bUseAimScopeAnims ? "_aim_scope" : "_aim") : "", (iAmmoElapsed == 1) ? "_last" : "", (IsMisfire() ? "_jammed" : IsMagazineEmpty() ? "_empty" : ""), (IsSilencerAttached() && m_bUseSilShotAnim) ? "_sil" : "", "_w_gl");
+			strconcat(sizeof(guns_shoot_anm), guns_shoot_anm, (isHUDAnimationExist("anm_shots") ? "anm_shots" : ""), (IsZoomed() && !IsRotatingToZoom()) ? (IsScopeAttached() && m_bUseAimScopeAnims ? "_aim_scope" : "_aim") : "", (iAmmoElapsed == 1) ? "_last" : "", (IsMisfire() ? "_jammed" : IsMagazineEmpty() ? "_empty" : ""), (IsSilencerAttached() && m_bUseSilShotAnim) ? "_sil" : "", "_with_gl");
+
+		//	Msg("SHOOTING WITH ATTACHED GL");
 
 			if (iAmmoElapsed == 1)
-				PlayHUDMotionIfExists({ guns_shoot_anm,"anm_shoot_last_w_gl", "anm_shots_last_w_gl", "anm_shot_l_w_gl", "anm_shoot_w_gl", "anm_shots_w_gl" }, false, GetState());
+				PlayHUDMotionIfExists({ guns_shoot_anm,"anm_shoot_last_with_gl", "anm_shoot_with_gl",  }, false, GetState());
 			else
-				PlayHUDMotionIfExists({ guns_shoot_anm, "anm_shoot_w_gl", "anm_shots_w_gl" }, false, GetState());
+				PlayHUDMotionIfExists({ guns_shoot_anm, "anm_shoot_with_gl" }, false, GetState());
 		}
 		else
 		{

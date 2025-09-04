@@ -46,6 +46,9 @@
 #include "WeaponMagazinedWGrenade.h"
 #include "Actor.h"
 #include "danger_object.h"
+#include "WeaponAddonStock1.h"
+#include "WeaponAddonGripHorizontal.h"
+#include "WeaponAddonGripVertical.h"
 
 using namespace luabind;
 
@@ -216,12 +219,18 @@ class_<CScriptGameObject> script_register_game_object2(class_<CScriptGameObject>
 		.def("weapon_is_silencer",			&CScriptGameObject::Weapon_IsSilencerAttached)
 		.def("weapon_is_laser_designator",	&CScriptGameObject::Weapon_IsLaserDesignatorAttached)
 		.def("weapon_is_tactical_torch",	&CScriptGameObject::Weapon_IsTacticalTorchAttached)
+		.def("weapon_is_stock",				&CScriptGameObject::Weapon_IsStockAttached)
+		.def("weapon_is_grip",				&CScriptGameObject::Weapon_IsGripAttached)
+		.def("weapon_is_gripv",				&CScriptGameObject::Weapon_IsGripvAttached)
 
 		.def("weapon_grenadelauncher_status",	&CScriptGameObject::Weapon_GrenadeLauncher_Status)
 		.def("weapon_scope_status",				&CScriptGameObject::Weapon_Scope_Status)
 		.def("weapon_silencer_status",			&CScriptGameObject::Weapon_Silencer_Status)
 		.def("weapon_laser_designator_status",	&CScriptGameObject::Weapon_LaserDesignator_Status)
 		.def("weapon_tactical_torch_status",	&CScriptGameObject::Weapon_TacticalTorch_Status)
+		.def("weapon_stock_status",				&CScriptGameObject::Weapon_Stock_Status)
+		.def("weapon_grip_status",				&CScriptGameObject::Weapon_Grip_Status)
+		.def("weapon_gripv_status",				&CScriptGameObject::Weapon_Gripv_Status)
 
 		.def("allow_sprint",				&CScriptGameObject::AllowSprint)
 
@@ -469,6 +478,9 @@ class_<CScriptGameObject> script_register_game_object2(class_<CScriptGameObject>
 		.def("cast_Silencer",					&objectCast<CSilencer>)
 		.def("cast_GrenadeLauncher",			&objectCast<CGrenadeLauncher>)
 		.def("cast_LaserDesignator",			&objectCast<CLaserDesignator>)
+		.def("cast_Stock",						&objectCast<CStock>)
+		.def("cast_Grip",						&objectCast<CHorGrip>)
+		.def("cast_Gripv",						&objectCast<CVerGrip>)
 		.def("cast_TacticalTorch",				&objectCast<CTacticalTorch>)
 		.def("cast_WeaponMagazined",			&objectCast<CWeaponMagazined>)
 		.def("cast_SpaceRestrictor",			&objectCast<CSpaceRestrictor>)
@@ -534,6 +546,9 @@ class_<CScriptGameObject> script_register_game_object2(class_<CScriptGameObject>
 		.def("is_helmet",						&CScriptGameObject::IsHelmet)
 		.def("is_scope",						&CScriptGameObject::IsScope)
 		.def("is_silencer",						&CScriptGameObject::IsSilencer)
+		.def("is_stock",						&CScriptGameObject::IsStock)
+		.def("is_grip",							&CScriptGameObject::IsGrip)
+		.def("is_gripv",						&CScriptGameObject::IsGripv)
 		.def("is_grenade_launcher",				&CScriptGameObject::IsGrenadeLauncher)
 		.def("is_laser_designator",				&CScriptGameObject::IsLaserDesignator)
 		.def("is_tactical_torch",				&CScriptGameObject::IsTacticalTorch)

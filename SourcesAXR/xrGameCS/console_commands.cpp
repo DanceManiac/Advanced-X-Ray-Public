@@ -2608,7 +2608,15 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask,				"hud_crosshair",		&psHUD_Flags,	HUD_CROSSHAIR);
 	CMD3(CCC_Mask,				"hud_crosshair_dist",	&psHUD_Flags,	HUD_CROSSHAIR_DIST);
 
-	CMD4(CCC_Float,				"hud_fov",				&psHUD_FOV_def,	0.25f,	1.0f);
+	if (bDeveloperMode)
+	{
+		CMD4(CCC_Float,			"hud_fov",				&psHUD_FOV_def,	0.25f,	2.0f);
+	}
+	else
+	{
+		CMD4(CCC_Float,			"hud_fov",				&psHUD_FOV_def, 0.25f, 1.0f);
+	}
+
 	CMD4(CCC_Float,				"cam_fov",				&g_fov,			5.0f,	180.0f);
 	CMD3(CCC_Mask,				"ph_corpse_collision",	&psActorFlags,	AF_COLLISION);
 

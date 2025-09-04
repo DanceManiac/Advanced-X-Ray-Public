@@ -77,6 +77,9 @@ public:
 	void					LoadTacticalTorchParams(LPCSTR section);
 	void					LoadTacticalTorchLightParams(LPCSTR section);
 	void					LoadGrenadeLauncherParams(LPCSTR section);
+	void					LoadStockParams(LPCSTR section);
+	void					LoadGripParams(LPCSTR section);
+	void					LoadGripvParams(LPCSTR section);
 	void					LoadOverheatLightParams(LPCSTR section);
 	void					GetZoomData(const float scope_factor, float& delta, float& min_zoom_factor);
 	void					ZoomDynamicMod(bool bIncrement, bool bForceLimit);
@@ -222,23 +225,32 @@ protected:
 public:
 			u8   m_sub_state;
 			bool IsCustomReloadAvaible;
-			bool IsGrenadeLauncherAttached	() const;
-			bool IsScopeAttached			() const;
-			bool IsSilencerAttached			() const;
-			bool IsLaserAttached			() const;
-			bool IsTacticalTorchAttached	() const;
+			bool IsGrenadeLauncherAttached					() const;
+			bool IsScopeAttached							() const;
+			bool IsSilencerAttached							() const;
+			bool IsLaserAttached							() const;
+			bool IsTacticalTorchAttached					() const;
+			bool IsStockAttached							() const; 
+			bool IsGripAttached								() const;
+			bool IsGripvAttached							() const;
 
-	virtual bool GrenadeLauncherAttachable();
-	virtual bool ScopeAttachable();
-	virtual bool SilencerAttachable();
-	virtual bool LaserAttachable();
-	virtual bool TacticalTorchAttachable();
-			
+	virtual bool GrenadeLauncherAttachable					();
+	virtual bool ScopeAttachable							();
+	virtual bool SilencerAttachable							();
+	virtual bool LaserAttachable							();
+	virtual bool TacticalTorchAttachable					();
+	virtual bool StockAttachable							();
+	virtual bool GripAttachable								();
+	virtual bool GripvAttachable							();
+
 	ALife::EWeaponAddonStatus	get_GrenadeLauncherStatus	() const { return m_eGrenadeLauncherStatus; }
 	ALife::EWeaponAddonStatus	get_ScopeStatus				() const { return m_eScopeStatus; }
 	ALife::EWeaponAddonStatus	get_SilencerStatus			() const { return m_eSilencerStatus; }
 	ALife::EWeaponAddonStatus	get_LaserDesignatorStatus	() const { return m_eLaserDesignatorStatus; }
 	ALife::EWeaponAddonStatus	get_TacticalTorchStatus		() const { return m_eTacticalTorchStatus; }
+	ALife::EWeaponAddonStatus	get_StockStatus				() const { return m_eStockStatus; }
+	ALife::EWeaponAddonStatus	get_GripStatus				() const { return m_eGripStatus; }
+	ALife::EWeaponAddonStatus	get_GripvStatus				() const { return m_eGripvStatus; }
 
 	virtual bool UseScopeTexture() {return true;};
 
@@ -250,27 +262,36 @@ public:
 	virtual void InitAddons();
 
 	//для отоброажения иконок апгрейдов в интерфейсе
-	int GetScopeX();
-	int GetScopeY();
-	int	GetSilencerX() {return m_iSilencerX * UI().get_icons_kx();}
-	int	GetSilencerY() {return m_iSilencerY * UI().get_icons_kx();}
-	int	GetGrenadeLauncherX() {return m_iGrenadeLauncherX * UI().get_icons_kx();}
-	int	GetGrenadeLauncherY() {return m_iGrenadeLauncherY * UI().get_icons_kx();}
-	int	GetLaserDesignatorX() {return m_iLaserX * UI().get_icons_kx();}
-	int	GetLaserDesignatorY() {return m_iLaserY * UI().get_icons_kx();}
-	int	GetTacticalTorchX() {return m_iTacticalTorchX * UI().get_icons_kx();}
-	int	GetTacticalTorchY() {return m_iTacticalTorchY * UI().get_icons_kx();}
+	int GetScopeX								();
+	int GetScopeY								();
+	int	GetSilencerX							() {return m_iSilencerX * UI().get_icons_kx();}
+	int	GetSilencerY							() {return m_iSilencerY * UI().get_icons_kx();}
+	int	GetGrenadeLauncherX						() {return m_iGrenadeLauncherX * UI().get_icons_kx();}
+	int	GetGrenadeLauncherY						() {return m_iGrenadeLauncherY * UI().get_icons_kx();}
+	int	GetLaserDesignatorX						() {return m_iLaserX * UI().get_icons_kx();}
+	int	GetLaserDesignatorY						() {return m_iLaserY * UI().get_icons_kx();}
+	int	GetTacticalTorchX						() {return m_iTacticalTorchX * UI().get_icons_kx();}
+	int	GetTacticalTorchY						() {return m_iTacticalTorchY * UI().get_icons_kx();}
+	int	GetStockX								() { return m_iStockX * UI().get_icons_kx(); }
+	int	GetStockY								() { return m_iStockY * UI().get_icons_kx(); }
+	int	GetGripX								() { return m_iGripX * UI().get_icons_kx(); }
+	int	GetGripY								() { return m_iGripY * UI().get_icons_kx(); }
+	int	GetGripvX								() { return m_iGripvX * UI().get_icons_kx(); }
+	int	GetGripvY								() { return m_iGripvY * UI().get_icons_kx(); }
 
 	const shared_str& GetGrenadeLauncherName	() const {return m_sGrenadeLauncherName;}
 	const shared_str GetScopeName				() const;
 	const shared_str& GetSilencerName			() const {return m_sSilencerName;}
 	const shared_str& GetLaserName				() const {return m_sLaserName;}
 	const shared_str& GetTacticalTorchName		() const{return m_sTacticalTorchName;}
+	const shared_str& GetStockName				() const { return m_sStockName; }
+	const shared_str& GetGripName				() const { return m_sGripName; }
+	const shared_str& GetGripvName				() const { return m_sGripvName; }
 
 	IC void	ForceUpdateAmmo						()		{ m_dwAmmoCurrentCalcFrame = 0; }
 
-	u8		GetAddonsState						()		const		{return m_flagsAddOnState;};
-	void	SetAddonsState						(u8 st)	{m_flagsAddOnState=st;}
+	u16		GetAddonsState						()		const		{return m_flagsAddOnState;};
+	void	SetAddonsState						(u16 st)	{m_flagsAddOnState=st;}
 
 	bool	IsAltAimEnabled						() const {return (m_bAltZoomEnabled || m_bAltZoomEnabledScope);}
 	bool	GetAltZoomStatus					() const {return m_bAltZoomActive;}
@@ -281,7 +302,7 @@ public:
 	void	RemoveBones							(xr_vector<shared_str>& m_all_bones, const xr_vector<shared_str>& bones_to_remove);
 protected:
 	//состояние подключенных аддонов
-	u8 m_flagsAddOnState;
+	u16 m_flagsAddOnState;
 
 	//возможность подключения различных аддонов
 	ALife::EWeaponAddonStatus	m_eScopeStatus;
@@ -289,6 +310,9 @@ protected:
 	ALife::EWeaponAddonStatus	m_eGrenadeLauncherStatus;
 	ALife::EWeaponAddonStatus	m_eLaserDesignatorStatus;
 	ALife::EWeaponAddonStatus	m_eTacticalTorchStatus;
+	ALife::EWeaponAddonStatus	m_eStockStatus;
+	ALife::EWeaponAddonStatus	m_eGripStatus;
+	ALife::EWeaponAddonStatus	m_eGripvStatus;
 
 	//названия секций подключаемых аддонов
 	shared_str		m_sScopeName;
@@ -296,12 +320,18 @@ protected:
 	shared_str		m_sGrenadeLauncherName;
 	shared_str		m_sLaserName;
 	shared_str		m_sTacticalTorchName;
+	shared_str		m_sStockName;
+	shared_str		m_sGripName;
+	shared_str		m_sGripvName;
 
 	shared_str		m_sScopeAttachSection{};
 	shared_str		m_sSilencerAttachSection{};
 	shared_str		m_sLaserAttachSection{};
 	shared_str		m_sTacticalTorchAttachSection{};
 	shared_str		m_sGrenadeLauncherAttachSection{};
+	shared_str		m_sStockAttachSection{};
+	shared_str		m_sGripAttachSection{};
+	shared_str		m_sGripvAttachSection{};
 
 	shared_str		m_sWpn_scope_bone;
 	shared_str		m_sWpn_silencer_bone;
@@ -313,6 +343,9 @@ protected:
 	shared_str		m_sHud_wpn_laser_ray_bone;
 	shared_str		m_sHud_wpn_flashlight_cone_bone;
 	shared_str		m_sWpn_overheating_bone;
+	shared_str		m_sWpn_stock_bone;
+	shared_str		m_sWpn_grip_bone;
+	shared_str		m_sWpn_gripv_bone;
 
 	xr_vector<shared_str> m_all_scope_bones;
 	shared_str		m_cur_scope_bone;
@@ -328,6 +361,9 @@ protected:
 	int	m_iGrenadeLauncherX, m_iGrenadeLauncherY;
 	int m_iLaserX, m_iLaserY;
 	int m_iTacticalTorchX, m_iTacticalTorchY;
+	int	m_iStockX, m_iStockY; 
+	int	m_iGripX, m_iGripY;
+	int	m_iGripvX, m_iGripvY;
 
 	RStringVec		m_defShownBones;
 	RStringVec		m_defHiddenBones;
@@ -341,6 +377,7 @@ protected:
 	RStringVec		m_defHiddenBonesScopePermanent;
 	RStringVec		m_defHiddenBonesScopePermanent2;
 	RStringVec		m_defOverheatinBarrel;
+	RStringVec		m_deleteStockBone;
 
 public:
 
@@ -465,7 +502,7 @@ protected:
 	Fmatrix					m_mSafetyRotation;
 
 	// Временные блокировки аддонов
-	bool					m_bBlockSilencerWithGL, m_bLaserBlockedByAddon, m_bFlashlightBlockedByAddon;
+	bool					m_bBlockSilencerWithGL, m_bLaserBlockedByAddon, m_bFlashlightBlockedByAddon, m_bBlockGripWithGrip, m_bStockBlockedByAddon, m_bGripHBlockedByAddon, m_bGripVBlockedByAddon;
 
 	float					m_fOverheatingSubRpm, m_fOverheatingMisfire, m_fOverheatingCond;
 
@@ -683,6 +720,7 @@ public:
 	u8						m_cur_scope;
 
 	xr_vector<shared_str>	m_availableLasers{};
+	xr_vector<shared_str>	m_availableStocks{};
 	xr_vector<shared_str>	m_availableFlashlights{};
 
 	CWeaponAmmo*			m_pCurrentAmmo;

@@ -532,11 +532,14 @@ void CGameObject::spawn_supplies()
 
 	LPCSTR					N,V;
 	float					p;
-	bool bScope				=	false;
-	bool bSilencer			=	false;
-	bool bLauncher			=	false;
-	bool bLaser				=	false;
-	bool bTorch				=	false;
+	bool bScope				= false;
+	bool bSilencer			= false;
+	bool bLauncher			= false;
+	bool bLaser				= false;
+	bool bTorch				= false;
+	bool bStock				= false;
+	bool bGrip				= false;
+	bool bGripv				= false;
 
 	for (u32 k = 0, j; spawn_ini()->r_line("spawn",k,&N,&V); k++) {
 		VERIFY				(xr_strlen(N));
@@ -556,12 +559,15 @@ void CGameObject::spawn_supplies()
 			if (!j)	j		= 1;
 			if(NULL!=strstr(V,"cond="))
 				f_cond		= (float)atof(strstr(V,"cond=")+5);
-			bScope			=	(NULL!=strstr(V,"scope"));
-			bSilencer		=	(NULL!=strstr(V,"silencer"));
-			bLauncher		=	(NULL!=strstr(V,"launcher"));
-			bLaser			=	(NULL!=strstr(V, "laser"));
-			bTorch			=	(NULL!=strstr(V, "torch"));
-
+			bScope			= (NULL!=strstr(V,"scope"));
+			bSilencer		= (NULL!=strstr(V,"silencer"));
+			bLauncher		= (NULL!=strstr(V,"launcher"));
+			bLaser			= (NULL!=strstr(V,"laser"));
+			bTorch			= (NULL!=strstr(V,"torch"));
+			bStock			= (NULL!=strstr(V,"stock"));
+			bGripv			= (NULL!=strstr(V,"gripv"));
+			bGrip			= (NULL!=strstr(V,"grip"));
+			
 		}
 		for (u32 i=0; i<j; ++i)
 			if (::Random.randF(1.f) < p){
@@ -583,6 +589,12 @@ void CGameObject::spawn_supplies()
 						W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator, bLaser);
 					if (W->m_tactical_torch_status == ALife::eAddonAttachable)
 						W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch, bTorch);
+					if (W->m_stock_status == ALife::eAddonAttachable)
+						W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonStock, bStock);
+					if (W->m_grip_status == ALife::eAddonAttachable)
+						W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonGrip, bGrip);
+					if (W->m_gripv_status == ALife::eAddonAttachable)
+						W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonGripv, bGripv);
 				}
 
 				NET_Packet					P;

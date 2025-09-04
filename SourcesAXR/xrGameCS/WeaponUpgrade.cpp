@@ -306,6 +306,60 @@ bool CWeapon::install_upgrade_addon( LPCSTR section, bool test )
 	}
 	result |= result2;
 
+	temp_int = (int)m_eStockStatus;
+	result2 = process_if_exists_set(section, "stock_status", &CInifile::r_s32, temp_int, test);
+	if (result2 && !test)
+	{
+		m_eStockStatus = (ALife::EWeaponAddonStatus)temp_int;
+		if (m_eStockStatus == ALife::eAddonAttachable || m_eStockStatus == ALife::eAddonPermanent)
+		{
+			m_sStockName = pSettings->r_string(section, "stock_name");
+			m_iStockX = pSettings->r_s32(section, "stock_x");
+			m_iStockY = pSettings->r_s32(section, "stock_y");
+			m_sWpn_stock_bone = pSettings->r_string(section, "stock_bone");
+
+			if (m_eStockStatus == ALife::eAddonPermanent)
+				InitAddons();
+		}
+	}
+	result |= result2;
+
+	temp_int = (int)m_eGripStatus;
+	result2 = process_if_exists_set(section, "grip_h_status", &CInifile::r_s32, temp_int, test);
+	if (result2 && !test)
+	{
+		m_eGripStatus = (ALife::EWeaponAddonStatus)temp_int;
+		if (m_eGripStatus == ALife::eAddonAttachable || m_eGripStatus == ALife::eAddonPermanent)
+		{
+			m_sGripName = pSettings->r_string(section, "grip_h_name");
+			m_iGripX = pSettings->r_s32(section, "grip_h_x");
+			m_iGripY = pSettings->r_s32(section, "grip_h_y");
+			m_sWpn_grip_bone = pSettings->r_string(section, "grip_h_bone");
+
+			if (m_eGripStatus == ALife::eAddonPermanent)
+				InitAddons();
+		}
+	}
+	result |= result2;
+
+	temp_int = (int)m_eGripvStatus;
+	result2 = process_if_exists_set(section, "grip_v_status", &CInifile::r_s32, temp_int, test);
+	if (result2 && !test)
+	{
+		m_eGripvStatus = (ALife::EWeaponAddonStatus)temp_int;
+		if (m_eGripvStatus == ALife::eAddonAttachable || m_eGripvStatus == ALife::eAddonPermanent)
+		{
+			m_sGripvName = pSettings->r_string(section, "grip_v_name");
+			m_iGripvX = pSettings->r_s32(section, "grip_v_x");
+			m_iGripvY = pSettings->r_s32(section, "grip_v_y");
+			m_sWpn_gripv_bone = pSettings->r_string(section, "grip_v_bone");
+
+			if (m_eGripvStatus == ALife::eAddonPermanent)
+				InitAddons();
+		}
+	}
+	result |= result2;
+
 	temp_int = (int)m_eLaserDesignatorStatus;
 	result2 = process_if_exists_set( section, "laser_designator_status", &CInifile::r_s32, temp_int, test );
 	if ( result2 && !test )

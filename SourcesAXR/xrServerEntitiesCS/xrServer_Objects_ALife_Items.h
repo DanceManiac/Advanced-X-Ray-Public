@@ -140,15 +140,18 @@ SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemWeapon,CSE_ALifeItem)
 	typedef	ALife::EWeaponAddonStatus	EWeaponAddonStatus;
 	
 	//текущее состояние аддонов
-	enum EWeaponAddonState : u8
+	enum EWeaponAddonState : u16
 	{
-		eWeaponAddonScope = 1 << 0,
-		eWeaponAddonGrenadeLauncher = 1 << 1,
-		eWeaponAddonSilencer = 1 << 2,
-		eWeaponAddonLaserOn = 1 << 3,
-		eWeaponAddonFlashlightOn = 1 << 4,
-		eWeaponAddonLaserDesignator = 1 << 5,
-		eWeaponAddonTacticalTorch = 1 << 6,
+		eWeaponAddonScope				= 1 << 0,
+		eWeaponAddonGrenadeLauncher		= 1 << 1,
+		eWeaponAddonSilencer			= 1 << 2,
+		eWeaponAddonLaserOn				= 1 << 3,
+		eWeaponAddonFlashlightOn		= 1 << 4,
+		eWeaponAddonLaserDesignator		= 1 << 5,
+		eWeaponAddonTacticalTorch		= 1 << 6,
+		eWeaponAddonStock				= 1 << 7,
+		eWeaponAddonGrip				= 1 << 8,
+		eWeaponAddonGripv				= 1 << 9,
 	};
 
 	EWeaponAddonStatus				m_scope_status;
@@ -156,6 +159,9 @@ SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemWeapon,CSE_ALifeItem)
 	EWeaponAddonStatus				m_grenade_launcher_status;
 	EWeaponAddonStatus				m_laser_designator_status;
 	EWeaponAddonStatus				m_tactical_torch_status;
+	EWeaponAddonStatus				m_stock_status;
+	EWeaponAddonStatus				m_grip_status;
+	EWeaponAddonStatus				m_gripv_status;
 
 	u32								timestamp;
 	u8								wpn_flags;
@@ -186,7 +192,7 @@ SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemWeapon,CSE_ALifeItem)
 	ALife::EHitType					m_tHitType;
 	LPCSTR							m_caAmmoSections;
 	u32								m_dwAmmoAvailable;
-	Flags8							m_addon_flags;
+	Flags16							m_addon_flags;
 	u8								m_bZoom;
 	u32								m_ef_main_weapon_type;
 	u32								m_ef_weapon_type;

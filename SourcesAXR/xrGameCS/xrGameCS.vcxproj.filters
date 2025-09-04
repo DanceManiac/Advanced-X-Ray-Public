@@ -7367,6 +7367,15 @@
     <ClInclude Include="physics_world_scripted.h">
       <Filter>Physics\scripts</Filter>
     </ClInclude>
+    <ClInclude Include="WeaponAddonGripHorizontal.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\Grip</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponAddonGripVertical.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\GripV</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponAddonStock1.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\Stock</Filter>
+    </ClInclude>
     <ClInclude Include="LaserDesignator.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\LaserDesignator</Filter>
     </ClInclude>
@@ -11034,6 +11043,15 @@
     </ClCompile>
     <ClCompile Include="physics_world_scripted.cpp">
       <Filter>Physics\scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponAddonGripHorizontal.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\Grip</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponAddonGripVertical.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\GripV</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponAddonStock1.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\Stock</Filter>
     </ClCompile>
     <ClCompile Include="LaserDesignator.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\LaserDesignator</Filter>

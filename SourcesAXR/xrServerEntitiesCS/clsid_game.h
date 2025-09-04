@@ -108,6 +108,9 @@
 #define CLSID_OBJECT_W_GLAUNCHER	MK_CLSID('W','_','G','L','A','U','N','C')
 #define CLSID_OBJECT_W_LASER		MK_CLSID('W','_','L','A','S','E','R',' ')
 #define CLSID_OBJECT_W_TTORCH		MK_CLSID('W','_','T','T','O','R','C','H')
+#define CLSID_OBJECT_W_STOCK		MK_CLSID('W','_','S','A','S','T','C','K')
+#define CLSID_OBJECT_W_HOR_GRIP		MK_CLSID('W','_','H','O','R','G','R','I')
+#define CLSID_OBJECT_W_VER_GRIP		MK_CLSID('W','_','V','E','R','G','R','I')
 
 // Modifiers
 #define CLSID_OBJECT_M_QDAMAGE		MK_CLSID('O','_','Q','D','M','G',' ',' ')

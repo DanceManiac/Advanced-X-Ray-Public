@@ -19,6 +19,9 @@
 #include "../Silencer.h"
 #include "../Scope.h"
 #include "../GrenadeLauncher.h"
+#include "../WeaponAddonStock1.h"
+#include "../WeaponAddonGripHorizontal.h"
+#include "../WeaponAddonGripVertical.h"
 #include "../LaserDesignator.h"
 #include "../TacticalTorch.h"
 #include "../trade_parameters.h"
@@ -782,6 +785,7 @@ void CUIActorMenu::highlight_ammo_for_weapon( PIItem weapon_item, CUIDragDropLis
 	}
 	ammo_types.assign( weapon->m_ammoTypes.begin(), weapon->m_ammoTypes.end() );
 
+	/*  !!! CHECK WHATS HAPPEN LATER CRASH POPUP WINDOW WITH ATTCHED GL 
 	CWeaponMagazinedWGrenade* wg = smart_cast<CWeaponMagazinedWGrenade*>(weapon_item);
 	if ( wg )
 	{
@@ -789,7 +793,7 @@ void CUIActorMenu::highlight_ammo_for_weapon( PIItem weapon_item, CUIDragDropLis
 		{
 			ammo_types.insert( ammo_types.end(), wg->m_ammoTypes2.begin(), wg->m_ammoTypes2.end() );
 		}
-	}
+	}*/
 	
 	if ( ammo_types.size() == 0 )
 	{
@@ -933,6 +937,27 @@ bool CUIActorMenu::highlight_addons_for_weapon( PIItem weapon_item, CUICellItem*
 		return true;
 	}
 
+	CStock* pStock = smart_cast<CStock*>(item);
+	if (pStock && weapon_item->CanAttach(pStock))
+	{
+		ci->m_select_armament = true;
+		return true;
+	}
+
+	CHorGrip* pHGrip = smart_cast<CHorGrip*>(item);
+	if (pHGrip && weapon_item->CanAttach(pHGrip))
+	{
+		ci->m_select_armament = true;
+		return true;
+	}
+
+	CVerGrip* pVGrip = smart_cast<CVerGrip*>(item);
+	if (pVGrip && weapon_item->CanAttach(pVGrip))
+	{
+		ci->m_select_armament = true;
+		return true;
+	}
+
 	return false;
 }
 
@@ -946,8 +971,11 @@ void CUIActorMenu::highlight_weapons_for_addon( PIItem addon_item, CUIDragDropLi
 	CGrenadeLauncher*	pGrenadeLauncher	= smart_cast<CGrenadeLauncher*>	(addon_item);
 	CLaserDesignator*	pLaser				= smart_cast<CLaserDesignator*>	(addon_item);
 	CTacticalTorch*		pTacticalTorch		= smart_cast<CTacticalTorch*>	(addon_item);
+	CStock*				pStock				= smart_cast<CStock*>			(addon_item);
+	CHorGrip*			pHGrip				= smart_cast<CHorGrip*>			(addon_item);
+	CVerGrip*			pVGrip				= smart_cast<CVerGrip*>			(addon_item);
 
-	if (!pScope && !pSilencer && !pGrenadeLauncher && !pLaser && !pTacticalTorch)
+	if (!pScope && !pSilencer && !pGrenadeLauncher && !pLaser && !pTacticalTorch && !pStock && !pHGrip && !pVGrip)
 	{
 		return;
 	}
@@ -978,6 +1006,21 @@ void CUIActorMenu::highlight_weapons_for_addon( PIItem addon_item, CUIDragDropLi
 			continue;
 		}
 		if ( pGrenadeLauncher && weapon->CanAttach(pGrenadeLauncher) )
+		{
+			ci->m_select_armament = true;
+			continue;
+		}
+		if (pStock && weapon->CanAttach(pStock))
+		{
+			ci->m_select_armament = true;
+			continue;
+		}
+		if (pHGrip && weapon->CanAttach(pHGrip))
+		{
+			ci->m_select_armament = true;
+			continue;
+		}
+		if (pVGrip && weapon->CanAttach(pVGrip))
 		{
 			ci->m_select_armament = true;
 			continue;

@@ -110,6 +110,9 @@
 #	include "grenadelauncher.h"
 #	include "LaserDesignator.h"
 #	include "TacticalTorch.h"
+#	include "WeaponAddonStock1.h"
+#	include "WeaponAddonGripHorizontal.h"
+#	include "WeaponAddonGripVertical.h"
 
 #	include "bolt.h"
 #	include "medkit.h"
@@ -328,6 +331,9 @@ void CObjectFactory::register_classes	()
 	ADD(CGrenadeLauncher		,CSE_ALifeItem					,CLSID_OBJECT_W_GLAUNCHER		,"wpn_grenade_launcher");
 	ADD(CLaserDesignator		,CSE_ALifeItem					,CLSID_OBJECT_W_LASER			,"wpn_laser_designator");
 	ADD(CTacticalTorch			,CSE_ALifeItem					,CLSID_OBJECT_W_TTORCH			,"wpn_tactical_torch");
+	ADD(CStock					,CSE_ALifeItem					,CLSID_OBJECT_W_STOCK			,"wpn_stock");
+	ADD(CHorGrip				,CSE_ALifeItem					,CLSID_OBJECT_W_HOR_GRIP		,"wpn_grip_horizontal");
+	ADD(CVerGrip				,CSE_ALifeItem					,CLSID_OBJECT_W_VER_GRIP		,"wpn_grip_vertical");
 
 	// Inventory
 	ADD(CBolt					,CSE_ALifeItemBolt				,CLSID_IITEM_BOLT				,"obj_bolt");

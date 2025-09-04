@@ -72,6 +72,10 @@ bool bSilencer = false;
 bool bLauncher = false;
 bool bLaser = false;
 bool bTacticalTorch = false;
+bool bStock = false;
+bool bGrip = false;
+bool bGripv = false;
+
 float f_cond = 1.0f;
 int i_ammo_type = 0, n = 0;
 int cur_scope = 0;
@@ -97,6 +101,9 @@ bSilencer = (NULL != strstr(V, "silencer"));
 bLauncher = (NULL != strstr(V, "launcher"));
 bLaser = (NULL != strstr(V, "laser"));
 bTacticalTorch = (NULL != strstr(V, "torch"));
+bStock = (NULL != strstr(V, "stock"));
+bGrip = (NULL != strstr(V, "grip"));
+bGripv = (NULL != strstr(V, "gripv"));
 
 if (NULL != strstr(V, "ammo_type="))
 i_ammo_type = atoi(strstr(V, "ammo_type=") + 10);
@@ -113,17 +120,23 @@ if (W)
 {
 if (W->m_scope_status == ALife::eAddonAttachable)
 {
-W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonScope, bScope);
-W->cur_scope = cur_scope;
+	W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonScope, bScope);
+	W->cur_scope = cur_scope;
 }
 if (W->m_silencer_status == ALife::eAddonAttachable)
-W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonSilencer, bSilencer);
+	W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonSilencer, bSilencer);
 if (W->m_grenade_launcher_status == ALife::eAddonAttachable)
-W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher, bLauncher);
+	W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher, bLauncher);
 if (W->m_laser_designator_status == ALife::eAddonAttachable)
-W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator, bLaser);
+	W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator, bLaser);
 if (W->m_tactical_torch_status == ALife::eAddonAttachable)
-W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch, bTacticalTorch);
+	W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch, bTacticalTorch);
+if (W->m_stock_status == ALife::eAddonAttachable)
+	W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonStock, bStock);
+if (W->m_grip_status == ALife::eAddonAttachable)
+	W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonGrip, bGrip);
+if (W->m_gripv_status == ALife::eAddonAttachable)
+	W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonGripv, bGripv);
 
 //spawn count box(es) of the correct ammo for weapon
 if (pSettings->line_exist(itmSection, "ammo_class"))
@@ -177,6 +190,9 @@ bool bSilencer = false;
 bool bLauncher = false;
 bool bLaser = false;
 bool bTacticalTorch = false;
+bool bStock = false;
+bool bGrip = false;
+bool bGripv = false;
 int cur_scope = 0;
 
 j = 1;
@@ -194,6 +210,9 @@ bSilencer = nullptr != strstr(V, "silencer");
 bLauncher = nullptr != strstr(V, "launcher");
 bLaser = nullptr != strstr(V, "laser");
 bTacticalTorch = nullptr != strstr(V, "torch");
+bStock = nullptr != strstr(V, "stock");
+bGrip = nullptr != strstr(V, "grip");
+bGripv = nullptr != strstr(V, "gripv");
 
 // probability
 if (nullptr != strstr(V, "prob="))
@@ -216,17 +235,23 @@ if (W)
 {
 if (W->m_scope_status == ALife::eAddonAttachable)
 {
-W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonScope, bScope);
-W->cur_scope = cur_scope;
+	W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonScope, bScope);
+	W->cur_scope = cur_scope;
 }
 if (W->m_silencer_status == ALife::eAddonAttachable)
-W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonSilencer, bSilencer);
+	W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonSilencer, bSilencer);
 if (W->m_grenade_launcher_status == ALife::eAddonAttachable)
-W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher, bLauncher);
+	W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher, bLauncher);
 if (W->m_laser_designator_status == ALife::eAddonAttachable)
-W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator, bLaser);
+	W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator, bLaser);
 if (W->m_tactical_torch_status == ALife::eAddonAttachable)
-W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch, bTacticalTorch);
+	W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch, bTacticalTorch);
+if (W->m_stock_status == ALife::eAddonAttachable)
+	W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonStock, bStock);
+if (W->m_grip_status == ALife::eAddonAttachable)
+	W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonGrip, bGrip);
+if (W->m_gripv_status == ALife::eAddonAttachable)
+	W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonGripv, bGripv);
 }
 CSE_ALifeInventoryItem* IItem = smart_cast<CSE_ALifeInventoryItem*>(E);
 if (IItem)

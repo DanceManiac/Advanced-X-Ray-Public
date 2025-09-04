@@ -216,7 +216,7 @@ void CPda::OnStateSwitch(u32 S)
 	break;
 	case eIdle:
 	{
-		PlayAnimIdle();
+		PlayAnimIdlePDA();
 
 		if (m_joystick_bone && joystick == BI_NONE && HudItemData())
 			joystick = HudItemData()->m_model->LL_BoneID(m_joystick_bone);
