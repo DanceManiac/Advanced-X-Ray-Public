@@ -146,13 +146,13 @@ void CWeaponBM16::PlayAnimBore()
 	switch( m_magazine.size() )
 	{
 	case 0:
-		PlayHUDMotion("anm_bore_0",TRUE,this,GetState());
+		PlayHUDMotion("anm_inspect_weapon_0",TRUE,this,GetState());
 		break;
 	case 1:
-		PlayHUDMotion("anm_bore_1",TRUE,this,GetState());
+		PlayHUDMotion("anm_inspect_weapon_1",TRUE,this,GetState());
 		break;
 	case 2:
-		PlayHUDMotion("anm_bore_2",TRUE,this,GetState());
+		PlayHUDMotion("anm_inspect_weapon_2",TRUE,this,GetState());
 		break;
 	}
 }

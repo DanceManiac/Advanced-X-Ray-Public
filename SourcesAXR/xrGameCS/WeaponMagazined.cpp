@@ -96,7 +96,7 @@ void CWeaponMagazined::Load	(LPCSTR section)
 	SetAnimFlag(ANM_HIDE_EMPTY,		"anm_hide_empty");
 	SetAnimFlag(ANM_IDLE_EMPTY,		"anm_idle_empty");
 	SetAnimFlag(ANM_AIM_EMPTY,		"anm_idle_aim_empty");
-	SetAnimFlag(ANM_BORE_EMPTY,		"anm_bore_empty");
+	SetAnimFlag(ANM_BORE_EMPTY,		"anm_inspect_weapon_empty"/*"anm_bore_empty"*/);
 	SetAnimFlag(ANM_SHOT_EMPTY,		"anm_shot_l");
 	SetAnimFlag(ANM_SPRINT_EMPTY,	"anm_idle_sprint_empty");
 	SetAnimFlag(ANM_MOVING_EMPTY,	"anm_idle_moving_empty");
@@ -159,11 +159,27 @@ void CWeaponMagazined::Load	(LPCSTR section)
 	if (WeaponSoundExist(section, "snd_inspect_weapon_empty", true))
 		m_sounds.LoadSound(section, "snd_inspect_weapon_empty", "sndInspectWeaponEmpty", false, m_eSoundEmptyClick);
 
+	if (WeaponSoundExist(section, "snd_inspect_weapon_misfire", true))
+		m_sounds.LoadSound(section, "snd_inspect_weapon_misfire", "sndInspectWeaponMisfire", false, m_eSoundEmptyClick);
+
 	if (WeaponSoundExist(section, "snd_inspect_weapon_gl", true))
 		m_sounds.LoadSound(section, "snd_inspect_weapon_gl", "sndInspectWeaponGl", false, m_eSoundEmptyClick);
 
 	if (WeaponSoundExist(section, "snd_inspect_weapon_empty_gl", true))
 		m_sounds.LoadSound(section, "snd_inspect_weapon_empty_gl", "sndInspectWeaponEmptyGl", false, m_eSoundEmptyClick);
+
+	if (WeaponSoundExist(section, "snd_inspect_weapon_misfire_gl", true))
+		m_sounds.LoadSound(section, "snd_inspect_weapon_misfire_gl", "sndInspectWeaponMisfireGl", false, m_eSoundEmptyClick);
+
+	if (WeaponSoundExist(section, "snd_inspect_weapon_gl_used", true))
+		m_sounds.LoadSound(section, "snd_inspect_weapon_gl_used", "sndInspectWeaponGlUsed", false, m_eSoundEmptyClick);
+
+	if (WeaponSoundExist(section, "snd_inspect_weapon_empty_gl_used", true))
+		m_sounds.LoadSound(section, "snd_inspect_weapon_empty_gl_used", "sndInspectWeaponEmptyGlUsed", false, m_eSoundEmptyClick);
+
+	if (WeaponSoundExist(section, "snd_inspect_weapon_misfire_gl_used", true))
+		m_sounds.LoadSound(section, "snd_inspect_weapon_misfire_gl_used", "sndInspectWeaponMisfireGlUsed", false, m_eSoundEmptyClick);
+
 
 	m_sounds.LoadSound(section,"snd_empty",			"sndEmptyClick",	false,	m_eSoundEmptyClick	);
 	m_sounds.LoadSound(section,"snd_reload",		"sndReload",		true,	m_eSoundReload		);
@@ -1037,14 +1053,27 @@ void CWeaponMagazined::UpdateSounds	()
 		m_sounds.SetPosition("sndAimUp", P);
 	if (m_sounds.FindSoundItem("sndAimDown", false))
 		m_sounds.SetPosition("sndAimDown", P);
+	// LFO INSPECT WEAPONS
 	if (WeaponSoundExist(m_section_id.c_str(), "sndInspectWeapon"))
 		m_sounds.SetPosition("sndInspectWeapon", P);
 	if (WeaponSoundExist(m_section_id.c_str(), "sndInspectWeaponEmpty"))
 		m_sounds.SetPosition("sndInspectWeaponEmpty", P);
+	if (WeaponSoundExist(m_section_id.c_str(), "sndInspectWeaponMisfire"))
+		m_sounds.SetPosition("sndInspectWeaponMisfire", P);
+
 	if (WeaponSoundExist(m_section_id.c_str(), "sndInspectWeaponGl"))
 		m_sounds.SetPosition("sndInspectWeaponGl", P);
 	if (WeaponSoundExist(m_section_id.c_str(), "sndInspectWeaponEmptyGl"))
 		m_sounds.SetPosition("sndInspectWeaponEmptyGl", P);
+	if (WeaponSoundExist(m_section_id.c_str(), "sndInspectWeaponMisfireGl"))
+		m_sounds.SetPosition("sndInspectWeaponMisfireGl", P);
+
+	if (WeaponSoundExist(m_section_id.c_str(), "sndInspectWeaponGlUsed"))
+		m_sounds.SetPosition("sndInspectWeaponGlUsed", P);
+	if (WeaponSoundExist(m_section_id.c_str(), "sndInspectWeaponEmptyGlUsed"))
+		m_sounds.SetPosition("sndInspectWeaponEmptyGlUsed", P);
+	if (WeaponSoundExist(m_section_id.c_str(), "sndInspectWeaponMisfireGlUsed"))
+		m_sounds.SetPosition("sndInspectWeaponMisfireGlUsed", P);
 
 //. nah	m_sounds.SetPosition("sndShot", P);
 	m_sounds.SetPosition("sndReload", P);

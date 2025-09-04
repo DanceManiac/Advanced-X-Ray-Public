@@ -1147,20 +1147,38 @@ void CWeaponMagazinedWGrenade::PlayAnimBore()
 		if (m_bGrenadeMode)
 		{
 			if (IsMisfireNow())
-				PlayHUDMotionIfExists({ "anm_bore_g_jammed", "anm_bore_jammed_g", "anm_bore_g", "anm_bore" }, true, GetState());
+			{
+				PlayHUDMotionIfExists({ "anm_inspect_weapon_misfire_gl_used" }, true, GetState());
+				PlaySound("sndInspectWeaponMisfireGlUsed", get_LastFP());
+			}
 			else if (IsMainMagazineEmpty())
-				PlayHUDMotionIfExists({ "anm_bore_g_empty", "anm_bore_empty_g", "anm_bore_g", "anm_bore" }, true, GetState());
+			{
+				PlayHUDMotionIfExists({ "anm_inspect_weapon_empty_gl_used" }, true, GetState());
+				PlaySound("sndInspectWeaponEmptyGlUsed", get_LastFP());
+			}
 			else
-				PlayHUDMotion("anm_bore_g", TRUE, this, GetState());
+			{
+				PlayHUDMotion("anm_inspect_weapon_gl_used", TRUE, this, GetState());
+				PlaySound("sndInspectWeaponGlUsed", get_LastFP());
+			}
 		}
 		else
 		{
 			if (IsMisfireNow())
-				PlayHUDMotionIfExists({ "anm_bore_w_gl_jammed", "anm_bore_jammed_w_gl", "anm_bore_w_gl", "anm_bore" }, true, GetState());
-			else if (IsMagazineEmpty())
-				PlayHUDMotionIfExists({ "anm_bore_w_gl_empty", "anm_bore_empty_w_gl", "anm_bore_w_gl", "anm_bore" }, true, GetState());
+			{
+				PlayHUDMotionIfExists({ "anm_inspect_weapon_misfire_gl" }, true, GetState());
+				PlaySound("sndInspectWeaponMisfireGl", get_LastFP());
+			}
+			else if (IsMainMagazineEmpty())
+			{
+				PlayHUDMotionIfExists({ "anm_inspect_weapon_empty_gl" }, true, GetState());
+				PlaySound("sndInspectWeaponEmptyGl", get_LastFP());
+			}
 			else
-				PlayHUDMotion("anm_bore_w_gl", TRUE, this, GetState());
+			{
+				PlayHUDMotion("anm_inspect_weapon_gl", TRUE, this, GetState());
+				PlaySound("sndInspectWeaponGl", get_LastFP());
+			}
 		}
 	}
 	else

@@ -180,7 +180,11 @@ void CHudItem::Load(LPCSTR section)
 	m_bBoreEnabled				= READ_IF_EXISTS(pSettings, r_bool, section, "enable_bore_state", true);
 
 	if (m_bBoreEnabled)
-		m_sounds.LoadSound		(section, "snd_bore", "sndBore", true);
+	{
+		m_sounds.LoadSound		(section, "snd_inspect_weapon", "sndBore", true);
+		m_sounds.LoadSound		(section, "snd_inspect_weapon_empty", "sndBoreEmpty", true);
+		m_sounds.LoadSound		(section, "snd_inspect_weapon_misfire", "sndBoreMisfire", true);
+	}
 
 	if (pSettings->line_exist(section, "snd_headlamp_on"))
 		m_sounds.LoadSound(section, "snd_headlamp_on", "sndHeadlampOn", false);
@@ -284,9 +288,14 @@ void CHudItem::OnStateSwitch(u32 S)
 			if (HudItemData())
 			{
 				Fvector P		= HudItemData()->m_item_transform.c;
-				m_sounds.PlaySound("sndBore", P, object().H_Root(), !!GetHUDmode(), false, m_started_rnd_anim_idx);
-			}
 
+				if (IsMisfireNow())
+					m_sounds.PlaySound("sndBoreMisfire", P, object().H_Root(), !!GetHUDmode(), false, m_started_rnd_anim_idx);
+				else if (IsMagazineEmpty())
+					m_sounds.PlaySound("sndBoreEmpty", P, object().H_Root(), !!GetHUDmode(), false, m_started_rnd_anim_idx);
+				else
+					m_sounds.PlaySound("sndBore", P, object().H_Root(), !!GetHUDmode(), false, m_started_rnd_anim_idx);
+			}
 		} break;
 	case eSprintStart:
 		PlayAnimSprintStart();
@@ -346,11 +355,17 @@ void CHudItem::OnMotionMark(u32 state, const motion_marks& M)
 void CHudItem::PlayAnimBore()
 {
 	if (IsMisfireNow())
-		PlayHUDMotionIfExists({ "anm_bore_jammed", "anm_bore" }, true, GetState());
+	{
+		PlayHUDMotionIfExists({ "anm_inspect_weapon_misfire" }, true, GetState());
+	}
 	else if (IsMagazineEmpty())
-		PlayHUDMotionIfExists({ "anm_bore_empty", "anm_bore" }, true, GetState());
+	{
+		PlayHUDMotionIfExists({ "anm_inspect_weapon_empty" }, true, GetState());
+	}
 	else
-		PlayHUDMotion("anm_bore", TRUE, this, GetState());
+	{
+		PlayHUDMotion("anm_inspect_weapon", TRUE, this, GetState());
+	}
 }
 
 bool CHudItem::ActivateItem() 
