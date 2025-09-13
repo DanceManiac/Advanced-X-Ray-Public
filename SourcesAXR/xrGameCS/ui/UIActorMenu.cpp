@@ -20,8 +20,10 @@
 #include "../Scope.h"
 #include "../GrenadeLauncher.h"
 #include "../WeaponAddonStock1.h"
+#include "../WeaponAddonHandguard.h"
 #include "../WeaponAddonGripHorizontal.h"
 #include "../WeaponAddonGripVertical.h"
+#include "../WeaponAddonPistolGrip.h"
 #include "../LaserDesignator.h"
 #include "../TacticalTorch.h"
 #include "../trade_parameters.h"
@@ -944,6 +946,20 @@ bool CUIActorMenu::highlight_addons_for_weapon( PIItem weapon_item, CUICellItem*
 		return true;
 	}
 
+	CPistolGrip* pPistolgrip = smart_cast<CPistolGrip*>(item);
+	if (pPistolgrip && weapon_item->CanAttach(pPistolgrip))
+	{
+		ci->m_select_armament = true;
+		return true;
+	}
+
+	CHandguard* pHandguard = smart_cast<CHandguard*>(item);
+	if (pHandguard && weapon_item->CanAttach(pHandguard))
+	{
+		ci->m_select_armament = true;
+		return true;
+	}
+
 	CHorGrip* pHGrip = smart_cast<CHorGrip*>(item);
 	if (pHGrip && weapon_item->CanAttach(pHGrip))
 	{
@@ -974,8 +990,10 @@ void CUIActorMenu::highlight_weapons_for_addon( PIItem addon_item, CUIDragDropLi
 	CStock*				pStock				= smart_cast<CStock*>			(addon_item);
 	CHorGrip*			pHGrip				= smart_cast<CHorGrip*>			(addon_item);
 	CVerGrip*			pVGrip				= smart_cast<CVerGrip*>			(addon_item);
+	CHandguard*			pHandguard			= smart_cast<CHandguard*>		(addon_item);
+	CPistolGrip*		pPistolgrip			= smart_cast<CPistolGrip*>		(addon_item);
 
-	if (!pScope && !pSilencer && !pGrenadeLauncher && !pLaser && !pTacticalTorch && !pStock && !pHGrip && !pVGrip)
+	if (!pScope && !pSilencer && !pGrenadeLauncher && !pLaser && !pTacticalTorch && !pStock && !pHGrip && !pVGrip && !pHandguard && !pPistolgrip)
 	{
 		return;
 	}
@@ -1011,6 +1029,16 @@ void CUIActorMenu::highlight_weapons_for_addon( PIItem addon_item, CUIDragDropLi
 			continue;
 		}
 		if (pStock && weapon->CanAttach(pStock))
+		{
+			ci->m_select_armament = true;
+			continue;
+		}
+		if (pPistolgrip && weapon->CanAttach(pPistolgrip))
+		{
+			ci->m_select_armament = true;
+			continue;
+		}
+		if (pHandguard && weapon->CanAttach(pHandguard))
 		{
 			ci->m_select_armament = true;
 			continue;

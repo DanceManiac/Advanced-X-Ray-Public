@@ -393,6 +393,8 @@ public:
 			bool				Weapon_IsStockAttached			();
 			bool				Weapon_IsGripAttached			();
 			bool				Weapon_IsGripvAttached			();
+			bool				Weapon_IsHandguardAttached		();
+			bool				Weapon_IsPistolgripAttached		();
 
 			int					Weapon_GrenadeLauncher_Status	();
 			int					Weapon_Scope_Status				();
@@ -402,6 +404,8 @@ public:
 			int					Weapon_Stock_Status				();
 			int					Weapon_Grip_Status				();
 			int					Weapon_Gripv_Status				();
+			int					Weapon_Handguard_Status			();
+			int					Weapon_Pistolgrip_Status		();
 
 			LPCSTR				ProfileName			();
 			LPCSTR				CharacterName		();
@@ -836,8 +840,10 @@ public:
 			_DECLARE_FUNCTION10(IsScope, bool);
 			_DECLARE_FUNCTION10(IsSilencer, bool);
 			_DECLARE_FUNCTION10(IsStock, bool);
+			_DECLARE_FUNCTION10(IsPistolgrip, bool);
 			_DECLARE_FUNCTION10(IsGrip, bool);
 			_DECLARE_FUNCTION10(IsGripv, bool);
+			_DECLARE_FUNCTION10(IsHandguard, bool);
 			_DECLARE_FUNCTION10(IsGrenadeLauncher, bool);
 			_DECLARE_FUNCTION10(IsLaserDesignator, bool);
 			_DECLARE_FUNCTION10(IsTacticalTorch, bool);

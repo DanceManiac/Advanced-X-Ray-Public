@@ -111,6 +111,8 @@
 #define CLSID_OBJECT_W_STOCK		MK_CLSID('W','_','S','A','S','T','C','K')
 #define CLSID_OBJECT_W_HOR_GRIP		MK_CLSID('W','_','H','O','R','G','R','I')
 #define CLSID_OBJECT_W_VER_GRIP		MK_CLSID('W','_','V','E','R','G','R','I')
+#define CLSID_OBJECT_W_HANDGUARD	MK_CLSID('W','_','H','A','N','G','U','A')
+#define CLSID_OBJECT_W_PISTOLGRIP	MK_CLSID('W','_','P','I','S','G','R','I')
 
 // Modifiers
 #define CLSID_OBJECT_M_QDAMAGE		MK_CLSID('O','_','Q','D','M','G',' ',' ')

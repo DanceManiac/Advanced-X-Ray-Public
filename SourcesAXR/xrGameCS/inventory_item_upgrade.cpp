@@ -249,6 +249,14 @@ void CInventoryItem::pre_install_upgrade()
 		{
 			weapon->Detach(weapon->GetGripvName().c_str(), true);
 		}
+		if (weapon->HandguardAttachable() && weapon->IsHandguardAttached())
+		{
+			weapon->Detach(weapon->GetHandguardName().c_str(), true);
+		}
+		if (weapon->PistolgripAttachable() && weapon->IsPistolgripAttached())
+		{
+			weapon->Detach(weapon->GetPistolgripName().c_str(), true);
+		}
 		return;
 	}
 	CCustomOutfit* pOutfit = smart_cast<CCustomOutfit*>(this);

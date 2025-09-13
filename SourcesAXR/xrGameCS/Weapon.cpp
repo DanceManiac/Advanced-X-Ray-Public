@@ -137,12 +137,14 @@ CWeapon::CWeapon()
 	m_fSafetyRotationTime	= 0.0f;
 	m_mSafetyRotation.identity();
 
-	m_bBlockSilencerWithGL	= false;
-	m_bLaserBlockedByAddon	= false;
-	m_bFlashlightBlockedByAddon = false;
-	m_bStockBlockedByAddon = false;
-	m_bGripHBlockedByAddon = false;
-	m_bGripVBlockedByAddon = false;
+	m_bBlockSilencerWithGL			= false;
+	m_bLaserBlockedByAddon			= false;
+	m_bFlashlightBlockedByAddon		= false;
+	m_bStockBlockedByAddon			= false;
+	m_bGripHBlockedByAddon			= false;
+	m_bGripVBlockedByAddon			= false;
+	m_bHandguardBlockedByAddon		= false;
+	m_bPistolgripBlockedByAddon		= false;
 
 	m_fOverheatingSubRpm	= 0.0f;
 	m_fOverheatingMisfire	= 0.0f;
@@ -458,6 +460,8 @@ LPCSTR wpn_overheat_def_bone	= "overheat_barrel";
 LPCSTR wpn_stock_def_bone		= "wpn_stock";
 LPCSTR wpn_grip_def_bone		= "wpn_grip_horizontal";
 LPCSTR wpn_gripv_def_bone		= "wpn_grip_vertical";
+LPCSTR wpn_handguard_def_bone	= "wpn_handguard";
+LPCSTR wpn_pistolgrip_def_bone	= "wpn_pistolgrip";
 
 void CWeapon::Load		(LPCSTR section)
 {
@@ -658,6 +662,8 @@ void CWeapon::Load		(LPCSTR section)
 	m_eStockStatus				= (ALife::EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, section, "stock_status", 0);
 	m_eGripStatus				= (ALife::EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, section, "grip_h_status", 0);
 	m_eGripvStatus				= (ALife::EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, section, "grip_v_status", 0);
+	m_eHandguardStatus			= (ALife::EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, section, "handguard_status", 0);
+	m_ePistolgripStatus			= (ALife::EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, section, "pistolgrip_status", 0);
 
 	m_zoom_params.m_bZoomEnabled		= !!pSettings->r_bool(section,"zoom_enabled");
 
@@ -685,6 +691,8 @@ void CWeapon::Load		(LPCSTR section)
 	LoadStockParams(section);
 	LoadGripParams(section);
 	LoadGripvParams(section);
+	LoadHandguardParams(section);
+	LoadPistolgripParams(section);
 
 	UpdateAltScope();
 	InitAddons();
@@ -743,6 +751,8 @@ void CWeapon::Load		(LPCSTR section)
 
 	if (pSettings->line_exist(section, "silencer_bone"))
 		m_sWpn_silencer_bone = pSettings->r_string(section, "silencer_bone");
+	else if (pSettings->line_exist(section, "silencer2_bone"))
+		m_sWpn_silencer_bone = pSettings->r_string(section, "silencer2_bone");
 	else
 		m_sWpn_silencer_bone = wpn_silencer_def_bone;
 
@@ -755,6 +765,16 @@ void CWeapon::Load		(LPCSTR section)
 		m_sWpn_stock_bone = pSettings->r_string(section, "stock_bone");
 	else
 		m_sWpn_stock_bone = wpn_stock_def_bone;
+
+	if (pSettings->line_exist(section, "pistolgrip_bone"))
+		m_sWpn_pistolgrip_bone = pSettings->r_string(section, "pistolgrip_bone");
+	else
+		m_sWpn_pistolgrip_bone = wpn_pistolgrip_def_bone;
+
+	if (pSettings->line_exist(section, "handguard_bone"))
+		m_sWpn_handguard_bone = pSettings->r_string(section, "handguard_bone");
+	else
+		m_sWpn_handguard_bone = wpn_handguard_def_bone;
 
 	if (pSettings->line_exist(section, "grip_h_bone"))
 		m_sWpn_grip_bone = pSettings->r_string(section, "grip_h_bone");
@@ -795,18 +815,22 @@ void CWeapon::Load		(LPCSTR section)
 
 	// Default shown bones
 	// SHOW-HIDE BONES
-	LoadBoneNames(section, "def_show_bones", m_defShownBones);
-	LoadBoneNames(section, "def_hide_bones", m_defHiddenBones);
-	LoadBoneNames(section, "def_show_bones_aim_scope_permanent", m_defShownBonesScopePermanent);
-	LoadBoneNames(section, "def_hide_bones_aim_scope_permanent", m_defHiddenBonesScopePermanent);
-	LoadBoneNames(section, "def_hide_bones_aim_scope_permanent2", m_defHiddenBonesScopePermanent2);
-	LoadBoneNames(section, "def_show_bones_with_scopes", m_defShownBonesScope);
-	LoadBoneNames(section, "def_hide_bones_with_scopes", m_defHiddenBonesScope);
-	LoadBoneNames(section, "hide_bones_override_when_silencer_attached", m_defSilHiddenBones);
-	LoadBoneNames(section, "def_animated_3d_shell_bones", m_defShellBones);
-	LoadBoneNames(section, "overheat_barrel_bones", m_defOverheatinBarrel);
-	LoadBoneNames(section, "stock_default_bones", m_deleteStockBone);
-
+	LoadBoneNames(section, "def_show_bones",								m_defShownBones);
+	LoadBoneNames(section, "def_hide_bones",								m_defHiddenBones);
+	LoadBoneNames(section, "def_show_bones_aim_scope_permanent",			m_defShownBonesScopePermanent);
+	LoadBoneNames(section, "def_hide_bones_aim_scope_permanent",			m_defHiddenBonesScopePermanent);
+	LoadBoneNames(section, "def_hide_bones_aim_scope_permanent2",			m_defHiddenBonesScopePermanent2);
+	LoadBoneNames(section, "def_show_bones_with_scopes",					m_defShownBonesScope);
+	LoadBoneNames(section, "def_hide_bones_with_scopes",					m_defHiddenBonesScope);
+	LoadBoneNames(section, "hide_bones_override_when_silencer_attached",	m_defSilHiddenBones);
+	LoadBoneNames(section, "def_animated_3d_shell_bones",					m_defShellBones);
+	LoadBoneNames(section, "overheat_barrel_bones",							m_defOverheatinBarrel);
+	LoadBoneNames(section, "stock_default_bones",							m_deleteStockBone);
+	LoadBoneNames(section, "handguard_default_bones",						m_deleteHandguardBone);
+	LoadBoneNames(section, "handguard_remove_silencer_bones",				m_deleteHandguardDelSilencerBone);
+	LoadBoneNames(section, "pistolgrip_default_bones",						m_deletePistolgripBone);
+	LoadBoneNames(section, "grenade_launcher_hide_bones",					m_glremoveBone);
+	LoadBoneNames(section, "grenade_launcher_show_bones",					m_glshowBone);
 
 	if (pSettings->line_exist(section, "scopes_sect"))
 	{
@@ -1122,6 +1146,96 @@ void CWeapon::LoadStockParams(LPCSTR section)
 	{
 		m_sStockName = READ_IF_EXISTS(pSettings, r_string, section, "stock_name", "");
 		m_sStockAttachSection = READ_IF_EXISTS(pSettings, r_string, section, "stock_attach_sect", "");
+	}
+}
+
+void CWeapon::LoadHandguardParams(LPCSTR section)
+{
+	if (m_eHandguardStatus == ALife::eAddonAttachable)
+	{
+		if (pSettings->line_exist(section, "handguard_attach_sects"))
+		{
+			LPCSTR handguard_sects = pSettings->r_string(section, "handguard_attach_sects");
+			string128 single_sect;
+			int count = _GetItemCount(handguard_sects);
+
+			for (int i = 0; i < count; ++i)
+			{
+				_GetItem(handguard_sects, i, single_sect);
+				m_availableHandguards.push_back(single_sect);
+			}
+
+
+			if (pSettings->line_exist(section, "silencer2_bone"))
+				m_sWpn_silencer2_bone = pSettings->r_string(section, "silencer2_bone");
+			else
+				m_sWpn_silencer2_bone = wpn_silencer_def_bone;
+
+			if (pSettings->line_exist(section, "silencer_bone"))
+				m_sWpn_silencer_bone = pSettings->r_string(section, "silencer_bone");
+			else
+				m_sWpn_silencer_bone = wpn_silencer_def_bone;
+
+
+			if (!m_availableHandguards.empty() && !m_sHandguardAttachSection)
+			{
+				m_sHandguardAttachSection = m_availableHandguards[0];
+				m_sHandguardName = pSettings->r_string(m_sHandguardAttachSection, "handguard_name");
+				m_iHandguardX = pSettings->r_s32(m_sHandguardAttachSection, "handguard_x");
+				m_iHandguardY = pSettings->r_s32(m_sHandguardAttachSection, "handguard_y");
+			}
+		}
+		else if (pSettings->line_exist(section, "handguard_name"))
+		{
+			m_sHandguardName = pSettings->r_string(section, "handguard_name");
+
+			m_iHandguardX = pSettings->r_s32(section, "handguard_x");
+			m_iHandguardY = pSettings->r_s32(section, "handguard_y");
+		}
+	}
+	else if (m_eHandguardStatus == ALife::eAddonPermanent)
+	{
+		m_sHandguardName = READ_IF_EXISTS(pSettings, r_string, section, "handguard_name", "");
+		m_sHandguardAttachSection = READ_IF_EXISTS(pSettings, r_string, section, "handguard_attach_sect", "");
+	}
+}
+
+void CWeapon::LoadPistolgripParams(LPCSTR section)
+{
+	if (m_ePistolgripStatus == ALife::eAddonAttachable)
+	{
+		if (pSettings->line_exist(section, "pistolgrip_attach_sects"))
+		{
+			LPCSTR pistolgrip_sects = pSettings->r_string(section, "pistolgrip_attach_sects");
+			string128 single_sect;
+			int count = _GetItemCount(pistolgrip_sects);
+
+			for (int i = 0; i < count; ++i)
+			{
+				_GetItem(pistolgrip_sects, i, single_sect);
+				m_availablePistolgrips.push_back(single_sect);
+			}
+
+			if (!m_availablePistolgrips.empty() && !m_sPistolgripAttachSection)
+			{
+				m_sPistolgripAttachSection = m_availablePistolgrips[0];
+				m_sPistolgripName = pSettings->r_string(m_sPistolgripAttachSection, "pistolgrip_name");
+				m_iPistolgripX = pSettings->r_s32(m_sPistolgripAttachSection, "pistolgrip_x");
+				m_iPistolgripY = pSettings->r_s32(m_sPistolgripAttachSection, "pistolgrip_y");
+			}
+		}
+		else if (pSettings->line_exist(section, "pistolgrip_name"))
+		{
+			m_sPistolgripName = pSettings->r_string(section, "pistolgrip_name");
+
+			m_iPistolgripX = pSettings->r_s32(section, "pistolgrip_x");
+			m_iPistolgripY = pSettings->r_s32(section, "pistolgrip_y");
+		}
+	}
+	else if (m_ePistolgripStatus == ALife::eAddonPermanent)
+	{
+		m_sPistolgripName = READ_IF_EXISTS(pSettings, r_string, section, "pistolgrip_name", "");
+		m_sPistolgripAttachSection = READ_IF_EXISTS(pSettings, r_string, section, "pistolgrip_attach_sect", "");
 	}
 }
 
@@ -1718,7 +1832,10 @@ void CWeapon::save(NET_Packet &output_packet)
 	save_data		(m_sGripAttachSection,			output_packet);
 	save_data		(m_sGripvName,					output_packet);
 	save_data		(m_sGripvAttachSection,			output_packet);
-
+	save_data		(m_sHandguardName,				output_packet);
+	save_data		(m_sHandguardAttachSection,		output_packet);
+	save_data		(m_sPistolgripName,				output_packet);
+	save_data		(m_sPistolgripAttachSection,	output_packet);
 }
 
 void CWeapon::load(IReader &input_packet)
@@ -1751,7 +1868,10 @@ void CWeapon::load(IReader &input_packet)
 	load_data		(m_sGripAttachSection,			input_packet);
 	load_data		(m_sGripvName,					input_packet);
 	load_data		(m_sGripvAttachSection,			input_packet);
-
+	load_data		(m_sHandguardName,				input_packet);
+	load_data		(m_sHandguardAttachSection,		input_packet);
+	load_data		(m_sPistolgripName,				input_packet);
+	load_data		(m_sPistolgripAttachSection,	input_packet);
 }
 
 
@@ -2749,6 +2869,20 @@ bool CWeapon::IsStockAttached() const
 		ALife::eAddonPermanent == m_eStockStatus;
 }
 
+bool CWeapon::IsPistolgripAttached() const
+{
+	return (ALife::eAddonAttachable == m_ePistolgripStatus &&
+		0 != (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonPistolgrip)) ||
+		ALife::eAddonPermanent == m_ePistolgripStatus;
+}
+
+bool CWeapon::IsHandguardAttached() const
+{
+	return (ALife::eAddonAttachable == m_eHandguardStatus &&
+		0 != (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonHandguard)) ||
+		ALife::eAddonPermanent == m_eHandguardStatus;
+}
+
 bool CWeapon::IsGripAttached() const
 {
 	return (ALife::eAddonAttachable == m_eGripStatus &&
@@ -2786,6 +2920,14 @@ bool CWeapon::TacticalTorchAttachable()
 bool CWeapon::StockAttachable()
 {
 	return (ALife::eAddonAttachable == m_eStockStatus);
+}
+bool CWeapon::PistolgripAttachable()
+{
+	return (ALife::eAddonAttachable == m_ePistolgripStatus);
+}
+bool CWeapon::HandguardAttachable()
+{
+	return (ALife::eAddonAttachable == m_eHandguardStatus);
 }
 bool CWeapon::GripAttachable()
 {
@@ -2887,9 +3029,77 @@ void CWeapon::UpdateHUDAddonsVisibility()
 		}
 	}
 
+	for (const shared_str& bone : m_deletePistolgripBone)
+	{
+		if (!IsPistolgripAttached())
+		{
+			SetBoneVisible(bone, TRUE);
+		}
+		else
+		{
+			SetBoneVisible(bone, FALSE);
+		}
+	}
+
 	for (const shared_str& bone : m_deleteStockBone)
 	{
 		if (!IsStockAttached())
+		{
+			SetBoneVisible(bone, TRUE);
+		}
+		else
+		{
+			SetBoneVisible(bone, FALSE);
+		}
+	}
+
+	for (const shared_str& bone : m_deleteHandguardBone)
+	{
+		if (!IsHandguardAttached())
+		{
+			SetBoneVisible(bone, TRUE);
+		}
+		else
+		{
+			SetBoneVisible(bone, FALSE);
+		}
+	}
+
+	for (const shared_str& bone : m_deleteHandguardDelSilencerBone)
+	{
+		if (!IsHandguardAttached())
+		{
+			SetBoneVisible(bone, TRUE);
+		}
+		else
+		{
+			SetBoneVisible(bone, FALSE);
+		}
+	}
+
+	for (const shared_str& bone : m_glremoveBone)
+	{
+
+		shared_str GLHideBone_Section = (m_sGrenadeLauncherAttachSection.size() ? m_sGrenadeLauncherAttachSection : "gl_hide_bone");
+
+		bool GLHideBone = false;
+
+		if (pSettings->line_exist(m_section_id.c_str(), "gl_hide_bone"))
+			GLHideBone = READ_IF_EXISTS(pSettings, r_bool, GLHideBone_Section, "gl_hide_bone", false);
+
+		if (IsGrenadeLauncherAttached() && GLHideBone)
+		{
+			SetBoneVisible(bone, TRUE);
+		}
+		else
+		{
+			SetBoneVisible(bone, FALSE);
+		}
+	}
+
+	for (const shared_str& bone : m_glshowBone)
+	{
+		if (!IsGrenadeLauncherAttached())
 		{
 			SetBoneVisible(bone, TRUE);
 		}
@@ -3296,17 +3506,41 @@ void CWeapon::UpdateHUDAddonsVisibility()
 				HudItemData()->set_bone_visible(wpn_scope_def_bone, TRUE, TRUE);
 	}
 
-	if (SilencerAttachable())
+	shared_str cur_handguard_sect = (m_sHandguardAttachSection.size() ? m_sHandguardAttachSection : "handguard_need_silencer");
+
+	bool HandguardNeedNewSilencer = false;
+
+	if (pSettings->line_exist(m_section_id.c_str(), "handguard_need_silencer"))
+	HandguardNeedNewSilencer = READ_IF_EXISTS(pSettings, r_bool, cur_handguard_sect, "handguard_need_silencer", false);
+
+	if (IsHandguardAttached() && HandguardNeedNewSilencer)
 	{
-		SetBoneVisible(m_sWpn_silencer_bone, IsSilencerAttached());
-	}
-	if (m_eSilencerStatus == ALife::eAddonDisabled)
-	{
-		SetBoneVisible(m_sWpn_silencer_bone, FALSE);
+		if (SilencerAttachable())
+		{
+			SetBoneVisible(m_sWpn_silencer2_bone, IsSilencerAttached());
+		}
+		if (m_eSilencerStatus == ALife::eAddonDisabled)
+		{
+			SetBoneVisible(m_sWpn_silencer2_bone, FALSE);
+		}
+		else
+			if (m_eSilencerStatus == ALife::eAddonPermanent)
+				SetBoneVisible(m_sWpn_silencer2_bone, TRUE);
 	}
 	else
-		if (m_eSilencerStatus == ALife::eAddonPermanent)
-			SetBoneVisible(m_sWpn_silencer_bone, TRUE);
+	{
+		if (SilencerAttachable())
+		{
+			SetBoneVisible(m_sWpn_silencer_bone, IsSilencerAttached());
+		}
+		if (m_eSilencerStatus == ALife::eAddonDisabled)
+		{
+			SetBoneVisible(m_sWpn_silencer_bone, FALSE);
+		}
+		else
+			if (m_eSilencerStatus == ALife::eAddonPermanent)
+				SetBoneVisible(m_sWpn_silencer_bone, TRUE);
+	}
 
 	if (GrenadeLauncherAttachable())
 	{
@@ -3329,6 +3563,28 @@ void CWeapon::UpdateHUDAddonsVisibility()
 	}
 	else if (m_eStockStatus == ALife::eAddonPermanent && !m_sStockAttachSection.size())
 		SetBoneVisible(m_sWpn_stock_bone, TRUE);
+
+	if (PistolgripAttachable())
+	{
+		SetBoneVisible(m_sWpn_pistolgrip_bone, IsPistolgripAttached() && !m_sPistolgripAttachSection.size());
+	}
+	if (m_ePistolgripStatus == ALife::eAddonDisabled || m_sPistolgripAttachSection.size())
+	{
+		SetBoneVisible(m_sWpn_pistolgrip_bone, FALSE);
+	}
+	else if (m_ePistolgripStatus == ALife::eAddonPermanent && !m_sPistolgripAttachSection.size())
+		SetBoneVisible(m_sWpn_pistolgrip_bone, TRUE);
+
+	if (HandguardAttachable())
+	{
+		SetBoneVisible(m_sWpn_handguard_bone, IsHandguardAttached() && !m_sHandguardAttachSection.size());
+	}
+	if (m_eHandguardStatus == ALife::eAddonDisabled || m_sHandguardAttachSection.size())
+	{
+		SetBoneVisible(m_sWpn_handguard_bone, FALSE);
+	}
+	else if (m_eHandguardStatus == ALife::eAddonPermanent && !m_sHandguardAttachSection.size())
+		SetBoneVisible(m_sWpn_handguard_bone, TRUE);
 
 	if (GripAttachable())
 	{
@@ -3668,6 +3924,46 @@ void CWeapon::UpdateAddonsVisibility(IKinematics* visual)
 		}
 	}
 	if ((m_eStockStatus == ALife::eAddonDisabled || m_sStockAttachSection.size()) && bone_id != BI_NONE && pWeaponVisual->LL_GetBoneVisible(bone_id))
+	{
+		pWeaponVisual->LL_SetBoneVisible(bone_id, FALSE, TRUE);
+		//		Log("laser", pWeaponVisual->LL_GetBoneVisible	(bone_id));
+	}
+
+	bone_id = pWeaponVisual->LL_BoneID(m_sWpn_pistolgrip_bone);
+	if (PistolgripAttachable())
+	{
+		if (IsPistolgripAttached() && !m_sPistolgripAttachSection.size())
+		{
+			if (!pWeaponVisual->LL_GetBoneVisible(bone_id))
+				pWeaponVisual->LL_SetBoneVisible(bone_id, TRUE, TRUE);
+		}
+		else
+		{
+			if (bone_id != BI_NONE && pWeaponVisual->LL_GetBoneVisible(bone_id))
+				pWeaponVisual->LL_SetBoneVisible(bone_id, FALSE, TRUE);
+		}
+	}
+	if ((m_ePistolgripStatus == ALife::eAddonDisabled || m_sPistolgripAttachSection.size()) && bone_id != BI_NONE && pWeaponVisual->LL_GetBoneVisible(bone_id))
+	{
+		pWeaponVisual->LL_SetBoneVisible(bone_id, FALSE, TRUE);
+		//		Log("laser", pWeaponVisual->LL_GetBoneVisible	(bone_id));
+	}
+
+	bone_id = pWeaponVisual->LL_BoneID(m_sWpn_handguard_bone);
+	if (HandguardAttachable())
+	{
+		if (IsHandguardAttached() && !m_sHandguardAttachSection.size())
+		{
+			if (!pWeaponVisual->LL_GetBoneVisible(bone_id))
+				pWeaponVisual->LL_SetBoneVisible(bone_id, TRUE, TRUE);
+		}
+		else
+		{
+			if (bone_id != BI_NONE && pWeaponVisual->LL_GetBoneVisible(bone_id))
+				pWeaponVisual->LL_SetBoneVisible(bone_id, FALSE, TRUE);
+		}
+	}
+	if ((m_eHandguardStatus == ALife::eAddonDisabled || m_sHandguardAttachSection.size()) && bone_id != BI_NONE && pWeaponVisual->LL_GetBoneVisible(bone_id))
 	{
 		pWeaponVisual->LL_SetBoneVisible(bone_id, FALSE, TRUE);
 		//		Log("laser", pWeaponVisual->LL_GetBoneVisible	(bone_id));
@@ -4325,7 +4621,14 @@ float CWeapon::Weight() const
 	{
 		res += pSettings->r_float(GetGripvName(), "inv_weight");
 	}
-
+	if (IsHandguardAttached() && GetHandguardName().size())
+	{
+		res += pSettings->r_float(GetHandguardName(), "inv_weight");
+	}
+	if (IsPistolgripAttached() && GetPistolgripName().size())
+	{
+		res += pSettings->r_float(GetPistolgripName(), "inv_weight");
+	}
 	res += GetMagazineWeight(m_magazine);
 
 	return res;
@@ -4563,7 +4866,12 @@ u32 CWeapon::Cost() const
 	if (IsGripvAttached() && GetGripvName().size()) {
 		res += pSettings->r_u32(GetGripvName(), "cost");
 	}
-
+	if (IsHandguardAttached() && GetHandguardName().size()) {
+		res += pSettings->r_u32(GetHandguardName(), "cost");
+	}
+	if (IsPistolgripAttached() && GetPistolgripName().size()) {
+		res += pSettings->r_u32(GetPistolgripName(), "cost");
+	}
 	if(iAmmoElapsed)
 	{
 		float w		= pSettings->r_float(m_ammoTypes[m_ammoType].c_str(),"cost");
@@ -4604,6 +4912,8 @@ void CWeapon::UpdateSecondVP(bool bInGrenade)
 
 const char* CWeapon::GetAnimAimName()
 {
+	
+
 	auto pActor = smart_cast<const CActor*>(H_Parent());
 	if (pActor)
 	{
@@ -4620,6 +4930,7 @@ const char* CWeapon::GetAnimAimName()
 
 		if (state && state & mcAnyMove)
 		{
+	
 			if (IsGripAttached())
 			{
 				if (IsScopeAttached() && m_bUseScopeAimMoveAnims)

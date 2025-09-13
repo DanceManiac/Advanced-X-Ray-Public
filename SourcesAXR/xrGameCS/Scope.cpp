@@ -7,6 +7,8 @@
 #include "WeaponAddonStock1.h"
 #include "WeaponAddonGripHorizontal.h"
 #include "WeaponAddonGripVertical.h"
+#include "WeaponAddonHandguard.h"
+#include "WeaponAddonPistolGrip.h"
 
 CScope::CScope	()
 {
@@ -34,6 +36,10 @@ void CScope::script_register	(lua_State *L)
 		class_<CHorGrip, CGameObject>("CHorGrip")
 			.def(constructor<>()),
 		class_<CVerGrip, CGameObject>("CVerGrip")
+			.def(constructor<>()),
+		class_<CHandguard, CGameObject>("CHandguard")
+			.def(constructor<>()),
+		class_<CPistolGrip, CGameObject>("CPistolGrip")
 			.def(constructor<>()),
 		class_<CLaserDesignator, CGameObject>("CLaserDesignator")
 			.def(constructor<>()),

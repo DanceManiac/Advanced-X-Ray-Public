@@ -152,6 +152,8 @@ SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemWeapon,CSE_ALifeItem)
 		eWeaponAddonStock				= 1 << 7,
 		eWeaponAddonGrip				= 1 << 8,
 		eWeaponAddonGripv				= 1 << 9,
+		eWeaponAddonHandguard			= 1 << 10,
+		eWeaponAddonPistolgrip			= 1 << 11,
 	};
 
 	EWeaponAddonStatus				m_scope_status;
@@ -162,6 +164,8 @@ SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemWeapon,CSE_ALifeItem)
 	EWeaponAddonStatus				m_stock_status;
 	EWeaponAddonStatus				m_grip_status;
 	EWeaponAddonStatus				m_gripv_status;
+	EWeaponAddonStatus				m_handguard_status;
+	EWeaponAddonStatus				m_pistolgrip_status;
 
 	u32								timestamp;
 	u8								wpn_flags;

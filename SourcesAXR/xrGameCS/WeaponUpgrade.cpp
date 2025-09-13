@@ -324,6 +324,24 @@ bool CWeapon::install_upgrade_addon( LPCSTR section, bool test )
 	}
 	result |= result2;
 
+	temp_int = (int)m_eHandguardStatus;
+	result2 = process_if_exists_set(section, "handguard_status", &CInifile::r_s32, temp_int, test);
+	if (result2 && !test)
+	{
+		m_eHandguardStatus = (ALife::EWeaponAddonStatus)temp_int;
+		if (m_eHandguardStatus == ALife::eAddonAttachable || m_eHandguardStatus == ALife::eAddonPermanent)
+		{
+			m_sHandguardName = pSettings->r_string(section, "handguard_name");
+			m_iHandguardX = pSettings->r_s32(section, "handguard_x");
+			m_iHandguardY = pSettings->r_s32(section, "handguard_y");
+			m_sWpn_handguard_bone = pSettings->r_string(section, "handguard_bone");
+
+			if (m_eHandguardStatus == ALife::eAddonPermanent)
+				InitAddons();
+		}
+	}
+	result |= result2;
+
 	temp_int = (int)m_eGripStatus;
 	result2 = process_if_exists_set(section, "grip_h_status", &CInifile::r_s32, temp_int, test);
 	if (result2 && !test)

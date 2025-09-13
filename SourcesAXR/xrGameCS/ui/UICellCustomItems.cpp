@@ -257,6 +257,8 @@ CUIWeaponCellItem::CUIWeaponCellItem(CWeapon* itm)
 	m_addons[eStock]		= nullptr;
 	m_addons[eGrip]			= nullptr;
 	m_addons[eGripv]		= nullptr;
+	m_addons[eHandguard]	= nullptr;
+	m_addons[ePistolgrip]	= nullptr;
 
 	if(itm->SilencerAttachable())
 		m_addon_offset[eSilencer].set(object()->GetSilencerX(), object()->GetSilencerY());
@@ -275,6 +277,12 @@ CUIWeaponCellItem::CUIWeaponCellItem(CWeapon* itm)
 
 	if (itm->StockAttachable())
 		m_addon_offset[eStock].set(object()->GetStockX(), object()->GetStockY());
+
+	if (itm->PistolgripAttachable())
+		m_addon_offset[ePistolgrip].set(object()->GetPistolgripX(), object()->GetPistolgripY());
+
+	if (itm->HandguardAttachable())
+		m_addon_offset[eHandguard].set(object()->GetHandguardX(), object()->GetHandguardY());
 
 	if (itm->GripAttachable())
 		m_addon_offset[eGrip].set(object()->GetGripX(), object()->GetGripY());
@@ -306,6 +314,16 @@ bool CUIWeaponCellItem::is_launcher()
 bool CUIWeaponCellItem::is_stock()
 {
 	return object()->StockAttachable() && object()->IsStockAttached();
+}
+
+bool CUIWeaponCellItem::is_pistolgrip()
+{
+	return object()->PistolgripAttachable() && object()->IsPistolgripAttached();
+}
+
+bool CUIWeaponCellItem::is_handguard()
+{
+	return object()->HandguardAttachable() && object()->IsHandguardAttached();
 }
 
 bool CUIWeaponCellItem::is_grip()
@@ -377,6 +395,12 @@ void CUIWeaponCellItem::RefreshOffset()
 
 	if (object()->StockAttachable())
 		m_addon_offset[eStock].set(object()->GetStockX(), object()->GetStockY());
+
+	if (object()->PistolgripAttachable())
+		m_addon_offset[ePistolgrip].set(object()->GetPistolgripX(), object()->GetPistolgripY());
+
+	if (object()->HandguardAttachable())
+		m_addon_offset[eHandguard].set(object()->GetHandguardX(), object()->GetHandguardY());
 
 	if (object()->GripAttachable())
 		m_addon_offset[eGrip].set(object()->GetGripX(), object()->GetGripY());
@@ -543,6 +567,42 @@ void CUIWeaponCellItem::Update()
 		}
 	}
 
+	if (object()->PistolgripAttachable())
+	{
+		if (object()->IsPistolgripAttached())
+		{
+			if (!GetIcon(ePistolgrip) || bForceReInitAddons)
+			{
+				CreateIcon(ePistolgrip, object()->GetPistolgripName());
+				RefreshOffset();
+				InitAddon(GetIcon(ePistolgrip), *object()->GetPistolgripName(), m_addon_offset[ePistolgrip], Heading());
+			}
+		}
+		else
+		{
+			if (m_addons[ePistolgrip])
+				DestroyIcon(ePistolgrip);
+		}
+	}
+
+	if (object()->HandguardAttachable())
+	{
+		if (object()->IsHandguardAttached())
+		{
+			if (!GetIcon(eHandguard) || bForceReInitAddons)
+			{
+				CreateIcon(eHandguard, object()->GetHandguardName());
+				RefreshOffset();
+				InitAddon(GetIcon(eHandguard), *object()->GetHandguardName(), m_addon_offset[eHandguard], Heading());
+			}
+		}
+		else
+		{
+			if (m_addons[eHandguard])
+				DestroyIcon(eHandguard);
+		}
+	}
+
 	if (object()->LaserAttachable())
 	{
 		if (object()->IsLaserAttached())
@@ -599,6 +659,14 @@ void CUIWeaponCellItem::SetColor( u32 color )
 	{
 		m_addons[eStock]->SetColor(color);
 	}
+	if (m_addons[ePistolgrip])
+	{
+		m_addons[ePistolgrip]->SetColor(color);
+	}
+	if (m_addons[eHandguard])
+	{
+		m_addons[eHandguard]->SetColor(color);
+	}
 	if (m_addons[eGrip])
 	{
 		m_addons[eGrip]->SetColor(color);
@@ -630,6 +698,12 @@ void CUIWeaponCellItem::OnAfterChild(CUIDragDropListEx* parent_list)
 
 	if (is_stock() && GetIcon(eStock))
 		InitAddon(GetIcon(eStock), *object()->GetStockName(), m_addon_offset[eStock], parent_list->GetVerticalPlacement());
+
+	if (is_pistolgrip() && GetIcon(ePistolgrip))
+		InitAddon(GetIcon(ePistolgrip), *object()->GetPistolgripName(), m_addon_offset[ePistolgrip], parent_list->GetVerticalPlacement());
+
+	if (is_handguard() && GetIcon(eHandguard))
+		InitAddon(GetIcon(eHandguard), *object()->GetHandguardName(), m_addon_offset[eHandguard], parent_list->GetVerticalPlacement());
 
 	if (is_grip() && GetIcon(eGrip))
 		InitAddon(GetIcon(eGrip), *object()->GetGripName(), m_addon_offset[eGrip], parent_list->GetVerticalPlacement());
@@ -859,6 +933,48 @@ CUIDragItem* CUIWeaponCellItem::CreateDragItem()
 		s = xr_new<CUIStatic>(); s->SetAutoDelete(true);
 		s->SetShader(InventoryUtilities::GetEquipmentIconsShader());
 		InitAddon(s, *object()->GetStockName(), m_addon_offset[eStock], false, true, is_scope(), is_silencer(), is_launcher());
+
+
+		if (pSettings->line_exist(object()->GetSilencerName(), "icons_texture"))
+		{
+			LPCSTR icons_texture = pSettings->r_string(object()->GetSilencerName(), "icons_texture");
+			s->SetShader(InventoryUtilities::GetCustomIconTextureShader(icons_texture));
+		}
+		else
+		{
+			s->SetShader(InventoryUtilities::GetEquipmentIconsShader());
+		}
+
+		s->SetColor(i->wnd()->GetColor());
+		i->wnd()->AttachChild(s);
+	}
+
+	if (GetIcon(ePistolgrip))
+	{
+		s = xr_new<CUIStatic>(); s->SetAutoDelete(true);
+		s->SetShader(InventoryUtilities::GetEquipmentIconsShader());
+		InitAddon(s, *object()->GetPistolgripName(), m_addon_offset[ePistolgrip], false, true, is_scope(), is_silencer(), is_launcher());
+
+
+		if (pSettings->line_exist(object()->GetSilencerName(), "icons_texture"))
+		{
+			LPCSTR icons_texture = pSettings->r_string(object()->GetSilencerName(), "icons_texture");
+			s->SetShader(InventoryUtilities::GetCustomIconTextureShader(icons_texture));
+		}
+		else
+		{
+			s->SetShader(InventoryUtilities::GetEquipmentIconsShader());
+		}
+
+		s->SetColor(i->wnd()->GetColor());
+		i->wnd()->AttachChild(s);
+	}
+
+	if (GetIcon(eHandguard))
+	{
+		s = xr_new<CUIStatic>(); s->SetAutoDelete(true);
+		s->SetShader(InventoryUtilities::GetEquipmentIconsShader());
+		InitAddon(s, *object()->GetHandguardName(), m_addon_offset[eHandguard], false, true, is_scope(), is_silencer(), is_launcher());
 
 
 		if (pSettings->line_exist(object()->GetSilencerName(), "icons_texture"))

@@ -540,6 +540,8 @@ void CGameObject::spawn_supplies()
 	bool bStock				= false;
 	bool bGrip				= false;
 	bool bGripv				= false;
+	bool bHandguard			= false;
+	bool bPistolgrip		= false;
 
 	for (u32 k = 0, j; spawn_ini()->r_line("spawn",k,&N,&V); k++) {
 		VERIFY				(xr_strlen(N));
@@ -567,7 +569,8 @@ void CGameObject::spawn_supplies()
 			bStock			= (NULL!=strstr(V,"stock"));
 			bGripv			= (NULL!=strstr(V,"gripv"));
 			bGrip			= (NULL!=strstr(V,"grip"));
-			
+			bHandguard		= (NULL!=strstr(V,"handguard"));
+			bPistolgrip		= (NULL!=strstr(V,"pistolgrip"));
 		}
 		for (u32 i=0; i<j; ++i)
 			if (::Random.randF(1.f) < p){
@@ -595,6 +598,10 @@ void CGameObject::spawn_supplies()
 						W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonGrip, bGrip);
 					if (W->m_gripv_status == ALife::eAddonAttachable)
 						W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonGripv, bGripv);
+					if (W->m_handguard_status == ALife::eAddonAttachable)
+						W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonHandguard, bHandguard);
+					if (W->m_pistolgrip_status == ALife::eAddonAttachable)
+						W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonPistolgrip, bPistolgrip);
 				}
 
 				NET_Packet					P;

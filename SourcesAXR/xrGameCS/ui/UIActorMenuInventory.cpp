@@ -27,6 +27,8 @@
 #include "../WeaponAddonStock1.h"
 #include "../WeaponAddonGripHorizontal.h"
 #include "../WeaponAddonGripVertical.h"
+#include "../WeaponAddonHandguard.h"
+#include "../WeaponAddonPistolGrip.h"
 #include "../Artefact.h"
 #include "../eatable_item.h"
 #include "../BottleItem.h"
@@ -1086,7 +1088,7 @@ void CUIActorMenu::PropertiesBoxForWeapon( CUICellItem* cell_item, PIItem item, 
 	{
 		if ( pWeapon->IsScopeAttached() )
 		{
-			m_UIPropertiesBox->AddItem( "st_detach_scope",  NULL, INVENTORY_DETACH_SCOPE_ADDON );
+			m_UIPropertiesBox->AddItem( "str_detach_scope",  NULL, INVENTORY_DETACH_SCOPE_ADDON );
 			b_show			= true;
 		}
 	}
@@ -1095,7 +1097,7 @@ void CUIActorMenu::PropertiesBoxForWeapon( CUICellItem* cell_item, PIItem item, 
 	{
 		if (pWeapon->IsGrenadeLauncherAttached())
 		{
-			m_UIPropertiesBox->AddItem("st_detach_gl", NULL, INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON);
+			m_UIPropertiesBox->AddItem("str_detach_gl", NULL, INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON);
 			b_show = true;
 		}
 	}
@@ -1104,7 +1106,7 @@ void CUIActorMenu::PropertiesBoxForWeapon( CUICellItem* cell_item, PIItem item, 
 	{
 		if ( pWeapon->IsSilencerAttached() )
 		{
-			m_UIPropertiesBox->AddItem( "st_detach_silencer",  NULL, INVENTORY_DETACH_SILENCER_ADDON );
+			m_UIPropertiesBox->AddItem( "str_detach_silencer",  NULL, INVENTORY_DETACH_SILENCER_ADDON );
 			b_show			= true;
 		}
 	}
@@ -1113,7 +1115,7 @@ void CUIActorMenu::PropertiesBoxForWeapon( CUICellItem* cell_item, PIItem item, 
 	{
 		if (pWeapon->IsGripAttached())
 		{
-			m_UIPropertiesBox->AddItem("st_detach_grip", NULL, INVENTORY_DETACH_GRIP_ADDON);
+			m_UIPropertiesBox->AddItem("str_detach_grip", NULL, INVENTORY_DETACH_GRIP_ADDON);
 			b_show = true;
 		}
 	}
@@ -1122,7 +1124,7 @@ void CUIActorMenu::PropertiesBoxForWeapon( CUICellItem* cell_item, PIItem item, 
 	{
 		if (pWeapon->IsGripvAttached())
 		{
-			m_UIPropertiesBox->AddItem("st_detach_grip_v", NULL, INVENTORY_DETACH_GRIPV_ADDON);
+			m_UIPropertiesBox->AddItem("str_detach_grip", NULL, INVENTORY_DETACH_GRIPV_ADDON);
 			b_show = true;
 		}
 	}
@@ -1131,7 +1133,25 @@ void CUIActorMenu::PropertiesBoxForWeapon( CUICellItem* cell_item, PIItem item, 
 	{
 		if (pWeapon->IsStockAttached())
 		{
-			m_UIPropertiesBox->AddItem("st_detach_stock", NULL, INVENTORY_DETACH_STOCK_ADDON);
+			m_UIPropertiesBox->AddItem("str_detach_stock", NULL, INVENTORY_DETACH_STOCK_ADDON);
+			b_show = true;
+		}
+	}
+
+	if (pWeapon->PistolgripAttachable())
+	{
+		if (pWeapon->IsPistolgripAttached())
+		{
+			m_UIPropertiesBox->AddItem("str_detach_pistolgrip", NULL, INVENTORY_DETACH_PISTOLGRIP_ADDON);
+			b_show = true;
+		}
+	}
+
+	if (pWeapon->HandguardAttachable())
+	{
+		if (pWeapon->IsHandguardAttached())
+		{
+			m_UIPropertiesBox->AddItem("str_detach_handguard", NULL, INVENTORY_DETACH_HANDGUARD_ADDON);
 			b_show = true;
 		}
 	}
@@ -1140,7 +1160,7 @@ void CUIActorMenu::PropertiesBoxForWeapon( CUICellItem* cell_item, PIItem item, 
 	{
 		if (pWeapon->IsLaserAttached())
 		{
-			m_UIPropertiesBox->AddItem("st_detach_laser", NULL, INVENTORY_DETACH_LASER_ADDON);
+			m_UIPropertiesBox->AddItem("str_detach_laser", NULL, INVENTORY_DETACH_LASER_ADDON);
 			b_show = true;
 		}
 	}
@@ -1149,7 +1169,7 @@ void CUIActorMenu::PropertiesBoxForWeapon( CUICellItem* cell_item, PIItem item, 
 	{
 		if (pWeapon->IsTacticalTorchAttached())
 		{
-			m_UIPropertiesBox->AddItem("st_detach_tactical_torch", NULL, INVENTORY_DETACH_TACTICAL_TORCH_ADDON);
+			m_UIPropertiesBox->AddItem("str_detach_tactical_torch", NULL, INVENTORY_DETACH_TACTICAL_TORCH_ADDON);
 			b_show = true;
 		}
 	}
@@ -1189,7 +1209,8 @@ void CUIActorMenu::PropertiesBoxForAddon( PIItem item, bool& b_show )
 	CStock*				pStock				= smart_cast<CStock*>			(item);
 	CHorGrip*			pHGrip				= smart_cast<CHorGrip*>			(item);
 	CVerGrip*			pVGrip				= smart_cast<CVerGrip*>			(item);
-
+	CHandguard*			pHandguard			= smart_cast<CHandguard*>		(item);
+	CPistolGrip*		pPistolgrip			= smart_cast<CPistolGrip*>		(item);
 	CInventory*			inv					= &m_pActorInvOwner->inventory();
 
 	if ( pScope )
@@ -1197,14 +1218,20 @@ void CUIActorMenu::PropertiesBoxForAddon( PIItem item, bool& b_show )
 		if ( inv->m_slots[PISTOL_SLOT].m_pIItem && inv->m_slots[PISTOL_SLOT].m_pIItem->CanAttach(pScope) )
 		{
 			PIItem tgt = inv->m_slots[PISTOL_SLOT].m_pIItem;
-			m_UIPropertiesBox->AddItem( "st_attach_scope_to_pistol",  (void*)tgt, INVENTORY_ATTACH_ADDON );
+			m_UIPropertiesBox->AddItem( "str_attach_to_wpn_pistol",  (void*)tgt, INVENTORY_ATTACH_ADDON );
 			b_show			= true;
 		}
 		if ( inv->m_slots[RIFLE_SLOT].m_pIItem && inv->m_slots[RIFLE_SLOT].m_pIItem->CanAttach(pScope) )
 		{
 			PIItem tgt = inv->m_slots[RIFLE_SLOT].m_pIItem;
-			m_UIPropertiesBox->AddItem( "st_attach_scope_to_rifle",  (void*)tgt, INVENTORY_ATTACH_ADDON );
+			m_UIPropertiesBox->AddItem( "str_attach_to_wpn_2",  (void*)tgt, INVENTORY_ATTACH_ADDON );
 			b_show			= true;
+		}
+		if (inv->m_slots[SMG_SLOT].m_pIItem && inv->m_slots[SMG_SLOT].m_pIItem->CanAttach(pScope))
+		{
+			PIItem tgt = inv->m_slots[SMG_SLOT].m_pIItem;
+			m_UIPropertiesBox->AddItem("str_attach_to_wpn_1", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			b_show = true;
 		}
 		return;
 	}
@@ -1214,19 +1241,19 @@ void CUIActorMenu::PropertiesBoxForAddon( PIItem item, bool& b_show )
 		if ( inv->m_slots[PISTOL_SLOT].m_pIItem && inv->m_slots[PISTOL_SLOT].m_pIItem->CanAttach(pSilencer) )
 		{
 			PIItem tgt = inv->m_slots[PISTOL_SLOT].m_pIItem;
-			m_UIPropertiesBox->AddItem( "st_attach_silencer_to_pistol",  (void*)tgt, INVENTORY_ATTACH_ADDON );
+			m_UIPropertiesBox->AddItem( "str_attach_to_wpn_pistol",  (void*)tgt, INVENTORY_ATTACH_ADDON );
 			b_show			= true;
 		}
 		if ( inv->m_slots[RIFLE_SLOT].m_pIItem && inv->m_slots[RIFLE_SLOT].m_pIItem->CanAttach(pSilencer) )
 		{
 			PIItem tgt = inv->m_slots[RIFLE_SLOT].m_pIItem;
-			m_UIPropertiesBox->AddItem( "st_attach_silencer_to_rifle",  (void*)tgt, INVENTORY_ATTACH_ADDON );
+			m_UIPropertiesBox->AddItem( "str_attach_to_wpn_2",  (void*)tgt, INVENTORY_ATTACH_ADDON );
 			b_show			= true;
 		}
 		if (inv->m_slots[SMG_SLOT].m_pIItem && inv->m_slots[SMG_SLOT].m_pIItem->CanAttach(pSilencer))
 		{
 			PIItem tgt = inv->m_slots[SMG_SLOT].m_pIItem;
-			m_UIPropertiesBox->AddItem("st_attach_silencer_to_rifle", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			m_UIPropertiesBox->AddItem("str_attach_to_wpn_1", (void*)tgt, INVENTORY_ATTACH_ADDON);
 			b_show = true;
 		}
 		return;
@@ -1237,61 +1264,123 @@ void CUIActorMenu::PropertiesBoxForAddon( PIItem item, bool& b_show )
 		if ( inv->m_slots[RIFLE_SLOT].m_pIItem && inv->m_slots[RIFLE_SLOT].m_pIItem->CanAttach(pGrenadeLauncher) )
 		{
 			PIItem tgt = inv->m_slots[RIFLE_SLOT].m_pIItem;
-			m_UIPropertiesBox->AddItem( "st_attach_gl_to_rifle",  (void*)tgt, INVENTORY_ATTACH_ADDON );
+			m_UIPropertiesBox->AddItem( "str_attach_to_wpn_2",  (void*)tgt, INVENTORY_ATTACH_ADDON );
 			b_show			= true;
 		}
 		if (inv->m_slots[SMG_SLOT].m_pIItem && inv->m_slots[SMG_SLOT].m_pIItem->CanAttach(pGrenadeLauncher))
 		{
 			PIItem tgt = inv->m_slots[SMG_SLOT].m_pIItem;
-			m_UIPropertiesBox->AddItem("st_attach_gl_to_rifle", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			m_UIPropertiesBox->AddItem("str_attach_to_wpn_1", (void*)tgt, INVENTORY_ATTACH_ADDON);
 			b_show = true;
 		}
 	}
 
 	if (pStock)
 	{
+		if (inv->m_slots[PISTOL_SLOT].m_pIItem && inv->m_slots[PISTOL_SLOT].m_pIItem->CanAttach(pStock))
+		{
+			PIItem tgt = inv->m_slots[PISTOL_SLOT].m_pIItem;
+			m_UIPropertiesBox->AddItem("str_attach_to_wpn_pistol", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			b_show = true;
+		}
 		if (inv->m_slots[RIFLE_SLOT].m_pIItem && inv->m_slots[RIFLE_SLOT].m_pIItem->CanAttach(pStock))
 		{
 			PIItem tgt = inv->m_slots[RIFLE_SLOT].m_pIItem;
-			m_UIPropertiesBox->AddItem("st_attach_stock_to_rifle", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			m_UIPropertiesBox->AddItem("str_attach_to_wpn_2", (void*)tgt, INVENTORY_ATTACH_ADDON);
 			b_show = true;
 		}
 		if (inv->m_slots[SMG_SLOT].m_pIItem && inv->m_slots[SMG_SLOT].m_pIItem->CanAttach(pStock))
 		{
 			PIItem tgt = inv->m_slots[SMG_SLOT].m_pIItem;
-			m_UIPropertiesBox->AddItem("st_attach_stock_to_rifle", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			m_UIPropertiesBox->AddItem("str_attach_to_wpn_1", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			b_show = true;
+		}
+	}
+
+	if (pPistolgrip)
+	{
+		if (inv->m_slots[PISTOL_SLOT].m_pIItem && inv->m_slots[PISTOL_SLOT].m_pIItem->CanAttach(pPistolgrip))
+		{
+			PIItem tgt = inv->m_slots[PISTOL_SLOT].m_pIItem;
+			m_UIPropertiesBox->AddItem("str_attach_to_wpn_pistol", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			b_show = true;
+		}
+		if (inv->m_slots[RIFLE_SLOT].m_pIItem && inv->m_slots[RIFLE_SLOT].m_pIItem->CanAttach(pPistolgrip))
+		{
+			PIItem tgt = inv->m_slots[RIFLE_SLOT].m_pIItem;
+			m_UIPropertiesBox->AddItem("str_attach_to_wpn_2", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			b_show = true;
+		}
+		if (inv->m_slots[SMG_SLOT].m_pIItem && inv->m_slots[SMG_SLOT].m_pIItem->CanAttach(pPistolgrip))
+		{
+			PIItem tgt = inv->m_slots[SMG_SLOT].m_pIItem;
+			m_UIPropertiesBox->AddItem("str_attach_to_wpn_1", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			b_show = true;
+		}
+	}
+
+	if (pHandguard)
+	{
+		if (inv->m_slots[PISTOL_SLOT].m_pIItem && inv->m_slots[PISTOL_SLOT].m_pIItem->CanAttach(pHandguard))
+		{
+			PIItem tgt = inv->m_slots[PISTOL_SLOT].m_pIItem;
+			m_UIPropertiesBox->AddItem("str_attach_to_wpn_pistol", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			b_show = true;
+		}
+		if (inv->m_slots[RIFLE_SLOT].m_pIItem && inv->m_slots[RIFLE_SLOT].m_pIItem->CanAttach(pHandguard))
+		{
+			PIItem tgt = inv->m_slots[RIFLE_SLOT].m_pIItem;
+			m_UIPropertiesBox->AddItem("str_attach_to_wpn_2", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			b_show = true;
+		}
+		if (inv->m_slots[SMG_SLOT].m_pIItem && inv->m_slots[SMG_SLOT].m_pIItem->CanAttach(pHandguard))
+		{
+			PIItem tgt = inv->m_slots[SMG_SLOT].m_pIItem;
+			m_UIPropertiesBox->AddItem("str_attach_to_wpn_1", (void*)tgt, INVENTORY_ATTACH_ADDON);
 			b_show = true;
 		}
 	}
 
 	if (pHGrip)
 	{
+		if (inv->m_slots[PISTOL_SLOT].m_pIItem && inv->m_slots[PISTOL_SLOT].m_pIItem->CanAttach(pHGrip))
+		{
+			PIItem tgt = inv->m_slots[PISTOL_SLOT].m_pIItem;
+			m_UIPropertiesBox->AddItem("str_attach_to_wpn_pistol", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			b_show = true;
+		}
 		if (inv->m_slots[RIFLE_SLOT].m_pIItem && inv->m_slots[RIFLE_SLOT].m_pIItem->CanAttach(pHGrip))
 		{
 			PIItem tgt = inv->m_slots[RIFLE_SLOT].m_pIItem;
-			m_UIPropertiesBox->AddItem("st_attach_grip_to_rifle", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			m_UIPropertiesBox->AddItem("str_attach_to_wpn_2", (void*)tgt, INVENTORY_ATTACH_ADDON);
 			b_show = true;
 		}
 		if (inv->m_slots[SMG_SLOT].m_pIItem && inv->m_slots[SMG_SLOT].m_pIItem->CanAttach(pHGrip))
 		{
 			PIItem tgt = inv->m_slots[SMG_SLOT].m_pIItem;
-			m_UIPropertiesBox->AddItem("st_attach_grip_to_rifle", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			m_UIPropertiesBox->AddItem("str_attach_to_wpn_1", (void*)tgt, INVENTORY_ATTACH_ADDON);
 			b_show = true;
 		}
 	}
 
 	if (pVGrip)
 	{
+		if (inv->m_slots[PISTOL_SLOT].m_pIItem && inv->m_slots[PISTOL_SLOT].m_pIItem->CanAttach(pVGrip))
+		{
+			PIItem tgt = inv->m_slots[PISTOL_SLOT].m_pIItem;
+			m_UIPropertiesBox->AddItem("str_attach_to_wpn_pistol", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			b_show = true;
+		}
 		if (inv->m_slots[RIFLE_SLOT].m_pIItem && inv->m_slots[RIFLE_SLOT].m_pIItem->CanAttach(pVGrip))
 		{
 			PIItem tgt = inv->m_slots[RIFLE_SLOT].m_pIItem;
-			m_UIPropertiesBox->AddItem("st_attach_grip_v_to_rifle", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			m_UIPropertiesBox->AddItem("str_attach_to_wpn_2", (void*)tgt, INVENTORY_ATTACH_ADDON);
 			b_show = true;
 		}
 		if (inv->m_slots[SMG_SLOT].m_pIItem && inv->m_slots[SMG_SLOT].m_pIItem->CanAttach(pVGrip))
 		{
 			PIItem tgt = inv->m_slots[SMG_SLOT].m_pIItem;
-			m_UIPropertiesBox->AddItem("st_attach_grip_v_to_rifle", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			m_UIPropertiesBox->AddItem("str_attach_to_wpn_1", (void*)tgt, INVENTORY_ATTACH_ADDON);
 			b_show = true;
 		}
 	}
@@ -1301,19 +1390,19 @@ void CUIActorMenu::PropertiesBoxForAddon( PIItem item, bool& b_show )
 		if (inv->m_slots[PISTOL_SLOT].m_pIItem && inv->m_slots[PISTOL_SLOT].m_pIItem->CanAttach(pLaser))
 		{
 			PIItem tgt = inv->m_slots[PISTOL_SLOT].m_pIItem;
-			m_UIPropertiesBox->AddItem("st_attach_laser_to_pistol", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			m_UIPropertiesBox->AddItem("str_attach_to_wpn_pistol", (void*)tgt, INVENTORY_ATTACH_ADDON);
 			b_show = true;
 		}
 		if (inv->m_slots[RIFLE_SLOT].m_pIItem && inv->m_slots[RIFLE_SLOT].m_pIItem->CanAttach(pLaser))
 		{
 			PIItem tgt = inv->m_slots[RIFLE_SLOT].m_pIItem;
-			m_UIPropertiesBox->AddItem("st_attach_laser_to_rifle", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			m_UIPropertiesBox->AddItem("str_attach_to_wpn_2", (void*)tgt, INVENTORY_ATTACH_ADDON);
 			b_show = true;
 		}
 		if (inv->m_slots[SMG_SLOT].m_pIItem && inv->m_slots[SMG_SLOT].m_pIItem->CanAttach(pLaser))
 		{
 			PIItem tgt = inv->m_slots[SMG_SLOT].m_pIItem;
-			m_UIPropertiesBox->AddItem("st_attach_laser_to_rifle", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			m_UIPropertiesBox->AddItem("str_attach_to_wpn_1", (void*)tgt, INVENTORY_ATTACH_ADDON);
 			b_show = true;
 		}
 	}
@@ -1323,19 +1412,19 @@ void CUIActorMenu::PropertiesBoxForAddon( PIItem item, bool& b_show )
 		if (inv->m_slots[PISTOL_SLOT].m_pIItem && inv->m_slots[PISTOL_SLOT].m_pIItem->CanAttach(pTacticalTorch))
 		{
 			PIItem tgt = inv->m_slots[PISTOL_SLOT].m_pIItem;
-			m_UIPropertiesBox->AddItem("st_attach_tactical_torch_to_pistol", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			m_UIPropertiesBox->AddItem("str_attach_to_wpn_pistol", (void*)tgt, INVENTORY_ATTACH_ADDON);
 			b_show = true;
 		}
 		if (inv->m_slots[RIFLE_SLOT].m_pIItem && inv->m_slots[RIFLE_SLOT].m_pIItem->CanAttach(pTacticalTorch))
 		{
 			PIItem tgt = inv->m_slots[RIFLE_SLOT].m_pIItem;
-			m_UIPropertiesBox->AddItem("st_attach_tactical_torch_to_rifle", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			m_UIPropertiesBox->AddItem("str_attach_to_wpn_2", (void*)tgt, INVENTORY_ATTACH_ADDON);
 			b_show = true;
 		}
 		if (inv->m_slots[SMG_SLOT].m_pIItem && inv->m_slots[SMG_SLOT].m_pIItem->CanAttach(pTacticalTorch))
 		{
 			PIItem tgt = inv->m_slots[SMG_SLOT].m_pIItem;
-			m_UIPropertiesBox->AddItem("st_attach_tactical_torch_to_rifle", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			m_UIPropertiesBox->AddItem("str_attach_to_wpn_1", (void*)tgt, INVENTORY_ATTACH_ADDON);
 			b_show = true;
 		}
 	}
@@ -1915,6 +2004,18 @@ void CUIActorMenu::ProcessPropertiesBoxClicked( CUIWindow* w, void* d )
 		if (weapon)
 		{
 			DetachAddon(weapon->GetStockName().c_str());
+		}
+		break;
+	case INVENTORY_DETACH_PISTOLGRIP_ADDON:
+		if (weapon)
+		{
+			DetachAddon(weapon->GetPistolgripName().c_str());
+		}
+		break;
+	case INVENTORY_DETACH_HANDGUARD_ADDON:
+		if (weapon)
+		{
+			DetachAddon(weapon->GetHandguardName().c_str());
 		}
 		break;
 	case INVENTORY_DETACH_LASER_ADDON:

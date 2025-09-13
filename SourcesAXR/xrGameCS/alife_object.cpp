@@ -67,14 +67,16 @@ VERIFY(xr_strlen(itmSection));
 if (pSettings->section_exist(itmSection))
 {
 u32 spawn_count = 1;
-bool bScope = false;
-bool bSilencer = false;
-bool bLauncher = false;
-bool bLaser = false;
+bool bScope			= false;
+bool bSilencer		= false;
+bool bLauncher		= false;
+bool bLaser			= false;
 bool bTacticalTorch = false;
-bool bStock = false;
-bool bGrip = false;
-bool bGripv = false;
+bool bStock			= false;
+bool bGrip			= false;
+bool bGripv			= false;
+bool bHandguard		= false;
+bool bPistolgrip	= false;
 
 float f_cond = 1.0f;
 int i_ammo_type = 0, n = 0;
@@ -96,14 +98,16 @@ spawn_count = 1;
 if (NULL != strstr(V, "cond="))
 f_cond = (float)atof(strstr(V, "cond=") + 5);
 
-bScope = (NULL != strstr(V, "scope"));
-bSilencer = (NULL != strstr(V, "silencer"));
-bLauncher = (NULL != strstr(V, "launcher"));
-bLaser = (NULL != strstr(V, "laser"));
-bTacticalTorch = (NULL != strstr(V, "torch"));
-bStock = (NULL != strstr(V, "stock"));
-bGrip = (NULL != strstr(V, "grip"));
-bGripv = (NULL != strstr(V, "gripv"));
+bScope			= (NULL != strstr(V, "scope"));
+bSilencer		= (NULL != strstr(V, "silencer"));
+bLauncher		= (NULL != strstr(V, "launcher"));
+bLaser			= (NULL != strstr(V, "laser"));
+bTacticalTorch	= (NULL != strstr(V, "torch"));
+bStock			= (NULL != strstr(V, "stock"));
+bGrip			= (NULL != strstr(V, "grip"));
+bGripv			= (NULL != strstr(V, "gripv"));
+bHandguard		= (NULL != strstr(V, "handguard"));
+bPistolgrip		= (NULL != strstr(V, "pistolgrip"));
 
 if (NULL != strstr(V, "ammo_type="))
 i_ammo_type = atoi(strstr(V, "ammo_type=") + 10);
@@ -137,6 +141,10 @@ if (W->m_grip_status == ALife::eAddonAttachable)
 	W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonGrip, bGrip);
 if (W->m_gripv_status == ALife::eAddonAttachable)
 	W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonGripv, bGripv);
+if (W->m_handguard_status == ALife::eAddonAttachable)
+	W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonHandguard, bHandguard);
+if (W->m_pistolgrip_status == ALife::eAddonAttachable)
+	W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonPistolgrip, bPistolgrip);
 
 //spawn count box(es) of the correct ammo for weapon
 if (pSettings->line_exist(itmSection, "ammo_class"))
@@ -185,14 +193,17 @@ VERIFY(xr_strlen(N));
 if (pSettings->section_exist(N)) //Alundaio: verify item section exists!
 {
 float f_cond = 1.0f;
-bool bScope = false;
-bool bSilencer = false;
-bool bLauncher = false;
-bool bLaser = false;
-bool bTacticalTorch = false;
-bool bStock = false;
-bool bGrip = false;
-bool bGripv = false;
+bool bScope				= false;
+bool bSilencer			= false;
+bool bLauncher			= false;
+bool bLaser				= false;
+bool bTacticalTorch		= false;
+bool bStock				= false;
+bool bGrip				= false;
+bool bGripv				= false;
+bool bHandguard			= false;
+bool bPistolgrip		= false;
+
 int cur_scope = 0;
 
 j = 1;
@@ -205,14 +216,16 @@ j = atoi(_GetItem(V, 0, buf));
 if (!j)
 j = 1;
 
-bScope = nullptr != strstr(V, "scope");
-bSilencer = nullptr != strstr(V, "silencer");
-bLauncher = nullptr != strstr(V, "launcher");
-bLaser = nullptr != strstr(V, "laser");
-bTacticalTorch = nullptr != strstr(V, "torch");
-bStock = nullptr != strstr(V, "stock");
-bGrip = nullptr != strstr(V, "grip");
-bGripv = nullptr != strstr(V, "gripv");
+bScope			= nullptr != strstr(V, "scope");
+bSilencer		= nullptr != strstr(V, "silencer");
+bLauncher		= nullptr != strstr(V, "launcher");
+bLaser			= nullptr != strstr(V, "laser");
+bTacticalTorch	= nullptr != strstr(V, "torch");
+bStock			= nullptr != strstr(V, "stock");
+bGrip			= nullptr != strstr(V, "grip");
+bGripv			= nullptr != strstr(V, "gripv");
+bHandguard		= nullptr != strstr(V, "handguard");
+bPistolgrip		= nullptr != strstr(V, "pistolgrip");
 
 // probability
 if (nullptr != strstr(V, "prob="))
@@ -252,6 +265,10 @@ if (W->m_grip_status == ALife::eAddonAttachable)
 	W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonGrip, bGrip);
 if (W->m_gripv_status == ALife::eAddonAttachable)
 	W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonGripv, bGripv);
+if (W->m_handguard_status == ALife::eAddonAttachable)
+	W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonHandguard, bHandguard);
+if (W->m_pistolgrip_status == ALife::eAddonAttachable)
+	W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonPistolgrip, bPistolgrip);
 }
 CSE_ALifeInventoryItem* IItem = smart_cast<CSE_ALifeInventoryItem*>(E);
 if (IItem)

@@ -113,6 +113,8 @@
 #	include "WeaponAddonStock1.h"
 #	include "WeaponAddonGripHorizontal.h"
 #	include "WeaponAddonGripVertical.h"
+#	include "WeaponAddonHandguard.h"
+#	include "WeaponAddonPistolGrip.h"
 
 #	include "bolt.h"
 #	include "medkit.h"
@@ -334,6 +336,8 @@ void CObjectFactory::register_classes	()
 	ADD(CStock					,CSE_ALifeItem					,CLSID_OBJECT_W_STOCK			,"wpn_stock");
 	ADD(CHorGrip				,CSE_ALifeItem					,CLSID_OBJECT_W_HOR_GRIP		,"wpn_grip_horizontal");
 	ADD(CVerGrip				,CSE_ALifeItem					,CLSID_OBJECT_W_VER_GRIP		,"wpn_grip_vertical");
+	ADD(CHandguard				,CSE_ALifeItem					,CLSID_OBJECT_W_HANDGUARD		,"wpn_handguard");
+	ADD(CPistolGrip				,CSE_ALifeItem					,CLSID_OBJECT_W_PISTOLGRIP		,"wpn_pistolgrip");
 
 	// Inventory
 	ADD(CBolt					,CSE_ALifeItemBolt				,CLSID_IITEM_BOLT				,"obj_bolt");

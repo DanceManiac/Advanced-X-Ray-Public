@@ -78,8 +78,10 @@ public:
 	void					LoadTacticalTorchLightParams(LPCSTR section);
 	void					LoadGrenadeLauncherParams(LPCSTR section);
 	void					LoadStockParams(LPCSTR section);
+	void					LoadPistolgripParams(LPCSTR section);
 	void					LoadGripParams(LPCSTR section);
 	void					LoadGripvParams(LPCSTR section);
+	void					LoadHandguardParams(LPCSTR section);
 	void					LoadOverheatLightParams(LPCSTR section);
 	void					GetZoomData(const float scope_factor, float& delta, float& min_zoom_factor);
 	void					ZoomDynamicMod(bool bIncrement, bool bForceLimit);
@@ -233,6 +235,8 @@ public:
 			bool IsStockAttached							() const; 
 			bool IsGripAttached								() const;
 			bool IsGripvAttached							() const;
+			bool IsHandguardAttached						() const;
+			bool IsPistolgripAttached						() const;
 
 	virtual bool GrenadeLauncherAttachable					();
 	virtual bool ScopeAttachable							();
@@ -242,6 +246,8 @@ public:
 	virtual bool StockAttachable							();
 	virtual bool GripAttachable								();
 	virtual bool GripvAttachable							();
+	virtual bool HandguardAttachable						();
+	virtual bool PistolgripAttachable						();
 
 	ALife::EWeaponAddonStatus	get_GrenadeLauncherStatus	() const { return m_eGrenadeLauncherStatus; }
 	ALife::EWeaponAddonStatus	get_ScopeStatus				() const { return m_eScopeStatus; }
@@ -251,6 +257,8 @@ public:
 	ALife::EWeaponAddonStatus	get_StockStatus				() const { return m_eStockStatus; }
 	ALife::EWeaponAddonStatus	get_GripStatus				() const { return m_eGripStatus; }
 	ALife::EWeaponAddonStatus	get_GripvStatus				() const { return m_eGripvStatus; }
+	ALife::EWeaponAddonStatus	get_HandguardStatus			() const { return m_eHandguardStatus; }
+	ALife::EWeaponAddonStatus	get_PistolgripStatus		() const { return m_ePistolgripStatus; }
 
 	virtual bool UseScopeTexture() {return true;};
 
@@ -278,7 +286,11 @@ public:
 	int	GetGripY								() { return m_iGripY * UI().get_icons_kx(); }
 	int	GetGripvX								() { return m_iGripvX * UI().get_icons_kx(); }
 	int	GetGripvY								() { return m_iGripvY * UI().get_icons_kx(); }
-
+	int	GetHandguardX							() { return m_iHandguardX * UI().get_icons_kx(); }
+	int	GetHandguardY							() { return m_iHandguardY * UI().get_icons_kx(); }
+	int	GetPistolgripX							() { return m_iPistolgripX * UI().get_icons_kx(); }
+	int	GetPistolgripY							() { return m_iPistolgripY * UI().get_icons_kx(); }
+	
 	const shared_str& GetGrenadeLauncherName	() const {return m_sGrenadeLauncherName;}
 	const shared_str GetScopeName				() const;
 	const shared_str& GetSilencerName			() const {return m_sSilencerName;}
@@ -287,6 +299,8 @@ public:
 	const shared_str& GetStockName				() const { return m_sStockName; }
 	const shared_str& GetGripName				() const { return m_sGripName; }
 	const shared_str& GetGripvName				() const { return m_sGripvName; }
+	const shared_str& GetHandguardName			() const { return m_sHandguardName; }
+	const shared_str& GetPistolgripName			() const { return m_sPistolgripName; }
 
 	IC void	ForceUpdateAmmo						()		{ m_dwAmmoCurrentCalcFrame = 0; }
 
@@ -313,6 +327,8 @@ protected:
 	ALife::EWeaponAddonStatus	m_eStockStatus;
 	ALife::EWeaponAddonStatus	m_eGripStatus;
 	ALife::EWeaponAddonStatus	m_eGripvStatus;
+	ALife::EWeaponAddonStatus	m_eHandguardStatus;
+	ALife::EWeaponAddonStatus	m_ePistolgripStatus;
 
 	//названия секций подключаемых аддонов
 	shared_str		m_sScopeName;
@@ -323,6 +339,8 @@ protected:
 	shared_str		m_sStockName;
 	shared_str		m_sGripName;
 	shared_str		m_sGripvName;
+	shared_str		m_sHandguardName;
+	shared_str		m_sPistolgripName;
 
 	shared_str		m_sScopeAttachSection{};
 	shared_str		m_sSilencerAttachSection{};
@@ -332,9 +350,12 @@ protected:
 	shared_str		m_sStockAttachSection{};
 	shared_str		m_sGripAttachSection{};
 	shared_str		m_sGripvAttachSection{};
+	shared_str		m_sHandguardAttachSection{};
+	shared_str		m_sPistolgripAttachSection{};
 
 	shared_str		m_sWpn_scope_bone;
 	shared_str		m_sWpn_silencer_bone;
+	shared_str		m_sWpn_silencer2_bone;
 	shared_str		m_sWpn_launcher_bone;
 	shared_str		m_sWpn_laser_bone;
 	shared_str		m_sWpn_flashlight_bone;
@@ -346,6 +367,8 @@ protected:
 	shared_str		m_sWpn_stock_bone;
 	shared_str		m_sWpn_grip_bone;
 	shared_str		m_sWpn_gripv_bone;
+	shared_str		m_sWpn_handguard_bone;
+	shared_str		m_sWpn_pistolgrip_bone;
 
 	xr_vector<shared_str> m_all_scope_bones;
 	shared_str		m_cur_scope_bone;
@@ -364,6 +387,8 @@ protected:
 	int	m_iStockX, m_iStockY; 
 	int	m_iGripX, m_iGripY;
 	int	m_iGripvX, m_iGripvY;
+	int	m_iHandguardX, m_iHandguardY;
+	int	m_iPistolgripX, m_iPistolgripY;
 
 	RStringVec		m_defShownBones;
 	RStringVec		m_defHiddenBones;
@@ -378,6 +403,11 @@ protected:
 	RStringVec		m_defHiddenBonesScopePermanent2;
 	RStringVec		m_defOverheatinBarrel;
 	RStringVec		m_deleteStockBone;
+	RStringVec		m_deleteHandguardBone;
+	RStringVec		m_deleteHandguardDelSilencerBone;
+	RStringVec		m_deletePistolgripBone;
+	RStringVec		m_glremoveBone;
+	RStringVec		m_glshowBone;
 
 public:
 
@@ -502,7 +532,7 @@ protected:
 	Fmatrix					m_mSafetyRotation;
 
 	// Временные блокировки аддонов
-	bool					m_bBlockSilencerWithGL, m_bLaserBlockedByAddon, m_bFlashlightBlockedByAddon, m_bBlockGripWithGrip, m_bStockBlockedByAddon, m_bGripHBlockedByAddon, m_bGripVBlockedByAddon;
+	bool					m_bBlockSilencerWithGL, m_bLaserBlockedByAddon, m_bFlashlightBlockedByAddon, m_bBlockGripWithGrip, m_bStockBlockedByAddon, m_bPistolgripBlockedByAddon, m_bHandguardBlockedByAddon, m_bGripHBlockedByAddon, m_bGripVBlockedByAddon;
 
 	float					m_fOverheatingSubRpm, m_fOverheatingMisfire, m_fOverheatingCond;
 
@@ -721,7 +751,9 @@ public:
 
 	xr_vector<shared_str>	m_availableLasers{};
 	xr_vector<shared_str>	m_availableStocks{};
+	xr_vector<shared_str>	m_availableHandguards{};
 	xr_vector<shared_str>	m_availableFlashlights{};
+	xr_vector<shared_str>	m_availablePistolgrips{};
 
 	CWeaponAmmo*			m_pCurrentAmmo;
 	u32						m_ammoType;

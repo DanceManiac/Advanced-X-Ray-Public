@@ -36,7 +36,7 @@ class CUIWeaponCellItem :public CUIInventoryCellItem
 {
 	typedef  CUIInventoryCellItem	inherited;
 public:
-	enum eAddonType{	eSilencer=0, eScope, eLauncher, eLaser, eTorch, eStock, eGrip, eGripv, eMaxAddon};
+	enum eAddonType{	eSilencer=0, eScope, eLauncher, eLaser, eTorch, eStock, eGrip, eGripv, eHandguard, ePistolgrip, eMaxAddon};
 protected:
 	CUIStatic*					m_addons					[eMaxAddon];
 	Fvector2					m_addon_offset				[eMaxAddon];
@@ -53,6 +53,8 @@ protected:
 	bool						is_stock					();
 	bool						is_grip						();
 	bool						is_gripv					();
+	bool						is_handguard				();
+	bool						is_pistolgrip				();
 
 public:
 								CUIWeaponCellItem			(CWeapon* itm);

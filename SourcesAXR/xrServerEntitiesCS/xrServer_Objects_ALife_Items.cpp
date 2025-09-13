@@ -505,6 +505,8 @@ CSE_ALifeItemWeapon::CSE_ALifeItemWeapon	(LPCSTR caSection) : CSE_ALifeItem(caSe
 	m_grip_status				= (EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, s_name, "grip_h_status", 0);
 	m_gripv_status				= (EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, s_name, "grip_v_status", 0);
 	m_stock_status				= (EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, s_name, "stock_status", 0);
+	m_pistolgrip_status			= (EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, s_name, "pistolgrip_status", 0);
+	m_handguard_status			= (EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, s_name, "handguard_status", 0);
 	m_laser_designator_status	= (EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, s_name, "laser_designator_status", 0);
 	m_tactical_torch_status		= (EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, s_name, "tactical_torch_status", 0);
 	m_ef_main_weapon_type		= READ_IF_EXISTS(pSettings,r_u32,caSection,"ef_main_weapon_type",u32(-1));
@@ -666,7 +668,7 @@ void CSE_ALifeItemWeapon::FillProps			(LPCSTR pref, PropItemVec& items)
 	if (m_tactical_torch_status == ALife::eAddonAttachable)
 		PHelper().CreateFlag8	(items, PrepareKey(pref, *s_name, "Addons\\TacticalTorch"), &m_addon_flags, eWeaponAddonTacticalTorch);
 
-	if (m_stock_designator_status == ALife::eAddonAttachable)
+	if (m_stock_status == ALife::eAddonAttachable)
 		PHelper().CreateFlag8(items, PrepareKey(pref, *s_name, "Addons\\Stock"), &m_addon_flags, eWeaponAddonStock);
 
 	if (m_grip_status == ALife::eAddonAttachable)
@@ -674,6 +676,13 @@ void CSE_ALifeItemWeapon::FillProps			(LPCSTR pref, PropItemVec& items)
 
 	if (m_gripv_status == ALife::eAddonAttachable)
 		PHelper().CreateFlag8(items, PrepareKey(pref, *s_name, "Addons\\Gripv"), &m_addon_flags, eWeaponAddonGripv);
+
+	if (m_handguard_status == ALife::eAddonAttachable)
+		PHelper().CreateFlag8(items, PrepareKey(pref, *s_name, "Addons\\Handguard"), &m_addon_flags, eWeaponAddonHandguard);
+
+	if (m_pistolgrip_status == ALife::eAddonAttachable)
+		PHelper().CreateFlag8(items, PrepareKey(pref, *s_name, "Addons\\Pistolgrip"), &m_addon_flags, eWeaponAddonPistolgrip);
+
 }
 #endif // #ifndef XRGAME_EXPORTS
 

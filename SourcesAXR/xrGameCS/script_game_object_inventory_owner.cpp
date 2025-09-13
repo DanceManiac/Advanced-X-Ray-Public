@@ -1322,6 +1322,28 @@ int CScriptGameObject::Weapon_Stock_Status()
 	return (int)weapon->get_StockStatus();
 }
 
+int CScriptGameObject::Weapon_Pistolgrip_Status()
+{
+	CWeapon* weapon = smart_cast<CWeapon*>(&object());
+	if (!weapon)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CWeapon : cannot access class member Weapon_Pistolgrip_Status!");
+		return								(false);
+	}
+	return (int)weapon->get_PistolgripStatus();
+}
+
+int CScriptGameObject::Weapon_Handguard_Status()
+{
+	CWeapon* weapon = smart_cast<CWeapon*>(&object());
+	if (!weapon)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CWeapon : cannot access class member Weapon_Handguard_Status!");
+		return								(false);
+	}
+	return (int)weapon->get_HandguardStatus();
+}
+
 int CScriptGameObject::Weapon_LaserDesignator_Status()
 {
 	CWeapon* weapon = smart_cast<CWeapon*>(&object());
@@ -1408,6 +1430,28 @@ bool CScriptGameObject::Weapon_IsStockAttached()
 		return								(false);
 	}
 	return weapon->IsStockAttached();
+}
+
+bool CScriptGameObject::Weapon_IsPistolgripAttached()
+{
+	CWeapon* weapon = smart_cast<CWeapon*>(&object());
+	if (!weapon)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CWeapon : cannot access class member Weapon_IsPistolgripAttached!");
+		return								(false);
+	}
+	return weapon->IsPistolgripAttached();
+}
+
+bool CScriptGameObject::Weapon_IsHandguardAttached()
+{
+	CWeapon* weapon = smart_cast<CWeapon*>(&object());
+	if (!weapon)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CWeapon : cannot access class member Weapon_IsHandguardAttached!");
+		return								(false);
+	}
+	return weapon->IsHandguardAttached();
 }
 
 bool CScriptGameObject::Weapon_IsLaserDesignatorAttached()

@@ -55,6 +55,8 @@
 #include "WeaponAddonStock1.h"
 #include "WeaponAddonGripHorizontal.h"
 #include "WeaponAddonGripVertical.h"
+#include "WeaponAddonHandguard.h"
+#include "WeaponAddonPistolGrip.h"
 
 class CWeapon;
 
@@ -384,8 +386,10 @@ TEST_OBJECT_CLASS(CScriptGameObject::IsScope,			CScope)
 TEST_OBJECT_CLASS(CScriptGameObject::IsSilencer,		CSilencer)
 TEST_OBJECT_CLASS(CScriptGameObject::IsGrenadeLauncher, CGrenadeLauncher)
 TEST_OBJECT_CLASS(CScriptGameObject::IsStock,			CStock)
+TEST_OBJECT_CLASS(CScriptGameObject::IsPistolgrip,		CPistolGrip)
 TEST_OBJECT_CLASS(CScriptGameObject::IsGrip,			CHorGrip)
 TEST_OBJECT_CLASS(CScriptGameObject::IsGripv,			CVerGrip)
+TEST_OBJECT_CLASS(CScriptGameObject::IsHandguard,		CHandguard)
 TEST_OBJECT_CLASS(CScriptGameObject::IsLaserDesignator, CLaserDesignator)
 TEST_OBJECT_CLASS(CScriptGameObject::IsTacticalTorch,	CTacticalTorch)
 TEST_OBJECT_CLASS(CScriptGameObject::IsWeaponMagazined, CWeaponMagazined)

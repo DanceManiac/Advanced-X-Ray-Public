@@ -7376,6 +7376,12 @@
     <ClInclude Include="WeaponAddonStock1.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\Stock</Filter>
     </ClInclude>
+    <ClInclude Include="WeaponAddonPistolGrip.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\Pistolgrip</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponAddonHandguard.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\Handguard</Filter>
+    </ClInclude>
     <ClInclude Include="LaserDesignator.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\LaserDesignator</Filter>
     </ClInclude>
@@ -11052,6 +11058,12 @@
     </ClCompile>
     <ClCompile Include="WeaponAddonStock1.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\Stock</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponAddonPistolGrip.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\Pistolgrip</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponAddonHandguard.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\Handguard</Filter>
     </ClCompile>
     <ClCompile Include="LaserDesignator.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\LaserDesignator</Filter>
