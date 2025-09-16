@@ -57,6 +57,7 @@ public:
 	bool					m_bSecondHelmetEnabled;
 	bool					m_b_HasGlass;
 	bool					m_bUseFilter;
+	bool					m_bFilterProtectionDropsInstantly;
 	bool					m_bUseAttach;
 
 	shared_str				m_sShaderNightVisionSect;

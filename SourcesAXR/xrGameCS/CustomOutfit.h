@@ -90,6 +90,7 @@ public:
 	bool					bIsSecondHelmetAvaliable;
 	bool					m_b_HasGlass;
 	bool					m_bUseFilter;
+	bool					m_bFilterProtectionDropsInstantly;
 	bool					m_bHasLSS;
 
 	shared_str				m_sShaderNightVisionSect;
