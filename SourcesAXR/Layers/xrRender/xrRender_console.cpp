@@ -216,7 +216,7 @@ float		ps_r__WallmarkSHIFT_V		= 0.0001f;
 
 float		ps_r__GLOD_ssa_start		= 256.f	;
 float		ps_r__GLOD_ssa_end			=  64.f	;
-float		ps_r__LOD					= READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "r__tf_mipbias", 0.75f);
+float		ps_r__LOD					= READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "r__geometry_lod", 0.75f);
 //. float		ps_r__LOD_Power				=  1.5f	;
 float		ps_r__ssaDISCARD			=  3.5f	;					//RO
 float		ps_r__ssaDONTSORT			=  32.f	;					//RO
