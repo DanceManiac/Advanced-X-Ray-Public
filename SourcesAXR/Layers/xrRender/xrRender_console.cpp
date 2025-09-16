@@ -464,6 +464,8 @@ extern ENGINE_API Fvector4 ps_ssfx_pom;						// Samples , Range, Height, AO
 extern ENGINE_API Fvector4 ps_ssfx_terrain_pom;				// Samples, Range, Height, Water Limit
 extern ENGINE_API int ps_ssfx_terrain_pom_refine;
 
+extern ENGINE_API float psWeatherFogClamping;
+
 int ps_r4_ss_grass_collision = ps_r4_shaders_flags.test(R4FLAG_SSS_ADDON) ? 1 : 0;
 int ps_r4_pseudo_pbr = 0;
 
@@ -1432,6 +1434,9 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Float,			"r2_aref_strength",				&ps_r2_aref_strength,		10.0f,	450.f);
 	CMD4(CCC_Vector4,		"r4_normal_strength",			&ps_r4_normal_strength,		Fvector4().set(0.1f, 0.1f, 0.1f, 0.1f), Fvector4().set(1.0f, 1.0f, 1.0f, 1.0f));
 	CMD4(CCC_Float,			"r4_water_waves_koef",			&ps_r4_sss_water_waves_koef,0.0f,	0.5f);
+
+	psWeatherFogClamping	= READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "weather_fog_clamping", 0.0f);
+	CMD4(CCC_Float,			"weather_fog_clamping",			&psWeatherFogClamping,		0.0f,	10000.0f);
 //	CMD3(CCC_Mask,		"r2_sun_ignore_portals",		&ps_r2_ls_flags,			R2FLAG_SUN_IGNORE_PORTALS);
 }
 

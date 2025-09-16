@@ -12,8 +12,6 @@
 #include "../xrServerEntities/object_broker.h"
 #include "../xrServerEntities/LevelGameDef.h"
 
-extern ENGINE_API float ps_weather_fog_clamping;
-
 void CEnvModifier::load	(IReader* fs, u32 version)
 {
 	use_flags.one					();
