@@ -1,9 +1,9 @@
 ////////////////////////////////////////////////////////////////////////////
 //	Module 		: Battery.cpp
 //	Created 	: 07.04.2021
-//  Modified 	: 12.04.2025
+//  Modified 	: 15.09.2025
 //	Author		: Dance Maniac (M.F.S. Team)
-//	Description : Torch battery
+//	Description : Device battery
 ////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
@@ -64,6 +64,9 @@ void CBattery::OnH_B_Independent(bool just_before_destroy)
 
 bool CBattery::CanRechargeDevice() const
 {
+	if (!Actor())
+		return false;
+
 	CTorch* flashlight = smart_cast<CTorch*>(Actor()->inventory().ItemFromSlot(TORCH_SLOT));
 	CDetectorAnomaly* detector = nullptr;
 
