@@ -576,7 +576,7 @@ ENGINE_API float ps_r3_dyn_wet_surf_far = 300.f; // 30.0f
 ENGINE_API int ps_r3_dyn_wet_surf_sm_res = 256; // 256
 
 // Fog Clamping
-ENGINE_API float ps_weather_fog_clamping = 0.0f;
+ENGINE_API float psWeatherFogClamping = 0.0f;
 
 u32	renderer_value	= 3;
 //void fill_render_mode_list();
@@ -924,8 +924,6 @@ void CCC_Register()
 
 
 	CMD1(CCC_HideConsole,		"hide");
-
-	CMD4(CCC_Float,		"weather_fog_clamping",		&psWeatherFogClamping,		0.0f,	10000.0f);
 
 #ifdef	DEBUG
 	extern BOOL debug_destroy;

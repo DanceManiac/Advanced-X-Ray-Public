@@ -12,6 +12,7 @@
 #include "../xrServerEntities/object_broker.h"
 #include "../xrServerEntities/LevelGameDef.h"
 
+
 extern ENGINE_API float ps_weather_fog_clamping;
 
 extern float ps_r2_sun_shafts_min;
