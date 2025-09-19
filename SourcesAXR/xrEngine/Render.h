@@ -332,6 +332,8 @@ public:
 
 	virtual bool					isActorShadowEnabled	()											= 0;
 
+	virtual void					RenderApplyRTandZB		()											= 0;
+
 	ViewPort	currentViewPort;
 	ViewPort	firstViewPort;
 	ViewPort	lastViewPort;

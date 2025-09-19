@@ -714,6 +714,9 @@ void CLevel::OnRender()
 
 	draw_wnds_rects();
 
+	// Фикс отрисовки имгуи, когда на экране нет элементов интерфейса
+	if (psDeviceFlags.test(rsR4))
+		::Render->RenderApplyRTandZB();
 
 #ifdef DEBUG
 	ph_world->OnRender	();

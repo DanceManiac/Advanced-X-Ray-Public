@@ -395,6 +395,8 @@ public:
 
 	virtual bool					isActorShadowEnabled		() override { return ps_actor_shadow_flags.test(RFLAG_ACTOR_SHADOW); }
 
+	virtual void					RenderApplyRTandZB			() override { RCache.ApplyRTandZB(); }
+
 	// Constructor/destructor/loader
 	CRender							();
 	virtual ~CRender				();
