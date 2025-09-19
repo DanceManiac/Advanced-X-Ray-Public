@@ -875,6 +875,10 @@ void CLevel::OnRender()
 	//отрисовать интерфейc пользователя
 	HUD().RenderUI();
 
+	// Фикс отрисовки имгуи, когда на экране нет элементов интерфейса
+	if (psDeviceFlags.test(rsR4))
+		::Render->RenderApplyRTandZB();
+
 #ifdef DEBUG
 	draw_wnds_rects();
 	physics_world()->OnRender	();

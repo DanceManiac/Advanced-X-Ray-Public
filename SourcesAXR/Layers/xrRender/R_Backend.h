@@ -413,10 +413,11 @@ private:
 	//void CreateConstantBuffers();
 	//void DestroyConstantBuffers();
 	void	ApplyVertexLayout();
-	void	ApplyRTandZB();
 	void	ApplyPrimitieTopology( D3D_PRIMITIVE_TOPOLOGY Topology );
 	bool	CBuffersNeedUpdate(ref_cbuffer	buf1[MaxCBuffers], ref_cbuffer	buf2[MaxCBuffers], u32	&uiMin, u32	&uiMax);
 
+public:
+	void	ApplyRTandZB();
 private:
 	ID3DBlob*				m_pInputSignature;
 
