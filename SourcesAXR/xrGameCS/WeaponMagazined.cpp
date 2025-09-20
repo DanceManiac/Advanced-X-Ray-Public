@@ -2476,6 +2476,7 @@ bool CWeaponMagazined::CanAttach(PIItem pIItem)
 	}
 	else if (pHGrip && m_eGripStatus == ALife::eAddonAttachable && (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonGrip) == 0 && (m_sGripName == pIItem->object().cNameSect()))
 	{
+
 		if (IsGripAttached() || IsGrenadeLauncherAttached())
 			return false;
 
@@ -2897,6 +2898,7 @@ bool CWeaponMagazined::DetachScope(const char* item_section_name, bool b_spawn_i
 			m_cur_scope = NULL;
 			m_cur_scope_bone = NULL;
 			m_cur_scope_bone_aim = NULL;
+			m_cur_scope_bone_lens = NULL;
 			m_cur_scope_bone_part = NULL;
 			m_cur_scope_bone_aim_part = NULL;
 			m_cur_scope_show_bone_rail = NULL;
@@ -3074,6 +3076,10 @@ void CWeaponMagazined::InitAddons()
 				// BONE FOR SCOPE IDLE MODEL
 				pcstr ScopeBone = pSettings->r_string(m_scopes[m_cur_scope], "scope_bones");
 				m_cur_scope_bone = ScopeBone;
+
+				// BONE FOR SCOPE AIM MODEL LENS
+				pcstr ScopeBoneLens = pSettings->r_string(m_scopes[m_cur_scope], "scope_bones_lens");
+				m_cur_scope_bone_lens = ScopeBoneLens;
 
 				// BONE FOR SCOPE AIM MODEL
 				pcstr ScopeBoneAim = pSettings->r_string(m_scopes[m_cur_scope], "scope_bones_aim");

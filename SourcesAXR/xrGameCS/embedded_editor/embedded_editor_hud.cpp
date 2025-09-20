@@ -51,34 +51,71 @@ void ShowHudEditor(bool& show)
 		ImGui::Text(toUtf8(CStringTable().translate("st_hud_editor_hud").c_str()).c_str());
 		ImGui::DragFloat3("hands_position 0", (float*)&item->m_measures.m_hands_attach[0], drag_intensity, NULL, NULL, "%.6f");
 		ImGui::DragFloat3("hands_orientation 0", (float*)&item->m_measures.m_hands_attach[1], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("hands_position_grip_h 0", (float*)&item->m_measures.m_hands_attach[0], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("hands_orientation_grip_h 0", (float*)&item->m_measures.m_hands_attach[1], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("hands_position_grip_v 0", (float*)&item->m_measures.m_hands_attach[0], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("hands_orientation_grip_v 0", (float*)&item->m_measures.m_hands_attach[1], drag_intensity, NULL, NULL, "%.6f");
+
 		ImGui::DragFloat3("item_position 0", (float*)&item->m_measures.m_item_attach[0], drag_intensity, NULL, NULL, "%.6f");
 		ImGui::DragFloat3("item_orientation 0", (float*)&item->m_measures.m_item_attach[1], drag_intensity, NULL, NULL, "%.6f");
 
 		ImGui::Text(toUtf8(CStringTable().translate("st_hud_editor_hud_aim").c_str()).c_str());
 		ImGui::DragFloat3("aim_hud_offset_pos 0", (float*)&item->m_measures.m_hands_offset[0][1], drag_intensity, NULL, NULL, "%.6f");
 		ImGui::DragFloat3("aim_hud_offset_rot 0", (float*)&item->m_measures.m_hands_offset[1][1], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("aim_hud_offset_pos_grip_h 0", (float*)&item->m_measures.m_hands_offset[0][1], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("aim_hud_offset_rot_grip_h 0", (float*)&item->m_measures.m_hands_offset[1][1], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("aim_hud_offset_pos_grip_v 0", (float*)&item->m_measures.m_hands_offset[0][1], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("aim_hud_offset_rot_grip_v 0", (float*)&item->m_measures.m_hands_offset[1][1], drag_intensity, NULL, NULL, "%.6f");
 
 		ImGui::Text(toUtf8(CStringTable().translate("st_hud_editor_hud_aim_alt").c_str()).c_str());
 		ImGui::DragFloat3("aim_hud_offset_alt_pos 0", (float*)&item->m_measures.m_hands_offset[0][1], drag_intensity, NULL, NULL, "%.6f");
 		ImGui::DragFloat3("aim_hud_offset_alt_rot 0", (float*)&item->m_measures.m_hands_offset[1][1], drag_intensity, NULL, NULL, "%.6f");
 		ImGui::DragFloat3("aim_hud_offset_alt_pos 0", (float*)&item->m_measures.m_hands_offset[0][3], drag_intensity, NULL, NULL, "%.6f");
 		ImGui::DragFloat3("aim_hud_offset_alt_rot 0", (float*)&item->m_measures.m_hands_offset[1][3], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("aim_hud_offset_grip_h_alt_pos 0", (float*)&item->m_measures.m_hands_offset[0][1], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("aim_hud_offset_grip_h_alt_rot 0", (float*)&item->m_measures.m_hands_offset[1][1], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("aim_hud_offset_grip_h_alt_pos 0", (float*)&item->m_measures.m_hands_offset[0][3], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("aim_hud_offset_grip_h_alt_rot 0", (float*)&item->m_measures.m_hands_offset[1][3], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("aim_hud_offset_grip_v_alt_pos 0", (float*)&item->m_measures.m_hands_offset[0][1], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("aim_hud_offset_grip_v_alt_rot 0", (float*)&item->m_measures.m_hands_offset[1][1], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("aim_hud_offset_grip_v_alt_pos 0", (float*)&item->m_measures.m_hands_offset[0][3], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("aim_hud_offset_grip_v_alt_rot 0", (float*)&item->m_measures.m_hands_offset[1][3], drag_intensity, NULL, NULL, "%.6f");
 
 		ImGui::Text(toUtf8(CStringTable().translate("st_hud_editor_hud_scope_lfo").c_str()).c_str());
 		ImGui::DragFloat3("aim_hud_offset_3d_pos 0", (float*)&item->m_measures.m_hands_offset[0][1], drag_intensity, NULL, NULL, "%.6f");
 		ImGui::DragFloat3("aim_hud_offset_3d_rot 0", (float*)&item->m_measures.m_hands_offset[1][1], drag_intensity, NULL, NULL, "%.6f");
 		ImGui::DragFloat3("aim_hud_offset_3d_pos 0", (float*)&item->m_measures.m_hands_offset[0][3], drag_intensity, NULL, NULL, "%.6f");
 		ImGui::DragFloat3("aim_hud_offset_3d_rot 0", (float*)&item->m_measures.m_hands_offset[1][3], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("aim_hud_offset_grip_h_3d_pos 0", (float*)&item->m_measures.m_hands_offset[0][1], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("aim_hud_offset_grip_h_3d_rot 0", (float*)&item->m_measures.m_hands_offset[1][1], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("aim_hud_offset_grip_h_3d_pos 0", (float*)&item->m_measures.m_hands_offset[0][3], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("aim_hud_offset_grip_h_3d_rot 0", (float*)&item->m_measures.m_hands_offset[1][3], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("aim_hud_offset_grip_v_3d_pos 0", (float*)&item->m_measures.m_hands_offset[0][1], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("aim_hud_offset_grip_v_3d_rot 0", (float*)&item->m_measures.m_hands_offset[1][1], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("aim_hud_offset_grip_v_3d_pos 0", (float*)&item->m_measures.m_hands_offset[0][3], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("aim_hud_offset_grip_v_3d_rot 0", (float*)&item->m_measures.m_hands_offset[1][3], drag_intensity, NULL, NULL, "%.6f");
 
 		ImGui::Text(toUtf8(CStringTable().translate("st_hud_editor_hud_scope_lfo_alt").c_str()).c_str());
 		ImGui::DragFloat3("aim_hud_offset_3d_alt_pos 0", (float*)&item->m_measures.m_hands_offset[0][1], drag_intensity, NULL, NULL, "%.6f");
 		ImGui::DragFloat3("aim_hud_offset_3d_alt_rot 0", (float*)&item->m_measures.m_hands_offset[1][1], drag_intensity, NULL, NULL, "%.6f");
 		ImGui::DragFloat3("aim_hud_offset_3d_alt_pos 0", (float*)&item->m_measures.m_hands_offset[0][3], drag_intensity, NULL, NULL, "%.6f");
 		ImGui::DragFloat3("aim_hud_offset_3d_alt_rot 0", (float*)&item->m_measures.m_hands_offset[1][3], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("aim_hud_offset_grip_h_3d_alt_pos 0", (float*)&item->m_measures.m_hands_offset[0][1], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("aim_hud_offset_grip_h_3d_alt_rot 0", (float*)&item->m_measures.m_hands_offset[1][1], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("aim_hud_offset_grip_h_3d_alt_pos 0", (float*)&item->m_measures.m_hands_offset[0][3], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("aim_hud_offset_grip_h_3d_alt_rot 0", (float*)&item->m_measures.m_hands_offset[1][3], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("aim_hud_offset_grip_v_3d_alt_pos 0", (float*)&item->m_measures.m_hands_offset[0][1], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("aim_hud_offset_grip_v_3d_alt_rot 0", (float*)&item->m_measures.m_hands_offset[1][1], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("aim_hud_offset_grip_v_3d_alt_pos 0", (float*)&item->m_measures.m_hands_offset[0][3], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("aim_hud_offset_grip_v_3d_alt_rot 0", (float*)&item->m_measures.m_hands_offset[1][3], drag_intensity, NULL, NULL, "%.6f");
 
 		ImGui::Text(toUtf8(CStringTable().translate("st_hud_editor_hud_gl").c_str()).c_str());
 		ImGui::DragFloat3("gl_hud_offset_pos 0", (float*)&item->m_measures.m_hands_offset[0][2], drag_intensity, NULL, NULL, "%.6f");
 		ImGui::DragFloat3("gl_hud_offset_rot 0", (float*)&item->m_measures.m_hands_offset[1][2], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("gl_hud_offset_grip_h_pos 0", (float*)&item->m_measures.m_hands_offset[0][2], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("gl_hud_offset_grip_h_rot 0", (float*)&item->m_measures.m_hands_offset[1][2], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("gl_hud_offset_grip_v_pos 0", (float*)&item->m_measures.m_hands_offset[0][2], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("gl_hud_offset_grip_v_rot 0", (float*)&item->m_measures.m_hands_offset[1][2], drag_intensity, NULL, NULL, "%.6f");
 
 		ImGui::Text(toUtf8(CStringTable().translate("st_hud_editor_hud_particles").c_str()).c_str());
 		ImGui::DragFloat3("fire_point 0", (float*)&item->m_measures.m_fire_point_offset[0], drag_intensity, NULL, NULL, "%.6f");

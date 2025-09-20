@@ -87,6 +87,7 @@ public:
 	void					ZoomDynamicMod(bool bIncrement, bool bForceLimit);
 	void					UpdateAltScope();
 	void					UpdateAimOffsets();
+	void					Update_WPN_HUD();
 	void					UpdateAimFOV();
 	void					UpdateAltAimZoomFactor();
 	void					UpdateCheckWeaponHaveLaser();
@@ -377,6 +378,8 @@ protected:
 	shared_str		m_cur_scope_bone_aim_part;
 	shared_str		m_cur_scope_show_bone_rail;
 	shared_str		m_cur_scope_hide_bone_rail;
+	shared_str		m_cur_scope_bone_lens;
+
 
 	//смещение иконов апгрейдов в инвентаре
 	int	m_iScopeX, m_iScopeY;

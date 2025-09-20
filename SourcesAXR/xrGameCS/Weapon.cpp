@@ -81,7 +81,7 @@ CWeapon::CWeapon()
 	m_zoom_params.m_pNight_vision				= NULL;
 	m_zoom_params.m_fSecondVPFovFactor			= 0.0f;
 	m_zoom_params.m_f3dZoomFactor				= 0.0f;
-	m_zoom_params.m_fAltAimZoomFactor			= 50.f;
+	m_zoom_params.m_fAltAimZoomFactor			= 90.f;
 
 	ResetShootingEffect		();
 	
@@ -2147,6 +2147,8 @@ void CWeapon::UpdateCL		()
 			g_player_hud->PlayBlendAnm(m_BlendAimIdleCam.name.c_str(), 2, m_BlendAimIdleCam.speed, m_BlendAimIdleCam.power, true, false);
 		}
 	}
+	if (IsGripAttached() || IsGripvAttached())
+		Update_WPN_HUD();
 }
 
 void CWeapon::GetBoneOffsetPosDir(const shared_str& bone_name, Fvector& dest_pos, Fvector& dest_dir, const Fvector& offset)
@@ -3269,11 +3271,47 @@ void CWeapon::UpdateHUDAddonsVisibility()
 
 	bool WeaponNeedAltAimBoneIronsight = false;
 	if (pSettings->line_exist(m_section_id.c_str(), "enable_alternative_aim_ironsight"))
-		//	WeaponNeedAltAimBoneIronsight = READ_IF_EXISTS(pSettings, r_bool, m_section_id, "enable_alternative_aim_ironsight", false);
 		WeaponNeedAltAimBoneIronsight = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "enable_alternative_aim_ironsight", false);
 
+	if (lfo_scope_type == 4)
+	{
+		if (IsZoomed() && GetZRotatingFactor() < .1f)
+		{
+			if (m_bAltZoomEnabled && m_bAltZoomActive)
+			{
+				if (m_cur_scope_bone_lens != NULL)
+					SetBoneVisible(m_cur_scope_bone_lens, FALSE);
+			}
+			else
+			{
+				if (m_cur_scope_bone != NULL)
+					SetBoneVisible(m_cur_scope_bone, TRUE);
+			}
+		}
+	}
+	else
+	{
+		if (IsZoomed())
+		{
+			if (m_bAltZoomEnabled && m_bAltZoomActive)
+			{
+				if (m_cur_scope_bone_lens != NULL)
+					SetBoneVisible(m_cur_scope_bone_lens, FALSE);
+			}
+			else
+			{
+				if (m_cur_scope_bone_lens != NULL)
+					SetBoneVisible(m_cur_scope_bone_lens, TRUE);
+			}
+		}
+		else
+		{
+			if (m_cur_scope_bone != NULL)
+				SetBoneVisible(m_cur_scope_bone, TRUE);
+		}
+	}
+
 	if (!IsZoomed() && GetZRotatingFactor() < .9f)
-		//	if (!IsZoomed() && !IsRotatingFromZoom())
 	{
 		// BONE FOR SCOPE IDLE MODEL
 		if (m_cur_scope_bone != NULL)
@@ -4125,6 +4163,7 @@ void CWeapon::OnZoomIn()
 	{
 		last_hud_fov = psHUD_FOV_def;
 		GamePersistent().SetPickableEffectorDOF(true);
+
 		UpdateAimOffsets();
 		UpdateAimFOV();
 		UpdateAltAimZoomFactor();
@@ -5027,9 +5066,13 @@ bool CWeapon::IsMagazineEmpty()
 
 void CWeapon::SwitchZoomMode()
 {
-	if (!IsZoomed())
+	if (!IsZoomed() || IsZoomed())
 	{
 		!m_bAltZoomActive ? m_bAltZoomActive = true : m_bAltZoomActive = false;
+		OnZoomOut();
+
+		if (m_bAltZoomActive)
+			OnZoomIn();
 	}
 	else
 	{
@@ -5307,124 +5350,309 @@ void CWeapon::WpnExplosion()
 
 void CWeapon::UpdateAimOffsets()
 {
+	attachable_hud_item* hi = HudItemData();
+
+	if (!hi)
+		return;
+
+	bool is_16x9 = UI().is_widescreen();
+	string64	_prefix;
+	xr_sprintf(_prefix, "%s", is_16x9 ? "_16x9" : "");
+	string128	val_name;
+
 	shared_str cur_scope_sect = (m_sScopeAttachSection.size() ? m_sScopeAttachSection : (m_eScopeStatus == ALife::eAddonAttachable) ? m_scopes[m_cur_scope].c_str() : "scope");
+
 	bool UseScopeAimBone = false;
-
 	bool AimOffsetsFromScope = false;
-	AimOffsetsFromScope = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "cur_scope_aim_offsets", false);
-
 	bool NeedAnotherOffset = false;
+	bool AimOffsetsPermanentScope = false;
+	bool NeedGrip_H_Offset = false;
+	bool NeedGrip_V_Offset = false;
+
+	NeedGrip_H_Offset = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "grip_h_need_aim_offset", false);
+	NeedGrip_V_Offset = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "grip_v_need_aim_offset", false);
+	AimOffsetsFromScope = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "cur_scope_aim_offsets", false);
 	NeedAnotherOffset = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "cur_scope_aim_offsets_3d", false);
 
-
-	bool AimOffsetsPermanentScope = false;
 	if (pSettings->line_exist(m_section_id.c_str(), "weapon_have_permanent_scope"))
 		AimOffsetsPermanentScope = READ_IF_EXISTS(pSettings, r_bool, m_section_id, "weapon_have_permanent_scope", false);
 
-
+	// ---------------------------------------------------------------------------------------------------------------------------------------- //
+	// ------ AIM NO SCOPE -------------------------------------------------------------------------------------------------------------------- //
+	// ------
 	if (!IsScopeAttached() || (!IsZoomed() && !IsRotatingFromZoom()) || !cur_scope_sect.size())
 	{
-		attachable_hud_item* hi = HudItemData();
-
-		if (!hi)
-			return;
-
-		bool is_16x9 = UI().is_widescreen();
-		string64	_prefix;
-		xr_sprintf(_prefix, "%s", is_16x9 ? "_16x9" : "");
-		string128	val_name;
-
-		if (AimOffsetsPermanentScope)
+		if (IsGripAttached()) // GRIP HORIZONTAL AIM
 		{
-			strconcat(sizeof(val_name), val_name, "aim_hud_offset_3d_pos", _prefix);
-			hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(m_hud_sect, val_name);
-			strconcat(sizeof(val_name), val_name, "aim_hud_offset_3d_rot", _prefix);
-			hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(m_hud_sect, val_name);
-		}
-		else
-		{
-			strconcat(sizeof(val_name), val_name, "aim_hud_offset_pos", _prefix);
-			hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(m_hud_sect, val_name);
-			strconcat(sizeof(val_name), val_name, "aim_hud_offset_rot", _prefix);
-			hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(m_hud_sect, val_name);
-		}
-		
-		strconcat(sizeof(val_name), val_name, "aim_hud_offset_3d_alt_pos", _prefix);
-		hi->m_measures.m_hands_offset[0][3] = READ_IF_EXISTS(pSettings, r_fvector3, m_hud_sect, val_name, hi->m_measures.m_hands_offset[0][1]);
-		strconcat(sizeof(val_name), val_name, "aim_hud_offset_3d_alt_rot", _prefix);
-		hi->m_measures.m_hands_offset[1][3] = READ_IF_EXISTS(pSettings, r_fvector3, m_hud_sect, val_name, hi->m_measures.m_hands_offset[1][1]);
-
-		strconcat(sizeof(val_name), val_name, "gl_hud_offset_pos", _prefix);
-		hi->m_measures.m_hands_offset[0][2] = pSettings->r_fvector3(m_hud_sect, val_name);
-		strconcat(sizeof(val_name), val_name, "gl_hud_offset_rot", _prefix);
-		hi->m_measures.m_hands_offset[1][2] = pSettings->r_fvector3(m_hud_sect, val_name);
-
-		return;
-	}
-
-	if (AimOffsetsFromScope)
-	{
-		attachable_hud_item* hi = HudItemData();
-
-		if (!hi)
-			return;
-
-		bool is_16x9 = UI().is_widescreen();
-		string64	_prefix;
-		xr_sprintf(_prefix, "%s", is_16x9 ? "_16x9" : "");
-		string128	val_name;
-
-		if (NeedAnotherOffset && !bIsSecondVPZoomPresent())
-		{
-			if (lfo_scope_type != 3)// SHOKER 3d Scopes PiP
+			//Msg("GRIP HORIZONTAL AIM");
+			if (AimOffsetsPermanentScope)
 			{
-				strconcat(sizeof(val_name), val_name, "aim_hud_offset_3d_pos", _prefix);
-				hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
-				strconcat(sizeof(val_name), val_name, "aim_hud_offset_3d_rot", _prefix);
-				hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
-
+				strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_h_3d_pos", _prefix);
+				hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(m_hud_sect, val_name);
+				strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_h_3d_rot", _prefix);
+				hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(m_hud_sect, val_name);
 			}
 			else
 			{
+				strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_h_pos", _prefix);
+				hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(m_hud_sect, val_name);
+				strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_h_rot", _prefix);
+				hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(m_hud_sect, val_name);
+			}
+
+			strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_h_3d_alt_pos", _prefix);
+			hi->m_measures.m_hands_offset[0][3] = READ_IF_EXISTS(pSettings, r_fvector3, m_hud_sect, val_name, hi->m_measures.m_hands_offset[0][1]);
+			strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_h_3d_alt_rot", _prefix);
+			hi->m_measures.m_hands_offset[1][3] = READ_IF_EXISTS(pSettings, r_fvector3, m_hud_sect, val_name, hi->m_measures.m_hands_offset[1][1]);
+
+			strconcat(sizeof(val_name), val_name, "gl_hud_offset_grip_h_pos", _prefix);
+			hi->m_measures.m_hands_offset[0][2] = pSettings->r_fvector3(m_hud_sect, val_name);
+			strconcat(sizeof(val_name), val_name, "gl_hud_offset_grip_h_rot", _prefix);
+			hi->m_measures.m_hands_offset[1][2] = pSettings->r_fvector3(m_hud_sect, val_name);
+		}
+		// ------
+		else if (IsGripvAttached()) // GRIP VERTICAL AIM
+		{
+			//Msg("GRIP VERTICAL AIM");
+			if (AimOffsetsPermanentScope)
+			{
+				strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_v_3d_pos", _prefix);
+				hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(m_hud_sect, val_name);
+				strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_v_3d_rot", _prefix);
+				hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(m_hud_sect, val_name);
+			}
+			else
+			{
+				strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_v_pos", _prefix);
+				hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(m_hud_sect, val_name);
+				strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_v_rot", _prefix);
+				hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(m_hud_sect, val_name);
+			}
+		
+			strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_v_3d_alt_pos", _prefix);
+			hi->m_measures.m_hands_offset[0][3] = READ_IF_EXISTS(pSettings, r_fvector3, m_hud_sect, val_name, hi->m_measures.m_hands_offset[0][1]);
+			strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_v_3d_alt_rot", _prefix);
+			hi->m_measures.m_hands_offset[1][3] = READ_IF_EXISTS(pSettings, r_fvector3, m_hud_sect, val_name, hi->m_measures.m_hands_offset[1][1]);
+
+			strconcat(sizeof(val_name), val_name, "gl_hud_offset_grip_v_pos", _prefix);
+			hi->m_measures.m_hands_offset[0][2] = pSettings->r_fvector3(m_hud_sect, val_name);
+			strconcat(sizeof(val_name), val_name, "gl_hud_offset_grip_v_rot", _prefix);
+			hi->m_measures.m_hands_offset[1][2] = pSettings->r_fvector3(m_hud_sect, val_name);
+		}
+		// ------
+		else // WITHOUT GRIP AIM
+		{
+			//Msg("NO GRIP AIM");
+			if (AimOffsetsPermanentScope)
+			{
 				strconcat(sizeof(val_name), val_name, "aim_hud_offset_3d_pos", _prefix);
-				hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+				hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(m_hud_sect, val_name);
 				strconcat(sizeof(val_name), val_name, "aim_hud_offset_3d_rot", _prefix);
-				hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+				hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(m_hud_sect, val_name);
+			}
+			else
+			{
+				strconcat(sizeof(val_name), val_name, "aim_hud_offset_pos", _prefix);
+				hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(m_hud_sect, val_name);
+				strconcat(sizeof(val_name), val_name, "aim_hud_offset_rot", _prefix);
+				hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(m_hud_sect, val_name);
 			}
 
 			strconcat(sizeof(val_name), val_name, "aim_hud_offset_3d_alt_pos", _prefix);
-			hi->m_measures.m_hands_offset[0][3] = READ_IF_EXISTS(pSettings, r_fvector3, cur_scope_sect, val_name, hi->m_measures.m_hands_offset[0][1]);
+			hi->m_measures.m_hands_offset[0][3] = READ_IF_EXISTS(pSettings, r_fvector3, m_hud_sect, val_name, hi->m_measures.m_hands_offset[0][1]);
 			strconcat(sizeof(val_name), val_name, "aim_hud_offset_3d_alt_rot", _prefix);
-			hi->m_measures.m_hands_offset[1][3] = READ_IF_EXISTS(pSettings, r_fvector3, cur_scope_sect, val_name, hi->m_measures.m_hands_offset[1][1]);
-		}
-		else
-		{
+			hi->m_measures.m_hands_offset[1][3] = READ_IF_EXISTS(pSettings, r_fvector3, m_hud_sect, val_name, hi->m_measures.m_hands_offset[1][1]);
 
-			if (lfo_scope_type != 3)// SHOKER 3d Scopes PiP
+			strconcat(sizeof(val_name), val_name, "gl_hud_offset_pos", _prefix);
+			hi->m_measures.m_hands_offset[0][2] = pSettings->r_fvector3(m_hud_sect, val_name);
+			strconcat(sizeof(val_name), val_name, "gl_hud_offset_rot", _prefix);
+			hi->m_measures.m_hands_offset[1][2] = pSettings->r_fvector3(m_hud_sect, val_name);
+		}
+		return;
+	}
+
+
+	// ---------------------------------------------------------------------------------------------------------------------------------------- //
+	// ------ AIM WITH SCOPE ------------------------------------------------------------------------------------------------------------------ //
+	// ------
+	if (IsGripAttached() && NeedGrip_H_Offset) // GRIP HORIZONTAL AIM
+	{
+		//Msg("GRIP HORIZONTAL AIM + SCOPE");
+		if (AimOffsetsFromScope)
+		{
+			
+			if (NeedAnotherOffset && !bIsSecondVPZoomPresent())
 			{
-				strconcat(sizeof(val_name), val_name, "aim_hud_offset_pos", _prefix);
-				hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
-				strconcat(sizeof(val_name), val_name, "aim_hud_offset_rot", _prefix);
-				hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+				if (lfo_scope_type != 3)// SHOKER 3d Scopes PiP + SCOPE
+				{
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_h_3d_pos", _prefix);
+					hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_h_3d_rot", _prefix);
+					hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+
+				}
+				else
+				{
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_h_3d_pos", _prefix);
+					hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_h_3d_rot", _prefix);
+					hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+				}
+
+				strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_h_3d_alt_pos", _prefix);
+				hi->m_measures.m_hands_offset[0][3] = READ_IF_EXISTS(pSettings, r_fvector3, cur_scope_sect, val_name, hi->m_measures.m_hands_offset[0][1]);
+				strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_h_3d_alt_rot", _prefix);
+				hi->m_measures.m_hands_offset[1][3] = READ_IF_EXISTS(pSettings, r_fvector3, cur_scope_sect, val_name, hi->m_measures.m_hands_offset[1][1]);
 			}
 			else
 			{
-				strconcat(sizeof(val_name), val_name, "aim_hud_offset_pos", _prefix);
-				hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
-				strconcat(sizeof(val_name), val_name, "aim_hud_offset_rot", _prefix);
-				hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
-			}
-	
-			strconcat(sizeof(val_name), val_name, "aim_hud_offset_alt_pos", _prefix);
-			hi->m_measures.m_hands_offset[0][3] = READ_IF_EXISTS(pSettings, r_fvector3, cur_scope_sect, val_name, hi->m_measures.m_hands_offset[0][1]);
-			strconcat(sizeof(val_name), val_name, "aim_hud_offset_alt_rot", _prefix);
-			hi->m_measures.m_hands_offset[1][3] = READ_IF_EXISTS(pSettings, r_fvector3, cur_scope_sect, val_name, hi->m_measures.m_hands_offset[1][1]);
-		}
 
-		strconcat(sizeof(val_name), val_name, "gl_hud_offset_pos", _prefix);
-		hi->m_measures.m_hands_offset[0][2] = pSettings->r_fvector3(cur_scope_sect, val_name);
-		strconcat(sizeof(val_name), val_name, "gl_hud_offset_rot", _prefix);
-		hi->m_measures.m_hands_offset[1][2] = pSettings->r_fvector3(cur_scope_sect, val_name);
+				if (lfo_scope_type != 3)// SHOKER 3d Scopes PiP
+				{
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_h_pos", _prefix);
+					hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_h_rot", _prefix);
+					hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+				}
+				else
+				{
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_h_pos", _prefix);
+					hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_h_rot", _prefix);
+					hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+				}
+
+				strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_h_alt_pos", _prefix);
+				hi->m_measures.m_hands_offset[0][3] = READ_IF_EXISTS(pSettings, r_fvector3, cur_scope_sect, val_name, hi->m_measures.m_hands_offset[0][1]);
+				strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_h_alt_rot", _prefix);
+				hi->m_measures.m_hands_offset[1][3] = READ_IF_EXISTS(pSettings, r_fvector3, cur_scope_sect, val_name, hi->m_measures.m_hands_offset[1][1]);
+			}
+
+			strconcat(sizeof(val_name), val_name, "gl_hud_offset_grip_h_pos", _prefix);
+			hi->m_measures.m_hands_offset[0][2] = pSettings->r_fvector3(cur_scope_sect, val_name);
+			strconcat(sizeof(val_name), val_name, "gl_hud_offset_grip_h_rot", _prefix);
+			hi->m_measures.m_hands_offset[1][2] = pSettings->r_fvector3(cur_scope_sect, val_name);
+		}
+	}
+	// ------
+	else if (IsGripvAttached() && NeedGrip_V_Offset) // GRIP VERTICAL AIM + SCOPE
+	{
+		//Msg("GRIP HORIZONTAL AIM + SCOPE");
+		if (AimOffsetsFromScope)
+		{
+
+			if (NeedAnotherOffset && !bIsSecondVPZoomPresent())
+			{
+				if (lfo_scope_type != 3)// SHOKER 3d Scopes PiP
+				{
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_v_3d_pos", _prefix);
+					hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_v_3d_rot", _prefix);
+					hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+
+				}
+				else
+				{
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_v_3d_pos", _prefix);
+					hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_v_3d_rot", _prefix);
+					hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+				}
+
+				strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_v_3d_alt_pos", _prefix);
+				hi->m_measures.m_hands_offset[0][3] = READ_IF_EXISTS(pSettings, r_fvector3, cur_scope_sect, val_name, hi->m_measures.m_hands_offset[0][1]);
+				strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_v_3d_alt_rot", _prefix);
+				hi->m_measures.m_hands_offset[1][3] = READ_IF_EXISTS(pSettings, r_fvector3, cur_scope_sect, val_name, hi->m_measures.m_hands_offset[1][1]);
+			}
+			else
+			{
+
+				if (lfo_scope_type != 3)// SHOKER 3d Scopes PiP
+				{
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_v_pos", _prefix);
+					hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_v_rot", _prefix);
+					hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+				}
+				else
+				{
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_v_pos", _prefix);
+					hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_v_rot", _prefix);
+					hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+				}
+
+				strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_v_alt_pos", _prefix);
+				hi->m_measures.m_hands_offset[0][3] = READ_IF_EXISTS(pSettings, r_fvector3, cur_scope_sect, val_name, hi->m_measures.m_hands_offset[0][1]);
+				strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_v_alt_rot", _prefix);
+				hi->m_measures.m_hands_offset[1][3] = READ_IF_EXISTS(pSettings, r_fvector3, cur_scope_sect, val_name, hi->m_measures.m_hands_offset[1][1]);
+			}
+
+			strconcat(sizeof(val_name), val_name, "gl_hud_offset_grip_v_pos", _prefix);
+			hi->m_measures.m_hands_offset[0][2] = pSettings->r_fvector3(cur_scope_sect, val_name);
+			strconcat(sizeof(val_name), val_name, "gl_hud_offset_grip_v_rot", _prefix);
+			hi->m_measures.m_hands_offset[1][2] = pSettings->r_fvector3(cur_scope_sect, val_name);
+		}
+	}
+	// ------
+	else // WITHOUT GRIP AIM + SCOPE
+	{
+		//Msg("GRIP VERTICAL AIM + Scope");
+
+		if (AimOffsetsFromScope) 
+		{
+			if (NeedAnotherOffset && !bIsSecondVPZoomPresent())
+			{
+				if (lfo_scope_type != 3)// SHOKER 3d Scopes PiP
+				{
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_3d_pos", _prefix);
+					hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_3d_rot", _prefix);
+					hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+
+				}
+				else
+				{
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_3d_pos", _prefix);
+					hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_3d_rot", _prefix);
+					hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+				}
+
+				strconcat(sizeof(val_name), val_name, "aim_hud_offset_3d_alt_pos", _prefix);
+				hi->m_measures.m_hands_offset[0][3] = READ_IF_EXISTS(pSettings, r_fvector3, cur_scope_sect, val_name, hi->m_measures.m_hands_offset[0][1]);
+				strconcat(sizeof(val_name), val_name, "aim_hud_offset_3d_alt_rot", _prefix);
+				hi->m_measures.m_hands_offset[1][3] = READ_IF_EXISTS(pSettings, r_fvector3, cur_scope_sect, val_name, hi->m_measures.m_hands_offset[1][1]);
+			}
+			else
+			{
+
+				if (lfo_scope_type != 3)// SHOKER 3d Scopes PiP
+				{
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_pos", _prefix);
+					hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_rot", _prefix);
+					hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+				}
+				else
+				{
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_pos", _prefix);
+					hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_rot", _prefix);
+					hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+				}
+	
+				strconcat(sizeof(val_name), val_name, "aim_hud_offset_alt_pos", _prefix);
+				hi->m_measures.m_hands_offset[0][3] = READ_IF_EXISTS(pSettings, r_fvector3, cur_scope_sect, val_name, hi->m_measures.m_hands_offset[0][1]);
+				strconcat(sizeof(val_name), val_name, "aim_hud_offset_alt_rot", _prefix);
+				hi->m_measures.m_hands_offset[1][3] = READ_IF_EXISTS(pSettings, r_fvector3, cur_scope_sect, val_name, hi->m_measures.m_hands_offset[1][1]);
+			}
+
+			strconcat(sizeof(val_name), val_name, "gl_hud_offset_pos", _prefix);
+			hi->m_measures.m_hands_offset[0][2] = pSettings->r_fvector3(cur_scope_sect, val_name);
+			strconcat(sizeof(val_name), val_name, "gl_hud_offset_rot", _prefix);
+			hi->m_measures.m_hands_offset[1][2] = pSettings->r_fvector3(cur_scope_sect, val_name);
+		}
 	}
 }
 
@@ -5441,7 +5669,17 @@ void CWeapon::UpdateAltAimZoomFactor2()	//FOR NONE SCOPED WEAPONS
 {
 	luabind::functor<void> funct;
 	bool ShowHudAltAimNoScope = false;
-	
+
+	attachable_hud_item* hi = HudItemData();
+
+	if (!hi)
+		return;
+
+	bool is_16x9 = UI().is_widescreen();
+	string64	_prefix;
+	xr_sprintf(_prefix, "%s", is_16x9 ? "_16x9" : "");
+	string128	val_name;
+
 	if (pSettings->line_exist(m_section_id, "enable_alternative_aim_no_scope"))
 		ShowHudAltAimNoScope = READ_IF_EXISTS(pSettings, r_bool, m_section_id, "enable_alternative_aim_no_scope", false);
 
@@ -5455,7 +5693,38 @@ void CWeapon::UpdateAltAimZoomFactor2()	//FOR NONE SCOPED WEAPONS
 				if (ai().script_engine().functor("lfo_weapons.on_actor_weapon_test_process_on", funct))
 					funct();
 
-				m_zoom_params.m_fScopeZoomFactor = pSettings->r_float(cNameSect(), "scope_zoom_factor_alt");
+		//		m_zoom_params.m_fScopeZoomFactor = pSettings->r_float(cNameSect(), "scope_zoom_factor_alt");
+
+				if (IsGripAttached())
+				{
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_h_alt_pos", _prefix);
+					hi->m_measures.m_hands_offset[0][3] = READ_IF_EXISTS(pSettings, r_fvector3, m_hud_sect, val_name, hi->m_measures.m_hands_offset[0][1]);
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_h_alt_rot", _prefix);
+					hi->m_measures.m_hands_offset[1][3] = READ_IF_EXISTS(pSettings, r_fvector3, m_hud_sect, val_name, hi->m_measures.m_hands_offset[1][1]);
+
+					//if (IsZoomed() && IsRotatingFromZoom())
+					//	PlayHUDMotion("anm_idle_aim_grip_h", FALSE, this, GetState());
+				}
+				else if (IsGripvAttached())
+				{
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_v_alt_pos", _prefix);
+					hi->m_measures.m_hands_offset[0][3] = READ_IF_EXISTS(pSettings, r_fvector3, m_hud_sect, val_name, hi->m_measures.m_hands_offset[0][1]);
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_v_alt_rot", _prefix);
+					hi->m_measures.m_hands_offset[1][3] = READ_IF_EXISTS(pSettings, r_fvector3, m_hud_sect, val_name, hi->m_measures.m_hands_offset[1][1]);
+
+					//if (IsZoomed() && IsRotatingFromZoom())
+					//	PlayHUDMotion("anm_idle_aim_grip_v", FALSE, this, GetState());
+				}
+				else
+				{
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_alt_pos", _prefix);
+					hi->m_measures.m_hands_offset[0][3] = READ_IF_EXISTS(pSettings, r_fvector3, m_hud_sect, val_name, hi->m_measures.m_hands_offset[0][1]);
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_alt_rot", _prefix);
+					hi->m_measures.m_hands_offset[1][3] = READ_IF_EXISTS(pSettings, r_fvector3, m_hud_sect, val_name, hi->m_measures.m_hands_offset[1][1]);
+
+					//if (IsZoomed() && IsRotatingFromZoom())
+					//	PlayHUDMotion("anm_idle_aim", FALSE, this, GetState());
+				}
 			}
 			else
 			{
@@ -5463,7 +5732,38 @@ void CWeapon::UpdateAltAimZoomFactor2()	//FOR NONE SCOPED WEAPONS
 				if (ai().script_engine().functor("lfo_weapons.on_actor_weapon_test_process_off", funct))
 					funct();
 
-				m_zoom_params.m_fScopeZoomFactor = pSettings->r_float(cNameSect(), "scope_zoom_factor");
+		//		m_zoom_params.m_fScopeZoomFactor = pSettings->r_float(cNameSect(), "scope_zoom_factor");
+
+				if (IsGripAttached())
+				{
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_h_pos", _prefix);
+					hi->m_measures.m_hands_offset[0][3] = READ_IF_EXISTS(pSettings, r_fvector3, m_hud_sect, val_name, hi->m_measures.m_hands_offset[0][1]);
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_h_rot", _prefix);
+					hi->m_measures.m_hands_offset[1][3] = READ_IF_EXISTS(pSettings, r_fvector3, m_hud_sect, val_name, hi->m_measures.m_hands_offset[1][1]);
+
+					//if (IsZoomed() && IsRotatingFromZoom())
+					//	PlayHUDMotion("anm_idle_aim_grip_h", FALSE, this, GetState());
+				}
+				else if (IsGripvAttached())
+				{
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_v_pos", _prefix);
+					hi->m_measures.m_hands_offset[0][3] = READ_IF_EXISTS(pSettings, r_fvector3, m_hud_sect, val_name, hi->m_measures.m_hands_offset[0][1]);
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_grip_v_rot", _prefix);
+					hi->m_measures.m_hands_offset[1][3] = READ_IF_EXISTS(pSettings, r_fvector3, m_hud_sect, val_name, hi->m_measures.m_hands_offset[1][1]);
+
+					//if (IsZoomed() && IsRotatingFromZoom())
+					//	PlayHUDMotion("anm_idle_aim_grip_v", FALSE, this, GetState());
+				}
+				else
+				{
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_pos", _prefix);
+					hi->m_measures.m_hands_offset[0][3] = READ_IF_EXISTS(pSettings, r_fvector3, m_hud_sect, val_name, hi->m_measures.m_hands_offset[0][1]);
+					strconcat(sizeof(val_name), val_name, "aim_hud_offset_rot", _prefix);
+					hi->m_measures.m_hands_offset[1][3] = READ_IF_EXISTS(pSettings, r_fvector3, m_hud_sect, val_name, hi->m_measures.m_hands_offset[1][1]);
+
+					//if (IsZoomed() && IsRotatingFromZoom())
+					//	PlayHUDMotion("anm_idle_aim", FALSE, this, GetState());
+				}
 			}
 		}
 	}
@@ -5808,5 +6108,60 @@ void CWeapon::UpdateOverheatLights()
 			if (overheat_glow && overheat_glow->get_active() && m_bOverheatGlowEnabled)
 				overheat_glow->set_active(false);
 		}
+	}
+}
+
+void CWeapon::Update_WPN_HUD()
+{
+	attachable_hud_item* hi = HudItemData();
+
+	if (!hi)
+		return;
+
+	bool is_16x9 = UI().is_widescreen();
+	string64	_prefix;
+	xr_sprintf(_prefix, "%s", is_16x9 ? "_16x9" : "");
+	string128	val_name;
+
+	// UPDATE HUD GRIP HORIZONTAL
+	if (IsGripAttached())
+	{
+		strconcat(sizeof(val_name), val_name, "hands_position_grip_h", _prefix);
+		hi->m_measures.m_hands_attach[0] = pSettings->r_fvector3(m_hud_sect, val_name);
+		strconcat(sizeof(val_name), val_name, "hands_orientation_grip_h", _prefix);
+		hi->m_measures.m_hands_attach[1] = pSettings->r_fvector3(m_hud_sect, val_name);
+
+		strconcat(sizeof(val_name), val_name, "gl_hud_offset_grip_h_pos", _prefix);
+		hi->m_measures.m_hands_offset[0][2] = pSettings->r_fvector3(m_hud_sect, val_name);
+		strconcat(sizeof(val_name), val_name, "gl_hud_offset_grip_h_rot", _prefix);
+		hi->m_measures.m_hands_offset[1][2] = pSettings->r_fvector3(m_hud_sect, val_name);
+	}
+
+	// UPDATE HUD GRIP VERTICAL 
+	else if (IsGripvAttached())
+	{
+		strconcat(sizeof(val_name), val_name, "hands_position_grip_v", _prefix);
+		hi->m_measures.m_hands_attach[0] = pSettings->r_fvector3(m_hud_sect, val_name);
+		strconcat(sizeof(val_name), val_name, "hands_orientation_grip_v", _prefix);
+		hi->m_measures.m_hands_attach[1] = pSettings->r_fvector3(m_hud_sect, val_name);
+
+		strconcat(sizeof(val_name), val_name, "gl_hud_offset_grip_v_pos", _prefix);
+		hi->m_measures.m_hands_offset[0][2] = pSettings->r_fvector3(m_hud_sect, val_name);
+		strconcat(sizeof(val_name), val_name, "gl_hud_offset_grip_v_rot", _prefix);
+		hi->m_measures.m_hands_offset[1][2] = pSettings->r_fvector3(m_hud_sect, val_name);
+	}
+
+	// UPDATE HUD DEFAULT
+	else
+	{
+		strconcat(sizeof(val_name), val_name, "hands_position", _prefix);
+		hi->m_measures.m_hands_attach[0] = pSettings->r_fvector3(m_hud_sect, val_name);
+		strconcat(sizeof(val_name), val_name, "hands_orientation", _prefix);
+		hi->m_measures.m_hands_attach[1] = pSettings->r_fvector3(m_hud_sect, val_name);
+
+		strconcat(sizeof(val_name), val_name, "gl_hud_offset_pos", _prefix);
+		hi->m_measures.m_hands_offset[0][2] = pSettings->r_fvector3(m_hud_sect, val_name);
+		strconcat(sizeof(val_name), val_name, "gl_hud_offset_rot", _prefix);
+		hi->m_measures.m_hands_offset[1][2] = pSettings->r_fvector3(m_hud_sect, val_name);
 	}
 }

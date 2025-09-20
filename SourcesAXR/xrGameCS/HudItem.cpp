@@ -816,6 +816,13 @@ void CHudItem::PlayAnimIdleMoving()
 			else
 				PlayHUDMotionIfExists({ "anm_idle_moving_w_gl", "anm_idle_w_gl" }, true, GetState());
 		}
+		else if (IsGrenadeMode())
+		{
+			if (IsMisfireNow())
+				PlayHUDMotionIfExists({ "anm_idle_moving_g_jammed", "anm_idle_moving_g" }, true, GetState());
+			else
+				PlayHUDMotionIfExists({ "anm_idle_moving_g" }, true, GetState());
+		}
 		else
 		{
 			if (IsMisfireNow())
@@ -1248,10 +1255,18 @@ void CHudItem::PlayAnimSprintEnd()
 
 void CHudItem::OnMovementChanged(ACTOR_DEFS::EMoveCommand cmd)
 {
+	CPda* pda = smart_cast<CPda*>(this);
+
 	if(GetState()==eIdle && !m_bStopAtEndAnimIsRunning)
 	{
 		PlayAnimIdle();
-		PlayAnimIdlePDA();
+
+		if (pda)
+		{
+			PlayAnimIdlePDA();
+		}
+
+
 		ResetSubStateTime();
 	}
 }
