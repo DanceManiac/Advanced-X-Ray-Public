@@ -1,5 +1,6 @@
 #include "common.h"
 #include "rainbow_draw.h"
+#include "advanced_aurora.h"
 
 #ifdef ENCHANTED_SHADERS_ENABLED 
 #	include "pbr_cubemap_check.h"
@@ -10,6 +11,7 @@ struct         v2p
 	float4	factor	: COLOR0;        // rgb tint
 	float4	tc0		: TEXCOORD0; //tonemap in alpha
 	float3	tc1		: TEXCOORD1;
+	float3  rd_world : TEXCOORD2;
 };
 struct        _out
 {
@@ -57,6 +59,11 @@ _out main(v2p I )
 	o.low =	sky.xyzz;
 	o.high = o.low/def_hdr;
 #endif
+	
+	// Северное сияние
+	float4 auroraColor = aurora(normalize(I.rd_world), I.tc0);
+	o.low.rgb += auroraColor.rgb * auroraColor.a;
+	o.high.rgb += auroraColor.rgb * auroraColor.a / def_hdr;
 	
 	float diff_green_red = L_sun_color.g - L_sun_color.r;
 	float diff_green_blue = L_sun_color.g - L_sun_color.b;

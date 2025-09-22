@@ -17,6 +17,7 @@ struct v2p
 	float3	tc0		: TEXCOORD0;
 #endif
 	float3	tc1		: TEXCOORD1;
+	float3  rd_world : TEXCOORD2;
 	float4	hpos	: SV_Position;
 };
 
@@ -50,6 +51,9 @@ v2p main (vi v)
 	float	scale	= s_tonemap.Load( int3(0,0,0) ).x;
     o.c				= float4	( v.c.rgb*(scale*2.0), v.c.a );      		// copy color, pre-scale by tonemap //float4 ( v.c.rgb*scale*2, v.c.a );
 #endif
+
+	float3 sphere = 6371e3 * normalize(v.p.xyz);
+	o.rd_world = normalize(sphere - eye_position.xyz);
 
 	return	o;
 }
