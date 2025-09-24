@@ -35,8 +35,8 @@ void CWeaponAutomaticShotgun::Load(LPCSTR section)
 	{
 		m_sounds.LoadSound(section, "snd_open_weapon", "sndOpen", false, m_eSoundOpen);
 
-		if (WeaponSoundExist(section, "snd_open_weapon_empty,", true))
-			m_sounds.LoadSound(section, "snd_open_weapon_empty,", "sndOpenEmpty", false, m_eSoundAddCartridge);
+		if (WeaponSoundExist(section, "snd_open_weapon_empty", true))
+			m_sounds.LoadSound(section, "snd_open_weapon_empty", "sndOpenEmpty", false, m_eSoundAddCartridge);
 
 		m_sounds.LoadSound(section, "snd_add_cartridge", "sndAddCartridge", false, m_eSoundAddCartridge);
 
