@@ -237,7 +237,7 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 		{
 			continue;
 		}
-		max_val = actor->conditions().GetZoneMaxPower( (ALife::EInfluenceType)i );
+		max_val = actor->conditions().GetZoneMaxPower((ALife::EHitType)i);
 		val /= max_val;
 		m_immunity_item[i]->SetValue(val, 2);
 
