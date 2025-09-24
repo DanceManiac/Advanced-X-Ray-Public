@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //	Module 		: embedded_editor_spawner.cpp
 //	Created 	: 17.02.2024
-//  Modified 	: 13.07.2025
+//  Modified 	: 24.09.2025
 //	Author		: Dance Maniac (M.F.S. Team)
 //	Description : ImGui Spawn Menu
 ////////////////////////////////////////////////////////////////////////////
@@ -188,9 +188,15 @@ void FillSectionsList()
 {
 	for (auto sect : pSettings->sections())
 	{
+		// Игнорируем мультиплеерные предметы
+		const std::string& sectionName = sect->Name.c_str();
+
+		if (sectionName.find("_mp") != std::string::npos || sectionName.find("mp_") != std::string::npos)
+			continue;
+
 		if (sect->line_exist("class") && sect->line_exist("$spawn"))
 		{
-			LPCSTR item_name = sect->Name.c_str();
+			LPCSTR item_name = sectionName.c_str();
 
 			if (pSettings->line_exist(item_name, "inv_name") && CStringTable().translate(pSettings->r_string(item_name, "inv_name")).size())
 				item_name = CStringTable().translate(pSettings->r_string(item_name, "inv_name")).c_str();

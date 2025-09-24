@@ -313,8 +313,13 @@ public:
 	{
 		for (auto sect : pSettings->sections())
 		{
+			const std::string& sectionName = sect->Name.c_str();
+
+			if (sectionName.find("_mp") != std::string::npos || sectionName.find("mp_") != std::string::npos)
+				continue;
+
 			if (sect->line_exist("class") && sect->line_exist("$spawn"))
-				tips.push_back(sect->Name.c_str());
+				tips.push_back(sectionName.c_str());
 		}
 	}
 
@@ -439,9 +444,15 @@ public:
 			return;
 		}
 		
-		for (auto sect : pSettings->sections()) {
+		for (auto sect : pSettings->sections())
+		{
+			const std::string& sectionName = sect->Name.c_str();
+
+			if (sectionName.find("_mp") != std::string::npos || sectionName.find("mp_") != std::string::npos)
+				continue;
+
 			if (sect->line_exist("class") && sect->line_exist("inv_weight"))
-				tips.push_back(sect->Name.c_str());
+				tips.push_back(sectionName.c_str());
 		}
 	}
 };
