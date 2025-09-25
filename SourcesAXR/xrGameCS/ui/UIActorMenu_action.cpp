@@ -87,6 +87,10 @@ bool CUIActorMenu::OnItemDrop(CUICellItem* itm)
 
 		if (old_owner == new_owner && item_in_cell && item_in_cell->CanAttach(CurrentIItem()))
 		{
+#pragma todo("Dance Maniac: Need to fix crash when transferring addon to weapons in corpses and inventory boxes. Temporarily disabled this action.")
+			if (m_currMenuMode == mmDeadBodySearch)
+				return false;
+
 			AttachAddon(item_in_cell);
 			UpdateItemsPlace();
 			return true;
