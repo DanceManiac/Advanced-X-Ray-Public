@@ -115,6 +115,7 @@ void CWeaponMagazined::Load	(LPCSTR section)
 
 	//Alundaio: LAYERED_SND_SHOOT
 	m_sounds.LoadSound(section, "snd_shoot", "sndShot", false, m_eSoundShot);
+	m_sounds.LoadSound(section, "snd_mag_shot_hip", "sndMagShotHip", false, m_eSoundShot);
 	m_sounds.LoadSound(section, "snd_mag_shot", "sndMagShot", false, m_eSoundShot);
 
 	if (WeaponSoundExist(section, "snd_shoot_actor", true))
@@ -1361,21 +1362,44 @@ void CWeaponMagazined::OnShot()
 		if (ai().script_engine().functor("lfo_weapons.on_actor_shooting", funct))
 			funct();
 
-		if (auto mag_shot_snd = m_sounds.FindSoundItem("sndMagShot", false))
+		if (IsZoomed())
 		{
-			float threshold = iMagazineSize * 0.30f;
-			float volume = 0.0f;
-
-			if (iAmmoElapsed <= threshold && threshold > 0)
+			if (auto mag_shot_snd = m_sounds.FindSoundItem("sndMagShot", false))
 			{
-				volume = 2.0f * (1.0f - (iAmmoElapsed / threshold));
-				clamp(volume, 0.0f, 2.0f);
+				float threshold = iMagazineSize * 0.30f;
+				float volume = 0.0f;
 
-				if (mag_shot_snd->m_activeSnd && mag_shot_snd->m_activeSnd->volume > volume)
+				if (iAmmoElapsed <= threshold && threshold > 0)
+				{
+					volume = 2.0f * (1.0f - (iAmmoElapsed / threshold));
+					clamp(volume, 0.0f, 2.0f);
+
+					if (mag_shot_snd->m_activeSnd && mag_shot_snd->m_activeSnd->volume > volume)
+						mag_shot_snd->m_activeSnd->volume = volume;
+
+					m_sounds.PlaySound("sndMagShot", get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
 					mag_shot_snd->m_activeSnd->volume = volume;
+				}
+			}
+		}
+		else
+		{
+			if (auto mag_shot_snd = m_sounds.FindSoundItem("sndMagShotHip", false))
+			{
+				float threshold = iMagazineSize * 0.30f;
+				float volume = 0.0f;
 
-				m_sounds.PlaySound("sndMagShot", get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
-				mag_shot_snd->m_activeSnd->volume = volume;
+				if (iAmmoElapsed <= threshold && threshold > 0)
+				{
+					volume = 2.0f * (1.0f - (iAmmoElapsed / threshold));
+					clamp(volume, 0.0f, 2.0f);
+
+					if (mag_shot_snd->m_activeSnd && mag_shot_snd->m_activeSnd->volume > volume)
+						mag_shot_snd->m_activeSnd->volume = volume;
+
+					m_sounds.PlaySound("sndMagShotHip", get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
+					mag_shot_snd->m_activeSnd->volume = volume;
+				}
 			}
 		}
 
