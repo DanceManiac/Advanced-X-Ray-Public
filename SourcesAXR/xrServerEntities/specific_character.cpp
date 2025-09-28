@@ -334,8 +334,8 @@ LPCSTR CSpecificCharacter::Visual()
 
 void CSpecificCharacter::SetRandomRange()
 {
-	int min_num = 1000000;
-	int max_num = -1;
+	int min_num = 1;
+	int max_num = 1;
 
 	std::string visual_name = data()->m_sVisual.c_str();
 	std::string relative_path = RemoveSymbolsAfterSlash(visual_name);
@@ -344,21 +344,30 @@ void CSpecificCharacter::SetRandomRange()
 	std::string path = userDir + relative_path;
 
 	visual_name = RemoveSymbolsBeforeSlash(visual_name);
-	
+
+	bool filesFound = false;
+
 	for (auto& p : fs::directory_iterator(path))
 	{
 		std::string name = p.path().filename().string();
 
 		if (name.find(visual_name) == 0)
 		{
-			int test = name.length();
 			int num = std::stoi(name.substr(visual_name.length()));
 
-			if (num < min_num)
+			if (!filesFound)
+			{
 				min_num = num;
-
-			if (num > max_num)
 				max_num = num;
+				filesFound = true;
+			}
+			else
+			{
+				if (num < min_num)
+					min_num = num;
+				if (num > max_num)
+					max_num = num;
+			}
 		}
 	}
 
