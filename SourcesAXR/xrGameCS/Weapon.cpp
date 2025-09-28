@@ -831,6 +831,7 @@ void CWeapon::Load		(LPCSTR section)
 	LoadBoneNames(section, "pistolgrip_default_bones",						m_deletePistolgripBone);
 	LoadBoneNames(section, "grenade_launcher_hide_bones",					m_glremoveBone);
 	LoadBoneNames(section, "grenade_launcher_show_bones",					m_glshowBone);
+	LoadBoneNames(section, "scope_bone_reticles",							m_scope_bone_reticle);
 
 	if (pSettings->line_exist(section, "scopes_sect"))
 	{
@@ -3272,6 +3273,108 @@ void CWeapon::UpdateHUDAddonsVisibility()
 	bool WeaponNeedAltAimBoneIronsight = false;
 	if (pSettings->line_exist(m_section_id.c_str(), "enable_alternative_aim_ironsight"))
 		WeaponNeedAltAimBoneIronsight = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "enable_alternative_aim_ironsight", false);
+
+	bool WeaponNeedAimRemoveBones = false;
+	if (pSettings->line_exist(m_section_id.c_str(), "aim_need_remove_laser_dot"))
+		WeaponNeedAimRemoveBones = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "aim_need_remove_laser_dot", false);
+
+	bool WeaponHideReticle = false;
+	if (pSettings->line_exist(cur_scope_sect, "scope_bone_reticles_hide"))
+		WeaponHideReticle = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "scope_bone_reticles_hide", false);
+
+	bool WeaponBaseHideReticle = false;
+	if (pSettings->line_exist(m_section_id.c_str(), "scope_bone_reticles_hide"))
+		WeaponBaseHideReticle = READ_IF_EXISTS(pSettings, r_bool, m_section_id.c_str(), "scope_bone_reticles_hide", false);
+
+
+	for (const shared_str& bone : m_glshowBone)
+	{
+		if (!IsGrenadeLauncherAttached())
+		{
+			SetBoneVisible(bone, TRUE);
+		}
+		else
+		{
+			SetBoneVisible(bone, FALSE);
+		}
+	}
+
+	if (WeaponBaseHideReticle)
+	{
+		for (const shared_str& bone : m_scope_bone_reticle)
+		{
+			if (!IsZoomed() && GetZRotatingFactor() < .9f)
+			{
+				SetBoneVisible(bone, FALSE);
+			}
+			else
+			{
+				SetBoneVisible(bone, TRUE);
+			}
+		}
+	}
+
+	if (WeaponHideReticle)
+	{
+		if (!IsZoomed() && GetZRotatingFactor() < .9f)
+		{
+			//	Msg("NOT AIM : HIDE RETICLE");
+			if (m_cur_scope_bone_reticle != NULL)
+				SetBoneVisible(m_cur_scope_bone_reticle, FALSE);
+		}
+		else
+		{
+			if (m_bAltZoomActive)
+			{
+				//	Msg("ALT AIM : HIDE RETICLE");
+				if (m_cur_scope_bone_reticle != NULL)
+					SetBoneVisible(m_cur_scope_bone_reticle, FALSE);
+			}
+			else
+			{
+				//	Msg("AIM : SHOW RETICLE");
+				if (m_cur_scope_bone_reticle != NULL)
+					SetBoneVisible(m_cur_scope_bone_reticle, TRUE);
+			}
+		}
+	}
+	else
+	{
+		//Msg("AIM : SHOW RETICLE");
+		if (m_cur_scope_bone_reticle != NULL)
+			SetBoneVisible(m_cur_scope_bone_reticle, TRUE);
+	}
+
+	if (WeaponNeedAimRemoveBones)
+	{
+		if (!IsZoomed() && GetZRotatingFactor() < .9f)
+		{
+			//	Msg("NOT AIM : TEST SHOW BONE");
+			if (m_cur_aim_hide_laser_dot_bone != NULL)
+				SetBoneVisible(m_cur_aim_hide_laser_dot_bone, TRUE);
+		}
+		else
+		{
+			if (m_bAltZoomActive)
+			{
+			//	Msg("ALT AIM : TEST SHOW BONE");
+			if (m_cur_aim_hide_laser_dot_bone != NULL)
+				SetBoneVisible(m_cur_aim_hide_laser_dot_bone, TRUE);
+			}
+			else
+			{
+			//	Msg("AIM : TEST HIDE BONE");
+				if (m_cur_aim_hide_laser_dot_bone != NULL)
+					SetBoneVisible(m_cur_aim_hide_laser_dot_bone, FALSE);
+			}
+		}
+	}
+	else
+	{
+		//	Msg("NOT AIM : TEST SHOW BONE");
+		if (m_cur_aim_hide_laser_dot_bone != NULL)
+			SetBoneVisible(m_cur_aim_hide_laser_dot_bone, TRUE);
+	}
 
 	if (lfo_scope_type == 4)
 	{

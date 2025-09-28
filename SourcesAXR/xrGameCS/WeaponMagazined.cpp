@@ -2927,6 +2927,8 @@ bool CWeaponMagazined::DetachScope(const char* item_section_name, bool b_spawn_i
 			m_cur_scope_bone_aim_part = NULL;
 			m_cur_scope_show_bone_rail = NULL;
 			m_cur_scope_hide_bone_rail = NULL;
+			m_cur_aim_hide_laser_dot_bone = NULL;
+			m_cur_scope_bone_reticle = NULL;
 			m_bAltZoomActive = false;
 			detached = true;
 		}
@@ -3124,6 +3126,14 @@ void CWeaponMagazined::InitAddons()
 				// BONE FOR Picatinny RAILS
 				pcstr ScopeHideBoneRail = pSettings->r_string(m_scopes[m_cur_scope], "scope_hide_bones_rail");
 				m_cur_scope_hide_bone_rail = ScopeHideBoneRail;
+
+				// BONE HIDE LASER DOT
+				pcstr LaserDotBones = pSettings->r_string(m_scopes[m_cur_scope], "aim_remove_laser_dot");
+				m_cur_aim_hide_laser_dot_bone = LaserDotBones;
+
+				// BONE SCOPES RETICLES
+				pcstr ScopeReticleBones = pSettings->r_string(m_scopes[m_cur_scope], "scope_bone_reticles");
+				m_cur_scope_bone_reticle = ScopeReticleBones;
 			}
 
 			if (m_sScopeAttachSection.size() && pSettings->line_exist(m_sScopeAttachSection, "attach_hud_visual"))

@@ -379,7 +379,8 @@ protected:
 	shared_str		m_cur_scope_show_bone_rail;
 	shared_str		m_cur_scope_hide_bone_rail;
 	shared_str		m_cur_scope_bone_lens;
-
+	shared_str		m_cur_aim_hide_laser_dot_bone;
+	shared_str		m_cur_scope_bone_reticle;
 
 	//смещение иконов апгрейдов в инвентаре
 	int	m_iScopeX, m_iScopeY;
@@ -411,6 +412,8 @@ protected:
 	RStringVec		m_deletePistolgripBone;
 	RStringVec		m_glremoveBone;
 	RStringVec		m_glshowBone;
+	RStringVec		m_aimRemoveBone;
+	RStringVec		m_scope_bone_reticle;
 
 public:
 
