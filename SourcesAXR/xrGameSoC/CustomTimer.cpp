@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //	Module 		: CustomTimer.cpp
 //	Created 	: 15.08.2023
-//  Modified 	: 15.08.2023
+//  Modified 	: 29.09.2025
 //	Author		: Dance Maniac (M.F.S. Team)
 //	Description : Engine custom timer
 ////////////////////////////////////////////////////////////////////////////
@@ -258,7 +258,7 @@ ALife::_TIME_ID CTimerManager::GetTimerValue(std::string name) const
 		}
 	}
 
-	return -1;
+	return 0;
 }
 
 void CTimerManager::Update()
