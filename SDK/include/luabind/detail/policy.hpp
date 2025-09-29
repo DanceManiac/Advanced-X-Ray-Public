@@ -165,6 +165,7 @@ namespace luabind { namespace detail
 	LUABIND_INTEGER_TYPE(short)
 	LUABIND_INTEGER_TYPE(int)
 	LUABIND_INTEGER_TYPE(long)
+	LUABIND_INTEGER_TYPE(long long)
 
 	template<> struct is_primitive<signed char> : std::true_type {}; \
 	template<> struct is_primitive<signed char const> : std::true_type {}; \
@@ -203,6 +204,10 @@ namespace luabind { namespace detail
 	template<> struct is_primitive<string_class>: std::true_type {};
 	template<> struct is_primitive<const string_class>: std::true_type {};
 
+	template<> struct is_primitive<const std::string&> : std::true_type {};
+	template<> struct is_primitive<std::string> : std::true_type {};
+	template<> struct is_primitive<const std::string> : std::true_type {};
+
 
 	template<Direction> struct primitive_converter;
 	
@@ -227,6 +232,7 @@ namespace luabind { namespace detail
 		void apply(lua_State* L, short v) { lua_pushnumber(L, (lua_Number)v); }
 		void apply(lua_State* L, char v) { lua_pushnumber(L, (lua_Number)v); }
 		void apply(lua_State* L, long v) { lua_pushnumber(L, (lua_Number)v); }
+		void apply(lua_State* L, long long v) { lua_pushnumber(L, (lua_Number)v); }
 		void apply(lua_State* L, unsigned int v) { lua_pushnumber(L, (lua_Number)v); }
 		void apply(lua_State* L, unsigned short v) { lua_pushnumber(L, (lua_Number)v); }
 		void apply(lua_State* L, unsigned char v) { lua_pushnumber(L, (lua_Number)v); }
@@ -237,6 +243,8 @@ namespace luabind { namespace detail
 		void apply(lua_State* L, long double v) { lua_pushnumber(L, (lua_Number)v); }
 		void apply(lua_State* L, const char* v) { lua_pushstring(L, v); }
 		void apply(lua_State* L, const string_class& v)
+		{ lua_pushlstring(L, v.data(), v.size()); }
+		void apply(lua_State* L, const std::string& v)
 		{ lua_pushlstring(L, v.data(), v.size()); }
 		void apply(lua_State* L, bool b) { lua_pushboolean(L, b); }
 	};
@@ -287,6 +295,9 @@ namespace luabind { namespace detail
 
 		PRIMITIVE_CONVERTER(unsigned long) { return static_cast<unsigned long>(lua_tonumber(L, index)); }
 		PRIMITIVE_MATCHER(unsigned long) { if (lua_type(L, index) == LUA_TNUMBER) return 0; else return -1; }
+
+		PRIMITIVE_CONVERTER(long long) { return static_cast<long long>(lua_tonumber(L, index)); }
+		PRIMITIVE_MATCHER(long long) { if (lua_type(L, index) == LUA_TNUMBER) return 0; else return -1; }
 		
 		PRIMITIVE_CONVERTER(unsigned long long) { return static_cast<unsigned long long>(lua_tonumber(L, index)); }
 		PRIMITIVE_MATCHER(unsigned long long) { if (lua_type(L, index) == LUA_TNUMBER) return 0; else return -1; }
@@ -300,6 +311,12 @@ namespace luabind { namespace detail
 		PRIMITIVE_CONVERTER(string_class)
 		{ return string_class(lua_tostring(L, index), lua_strlen(L, index)); }
 		PRIMITIVE_MATCHER(string_class) { if (lua_type(L, index) == LUA_TSTRING) return 0; else return -1; }
+
+		PRIMITIVE_CONVERTER(std::string)
+		{
+			return std::string(lua_tostring(L, index), lua_strlen(L, index));
+		}
+		PRIMITIVE_MATCHER(std::string) { if (lua_type(L, index) == LUA_TSTRING) return 0; else return -1; }
 
 		PRIMITIVE_CONVERTER(luabind::object)
 		{
