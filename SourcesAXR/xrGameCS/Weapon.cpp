@@ -5184,24 +5184,56 @@ void CWeapon::SwitchZoomMode()
 		bool HudFovFromScope = false;
 		HudFovFromScope = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "cur_scope_hud_fov", false);
 
+		bool HudFovFromScopeAlt = false;
+		HudFovFromScopeAlt = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "cur_scope_hud_fov_alt_aim", false);
+
 		if (HudFovFromScope)
 		{
-			if (lfo_scope_type == 4)//LFO 3d Scopes
+			m_zoom_params.m_fCurrentZoomFactor = CurrentZoomFactor();
+
+			if (lfo_scope_type)//LFO 3d Scopes
 			{
-				psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, !m_bAltZoomActive ? "aim_hud_fov" : "alt_aim_hud_fov", GetHudFov());
-				m_zoom_params.m_fCurrentZoomFactor = CurrentZoomFactor();
+				if (HudFovFromScopeAlt)
+				{
+					psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, !m_bAltZoomActive ? "aim_hud_fov" : "alt_aim_hud_fov", GetHudFov());
+				}
+				else
+				{
+					if (!m_bAltZoomActive)
+					{
+						psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, "aim_hud_fov", GetHudFov());
+					}
+				}
 			}
 			else
 			{
 				if (psActorFlags.test(ALTERNATIV_ALT_AIM))
 				{
-					psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, !m_bAltZoomActive ? "aim_hud_fov_pip_2" : "alt_aim_hud_fov_pip_2", GetHudFov());
-					m_zoom_params.m_fCurrentZoomFactor = CurrentZoomFactor();
+					if (HudFovFromScopeAlt)
+					{
+						psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, !m_bAltZoomActive ? "aim_hud_fov_pip_2" : "alt_aim_hud_fov_pip_2", GetHudFov());
+					}
+					else
+					{
+						if (!m_bAltZoomActive)
+						{
+							psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, "aim_hud_fov_pip_2", GetHudFov());
+						}
+					}
 				}
 				else
 				{
-					psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, !m_bAltZoomActive ? "aim_hud_fov_pip" : "alt_aim_hud_fov_pip", GetHudFov());
-					m_zoom_params.m_fCurrentZoomFactor = CurrentZoomFactor();
+					if (HudFovFromScopeAlt)
+					{
+						psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, !m_bAltZoomActive ? "aim_hud_fov_pip" : "alt_aim_hud_fov_pip", GetHudFov());
+					}
+					else
+					{
+						if (!m_bAltZoomActive)
+						{
+							psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, "aim_hud_fov_pip", GetHudFov());
+						}
+					}
 				}
 			}
 		}
@@ -6022,24 +6054,57 @@ void CWeapon::UpdateAimFOV()
 	bool HudFovFromScope = false;
 	HudFovFromScope = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "cur_scope_hud_fov", false);
 
+
+	bool HudFovFromScopeAlt = false;
+	HudFovFromScopeAlt = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "cur_scope_hud_fov_alt_aim", false);
+
 	if (HudFovFromScope && IsScopeAttached() && !IsRotatingFromZoom())	//SCOPED WEAPONS
 	{
+		m_zoom_params.m_fCurrentZoomFactor = CurrentZoomFactor();
+
 		if (lfo_scope_type == 4)//LFO 3d Scopes
 		{
-			psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, !m_bAltZoomActive ? "aim_hud_fov" : "alt_aim_hud_fov", GetHudFov());
-			m_zoom_params.m_fCurrentZoomFactor = CurrentZoomFactor();
+			if (HudFovFromScopeAlt)
+			{
+				psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, !m_bAltZoomActive ? "aim_hud_fov" : "alt_aim_hud_fov", GetHudFov());
+			}
+			else
+			{
+				if (!m_bAltZoomActive)
+				{
+				psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, "aim_hud_fov", GetHudFov());
+				}
+			}
 		}
 		else
 		{
 			if (psActorFlags.test(ALTERNATIV_ALT_AIM))
 			{
-				psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, !m_bAltZoomActive ? "aim_hud_fov_pip_2" : "alt_aim_hud_fov_pip_2", GetHudFov());
-				m_zoom_params.m_fCurrentZoomFactor = CurrentZoomFactor();
+				if (HudFovFromScopeAlt)
+				{
+					psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, !m_bAltZoomActive ? "aim_hud_fov_pip_2" : "alt_aim_hud_fov_pip_2", GetHudFov());
+				}
+				else
+				{
+					if (!m_bAltZoomActive)
+					{
+						psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, "aim_hud_fov_pip_2", GetHudFov());
+					}
+				}	
 			}
 			else
 			{
-				psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, !m_bAltZoomActive ? "aim_hud_fov_pip" : "alt_aim_hud_fov_pip", GetHudFov());
-				m_zoom_params.m_fCurrentZoomFactor = CurrentZoomFactor();
+				if (HudFovFromScopeAlt)
+				{
+					psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, !m_bAltZoomActive ? "aim_hud_fov_pip" : "alt_aim_hud_fov_pip", GetHudFov());
+				}
+				else
+				{
+					if (!m_bAltZoomActive)
+					{
+						psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, "aim_hud_fov_pip", GetHudFov());
+					}
+				}
 			}
 		}
 	}
@@ -6049,10 +6114,19 @@ void CWeapon::UpdateAimFOV()
 
 	if (HudFovFromNoScope && !IsScopeAttached())	//NONE SCOPED WEAPONS
 	{
-		psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, m_section_id, !m_bAltZoomActive ? "aim_hud_fov_ironsight" : "alt_aim_hud_fov_ironsight", GetHudFov());
+		if (HudFovFromScopeAlt)
+		{
+			psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, !m_bAltZoomActive ? "aim_hud_fov_ironsight" : "alt_aim_hud_fov_ironsight", GetHudFov());
+		}
+		else
+		{
+			if (!m_bAltZoomActive)
+			{
+				psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, "aim_hud_fov_ironsight", GetHudFov());
+			}
+		}
 		m_zoom_params.m_fCurrentZoomFactor = CurrentZoomFactor();
 	}
-
 }
 
 void CWeapon::LoadOverheatLightParams(LPCSTR section)
