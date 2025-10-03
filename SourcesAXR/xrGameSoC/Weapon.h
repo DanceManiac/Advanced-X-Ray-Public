@@ -763,7 +763,7 @@ private:
 
 	void UpdateLaser();
 public:
-	Fvector laserdot_attach_offset, laserdot_world_attach_offset;
+	Fvector laserdot_attach_offset{}, laserdot_world_attach_offset{};
 
 	void SwitchLaser(bool on);
 	void DestroyLaserLight() { if (laser_light_render) laser_light_render.destroy(); }
@@ -784,7 +784,7 @@ private:
 
 	void UpdateFlashlight();
 public:
-	Fvector flashlight_attach_offset, flashlight_omni_attach_offset, flashlight_world_attach_offset, flashlight_omni_world_attach_offset;
+	Fvector flashlight_attach_offset{}, flashlight_omni_attach_offset{}, flashlight_world_attach_offset{}, flashlight_omni_world_attach_offset{};
 
 	void SwitchFlashlight(bool on);
 	void DestroyFlashlightLight() { if (flashlight_render) flashlight_render.destroy(); }
