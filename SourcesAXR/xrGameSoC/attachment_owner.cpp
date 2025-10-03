@@ -17,6 +17,8 @@
 #include "ActorHelmet.h"
 #include "CustomBackpack.h"
 
+#include "AdvancedXrayGameConstants.h"
+
 CAttachmentOwner::~CAttachmentOwner()
 {
 }
@@ -105,6 +107,9 @@ void CAttachmentOwner::attach(CInventoryItem* inventory_item)
 		CActor* pActor = smart_cast<CGameObject*>(pHelmet->H_Parent())->cast_actor();
 
 		if (pActor && pActor->inventory().ItemFromSlot(HELMET_SLOT) == pHelmet)
+			need_custom_attach = true;
+
+		if (GameConstants::GetSecondHelmetSlotEnabled() && pActor && pActor->inventory().ItemFromSlot(SECOND_HELMET_SLOT) == pHelmet)
 			need_custom_attach = true;
 	}
 
