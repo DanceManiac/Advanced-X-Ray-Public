@@ -153,6 +153,8 @@ protected:
 	int				m_iCurFireMode;
 	int				m_iPrefferedFireMode;
 
+	u32				m_iMagClickStartRound;
+
 	//переменная блокирует использование
 	//только разных типов патронов
 	bool m_bLockType;
