@@ -71,6 +71,7 @@ CWeaponMagazined::CWeaponMagazined(ESoundTypes eSoundType) : CWeapon()
 
 	m_sSndShotCurrent			= nullptr;
 	m_bIsRevolver				= false;
+	m_iMagClickStartRound		= 0;
 }
 
 CWeaponMagazined::~CWeaponMagazined()
@@ -294,6 +295,8 @@ void CWeaponMagazined::Load	(LPCSTR section)
 
 	m_iBaseDispersionedBulletsCount = READ_IF_EXISTS(pSettings, r_u8, section, "base_dispersioned_bullets_count", 0);
 	m_fBaseDispersionedBulletsSpeed = READ_IF_EXISTS(pSettings, r_float, section, "base_dispersioned_bullets_speed", m_fStartBulletSpeed);
+
+	m_iMagClickStartRound = READ_IF_EXISTS(pSettings, r_u32, section, "mag_click_start_round", 0);
 
 	if (pSettings->line_exist(section, "fire_modes"))
 	{
@@ -1365,6 +1368,16 @@ void CWeaponMagazined::OnShot()
 		if (IsZoomed())
 		{
 			if (auto mag_shot_snd = m_sounds.FindSoundItem("sndMagShot", false))
+
+			float threshold = 0.0f;
+			float volume = 0.0f;
+
+			if (m_iMagClickStartRound)
+				threshold = (float)m_iMagClickStartRound;
+			else
+				threshold = iMagazineSize * 0.30f;
+
+			if (iAmmoElapsed <= threshold && threshold > 0)
 			{
 				float threshold = iMagazineSize * 0.30f;
 				float volume = 0.0f;
@@ -1386,8 +1399,13 @@ void CWeaponMagazined::OnShot()
 		{
 			if (auto mag_shot_snd = m_sounds.FindSoundItem("sndMagShotHip", false))
 			{
-				float threshold = iMagazineSize * 0.30f;
+				float threshold = 0.0f;
 				float volume = 0.0f;
+
+				if (m_iMagClickStartRound)
+					threshold = (float)m_iMagClickStartRound;
+				else
+					threshold = iMagazineSize * 0.30f;
 
 				if (iAmmoElapsed <= threshold && threshold > 0)
 				{
