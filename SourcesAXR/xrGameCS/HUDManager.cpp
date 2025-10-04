@@ -282,26 +282,25 @@ void  CHUDManager::RenderUI()
 {
 	ZoneScoped;
 
-	if ( !m_Renderable )
-	{
+	if (!m_Renderable)
 		return;
-	}
 
-	if(!b_online)					return;
+	if (!b_online)
+		return;
 
 	BOOL bAlready					= FALSE;
-	if (true || psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT))
-	{
-		HitMarker.Render			();
-		bAlready					= ! (pUI && !pUI->Render());
-		UI().RenderFont				();
-	}
 
-	if (/* psHUD_Flags.is(HUD_CROSSHAIR|HUD_CROSSHAIR_RT|HUD_CROSSHAIR_RT2) &&*/ !bAlready)	
+	if (psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT))
+		HitMarker.Render		();
+		
+	bAlready					= ! (pUI && !pUI->Render());
+	UI().RenderFont				();
+
+	if (!bAlready)	
 		m_pHUDTarget->Render();
 
-
-	if( Device.Paused() && bShowPauseString){
+	if (Device.Paused() && bShowPauseString)
+	{
 		CGameFont* pFont	= UI().Font().pFontGraffiti50Russian;
 		pFont->SetColor		(0x80FF0000	);
 		LPCSTR _str			= CStringTable().translate("st_game_paused").c_str();
