@@ -75,12 +75,17 @@ void CBaseMonster::feel_sound_new(CObject* who, int eType, CSound_UserDataPtr us
 
 void CBaseMonster::HitEntity(const CEntity *pEntity, float fDamage, float impulse, Fvector &dir)
 {
-	if (!g_Alive()) return;
-	if (!pEntity || pEntity->getDestroy()) return;
+	if (!g_Alive())
+		return;
 
-	if (!EnemyMan.get_enemy()) return;
+	if (!pEntity || pEntity->getDestroy())
+		return;
 
-	if (EnemyMan.get_enemy() == pEntity) {
+	if (!EnemyMan.get_enemy())
+		return;
+
+	if (EnemyMan.get_enemy() == pEntity)
+	{
 		Fvector position_in_bone_space;
 		position_in_bone_space.set(0.f,0.f,0.f);
 
@@ -106,19 +111,25 @@ void CBaseMonster::HitEntity(const CEntity *pEntity, float fDamage, float impuls
 		HS.Write_Packet(l_P);
 		u_EventSend	(l_P);
 		
-		if (pEntityNC == Actor()) {
+		if (pEntityNC == Actor())
+		{
 			START_PROFILE("BaseMonster/Animation/HitEntity");
-			SDrawStaticStruct* s = HUD().GetUI()->UIGame()->AddCustomStatic("monster_claws", false);
-			s->m_endTime = Device.fTimeGlobal+3.0f;// 3sec
-			
-			float h1,p1;
-			Device.vCameraDirection.getHP	(h1,p1);
 
-			Fvector hd = hit_dir;
-			hd.mul(-1);
-			float d = -h1 + hd.getH();
-			s->wnd()->SetHeading	(d);
-			s->wnd()->SetHeadingPivot(Fvector2().set(256,512), Fvector2().set(0,0), false);
+			if (psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT))
+			{
+				SDrawStaticStruct* s = HUD().GetUI()->UIGame()->AddCustomStatic("monster_claws", false);
+				s->m_endTime = Device.fTimeGlobal + 3.0f;// 3sec
+
+				float h1, p1;
+				Device.vCameraDirection.getHP(h1, p1);
+
+				Fvector hd = hit_dir;
+				hd.mul(-1);
+				float d = -h1 + hd.getH();
+				s->wnd()->SetHeading(d);
+				s->wnd()->SetHeadingPivot(Fvector2().set(256, 512), Fvector2().set(0, 0), false);
+			}
+
 			STOP_PROFILE;
 
 			//SetAttackEffector			();
