@@ -3372,64 +3372,83 @@ void CWeaponMagazined::PlayAnimBore()
 
 void CWeaponMagazined::PlayAnimIdleSprint()
 {
-	if (IsGripAttached())
+	if (g_actor->IsDetectorActive())
 	{
-		if (IsMisfire() && isHUDAnimationExist("anm_idle_sprint_grip_h_jammed"))
-			PlayHUDMotion("anm_idle_sprint_grip_h_jammed", true, nullptr, GetState());
-		else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_SPRINT_EMPTY))
-			PlayHUDMotion("anm_idle_sprint_grip_h_empty", TRUE, NULL, GetState());
+		if (IsMisfireNow())
+			PlayHUDMotionIfExists({ "anm_idle_sprint_jammed", "anm_idle_sprint", "anm_idle" }, true, GetState());
 		else
-			inherited::PlayAnimIdleSprint();
-	}
-	else if (IsGripvAttached())
-	{
-		if (IsMisfire() && isHUDAnimationExist("anm_idle_sprint_grip_v_jammed"))
-			PlayHUDMotion("anm_idle_sprint_grip_v_jammed", true, nullptr, GetState());
-		else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_SPRINT_EMPTY))
-			PlayHUDMotion("anm_idle_sprint_grip_v_empty", TRUE, NULL, GetState());
-		else
-			inherited::PlayAnimIdleSprint();
+			PlayHUDMotionIfExists({ "anm_idle_sprint", "anm_idle" }, true, GetState());
 	}
 	else
 	{
-		if (IsMisfire() && isHUDAnimationExist("anm_idle_sprint_jammed"))
-			PlayHUDMotion("anm_idle_sprint_jammed", true, nullptr, GetState());
-		else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_SPRINT_EMPTY))
-			PlayHUDMotion("anm_idle_sprint_empty", TRUE, NULL, GetState());
+		if (IsGripAttached())
+		{
+			if (IsMisfire() && isHUDAnimationExist("anm_idle_sprint_grip_h_jammed"))
+				PlayHUDMotion("anm_idle_sprint_grip_h_jammed", true, nullptr, GetState());
+			else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_SPRINT_EMPTY))
+				PlayHUDMotion("anm_idle_sprint_grip_h_empty", TRUE, NULL, GetState());
+			else
+				inherited::PlayAnimIdleSprint();
+		}
+		else if (IsGripvAttached())
+		{
+			if (IsMisfire() && isHUDAnimationExist("anm_idle_sprint_grip_v_jammed"))
+				PlayHUDMotion("anm_idle_sprint_grip_v_jammed", true, nullptr, GetState());
+			else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_SPRINT_EMPTY))
+				PlayHUDMotion("anm_idle_sprint_grip_v_empty", TRUE, NULL, GetState());
+			else
+				inherited::PlayAnimIdleSprint();
+		}
 		else
-			inherited::PlayAnimIdleSprint();
+		{
+			if (IsMisfire() && isHUDAnimationExist("anm_idle_sprint_jammed"))
+				PlayHUDMotion("anm_idle_sprint_jammed", true, nullptr, GetState());
+			else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_SPRINT_EMPTY))
+				PlayHUDMotion("anm_idle_sprint_empty", TRUE, NULL, GetState());
+			else
+				inherited::PlayAnimIdleSprint();
+		}
 	}
-
 }
 
 void CWeaponMagazined::PlayAnimIdleMoving()
 {
-	if (IsGripAttached())
+	if (g_actor->IsDetectorActive())
 	{
-		if (IsMisfire() && isHUDAnimationExist("anm_idle_moving_grip_h_jammed"))
-			PlayHUDMotion("anm_idle_moving_grip_h_jammed", true, nullptr, GetState());
-		else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_MOVING_EMPTY))
-			PlayHUDMotion("anm_idle_moving_grip_h_empty", TRUE, NULL, GetState());
-		else
-			inherited::PlayAnimIdleMoving();
+			if (IsMisfireNow())
+				PlayHUDMotionIfExists({ "anm_idle_moving_jammed", "anm_idle_moving", "anm_idle" }, true, GetState());
+			else
+				PlayHUDMotionIfExists({ "anm_idle_moving", "anm_idle" }, true, GetState());
 	}
-	else if (IsGripvAttached())
+	else 
 	{
-		if (IsMisfire() && isHUDAnimationExist("anm_idle_moving_grip_v_jammed"))
-			PlayHUDMotion("anm_idle_moving_grip_v_jammed", true, nullptr, GetState());
-		else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_MOVING_EMPTY))
-			PlayHUDMotion("anm_idle_moving_grip_v_empty", TRUE, NULL, GetState());
+		if (IsGripAttached())
+		{
+			if (IsMisfire() && isHUDAnimationExist("anm_idle_moving_grip_h_jammed"))
+				PlayHUDMotion("anm_idle_moving_grip_h_jammed", true, nullptr, GetState());
+			else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_MOVING_EMPTY))
+				PlayHUDMotion("anm_idle_moving_grip_h_empty", TRUE, NULL, GetState());
+			else
+				inherited::PlayAnimIdleMoving();
+		}
+		else if (IsGripvAttached())
+		{
+			if (IsMisfire() && isHUDAnimationExist("anm_idle_moving_grip_v_jammed"))
+				PlayHUDMotion("anm_idle_moving_grip_v_jammed", true, nullptr, GetState());
+			else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_MOVING_EMPTY))
+				PlayHUDMotion("anm_idle_moving_grip_v_empty", TRUE, NULL, GetState());
+			else
+				inherited::PlayAnimIdleMoving();
+		}
 		else
-			inherited::PlayAnimIdleMoving();
-	}
-	else
-	{
-		if (IsMisfire() && isHUDAnimationExist("anm_idle_moving_jammed"))
-			PlayHUDMotion("anm_idle_moving_jammed", true, nullptr, GetState());
-		else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_MOVING_EMPTY))
-			PlayHUDMotion("anm_idle_moving_empty", TRUE, NULL, GetState());
-		else
-			inherited::PlayAnimIdleMoving();
+		{
+			if (IsMisfire() && isHUDAnimationExist("anm_idle_moving_jammed"))
+				PlayHUDMotion("anm_idle_moving_jammed", true, nullptr, GetState());
+			else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_MOVING_EMPTY))
+				PlayHUDMotion("anm_idle_moving_empty", TRUE, NULL, GetState());
+			else
+				inherited::PlayAnimIdleMoving();
+		}
 	}
 }
 

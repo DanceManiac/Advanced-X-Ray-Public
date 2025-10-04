@@ -251,7 +251,7 @@ void CCustomBackpack::OnStateSwitch(u32 S)
 		}break;
 	case eIdle:
 		{
-			PlayAnimIdle();
+			PlayAnimIdleBackpack();
 
 			if (m_bInvOnIdle && !HUD().GetUI()->UIGame()->ActorMenu().IsShown())
 				HUD().GetUI()->UIGame()->ShowActorMenu();

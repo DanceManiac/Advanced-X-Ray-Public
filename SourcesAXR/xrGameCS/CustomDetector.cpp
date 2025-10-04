@@ -152,7 +152,7 @@ void CCustomDetector::OnStateSwitch(u32 S)
 		}break;
 	case eIdle:
 		{
-			PlayAnimIdle				();
+			PlayAnimIdleDetector		();
 			SetPending					(FALSE);
 		}break;
 }

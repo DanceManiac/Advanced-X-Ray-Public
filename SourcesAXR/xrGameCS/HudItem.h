@@ -117,6 +117,8 @@ public:
 
 	virtual void				PlayAnimIdle		();
 	virtual void				PlayAnimIdlePDA		();
+	virtual void				PlayAnimIdleBackpack();
+	virtual void				PlayAnimIdleDetector();
 	virtual void				PlayAnimBore		();
 	bool						TryPlayAnimIdle		();
 	virtual bool				MovingAnimAllowedNow() { return true; }

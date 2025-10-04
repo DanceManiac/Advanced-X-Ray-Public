@@ -667,31 +667,53 @@ void CHudItem::PlayAnimIdle()
 	CWeapon* weapon = smart_cast<CWeapon*>(this);
 	CPda* pda = smart_cast<CPda*>(this);
 
-	if (!pda)
+	if (g_actor->IsDetectorActive() || !weapon)
 	{
-		if (weapon->IsGripAttached())
+		if (IsMisfireNow())
+			PlayHUDMotionIfExists({ "anm_idle_jammed", "anm_idle" }, true, GetState());
+		else if (IsMagazineEmpty())
+			PlayHUDMotionIfExists({ "anm_idle_empty", "anm_idle" }, true, GetState());
+		else
+			PlayHUDMotion("anm_idle", TRUE, NULL, GetState());
+	}
+	else
+	{
+		if (!pda)
 		{
-		//	Msg("IDLE ANIMATION: GRIP H");
-			if (IsMisfireNow())
-				PlayHUDMotionIfExists({ "anm_idle_grip_h_jammed", "anm_idle_grip_h" }, true, GetState());
-			else if (IsMagazineEmpty())
-				PlayHUDMotionIfExists({ "anm_idle_grip_h_empty", "anm_idle_grip_h" }, true, GetState());
+			if (ParentIsActor() && weapon->IsGripAttached())
+			{
+			//	Msg("IDLE ANIMATION: GRIP H");
+				if (IsMisfireNow())
+					PlayHUDMotionIfExists({ "anm_idle_grip_h_jammed", "anm_idle_grip_h" }, true, GetState());
+				else if (IsMagazineEmpty())
+					PlayHUDMotionIfExists({ "anm_idle_grip_h_empty", "anm_idle_grip_h" }, true, GetState());
+				else
+					PlayHUDMotion("anm_idle_grip_h", TRUE, NULL, GetState());
+			}
+			else if (ParentIsActor() && weapon->IsGripvAttached())
+			{
+				//	Msg("IDLE ANIMATION: GRIP V");
+				if (IsMisfireNow())
+					PlayHUDMotionIfExists({ "anm_idle_grip_v_jammed", "anm_idle_grip_v" }, true, GetState());
+				else if (IsMagazineEmpty())
+					PlayHUDMotionIfExists({ "anm_idle_grip_v_empty", "anm_idle_grip_v" }, true, GetState());
+				else
+					PlayHUDMotion("anm_idle_grip_v", TRUE, NULL, GetState());
+			}
 			else
-				PlayHUDMotion("anm_idle_grip_h", TRUE, NULL, GetState());
-		}
-		else if (weapon->IsGripvAttached())
-		{
-			//	Msg("IDLE ANIMATION: GRIP V");
-			if (IsMisfireNow())
-				PlayHUDMotionIfExists({ "anm_idle_grip_v_jammed", "anm_idle_grip_v" }, true, GetState());
-			else if (IsMagazineEmpty())
-				PlayHUDMotionIfExists({ "anm_idle_grip_v_empty", "anm_idle_grip_v" }, true, GetState());
-			else
-				PlayHUDMotion("anm_idle_grip_v", TRUE, NULL, GetState());
+			{
+			//	Msg("IDLE ANIMATION: NO GRIP");
+				if (IsMisfireNow())
+					PlayHUDMotionIfExists({ "anm_idle_jammed", "anm_idle" }, true, GetState());
+				else if (IsMagazineEmpty())
+					PlayHUDMotionIfExists({ "anm_idle_empty", "anm_idle" }, true, GetState());
+				else
+					PlayHUDMotion("anm_idle", TRUE, NULL, GetState());
+			}
 		}
 		else
 		{
-		//	Msg("IDLE ANIMATION: NO GRIP");
+			//	Msg("IDLE ANIMATION: NO GRIP");
 			if (IsMisfireNow())
 				PlayHUDMotionIfExists({ "anm_idle_jammed", "anm_idle" }, true, GetState());
 			else if (IsMagazineEmpty())
@@ -700,23 +722,36 @@ void CHudItem::PlayAnimIdle()
 				PlayHUDMotion("anm_idle", TRUE, NULL, GetState());
 		}
 	}
-	else
-	{
-		//	Msg("IDLE ANIMATION: NO GRIP");
-		if (IsMisfireNow())
-			PlayHUDMotionIfExists({ "anm_idle_jammed", "anm_idle" }, true, GetState());
-		else if (IsMagazineEmpty())
-			PlayHUDMotionIfExists({ "anm_idle_empty", "anm_idle" }, true, GetState());
-		else
-			PlayHUDMotion("anm_idle", TRUE, NULL, GetState());
-	}
 }
 
 void CHudItem::PlayAnimIdlePDA()
 {
 	if (TryPlayAnimIdle()) return;
 
-	//	Msg("IDLE ANIMATION: NO GRIP");
+	if (IsMisfireNow())
+		PlayHUDMotionIfExists({ "anm_idle_jammed", "anm_idle" }, true, GetState());
+	else if (IsMagazineEmpty())
+		PlayHUDMotionIfExists({ "anm_idle_empty", "anm_idle" }, true, GetState());
+	else
+		PlayHUDMotion("anm_idle", TRUE, NULL, GetState());
+}
+
+void CHudItem::PlayAnimIdleBackpack()
+{
+	if (TryPlayAnimIdle()) return;
+
+	if (IsMisfireNow())
+		PlayHUDMotionIfExists({ "anm_idle_jammed", "anm_idle" }, true, GetState());
+	else if (IsMagazineEmpty())
+		PlayHUDMotionIfExists({ "anm_idle_empty", "anm_idle" }, true, GetState());
+	else
+		PlayHUDMotion("anm_idle", TRUE, NULL, GetState());
+}
+
+void CHudItem::PlayAnimIdleDetector()
+{
+	if (TryPlayAnimIdle()) return;
+
 	if (IsMisfireNow())
 		PlayHUDMotionIfExists({ "anm_idle_jammed", "anm_idle" }, true, GetState());
 	else if (IsMagazineEmpty())
@@ -792,36 +827,53 @@ void CHudItem::PlayAnimIdleMoving()
 {
 	CWeapon* weapon = smart_cast<CWeapon*>(this);
 	CPda* pda = smart_cast<CPda*>(this);
-
-	if (!pda)
+	
+	if (g_actor->IsDetectorActive() || !weapon)
 	{
-		if (weapon->IsGripAttached())
+		if (IsMisfireNow())
+			PlayHUDMotionIfExists({ "anm_idle_moving_jammed", "anm_idle_moving", "anm_idle" }, true, GetState());
+		else
+			PlayHUDMotionIfExists({ "anm_idle_moving", "anm_idle" }, true, GetState());
+	}
+	else
+	{
+		if (!pda)
 		{
-			if (IsMisfireNow())
-				PlayHUDMotionIfExists({ "anm_idle_moving_grip_h_jammed", "anm_idle_moving_grip_h", "anm_idle_grip_h" }, true, GetState());
+			if (weapon->IsGripAttached())
+			{
+				if (IsMisfireNow())
+					PlayHUDMotionIfExists({ "anm_idle_moving_grip_h_jammed", "anm_idle_moving_grip_h", "anm_idle_grip_h" }, true, GetState());
+				else
+					PlayHUDMotionIfExists({ "anm_idle_moving_grip_h", "anm_idle_grip_h"}, true, GetState());
+			}
+			else if (weapon->IsGripvAttached())
+			{
+				if (IsMisfireNow())
+					PlayHUDMotionIfExists({ "anm_idle_moving_grip_v_jammed", "anm_idle_moving_grip_v", "anm_idle_grip_v" }, true, GetState());
+				else
+					PlayHUDMotionIfExists({ "anm_idle_moving_grip_v", "anm_idle_grip_v" }, true, GetState());
+			}
+			else if (weapon->IsGrenadeLauncherAttached())
+			{
+				if (IsMisfireNow())
+					PlayHUDMotionIfExists({ "anm_idle_moving_w_gl_jammed", "anm_idle_moving_w_gl", "anm_idle_w_gl" }, true, GetState());
+				else
+					PlayHUDMotionIfExists({ "anm_idle_moving_w_gl", "anm_idle_w_gl" }, true, GetState());
+			}
+			else if (IsGrenadeMode())
+			{
+				if (IsMisfireNow())
+					PlayHUDMotionIfExists({ "anm_idle_moving_g_jammed", "anm_idle_moving_g" }, true, GetState());
+				else
+					PlayHUDMotionIfExists({ "anm_idle_moving_g" }, true, GetState());
+			}
 			else
-				PlayHUDMotionIfExists({ "anm_idle_moving_grip_h", "anm_idle_grip_h"}, true, GetState());
-		}
-		else if (weapon->IsGripvAttached())
-		{
-			if (IsMisfireNow())
-				PlayHUDMotionIfExists({ "anm_idle_moving_grip_v_jammed", "anm_idle_moving_grip_v", "anm_idle_grip_v" }, true, GetState());
-			else
-				PlayHUDMotionIfExists({ "anm_idle_moving_grip_v", "anm_idle_grip_v" }, true, GetState());
-		}
-		else if (weapon->IsGrenadeLauncherAttached())
-		{
-			if (IsMisfireNow())
-				PlayHUDMotionIfExists({ "anm_idle_moving_w_gl_jammed", "anm_idle_moving_w_gl", "anm_idle_w_gl" }, true, GetState());
-			else
-				PlayHUDMotionIfExists({ "anm_idle_moving_w_gl", "anm_idle_w_gl" }, true, GetState());
-		}
-		else if (IsGrenadeMode())
-		{
-			if (IsMisfireNow())
-				PlayHUDMotionIfExists({ "anm_idle_moving_g_jammed", "anm_idle_moving_g" }, true, GetState());
-			else
-				PlayHUDMotionIfExists({ "anm_idle_moving_g" }, true, GetState());
+			{
+				if (IsMisfireNow())
+					PlayHUDMotionIfExists({ "anm_idle_moving_jammed", "anm_idle_moving", "anm_idle" }, true, GetState());
+				else
+					PlayHUDMotionIfExists({ "anm_idle_moving", "anm_idle" }, true, GetState());
+			}
 		}
 		else
 		{
@@ -831,13 +883,6 @@ void CHudItem::PlayAnimIdleMoving()
 				PlayHUDMotionIfExists({ "anm_idle_moving", "anm_idle" }, true, GetState());
 		}
 	}
-	else
-	{
-		if (IsMisfireNow())
-			PlayHUDMotionIfExists({ "anm_idle_moving_jammed", "anm_idle_moving", "anm_idle" }, true, GetState());
-		else
-			PlayHUDMotionIfExists({ "anm_idle_moving", "anm_idle" }, true, GetState());
-	}
 }
 
 void CHudItem::PlayAnimIdleMovingSlow()
@@ -845,34 +890,55 @@ void CHudItem::PlayAnimIdleMovingSlow()
 	CWeapon* weapon = smart_cast<CWeapon*>(this);
 	CPda* pda = smart_cast<CPda*>(this);
 
-	if (!pda)
+	if (g_actor->IsDetectorActive() || !weapon)
 	{
-		if (weapon->IsGripAttached())
+		if (IsMisfireNow())
+			PlayHUDMotionIfExists({ "anm_idle_moving_slow_jammed", "anm_idle_moving_slow", "anm_idle_moving", "anm_idle" }, true, GetState());
+		else if (IsMagazineEmpty())
+			PlayHUDMotionIfExists({ "anm_idle_moving_slow_empty", "anm_idle_moving_slow", "anm_idle_moving", "anm_idle" }, true, GetState());
+		else
+			PlayHUDMotionIfExists({ "anm_idle_moving_slow", "anm_idle_moving", "anm_idle" }, true, GetState());
+	}
+	else
+	{
+		if (!pda)
 		{
-			if (IsMisfireNow())
-				PlayHUDMotionIfExists({ "anm_idle_moving_grip_h_slow_jammed", "anm_idle_moving_grip_h_slow", "anm_idle_moving_grip_h", "anm_idle_grip_h" }, true, GetState());
-			else if (IsMagazineEmpty())
-				PlayHUDMotionIfExists({ "anm_idle_moving_grip_h_slow_empty", "anm_idle_moving_grip_h_slow", "anm_idle_moving_grip_h", "anm_idle_grip_h" }, true, GetState());
+			if (weapon->IsGripAttached())
+			{
+				if (IsMisfireNow())
+					PlayHUDMotionIfExists({ "anm_idle_moving_grip_h_slow_jammed", "anm_idle_moving_grip_h_slow", "anm_idle_moving_grip_h", "anm_idle_grip_h" }, true, GetState());
+				else if (IsMagazineEmpty())
+					PlayHUDMotionIfExists({ "anm_idle_moving_grip_h_slow_empty", "anm_idle_moving_grip_h_slow", "anm_idle_moving_grip_h", "anm_idle_grip_h" }, true, GetState());
+				else
+					PlayHUDMotionIfExists({ "anm_idle_moving_grip_h_slow", "anm_idle_moving_grip_h", "anm_idle_grip_h" }, true, GetState());
+			}
+			else if (weapon->IsGripvAttached())
+			{
+				if (IsMisfireNow())
+					PlayHUDMotionIfExists({ "anm_idle_moving_grip_v_slow_jammed", "anm_idle_moving_grip_v_slow", "anm_idle_moving_grip_v", "anm_idle_grip_v" }, true, GetState());
+				else if (IsMagazineEmpty())
+					PlayHUDMotionIfExists({ "anm_idle_moving_grip_v_slow_empty", "anm_idle_moving_grip_v_slow", "anm_idle_moving_grip_v", "anm_idle_grip_v" }, true, GetState());
+				else
+					PlayHUDMotionIfExists({ "anm_idle_moving_grip_v_slow", "anm_idle_moving_grip_v", "anm_idle_grip_v" }, true, GetState());
+			}
+			else if (weapon->IsGrenadeLauncherAttached())
+			{
+				if (IsMisfireNow())
+					PlayHUDMotionIfExists({ "anm_idle_moving_w_gl_slow_jammed", "anm_idle_moving_w_gl_slow", "anm_idle_moving_w_gl", "anm_idle_w_gl" }, true, GetState());
+				else if (IsMagazineEmpty())
+					PlayHUDMotionIfExists({ "anm_idle_moving_w_gl_slow_empty", "anm_idle_moving_w_gl_slow", "anm_idle_moving_w_gl", "anm_idle_w_gl" }, true, GetState());
+				else
+					PlayHUDMotionIfExists({ "anm_idle_moving_w_gl_slow", "anm_idle_moving_w_gl", "anm_idle_w_gl" }, true, GetState());
+			}
 			else
-				PlayHUDMotionIfExists({ "anm_idle_moving_grip_h_slow", "anm_idle_moving_grip_h", "anm_idle_grip_h" }, true, GetState());
-		}
-		else if (weapon->IsGripvAttached())
-		{
-			if (IsMisfireNow())
-				PlayHUDMotionIfExists({ "anm_idle_moving_grip_v_slow_jammed", "anm_idle_moving_grip_v_slow", "anm_idle_moving_grip_v", "anm_idle_grip_v" }, true, GetState());
-			else if (IsMagazineEmpty())
-				PlayHUDMotionIfExists({ "anm_idle_moving_grip_v_slow_empty", "anm_idle_moving_grip_v_slow", "anm_idle_moving_grip_v", "anm_idle_grip_v" }, true, GetState());
-			else
-				PlayHUDMotionIfExists({ "anm_idle_moving_grip_v_slow", "anm_idle_moving_grip_v", "anm_idle_grip_v" }, true, GetState());
-		}
-		else if (weapon->IsGrenadeLauncherAttached())
-		{
-			if (IsMisfireNow())
-				PlayHUDMotionIfExists({ "anm_idle_moving_w_gl_slow_jammed", "anm_idle_moving_w_gl_slow", "anm_idle_moving_w_gl", "anm_idle_w_gl" }, true, GetState());
-			else if (IsMagazineEmpty())
-				PlayHUDMotionIfExists({ "anm_idle_moving_w_gl_slow_empty", "anm_idle_moving_w_gl_slow", "anm_idle_moving_w_gl", "anm_idle_w_gl" }, true, GetState());
-			else
-				PlayHUDMotionIfExists({ "anm_idle_moving_w_gl_slow", "anm_idle_moving_w_gl", "anm_idle_w_gl" }, true, GetState());
+			{
+				if (IsMisfireNow())
+					PlayHUDMotionIfExists({ "anm_idle_moving_slow_jammed", "anm_idle_moving_slow", "anm_idle_moving", "anm_idle" }, true, GetState());
+				else if (IsMagazineEmpty())
+					PlayHUDMotionIfExists({ "anm_idle_moving_slow_empty", "anm_idle_moving_slow", "anm_idle_moving", "anm_idle" }, true, GetState());
+				else
+					PlayHUDMotionIfExists({ "anm_idle_moving_slow", "anm_idle_moving", "anm_idle" }, true, GetState());
+			}
 		}
 		else
 		{
@@ -884,15 +950,6 @@ void CHudItem::PlayAnimIdleMovingSlow()
 				PlayHUDMotionIfExists({ "anm_idle_moving_slow", "anm_idle_moving", "anm_idle" }, true, GetState());
 		}
 	}
-	else
-	{
-		if (IsMisfireNow())
-			PlayHUDMotionIfExists({ "anm_idle_moving_slow_jammed", "anm_idle_moving_slow", "anm_idle_moving", "anm_idle" }, true, GetState());
-		else if (IsMagazineEmpty())
-			PlayHUDMotionIfExists({ "anm_idle_moving_slow_empty", "anm_idle_moving_slow", "anm_idle_moving", "anm_idle" }, true, GetState());
-		else
-			PlayHUDMotionIfExists({ "anm_idle_moving_slow", "anm_idle_moving", "anm_idle" }, true, GetState());
-	}
 }
 
 void CHudItem::PlayAnimIdleMovingCrouch()
@@ -900,34 +957,55 @@ void CHudItem::PlayAnimIdleMovingCrouch()
 	CWeapon* weapon = smart_cast<CWeapon*>(this);
 	CPda* pda = smart_cast<CPda*>(this);
 
-	if (!pda)
+	if (g_actor->IsDetectorActive() || !weapon)
 	{
-		if (weapon->IsGripAttached())
+		if (IsMisfireNow())
+			PlayHUDMotionIfExists({ "anm_idle_moving_crouch_jammed", "anm_idle_moving_crouch", "anm_idle_moving", "anm_idle" }, true, GetState());
+		else if (IsMagazineEmpty())
+			PlayHUDMotionIfExists({ "anm_idle_moving_crouch_empty", "anm_idle_moving_crouch", "anm_idle_moving", "anm_idle" }, true, GetState());
+		else
+			PlayHUDMotionIfExists({ "anm_idle_moving_crouch", "anm_idle_moving", "anm_idle" }, true, GetState());
+	}
+	else
+	{
+		if (!pda)
 		{
-			if (IsMisfireNow())
-				PlayHUDMotionIfExists({ "anm_idle_moving_grip_h_crouch_jammed", "anm_idle_moving_grip_h_crouch", "anm_idle_moving_grip_h", "anm_idle_grip_h" }, true, GetState());
-			else if (IsMagazineEmpty())
-				PlayHUDMotionIfExists({ "anm_idle_moving_grip_crouch_empty", "anm_idle_moving_grip_h_h_crouch", "anm_idle_moving_grip_h", "anm_idle_grip_h" }, true, GetState());
+			if (weapon->IsGripAttached())
+			{
+				if (IsMisfireNow())
+					PlayHUDMotionIfExists({ "anm_idle_moving_grip_h_crouch_jammed", "anm_idle_moving_grip_h_crouch", "anm_idle_moving_grip_h", "anm_idle_grip_h" }, true, GetState());
+				else if (IsMagazineEmpty())
+					PlayHUDMotionIfExists({ "anm_idle_moving_grip_crouch_empty", "anm_idle_moving_grip_h_h_crouch", "anm_idle_moving_grip_h", "anm_idle_grip_h" }, true, GetState());
+				else
+					PlayHUDMotionIfExists({ "anm_idle_moving_grip_h_crouch", "anm_idle_moving_grip_h", "anm_idle_grip_h" }, true, GetState());
+			}
+			else if (weapon->IsGripvAttached())
+			{
+				if (IsMisfireNow())
+					PlayHUDMotionIfExists({ "anm_idle_moving_grip_v_crouch_jammed", "anm_idle_moving_grip_v_crouch", "anm_idle_moving_grip_v", "anm_idle_grip_v" }, true, GetState());
+				else if (IsMagazineEmpty())
+					PlayHUDMotionIfExists({ "anm_idle_moving_grip_v_crouch_empty", "anm_idle_moving_grip_v_crouch", "anm_idle_moving_grip_v", "anm_idle_grip_v" }, true, GetState());
+				else
+					PlayHUDMotionIfExists({ "anm_idle_moving_grip_v_crouch", "anm_idle_moving_grip_v", "anm_idle_grip_v" }, true, GetState());
+			}
+			else if (weapon->IsGrenadeLauncherAttached())
+			{
+				if (IsMisfireNow())
+					PlayHUDMotionIfExists({ "anm_idle_moving_w_gl_crouch_jammed", "anm_idle_moving_w_gl_crouch", "anm_idle_moving_w_gl", "anm_idle_w_gl" }, true, GetState());
+				else if (IsMagazineEmpty())
+					PlayHUDMotionIfExists({ "anm_idle_moving_w_gl_crouch_empty", "anm_idle_moving_w_gl_crouch", "anm_idle_moving_w_gl", "anm_idle_w_gl" }, true, GetState());
+				else
+					PlayHUDMotionIfExists({ "anm_idle_moving_w_gl_crouch", "anm_idle_moving_w_gl", "anm_idle_w_gl" }, true, GetState());
+			}
 			else
-				PlayHUDMotionIfExists({ "anm_idle_moving_grip_h_crouch", "anm_idle_moving_grip_h", "anm_idle_grip_h" }, true, GetState());
-		}
-		else if (weapon->IsGripvAttached())
-		{
-			if (IsMisfireNow())
-				PlayHUDMotionIfExists({ "anm_idle_moving_grip_v_crouch_jammed", "anm_idle_moving_grip_v_crouch", "anm_idle_moving_grip_v", "anm_idle_grip_v" }, true, GetState());
-			else if (IsMagazineEmpty())
-				PlayHUDMotionIfExists({ "anm_idle_moving_grip_v_crouch_empty", "anm_idle_moving_grip_v_crouch", "anm_idle_moving_grip_v", "anm_idle_grip_v" }, true, GetState());
-			else
-				PlayHUDMotionIfExists({ "anm_idle_moving_grip_v_crouch", "anm_idle_moving_grip_v", "anm_idle_grip_v" }, true, GetState());
-		}
-		else if (weapon->IsGrenadeLauncherAttached())
-		{
-			if (IsMisfireNow())
-				PlayHUDMotionIfExists({ "anm_idle_moving_w_gl_crouch_jammed", "anm_idle_moving_w_gl_crouch", "anm_idle_moving_w_gl", "anm_idle_w_gl" }, true, GetState());
-			else if (IsMagazineEmpty())
-				PlayHUDMotionIfExists({ "anm_idle_moving_w_gl_crouch_empty", "anm_idle_moving_w_gl_crouch", "anm_idle_moving_w_gl", "anm_idle_w_gl" }, true, GetState());
-			else
-				PlayHUDMotionIfExists({ "anm_idle_moving_w_gl_crouch", "anm_idle_moving_w_gl", "anm_idle_w_gl" }, true, GetState());
+			{
+				if (IsMisfireNow())
+					PlayHUDMotionIfExists({ "anm_idle_moving_crouch_jammed", "anm_idle_moving_crouch", "anm_idle_moving", "anm_idle" }, true, GetState());
+				else if (IsMagazineEmpty())
+					PlayHUDMotionIfExists({ "anm_idle_moving_crouch_empty", "anm_idle_moving_crouch", "anm_idle_moving", "anm_idle" }, true, GetState());
+				else
+					PlayHUDMotionIfExists({ "anm_idle_moving_crouch", "anm_idle_moving", "anm_idle" }, true, GetState());
+			}
 		}
 		else
 		{
@@ -939,15 +1017,6 @@ void CHudItem::PlayAnimIdleMovingCrouch()
 				PlayHUDMotionIfExists({ "anm_idle_moving_crouch", "anm_idle_moving", "anm_idle" }, true, GetState());
 		}
 	}
-	else
-	{
-		if (IsMisfireNow())
-			PlayHUDMotionIfExists({ "anm_idle_moving_crouch_jammed", "anm_idle_moving_crouch", "anm_idle_moving", "anm_idle" }, true, GetState());
-		else if (IsMagazineEmpty())
-			PlayHUDMotionIfExists({ "anm_idle_moving_crouch_empty", "anm_idle_moving_crouch", "anm_idle_moving", "anm_idle" }, true, GetState());
-		else
-			PlayHUDMotionIfExists({ "anm_idle_moving_crouch", "anm_idle_moving", "anm_idle" }, true, GetState());
-	}
 }
 
 void CHudItem::PlayAnimIdleMovingCrouchSlow()
@@ -955,34 +1024,55 @@ void CHudItem::PlayAnimIdleMovingCrouchSlow()
 	CWeapon* weapon = smart_cast<CWeapon*>(this);
 	CPda* pda = smart_cast<CPda*>(this);
 
-	if (!pda)
+	if (g_actor->IsDetectorActive() || !weapon)
 	{
-		if (weapon->IsGripAttached())
+		if (IsMisfireNow())
+			PlayHUDMotionIfExists({ "anm_idle_moving_crouch_slow_jammed", "anm_idle_moving_crouch_slow", "anm_idle_moving_crouch", "anm_idle_moving", "anm_idle" }, true, GetState());
+		else if (IsMagazineEmpty())
+			PlayHUDMotionIfExists({ "anm_idle_moving_crouch_slow_empty", "anm_idle_moving_crouch_slow", "anm_idle_moving_crouch", "anm_idle_moving", "anm_idle" }, true, GetState());
+		else
+			PlayHUDMotionIfExists({ "anm_idle_moving_crouch_slow", "anm_idle_moving_crouch", "anm_idle_moving", "anm_idle" }, true, GetState());
+	}
+	else
+	{
+		if (!pda)
 		{
-			if (IsMisfireNow())
-				PlayHUDMotionIfExists({ "anm_idle_moving_grip_h_crouch_slow_jammed", "anm_idle_moving_grip_h_crouch_slow", "anm_idle_moving_grip_h_crouch", "anm_idle_moving_grip_h", "anm_idle_grip_h" }, true, GetState());
-			else if (IsMagazineEmpty())
-				PlayHUDMotionIfExists({ "anm_idle_moving_grip_h_crouch_slow_empty", "anm_idle_moving_grip_h_crouch_slow", "anm_idle_moving_grip_h_crouch", "anm_idle_moving_grip_h", "anm_idle_grip_h" }, true, GetState());
+			if (weapon->IsGripAttached())
+			{
+				if (IsMisfireNow())
+					PlayHUDMotionIfExists({ "anm_idle_moving_grip_h_crouch_slow_jammed", "anm_idle_moving_grip_h_crouch_slow", "anm_idle_moving_grip_h_crouch", "anm_idle_moving_grip_h", "anm_idle_grip_h" }, true, GetState());
+				else if (IsMagazineEmpty())
+					PlayHUDMotionIfExists({ "anm_idle_moving_grip_h_crouch_slow_empty", "anm_idle_moving_grip_h_crouch_slow", "anm_idle_moving_grip_h_crouch", "anm_idle_moving_grip_h", "anm_idle_grip_h" }, true, GetState());
+				else
+					PlayHUDMotionIfExists({ "anm_idle_moving_grip_h_crouch_slow", "anm_idle_moving_grip_h_crouch", "anm_idle_moving_grip_h", "anm_idle_grip_h" }, true, GetState());
+			}
+			else if (weapon->IsGripvAttached())
+			{
+				if (IsMisfireNow())
+					PlayHUDMotionIfExists({ "anm_idle_moving_grip_v_crouch_slow_jammed", "anm_idle_moving_grip_v_crouch_slow", "anm_idle_moving_grip_v_crouch", "anm_idle_moving_grip_v", "anm_idle_grip_v" }, true, GetState());
+				else if (IsMagazineEmpty())
+					PlayHUDMotionIfExists({ "anm_idle_moving_grip_v_crouch_slow_empty", "anm_idle_moving_grip_v_crouch_slow", "anm_idle_moving_grip_v_crouch", "anm_idle_moving_grip_v", "anm_idle_grip_v" }, true, GetState());
+				else
+					PlayHUDMotionIfExists({ "anm_idle_moving_grip_v_crouch_slow", "anm_idle_moving_grip_v_crouch", "anm_idle_moving_grip_v", "anm_idle_grip_v" }, true, GetState());
+			}
+			else if (weapon->IsGrenadeLauncherAttached())
+			{
+				if (IsMisfireNow())
+					PlayHUDMotionIfExists({ "anm_idle_moving_w_gl_crouch_slow_jammed", "anm_idle_moving_w_gl_crouch_slow", "anm_idle_moving_w_gl_crouch", "anm_idle_moving_w_gl", "anm_idle_w_gl" }, true, GetState());
+				else if (IsMagazineEmpty())
+					PlayHUDMotionIfExists({ "anm_idle_moving_w_gl_crouch_slow_empty", "anm_idle_moving_w_gl_crouch_slow", "anm_idle_moving_w_gl_crouch", "anm_idle_moving_w_gl", "anm_idle_w_gl" }, true, GetState());
+				else
+					PlayHUDMotionIfExists({ "anm_idle_moving_w_gl_crouch_slow", "anm_idle_moving_w_gl_crouch", "anm_idle_moving_w_gl", "anm_idle_w_gl" }, true, GetState());
+			}
 			else
-				PlayHUDMotionIfExists({ "anm_idle_moving_grip_h_crouch_slow", "anm_idle_moving_grip_h_crouch", "anm_idle_moving_grip_h", "anm_idle_grip_h" }, true, GetState());
-		}
-		else if (weapon->IsGripvAttached())
-		{
-			if (IsMisfireNow())
-				PlayHUDMotionIfExists({ "anm_idle_moving_grip_v_crouch_slow_jammed", "anm_idle_moving_grip_v_crouch_slow", "anm_idle_moving_grip_v_crouch", "anm_idle_moving_grip_v", "anm_idle_grip_v" }, true, GetState());
-			else if (IsMagazineEmpty())
-				PlayHUDMotionIfExists({ "anm_idle_moving_grip_v_crouch_slow_empty", "anm_idle_moving_grip_v_crouch_slow", "anm_idle_moving_grip_v_crouch", "anm_idle_moving_grip_v", "anm_idle_grip_v" }, true, GetState());
-			else
-				PlayHUDMotionIfExists({ "anm_idle_moving_grip_v_crouch_slow", "anm_idle_moving_grip_v_crouch", "anm_idle_moving_grip_v", "anm_idle_grip_v" }, true, GetState());
-		}
-		else if (weapon->IsGrenadeLauncherAttached())
-		{
-			if (IsMisfireNow())
-				PlayHUDMotionIfExists({ "anm_idle_moving_w_gl_crouch_slow_jammed", "anm_idle_moving_w_gl_crouch_slow", "anm_idle_moving_w_gl_crouch", "anm_idle_moving_w_gl", "anm_idle_w_gl" }, true, GetState());
-			else if (IsMagazineEmpty())
-				PlayHUDMotionIfExists({ "anm_idle_moving_w_gl_crouch_slow_empty", "anm_idle_moving_w_gl_crouch_slow", "anm_idle_moving_w_gl_crouch", "anm_idle_moving_w_gl", "anm_idle_w_gl" }, true, GetState());
-			else
-				PlayHUDMotionIfExists({ "anm_idle_moving_w_gl_crouch_slow", "anm_idle_moving_w_gl_crouch", "anm_idle_moving_w_gl", "anm_idle_w_gl" }, true, GetState());
+			{
+				if (IsMisfireNow())
+					PlayHUDMotionIfExists({ "anm_idle_moving_crouch_slow_jammed", "anm_idle_moving_crouch_slow", "anm_idle_moving_crouch", "anm_idle_moving", "anm_idle" }, true, GetState());
+				else if (IsMagazineEmpty())
+					PlayHUDMotionIfExists({ "anm_idle_moving_crouch_slow_empty", "anm_idle_moving_crouch_slow", "anm_idle_moving_crouch", "anm_idle_moving", "anm_idle" }, true, GetState());
+				else
+					PlayHUDMotionIfExists({ "anm_idle_moving_crouch_slow", "anm_idle_moving_crouch", "anm_idle_moving", "anm_idle" }, true, GetState());
+			}
 		}
 		else
 		{
@@ -994,15 +1084,6 @@ void CHudItem::PlayAnimIdleMovingCrouchSlow()
 				PlayHUDMotionIfExists({ "anm_idle_moving_crouch_slow", "anm_idle_moving_crouch", "anm_idle_moving", "anm_idle" }, true, GetState());
 		}
 	}
-	else
-	{
-		if (IsMisfireNow())
-			PlayHUDMotionIfExists({ "anm_idle_moving_crouch_slow_jammed", "anm_idle_moving_crouch_slow", "anm_idle_moving_crouch", "anm_idle_moving", "anm_idle" }, true, GetState());
-		else if (IsMagazineEmpty())
-			PlayHUDMotionIfExists({ "anm_idle_moving_crouch_slow_empty", "anm_idle_moving_crouch_slow", "anm_idle_moving_crouch", "anm_idle_moving", "anm_idle" }, true, GetState());
-		else
-			PlayHUDMotionIfExists({ "anm_idle_moving_crouch_slow", "anm_idle_moving_crouch", "anm_idle_moving", "anm_idle" }, true, GetState());
-	}
 }
 
 void CHudItem::PlayAnimIdleSprint()
@@ -1010,28 +1091,45 @@ void CHudItem::PlayAnimIdleSprint()
 	CWeapon* weapon = smart_cast<CWeapon*>(this);
 	CPda* pda = smart_cast<CPda*>(this);
 
-	if (!pda)
+	if (g_actor->IsDetectorActive() || !weapon)
 	{
-		if (weapon->IsGripAttached())
+		if (IsMisfireNow())
+			PlayHUDMotionIfExists({ "anm_idle_sprint_jammed", "anm_idle_sprint", "anm_idle" }, true, GetState());
+		else
+			PlayHUDMotionIfExists({ "anm_idle_sprint", "anm_idle" }, true, GetState());
+	}
+	else
+	{
+		if (!pda)
 		{
-			if (IsMisfireNow())
-				PlayHUDMotionIfExists({ "anm_idle_sprint_grip_h_jammed", "anm_idle_sprint_grip_h", "anm_idle_grip_h" }, true, GetState());
+			if (weapon->IsGripAttached())
+			{
+				if (IsMisfireNow())
+					PlayHUDMotionIfExists({ "anm_idle_sprint_grip_h_jammed", "anm_idle_sprint_grip_h", "anm_idle_grip_h" }, true, GetState());
+				else
+					PlayHUDMotionIfExists({ "anm_idle_sprint_grip_h", "anm_idle_grip_h" }, true, GetState());
+			}
+			else if (weapon->IsGripvAttached())
+			{
+				if (IsMisfireNow())
+					PlayHUDMotionIfExists({ "anm_idle_sprint_grip_v_jammed", "anm_idle_sprint_grip_v", "anm_idle_grip_v" }, true, GetState());
+				else
+					PlayHUDMotionIfExists({ "anm_idle_sprint_grip_v", "anm_idle_grip_v" }, true, GetState());
+			}
+			else if (weapon->IsGrenadeLauncherAttached())
+			{
+				if (IsMisfireNow())
+					PlayHUDMotionIfExists({ "anm_idle_sprint_w_gl_jammed", "anm_idle_sprint_w_gl", "anm_idle_w_gl" }, true, GetState());
+				else
+					PlayHUDMotionIfExists({ "anm_idle_sprint_w_gl", "anm_idle_w_gl" }, true, GetState());
+			}
 			else
-				PlayHUDMotionIfExists({ "anm_idle_sprint_grip_h", "anm_idle_grip_h" }, true, GetState());
-		}
-		else if (weapon->IsGripvAttached())
-		{
-			if (IsMisfireNow())
-				PlayHUDMotionIfExists({ "anm_idle_sprint_grip_v_jammed", "anm_idle_sprint_grip_v", "anm_idle_grip_v" }, true, GetState());
-			else
-				PlayHUDMotionIfExists({ "anm_idle_sprint_grip_v", "anm_idle_grip_v" }, true, GetState());
-		}
-		else if (weapon->IsGrenadeLauncherAttached())
-		{
-			if (IsMisfireNow())
-				PlayHUDMotionIfExists({ "anm_idle_sprint_w_gl_jammed", "anm_idle_sprint_w_gl", "anm_idle_w_gl" }, true, GetState());
-			else
-				PlayHUDMotionIfExists({ "anm_idle_sprint_w_gl", "anm_idle_w_gl" }, true, GetState());
+			{
+				if (IsMisfireNow())
+					PlayHUDMotionIfExists({ "anm_idle_sprint_jammed", "anm_idle_sprint", "anm_idle" }, true, GetState());
+				else
+					PlayHUDMotionIfExists({ "anm_idle_sprint", "anm_idle" }, true, GetState());
+			}
 		}
 		else
 		{
@@ -1040,13 +1138,6 @@ void CHudItem::PlayAnimIdleSprint()
 			else
 				PlayHUDMotionIfExists({ "anm_idle_sprint", "anm_idle" }, true, GetState());
 		}
-	}
-	else
-	{
-		if (IsMisfireNow())
-			PlayHUDMotionIfExists({ "anm_idle_sprint_jammed", "anm_idle_sprint", "anm_idle" }, true, GetState());
-		else
-			PlayHUDMotionIfExists({ "anm_idle_sprint", "anm_idle" }, true, GetState());
 	}
 }
 
