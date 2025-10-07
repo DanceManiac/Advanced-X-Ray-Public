@@ -3272,7 +3272,7 @@ void CActor::SwitchNightVision(bool vision_on, bool use_sounds, bool send_event)
 				m_night_vision->Start(pHelmet2->m_NightVisionSect, this, use_sounds);
 
 				if (ps_r__ShaderNVG)
-					g_pGamePersistent->devices_shader_data.nightvision_lum_factor = pHelmet->m_fNightVisionLumFactor;
+					g_pGamePersistent->devices_shader_data.nightvision_lum_factor = pHelmet2->m_fNightVisionLumFactor;
 			}
 		}
 		else

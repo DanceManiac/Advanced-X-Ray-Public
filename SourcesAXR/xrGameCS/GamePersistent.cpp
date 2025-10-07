@@ -957,10 +957,13 @@ bool CGamePersistent::GetClearMaskProcess()
 bool CGamePersistent::GetActorNightvision()
 {
 	CHelmet* pHelmet = smart_cast<CHelmet*>(Actor()->inventory().ItemFromSlot(HELMET_SLOT));
+	CHelmet* pHelmet2 = smart_cast<CHelmet*>(Actor()->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
 	CCustomOutfit* pOutfit = smart_cast<CCustomOutfit*>(Actor()->inventory().ItemFromSlot(OUTFIT_SLOT));
 
 	if (pHelmet)
 		return (Actor()->GetNightVisionStatus() && pHelmet->m_NightVisionSect.size());
+	else if (pHelmet2)
+		return (Actor()->GetNightVisionStatus() && pHelmet2->m_NightVisionSect.size());
 	else if (pOutfit)
 		return (Actor()->GetNightVisionStatus() && pOutfit->m_NightVisionSect.size());
 
