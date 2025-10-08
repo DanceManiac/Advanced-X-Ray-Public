@@ -56,7 +56,8 @@
 
 CBaseMonster::CBaseMonster() :	m_psy_aura(this, "psy"), 
 								m_fire_aura(this, "fire"), 
-								m_radiation_aura(this, "radiation"), 
+								m_radiation_aura(this, "radiation"),
+								m_acid_aura(this, "acid"),
 								m_base_aura(this, "base")
 {
 	m_pPhysics_support=xr_new<CCharacterPhysicsSupport>(CCharacterPhysicsSupport::etBitting,this);
@@ -120,6 +121,7 @@ CBaseMonster::CBaseMonster() :	m_psy_aura(this, "psy"),
 	m_bEnablePsyAuraAfterDie				= false;
 	m_bEnableRadAuraAfterDie				= false;
 	m_bEnableFireAuraAfterDie				= false;
+	m_bEnableAcidAuraAfterDie				= false;
 	m_bDropItemAfterSuperAttack				= false;
 	m_iSuperAttackDropItemPer				= 50;
 
@@ -390,6 +392,7 @@ void CBaseMonster::shedule_Update(u32 dt)
 
 	m_psy_aura.update_schedule();
 	m_fire_aura.update_schedule();
+	m_acid_aura.update_schedule();
 	m_base_aura.update_schedule();
 	m_radiation_aura.update_schedule();
 
@@ -419,6 +422,7 @@ void CBaseMonster::Die(CObject* who)
 	m_psy_aura.on_monster_death();
 	m_radiation_aura.on_monster_death();
 	m_fire_aura.on_monster_death();
+	m_acid_aura.on_monster_death();
 	m_base_aura.on_monster_death();
 
 	if ( m_anti_aim )
@@ -999,6 +1003,11 @@ float   CBaseMonster::get_fire_influence ()
 	return m_fire_aura.calculate();
 }
 
+float   CBaseMonster::get_acid_influence()
+{
+	return m_acid_aura.calculate();
+}
+
 bool   CBaseMonster::get_enable_psy_aura_after_die()
 {
 	return m_bEnablePsyAuraAfterDie;
@@ -1014,11 +1023,17 @@ bool   CBaseMonster::get_enable_fire_aura_after_die()
 	return m_bEnableFireAuraAfterDie;
 }
 
+bool   CBaseMonster::get_enable_acid_aura_after_die()
+{
+	return m_bEnableAcidAuraAfterDie;
+}
+
 void   CBaseMonster::play_detector_sound()
 {
 	m_psy_aura.play_detector_sound();
 	m_radiation_aura.play_detector_sound();
 	m_fire_aura.play_detector_sound();
+	m_acid_aura.play_detector_sound();
 }
 
 bool CBaseMonster::is_jumping()

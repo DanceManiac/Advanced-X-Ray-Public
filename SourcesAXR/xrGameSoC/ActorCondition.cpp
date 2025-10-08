@@ -329,6 +329,7 @@ void CActorCondition::AffectDamage_InjuriousMaterialAndMonstersInfluence()
 
 	float psy_influence					=	0;
 	float fire_influence				=	0;
+	float acid_influence				=	0;
 #pragma todo("DANCE MANIAC: No xrPhysics functional for GetInjuriousMaterialDamage function.")
 	float radiation_influence			= 0; // GetInjuriousMaterialDamage(); // Get Radiation from Material
 
@@ -352,6 +353,7 @@ void CActorCondition::AffectDamage_InjuriousMaterialAndMonstersInfluence()
 				psy_influence		+= monster->get_psy_influence();
 				radiation_influence += monster->get_radiation_influence();
 				fire_influence		+= monster->get_fire_influence();
+				acid_influence		+= monster->get_acid_influence();
 			}
 			else
 			{
@@ -363,6 +365,9 @@ void CActorCondition::AffectDamage_InjuriousMaterialAndMonstersInfluence()
 
 				if (monster->get_enable_fire_aura_after_die())
 					fire_influence += monster->get_fire_influence();
+
+				if (monster->get_enable_acid_aura_after_die())
+					acid_influence += monster->get_acid_influence();
 			}
 		}
 	}
@@ -372,9 +377,10 @@ void CActorCondition::AffectDamage_InjuriousMaterialAndMonstersInfluence()
 		ALife::EHitType	type;
 		float			value;
 
-	} hits[] = { { ALife::eHitTypeRadiation, radiation_influence * one },
-							{ ALife::eHitTypeTelepatic, psy_influence * one },
-							{ ALife::eHitTypeBurn,		fire_influence * one } };
+	} hits[] = { { ALife::eHitTypeRadiation,				radiation_influence * one },
+							{ ALife::eHitTypeTelepatic,		psy_influence		* one },
+							{ ALife::eHitTypeBurn,			fire_influence		* one },
+							{ ALife::eHitTypeChemicalBurn,	acid_influence		* one } };
 
 	NET_Packet	np;
 
