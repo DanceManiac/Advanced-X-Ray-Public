@@ -320,6 +320,42 @@ LPCSTR CSpecificCharacter::Visual()
 
 		return visual_randomized.c_str();
 	}
+	else if (visual_name.back() == '*')
+	{
+		std::string visual_name = data()->m_sVisual.c_str();
+
+		string_path full_mask;
+		xr_strcpy(full_mask, data()->m_sVisual.c_str());
+		xr_strcat(full_mask, "*");
+
+		FS_FileSet fset;
+		FS.file_list(fset, "$game_meshes$", FS_ListFiles, full_mask);
+
+		if (fset.empty())
+		{
+			Msg("[CSpecificCharacter::Visual]: File list is empty! Check visuals folder!");
+			return data()->m_sVisual.c_str();
+		}
+
+		rnd_vis = ::Random.randI(0, fset.size());
+
+		FS_FileSetIt it = fset.begin();
+		std::advance(it, rnd_vis);
+
+		// Icon
+		if (!data()->m_bForceDisabledRandomIcons)
+		{
+			xr_string randomized_icon = "ui_npc_";
+			size_t lastBackslashPos = it->name.find_last_of('\\');
+
+			xr_string result = it->name.substr(lastBackslashPos + 1);
+			randomized_icon += result.c_str();
+
+			data()->m_icon_name = randomized_icon.c_str();
+		}
+
+		return it->name.c_str();
+	}
 
 	return data()->m_sVisual.c_str();
 }
@@ -330,38 +366,54 @@ void CSpecificCharacter::SetRandomRange()
 	int max_num = 1;
 
 	std::string visual_name = data()->m_sVisual.c_str();
-	std::string relative_path = RemoveSymbolsAfterSlash(visual_name);
 
-	std::string userDir = FS.get_path("$game_meshes$")->m_Path;
-	std::string path = userDir + relative_path;
+	string_path full_mask;
+	xr_strcpy(full_mask, data()->m_sVisual.c_str());
+	xr_strcat(full_mask, "*");
 
-	visual_name = RemoveSymbolsBeforeSlash(visual_name);
+	FS_FileSet fset;
+	FS.file_list(fset, "$game_meshes$", FS_ListFiles, full_mask);
+	FS_FileSetIt fit = fset.begin();
+	const FS_FileSetIt fit_e = fset.end();
 
 	bool filesFound = false;
 
-	for (auto& p : fs::directory_iterator(path))
+	for (; fit != fit_e; ++fit)
 	{
-		std::string name = p.path().filename().string();
+		std::string name = fit->name.c_str();
 
 		if (name.find(visual_name) == 0)
 		{
-			int num = std::stoi(name.substr(visual_name.length()));
+			try
+			{
+				int num = std::stoi(name.substr(visual_name.length()));
 
-			if (!filesFound)
-			{
-				min_num = num;
-				max_num = num;
-				filesFound = true;
-			}
-			else
-			{
-				if (num < min_num)
+				if (!filesFound)
+				{
 					min_num = num;
-				if (num > max_num)
 					max_num = num;
+					filesFound = true;
+				}
+				else
+				{
+					min_num = std::min(min_num, num);
+					max_num = std::max(max_num, num);
+				}
+			}
+			catch (const std::exception&)
+			{
+#ifdef DEBUG
+				Msg("[CSpecificCharacter::SetRandomRange]: Skip model with invalid numeric suffix: %s", name.c_str());
+#endif
+				continue;
 			}
 		}
 	}
+
+#ifdef DEBUG
+	if (!filesFound)
+		Msg("[CSpecificCharacter::SetRandomRange]: No valid numbered models found for visual name: %s, using default range [1,1]", visual_name.c_str());
+#endif
 
 	data()->first_visual = min_num;
 	data()->last_visual = max_num;
