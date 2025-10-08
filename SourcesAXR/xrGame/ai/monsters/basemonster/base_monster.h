@@ -391,6 +391,7 @@ public:
 	bool						m_bEnablePsyAuraAfterDie;
 	bool						m_bEnableRadAuraAfterDie;
 	bool						m_bEnableFireAuraAfterDie;
+	bool						m_bEnableAcidAuraAfterDie;
 	bool						m_bDropItemAfterSuperAttack;
 	int							m_iSuperAttackDropItemPer;
 	bool						m_bModelScaleRandom;
@@ -597,15 +598,18 @@ public:
 	float							get_psy_influence				();
 	float							get_radiation_influence			();
 	float							get_fire_influence				();
+	float							get_acid_influence				();
 	bool							get_enable_psy_aura_after_die	();
 	bool							get_enable_rad_aura_after_die	();
 	bool							get_enable_fire_aura_after_die	();
+	bool							get_enable_acid_aura_after_die	();
 	void							play_detector_sound				();
 
 private:
 	monster_aura					m_psy_aura;
 	monster_aura					m_radiation_aura;
 	monster_aura					m_fire_aura;
+	monster_aura					m_acid_aura;
 	monster_aura					m_base_aura;
 
 protected:
