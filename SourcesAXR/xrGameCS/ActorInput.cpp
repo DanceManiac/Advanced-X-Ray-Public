@@ -98,59 +98,51 @@ void CActor::IR_OnKeyboardPress(int cmd)
 	if (!g_Alive() || g_block_actor_movement) return;
 	switch (cmd)
 	{
-		case kQUICK_USE_1:
-		case kQUICK_USE_2:
-		case kQUICK_USE_3:
-		case kQUICK_USE_4:
-		case kQUICK_USE_5:
-		case kQUICK_USE_6:
+
+	case kQUICK_USE_1:
+	case kQUICK_USE_2:
+	case kQUICK_USE_3:
+	case kQUICK_USE_4:
+	case kQUICK_USE_5:
+	case kQUICK_USE_6:
+	{
+		if (!HUD().GetUI()->UIGame()->ActorMenu().m_pQuickSlot)
+			break;
+		const shared_str& item_name = g_quick_use_slots[cmd - kQUICK_USE_1];
+		if (item_name.size())
 		{
-			const shared_str& item_name		= g_quick_use_slots[cmd-kQUICK_USE_1];
-			if(item_name.size())
+			PIItem itm = inventory().GetAny(item_name.c_str());
+			CEatableItem* pItemToEat = smart_cast<CEatableItem*>(itm);
+
+			if (itm)
 			{
-				CEatableItem* itm = nullptr;
-
-				for (auto& it : inventory().m_ruck)
+				if (IsGameTypeSingle())
 				{
-					CEatableItem* pEatable = smart_cast<CEatableItem*>(it);
-					if (!pEatable)
-						continue;
-					if (pEatable->m_section_id == item_name && !itm && pEatable->GetPortionsNum() == 1)
-					{
-						itm = pEatable;
-						break;
-					}
-					if (pEatable->m_section_id == item_name && !itm || itm && (pEatable->GetPortionsNum() < itm->GetPortionsNum()))
-						itm = pEatable;
-				}
 
-				if(itm)
-				{
-					if (IsGameTypeSingle())
+					if (psActorFlags.test(AF_ITEM_ANIMS_ENABLE))
 					{
 						inventory().ChooseItmAnimOrNot(itm);
 					}
 					else
 					{
-						inventory().ClientEat(itm);
+						inventory().Eat(itm);
 					}
-
-					static const bool enabled = READ_IF_EXISTS(pSettings, r_bool, "null_features", "show_item_used_hud_text", true);
-					if (enabled && !inventory().ItmHasAnim(itm))
-					{
-						SDrawStaticStruct* _s		= HUD().GetUI()->UIGame()->AddCustomStatic("item_used", true);
-						_s->m_endTime				= Device.fTimeGlobal+3.0f;
-						string1024					str;
-						strconcat					(sizeof(str),str,*CStringTable().translate("st_item_used"),": ", itm->NameItem());
-						_s->wnd()->SetText			(str);
-					}
-					
-					if (HUD().GetUI()->UIGame()->ActorMenu().m_pQuickSlot)
-						HUD().GetUI()->UIGame()->ActorMenu().m_pQuickSlot->ReloadReferences(this);
 				}
-			}
-		}break;
+				else
 
+				{
+					inventory().ClientEat(itm);
+				}
+
+				SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("item_used", true);
+				string1024					str;
+				strconcat(sizeof(str), str, *CStringTable().translate("st_item_used"), ": ", itm->NameItem());
+				_s->wnd()->SetText(str);
+
+				HUD().GetUI()->UIGame()->ActorMenu().m_pQuickSlot->ReloadReferences(this);
+			}
+		}
+	}break;
 		case kUSE_BANDAGE:
 		case kUSE_MEDKIT:
 		{
