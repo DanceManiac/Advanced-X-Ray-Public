@@ -723,7 +723,11 @@ void SBooster::Load(const shared_str& sect, EBoostParams type)
 		case eBoostNarcotismRestore: fBoostValue = pSettings->r_float(sect.c_str(), "boost_narcotism_restore"); break;
 		case eBoostWithdrawalRestore: fBoostValue = pSettings->r_float(sect.c_str(), "boost_withdrawal_restore"); break;
 		case eBoostFrostbiteRestore: fBoostValue = pSettings->r_float(sect.c_str(), "boost_frostbite_restore"); break;
-		case eBoostTimeFactor: fBoostValue = pSettings->r_float(sect.c_str(), "boost_time_factor"); break;
+		case eBoostTimeFactor:
+			{
+				fBoostValue = pSettings->r_float(sect.c_str(), "boost_time_factor");
+				clamp(fBoostValue, -0.9f, 1.0f);
+			} break;
 		default: NODEFAULT;
 	}
 }
