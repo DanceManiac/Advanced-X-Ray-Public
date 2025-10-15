@@ -844,7 +844,10 @@ void CActorCondition::UpdateInfection()
 			//clamp(m_fInfection, 0.0f, 1.0f);
 			clamp(m_fInfection, 1.0f, 0.0f);
 
+		if (psActorFlags2.test(AF_DEV_MODE))
+		{
 			Msg("Update m_fInfection: %f", m_fInfection);
+		}
 	}
 	if (!m_bIsBleeding)
 	{

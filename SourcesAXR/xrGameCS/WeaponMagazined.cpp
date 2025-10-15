@@ -2501,7 +2501,7 @@ bool CWeaponMagazined::CanAttach(PIItem pIItem)
 	else if (pHGrip && m_eGripStatus == ALife::eAddonAttachable && (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonGrip) == 0 && (m_sGripName == pIItem->object().cNameSect()))
 	{
 
-		if (IsGripAttached() || IsGrenadeLauncherAttached())
+		if (IsGripvAttached() || IsGrenadeLauncherAttached())
 			return false;
 
 		return true;
