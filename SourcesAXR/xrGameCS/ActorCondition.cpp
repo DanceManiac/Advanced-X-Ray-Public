@@ -1334,7 +1334,7 @@ void CActorCondition::BoostTimeFactor(const float value)
 	m_fBoostTimeFactor = Device.time_factor();
 
 	m_fBoostTimeFactor += value;
-	clamp(m_fBoostTimeFactor, 0.25f, 1.5f);
+	clamp(m_fBoostTimeFactor, 0.1f, 2.0f);
 
 	Device.time_factor(m_fBoostTimeFactor);
 	psSpeedOfSound = m_fBoostTimeFactor;
