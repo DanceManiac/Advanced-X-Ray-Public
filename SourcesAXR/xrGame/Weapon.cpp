@@ -3615,7 +3615,7 @@ void CWeapon::SwitchZoomMode()
 
 void CWeapon::SwitchLaser(bool on)
 {
-	if (!has_laser || !IsLaserAttached())
+	if (!has_laser || !IsLaserAttached() || IsPending())
 		return;
 
 	if (on)
@@ -3632,7 +3632,7 @@ void CWeapon::SwitchLaser(bool on)
 
 void CWeapon::SwitchFlashlight(bool on)
 {
-	if (!has_flashlight || !IsTacticalTorchAttached())
+	if (!has_flashlight || !IsTacticalTorchAttached() || IsPending())
 		return;
 
 	if (on)
