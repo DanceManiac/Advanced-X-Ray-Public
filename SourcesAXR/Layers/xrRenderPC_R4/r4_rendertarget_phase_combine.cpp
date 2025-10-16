@@ -356,6 +356,9 @@ void	CRenderTarget::phase_combine	()
 
    if (ssfx_PrevPos_Requiered)
 	   HW.pContext->CopyResource(rt_ssfx_prevPos->pTexture->surface_get(), rt_Position->pTexture->surface_get());
+   
+   // Copy rt_Generic_0 to new RT
+   HW.pContext->CopyResource(rt_Generic_0_temp->pSurface, rt_Generic_0->pSurface);
 
 	// Forward rendering
 	{
