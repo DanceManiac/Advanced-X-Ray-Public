@@ -180,18 +180,16 @@ void CBlender_Model_EbB::Compile( CBlender_Compile& C )
 	if (oBlend.value)	
 	{
 		// forward
-		LPCSTR	vsname			= 0;
-		LPCSTR	psname			= 0;
 		switch(C.iElement) 
 		{
 		case 0:
 		case 1:
-			vsname = psname =	"model_env_lq"; 
-			C.r_Pass			(vsname,psname,TRUE,TRUE,FALSE,TRUE,D3DBLEND_SRCALPHA,	D3DBLEND_INVSRCALPHA,	TRUE,0);
-			//C.r_Sampler			("s_base",	C.L_textures[0]);
-			//C.r_Sampler			("s_env",	oT2_Name,false,D3DTADDRESS_CLAMP);
+			C.r_Pass			("ssfx_glass", "ssfx_glass", TRUE, TRUE, FALSE, TRUE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA, TRUE, 0);
 			C.r_dx10Texture		("s_base",	C.L_textures[0]);
 			C.r_dx10Texture		("s_env",	oT2_Name);
+			C.r_dx10Texture		("s_accumulator", r2_RT_accum);
+            C.r_dx10Texture		("s_screen", r2_RT_generic0_temp);
+            C.r_dx10Texture		("s_glass", "shaders\\glass_normal");
 
 			C.r_dx10Sampler			("smp_base");
 			C.r_dx10Sampler			("smp_rtlinear");

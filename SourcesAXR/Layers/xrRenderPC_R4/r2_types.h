@@ -31,6 +31,7 @@
 #define		r2_RT_generic1_r	"$user$generic1_r"	// ---
 #define		r2_RT_generic2		"$user$generic2"		// ---	//	Igor: for volumetric lights
 #define		r2_RT_generic		"$user$generic"		// ---
+#define		r2_RT_generic0_temp "$user$generic_temp" // Temporal RT for water reflections
 
 // SMAA
 #define		r2_RT_smaa_edgetex  "$user$smaa_edgetex"

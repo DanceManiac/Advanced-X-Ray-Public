@@ -121,6 +121,8 @@ public:
 	ref_rt						rt_Generic_0;		// 32bit		(r,g,b,a)				// post-process, intermidiate results, etc.
 	ref_rt						rt_Generic_1;		// 32bit		(r,g,b,a)				// post-process, intermidiate results, etc.
 
+	ref_rt						rt_Generic_0_temp;
+
 	//  Second viewport
 	ref_rt						rt_secondVP;		// 32bit		(r,g,b,a) --//#SM+#-- +SecondVP+
 	ref_rt						rt_dof;
