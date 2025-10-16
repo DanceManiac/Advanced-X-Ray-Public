@@ -504,6 +504,11 @@ void player_hud::SaveCfg(const int idx) const
 				"laserdot_attach_offset",
 				make_string("%f,%f,%f", Wpn->laserdot_attach_offset.x, Wpn->laserdot_attach_offset.y, Wpn->laserdot_attach_offset.z)
 				.c_str());
+
+			pWpnCfg.w_string(wpn_sect_name,
+				"laserdot_attach_rot",
+				make_string("%f,%f,%f", Wpn->laserdot_attach_rot.x, Wpn->laserdot_attach_rot.y, Wpn->laserdot_attach_rot.z)
+				.c_str());
 		}
 
 		if (Wpn->TacticalTorchAttachable())
@@ -516,6 +521,11 @@ void player_hud::SaveCfg(const int idx) const
 			pWpnCfg.w_string(wpn_sect_name,
 				"torch_omni_attach_offset",
 				make_string("%f,%f,%f", Wpn->flashlight_omni_attach_offset.x, Wpn->flashlight_omni_attach_offset.y, Wpn->flashlight_omni_attach_offset.z)
+				.c_str());
+
+			pWpnCfg.w_string(wpn_sect_name,
+				"torch_attach_rot",
+				make_string("%f,%f,%f", Wpn->flashlight_attach_rot.x, Wpn->flashlight_attach_rot.y, Wpn->flashlight_attach_rot.z)
 				.c_str());
 		}
 

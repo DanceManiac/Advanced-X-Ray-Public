@@ -745,7 +745,7 @@ public:
 		inherited::processing_deactivate();
 	}
 
-	void GetBoneOffsetPosDir(const shared_str& bone_name, Fvector& dest_pos, Fvector& dest_dir, const Fvector& offset);
+	void GetBoneOffsetPosDir(const shared_str& bone_name, Fvector& dest_pos, Fvector& dest_dir, const Fvector& offset, const Fvector& rotation = Fvector().set(0.f, 0.f, 1.f));
 	//Функция из ганслингера для приблизительной коррекции разности фовов худа и мира. Так себе на самом деле, но более годных способов я не нашел.
 	void CorrectDirFromWorldToHud(Fvector& dir);
 
@@ -759,7 +759,7 @@ private:
 
 	void UpdateLaser();
 public:
-	Fvector laserdot_attach_offset{}, laserdot_world_attach_offset{};
+	Fvector laserdot_attach_offset{}, laserdot_world_attach_offset{}, laserdot_attach_rot{};
 
 	void SwitchLaser(bool on);
 	void DestroyLaserLight() { if (laser_light_render) laser_light_render.destroy(); }
@@ -780,7 +780,7 @@ private:
 
 	void UpdateFlashlight();
 public:
-	Fvector flashlight_attach_offset{}, flashlight_omni_attach_offset{}, flashlight_world_attach_offset{}, flashlight_omni_world_attach_offset{};
+	Fvector flashlight_attach_offset{}, flashlight_omni_attach_offset{}, flashlight_world_attach_offset{}, flashlight_omni_world_attach_offset{}, flashlight_attach_rot{};
 
 	void SwitchFlashlight(bool on);
 	void DestroyFlashlightLight() { if (flashlight_render) flashlight_render.destroy(); }
