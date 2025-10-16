@@ -934,6 +934,7 @@ void CWeapon::LoadLaserLightParams(LPCSTR section)
 		laserdot_attach_bone = READ_IF_EXISTS(pSettings, r_string, section, "laserdot_attach_bone", m_sWpn_laser_bone);
 		laserdot_attach_offset = READ_IF_EXISTS(pSettings, r_fvector3, section, "laserdot_attach_offset", Fvector().set(0.f, 0.f, 0.f));
 		laserdot_world_attach_offset = READ_IF_EXISTS(pSettings, r_fvector3, section, "laserdot_world_attach_offset", Fvector().set(0.f, 0.f, 0.f));
+		laserdot_attach_rot = READ_IF_EXISTS(pSettings, r_fvector3, section, "laserdot_attach_rot", Fvector().set(0.f, 0.f, 1.f));
 
 		const bool b_r2 = psDeviceFlags.test(rsR2) || psDeviceFlags.test(rsR4);
 
@@ -1020,6 +1021,7 @@ void CWeapon::LoadTacticalTorchLightParams(LPCSTR section)
 		flashlight_omni_attach_offset = READ_IF_EXISTS(pSettings, r_fvector3, section, "torch_omni_attach_offset", Fvector().set(0.f, 0.f, 0.f));
 		flashlight_world_attach_offset = READ_IF_EXISTS(pSettings, r_fvector3, section, "torch_world_attach_offset", Fvector().set(0.f, 0.f, 0.f));
 		flashlight_omni_world_attach_offset = READ_IF_EXISTS(pSettings, r_fvector3, section, "torch_omni_world_attach_offset", Fvector().set(0.f, 0.f, 0.f));
+		flashlight_attach_rot = READ_IF_EXISTS(pSettings, r_fvector3, section, "torch_attach_rot", Fvector().set(0.f, 0.f, 1.f));
 
 		const bool b_r2 = psDeviceFlags.test(rsR2) || psDeviceFlags.test(rsR4);
 
@@ -1663,7 +1665,7 @@ void CWeapon::UpdateCL		()
 	}
 }
 
-void CWeapon::GetBoneOffsetPosDir(const shared_str& bone_name, Fvector& dest_pos, Fvector& dest_dir, const Fvector& offset)
+void CWeapon::GetBoneOffsetPosDir(const shared_str& bone_name, Fvector& dest_pos, Fvector& dest_dir, const Fvector& offset, const Fvector& rotation)
 {
 	const u16 bone_id = HudItemData()->m_model->LL_BoneID(bone_name);
 	//ASSERT_FMT(bone_id != BI_NONE, "!![%s] bone [%s] not found in weapon [%s]", __FUNCTION__, bone_name.c_str(), cNameSect().c_str());
@@ -1671,7 +1673,7 @@ void CWeapon::GetBoneOffsetPosDir(const shared_str& bone_name, Fvector& dest_pos
 	fire_mat.transform_tiny(dest_pos, offset);
 	HudItemData()->m_item_transform.transform_tiny(dest_pos);
 	dest_pos.add(Device.vCameraPosition);
-	dest_dir.set(0.f, 0.f, 1.f);
+	dest_dir.set(rotation);
 	HudItemData()->m_item_transform.transform_dir(dest_dir);
 }
 
@@ -1712,7 +1714,7 @@ void CWeapon::UpdateLaser()
 			{
 				if (laserdot_attach_bone.size())
 				{
-					GetBoneOffsetPosDir(laserdot_attach_bone, laser_pos, laser_dir, laserdot_attach_offset);
+					GetBoneOffsetPosDir(laserdot_attach_bone, laser_pos, laser_dir, laserdot_attach_offset, laserdot_attach_rot);
 					CorrectDirFromWorldToHud(laser_dir);
 				}
 			}
@@ -1769,10 +1771,10 @@ void CWeapon::UpdateFlashlight()
 
 			if (GetHUDmode())
 			{
-				GetBoneOffsetPosDir(flashlight_attach_bone, flashlight_pos, flashlight_dir, flashlight_attach_offset);
+				GetBoneOffsetPosDir(flashlight_attach_bone, flashlight_pos, flashlight_dir, flashlight_attach_offset, flashlight_attach_rot);
 				CorrectDirFromWorldToHud(flashlight_dir);
 
-				GetBoneOffsetPosDir(flashlight_attach_bone, flashlight_pos_omni, flashlight_dir_omni, flashlight_omni_attach_offset);
+				GetBoneOffsetPosDir(flashlight_attach_bone, flashlight_pos_omni, flashlight_dir_omni, flashlight_omni_attach_offset, flashlight_attach_rot);
 				CorrectDirFromWorldToHud(flashlight_dir_omni);
 			}
 			else
