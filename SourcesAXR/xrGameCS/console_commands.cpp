@@ -2621,11 +2621,11 @@ void CCC_RegisterCommands()
 
 	if (bDeveloperMode)
 	{
-		CMD4(CCC_Float,			"hud_fov",				&psHUD_FOV_def,	0.25f,	2.0f);
+		CMD4(CCC_Float,			"hud_fov",				&psHUD_FOV_def,	0.01f,	2.0f);
 	}
 	else
 	{
-		CMD4(CCC_Float,			"hud_fov",				&psHUD_FOV_def, 0.25f, 1.0f);
+		CMD4(CCC_Float,			"hud_fov",				&psHUD_FOV_def, 0.01f, 1.0f);
 	}
 
 	CMD4(CCC_Float,				"cam_fov",				&g_fov,			5.0f,	180.0f);

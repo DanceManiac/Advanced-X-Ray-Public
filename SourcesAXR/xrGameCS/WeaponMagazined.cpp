@@ -1365,33 +1365,34 @@ void CWeaponMagazined::OnShot()
 		if (ai().script_engine().functor("lfo_weapons.on_actor_shooting", funct))
 			funct();
 
+		float threshold = 0.0f;
+		float volume = 0.0f;
+
 		if (IsZoomed())
 		{
 			if (auto mag_shot_snd = m_sounds.FindSoundItem("sndMagShot", false))
-
-			float threshold = 0.0f;
-			float volume = 0.0f;
-
-			if (m_iMagClickStartRound)
-				threshold = (float)m_iMagClickStartRound;
-			else
-				threshold = iMagazineSize * 0.30f;
-
-			if (iAmmoElapsed <= threshold && threshold > 0)
 			{
-				float threshold = iMagazineSize * 0.30f;
-				float volume = 0.0f;
+				if (m_iMagClickStartRound)
+					threshold = (float)m_iMagClickStartRound;
+				else
+					threshold = iMagazineSize * 0.30f;
 
 				if (iAmmoElapsed <= threshold && threshold > 0)
 				{
-					volume = 2.0f * (1.0f - (iAmmoElapsed / threshold));
-					clamp(volume, 0.0f, 2.0f);
+					float threshold = iMagazineSize * 0.30f;
+					float volume = 0.0f;
 
-					if (mag_shot_snd->m_activeSnd && mag_shot_snd->m_activeSnd->volume > volume)
+					if (iAmmoElapsed <= threshold && threshold > 0)
+					{
+						volume = 2.0f * (1.0f - (iAmmoElapsed / threshold));
+						clamp(volume, 0.0f, 2.0f);
+
+						if (mag_shot_snd->m_activeSnd && mag_shot_snd->m_activeSnd->volume > volume)
+							mag_shot_snd->m_activeSnd->volume = volume;
+
+						m_sounds.PlaySound("sndMagShot", get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
 						mag_shot_snd->m_activeSnd->volume = volume;
-
-					m_sounds.PlaySound("sndMagShot", get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
-					mag_shot_snd->m_activeSnd->volume = volume;
+					}
 				}
 			}
 		}
@@ -1399,9 +1400,6 @@ void CWeaponMagazined::OnShot()
 		{
 			if (auto mag_shot_snd = m_sounds.FindSoundItem("sndMagShotHip", false))
 			{
-				float threshold = 0.0f;
-				float volume = 0.0f;
-
 				if (m_iMagClickStartRound)
 					threshold = (float)m_iMagClickStartRound;
 				else

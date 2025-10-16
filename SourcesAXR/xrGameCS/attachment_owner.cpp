@@ -109,7 +109,7 @@ void CAttachmentOwner::attach(CInventoryItem* inventory_item)
 		if (pActor && pActor->inventory().ItemFromSlot(HELMET_SLOT) == pHelmet)
 			need_custom_attach = true;
 
-		if (GameConstants::GetSecondHelmetSlotEnabled() && pActor && pActor->inventory().ItemFromSlot(SECOND_HELMET_SLOT) == pHelmet)
+		if (pActor && pActor->inventory().ItemFromSlot(SECOND_HELMET_SLOT) == pHelmet)
 			need_custom_attach = true;
 	}
 
