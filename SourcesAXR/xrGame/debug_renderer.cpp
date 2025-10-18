@@ -137,4 +137,44 @@ void CDebugRenderer::draw_ellipse	(const Fmatrix &matrix, const u32 &color, bool
 
 	add_lines						((Fvector*)&vertices[0], sizeof(vertices)/sizeof(Fvector), &pairs[0], sizeof(pairs)/(2*sizeof(u16)), color, hud_mode);
 }
+
+void CDebugRenderer::draw_cone(const Fmatrix& transform, float height, float radius, u32 color, bool hud_mode)
+{
+	const int segments = 24;
+	xr_vector<Fvector> vertices;
+	xr_vector<u16> pairs;
+
+	Fvector apex = { 0.f, 0.f, 0.f };
+	Fvector base_center = { 0.f, 0.f, height };
+
+	vertices.push_back(apex);
+	u16 apex_index = 0;
+
+	for (int i = 0; i < segments; ++i)
+	{
+		float angle = 2 * PI * i / segments;
+		Fvector p = { radius * cosf(angle), radius * sinf(angle), height };
+		vertices.push_back(p);
+
+		u16 current_base_index = (u16)(i + 1);
+		u16 next_base_index = (u16)((i + 1) % segments + 1);
+
+		pairs.push_back(apex_index);
+		pairs.push_back(current_base_index);
+
+		if (i < segments - 1)
+		{
+			pairs.push_back(current_base_index);
+			pairs.push_back(next_base_index);
+		}
+	}
+
+	pairs.push_back(1);
+	pairs.push_back((u16)segments);
+
+	for (auto& vertex : vertices)
+		transform.transform_tiny(vertex);
+
+	add_lines(&vertices.front(), (u32)vertices.size(), &pairs.front(), (u32)(pairs.size() / 2), color, hud_mode);
+}
 #endif // DEBUG
