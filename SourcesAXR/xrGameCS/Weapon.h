@@ -90,11 +90,16 @@ public:
 	void					Update_WPN_HUD();
 	void					UpdateAimFOV();
 	void					UpdateAltAimZoomFactor();
+	void					UpdateFOVZoomIn();
+	void					UpdateFOVZoomOut();
 	void					UpdateCheckWeaponHaveLaser();
 	void					UpdateHudAltAimHud();
 	void					UpdateAltAimZoomFactor2();
 	void					UpdateGLAttached();
 	void					UpdateHudAltAimHudMode2();
+	void					UpdateZoomLuaOutput();
+	void					UpdateZoomLuaOutputALT();
+	void					UpdateZoomLuaOutputOff();
 
 	// Up
 	// Magazine system & etc
@@ -455,7 +460,9 @@ public:
 	virtual	void			ZoomInc				();
 	virtual	void			ZoomDec				();
 	virtual void			OnZoomIn			();
+	virtual void			OnZoomIn_2			();
 	virtual void			OnZoomOut			();
+	virtual void			OnZoomOut_2			();
 			bool			IsZoomed			()	const override	{return m_zoom_params.m_bIsZoomModeNow;};
 	CUIWindow*				ZoomTexture			();	
 

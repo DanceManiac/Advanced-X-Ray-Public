@@ -45,6 +45,7 @@ enum	EGameActions
 	kWPN_NEXT,
 	kWPN_FIRE,
 	kWPN_ZOOM,
+	kWPN_ZOOM_2,
 	kWPN_ZOOM_INC,
 	kWPN_ZOOM_DEC,
 	kWPN_RELOAD,

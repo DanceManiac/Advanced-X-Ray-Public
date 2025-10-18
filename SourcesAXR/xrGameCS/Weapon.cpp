@@ -2081,6 +2081,8 @@ void CWeapon::UpdateCL		()
 	UpdateFlameParticles2	();
 	UpdateOverheatingAfterShootParticles();
 
+	UpdateZoomLuaOutputALT();
+
 	if(!IsGameTypeSingle())
 		make_Interpolation		();
 
@@ -2529,14 +2531,43 @@ bool CWeapon::Action(s32 cmd, u32 flags)
 			else
 				return false;
 
+		case kWPN_ZOOM_2:
+		{
+			{
+				if (IsScopeAttached() && !m_bAltZoomActive)
+				{
+					if (IsPending())
+						return				false;
+
+					if (IsZoomed())
+					{
+						if (flags & CMD_START && !IsPending())
+						{
+							OnZoomIn_2();
+						}
+						else
+						{
+							OnZoomOut_2();
+						}
+					}
+					else
+					{
+						OnZoomOut();
+					}
+				}
+			};
+		}
+		return true;
+
 		case kWPN_ZOOM_INC:
 		case kWPN_ZOOM_DEC:
-			if(IsZoomEnabled() && IsZoomed() && IsScopeAttached())
+			if (IsZoomEnabled() && IsZoomed() && IsScopeAttached())
 			{
-				if(cmd==kWPN_ZOOM_INC)  ZoomInc();
+				if (cmd == kWPN_ZOOM_INC)  ZoomInc();
 				else					ZoomDec();
 				return true;
-			}else
+			}
+			else
 				return false;
 	}
 	return false;
@@ -4275,6 +4306,9 @@ void CWeapon::OnZoomIn()
 		UpdateHudAltAimHud();
 		UpdateHudAltAimHudMode2();
 
+		if (IsZoomed() && IsScopeAttached())
+			UpdateZoomLuaOutput();
+	
 		if (IsGrenadeMode())
 		{
 			if (m_BlendAimStartGL_Cam.name.size())
@@ -4340,6 +4374,9 @@ void CWeapon::OnZoomOut()
 		UpdateHudAltAimHud();
 		UpdateHudAltAimHudMode2();
 
+		if (!IsZoomed())
+			UpdateZoomLuaOutputOff();
+
 		if (m_BlendAimEndCam.name.size())
 		{
 			if (m_BlendAimIdleCam.name.size())
@@ -4382,6 +4419,16 @@ void CWeapon::OnZoomOut()
 	{
 		g_player_hud->updateMovementLayerState();
 	}
+}
+
+void CWeapon::OnZoomIn_2()
+{
+	UpdateFOVZoomIn();
+}
+
+void CWeapon::OnZoomOut_2()
+{
+	UpdateFOVZoomOut();
 }
 
 CUIWindow* CWeapon::ZoomTexture()
@@ -4967,9 +5014,9 @@ void CWeapon::ZoomDynamicMod(bool bIncrement, bool bForceLimit)
 	}
 }
 
-void CWeapon::ZoomInc()
+void CWeapon::ZoomInc()	// xxxx
 {
-	if (lfo_scope_type != 4)//LFO 3d Scopes
+	if (!m_bAltZoomActive)
 	{
 		ZoomDynamicMod(true, false);
 	}
@@ -4977,7 +5024,7 @@ void CWeapon::ZoomInc()
 
 void CWeapon::ZoomDec()
 {
-	if (lfo_scope_type != 4)//LFO 3d Scopes
+	if (!m_bAltZoomActive)
 	{
 		ZoomDynamicMod(false, false);
 	}
@@ -5193,7 +5240,7 @@ void CWeapon::SwitchZoomMode()
 		{
 			m_zoom_params.m_fCurrentZoomFactor = CurrentZoomFactor();
 
-			if (lfo_scope_type)//LFO 3d Scopes
+			if (lfo_scope_type == 4)//LFO 3d Scopes
 			{
 				if (HudFovFromScopeAlt)
 				{
@@ -6342,5 +6389,72 @@ void CWeapon::Update_WPN_HUD()
 		hi->m_measures.m_hands_offset[0][2] = pSettings->r_fvector3(m_hud_sect, val_name);
 		strconcat(sizeof(val_name), val_name, "gl_hud_offset_rot", _prefix);
 		hi->m_measures.m_hands_offset[1][2] = pSettings->r_fvector3(m_hud_sect, val_name);
+	}
+}
+
+void CWeapon::UpdateFOVZoomIn()
+{
+	//m_zoom_params.m_fScopeZoomFactor = pSettings->r_float(cNameSect(), "scope_zoom_factor_NEW_IN");
+	shared_str cur_scope_sect = (m_sScopeAttachSection.size() ? m_sScopeAttachSection : (m_eScopeStatus == ALife::eAddonAttachable) ? m_scopes[m_cur_scope].c_str() : "scope");
+
+	psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, "weapon_hud_fov_zoom_focus", GetHudFov());
+}
+
+void CWeapon::UpdateFOVZoomOut()
+{
+	/*
+	lfo_scope_type
+	scopes_2d		 = 1
+	scopes_2d_open	 = 2
+	scopes_3d_pip	 = 3
+	scopes_3d_lfo	 = 4
+	*/
+	shared_str cur_scope_sect = (m_sScopeAttachSection.size() ? m_sScopeAttachSection : (m_eScopeStatus == ALife::eAddonAttachable) ? m_scopes[m_cur_scope].c_str() : "scope");
+
+	if (IsScopeAttached())
+	{
+		if (lfo_scope_type == 3)
+			psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, "aim_hud_fov_pip", GetHudFov());
+		else
+			psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, "aim_hud_fov", GetHudFov());
+	}
+}
+
+void CWeapon::UpdateZoomLuaOutput()
+{
+	luabind::functor<void> funct;
+
+	if (IsZoomed() && IsScopeAttached() && !m_bAltZoomActive)
+	{
+		if (ai().script_engine().functor("lfo_weapons.on_actor_weapon_zoom", funct))
+			funct();
+	}
+}
+
+void CWeapon::UpdateZoomLuaOutputALT()
+{
+	luabind::functor<void> funct;
+
+	if (IsZoomed())
+	{
+		if (ai().script_engine().functor("lfo_weapons.on_actor_weapon_zoom_alt", funct))
+			funct();
+	}
+}
+
+void CWeapon::UpdateZoomLuaOutputOff()
+{
+	luabind::functor<void> funct;
+
+	if (!IsZoomed())
+	{
+		if (ai().script_engine().functor("lfo_weapons.on_actor_weapon_zoom_off", funct))
+			funct();
+	}
+
+	else if (!IsZoomed() && !IsScopeAttached())
+	{
+		if (ai().script_engine().functor("lfo_weapons.on_actor_weapon_zoom_off", funct))
+			funct();
 	}
 }

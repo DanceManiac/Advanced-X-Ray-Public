@@ -55,6 +55,7 @@ _action  actions[]		= {
 	{ "wpn_next",			kWPN_NEXT				,_both},	
 	{ "wpn_fire",			kWPN_FIRE				,_both},	
 	{ "wpn_zoom",			kWPN_ZOOM				,_both},	
+	{ "wpn_zoom_2",			kWPN_ZOOM_2				,_both},
 	{ "wpn_zoom_inc",		kWPN_ZOOM_INC			,_both},	
 	{ "wpn_zoom_dec",		kWPN_ZOOM_DEC			,_both},	
 	{ "wpn_reload",			kWPN_RELOAD				,_both},	
