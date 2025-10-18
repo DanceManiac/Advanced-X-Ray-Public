@@ -43,6 +43,15 @@ ICF void CBackend::set_Format(IDirect3DVertexDeclaration9* _decl)
 	}
 }
 
+ICF void CBackend::set_FillMode(u32 _mode)
+{
+	if (fill_mode != _mode)
+	{
+		fill_mode = _mode;
+		CHK_DX(HW.pDevice->SetRenderState(D3DRS_FILLMODE, _mode));
+	}
+}
+
 ICF void CBackend::set_PS(ID3DPixelShader* _ps, LPCSTR _n)
 {
 	if (ps!=_ps)
