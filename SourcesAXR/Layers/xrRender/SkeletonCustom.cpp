@@ -5,6 +5,8 @@
 #include 	"SkeletonCustom.h"
 #include	"SkeletonX.h"
 #include	"../../xrEngine/fmesh.h"
+#include "dxRenderDeviceRender.h"
+
 #ifndef _EDITOR
 #include	"../../xrEngine/Render.h"
 #endif
@@ -54,6 +56,10 @@ LPCSTR CKinematics::LL_BoneName_dbg	(u16 ID)
 #ifdef DEBUG
 void CKinematics::DebugRender(Fmatrix& XFORM)
 {
+#if defined(USE_DX11)
+	RCache.set_Shader(dxRenderDeviceRender::Instance().m_WireShader);
+#endif
+
 	CalculateBones	();
 
 	CBoneData::BoneDebug	dbgLines;

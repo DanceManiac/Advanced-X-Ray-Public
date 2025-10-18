@@ -80,7 +80,8 @@ void CLevelGraph::draw_nodes	()
 
 	Fvector	DUP;		DUP.set(0,1,0);
 
-	DRender->SetShader(sh_debug);
+	DRender->OnFrameEnd	();
+	DRender->SetShader	(sh_debug);
 	F->SetColor			(color_rgba(255,255,255,255));
 
 	// если включён ai_dbg_frustum раскрасить ноды по light

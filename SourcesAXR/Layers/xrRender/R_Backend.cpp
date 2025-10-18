@@ -125,15 +125,16 @@ void CBackend::CreateQuadIB		()
 // Device dependance
 void CBackend::OnDeviceCreate	()
 {
-#ifdef USE_DX11
-	//CreateConstantBuffers();
-#endif	//	USE_DX11
-
 	CreateQuadIB		();
 
 	// streams
 	Vertex.Create		();
 	Index.Create		();
+
+#if defined(USE_DX11)
+	// Debug Draw
+	InitializeDebugDraw();
+#endif
 
 	// invalidate caching
 	Invalidate			();
@@ -150,24 +151,7 @@ void CBackend::OnDeviceDestroy()
 	_RELEASE							(QuadIB);
 
 #ifdef USE_DX11
-	//DestroyConstantBuffers();
-#endif	//	USE_DX11
+	// Debug Draw
+	DestroyDebugDraw();
+#endif	// USE_DX11
 }
-
-#ifdef USE_DX11
-/*
-void CBackend::CreateConstantBuffers()
-{
-	const int iVectorElements = 4;
-	const int iVectorNumber = 256;
-	dx10BufferUtils::CreateConstantBuffer(&m_pPixelConstants, iVectorNumber*iVectorElements*sizeof(float));
-	dx10BufferUtils::CreateConstantBuffer(&m_pVertexConstants, iVectorNumber*iVectorElements*sizeof(float));
-}
-
-void CBackend::DestroyConstantBuffers()
-{
-	_RELEASE(m_pVertexConstants);
-	_RELEASE(m_pPixelConstants);
-}
-*/
-#endif	//USE_DX11
