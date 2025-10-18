@@ -96,6 +96,40 @@ void CBackend::dbg_Draw			(D3DPRIMITIVETYPE T, FVF::L* pVerts, int pcnt)
 #endif	//	USE_DX11
 }
 
+void CBackend::dbg_Draw_Near(D3DPRIMITIVETYPE T, FVF::L* pVerts, int vcnt, u16* pIdx, int pcnt)
+{
+#ifdef USE_DX11
+	u32 vBase;
+	{
+		FVF::L* pv = (FVF::L*)Vertex.Lock(vcnt, vs_L->vb_stride, vBase);
+		for (size_t i = 0; i < vcnt; i++)
+		{
+			pv[i] = pVerts[i];
+		}
+		Vertex.Unlock(vcnt, vs_L->vb_stride);
+	}
+
+	u32 iBase;
+	{
+		const u32 count = GetIndexCount(T, pcnt);
+		u16* indices = Index.Lock(count, iBase);
+		for (size_t i = 0; i < count; i++)
+			indices[i] = pIdx[i];
+		Index.Unlock(count);
+	}
+
+	set_Geometry(vs_L);
+	set_RT(HW.pBaseRT);
+	RImplementation.rmNear();
+	set_Stencil(FALSE);
+	Render(T, vBase, 0, vcnt, iBase, pcnt);
+#else	//	USE_DX11
+	OnFrameEnd();
+	CHK_DX(HW.pDevice->SetFVF(FVF::F_L));
+	CHK_DX(HW.pDevice->DrawPrimitiveUP(T, pcnt, pVerts, sizeof(FVF::L)));
+#endif	//	USE_DX11
+}
+
 #define RGBA_GETALPHA(rgb)      ((rgb) >> 24)
 void CBackend::dbg_DrawOBB		(Fmatrix& T, Fvector& half_dim, u32 C)
 {
