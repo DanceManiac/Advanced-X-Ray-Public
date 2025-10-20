@@ -1199,11 +1199,11 @@ void CActor::UpdateCL	()
 				g_pGamePersistent->m_pGShaderConstants->hud_params.y = pWeapon->GetSecondVPFov(); //--#SM+#--
 				g_pGamePersistent->m_pGShaderConstants->hud_params.z = bUseMark; //--#SM+#--
 				g_pGamePersistent->m_pGShaderConstants->m_blender_mode.x = bNVEnbl;  //--#SM+#--
-				//	g_pGamePersistent->m_pGShaderConstants->m_condition_params.x = pWeapon->GetCondition(); //LVutner RUST SHADER		
-				g_pGamePersistent->m_pGShaderConstants->m_condition_params.x = envdesc.m_fWinterSnowLayer;
+				g_pGamePersistent->m_pGShaderConstants->m_condition_params_layers_rust.x = pWeapon->GetCondition(); //LVutner RUST SHADER		
+				g_pGamePersistent->m_pGShaderConstants->m_condition_params_layers_iscope.x = pWeapon->GetCondition(); //LVutner RUST SHADER	INSIDE SCOPE
+				g_pGamePersistent->m_pGShaderConstants->m_condition_params_layers_snow.x = envdesc.m_fWinterSnowLayer;
 			}
 		}
-
 	}
 	else
 	{

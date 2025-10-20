@@ -410,13 +410,29 @@ static class cl_blend_mode : public R_constant_setup //--#SM+#--
 	virtual void setup(R_constant* C) { RCache.set_c(C, g_pGamePersistent->m_pGShaderConstants->m_blender_mode); }
 } binder_blend_mode;
 
-static class cl_m_condition_params : public R_constant_setup
+static class cl_m_condition_params_layers_rust : public R_constant_setup
 {
 	virtual void setup(R_constant* C)
 	{
-		RCache.set_c(C, g_pGamePersistent->m_pGShaderConstants->m_condition_params);
+		RCache.set_c(C, g_pGamePersistent->m_pGShaderConstants->m_condition_params_layers_rust);
 	}
-}	binder_m_condition_params;
+}	binder_m_condition_params_layers_rust;
+
+static class cl_m_condition_params_layers_iscope : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, g_pGamePersistent->m_pGShaderConstants->m_condition_params_layers_iscope);
+	}
+}	binder_m_condition_params_layers_iscope;
+
+static class cl_m_condition_params_layers_snow : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, g_pGamePersistent->m_pGShaderConstants->m_condition_params_layers_snow);
+	}
+}	binder_m_condition_params_layers_snow;
 
 static class cl_screen_res : public R_constant_setup		
 {	
@@ -920,7 +936,9 @@ void	CBlender_Compile::SetMapping	()
 	r_Constant("m_script_params", &binder_script_params); //--#SM+#--
 	r_Constant("m_blender_mode", &binder_blend_mode);	//--#SM+#--
 	r_Constant("svp_screen_res", &binder_spv_screen_res);
-	r_Constant("m_condition_params", &binder_m_condition_params);
+	r_Constant("m_condition_params_layers_rust", &binder_m_condition_params_layers_rust);
+	r_Constant("m_condition_params_layers_snow", &binder_m_condition_params_layers_snow);
+	r_Constant("m_condition_params_layers_iscope", &binder_m_condition_params_layers_iscope);
 
 	// matrices
 	r_Constant				("m_W",				&binder_w);

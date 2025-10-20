@@ -1521,7 +1521,7 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Integer,		"r4_es_pseudo_pbr",				&ps_r4_pseudo_pbr,			0, 1); //Enchanted Shaders Pseudo PBR
 
 	CMD3(CCC_Mask,			"r__use_shader_cache",			&ps_r__common_flags,		RFLAG_USE_SHADERS_CACHE);
-	CMD4(CCC_Float,			"r__dyn_opt_dist",				&ps_r__opt_dist,			100.0f, 1000.0f);
+	CMD4(CCC_Float,			"r__optimize_dynamic_geom_dist",&ps_r__opt_dist,			100.0f, 1000.0f);
 	CMD3(CCC_Token,			"r__panorama_scr_size",			&ps_r_panorama_scr_size,	qpanorama_scr_size_token);
 	CMD4(CCC_Float,			"r2_aref_strength",				&ps_r2_aref_strength,		10.0f,	450.f);
 	CMD4(CCC_Vector4,		"r4_normal_strength",			&ps_r4_normal_strength,		Fvector4().set(0.1f, 0.1f, 0.1f, 0.1f), Fvector4().set(1.0f, 1.0f, 1.0f, 1.0f));
