@@ -756,7 +756,6 @@ public:
 private:
 	float hud_recalc_koef;
 	bool has_laser;
-	shared_str laserdot_attach_bone;
 	ref_light laser_light_render;
 	CLAItem* laser_lanim;
 	float laser_fBrightness{ 1.f };
@@ -764,6 +763,7 @@ private:
 	void UpdateLaser();
 public:
 	Fvector laserdot_attach_offset{}, laserdot_world_attach_offset{}, laserdot_attach_rot{};
+	shared_str laserdot_attach_bone;
 
 	void SwitchLaser(bool on);
 	void DestroyLaserLight() { if (laser_light_render) laser_light_render.destroy(); }
@@ -775,7 +775,6 @@ public:
 
 private:
 	bool has_flashlight;
-	shared_str flashlight_attach_bone;
 	ref_light flashlight_render;
 	ref_light flashlight_omni;
 	ref_glow flashlight_glow;
@@ -785,6 +784,7 @@ private:
 	void UpdateFlashlight();
 public:
 	Fvector flashlight_attach_offset{}, flashlight_omni_attach_offset{}, flashlight_world_attach_offset{}, flashlight_omni_world_attach_offset{}, flashlight_attach_rot{};
+	shared_str flashlight_attach_bone;
 
 	void SwitchFlashlight(bool on);
 	void DestroyFlashlightLight() { if (flashlight_render) flashlight_render.destroy(); }
