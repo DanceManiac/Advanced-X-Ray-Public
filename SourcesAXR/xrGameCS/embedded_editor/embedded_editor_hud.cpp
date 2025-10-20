@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //	Module 		: embedded_editor_hud.cpp
 //	Created 	: 05.05.2021
-//  Modified 	: 16.10.2025
+//  Modified 	: 20.10.2025
 //	Author		: Dance Maniac (M.F.S. Team)
 //	Description : ImGui Hud Editor
 ////////////////////////////////////////////////////////////////////////////
@@ -21,6 +21,63 @@
 #include "../Grenade.h"
 
 #include "string_table.h"
+
+#ifdef DEBUG
+#	include "debug_renderer.h"
+
+void DrawLightCone(Fvector position, Fvector direction, float range, float angle, u32 color)
+{
+	Fmatrix cone_transform;
+	cone_transform.identity();
+	cone_transform.c = position;
+
+	Fvector up = { 0, 1, 0 };
+
+	if (_abs(direction.y) > 0.9f)
+		up.set(1, 0, 0);
+
+	Fvector right;
+	right.crossproduct(direction, up).normalize();
+	up.crossproduct(right, direction).normalize();
+
+	cone_transform.i = right;
+	cone_transform.j = up;
+	cone_transform.k = direction;
+
+	Level().debug_renderer().draw_cone(cone_transform, range, angle, color, true);
+}
+
+extern ENGINE_API float psHUD_FOV;
+
+void DrawPointText(Fvector position, const char* text, u32 color = color_rgba(255, 255, 255, 255), float height_offset = 0.02f)
+{
+	Fvector text_pos = position;
+	text_pos.y += height_offset;
+
+	Fvector4 v_res;
+
+	Device.mProject.build_projection(psHUD_FOV, Device.fASPECT, HUD_VIEWPORT_NEAR, g_pGamePersistent->Environment().CurrentEnv->far_plane);
+
+	Fmatrix mFullTransform;
+	mFullTransform.mul(Device.mProject, Device.mView);
+
+	mFullTransform.transform(v_res, text_pos);
+
+	if (v_res.z < 0 || v_res.w < 0)
+		return;
+
+	if (v_res.x < -1.f || v_res.x > 1.f || v_res.y < -1.f || v_res.y > 1.f)
+		return;
+
+	float x = (1.f + v_res.x) / 2.f * (Device.dwWidth);
+	float y = (1.f - v_res.y) / 2.f * (Device.dwHeight);
+
+	UI().Font().pFontMedium->SetAligment(CGameFont::alCenter);
+	UI().Font().pFontMedium->SetColor(color);
+	UI().Font().pFontMedium->OutSet(x, y);
+	UI().Font().pFontMedium->OutNext(text);
+}
+#endif
 
 void ShowHudEditor(bool& show)
 {
@@ -68,6 +125,23 @@ void ShowHudEditor(bool& show)
 			ImGui::DragFloat3("hud_collision_offset_rot 0",	(float*)&item->m_measures.m_collision_offset[1],	drag_intensity, NULL, NULL, "%.6f");
 		}
 
+#ifdef DEBUG
+		firedeps fd;
+		item->setup_firedeps(fd);
+
+		DrawPointText(fd.vLastFP, "fire_point", color_rgba(255, 255, 0, 255));
+		Level().debug_renderer().draw_aabb(fd.vLastFP, 0.002f, 0.002f, 0.002f, color_rgba(0, 255, 0, 255), true);
+
+		DrawPointText(fd.vLastFP2, "fire_point2", color_rgba(255, 255, 0, 255));
+		Level().debug_renderer().draw_aabb(fd.vLastFP2, 0.002f, 0.002f, 0.002f, color_rgba(0, 255, 0, 255), true);
+
+		DrawPointText(fd.vLastSP, "shell_point", color_rgba(255, 255, 0, 255));
+		Level().debug_renderer().draw_aabb(fd.vLastSP, 0.002f, 0.002f, 0.002f, color_rgba(0, 255, 0, 255), true);
+
+		DrawPointText(fd.vLastOSP, "overheating_smoke_point", color_rgba(255, 255, 0, 255));
+		Level().debug_renderer().draw_aabb(fd.vLastOSP, 0.002f, 0.002f, 0.002f, color_rgba(0, 255, 0, 255), true);
+#endif
+
 		if (Wpn)
 		{
 			// Laser light offsets
@@ -75,6 +149,19 @@ void ShowHudEditor(bool& show)
 			{
 				ImGui::DragFloat3("laserdot_attach_offset 0",	(float*)&Wpn->laserdot_attach_offset, drag_intensity, NULL, NULL, "%.6f");
 				ImGui::DragFloat3("laserdot_attach_rot 0",		(float*)&Wpn->laserdot_attach_rot, drag_intensity, NULL, NULL, "%.6f");
+
+#ifdef DEBUG
+				if (Wpn->IsLaserOn())
+				{
+					Fvector laser_pos = Wpn->get_LastFP(), laser_dir = Wpn->get_LastFD();
+					Wpn->GetBoneOffsetPosDir(Wpn->laserdot_attach_bone, laser_pos, laser_dir, Wpn->laserdot_attach_offset, Wpn->laserdot_attach_rot);
+					Wpn->CorrectDirFromWorldToHud(laser_dir);
+
+					DrawPointText(laser_pos, "laserdot_attach_offset", color_rgba(255, 255, 0, 255));
+					Level().debug_renderer().draw_aabb(laser_pos, 0.002f, 0.002f, 0.002f, color_rgba(0, 255, 0, 255), true);
+					DrawLightCone(laser_pos, laser_dir, 0.5f, 0.002f, color_rgba(255, 0, 0, 255));
+				}
+#endif
 			}
 
 			//Torch light offsets
@@ -83,6 +170,19 @@ void ShowHudEditor(bool& show)
 				ImGui::DragFloat3("torch_attach_offset 0",		(float*)&Wpn->flashlight_attach_offset, drag_intensity, NULL, NULL, "%.6f");
 				ImGui::DragFloat3("torch_omni_attach_offset 0", (float*)&Wpn->flashlight_omni_attach_offset, drag_intensity, NULL, NULL, "%.6f");
 				ImGui::DragFloat3("torch_attach_rot 0",			(float*)&Wpn->flashlight_attach_rot, drag_intensity, NULL, NULL, "%.6f");
+
+#ifdef DEBUG
+				if (Wpn->IsFlashlightOn())
+				{
+					Fvector flashlight_pos = Wpn->get_LastFP(), flashlight_dir = Wpn->get_LastFD();
+					Wpn->GetBoneOffsetPosDir(Wpn->flashlight_attach_bone, flashlight_pos, flashlight_dir, Wpn->flashlight_attach_offset, Wpn->flashlight_attach_rot);
+					Wpn->CorrectDirFromWorldToHud(flashlight_dir);
+
+					DrawPointText(flashlight_pos, "torch_attach_offset", color_rgba(255, 255, 0, 255));
+					Level().debug_renderer().draw_aabb(flashlight_pos, 0.002f, 0.002f, 0.002f, color_rgba(0, 255, 0, 255), true);
+					DrawLightCone(flashlight_pos, flashlight_dir, 0.5f, 0.1f, color_rgba(255, 255, 255, 255));
+				}
+#endif
 			}
 
 			for (int i = 0; i < Wpn->m_weapon_attaches.size(); i++)
@@ -122,6 +222,29 @@ void ShowHudEditor(bool& show)
 			ImGui::DragFloat3("hud_collision_offset_pos 1", (float*)&item->m_measures.m_collision_offset[0], drag_intensity, NULL, NULL, "%.6f");
 			ImGui::DragFloat3("hud_collision_offset_rot 1", (float*)&item->m_measures.m_collision_offset[1], drag_intensity, NULL, NULL, "%.6f");
 		}
+
+#ifdef DEBUG
+		if (Det)
+		{
+			if (Det->m_bLightsEnabled)
+			{
+				firedeps fd;
+				item->setup_firedeps(fd);
+
+				DrawPointText(fd.vLastFP, "fire_point", color_rgba(255, 255, 0, 255));
+				Level().debug_renderer().draw_aabb(fd.vLastFP, 0.002f, 0.002f, 0.002f, color_rgba(0, 255, 0, 255), true);
+
+				DrawPointText(fd.vLastFP2, "fire_point2", color_rgba(255, 255, 0, 255));
+				Level().debug_renderer().draw_aabb(fd.vLastFP2, 0.002f, 0.002f, 0.002f, color_rgba(0, 255, 0, 255), true);
+
+				DrawPointText(fd.vLastSP, "shell_point", color_rgba(255, 255, 0, 255));
+				Level().debug_renderer().draw_aabb(fd.vLastSP, 0.002f, 0.002f, 0.002f, color_rgba(0, 255, 0, 255), true);
+
+				DrawPointText(fd.vLastOSP, "overheating_smoke_point", color_rgba(255, 255, 0, 255));
+				Level().debug_renderer().draw_aabb(fd.vLastOSP, 0.002f, 0.002f, 0.002f, color_rgba(0, 255, 0, 255), true);
+			}
+		}
+#endif
 	}
 
 	if (ImGui::Button(toUtf8(CStringTable().translate("st_editor_imgui_save").c_str()).c_str()))
