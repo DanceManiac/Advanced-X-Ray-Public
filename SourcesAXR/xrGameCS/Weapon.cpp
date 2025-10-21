@@ -4305,6 +4305,7 @@ void CWeapon::OnZoomIn()
 		UpdateAltAimZoomFactor();
 		UpdateHudAltAimHud();
 		UpdateHudAltAimHudMode2();
+		UpdateWeaponDoF();
 
 		if (IsZoomed() && IsScopeAttached())
 			UpdateZoomLuaOutput();
@@ -4373,6 +4374,7 @@ void CWeapon::OnZoomOut()
 		UpdateAimOffsets();
 		UpdateHudAltAimHud();
 		UpdateHudAltAimHudMode2();
+		UpdateWeaponDoF();
 
 		if (!IsZoomed())
 			UpdateZoomLuaOutputOff();
@@ -4911,18 +4913,70 @@ void CWeapon::OnStateSwitch	(u32 S)
 	inherited::OnStateSwitch(S);
 	m_dwAmmoCurrentCalcFrame = 0;
 
+	luabind::functor<void> funct;
+
 	if (H_Parent() == Level().CurrentEntity())
 	{
 		CActor* current_actor = smart_cast<CActor*>(H_Parent());
 
-		if (psActorFlags2.test(AF_HUD_DOF))
+		if (psActorFlags3.test(AF_HUD_DOF_WPN_ALL))
 		{
 			if (&HUD().GetUI()->UIGame()->ActorMenu() && HUD().GetUI()->UIGame()->ActorMenu().GetMenuMode() == mmUndefined)
 			{
-				if ((GetState() == eReload || GetState() == eUnMisfire || (GetState() == eBore && (GameConstants::GetSSFX_EnableBoreDoF() && m_bEnableBoreDof))) && current_actor)
+				if ((GetState() == eReload || GetState() == eUnMisfire || (GetState() == eBore /* && (GameConstants::GetSSFX_EnableBoreDoF() && m_bEnableBoreDof)*/)) && current_actor)
 				{
-					ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_FocusDoF();
-					ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_FocusDoF().z;
+					if (psActorFlags3.test(AF_HUD_DOF_WPN_FOCUS))
+					{
+						ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_FocusDoF();
+						ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_FocusDoF().z;
+					}
+					else
+					{
+						if (psActorFlags3.test(AF_HUD_DOF_WPN_IDLE))
+						{
+							ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_WeaponDoFIdle();
+							ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_WeaponDoFIdle().z;
+						}
+						else
+						{
+							ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
+							ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
+						}
+					}
+				}
+				else if (GetState() == eFire)
+				{
+					if (psActorFlags3.test(AF_HUD_DOF_WPN_FIRE))
+					{
+						ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_WeaponDoFShoot();
+						ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_WeaponDoFShoot().z;
+					}
+					else
+					{
+						if (psActorFlags3.test(AF_HUD_DOF_WPN_IDLE) && GetState() == eFire && !IsZoomed())
+						{
+							ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_WeaponDoFIdle();
+							ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_WeaponDoFIdle().z;
+						}
+						else
+						{
+							ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
+							ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
+						}
+					}
+				}
+				else if (GetState() == eIdle && !IsZoomed())
+				{
+					if (psActorFlags3.test(AF_HUD_DOF_WPN_IDLE))
+					{
+						ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_WeaponDoFIdle();
+						ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_WeaponDoFIdle().z;
+					}
+					else
+					{
+						ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
+						ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
+					}
 				}
 				else
 				{
@@ -6456,5 +6510,36 @@ void CWeapon::UpdateZoomLuaOutputOff()
 	{
 		if (ai().script_engine().functor("lfo_weapons.on_actor_weapon_zoom_off", funct))
 			funct();
+	}
+}
+
+void CWeapon::UpdateWeaponDoF()
+{
+	if (psActorFlags3.test(AF_HUD_DOF_WPN_ALL) && psActorFlags3.test(AF_HUD_DOF_WPN_AIM))
+	{
+		if (IsZoomed())
+		{
+			ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_WeaponDoFAim();
+			ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_WeaponDoFAim().z;
+		}
+		else
+		{
+			ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
+			ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
+		}
+	}
+}
+
+void CWeapon::UpdateWeaponDoFInspect()
+{
+	if (psActorFlags3.test(AF_HUD_DOF_WPN_ALL) && psActorFlags3.test(AF_HUD_DOF_WPN_FOCUS))
+	{
+		ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_FocusDoF();
+		ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_FocusDoF().z;
+	}
+	else
+	{
+		ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
+		ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
 	}
 }

@@ -1,5 +1,5 @@
 ﻿#pragma once
-
+#include "Actor.h"
 namespace GameConstants
 {
 	void LoadConstants();
@@ -41,6 +41,9 @@ namespace GameConstants
 	Ivector4 GetNeutralColor();
 	Fvector4 GetSSFX_DefaultDoF();
 	Fvector4 GetSSFX_FocusDoF();
+	Fvector4 GetSSFX_WeaponDoFAim();
+	Fvector4 GetSSFX_WeaponDoFShoot();
+	Fvector4 GetSSFX_WeaponDoFIdle();
 	bool GetSSFX_EnableBoreDoF();
 	LPCSTR GetAfInfluenceMode();
 	LPCSTR GetArtefactDegradationMode();

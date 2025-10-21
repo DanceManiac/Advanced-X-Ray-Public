@@ -2410,6 +2410,9 @@ bool CWeaponMagazined::Action(s32 cmd, u32 flags)
 	{
 		if (flags & CMD_START)
 		{
+
+		//	UpdateWeaponDoFInspect();
+
 			if (isHUDAnimationExist("anm_inspect_weapon") && (!IsMisfire()))
 			{
 				if (iAmmoElapsed == 0)
@@ -3664,7 +3667,9 @@ void CWeaponMagazined::PlayAnimIdle()
 		return;
 
 	if (IsZoomed())
-	{/**/
+	{
+		UpdateWeaponDoF();
+
 		if (IsGripAttached())
 		{
 			//Msg("TEST AIM GRIP H");

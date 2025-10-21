@@ -39,7 +39,7 @@ enum
 	AF_LFO_DYNAMIC_HUD_MASK_OVERLAY		= (1 << 4),
 	AF_LFO_DYNAMIC_HUD_WPN_SHAKING		= (1 << 5),
 	AF_LFO_DYNAMIC_HUD_HIT_EFFECTS		= (1 << 6),
-	AF_HUD_DOF							= (1 << 7),
+	AF_LFO_FALLOUT_SLEEP				= (1 << 7),
 	AF_DEV_MODE							= (1 << 8),
 	AF_WPN_RELOAD_TYPE					= (1 << 9),
 	AF_LFO_FREEPLAY						= (1 << 10),
@@ -59,9 +59,8 @@ enum
 	AF_LFO_FROSTBITE					= (1 << 24),
 	AF_LFO_WEATHER_FALLOUT_SIREN		= (1 << 25),
 	AF_LFO_ECO							= (1 << 26),
-	AF_LFO_FALLOUT_SLEEP				= (1 << 27),
-	AF_LFO_NO_AI_MAP_POINTS				= (1 << 28),
-	AF_LFO_NO_AI_INDICATORS				= (1 << 29),
+	AF_LFO_NO_AI_MAP_POINTS				= (1 << 27),
+	AF_LFO_NO_AI_INDICATORS				= (1 << 28),
 	//	AF_TAKE_ITEM_ANIMATIONS					= (1<<21),
 };
 
@@ -82,6 +81,11 @@ enum
 	AF_LFO_AMMO_ICONS					= (1 << 12),
 	AF_LFO_WPN_AIM_RELOADS				= (1 << 13),
 	AF_LFO_WPN_OVERHEAT_LIGHTS			= (1 << 14),
+	AF_HUD_DOF_WPN_ALL					= (1 << 15),
+	AF_HUD_DOF_WPN_AIM					= (1 << 16),
+	AF_HUD_DOF_WPN_FIRE					= (1 << 17),
+	AF_HUD_DOF_WPN_IDLE					= (1 << 18),
+	AF_HUD_DOF_WPN_FOCUS				= (1 << 19),
 };
 
 extern Flags32 psActorFlags;
