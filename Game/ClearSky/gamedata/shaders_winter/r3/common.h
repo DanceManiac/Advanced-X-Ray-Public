@@ -12,10 +12,10 @@
 #include "common_functions.h"
 #include "gbuffer_stage.h"
 
-#if !defined(ALLOW_CLOUD_SHADOWS) || defined(USE_CLOUD_SHADOWS)
+#if !defined(ALLOW_CLOUD_SHADOWS)
 // #define USE_SUNMASK  
 #endif
-#if defined(ALLOW_CLOUD_SHADOWS) || defined(USE_CLOUD_SHADOWS)
+#if defined(ALLOW_CLOUD_SHADOWS)
 #define USE_SUNMASK  
 #endif
 

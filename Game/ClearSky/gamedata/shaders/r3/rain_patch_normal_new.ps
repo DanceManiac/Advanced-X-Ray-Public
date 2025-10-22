@@ -3,10 +3,10 @@
 #include "shadow.h"
 
 
-#if !defined(ALLOW_CLOUD_SHADOWS) || defined(USE_CLOUD_SHADOWS)
+#if !defined(ALLOW_CLOUD_SHADOWS)
 float3x4 m_sunmask;	// ortho-projection
 #endif
-#if defined(ALLOW_CLOUD_SHADOWS) || defined(USE_CLOUD_SHADOWS)
+#if defined(ALLOW_CLOUD_SHADOWS)
 // float3x4 m_sunmask;	// ortho-projection
 #endif
 

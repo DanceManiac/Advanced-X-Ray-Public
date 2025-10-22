@@ -20,6 +20,6 @@
 
 #define G_PUDDLES_REFRACTION_INTENSITY		1.0f	// Refraction intensity
 
-#if defined(ALLOW_PUDDLE) || defined(USE_PUDDLE)
-#define G_PUDDLES_ALLWAYS					// Uncomment to allways render puddles ( Raining or not )
+#if defined(SSFX_PUDDLES_ALLWAYS)
+	#define G_PUDDLES_ALLWAYS					// Uncomment to allways render puddles ( Raining or not )
 #endif

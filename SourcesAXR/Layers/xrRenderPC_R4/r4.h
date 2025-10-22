@@ -118,10 +118,14 @@ public:
 	  u32		dx11_ss_shadows			: 1;
 	  u32		dx11_ss_lut				: 1;
 	  u32		dx11_ss_wind			: 1;
-	  u32		dx11_ss_puddles_allways : 1;
 	  u32		dx11_ss_puddles			: 1;
+	  u32		dx11_ss_puddles_allways : 1;
 	  u32		dx11_ss_bloom			: 1;
 	  u32		dx11_ss_bloom_mask_dirt : 1;
+	  u32		dx11_cloud_shadows		: 1;
+	  u32		dx11_ss_contact_shadows : 1;
+	  u32		dx11_wet_hands			: 1;
+	  u32		dx11_ss_fog_scattering	: 1;
 
 	  u32		dx11_enable_tessellation : 1;
 

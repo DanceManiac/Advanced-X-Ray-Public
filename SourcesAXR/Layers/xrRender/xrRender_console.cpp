@@ -299,10 +299,7 @@ Flags32		ps_r2_ls_flags				= { R2FLAG_SUN
 
 Flags32	ps_r2_ls_flags_n =
 {
-	R3FLAG_WET_HANDS
-	| R2FLAG_RAINBOWS
-	| R3FLAG_CLOUD_SHADOWS
-	| R3FLAG_SSS_CONTACT_SHADOWS
+	R2FLAG_RAINBOWS
 };	// r2-only
 
 Flags32	ps_r2_ls_flags_amd =
@@ -1410,10 +1407,7 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Integer,	"r3_dynamic_wet_surfaces_sm_res",&ps_r3_dyn_wet_surf_sm_res,64,	2048	);
 	*/
 
-	CMD3(CCC_Mask, "r3_dynamic_wet_surfaces_hand", &ps_r2_ls_flags_n, R3FLAG_WET_HANDS);					// Need restart
 	CMD3(CCC_Mask, "r2_rainbow", &ps_r2_ls_flags_n, R2FLAG_RAINBOWS);					// Need restart
-	CMD3(CCC_Mask, "r3_cloud_shadows", &ps_r2_ls_flags_n, R3FLAG_CLOUD_SHADOWS);				// Need restart
-	CMD3(CCC_Mask, "r3_sss_contact_shadows", &ps_r2_ls_flags_n, R3FLAG_SSS_CONTACT_SHADOWS);		// Need restart
 	CMD3(CCC_Mask, "renderer_amd_dx9_compatibility", &ps_r2_ls_flags_amd, R3FLAG_AMD_DX9_COMPATIBILITY);				// Need restart
 
 	CMD3(CCC_Mask, "r3_dynamic_wet_surfaces", &ps_r2_ls_flags, R3FLAG_DYN_WET_SURF);
@@ -1464,9 +1458,15 @@ void		xrRender_initconsole	()
 	CMD3(CCC_Mask,			"r4_ss_lut",					&ps_r4_shaders_flags,		R4FLAG_SS_LUT); //Need restart
 	CMD3(CCC_Mask,			"r4_ss_wind",					&ps_r4_shaders_flags,		R4FLAG_SS_WIND); //Need restart
 	CMD3(CCC_Mask,			"r4_ss_puddles",				&ps_r4_shaders_flags,		R4FLAG_SS_PUDDLES); //Need restart
+	CMD3(CCC_Mask,			"r4_ss_puddles_allways",		&ps_r4_shaders_flags,		R4FLAG_SS_PUDDLES_ALLWAYS); //Need restart
 	CMD3(CCC_Mask,			"r4_ss_bloom",					&ps_r4_shaders_flags,		R4FLAG_SS_BLOOM); //Need restart
 	CMD3(CCC_Mask,			"r4_ss_bloom_mask_dirt",		&ps_r4_shaders_flags,		R4FLAG_SS_BLOOM_MASK_DIRT); //Need restart
 	CMD3(CCC_Shader_Preset, "shaders_preset",				&ps_ShaderPreset,			qshader_preset_token);
+
+	CMD3(CCC_Mask,			"r3_cloud_shadows",				&ps_r4_shaders_flags,		R4FLAG_CLOUD_SHADOWS);				// Need restart
+	CMD3(CCC_Mask,			"r4_ss_contact_shadows",		&ps_r4_shaders_flags,		R4FLAG_SS_CONTACT_SHADOWS);		// Need restart
+	CMD3(CCC_Mask,			"r3_dynamic_wet_surfaces_hand", &ps_r4_shaders_flags,		R4FLAG_WET_HANDS);					// Need restart
+	CMD3(CCC_Mask,			"r4_ss_fog_scattering",			&ps_r4_shaders_flags,		R4FLAG_FOG_SCATTERING);					// Need restart
 
 	CMD4(CCC_Vector4,		"ssfx_wpn_dof_1",				&ps_ssfx_wpn_dof_1,			tw2_min, tw2_max);
 	CMD4(CCC_Float,			"ssfx_wpn_dof_2",				&ps_ssfx_wpn_dof_2,			0.0f, 1.0f);
@@ -1527,8 +1527,6 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Vector4,		"r4_normal_strength",			&ps_r4_normal_strength,		Fvector4().set(0.1f, 0.1f, 0.1f, 0.1f), Fvector4().set(1.0f, 1.0f, 1.0f, 1.0f));
 	CMD4(CCC_Float,			"r4_water_waves_koef",			&ps_r4_sss_water_waves_koef,0.0f,	0.5f);
 
-	CMD3(CCC_Mask,			"r3_puddle",					&ps_r4_shaders_flags,		R3FLAG_PUDDLE);					//Need restart
-	
 	psWeatherFogClamping	= READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "weather_fog_clamping", 0.0f);
 	CMD4(CCC_Float,			"weather_fog_clamping",			&psWeatherFogClamping,		0.0f,	10000.0f);
 	

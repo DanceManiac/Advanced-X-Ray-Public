@@ -251,10 +251,7 @@ enum
 
 enum
 {
-	R3FLAG_WET_HANDS = (1 << 0),
-	R2FLAG_RAINBOWS = (1 << 1),
-	R3FLAG_CLOUD_SHADOWS = (1 << 2),
-	R3FLAG_SSS_CONTACT_SHADOWS = (1 << 3),
+	R2FLAG_RAINBOWS = (1 << 0)
 };
 
 enum
@@ -349,7 +346,11 @@ enum
 	R4FLAG_SS_BLOOM				= (1 << 12),
 	R4FLAG_SS_BLOOM_MASK_DIRT	= (1 << 13),
 	R4FLAG_ES_ACES_TONEMAPPING  = (1 << 14),
-	R3FLAG_PUDDLE				= (1 << 15),
+	R4FLAG_SS_PUDDLES_ALLWAYS	= (1 << 15),
+	R4FLAG_CLOUD_SHADOWS		= (1 << 16),
+	R4FLAG_SS_CONTACT_SHADOWS   = (1 << 17),
+	R4FLAG_WET_HANDS			= (1 << 19),
+	R4FLAG_FOG_SCATTERING		= (1 << 20),
 };
 
 extern ECORE_API Flags32		ps_r__common_flags;

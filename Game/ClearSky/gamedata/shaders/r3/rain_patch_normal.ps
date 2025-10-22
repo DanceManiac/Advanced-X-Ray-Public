@@ -15,10 +15,10 @@
 uniform float4 ssfx_wetsurfaces_1; // Ripples [ Size, Speed, Min Speed, Int ]
 uniform float4 ssfx_wetsurfaces_2; // FallWater [ Size, Speed, Min Speed, Int ]
 
-#if !defined(ALLOW_CLOUD_SHADOWS) || defined(USE_CLOUD_SHADOWS)
+#if !defined(ALLOW_CLOUD_SHADOWS)
 float3x4 m_sunmask;	// ortho-projection
 #endif
-#if defined(ALLOW_CLOUD_SHADOWS) || defined(USE_CLOUD_SHADOWS)
+#if defined(ALLOW_CLOUD_SHADOWS)
 // float3x4 m_sunmask;	// ortho-projection
 #endif
 
@@ -134,9 +134,9 @@ float4 main ( float2 tc : TEXCOORD0, float2 tcJ : TEXCOORD1, float4	Color	: COLO
 	//float HUD_Attenuation = smoothstep( 1.0f, 1.3f, p_len + (is_terrain * 1.3f) ) * !is_flora;
 	
 	// WET WEAPONS/ HANDS
-	#if !defined(ALLOW_WET_HANDS) || defined(USE_WET_HANDS)
-	#endif
-	#if defined(ALLOW_WET_HANDS) || defined(USE_WET_HANDS)
+	#if !defined(ALLOW_WET_HANDS)
+		float HUD_Attenuation = smoothstep( 1.0f, 1.3f, p_len + (is_terrain * 1.3f) ) * !is_flora;
+	#else
 		float HUD_Attenuation = 1;smoothstep( 0.8f, 0.9f, p_len + (is_terrain * 1.3f) ) * !is_flora;		// Wet Hands
 	#endif
 	// WET WEAPONS

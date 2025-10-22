@@ -116,8 +116,8 @@ c2_out main( v2p_aa_AA I )
 			disablefog *= (shader_param_8.x > 0 ? 0 : 1);
 		#endif
 
-		// Blend
-		img = lerp(img, max(img, foggg), smoothstep(0.2f, 0.8f, fogresult) * disablefog);
+		// Blend	//img = lerp(img, max(img, foggg), smoothstep(0.2f, 0.8f, fogresult) * disablefog);
+		img = lerp(img, max(img, foggg), smoothstep(0.1f, 1.0f, fogresult) * disablefog);
 	#endif
 	// --------------------------------------
 #endif

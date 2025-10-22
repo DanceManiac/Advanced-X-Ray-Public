@@ -15,10 +15,10 @@
 uniform float4 ssfx_wetsurfaces_1; // Ripples [ Size, Speed, Min Speed, Int ]
 uniform float4 ssfx_wetsurfaces_2; // FallWater [ Size, Speed, Min Speed, Int ]
 
-#if !defined(ALLOW_CLOUD_SHADOWS) || defined(USE_CLOUD_SHADOWS)
+#if !defined(ALLOW_CLOUD_SHADOWS)
 float3x4 m_sunmask;	// ortho-projection
 #endif
-#if defined(ALLOW_CLOUD_SHADOWS) || defined(USE_CLOUD_SHADOWS)
+#if defined(ALLOW_CLOUD_SHADOWS)
 // float3x4 m_sunmask;	// ortho-projection
 #endif
 

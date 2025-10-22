@@ -328,16 +328,12 @@ void xrSASH::GetAllOptions()
 	//Option.Dependency.ComparisonVal.Enum = TEXT("renderer_r3");
 	//Option.Dependency.ComparisonValType = GetOptionType("renderer");
 	{
-		DescribeOption("r3_cloud_shadows",					Option.Dependency);
-		DescribeOption("r3_dynamic_wet_surfaces_hand",		Option.Dependency);
 		DescribeOption("r3_dynamic_wet_surfaces",			Option.Dependency);
 		DescribeOption("r3_volumetric_smoke",				Option.Dependency);
 		DescribeOption("r3_gbuff_opt",						Option.Dependency);
 		DescribeOption("r3_use_dx10_1",						Option.Dependency);
 		DescribeOption("r3_minmax_sm",						Option.Dependency);
 		DescribeOption("r3_msaa",							Option.Dependency);
-		DescribeOption("r3_puddle",							Option.Dependency);
-		DescribeOption("r3_sss_contact_shadows",			Option.Dependency);
 		//	>= 2x
 		//Option.Dependency.ParentName = TEXT("r3_msaa");
 		//Option.Dependency.ComparisonOp = OA_COMP_OP_GREATER_OR_EQUAL;
@@ -394,10 +390,6 @@ void xrSASH::GetCurrentOptions()
 	GetOption("renderer_amd_reticle_fix");
 
 	//	>=r3
-	GetOption("r3_sss_contact_shadows");
-	GetOption("r3_puddle");
-	GetOption("r3_cloud_shadows");
-	GetOption("r3_dynamic_wet_surfaces_hand");
 	GetOption("r3_dynamic_wet_surfaces");
 	GetOption("r3_volumetric_smoke");
 	GetOption("r3_use_dx10_1");
