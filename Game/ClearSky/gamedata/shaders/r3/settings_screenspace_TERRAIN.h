@@ -2,7 +2,7 @@
 
 #define TERRAIN_WATER_LEVEL 		1.25	// Max water level
 
-#define TERRAIN_POM_STEPS_MAX		12		// More samples generate smoother results. You can lower this value to improve performance.
+#define TERRAIN_POM_STEPS_MAX		2		// More samples generate smoother results. You can lower this value to improve performance.
 #define TERRAIN_POM_STEPS_MIN 		3		// Minimum quantity of steps
 
 #define TERRAIN_POM_AO 				0.125f	// Basic ambient occlusion strength

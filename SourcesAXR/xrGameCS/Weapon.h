@@ -102,6 +102,7 @@ public:
 	void					UpdateZoomLuaOutputOff();
 	void					UpdateWeaponDoF();
 	void					UpdateWeaponDoFInspect();
+	void					UpdateZoomFocus();
 
 	// Up
 	// Magazine system & etc

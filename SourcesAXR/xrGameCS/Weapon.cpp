@@ -2544,10 +2544,19 @@ bool CWeapon::Action(s32 cmd, u32 flags)
 						if (flags & CMD_START && !IsPending())
 						{
 							OnZoomIn_2();
+
+							//if (IsZoomed() && (GetState() == eIdle))
+
+							if (IsZoomed() && GetState() == eFire || IsZoomed() && (GetState() == eIdle))
+								UpdateZoomFocus();
 						}
 						else
 						{
 							OnZoomOut_2();
+
+							if (IsZoomed() && GetState() == eFire || IsZoomed() && (GetState() == eIdle))
+								UpdateWeaponDoF();
+							//UpdateZoomFocus();
 						}
 					}
 					else
@@ -4305,11 +4314,15 @@ void CWeapon::OnZoomIn()
 		UpdateAltAimZoomFactor();
 		UpdateHudAltAimHud();
 		UpdateHudAltAimHudMode2();
-		UpdateWeaponDoF();
 
 		if (IsZoomed() && IsScopeAttached())
 			UpdateZoomLuaOutput();
-	
+
+		if (psActorFlags3.test(AF_HUD_DOF_WPN_ALL) && psActorFlags3.test(AF_HUD_DOF_WPN_AIM))
+			UpdateWeaponDoF();
+
+		UpdateZoomFocus();
+
 		if (IsGrenadeMode())
 		{
 			if (m_BlendAimStartGL_Cam.name.size())
@@ -6452,6 +6465,9 @@ void CWeapon::UpdateFOVZoomIn()
 	shared_str cur_scope_sect = (m_sScopeAttachSection.size() ? m_sScopeAttachSection : (m_eScopeStatus == ALife::eAddonAttachable) ? m_scopes[m_cur_scope].c_str() : "scope");
 
 	psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, "weapon_hud_fov_zoom_focus", GetHudFov());
+
+	ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
+	ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
 }
 
 void CWeapon::UpdateFOVZoomOut()
@@ -6543,3 +6559,16 @@ void CWeapon::UpdateWeaponDoFInspect()
 		ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
 	}
 }
+
+void CWeapon::UpdateZoomFocus()
+{
+	if (psActorFlags3.test(AF_HUD_DOF_WPN_ALL) && psActorFlags3.test(AF_HUD_DOF_WPN_AIM))
+	{
+	//	if (IsZoomed() && (GetState() == eFire))
+	//	{
+			ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
+			ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
+	//	}
+	}
+}
+
