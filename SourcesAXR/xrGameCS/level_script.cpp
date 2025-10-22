@@ -1306,6 +1306,11 @@ bool is_winter_mode()
 	return			(bWinterMode);
 }
 
+// Enable/Disable WEAPON GROUND PHYSICS 
+bool game_use_weapon_base_hud_infos() {
+	return !!psActorFlags3.test(AF_LFO_WPN_HUD_BI);
+}
+
 /*LFO EXPORTS FOR SCRIPTED OPTIONALS END*/
 // -------------------------------------------------------------------------
 
@@ -1485,6 +1490,7 @@ void CLevel::script_register(lua_State *L)
 		def("use_dev_full_main_menu",			&game_use_dev_full_main_menu),
 		def("use_lfo_weather_icons",			&game_use_lfo_weather_icons),
 		def("use_lfo_no_npc_indicators",		&game_use_lfo_no_npc_indicators),
+		def("use_weapon_base_hud_infos",		&game_use_weapon_base_hud_infos),
 
 		/* YZX */
 		def("actor_in_hideout", 				&actor_in_hideout),

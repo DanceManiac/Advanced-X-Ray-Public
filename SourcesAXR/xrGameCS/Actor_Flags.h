@@ -86,6 +86,7 @@ enum
 	AF_HUD_DOF_WPN_FIRE					= (1 << 17),
 	AF_HUD_DOF_WPN_IDLE					= (1 << 18),
 	AF_HUD_DOF_WPN_FOCUS				= (1 << 19),
+	AF_LFO_WPN_HUD_BI					= (1 << 20),
 };
 
 extern Flags32 psActorFlags;
