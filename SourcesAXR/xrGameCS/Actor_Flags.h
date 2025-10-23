@@ -52,13 +52,12 @@ enum
 	AF_LFO_TEST_FLAG					= (1 << 17),
 	AF_LFO_RW_LOOT						= (1 << 18),
 	AF_LFO_WEAPON_AIM_CAM_EFF			= (1 << 19),
-	AF_HUD_ITEM_DOF						= (1 << 20),
+	AF_LFO_ECO							= (1 << 20),
 	AF_LFO_WPN_PH_OBJ					= (1 << 21),
 	AF_LFO_LEVEL_AUTOSAVES				= (1 << 22),
 	AF_LFO_DEBUG_HUD_INFOS				= (1 << 23),
 	AF_LFO_FROSTBITE					= (1 << 24),
 	AF_LFO_WEATHER_FALLOUT_SIREN		= (1 << 25),
-	AF_LFO_ECO							= (1 << 26),
 	AF_LFO_NO_AI_MAP_POINTS				= (1 << 27),
 	AF_LFO_NO_AI_INDICATORS				= (1 << 28),
 	//	AF_TAKE_ITEM_ANIMATIONS					= (1<<21),
@@ -86,7 +85,8 @@ enum
 	AF_HUD_DOF_WPN_FIRE					= (1 << 17),
 	AF_HUD_DOF_WPN_IDLE					= (1 << 18),
 	AF_HUD_DOF_WPN_FOCUS				= (1 << 19),
-	AF_LFO_WPN_HUD_BI					= (1 << 20),
+	AF_HUD_DOF_ITEM						= (1 << 20),
+	AF_LFO_WPN_HUD_BI					= (1 << 21),
 };
 
 extern Flags32 psActorFlags;

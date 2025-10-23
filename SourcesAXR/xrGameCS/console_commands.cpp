@@ -2573,7 +2573,7 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask, "g_lfo_extra_zone_particles",		&psActorFlags3, AF_LFO_PARTICLES);
 	CMD3(CCC_Mask, "g_lfo_no_npc_indicators",			&psActorFlags2, AF_LFO_NO_AI_INDICATORS);
 	CMD3(CCC_Mask, "g_lfo_hud_wpn_base_icons",			&psActorFlags3, AF_LFO_WPN_HUD_BI);
-	CMD3(CCC_Mask, "g_lfo_hud_dof_item",				&psActorFlags2, AF_HUD_ITEM_DOF);
+	CMD3(CCC_Mask, "g_lfo_hud_dof_item",				&psActorFlags3, AF_HUD_DOF_ITEM);
 	CMD3(CCC_Mask, "g_lfo_hud_dof_wpn_all",				&psActorFlags3, AF_HUD_DOF_WPN_ALL);
 	CMD3(CCC_Mask, "g_lfo_hud_dof_wpn_focus",			&psActorFlags3, AF_HUD_DOF_WPN_FOCUS);
 	CMD3(CCC_Mask, "g_lfo_hud_dof_wpn_aim",				&psActorFlags3, AF_HUD_DOF_WPN_AIM);

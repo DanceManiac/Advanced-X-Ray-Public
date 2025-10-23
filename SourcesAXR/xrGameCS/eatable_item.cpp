@@ -250,8 +250,11 @@ void CEatableItem::StartAnimation()
 			psHUD_FOV_def = pSettings->r_float(cur_section, "hud_fov");
 		}
 
-		ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_FocusDoF();
-		ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_FocusDoF().z;
+		if (psActorFlags3.test(AF_HUD_DOF_ITEM))
+		{
+			ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_FocusDoF();
+			ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_FocusDoF().z;
+		}
 	}
 
 	if (!effector && use_cam_effector != nullptr)
