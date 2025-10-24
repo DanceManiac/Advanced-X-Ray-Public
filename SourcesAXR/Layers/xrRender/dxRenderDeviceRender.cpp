@@ -108,6 +108,9 @@ void dxRenderDeviceRender::SetupStates()
 #ifdef USE_DX11
 	//	TODO: DX10: Implement Resetting of render states into default mode
 	//VERIFY(!"dxRenderDeviceRender::SetupStates not implemented.");
+
+	SSManager.SetMaxAnisotropy(ps_r__tf_Anisotropic);
+	SSManager.SetMipLODBias(ps_r__tf_Mipbias);
 #else	//	USE_DX11
 	for (u32 i=0; i<HW.Caps.raster.dwStages; i++)				{
 		float fBias = -.5f	;
