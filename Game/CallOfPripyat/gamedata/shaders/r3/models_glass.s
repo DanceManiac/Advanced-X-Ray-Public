@@ -1,0 +1,17 @@
+function normal(shader, t_base, t_second, t_detail)
+  shader:begin    ("ssfx_glass","ssfx_glass")
+      : fog       (true)
+      : zb        (true,false)
+      : blend     (true,blend.srcalpha,blend.invsrcalpha)
+      : aref      (true,0)
+      : sorting   (3,true)
+	shader:dx10texture ("s_base", t_base)
+	shader:dx10texture ("s_env", "sky\\sky_5_cube")
+	shader:dx10texture("s_accumulator", "$user$accum")
+	shader:dx10texture("s_screen", "$user$generic_temp")
+	shader:dx10texture("s_glass", "fx\\glass_normal")
+
+	shader: dx10sampler("smp_base")
+	shader: dx10sampler("smp_rtlinear")
+	shader:dx10sampler("smp_nofilter")
+end

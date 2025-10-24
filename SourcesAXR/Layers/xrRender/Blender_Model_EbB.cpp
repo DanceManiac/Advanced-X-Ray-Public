@@ -184,12 +184,9 @@ void CBlender_Model_EbB::Compile( CBlender_Compile& C )
 		{
 		case 0:
 		case 1:
-			C.r_Pass			("ssfx_glass", "ssfx_glass", TRUE, TRUE, FALSE, TRUE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA, TRUE, 0);
+			C.r_Pass			("model_env_lq", "model_env_lq", TRUE, TRUE, FALSE, TRUE, D3DBLEND_SRCALPHA, D3DBLEND_INVSRCALPHA, TRUE, 0);
 			C.r_dx10Texture		("s_base",	C.L_textures[0]);
 			C.r_dx10Texture		("s_env",	oT2_Name);
-			C.r_dx10Texture		("s_accumulator", r2_RT_accum);
-            C.r_dx10Texture		("s_screen", r2_RT_generic0_temp);
-            C.r_dx10Texture		("s_glass", "shaders\\glass_normal");
 
 			C.r_dx10Sampler			("smp_base");
 			C.r_dx10Sampler			("smp_rtlinear");
