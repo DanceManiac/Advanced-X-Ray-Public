@@ -169,8 +169,6 @@ protected:
 	
 	std::vector<shared_str> attach_blocker_addons;
 
-	std::vector<shared_str> attach_blocker_addons;
-
 public:
 	virtual void	OnZoomIn			();
 	virtual void	OnZoomOut			();
