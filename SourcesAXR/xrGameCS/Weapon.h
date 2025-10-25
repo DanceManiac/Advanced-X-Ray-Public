@@ -245,6 +245,7 @@ public:
 			bool IsSilencerAttached			() const { return IsAddonAttached(m_eSilencerStatus,		m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonSilencer); }
 			bool IsLaserAttached			() const { return IsAddonAttached(m_eLaserDesignatorStatus,	m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator); }
 			bool IsTacticalTorchAttached	() const { return IsAddonAttached(m_eTacticalTorchStatus,	m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch); }
+
 			bool IsStockAttached			() const { return IsAddonAttached(m_eStockStatus,			m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonStock); }
 			bool IsGripAttached				() const { return IsAddonAttached(m_eGripStatus,			m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonGrip); }
 			bool IsGripvAttached			() const { return IsAddonAttached(m_eGripvStatus,			m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonGripv); }
@@ -259,12 +260,12 @@ public:
 	virtual bool SilencerAttachable			() const {return AddonAttachable(m_eSilencerStatus);}
 	virtual bool LaserAttachable			() const {return AddonAttachable(m_eLaserDesignatorStatus);}
 	virtual bool TacticalTorchAttachable	() const {return AddonAttachable(m_eTacticalTorchStatus);}
-	virtual bool StockAttachable			() const { return AddonAttachable(m_eStockStatus); }
-	virtual bool GripAttachable				() const { return AddonAttachable(m_eGripStatus); }
-	virtual bool GripvAttachable			() const { return AddonAttachable(m_eGripvStatus); }
-	virtual bool HandguardAttachable		() const { return AddonAttachable(m_eHandguardStatus); }
-	virtual bool PistolgripAttachable		() const { return AddonAttachable(m_ePistolgripStatus); }
 
+	virtual bool StockAttachable			() const {return AddonAttachable(m_eStockStatus);}
+	virtual bool GripAttachable				() const {return AddonAttachable(m_eGripStatus);}
+	virtual bool GripvAttachable			() const {return AddonAttachable(m_eGripvStatus);}
+	virtual bool HandguardAttachable		() const {return AddonAttachable(m_eHandguardStatus);}
+	virtual bool PistolgripAttachable		() const {return AddonAttachable(m_ePistolgripStatus);}
 	ALife::EWeaponAddonStatus	get_GrenadeLauncherStatus	() const { return m_eGrenadeLauncherStatus; }
 	ALife::EWeaponAddonStatus	get_ScopeStatus				() const { return m_eScopeStatus; }
 	ALife::EWeaponAddonStatus	get_SilencerStatus			() const { return m_eSilencerStatus; }
@@ -398,6 +399,7 @@ protected:
 	shared_str		m_cur_scope_bone_reticle;
 
 	//смещение иконов апгрейдов в инвентаре
+	int GetAddonXYNameBySection(shared_str addon_name, bool is_y = false) const;
 	int	m_iScopeX, m_iScopeY;
 	int	m_iSilencerX, m_iSilencerY;
 	int	m_iGrenadeLauncherX, m_iGrenadeLauncherY;

@@ -166,6 +166,8 @@ protected:
 	bool m_opened;
 	bool m_bUseFiremodeChangeAnim;
 	bool m_bIsRevolver;
+	
+	std::vector<shared_str> attach_blocker_addons;
 
 	std::vector<shared_str> attach_blocker_addons;
 

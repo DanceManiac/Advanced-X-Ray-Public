@@ -2909,6 +2909,32 @@ bool CWeapon::AddonAttachable(ALife::EWeaponAddonStatus addon_status) const
 	return (ALife::eAddonAttachable == addon_status);
 }
 
+int CWeapon::GetAddonXYNameBySection(shared_str addon_name, bool is_y) const
+{
+	if (addon_name == m_sScopeName.c_str() || addon_name == m_sScopeName)
+		return is_y ? m_iScopeY : m_iScopeX;
+	else if (addon_name == m_sSilencerName.c_str() || addon_name == m_sSilencerName)
+		return is_y ? m_iSilencerY : m_iSilencerX;
+	else if (addon_name == m_sGrenadeLauncherName.c_str() || addon_name == m_sGrenadeLauncherName)
+		return is_y ? m_iGrenadeLauncherY : m_iGrenadeLauncherX;
+	else if (addon_name == m_sLaserName.c_str() || addon_name == m_sLaserName)
+		return is_y ? m_iLaserY : m_iLaserX;
+	else if (addon_name == m_sTacticalTorchName.c_str() || addon_name == m_sTacticalTorchName)
+		return is_y ? m_iTacticalTorchY : m_iTacticalTorchX;
+	else if (addon_name == m_sStockName.c_str() || addon_name == m_sStockName)
+		return is_y ? m_iStockY : m_iStockX;
+	else if (addon_name == m_sGripName.c_str() || addon_name == m_sGripName)
+		return is_y ? m_iGripY : m_iGripX;
+	else if (addon_name == m_sGripvName.c_str() || addon_name == m_sGripvName)
+		return is_y ? m_iGripvY : m_iGripvX;
+	else if (addon_name == m_sHandguardName.c_str() || addon_name == m_sHandguardName)
+		return is_y ? m_iHandguardY : m_iHandguardX;
+	else if (addon_name == m_sPistolgripName.c_str() || addon_name == m_sPistolgripName)
+		return is_y ? m_iPistolgripY : m_iPistolgripX;
+	else
+		return 0;
+}
+
 void CWeapon::HUD_VisualBulletUpdate(bool force, int force_idx)
 {
 	if (!bHasBulletsToHide)
