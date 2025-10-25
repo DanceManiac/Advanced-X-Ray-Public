@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#pragma hdrstop
 
 #include "../../xrScripts/xrScripts.h"
 
@@ -14,13 +13,6 @@
 
 #include	"dxRenderDeviceRender.h"
 
-using namespace				luabind;
-
-#ifdef	DEBUG
-#define MDB	Memory.dbg_check()
-#else
-#define MDB
-#endif
 
 // wrapper
 class	adopt_sampler
@@ -80,57 +72,295 @@ class	adopt_blend
 public:
 };
 
-void LuaLog(LPCSTR caMessage)
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+lua_State* LSVM = nullptr;
+constexpr const char* GlobalNamespace = "_G";
+static constexpr const char* FILE_HEADER =
+    "\
+local function script_name() \
+return '{0}' \
+end; \
+local this; \
+module('{0}', package.seeall, function(m) this = m end); \
+{1}";
+
+static const char* get_lua_traceback(lua_State *L)
 {
-	MDB;	
-	Lua::LuaOut	(Lua::eLuaMessageTypeMessage,"%s",caMessage);
+	luaL_traceback(L, L, nullptr, 0);
+	auto tb = lua_tostring(L, -1);
+	lua_pop(L, 1);
+	return tb;
 }
+
+bool print_output(const char* caScriptFileName, int errorCode)
+{
+	auto Prefix = "";
+	if (errorCode) {
+		switch (errorCode) {
+		case LUA_ERRRUN: {
+			Prefix = "SCRIPT RUNTIME ERROR";
+			break;
+		}
+		case LUA_ERRMEM: {
+			Prefix = "SCRIPT ERROR (memory allocation)";
+			break;
+		}
+		case LUA_ERRERR: {
+			Prefix = "SCRIPT ERROR (while running the error handler function)";
+			break;
+		}
+		case LUA_ERRFILE: {
+			Prefix = "SCRIPT ERROR (while running file)";
+			break;
+		}
+		case LUA_ERRSYNTAX: {
+			Prefix = "SCRIPT SYNTAX ERROR";
+			break;
+		}
+		case LUA_YIELD: {
+			Prefix = "Thread is yielded";
+			break;
+		}
+		default: NODEFAULT;
+		}
+	}
+	auto traceback = get_lua_traceback(LSVM);
+	if (!lua_isstring(LSVM, -1)) //НЕ УДАЛЯТЬ! Иначе будут вылeты без лога!
+	{
+		Msg("*********************************************************************************");
+		Msg("[ResourceManager_Scripting.print_output(%s)] %s!\n%s", caScriptFileName, Prefix, traceback);
+		Msg("*********************************************************************************");
+		return false;
+	}
+	auto S = lua_tostring(LSVM, -1);
+	Msg("*********************************************************************************");
+	Msg("[ResourceManager_Scripting.print_output(%s)] %s:\n%s\n%s", caScriptFileName, Prefix, S, traceback);
+	Msg("*********************************************************************************");
+	return true;
+}
+
+bool load_buffer(const char* caBuffer, size_t tSize, const char* caScriptName, const char* caNameSpaceName)
+{
+	int buf_len = std::snprintf(nullptr, 0, FILE_HEADER, caNameSpaceName, caNameSpaceName, caBuffer);
+	auto strBuf = std::make_unique<char[]>(buf_len + 1);
+	std::snprintf(strBuf.get(), buf_len + 1, FILE_HEADER, caNameSpaceName, caNameSpaceName, caBuffer);
+
+	//Log("[CResourceManager::load_buffer] Loading buffer:");
+	//Log(strBuf.get());
+    int l_iErrorCode = luaL_loadbuffer(LSVM, strBuf.get(), buf_len, caScriptName);
+	if (l_iErrorCode)
+	{
+		print_output(caScriptName, l_iErrorCode);
+		R_ASSERT(false); //НЕ ЗАКОММЕНТИРОВАТЬ!
+		return false;
+	}
+	return true;
+}
+
+bool do_file(const char* caScriptName, const char* caNameSpaceName)
+{
+	string_path l_caLuaFileName;
+	auto l_tpFileReader = FS.r_open(caScriptName);
+	if (!l_tpFileReader) { //заменить на ассерт?
+		Msg("!![CResourceManager::do_file] Cannot open file [%s]", caScriptName);
+		return false;
+	}
+	strconcat(sizeof(l_caLuaFileName), l_caLuaFileName, "@", caScriptName); //KRodin: приводит путь к виду @f:\games\s.t.a.l.k.e.r\gamedata\scripts\class_registrator.script
+
+    load_buffer(reinterpret_cast<const char*>(l_tpFileReader->pointer()), (size_t)l_tpFileReader->length(), l_caLuaFileName, caNameSpaceName);
+
+	FS.r_close(l_tpFileReader);
+
+	int	l_iErrorCode = lua_pcall(LSVM, 0, 0, 0); //KRodin: без этого скрипты не работают!
+	if (l_iErrorCode)
+	{
+		print_output(caScriptName, l_iErrorCode);
+		R_ASSERT(false); //НЕ ЗАКОММЕНТИРОВАТЬ!
+		return false;
+	}
+	return true;
+}
+
+bool namespace_loaded(const char* name, bool remove_from_stack)
+{
+#ifdef DEBUG
+	int start = lua_gettop(LSVM);
+#endif
+	lua_pushstring(LSVM, GlobalNamespace);
+	lua_rawget(LSVM, LUA_GLOBALSINDEX);
+	string256 S2;
+	xr_strcpy(S2, name);
+	auto S = S2;
+	for (;;)
+	{
+		if (!xr_strlen(S))
+		{
+			VERIFY(lua_gettop(LSVM) >= 1);
+			lua_pop(LSVM, 1);
+			VERIFY(start == lua_gettop(LSVM));
+			return false;
+		}
+		auto S1 = strchr(S, '.');
+		if (S1)
+			*S1 = 0;
+		lua_pushstring(LSVM, S);
+		lua_rawget(LSVM, -2);
+		if (lua_isnil(LSVM, -1))
+		{
+			//lua_settop(LSVM,0);
+			VERIFY(lua_gettop(LSVM) >= 2);
+			lua_pop(LSVM, 2);
+			VERIFY(start == lua_gettop(LSVM));
+			return false; //there is no namespace!
+		}
+		else if (!lua_istable(LSVM, -1))
+		{
+			//lua_settop(LSVM, 0);
+			VERIFY(lua_gettop(LSVM) >= 1);
+			lua_pop(LSVM, 1);
+			VERIFY(start == lua_gettop(LSVM));
+			R_ASSERT3(false, "Error : the namespace is already being used by the non-table object! Name: ", S);
+			return false;
+		}
+		lua_remove(LSVM, -2);
+		if (S1)
+			S = ++S1;
+		else
+			break;
+	}
+	if (!remove_from_stack)
+		VERIFY(lua_gettop(LSVM) == start + 1);
+	else
+	{
+		VERIFY(lua_gettop(LSVM) >= 1);
+		lua_pop(LSVM, 1);
+		VERIFY(lua_gettop(LSVM) == start);
+	}
+	return true;
+}
+
+bool OBJECT_1(const char* identifier, int type)
+{
+#ifdef DEBUG
+	int start = lua_gettop(LSVM);
+#endif
+	lua_pushnil(LSVM);
+	while (lua_next(LSVM, -2))
+	{
+		if (lua_type(LSVM, -1) == type && !xr_strcmp(identifier, lua_tostring(LSVM, -2)))
+		{
+			VERIFY(lua_gettop(LSVM) >= 3);
+			lua_pop(LSVM, 3);
+			VERIFY(lua_gettop(LSVM) == start - 1);
+			return true;
+		}
+		lua_pop(LSVM, 1);
+	}
+	VERIFY(lua_gettop(LSVM) >= 1);
+	lua_pop(LSVM, 1);
+	VERIFY(lua_gettop(LSVM) == start - 1);
+	return false;
+}
+
+bool OBJECT_2(const char* namespace_name, const char* identifier, int type)
+{
+#ifdef DEBUG
+	int start = lua_gettop(LSVM);
+#endif
+	if (xr_strlen(namespace_name) && !namespace_loaded(namespace_name, false))
+	{
+		VERIFY(lua_gettop(LSVM) == start);
+		return false;
+	}
+	bool result = OBJECT_1(identifier, type);
+	VERIFY(lua_gettop(LSVM) == start);
+	return result;
+}
+
+#ifdef LUABIND_NO_EXCEPTIONS
 void LuaError(lua_State* L)
 {
-	Debug.fatal(DEBUG_INFO,"LUA error: %s",lua_tostring(L,-1));
+	print_output("[ResourceManager.lua_error]", LUA_ERRRUN);
+	Debug.fatal(DEBUG_INFO, "[ResourceManager.lua_error]: %s", lua_isstring(L, -1) ? lua_tostring(L, -1) : "");
 }
-#ifndef PURE_ALLOC
-#define USE_DL_ALLOCATOR
-#endif // PURE_ALLOC
 
-static void* lua_alloc(void* ud, void* ptr, size_t osize, size_t nsize) {
-	(void)ud;
-	(void)osize;
-	if (!nsize)
-	{
-		xr_free(ptr);
-		return	NULL;
-	}
-	else
-		return xr_realloc(ptr, nsize);
+static void lua_cast_failed(lua_State *L, LUABIND_TYPE_INFO info)
+{
+	print_output("[ResourceManager.lua_cast_failed]", LUA_ERRRUN);
+	Msg("LUA error: cannot cast lua value to %s", info->name());
+	//Debug.fatal(DEBUG_INFO, "LUA error: cannot cast lua value to %s", info->name()); //KRodin: Тут наверное вылетать не надо.
 }
+#endif
+
+int lua_pcall_failed(lua_State *L)
+{
+	print_output("[ResourceManager.lua_pcall_failed]", LUA_ERRRUN);
+	Debug.fatal(DEBUG_INFO, "[ResourceManager.lua_pcall_failed]: %s", lua_isstring(L, -1) ? lua_tostring(L, -1) : "");
+	if (lua_isstring(L, -1))
+		lua_pop(L, 1);
+	return LUA_ERRRUN;
+}
+
+int lua_panic(lua_State *L)
+{
+	print_output("[ResourceManager.lua_panic]", LUA_ERRRUN);
+	Debug.fatal(DEBUG_INFO, "[ResourceManager.lua_panic]: %s", lua_isstring(L, -1) ? lua_tostring(L, -1) : "");
+	return 0;
+}
+
+static void *__cdecl luabind_allocator(luabind::memory_allocation_function_parameter, const void *pointer, size_t const size) //Раньше всего инитится здесь, поэтому пусть здесь и будет
+{
+	if (!size)
+	{
+		void *non_const_pointer = const_cast<LPVOID>(pointer);
+		xr_free(non_const_pointer);
+		return nullptr;
+	}
+
+	if (!pointer)
+		return Memory.mem_alloc(size);
+
+	void *non_const_pointer = const_cast<LPVOID>(pointer);
+	return Memory.mem_realloc(non_const_pointer, size);
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+void LuaLog(const char* caMessage) { Log(caMessage); }
 
 // export
 void	CResourceManager::LS_Load			()
 {
-	LSVM			= lua_newstate(lua_alloc, NULL);
-	if (!LSVM)		{
-		Msg			("! ERROR : Cannot initialize LUA VM!");
-		return;
-	}
-
-	// initialize lua standard library functions 
-	luaopen_base	(LSVM); 
-	luaopen_table	(LSVM);
-	luaopen_string	(LSVM);
-	luaopen_math	(LSVM);
-	luaopen_jit		(LSVM);
-
-	luabind::open						(LSVM);
-#if !XRAY_EXCEPTIONS
-	if (0==luabind::get_error_callback())
-		luabind::set_error_callback		(LuaError);
+	//**************************************************************//
+		//Msg("[CResourceManager] Starting LuaJIT");
+	R_ASSERT2(!LSVM, "! LuaJIT is already running"); //На всякий случай
+	//
+	luabind::allocator = &luabind_allocator; //Аллокатор инитится только здесь и только один раз!
+	luabind::allocator_parameter = nullptr;
+	LSVM = luaL_newstate(); //Запускаем LuaJIT. Память себе он выделит сам.
+	luaL_openlibs(LSVM); //Инициализация функций LuaJIT
+	R_ASSERT2(LSVM, "! ERROR : Cannot initialize LUA VM!"); //Надо проверить, случается ли такое.
+	luabind::open(LSVM); //Запуск луабинда
+	//
+	//--------------Установка калбеков------------------//
+#ifdef LUABIND_NO_EXCEPTIONS
+	luabind::set_error_callback(LuaError); //Калбек на ошибки.
+	luabind::set_cast_failed_callback(lua_cast_failed);
 #endif
+	luabind::set_pcall_callback(lua_pcall_failed); //KRodin: НЕ ЗАКОММЕНТИРОВАТЬ НИ В КОЕМ СЛУЧАЕ!!!
+	lua_atpanic(LSVM, lua_panic);
+	//Msg("[CResourceManager] LuaJIT Started!");
+	//-----------------------------------------------------//
+//***************************************************************//
 
-	function		(LSVM, "log",	LuaLog);
+	using namespace luabind;
 
-	module			(LSVM)
+	module(LSVM)
 	[
+		def("log", &LuaLog),
+
 		class_<adopt_sampler>("_sampler")
 			.def(								constructor<const adopt_sampler&>())
 			.def("texture",						&adopt_sampler::_texture		,return_reference_to<1>())
@@ -197,12 +427,7 @@ void	CResourceManager::LS_Load			()
 		if		(0==namesp[0])			xr_strcpy	(namesp,"_G");
 		strconcat						(sizeof(fn),fn,::Render->getShaderPath(),(*folder)[it]);
 		FS.update_path					(fn,"$game_shaders$",fn);
-		try {
-			Script::bfLoadFileIntoNamespace	(LSVM,fn,namesp,true);
-		} catch (...)
-		{
-			Log(lua_tostring(LSVM,-1));
-		}
+		do_file(fn, namesp);
 	}
 	FS.file_list_close			(folder);
 }
@@ -210,7 +435,7 @@ void	CResourceManager::LS_Load			()
 void	CResourceManager::LS_Unload			()
 {
 	lua_close	(LSVM);
-	LSVM		= NULL;
+	LSVM		= nullptr;
 }
 
 BOOL	CResourceManager::_lua_HasShader	(LPCSTR s_shader)
@@ -219,13 +444,23 @@ BOOL	CResourceManager::_lua_HasShader	(LPCSTR s_shader)
 	for (int i=0, l=xr_strlen(s_shader)+1; i<l; i++)
 		undercorated[i]=('\\'==s_shader[i])?'_':s_shader[i];
 
-#ifdef _EDITOR
-	return Script::bfIsObjectPresent(LSVM,undercorated,"editor",LUA_TFUNCTION);
-#else
-	return	Script::bfIsObjectPresent(LSVM,undercorated,"normal",LUA_TFUNCTION)		||
-			Script::bfIsObjectPresent(LSVM,undercorated,"l_special",LUA_TFUNCTION)
-			;
-#endif
+	bool bHasShader = OBJECT_2(undercorated, "normal", LUA_TFUNCTION) || OBJECT_2(undercorated, "l_special", LUA_TFUNCTION);
+
+	// If not found - try to find new ones
+	if (!bHasShader)
+	{
+		for (int i = 0; i < SHADER_ELEMENTS_MAX; ++i)
+		{
+			string16 buff;
+			std::snprintf(buff, sizeof(buff), "element_%d", i);
+			if (OBJECT_2(undercorated, buff, LUA_TFUNCTION))
+			{
+				bHasShader = true;
+				break;
+			}
+		}
+	}
+	return bHasShader;
 }
 
 Shader*	CResourceManager::_lua_Create		(LPCSTR d_shader, LPCSTR s_textures)
@@ -249,60 +484,76 @@ Shader*	CResourceManager::_lua_Create		(LPCSTR d_shader, LPCSTR s_textures)
 	C.detail_texture	= NULL;
 	C.detail_scaler		= NULL;
 
-	// Compile element	(LOD0 - HQ)
-	if (Script::bfIsObjectPresent(LSVM,s_shader,"normal_hq",LUA_TFUNCTION))
-	{
-		// Analyze possibility to detail this shader
-		C.iElement			= 0;
-//.		C.bDetail			= dxRenderDeviceRender::Instance().Resources->_GetDetailTexture(*C.L_textures[0],C.detail_texture,C.detail_scaler);
-		//C.bDetail			= dxRenderDeviceRender::Instance().Resources->m_textures_description.GetDetailTexture(C.L_textures[0],C.detail_texture,C.detail_scaler);
-		C.bDetail			= dxRenderDeviceRender::Instance().Resources->m_textures_description.GetDetailTexture(C.L_textures[0],C.detail_texture,C.detail_scaler);
+	// Choose workflow here: old (using named stages) or new (explicitly declaring stage number)
+	bool bUseNewWorkflow = false;
 
-		if (C.bDetail)		S.E[0]	= C._lua_Compile(s_shader,"normal_hq");
-		else				S.E[0]	= C._lua_Compile(s_shader,"normal");
-	} else {
-		if (Script::bfIsObjectPresent(LSVM,s_shader,"normal",LUA_TFUNCTION))
+	for (int i = 0; i < SHADER_ELEMENTS_MAX; ++i)
+	{
+		string16 buff;
+		std::snprintf(buff, sizeof(buff), "element_%d", i);
+		if (OBJECT_2(s_shader, buff, LUA_TFUNCTION))
 		{
-			C.iElement			= 0;
-//.			C.bDetail			= dxRenderDeviceRender::Instance().Resources->_GetDetailTexture(*C.L_textures[0],C.detail_texture,C.detail_scaler);
-			//C.bDetail			= dxRenderDeviceRender::Instance().Resources->m_textures_description.GetDetailTexture(C.L_textures[0],C.detail_texture,C.detail_scaler);
-			C.bDetail			= dxRenderDeviceRender::Instance().Resources->m_textures_description.GetDetailTexture(C.L_textures[0],C.detail_texture,C.detail_scaler);
-			S.E[0]				= C._lua_Compile(s_shader,"normal");
+			C.iElement = i;
+			C.bDetail = dxRenderDeviceRender::Instance().Resources->m_textures_description.GetDetailTexture(C.L_textures[0], C.detail_texture, C.detail_scaler);
+			S.E[i] = C._lua_Compile(s_shader, buff);
+
+			bUseNewWorkflow = true;
 		}
 	}
 
-	// Compile element	(LOD1)
-	if (Script::bfIsObjectPresent(LSVM,s_shader,"normal",LUA_TFUNCTION))
-	{
-		C.iElement			= 1;
-//.		C.bDetail			= dxRenderDeviceRender::Instance().Resources->_GetDetailTexture(*C.L_textures[0],C.detail_texture,C.detail_scaler);
-		//C.bDetail			= dxRenderDeviceRender::Instance().Resources->m_textures_description.GetDetailTexture(C.L_textures[0],C.detail_texture,C.detail_scaler);
-		C.bDetail			= dxRenderDeviceRender::Instance().Resources->m_textures_description.GetDetailTexture(C.L_textures[0],C.detail_texture,C.detail_scaler);
-		S.E[1]				= C._lua_Compile(s_shader,"normal");
-	}
+	if (!bUseNewWorkflow) {
 
-	// Compile element
-	if (Script::bfIsObjectPresent(LSVM,s_shader,"l_point",LUA_TFUNCTION))
-	{
-		C.iElement			= 2;
-		C.bDetail			= FALSE;
-		S.E[2]				= C._lua_Compile(s_shader,"l_point");;
-	}
+		// Compile element	(LOD0 - HQ)
+		if (OBJECT_2(s_shader, "normal_hq", LUA_TFUNCTION))
+		{
+			// Analyze possibility to detail this shader
+			C.iElement = 0;
+			C.bDetail = dxRenderDeviceRender::Instance().Resources->m_textures_description.GetDetailTexture(C.L_textures[0], C.detail_texture, C.detail_scaler);
 
-	// Compile element
-	if (Script::bfIsObjectPresent(LSVM,s_shader,"l_spot",LUA_TFUNCTION))
-	{
-		C.iElement			= 3;
-		C.bDetail			= FALSE;
-		S.E[3]				= C._lua_Compile(s_shader,"l_spot");;
-	}
+			if (C.bDetail)		S.E[0] = C._lua_Compile(s_shader, "normal_hq");
+			else				S.E[0] = C._lua_Compile(s_shader, "normal");
+		}
+		else {
+			if (OBJECT_2(s_shader, "normal", LUA_TFUNCTION))
+			{
+				C.iElement = 0;
+				C.bDetail = dxRenderDeviceRender::Instance().Resources->m_textures_description.GetDetailTexture(C.L_textures[0], C.detail_texture, C.detail_scaler);
+				S.E[0] = C._lua_Compile(s_shader, "normal");
+			}
+		}
 
-	// Compile element
-	if (Script::bfIsObjectPresent(LSVM,s_shader,"l_special",LUA_TFUNCTION))
-	{
-		C.iElement			= 4;
-		C.bDetail			= FALSE;
-		S.E[4]				= C._lua_Compile(s_shader,"l_special");
+		// Compile element	(LOD1)
+		if (OBJECT_2(s_shader, "normal", LUA_TFUNCTION))
+		{
+			C.iElement = 1;
+			C.bDetail = dxRenderDeviceRender::Instance().Resources->m_textures_description.GetDetailTexture(C.L_textures[0], C.detail_texture, C.detail_scaler);
+			S.E[1] = C._lua_Compile(s_shader, "normal");
+		}
+
+		// Compile element
+		if (OBJECT_2(s_shader, "l_point", LUA_TFUNCTION))
+		{
+			C.iElement = 2;
+			C.bDetail = FALSE;
+			S.E[2] = C._lua_Compile(s_shader, "l_point");
+		}
+
+		// Compile element
+		if (OBJECT_2(s_shader, "l_spot", LUA_TFUNCTION))
+		{
+			C.iElement = 3;
+			C.bDetail = FALSE;
+			S.E[3] = C._lua_Compile(s_shader, "l_spot");
+		}
+
+		// Compile element
+		if (OBJECT_2(s_shader, "l_special", LUA_TFUNCTION))
+		{
+			C.iElement = 4;
+			C.bDetail = FALSE;
+			S.E[4] = C._lua_Compile(s_shader, "l_special");
+		}
+
 	}
 
 	// Search equal in shaders array
@@ -326,11 +577,12 @@ ShaderElement*		CBlender_Compile::_lua_Compile	(LPCSTR namesp, LPCSTR name)
 	LPCSTR				t_0		= *L_textures[0]			? *L_textures[0] : "null";
 	LPCSTR				t_1		= (L_textures.size() > 1)	? *L_textures[1] : "null";
 	LPCSTR				t_d		= detail_texture			? detail_texture : "null" ;
-	lua_State*			LSVM	= dxRenderDeviceRender::Instance().Resources->LSVM;
-	object				shader	= get_globals(LSVM)[namesp];
-	functor<void>		element	= object_cast<functor<void> >(shader[name]);
+
+	luabind::object		shader = luabind::get_globals(LSVM)[namesp];
+	luabind::object		element = shader[name];
 	adopt_compiler		ac		= adopt_compiler(this);
 	element						(ac,t_0,t_1,t_d);
+
 	r_End				();
 	ShaderElement*	_r	= dxRenderDeviceRender::Instance().Resources->_CreateElement(E);
 	return			_r;

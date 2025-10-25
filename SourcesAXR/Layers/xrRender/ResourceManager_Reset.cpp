@@ -101,7 +101,7 @@ void	CResourceManager::reset_end				()
 template<class C>	void mdump(C c)
 {
 	if (0==c.size())	return;
-	for (C::iterator I=c.begin(); I!=c.end(); I++)
+	for (auto I=c.begin(); I!=c.end(); I++)
 		Msg	("*        : %3d: %s",I->second->dwReference, I->second->cName.c_str());
 }
 
@@ -111,7 +111,7 @@ CResourceManager::~CResourceManager		()
 	Dump						(false);
 }
 
-void CResourceManager::Dump(bool bBrief)
+void CResourceManager::Dump(bool bBrief) const
 {
 	Msg		("* RM_Dump: textures  : %d",		m_textures.size());		if(!bBrief) mdump(m_textures);
 	Msg		("* RM_Dump: rtargets  : %d",		m_rtargets.size());		if(!bBrief) mdump(m_rtargets);

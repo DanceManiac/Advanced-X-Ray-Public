@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#pragma hdrstop
+
 
 #include "ResourceManager.h"
 #include "blenders\blender.h"
@@ -102,7 +102,7 @@ void	CResourceManager::OnDeviceCreate	(IReader* F)
 #endif
 
 			IBlender*		B = IBlender::Create(desc.CLS);
-			if	(0==B)
+			if	(!B)
 			{
 				Msg				("! Renderer doesn't support blender '%s'",desc.cName);
 			}

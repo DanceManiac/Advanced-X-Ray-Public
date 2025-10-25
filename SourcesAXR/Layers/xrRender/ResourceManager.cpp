@@ -33,8 +33,8 @@ void fix_texture_name(LPSTR fn)
 template <class T>
 BOOL	reclaim		(xr_vector<T*>& vec, const T* ptr)
 {
-	xr_vector<T*>::iterator it	= vec.begin	();
-	xr_vector<T*>::iterator end	= vec.end	();
+	auto it = vec.begin();
+	auto end = vec.end();
 	for (; it!=end; it++)
 		if (*it == ptr)	{ vec.erase	(it); return TRUE; }
 		return FALSE;
@@ -54,8 +54,8 @@ IBlender* CResourceManager::_GetBlender		(LPCSTR Name)
 #ifdef USE_DX11
 	if (I==m_blenders.end())	
 	{
-		Msg("DX10: Shader '%s' not found in library.",Name); 
-		return 0;
+		Msg("!![%s] DX10: Shader [%s] not found in library.", __FUNCTION__, Name);
+		return nullptr;
 	}
 #endif
 	if (I==m_blenders.end())	{ Debug.fatal(DEBUG_INFO,"Shader '%s' not found in library.",Name); return 0; }
@@ -92,11 +92,11 @@ void	CResourceManager::ED_UpdateBlender	(LPCSTR Name, IBlender* data)
 //////////////////////////////////////////////////////////////////////
 void	CResourceManager::_ParseList(sh_list& dest, LPCSTR names)
 {
-	if (0==names || 0==names[0])
+	if (nullptr==names || 0==names[0])
  		names 	= "$null";
 
-	ZeroMemory			(&dest, sizeof(dest));
-	char*	P			= (char*) names;
+    dest.clear();
+    const char* P = (char*)names;
 	svector<char,128>	N;
 
 	while (*P)
@@ -108,14 +108,14 @@ void	CResourceManager::_ParseList(sh_list& dest, LPCSTR names)
 
 			fix_texture_name( N.begin() );
 //. andy			if (strext(N.begin())) *strext(N.begin())=0;
-			dest.push_back(N.begin());
+			dest.emplace_back(N.begin());
 			N.clear		();
 		} else {
 			N.push_back	(*P);
 		}
 		P++;
 	}
-	if (N.size())
+	if (!N.empty())
 	{
 		// flush
 		N.push_back	(0);
@@ -123,23 +123,23 @@ void	CResourceManager::_ParseList(sh_list& dest, LPCSTR names)
 
 		fix_texture_name( N.begin() );
 //. andy		if (strext(N.begin())) *strext(N.begin())=0;
-		dest.push_back(N.begin());
+		dest.emplace_back(N.begin());
 	}
 }
 
 ShaderElement* CResourceManager::_CreateElement			(ShaderElement& S)
 {
-	if (S.passes.empty())		return	0;
+    if (S.passes.empty())
+        return nullptr;
 
-	// Search equal in shaders array
-	for (ShaderElement* elem : v_elements)
-		if (S.equal(*elem))
-			return elem;
+    // Search equal in shaders array
+    for (const auto& v_element : v_elements)
+        if (S.equal(*v_element))
+            return v_element;
 
 	// Create _new_ entry
-	ShaderElement*	N		=	xr_new<ShaderElement>(S);
+    ShaderElement* N = v_elements.emplace_back(xr_new<ShaderElement>(std::move(S)));
 	N->dwFlags				|=	xr_resource_flagged::RF_REGISTERED;
-	v_elements.push_back	(N);
 	return N;
 }
 
@@ -148,6 +148,60 @@ void CResourceManager::_DeleteElement(const ShaderElement* S)
 	if (0==(S->dwFlags&xr_resource_flagged::RF_REGISTERED))	return;
 	if (reclaim(v_elements,S))						return;
 	Msg	("! ERROR: Failed to find compiled 'shader-element'");
+}
+
+Shader*		CResourceManager::Create	(IBlender*	B,		LPCSTR s_shader,	LPCSTR s_textures,	LPCSTR s_constants, LPCSTR s_matrices)
+{
+	return	_cpp_Create	(B,s_shader,s_textures,s_constants,s_matrices);
+}
+
+Shader*		CResourceManager::Create	(LPCSTR s_shader,	LPCSTR s_textures,	LPCSTR s_constants,	LPCSTR s_matrices)
+{
+	{
+		//	TODO: DX10: When all shaders are ready switch to common path
+#ifdef USE_DX11
+		if	(_lua_HasShader(s_shader))
+			return	_lua_Create	(s_shader,s_textures); // Если есть .s шейдер, начнёт его грузить.
+		else								
+		{
+			Shader* pShader = _cpp_Create	(s_shader,s_textures,s_constants,s_matrices);  // Если .s шейдера нет, создаст новый
+			if (pShader)
+				return pShader;
+			else
+			{
+				if (_lua_HasShader("stub_default"))
+					return	_lua_Create	("stub_default",s_textures);
+				else
+				{
+					FATAL("Can't find stub_default.s");
+					return nullptr;
+				}
+			}
+		}
+#else	//	USE_DX11
+#ifndef _EDITOR
+		if	(_lua_HasShader(s_shader))		
+			return	_lua_Create	(s_shader,s_textures);
+		else								
+#endif
+			return	_cpp_Create	(s_shader,s_textures,s_constants,s_matrices);
+#endif	//	USE_DX11
+	}
+}
+
+Shader*	CResourceManager::_cpp_Create	(LPCSTR s_shader, LPCSTR s_textures, LPCSTR s_constants, LPCSTR s_matrices)
+{
+	{
+		//	TODO: DX10: When all shaders are ready switch to common path
+#ifdef USE_DX11
+		IBlender	*pBlender = _GetBlender(s_shader?s_shader:"null");
+		if (!pBlender)
+			return nullptr;
+		return	_cpp_Create(pBlender ,s_shader,s_textures,s_constants,s_matrices);
+#else	//	USE_DX11
+		return	_cpp_Create(_GetBlender(s_shader?s_shader:"null"),s_shader,s_textures,s_constants,s_matrices);
+#endif	//	USE_DX11
+	}
 }
 
 Shader*	CResourceManager::_cpp_Create	(IBlender* B, LPCSTR s_shader, LPCSTR s_textures, LPCSTR s_constants, LPCSTR s_matrices)
@@ -195,7 +249,7 @@ Shader*	CResourceManager::_cpp_Create	(IBlender* B, LPCSTR s_shader, LPCSTR s_te
 //.		C.bDetail			= _GetDetailTexture(*C.L_textures[0],C.detail_texture,C.detail_scaler);
 		ShaderElement		E;
 		C._cpp_Compile		(&E);
-		S.E[0]				= _CreateElement	(E);
+        S.E[0] = _CreateElement(std::move(E));
 	}
 
 	// Compile element	(LOD1)
@@ -205,7 +259,7 @@ Shader*	CResourceManager::_cpp_Create	(IBlender* B, LPCSTR s_shader, LPCSTR s_te
 		C.bDetail			= m_textures_description.GetDetailTexture(C.L_textures[0],C.detail_texture,C.detail_scaler);
 		ShaderElement		E;
 		C._cpp_Compile		(&E);
-		S.E[1]				= _CreateElement	(E);
+        S.E[1] = _CreateElement(std::move(E));
 	}
 
 	// Compile element
@@ -214,7 +268,7 @@ Shader*	CResourceManager::_cpp_Create	(IBlender* B, LPCSTR s_shader, LPCSTR s_te
 		C.bDetail			= FALSE;
 		ShaderElement		E;
 		C._cpp_Compile		(&E);
-		S.E[2]				= _CreateElement	(E);
+        S.E[2] = _CreateElement(std::move(E));
 	}
 
 	// Compile element
@@ -223,7 +277,7 @@ Shader*	CResourceManager::_cpp_Create	(IBlender* B, LPCSTR s_shader, LPCSTR s_te
 		C.bDetail			= FALSE;
 		ShaderElement		E;
 		C._cpp_Compile		(&E);
-		S.E[3]				= _CreateElement	(E);
+        S.E[3] = _CreateElement(std::move(E));
 	}
 
 	// Compile element
@@ -232,7 +286,7 @@ Shader*	CResourceManager::_cpp_Create	(IBlender* B, LPCSTR s_shader, LPCSTR s_te
 		C.bDetail			= TRUE;	//.$$$ HACK :)
 		ShaderElement		E;
 		C._cpp_Compile		(&E);
-		S.E[4]				= _CreateElement	(E);
+        S.E[4] = _CreateElement(std::move(E));
 	}
 
 	// Compile element
@@ -241,12 +295,13 @@ Shader*	CResourceManager::_cpp_Create	(IBlender* B, LPCSTR s_shader, LPCSTR s_te
 		C.bDetail			= FALSE;
 		ShaderElement		E;
 		C._cpp_Compile		(&E);
-		S.E[5]				= _CreateElement	(E);
+        S.E[5] = _CreateElement(std::move(E));
 	}
 
-	// Search equal in shaders array
-	for (u32 it=0; it<v_shaders.size(); it++)
-		if (S.equal(v_shaders[it]))	return v_shaders[it];
+    // Search equal in shaders array
+    for (auto* v_shader : v_shaders)
+        if (S.equal(v_shader))
+            return v_shader;
 
 	// Create _new_ entry
 	Shader*		N			=	xr_new<Shader>(S);
@@ -256,59 +311,6 @@ Shader*	CResourceManager::_cpp_Create	(IBlender* B, LPCSTR s_shader, LPCSTR s_te
 	if (time.GetElapsed_sec() * 1000.f > 50.0 && g_loading_events.empty() && !prefetching_in_progress) Msg("---Loading of %s made a %fms stutter, should it be prefetched?!", s_textures, time.GetElapsed_sec() * 1000.f);
 
 	return N;
-}
-
-Shader*	CResourceManager::_cpp_Create	(LPCSTR s_shader, LPCSTR s_textures, LPCSTR s_constants, LPCSTR s_matrices)
-{
-	{
-		//	TODO: DX10: When all shaders are ready switch to common path
-#ifdef USE_DX11
-		IBlender	*pBlender = _GetBlender(s_shader?s_shader:"null");
-		if (!pBlender) return NULL;
-		return	_cpp_Create(pBlender ,s_shader,s_textures,s_constants,s_matrices);
-#else	//	USE_DX11
-		return	_cpp_Create(_GetBlender(s_shader?s_shader:"null"),s_shader,s_textures,s_constants,s_matrices);
-#endif	//	USE_DX11
-	}
-}
-
-Shader*		CResourceManager::Create	(IBlender*	B,		LPCSTR s_shader,	LPCSTR s_textures,	LPCSTR s_constants, LPCSTR s_matrices)
-{
-	return	_cpp_Create	(B,s_shader,s_textures,s_constants,s_matrices);
-}
-
-Shader*		CResourceManager::Create	(LPCSTR s_shader,	LPCSTR s_textures,	LPCSTR s_constants,	LPCSTR s_matrices)
-{
-	{
-		//	TODO: DX10: When all shaders are ready switch to common path
-#ifdef USE_DX11
-		if	(_lua_HasShader(s_shader))
-			return	_lua_Create	(s_shader,s_textures); // Если есть .s шейдер, начнёт его грузить.
-		else								
-		{
-			Shader* pShader = _cpp_Create	(s_shader,s_textures,s_constants,s_matrices);  // Если .s шейдера нет, создаст новый
-			if (pShader)
-				return pShader;
-			else
-			{
-				if (_lua_HasShader("stub_default"))
-					return	_lua_Create	("stub_default",s_textures);
-				else
-				{
-					FATAL("Can't find stub_default.s");
-					return 0;
-				}
-			}
-		}
-#else	//	USE_DX11
-#ifndef _EDITOR
-		if	(_lua_HasShader(s_shader))		
-			return	_lua_Create	(s_shader,s_textures);
-		else								
-#endif
-			return	_cpp_Create	(s_shader,s_textures,s_constants,s_matrices);
-#endif	//	USE_DX11
-	}
 }
 
 void CResourceManager::Delete(const Shader* S)
@@ -350,7 +352,7 @@ void CResourceManager::DeferredUpload()
 	if (ps_mt_texture_load)
 		std::for_each(std::execution::par_unseq, m_textures.begin(), m_textures.end(), [](auto& pair) { pair.second->Load(); });
 	else
-		for (auto& pair : m_textures)
+		for (const auto& pair : m_textures)
 			pair.second->Load();
 
 	Msg("CResourceManager::DeferredUpload -> END");
@@ -391,10 +393,10 @@ void	CResourceManager::_GetMemoryUsage(u32& m_base, u32& c_base, u32& m_lmaps, u
 	m_base=c_base=m_lmaps=c_lmaps=0;
 
 	map_Texture::iterator I = m_textures.begin	();
-	map_Texture::iterator E = m_textures.end	();
+	const map_Texture::iterator E = m_textures.end	();
 	for (; I!=E; I++)
 	{
-		u32 m = I->second->flags.MemoryUsage;
+		const u32 m = I->second->flags.MemoryUsage;
 		if (strstr(I->first,"lmap"))
 		{
 			c_lmaps	++;
@@ -412,12 +414,12 @@ void	CResourceManager::_DumpMemoryUsage		()
 	// sort
 	{
 		map_Texture::iterator I = m_textures.begin	();
-		map_Texture::iterator E = m_textures.end	();
+		const map_Texture::iterator E = m_textures.end	();
 		for (; I!=E; I++)
 		{
 			u32			m = I->second->flags.MemoryUsage;
 			shared_str	n = I->second->cName;
-			mtex.emplace(m, std::make_pair(I->second->dwReference, n));
+			mtex.insert(std::make_pair(m, std::make_pair(I->second->dwReference, n)));
 		}
 	}
 
@@ -490,7 +492,7 @@ xr_vector<ITexture*> CResourceManager::FindTexture(const char* Name) const
 
 	if (!ch) // no wildcard?
 	{
-		auto I = m_textures.find(filename);
+		const auto I = m_textures.find(filename);
 		if (I != m_textures.end())
 			res.emplace_back(dynamic_cast<ITexture*>(I->second));
 	}

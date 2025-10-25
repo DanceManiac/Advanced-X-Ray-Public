@@ -8,7 +8,6 @@
 #include	"tss_def.h"
 #include	"TextureDescrManager.h"
 // refs
-struct		lua_State;
 
 class dx10ConstantBuffer;
 
@@ -83,7 +82,6 @@ public:
 	CTextureDescrMngr									m_textures_description;
 //.	CInifile*											m_textures_description;
 	xr_vector<std::pair<shared_str,R_constant_setup*> >	v_constant_setup;
-	lua_State*											LSVM;
 	BOOL												bDeferredLoad;
 private:
 	void							LS_Load				();
@@ -98,6 +96,7 @@ public:
 //.	BOOL							_GetDetailTexture	(LPCSTR Name, LPCSTR& T, R_constant_setup* &M);
 
 	map_Blender&					_GetBlenders		()		{	return m_blenders;	}
+	const xr_vector<Shader*>&		_GetShaders			()		{	return v_shaders; }
 
 	// Debug
 	void							DBG_VerifyGeoms		();
@@ -170,7 +169,7 @@ public:
 	SState*							_CreateState		(SimulatorStates& Code);
 	void							_DeleteState		(const SState* SB);
 
-	SDeclaration*					_CreateDecl			(D3DVERTEXELEMENT9* dcl);
+	SDeclaration*					_CreateDecl			(const D3DVERTEXELEMENT9* dcl);
 	void							_DeleteDecl			(const SDeclaration* dcl);
 
 	STextureList*					_CreateTextureList	(STextureList& L);
@@ -206,7 +205,7 @@ public:
 	void			Delete					(const Shader*		S	);
 	void			RegisterConstantSetup	(LPCSTR name,		R_constant_setup* s)	{	v_constant_setup.push_back(std::make_pair(shared_str(name),s));	}
 
-	SGeometry*		CreateGeom				(D3DVERTEXELEMENT9* decl, ID3DVertexBuffer* vb, ID3DIndexBuffer* ib);
+	SGeometry*		CreateGeom				(const D3DVERTEXELEMENT9* decl, ID3DVertexBuffer* vb, ID3DIndexBuffer* ib);
 	SGeometry*		CreateGeom				(u32 FVF				, ID3DVertexBuffer* vb, ID3DIndexBuffer* ib);
 	void			DeleteGeom				(const SGeometry* VS		);
 	void			DeferredLoad			(BOOL E)					{ bDeferredLoad=E;	}
@@ -215,7 +214,7 @@ public:
 	void			Evict					();
 	void			StoreNecessaryTextures	();
 	void			DestroyNecessaryTextures();
-	void			Dump					(bool bBrief);
+	void			Dump					(bool bBrief) const ;
 	void			RMPrefetchUITextures	();
 	xr_vector<ITexture*> FindTexture(const char* Name) const override;
 
