@@ -2516,7 +2516,7 @@ bool CWeaponMagazined::CanAttach(PIItem pIItem)
 		{
 			if (cast && attachable && addon_name.size())
 			{
-				if (addon_name == m_sScopeName)
+				if (*addon_name == m_sScopeName)
 				{
 					for (const auto& scopes_sect : m_scopes)
 					{
@@ -2524,35 +2524,35 @@ bool CWeaponMagazined::CanAttach(PIItem pIItem)
 							(pSettings->r_string(scopes_sect, "scope_name") == pIItem->object().cNameSect());
 					}
 				}
-				else if (addon_name == m_sLaserName)
+				else if (*addon_name == m_sLaserName)
 				{
 					for (const auto& laser_sect : m_availableLasers)
 					{
 						check_correct_name == (pSettings->r_string(laser_sect, "laser_designator_name") == pIItem->object().cNameSect());
 					}
 				}
-				else if (addon_name == m_sTacticalTorchName)
+				else if (*addon_name == m_sTacticalTorchName)
 				{
 					for (const auto& flashlight_sect : m_availableFlashlights)
 					{
 						check_correct_name == (pSettings->r_string(flashlight_sect, "tactical_torch_name") == pIItem->object().cNameSect());
 					}
 				}
-				else if (addon_name == m_sStockName)
+				else if (*addon_name == m_sStockName)
 				{
 					for (const auto& stock_sect : m_availableStocks)
 					{
 						check_correct_name == (pSettings->r_string(stock_sect, "stock_name") == pIItem->object().cNameSect());
 					}
 				}
-				else if (addon_name == m_sHandguardName)
+				else if (*addon_name == m_sHandguardName)
 				{
 					for (const auto& handguard_sect : m_availableHandguards)
 					{
 						check_correct_name == (pSettings->r_string(handguard_sect, "handguard_name") == pIItem->object().cNameSect());
 					}
 				}
-				else if (addon_name == m_sPistolgripName)
+				else if (*addon_name == m_sPistolgripName)
 				{
 					for (const auto& pistolgrip_sect : m_availablePistolgrips)
 					{
@@ -2598,7 +2598,7 @@ bool CWeaponMagazined::CanDetach(const char* item_section_name)
 		{
 			if (attachable && addon_name.size())
 			{
-				if (addon_name == m_sScopeName)
+				if (*addon_name == m_sScopeName)
 				{
 					for (const auto& scopes_sect : m_scopes)
 					{
@@ -2606,35 +2606,35 @@ bool CWeaponMagazined::CanDetach(const char* item_section_name)
 							(pSettings->r_string(scopes_sect, "scope_name") == item_section_name);
 					}
 				}
-				else if (addon_name == m_sLaserName)
+				else if (*addon_name == m_sLaserName)
 				{
 					for (const auto& laser_sect : m_availableLasers)
 					{
 						check_correct_name == (pSettings->r_string(laser_sect, "laser_designator_name") == item_section_name);
 					}
 				}
-				else if (addon_name == m_sTacticalTorchName)
+				else if (*addon_name == m_sTacticalTorchName)
 				{
 					for (const auto& flashlight_sect : m_availableFlashlights)
 					{
 						check_correct_name == (pSettings->r_string(flashlight_sect, "tactical_torch_name") == item_section_name);
 					}
 				}
-				else if (addon_name == m_sStockName)
+				else if (*addon_name == m_sStockName)
 				{
 					for (const auto& stock_sect : m_availableStocks)
 					{
 						check_correct_name == (pSettings->r_string(stock_sect, "stock_name") == item_section_name);
 					}
 				}
-				else if (addon_name == m_sPistolgripName)
+				else if (*addon_name == m_sPistolgripName)
 				{
 					for (const auto& pistolgrip_sect : m_availablePistolgrips)
 					{
 						check_correct_name == (pSettings->r_string(pistolgrip_sect, "pistolgrip_name") == item_section_name);
 					}
 				}
-				else if (addon_name == m_sHandguardName)
+				else if (*addon_name == m_sHandguardName)
 				{
 					for (const auto& handguard_sect : m_availableHandguards)
 					{
@@ -2679,7 +2679,7 @@ bool CWeaponMagazined::Attach(PIItem pIItem, bool b_send_event)
 	{
 		if (cast && attachable && addon_name.size())
 		{
-			if (addon_name == m_sScopeName)
+			if (*addon_name == m_sScopeName)
 			{
 				SCOPES_VECTOR_IT it = m_scopes.begin();
 				for (; it != m_scopes.end(); it++)
@@ -2697,11 +2697,11 @@ bool CWeaponMagazined::Attach(PIItem pIItem, bool b_send_event)
 				}
 			}
 			
-			if ((addon_name == m_sScopeName ? true : addon_name == pIItem->object().cNameSect()) && (m_flagsAddOnState & addon_state) == 0 && (!AttachIsBlockedByAnotherAddon(addon_name)))
+			if ((*addon_name == m_sScopeName ? true : addon_name == pIItem->object().cNameSect()) && (m_flagsAddOnState & addon_state) == 0 && (!AttachIsBlockedByAnotherAddon(addon_name)))
 			{
 				m_flagsAddOnState |= addon_state;
 
-				if (addon_name == m_sScopeName && bUseAltScope)
+				if (*addon_name == m_sScopeName && bUseAltScope)
 				{
 					bNVsecondVPstatus = !!pSettings->line_exist(pIItem->object().cNameSect(), "scope_nightvision");
 				}
@@ -2755,16 +2755,16 @@ bool CWeaponMagazined::Attach(PIItem pIItem, bool b_send_event)
 						}
 					};
 
-				if (addon_name == m_sLaserName)
-					SetAvailableAddon(m_availableLasers, m_sLaserAttachSection, addon_name, "laser_designator_name", "laser_designator_x", "laser_designator_y");
-				else if (addon_name == m_sTacticalTorchName)
-					SetAvailableAddon(m_availableFlashlights, m_sTacticalTorchAttachSection, addon_name, "tactical_torch_name", "tactical_torch_x", "tactical_torch_y");
-				else if (addon_name == m_sStockName)
-					SetAvailableAddon(m_availableStocks, m_sStockAttachSection, addon_name, "stock_name", "stock_x", "stock_y");
-				else if (addon_name == m_sPistolgripName)
-					SetAvailableAddon(m_availablePistolgrips, m_sPistolgripAttachSection, addon_name, "pistolgrip_name", "pistolgrip_x", "pistolgrip_y");
-				else if (addon_name == m_sHandguardName)
-					SetAvailableAddon(m_availableHandguards, m_sHandguardAttachSection, addon_name, "handguard_name", "handguard_x", "handguard_y");
+				if (*addon_name == m_sLaserName)
+					SetAvailableAddon(m_availableLasers, m_sLaserAttachSection, *addon_name, "laser_designator_name", "laser_designator_x", "laser_designator_y");
+				else if (*addon_name == m_sTacticalTorchName)
+					SetAvailableAddon(m_availableFlashlights, m_sTacticalTorchAttachSection, *addon_name, "tactical_torch_name", "tactical_torch_x", "tactical_torch_y");
+				else if (*addon_name == m_sStockName)
+					SetAvailableAddon(m_availableStocks, m_sStockAttachSection, *addon_name, "stock_name", "stock_x", "stock_y");
+				else if (*addon_name == m_sPistolgripName)
+					SetAvailableAddon(m_availablePistolgrips, m_sPistolgripAttachSection, *addon_name, "pistolgrip_name", "pistolgrip_x", "pistolgrip_y");
+				else if (*addon_name == m_sHandguardName)
+					SetAvailableAddon(m_availableHandguards, m_sHandguardAttachSection, *addon_name, "handguard_name", "handguard_x", "handguard_y");
 	
 			}
 
@@ -2844,12 +2844,12 @@ bool CWeaponMagazined::Detach(const char* item_section_name, bool b_spawn_item)
 	auto DetachThisAddon = [&](bool attachable, shared_str addon_name, int addon_state)
 	{
 		if (attachable && addon_name.size() &&
-			(addon_name == m_sScopeName ? DetachScope(item_section_name, b_spawn_item) : (addon_name == item_section_name)) &&
+			(*addon_name == m_sScopeName ? DetachScope(item_section_name, b_spawn_item) : (addon_name == item_section_name)) &&
 			(m_flagsAddOnState & addon_state) != 0)
 		{
 			m_flagsAddOnState &= ~addon_state;
 
-			if (addon_name == m_sScopeName)
+			if (*addon_name == m_sScopeName)
 			{
 				UpdateAltScope();
 				UpdateHudAltAimHud();
