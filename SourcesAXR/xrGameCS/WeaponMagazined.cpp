@@ -344,7 +344,7 @@ bool CWeaponMagazined::UseScopeTexture()
 	return bScopeIsHasTexture;
 }
 
-void CWeaponMagazined::FireStart		()
+void CWeaponMagazined::FireStart()
 {
 	if(!IsMisfire())
 	{
@@ -2493,7 +2493,7 @@ bool CWeaponMagazined::AttachIsBlockedByAnotherAddon(shared_str addon_name)
 				{
 					atch_result = true;
 
-					//Msg("[%s]: addon attach blocked by [%s]", *addon_name, *_attach_blocker_addon_name);
+					Msg("[%s]: addon attach blocked by [%s]", *addon_name, *_attach_blocker_addon_name);
 				}
 			}
 
@@ -2509,163 +2509,139 @@ bool CWeaponMagazined::AttachIsBlockedByAnotherAddon(shared_str addon_name)
 
 bool CWeaponMagazined::CanAttach(PIItem pIItem)
 {
-	bool result = false;
-	bool check_correct_name = false;
+	CScope*				pScope = smart_cast<CScope*>(pIItem);
+	CSilencer*			pSilencer = smart_cast<CSilencer*>(pIItem);
+	CGrenadeLauncher*	pGrenadeLauncher = smart_cast<CGrenadeLauncher*>(pIItem);
+	CLaserDesignator*	pLaser = smart_cast<CLaserDesignator*>(pIItem);
+	CTacticalTorch*		pTacticalTorch = smart_cast<CTacticalTorch*>(pIItem);
+	CStock*				pStock = smart_cast<CStock*>(pIItem);
+	CHorGrip*			pHGrip = smart_cast<CHorGrip*>(pIItem);
+	CVerGrip*			pVGrip = smart_cast<CVerGrip*>(pIItem);
+	CHandguard*			pHandguard = smart_cast<CHandguard*>(pIItem);
+	CPistolGrip*		pPistolgrip = smart_cast<CPistolGrip*>(pIItem);
 
-	auto CanAttachThisAddon = [&](bool cast, bool attachable, shared_str addon_name, int addon_state)
+	auto CanAttachThisAddon = [&](bool attachable, shared_str addon_name, int addon_state)
 		{
-			if (cast && attachable && addon_name.size())
-			{
-				if (*addon_name == m_sScopeName)
-				{
-					for (const auto& scopes_sect : m_scopes)
-					{
-						check_correct_name = bUseAltScope ? (scopes_sect == pIItem->object().cNameSect()) :
-							(pSettings->r_string(scopes_sect, "scope_name") == pIItem->object().cNameSect());
-					}
-				}
-				else if (*addon_name == m_sLaserName)
-				{
-					for (const auto& laser_sect : m_availableLasers)
-					{
-						check_correct_name == (pSettings->r_string(laser_sect, "laser_designator_name") == pIItem->object().cNameSect());
-					}
-				}
-				else if (*addon_name == m_sTacticalTorchName)
-				{
-					for (const auto& flashlight_sect : m_availableFlashlights)
-					{
-						check_correct_name == (pSettings->r_string(flashlight_sect, "tactical_torch_name") == pIItem->object().cNameSect());
-					}
-				}
-				else if (*addon_name == m_sStockName)
-				{
-					for (const auto& stock_sect : m_availableStocks)
-					{
-						check_correct_name == (pSettings->r_string(stock_sect, "stock_name") == pIItem->object().cNameSect());
-					}
-				}
-				else if (*addon_name == m_sHandguardName)
-				{
-					for (const auto& handguard_sect : m_availableHandguards)
-					{
-						check_correct_name == (pSettings->r_string(handguard_sect, "handguard_name") == pIItem->object().cNameSect());
-					}
-				}
-				else if (*addon_name == m_sPistolgripName)
-				{
-					for (const auto& pistolgrip_sect : m_availablePistolgrips)
-					{
-						check_correct_name == (pSettings->r_string(pistolgrip_sect, "pistolgrip_name") == pIItem->object().cNameSect());
-					}
-				}
-				else
-				{
-					check_correct_name = (addon_name == pIItem->object().cNameSect());
-				}
+			if (attachable && (m_flagsAddOnState & addon_state) == 0 && (addon_name == pIItem->object().cNameSect()) && !AttachIsBlockedByAnotherAddon(addon_name))
+					return true;
 
-				if (check_correct_name && (m_flagsAddOnState & addon_state) == 0 && (!AttachIsBlockedByAnotherAddon(addon_name)))
-				{
-					result = true;
-				}
-			}
+			return false;
 		};
 
-	CanAttachThisAddon(smart_cast<CScope*>(pIItem), ScopeAttachable(), m_sScopeName, CSE_ALifeItemWeapon::eWeaponAddonScope);
-	CanAttachThisAddon(smart_cast<CSilencer*>(pIItem), SilencerAttachable(), m_sSilencerName, CSE_ALifeItemWeapon::eWeaponAddonSilencer);
-	CanAttachThisAddon(smart_cast<CGrenadeLauncher*>(pIItem), GrenadeLauncherAttachable(), m_sGrenadeLauncherName, CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher);
-	CanAttachThisAddon(smart_cast<CLaserDesignator*>(pIItem), LaserAttachable(), m_sLaserName, CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator);
-	CanAttachThisAddon(smart_cast<CTacticalTorch*>(pIItem), TacticalTorchAttachable(), m_sTacticalTorchName, CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch);
+	auto CanAttachThisMultiAddon = [&](bool attachable, int addon_state, RStringVec vec, const char* target_addon_name)
+		{
+			if (attachable && (m_flagsAddOnState & addon_state) == 0)
+			{
+				for (const auto& common_sect : vec)
+				{
+					shared_str common_name = pSettings->r_string(common_sect, target_addon_name);
+					if (common_name == pIItem->object().cNameSect() && !AttachIsBlockedByAnotherAddon(common_sect))
+						return true;
+				}
+			}
 
-	CanAttachThisAddon(smart_cast<CStock*>(pIItem), StockAttachable(), m_sStockName, CSE_ALifeItemWeapon::eWeaponAddonStock);
-	CanAttachThisAddon(smart_cast<CHorGrip*>(pIItem), GripAttachable(), m_sGripName, CSE_ALifeItemWeapon::eWeaponAddonGrip);
-	CanAttachThisAddon(smart_cast<CVerGrip*>(pIItem), GripvAttachable(), m_sGripvName, CSE_ALifeItemWeapon::eWeaponAddonGripv);
-	CanAttachThisAddon(smart_cast<CHandguard*>(pIItem), HandguardAttachable(), m_sHandguardName, CSE_ALifeItemWeapon::eWeaponAddonHandguard);
-	CanAttachThisAddon(smart_cast<CPistolGrip*>(pIItem), PistolgripAttachable(), m_sPistolgripName, CSE_ALifeItemWeapon::eWeaponAddonPistolgrip);
+			return false;
+		};
 
-	if (result)
-		return true;
+	if (pScope && ScopeAttachable() && (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonScope) == 0)
+	{
+		SCOPES_VECTOR_IT it = m_scopes.begin();
+		for (; it != m_scopes.end(); it++)
+		{
+			if (bUseAltScope)
+			{
+				if (*it == pIItem->object().cNameSect() && !AttachIsBlockedByAnotherAddon(*it))
+					return true;
+			}
+			else
+			{
+				shared_str scope_name = (pSettings->r_string((*it), "scope_name"));
+				if (scope_name == pIItem->object().cNameSect() && !AttachIsBlockedByAnotherAddon(scope_name))
+					return true;
+			}
+		}
+		return false;
+	}
+	else if (pSilencer) 
+		CanAttachThisAddon(SilencerAttachable(), m_sSilencerName, CSE_ALifeItemWeapon::eWeaponAddonSilencer);
+	else if (pGrenadeLauncher)
+		CanAttachThisAddon(GrenadeLauncherAttachable(), m_sGrenadeLauncherName, CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher);
+	else if (pHGrip)
+		CanAttachThisAddon(GripAttachable(), m_sGripName, CSE_ALifeItemWeapon::eWeaponAddonGrip);
+	else if (pVGrip)
+		CanAttachThisAddon(GripvAttachable(), m_sGripvName, CSE_ALifeItemWeapon::eWeaponAddonGripv);
+	else if (pStock)
+		CanAttachThisMultiAddon(StockAttachable(), CSE_ALifeItemWeapon::eWeaponAddonStock, m_availableStocks, "stock_name");
+	else if (pPistolgrip)
+		CanAttachThisMultiAddon(PistolgripAttachable(), CSE_ALifeItemWeapon::eWeaponAddonPistolgrip, m_availablePistolgrips, "pistolgrip_name");
+	else if (pHandguard)
+		CanAttachThisMultiAddon(HandguardAttachable(), CSE_ALifeItemWeapon::eWeaponAddonHandguard, m_availableHandguards, "handguard_name");
+	else if (pLaser)
+		CanAttachThisMultiAddon(LaserAttachable(), CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator, m_availableLasers, "laser_designator_name");
+	else if (pTacticalTorch)
+		CanAttachThisMultiAddon(TacticalTorchAttachable(), CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch, m_availableFlashlights, "tactical_torch_name");
 	else
 		return inherited::CanAttach(pIItem);
 }
 
 bool CWeaponMagazined::CanDetach(const char* item_section_name)
 {
-	bool result = false;
-	bool check_correct_name = false;
-
-	auto CanDetachThisAddon = [&](bool attachable, shared_str addon_name, int addon_state)
+	if( m_eScopeStatus == ALife::eAddonAttachable &&
+		0 != (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonScope))/* &&
+		(m_scopes[cur_scope]->m_sScopeName	== item_section_name))*/
+	{
+		SCOPES_VECTOR_IT it = m_scopes.begin();
+		for(; it!=m_scopes.end(); it++)
 		{
-			if (attachable && addon_name.size())
+			if (bUseAltScope)
 			{
-				if (*addon_name == m_sScopeName)
-				{
-					for (const auto& scopes_sect : m_scopes)
-					{
-						check_correct_name = bUseAltScope ? (scopes_sect == item_section_name) :
-							(pSettings->r_string(scopes_sect, "scope_name") == item_section_name);
-					}
-				}
-				else if (*addon_name == m_sLaserName)
-				{
-					for (const auto& laser_sect : m_availableLasers)
-					{
-						check_correct_name == (pSettings->r_string(laser_sect, "laser_designator_name") == item_section_name);
-					}
-				}
-				else if (*addon_name == m_sTacticalTorchName)
-				{
-					for (const auto& flashlight_sect : m_availableFlashlights)
-					{
-						check_correct_name == (pSettings->r_string(flashlight_sect, "tactical_torch_name") == item_section_name);
-					}
-				}
-				else if (*addon_name == m_sStockName)
-				{
-					for (const auto& stock_sect : m_availableStocks)
-					{
-						check_correct_name == (pSettings->r_string(stock_sect, "stock_name") == item_section_name);
-					}
-				}
-				else if (*addon_name == m_sPistolgripName)
-				{
-					for (const auto& pistolgrip_sect : m_availablePistolgrips)
-					{
-						check_correct_name == (pSettings->r_string(pistolgrip_sect, "pistolgrip_name") == item_section_name);
-					}
-				}
-				else if (*addon_name == m_sHandguardName)
-				{
-					for (const auto& handguard_sect : m_availableHandguards)
-					{
-						check_correct_name == (pSettings->r_string(handguard_sect, "handguard_name") == item_section_name);
-					}
-				}
-				else
-				{
-					check_correct_name = (addon_name == item_section_name);
-				}
-
-				if (check_correct_name && (m_flagsAddOnState & addon_state) != 0)
-				{
-					result = true;
-				}
+				if (*it == item_section_name)
+					return true;
 			}
-		};
-
-	CanDetachThisAddon(ScopeAttachable(), m_sScopeName, CSE_ALifeItemWeapon::eWeaponAddonScope);
-	CanDetachThisAddon(SilencerAttachable(), m_sSilencerName, CSE_ALifeItemWeapon::eWeaponAddonSilencer);
-	CanDetachThisAddon(GrenadeLauncherAttachable(), m_sGrenadeLauncherName, CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher);
-	CanDetachThisAddon(LaserAttachable(), m_sLaserName, CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator);
-	CanDetachThisAddon(TacticalTorchAttachable(), m_sTacticalTorchName, CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch);
-
-	CanDetachThisAddon(StockAttachable(), m_sStockName, CSE_ALifeItemWeapon::eWeaponAddonStock);
-	CanDetachThisAddon(GripAttachable(), m_sGripName, CSE_ALifeItemWeapon::eWeaponAddonGrip);
-	CanDetachThisAddon(GripvAttachable(), m_sGripvName, CSE_ALifeItemWeapon::eWeaponAddonGripv);
-	CanDetachThisAddon(HandguardAttachable(), m_sHandguardName, CSE_ALifeItemWeapon::eWeaponAddonHandguard);
-	CanDetachThisAddon(PistolgripAttachable(), m_sPistolgripName, CSE_ALifeItemWeapon::eWeaponAddonPistolgrip);
-
-	if (result)
+			else
+			{
+				if (pSettings->r_string((*it), "scope_name") == item_section_name)
+					return true;
+			}
+		}
+		return false;
+	}
+//	   return true;
+	else if(m_eSilencerStatus == ALife::eAddonAttachable &&
+		0 != (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonSilencer) &&
+		(m_sSilencerName == item_section_name))
+		return true;
+	else if(m_eGrenadeLauncherStatus == ALife::eAddonAttachable &&
+		0 != (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher) &&
+		(m_sGrenadeLauncherName == item_section_name))
+		return true;
+	else if (m_eGripStatus == ALife::eAddonAttachable &&
+		0 != (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonGrip) &&
+		(m_sGripName == item_section_name))
+		return true;
+	else if (m_eGripvStatus == ALife::eAddonAttachable &&
+		0 != (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonGripv) &&
+		(m_sGripvName == item_section_name))
+		return true;
+	else if (m_eStockStatus == ALife::eAddonAttachable &&
+		0 != (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonStock) &&
+		(m_sStockName == item_section_name))
+		return true;
+	else if (m_ePistolgripStatus == ALife::eAddonAttachable &&
+		0 != (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonPistolgrip) &&
+		(m_sPistolgripName == item_section_name))
+		return true;
+	else if (m_eHandguardStatus == ALife::eAddonAttachable &&
+		0 != (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonHandguard) &&
+		(m_sHandguardName == item_section_name))
+		return true;
+	else if (m_eLaserDesignatorStatus == ALife::eAddonAttachable &&
+		0 != (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator) &&
+		(m_sLaserName == item_section_name))
+		return true;
+	else if (m_eTacticalTorchStatus == ALife::eAddonAttachable &&
+		0 != (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch) &&
+		(m_sTacticalTorchName == item_section_name))
 		return true;
 	else
 		return inherited::CanDetach(item_section_name);
@@ -2674,131 +2650,242 @@ bool CWeaponMagazined::CanDetach(const char* item_section_name)
 bool CWeaponMagazined::Attach(PIItem pIItem, bool b_send_event)
 {
 	bool result = false;
-	
-	auto AttachThisAddon = [&](bool cast, bool attachable, shared_str addon_name, int addon_state)
+
+	CScope*				pScope = smart_cast<CScope*>(pIItem);
+	CSilencer*			pSilencer = smart_cast<CSilencer*>(pIItem);
+	CGrenadeLauncher*	pGrenadeLauncher = smart_cast<CGrenadeLauncher*>(pIItem);
+	CLaserDesignator*	pLaser = smart_cast<CLaserDesignator*>(pIItem);
+	CTacticalTorch*		pTacticalTorch = smart_cast<CTacticalTorch*>(pIItem);
+	CStock*				pStock = smart_cast<CStock*>(pIItem);
+	CHorGrip*			pHGrip = smart_cast<CHorGrip*>(pIItem);
+	CVerGrip*			pVGrip = smart_cast<CVerGrip*>(pIItem);
+	CHandguard*			pHandguard = smart_cast<CHandguard*>(pIItem);
+	CPistolGrip*		pPistolgrip = smart_cast<CPistolGrip*>(pIItem);
+
+	if(pScope &&
+		m_eScopeStatus == ALife::eAddonAttachable &&
+		(m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonScope) == 0 /*&&
+		(m_scopes[cur_scope]->m_sScopeName == pIItem->object().cNameSect())*/)
 	{
-		if (cast && attachable && addon_name.size())
+		SCOPES_VECTOR_IT it = m_scopes.begin();
+		for(; it!=m_scopes.end(); it++)
 		{
-			if (*addon_name == m_sScopeName)
+			if (bUseAltScope)
 			{
-				SCOPES_VECTOR_IT it = m_scopes.begin();
-				for (; it != m_scopes.end(); it++)
-				{
-					if (bUseAltScope)
-					{
-						if (*it == pIItem->object().cNameSect())
-							m_cur_scope = u8(it - m_scopes.begin());
-					}
-					else
-					{
-						if (pSettings->r_string((*it), "scope_name") == pIItem->object().cNameSect())
-							m_cur_scope = u8(it - m_scopes.begin());
-					}
-				}
-			}
-			
-			if ((*addon_name == m_sScopeName ? true : addon_name == pIItem->object().cNameSect()) && (m_flagsAddOnState & addon_state) == 0 && (!AttachIsBlockedByAnotherAddon(addon_name)))
-			{
-				m_flagsAddOnState |= addon_state;
-
-				if (*addon_name == m_sScopeName && bUseAltScope)
-				{
-					bNVsecondVPstatus = !!pSettings->line_exist(pIItem->object().cNameSect(), "scope_nightvision");
-				}
-
-				if (b_send_event && OnServer())
-					pIItem->object().DestroyObject();
-
-				UpdateAltScope();
-				InitAddons();
-				UpdateAddonsVisibility();
-
-				if (GetState() == eIdle)
-					PlayAnimIdle();
-
-				result = true;
-			}
-		}
-	};
-
-	auto AttachCompatibleAddon = [&](bool cast, bool attachable, shared_str addon_name, int addon_state)
-	{
-		bool bCompatibleAddon = false;
-
-		if (cast && attachable && (m_flagsAddOnState & addon_state) == 0 && (!AttachIsBlockedByAnotherAddon(addon_name)))
-		{
-			if (addon_name.size() || addon_name == pIItem->object().cNameSect())
-			{
-				bCompatibleAddon = true;
+				if (*it == pIItem->object().cNameSect())
+					m_cur_scope = u8(it - m_scopes.begin());
 			}
 			else
 			{
-
-				auto SetAvailableAddon = [&](RStringVec vec, shared_str target_sect, shared_str target_addon_name,
-					const char* config_name, const char* config_x, const char* config_y)
-					{
-						for (const auto& common_sect : vec)
-						{
-							shared_str common_addon_name = pSettings->r_string(common_sect, config_name);
-							if (common_addon_name == pIItem->object().cNameSect())
-							{
-								bCompatibleAddon = true;
-								target_sect = common_sect;
-								target_addon_name = common_addon_name;
-
-								int icon_x = GetAddonXYNameBySection(target_addon_name);
-								int icon_y = GetAddonXYNameBySection(target_addon_name, true);
-								icon_x = pSettings->r_s32(common_sect, config_x);
-								icon_y = pSettings->r_s32(common_sect, config_y);
-								break;
-							}
-						}
-					};
-
-				if (*addon_name == m_sLaserName)
-					SetAvailableAddon(m_availableLasers, m_sLaserAttachSection, *addon_name, "laser_designator_name", "laser_designator_x", "laser_designator_y");
-				else if (*addon_name == m_sTacticalTorchName)
-					SetAvailableAddon(m_availableFlashlights, m_sTacticalTorchAttachSection, *addon_name, "tactical_torch_name", "tactical_torch_x", "tactical_torch_y");
-				else if (*addon_name == m_sStockName)
-					SetAvailableAddon(m_availableStocks, m_sStockAttachSection, *addon_name, "stock_name", "stock_x", "stock_y");
-				else if (*addon_name == m_sPistolgripName)
-					SetAvailableAddon(m_availablePistolgrips, m_sPistolgripAttachSection, *addon_name, "pistolgrip_name", "pistolgrip_x", "pistolgrip_y");
-				else if (*addon_name == m_sHandguardName)
-					SetAvailableAddon(m_availableHandguards, m_sHandguardAttachSection, *addon_name, "handguard_name", "handguard_x", "handguard_y");
-	
-			}
-
-			if (bCompatibleAddon)
-			{
-				if (b_send_event && OnServer())
-					pIItem->object().DestroyObject();
-
-				UpdateAltScope();
-				InitAddons();
-				UpdateAddonsVisibility();
-
-				if (GetState() == eIdle)
-					PlayAnimIdle();
-
-				result = true;
+				if (pSettings->r_string((*it), "scope_name") == pIItem->object().cNameSect())
+					m_cur_scope = u8(it - m_scopes.begin());
 			}
 		}
-	};
+		m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonScope;
+		result = true;
+	}
+	else if(pSilencer && m_eSilencerStatus == ALife::eAddonAttachable && (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonSilencer) == 0 && (m_sSilencerName == pIItem->object().cNameSect()))
+	{
+		m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonSilencer;
+		result = true;
+	}
+	else if(pGrenadeLauncher && m_eGrenadeLauncherStatus == ALife::eAddonAttachable && (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher) == 0 && (m_sGrenadeLauncherName == pIItem->object().cNameSect()))
+	{
+		m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher;
+		result = true;
+	}
+	else if (pHGrip && m_eGripStatus == ALife::eAddonAttachable && (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonGrip) == 0 && (m_sGripName == pIItem->object().cNameSect()))
+	{
+		m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonGrip;
+		result = true;
+	}
+	else if (pVGrip && m_eGripvStatus == ALife::eAddonAttachable && (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonGripv) == 0 && (m_sGripvName == pIItem->object().cNameSect()))
+	{
+		m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonGripv;
+		result = true;
+	}
+	else if (pStock && m_eStockStatus == ALife::eAddonAttachable && (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonStock) == 0)
+	{
+		bool bCompatibleStock = false;
 
-	AttachThisAddon(smart_cast<CScope*>(pIItem), ScopeAttachable(), m_sScopeName, CSE_ALifeItemWeapon::eWeaponAddonScope);
-	AttachThisAddon(smart_cast<CSilencer*>(pIItem), SilencerAttachable(), m_sSilencerName, CSE_ALifeItemWeapon::eWeaponAddonSilencer);
-	AttachThisAddon(smart_cast<CGrenadeLauncher*>(pIItem), GrenadeLauncherAttachable(), m_sGrenadeLauncherName, CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher);
-	AttachCompatibleAddon(smart_cast<CLaserDesignator*>(pIItem), LaserAttachable(), m_sLaserName, CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator);
-	AttachCompatibleAddon(smart_cast<CTacticalTorch*>(pIItem), TacticalTorchAttachable(), m_sTacticalTorchName, CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch);
+		if (m_sStockName.size() && m_sStockName == pIItem->object().cNameSect())
+		{
+			bCompatibleStock = true;
+		}
+		else
+		{
+			for (const auto& stock_sect : m_availableStocks)
+			{
+				shared_str stock_name = pSettings->r_string(stock_sect, "stock_name");
+				if (stock_name == pIItem->object().cNameSect())
+				{
+					bCompatibleStock = true;
+					m_sStockAttachSection = stock_sect;
+					m_sStockName = stock_name;
 
-	AttachCompatibleAddon(smart_cast<CStock*>(pIItem), StockAttachable(), m_sStockName, CSE_ALifeItemWeapon::eWeaponAddonStock);
-	AttachThisAddon(smart_cast<CHorGrip*>(pIItem), GripAttachable(), m_sGripName, CSE_ALifeItemWeapon::eWeaponAddonGrip);
-	AttachThisAddon(smart_cast<CVerGrip*>(pIItem), GripvAttachable(), m_sGripvName, CSE_ALifeItemWeapon::eWeaponAddonGripv);
-	AttachCompatibleAddon(smart_cast<CHandguard*>(pIItem), HandguardAttachable(), m_sHandguardName, CSE_ALifeItemWeapon::eWeaponAddonHandguard);
-	AttachCompatibleAddon(smart_cast<CPistolGrip*>(pIItem), PistolgripAttachable(), m_sPistolgripName, CSE_ALifeItemWeapon::eWeaponAddonPistolgrip);
+					m_iStockX = pSettings->r_s32(stock_sect, "stock_x");
+					m_iStockY = pSettings->r_s32(stock_sect, "stock_y");
+					break;
+				}
+			}
+		}
 
-	if (result)
+		if (bCompatibleStock)
+		{
+			m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonStock;
+			result = true;
+		}
+	}
+	else if (pPistolgrip && m_ePistolgripStatus == ALife::eAddonAttachable && (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonPistolgrip) == 0)
+	{
+		bool bCompatiblePistolgrip = false;
+
+		if (m_sPistolgripName.size() && m_sPistolgripName == pIItem->object().cNameSect())
+		{
+			bCompatiblePistolgrip = true;
+		}
+		else
+		{
+			for (const auto& pistolgrip_sect : m_availablePistolgrips)
+			{
+				shared_str pistolgrip_name = pSettings->r_string(pistolgrip_sect, "pistolgrip_name");
+				if (pistolgrip_name == pIItem->object().cNameSect())
+				{
+					bCompatiblePistolgrip = true;
+					m_sPistolgripAttachSection = pistolgrip_sect;
+					m_sPistolgripName = pistolgrip_name;
+
+					m_iPistolgripX = pSettings->r_s32(pistolgrip_sect, "pistolgrip_x");
+					m_iPistolgripY = pSettings->r_s32(pistolgrip_sect, "pistolgrip_y");
+					break;
+				}
+			}
+		}
+
+		if (bCompatiblePistolgrip)
+		{
+			m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonPistolgrip;
+			result = true;
+		}
+	}
+	else if (pHandguard && m_eHandguardStatus == ALife::eAddonAttachable && (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonHandguard) == 0)
+	{
+		bool bCompatibleHandguard = false;
+
+		if (m_sHandguardName.size() && m_sHandguardName == pIItem->object().cNameSect())
+		{
+			bCompatibleHandguard = true;
+		}
+		else
+		{
+			for (const auto& handguard_sect : m_availableHandguards)
+			{
+				shared_str handguard_name = pSettings->r_string(handguard_sect, "handguard_name");
+				if (handguard_name == pIItem->object().cNameSect())
+				{
+					bCompatibleHandguard = true;
+					m_sHandguardAttachSection = handguard_sect;
+					m_sHandguardName = handguard_name;
+
+					m_iHandguardX = pSettings->r_s32(handguard_sect, "handguard_x");
+					m_iHandguardY = pSettings->r_s32(handguard_sect, "handguard_y");
+					break;
+				}
+			}
+		}
+
+		if (bCompatibleHandguard)
+		{
+			m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonHandguard;
+			result = true;
+		}
+	}
+
+	else if (pLaser && m_eLaserDesignatorStatus == ALife::eAddonAttachable && (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator) == 0)
+	{
+		bool bCompatibleLaser = false;
+
+		if (m_sLaserName.size() && m_sLaserName == pIItem->object().cNameSect())
+		{
+			bCompatibleLaser = true;
+		}
+		else
+		{
+			for (const auto& laser_sect : m_availableLasers)
+			{
+				shared_str laser_name = pSettings->r_string(laser_sect, "laser_designator_name");
+				if (laser_name == pIItem->object().cNameSect())
+				{
+					bCompatibleLaser = true;
+					m_sLaserAttachSection = laser_sect;
+					m_sLaserName = laser_name;
+
+					m_iLaserX = pSettings->r_s32(laser_sect, "laser_designator_x");
+					m_iLaserY = pSettings->r_s32(laser_sect, "laser_designator_y");
+					break;
+				}
+			}
+		}
+
+		if (bCompatibleLaser)
+		{
+			m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator;
+			result = true;
+		}
+	}
+	else if (pTacticalTorch && m_eTacticalTorchStatus == ALife::eAddonAttachable && (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch) == 0)
+	{
+		bool bCompatibleFlashlight = false;
+
+		if (m_sTacticalTorchName.size() && m_sTacticalTorchName == pIItem->object().cNameSect())
+		{
+			bCompatibleFlashlight = true;
+		}
+		else
+		{
+			for (const auto& flashlight_sect : m_availableFlashlights)
+			{
+				shared_str flashlight_name = pSettings->r_string(flashlight_sect, "tactical_torch_name");
+				if (flashlight_name == pIItem->object().cNameSect())
+				{
+					bCompatibleFlashlight = true;
+					m_sTacticalTorchAttachSection = flashlight_sect;
+					m_sTacticalTorchName = flashlight_name;
+
+					m_iTacticalTorchX = pSettings->r_s32(flashlight_sect, "tactical_torch_x");
+					m_iTacticalTorchY = pSettings->r_s32(flashlight_sect, "tactical_torch_y");
+					break;
+				}
+			}
+		}
+
+		if (bCompatibleFlashlight)
+		{
+			m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch;
+			result = true;
+		}
+	}
+
+	if(result)
+	{
+		if (pScope && bUseAltScope)
+		{
+			bNVsecondVPstatus = !!pSettings->line_exist(pIItem->object().cNameSect(), "scope_nightvision");
+		}
+
+		if (b_send_event && OnServer())
+		{
+			//óíè÷òîæèòü ïîäñîåäèíåííóþ âåùü èç èíâåíòàðÿ
+//.			pIItem->Drop					();
+			pIItem->object().DestroyObject	();
+		};
+
+		UpdateAltScope();
+		UpdateAddonsVisibility();
+		InitAddons();
+
 		return true;
+	}
 	else
 		return inherited::Attach(pIItem, b_send_event);
 }
@@ -2839,49 +2926,142 @@ bool CWeaponMagazined::DetachScope(const char* item_section_name, bool b_spawn_i
 
 bool CWeaponMagazined::Detach(const char* item_section_name, bool b_spawn_item)
 {
-	bool result = false;
-
-	auto DetachThisAddon = [&](bool attachable, shared_str addon_name, int addon_state)
+	if(		m_eScopeStatus == ALife::eAddonAttachable && DetachScope(item_section_name, b_spawn_item))
 	{
-		if (attachable && addon_name.size() &&
-			(*addon_name == m_sScopeName ? DetachScope(item_section_name, b_spawn_item) : (addon_name == item_section_name)) &&
-			(m_flagsAddOnState & addon_state) != 0)
+		if ((m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonScope) == 0)
 		{
-			m_flagsAddOnState &= ~addon_state;
-
-			if (*addon_name == m_sScopeName)
-			{
-				UpdateAltScope();
-				UpdateHudAltAimHud();
-				UpdateHudAltAimHudMode2();
-			}
-			
-			InitAddons();
-			UpdateAddonsVisibility();
-
-			if (GetState() == eIdle)
-				PlayAnimIdle();
-
-			result = true;
+			Msg("ERROR: scope addon already detached.");
+			return true;
 		}
-	};
+		m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonScope;
+		
+		UpdateAltScope();
+		UpdateAddonsVisibility();
+		InitAddons();
+		UpdateHudAltAimHud();
+		UpdateHudAltAimHudMode2();
 
-	DetachThisAddon(ScopeAttachable(), m_sScopeName, CSE_ALifeItemWeapon::eWeaponAddonScope);
-	DetachThisAddon(SilencerAttachable(), m_sSilencerName, CSE_ALifeItemWeapon::eWeaponAddonSilencer);
-	DetachThisAddon(GrenadeLauncherAttachable(), m_sGrenadeLauncherName, CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher);
-	DetachThisAddon(LaserAttachable(), m_sLaserName, CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator);
-	DetachThisAddon(TacticalTorchAttachable(), m_sTacticalTorchName, CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch);
-
-	DetachThisAddon(StockAttachable(), m_sStockName, CSE_ALifeItemWeapon::eWeaponAddonStock);
-	DetachThisAddon(GripAttachable(), m_sGripName, CSE_ALifeItemWeapon::eWeaponAddonGrip);
-	DetachThisAddon(GripvAttachable(), m_sGripvName, CSE_ALifeItemWeapon::eWeaponAddonGripv);
-	DetachThisAddon(HandguardAttachable(), m_sHandguardName, CSE_ALifeItemWeapon::eWeaponAddonHandguard);
-	DetachThisAddon(PistolgripAttachable(), m_sPistolgripName, CSE_ALifeItemWeapon::eWeaponAddonPistolgrip);
-
-	if (result)
 		return CInventoryItemObject::Detach(item_section_name, b_spawn_item);
+	}
+	else if(m_eSilencerStatus == ALife::eAddonAttachable && (m_sSilencerName == item_section_name))
+	{
+		if ((m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonSilencer) == 0)
+		{
+			Msg("ERROR: silencer addon already detached.");
+			return true;
+		}
+		m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonSilencer;
+
+		UpdateAddonsVisibility();
+		InitAddons();
+		return CInventoryItemObject::Detach(item_section_name, b_spawn_item);
+	}
+	else if(m_eGrenadeLauncherStatus == ALife::eAddonAttachable && (m_sGrenadeLauncherName == item_section_name))
+	{
+		if ((m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher) == 0)
+		{
+			Msg("ERROR: grenade launcher addon already detached.");
+			return true;
+		}
+		m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher;
+
+		UpdateAddonsVisibility();
+		InitAddons();
+		return CInventoryItemObject::Detach(item_section_name, b_spawn_item);
+	}
+	else if (m_eGripStatus == ALife::eAddonAttachable && (m_sGripName == item_section_name))
+	{
+		if ((m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonGrip) == 0)
+		{
+			Msg("ERROR: horizontal grip addon already detached.");
+			return true;
+		}
+		m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonGrip;
+
+		UpdateAddonsVisibility();
+		InitAddons();
+		return CInventoryItemObject::Detach(item_section_name, b_spawn_item);
+	}
+	else if (m_eGripvStatus == ALife::eAddonAttachable && (m_sGripvName == item_section_name))
+	{
+		if ((m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonGripv) == 0)
+		{
+			Msg("ERROR: vertical grip addon already detached.");
+			return true;
+		}
+		m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonGripv;
+
+		UpdateAddonsVisibility();
+		InitAddons();
+		return CInventoryItemObject::Detach(item_section_name, b_spawn_item);
+	}
+	else if (m_eStockStatus == ALife::eAddonAttachable && (m_sStockName == item_section_name))
+	{
+		if ((m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonStock) == 0)
+		{
+			Msg("ERROR: stock addon already detached.");
+			return true;
+		}
+		m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonStock;
+
+		UpdateAddonsVisibility();
+		InitAddons();
+		return CInventoryItemObject::Detach(item_section_name, b_spawn_item);
+	}
+	else if (m_ePistolgripStatus == ALife::eAddonAttachable && (m_sPistolgripName == item_section_name))
+	{
+		if ((m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonPistolgrip) == 0)
+		{
+			Msg("ERROR: Pistolgrip addon already detached.");
+			return true;
+		}
+		m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonPistolgrip;
+
+		UpdateAddonsVisibility();
+		InitAddons();
+		return CInventoryItemObject::Detach(item_section_name, b_spawn_item);
+	}
+	else if (m_eHandguardStatus == ALife::eAddonAttachable && (m_sHandguardName == item_section_name))
+	{
+		if ((m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonHandguard) == 0)
+		{
+			Msg("ERROR: Handguard addon already detached.");
+			return true;
+		}
+		m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonHandguard;
+
+		UpdateAddonsVisibility();
+		InitAddons();
+		return CInventoryItemObject::Detach(item_section_name, b_spawn_item);
+	}
+	else if(m_eLaserDesignatorStatus == ALife::eAddonAttachable && (m_sLaserName == item_section_name))
+	{
+		if ((m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator) == 0)
+		{
+			Msg("ERROR: laser designator addon already detached.");
+			return true;
+		}
+		m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator;
+
+		UpdateAddonsVisibility();
+		InitAddons();
+		return CInventoryItemObject::Detach(item_section_name, b_spawn_item);
+	}
+	else if(m_eTacticalTorchStatus == ALife::eAddonAttachable && (m_sTacticalTorchName == item_section_name))
+	{
+		if ((m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch) == 0)
+		{
+			Msg("ERROR: tactical torch addon already detached.");
+			return true;
+		}
+		m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch;
+
+		UpdateAddonsVisibility();
+		InitAddons();
+		return CInventoryItemObject::Detach(item_section_name, b_spawn_item);
+	}
 	else
-		return inherited::Detach(item_section_name, b_spawn_item);
+		return inherited::Detach(item_section_name, b_spawn_item);;
 }
 
 /*
