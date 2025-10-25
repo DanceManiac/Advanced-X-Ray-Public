@@ -516,7 +516,7 @@ void CRender::reset_begin()
 	reset_frame = Device.dwFrame;
 
 	//AVO: let's reload details while changed details options on vid_restart
-	if (b_loaded && ((dm_current_size != dm_size) || (ps_r__Detail_density != ps_current_detail_density)))
+	if (b_loaded/* && ((dm_current_size != dm_size) || (ps_r__Detail_density != ps_current_detail_density))*/)
 	{
 		Details->Unload();
 		xr_delete(Details);
@@ -549,7 +549,7 @@ void CRender::reset_end()
 	Target						=	xr_new<CRenderTarget>	();
 
 	//AVO: let's reload details while changed details options on vid_restart
-	if (b_loaded && ((dm_current_size != dm_size) || (ps_r__Detail_density != ps_current_detail_density)))
+	if (b_loaded/* && ((dm_current_size != dm_size) || (ps_r__Detail_density != ps_current_detail_density))*/)
 	{
 		Details = xr_new<CDetailManager>();
 		Details->Load();
@@ -573,19 +573,25 @@ void CRender::OnFrame()
 }*/
 void CRender::OnFrame()
 {
-	Models->DeleteQueue			();
-	if (ps_r2_ls_flags.test(R2FLAG_EXP_MT_CALC) && g_pGameLevel)
-	{
-		// MT-details (@front)
-		if (Details)
-			Details->StartAsync();
+	bool b_main_menu_is_active = (g_pGamePersistent->m_pMainMenu && g_pGamePersistent->m_pMainMenu->IsActive());
 
+	// MT-details (@front)
+	if (Details && ps_r2_ls_flags.test(R2FLAG_EXP_MT_CALC))
+		Details->StartAsync();
+
+	if (!b_main_menu_is_active && g_pGameLevel)
+	{
 		// MT-HOM (@front)
 		Device.seqParallel.insert(Device.seqParallel.begin(), fastdelegate::FastDelegate0<>(&HOM, &CHOM::MT_RENDER));
 	}
 
-	if (Details)
-		g_pGamePersistent->GrassBendersUpdateAnimations();
+	Models->DeleteQueue			();
+
+	if (!b_main_menu_is_active && g_pGameLevel)
+	{
+		if (Details)
+			g_pGamePersistent->GrassBendersUpdateAnimations();
+	}
 }
 
 
@@ -597,9 +603,12 @@ IRenderVisual*			CRender::model_CreateChild		(LPCSTR name, IReader* data)		{ ret
 IRenderVisual*			CRender::model_Duplicate		(IRenderVisual* V)					{ return Models->Instance_Duplicate((dxRender_Visual*)V);	}
 void					CRender::model_Delete			(IRenderVisual* &V, BOOL bDiscard)	
 { 
-	dxRender_Visual* pVisual = (dxRender_Visual*)V;
-	Models->Delete(pVisual, bDiscard);
-	V = 0;
+	if (V)
+	{
+		dxRender_Visual* pVisual = (dxRender_Visual*)V;
+		Models->Delete(pVisual, bDiscard);
+		V = 0;
+	}
 }
 IRender_DetailModel*	CRender::model_CreateDM			(IReader*	F)
 {
@@ -1260,7 +1269,8 @@ HRESULT	CRender::shader_compile			(
 		def_it						++	;
 		sh_name[len]='1'; ++len;
 	}
-	else {
+	else
+	{
 		sh_name[len]='0'; ++len;
 	}
 
@@ -1957,7 +1967,7 @@ HRESULT	CRender::shader_compile			(
 				pTarget = "vs_4_0";
 			else if( HW.FeatureLevel == D3D_FEATURE_LEVEL_10_1 )
 				pTarget = "vs_4_1";
-			else if( HW.FeatureLevel == D3D_FEATURE_LEVEL_11_0 )
+            else if (HW.FeatureLevel >= D3D_FEATURE_LEVEL_11_0)
 				pTarget = "vs_5_0";
 		}
 		else if ('p'==pTarget[0])
@@ -1966,7 +1976,7 @@ HRESULT	CRender::shader_compile			(
 				pTarget = "ps_4_0";
 			else if( HW.FeatureLevel == D3D_FEATURE_LEVEL_10_1 )
 				pTarget = "ps_4_1";
-			else if( HW.FeatureLevel == D3D_FEATURE_LEVEL_11_0 )
+            else if (HW.FeatureLevel >= D3D_FEATURE_LEVEL_11_0)
 				pTarget = "ps_5_0";
 		}
 		else if ('g'==pTarget[0])		
@@ -1975,93 +1985,98 @@ HRESULT	CRender::shader_compile			(
 				pTarget = "gs_4_0";
 			else if( HW.FeatureLevel == D3D_FEATURE_LEVEL_10_1 )
 				pTarget = "gs_4_1";
-			else if( HW.FeatureLevel == D3D_FEATURE_LEVEL_11_0 )
+            else if (HW.FeatureLevel >= D3D_FEATURE_LEVEL_11_0)
 				pTarget = "gs_5_0";
 		}
 		else if ('c'==pTarget[0])		
 		{
-			if( HW.FeatureLevel == D3D_FEATURE_LEVEL_11_0 )
+            if (HW.FeatureLevel >= D3D_FEATURE_LEVEL_11_0)
 				pTarget = "cs_5_0";
 		}
 	}
-
-	HRESULT		_result = E_FAIL;
 
 	char extension[3];
 	strncpy_s(extension, pTarget, 2);
 
 	string_path file_name;
+
+	string_path file;
+	xr_strconcat(file, "shaders_cache\\", name, ".", extension);
+	FS.update_path(file_name, "$app_data_root$", file);
+
+	includer Includer;
+	LPD3DBLOB pShaderBuf{};
+	LPD3DBLOB pErrorBuf{};
+	HRESULT _result;
+	u32 crc = crc32(pSrcData, SrcDataLen);;
+
+	_result = D3DPreprocess(pSrcData, SrcDataLen, "", defines, &Includer, &pShaderBuf, &pErrorBuf);
+	if (SUCCEEDED(_result))
+		crc = crc32(pShaderBuf->GetBufferPointer(), static_cast<u32>(pShaderBuf->GetBufferSize()));
+	if (pShaderBuf)
+		pShaderBuf->Release();
+	if (pErrorBuf)
+		pErrorBuf->Release();
+
+	snprintf(file, sizeof(file), "%s\\%s-%s-%x", file_name, pFunctionName, pTarget, Flags);
+
+	if (FS.exist(file) && ps_r__common_flags.test(RFLAG_USE_SHADERS_CACHE))
 	{
-		string_path file;
-		xr_strcpy(file, "shaders_cache\\r4\\");
-		xr_strcat(file, name);
-		xr_strcat(file, ".");
-		xr_strcat(file, extension);
-		xr_strcat(file, "\\");
-		xr_strcat(file, sh_name);
-		FS.update_path(file_name, "$app_data_root$", file);
-	}
+		IReader* fp = FS.r_open(file);
 
-	u32 const file_crc = crc32(pSrcData, SrcDataLen);
-
-	if (FS.exist(file_name) && ps_r__common_flags.test(RFLAG_USE_SHADERS_CACHE))
-	{
-		std::unique_ptr<IReader> file(FS.r_open(file_name));
-
-		if (file && file->length() > 4)
+		if (fp->elapsed() > 2 * sizeof(crc))
 		{
-			u32 crc = file->r_u32();
-			u32 savedBytecodeCrc = file->r_u32();
+			u32 crc_read = fp->r_u32();
+			if (SUCCEEDED(_result) && crc_read != crc)
+				_result = E_FAIL;
+			crc_read = fp->r_u32();
+			if (SUCCEEDED(_result) && crc_read != crc32(fp->pointer(), fp->elapsed()))
+				_result = E_FAIL;
+			if (SUCCEEDED(_result))
+				_result = create_shader(pTarget, reinterpret_cast<DWORD*>(fp->pointer()), fp->elapsed(), file_name, result, o.disasm);
+		}
+		else
+			_result = E_FAIL;
 
-			if (file_crc == savedBytecodeCrc)
-			{
-				u32 real_crc = crc32(file->pointer(), file->elapsed());
+		FS.r_close(fp);
+	}
+	else
+		_result = E_FAIL;
 
-				if (real_crc == crc)
-					_result = create_shader(pTarget, reinterpret_cast<DWORD*>(file->pointer()), file->elapsed(), file_name, result, o.disasm);
-			}
+	pShaderBuf = NULL;
+	pErrorBuf = NULL;
+
+	if (FAILED(_result))
+	{
+		Msg("--Compiling shader [%s] [%s] [%s]", name, pTarget, pFunctionName);
+
+		_result = D3DCompile(pSrcData, SrcDataLen, "", defines, &Includer, pFunctionName, pTarget, Flags, 0, &pShaderBuf, &pErrorBuf);
+		if (SUCCEEDED(_result))
+		{
+			IWriter* fp = FS.w_open(file);
+			fp->w_u32(crc);
+
+			crc = crc32(pShaderBuf->GetBufferPointer(), pShaderBuf->GetBufferSize());
+			fp->w_u32(crc);
+
+			fp->w(pShaderBuf->GetBufferPointer(), static_cast<u32>(pShaderBuf->GetBufferSize()));
+			FS.w_close(fp);
+
+			_result = create_shader(pTarget, reinterpret_cast<DWORD*>(pShaderBuf->GetBufferPointer()), static_cast<u32>(pShaderBuf->GetBufferSize()), file_name, result, o.disasm);
 		}
 	}
 
 	if (FAILED(_result))
 	{
-		includer					Includer;
-		LPD3DBLOB					pShaderBuf	= NULL;
-		LPD3DBLOB					pErrorBuf	= NULL;
-		_result						= 
-			D3DCompile( 
-				pSrcData, 
-				SrcDataLen,
-				"",//NULL, //LPCSTR pFileName,	//	NVPerfHUD bug workaround.
-				defines, &Includer, pFunctionName,
-				pTarget,
-				Flags, 0,
-				&pShaderBuf,
-				&pErrorBuf
-			);
-
-		if (SUCCEEDED(_result))
-		{
-			std::unique_ptr<IWriter> file(FS.w_open(file_name));
-
-			u32 const crc = crc32(pShaderBuf->GetBufferPointer(), static_cast<u32>(pShaderBuf->GetBufferSize()));
-			file->w_u32(crc);
-			file->w_u32(file_crc);
-
-			file->w(pShaderBuf->GetBufferPointer(), static_cast<u32>(pShaderBuf->GetBufferSize()));
-
-			_result = create_shader(pTarget, reinterpret_cast<DWORD*>(pShaderBuf->GetBufferPointer()), static_cast<u32>(pShaderBuf->GetBufferSize()), file_name, result, o.disasm);
-		}
+		Msg("! %s", file_name);
+		if (pErrorBuf)
+			Log("! error: ", (LPCSTR)pErrorBuf->GetBufferPointer());
 		else
-		{
-			Log("! ", file_name);
-			
-			if (pErrorBuf)
-				Log("! error: ", (LPCSTR)pErrorBuf->GetBufferPointer());
-			else
-				Msg("Can't compile shader hr=0x%08x", _result);
-		}
+			Msg("Can't compile shader hr=0x%08x", _result);
 	}
 
-	return		_result;
+	if (pErrorBuf)
+		pErrorBuf->Release();
+
+	return _result;
 }
