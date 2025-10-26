@@ -827,7 +827,6 @@ void player_hud::SaveCfg(const int idx) const
 		.c_str());
 
 	pHudCfg.w_string(sect_name,
-
 		"hide_hands_position_16x9",
 		make_string(
 			"%f,%f,%f", hi->m_measures.m_hands_attach[0].x, hi->m_measures.m_hands_attach[0].y, hi->m_measures.m_hands_attach[0].z)
@@ -850,18 +849,6 @@ void player_hud::SaveCfg(const int idx) const
 		.c_str());
 
 	pHudCfg.w_string(sect_name,
-		"hide_hands_position",
-		make_string(
-			"%f,%f,%f", hi->m_measures.m_hands_attach[0].x, hi->m_measures.m_hands_attach[0].y, hi->m_measures.m_hands_attach[0].z)
-		.c_str());
-	pHudCfg.w_string(sect_name,
-		"hide_hands_orientation",
-		make_string(
-			"%f,%f,%f", hi->m_measures.m_hands_attach[1].x, hi->m_measures.m_hands_attach[1].y, hi->m_measures.m_hands_attach[1].z)
-		.c_str());
-
-	pHudCfg.w_string(sect_name,
-
 		"item_position",
 		make_string("%f,%f,%f", hi->m_measures.m_item_attach[0].x, hi->m_measures.m_item_attach[0].y, hi->m_measures.m_item_attach[0].z)
 		.c_str());

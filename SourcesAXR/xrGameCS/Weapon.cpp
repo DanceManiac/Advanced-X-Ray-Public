@@ -2094,16 +2094,15 @@ void CWeapon::UpdateCL		()
 		CActor* pActor	= smart_cast<CActor*>(H_Parent());
 		if(pActor && !pActor->AnyMove() && this==pActor->inventory().ActiveItem())
 		{
-			if (hud_adj_mode==0 && 
-				GetState()==eIdle && 
-				(Device.dwTimeGlobal-m_dw_curr_substate_time>20000) && 
-				!IsZoomed()&&
-				g_player_hud->attached_item(1)==NULL)
+			if (!psActorFlags2.test(AF_DEV_MODE) && !psActorFlags2.test(AF_LFO_WPN_BORE_DBG))
 			{
-				if(AllowBore())
-					SwitchState		(eBore);
+				if (hud_adj_mode==0 && GetState()==eIdle && (Device.dwTimeGlobal-m_dw_curr_substate_time>20000) && !IsZoomed() && g_player_hud->attached_item(1)==NULL)
+				{
+					if(AllowBore())
+						SwitchState		(eBore);
 
-				ResetSubStateTime	();
+					ResetSubStateTime	();
+				}
 			}
 		}
 	}
@@ -2152,8 +2151,6 @@ void CWeapon::UpdateCL		()
 			g_player_hud->PlayBlendAnm(m_BlendAimIdleCam.name.c_str(), 2, m_BlendAimIdleCam.speed, m_BlendAimIdleCam.power, true, false);
 		}
 	}
-	if (IsGripAttached() || IsGripvAttached())
-		Update_WPN_HUD();
 }
 
 void CWeapon::GetBoneOffsetPosDir(const shared_str& bone_name, Fvector& dest_pos, Fvector& dest_dir, const Fvector& offset, const Fvector& rotation)
@@ -2444,7 +2441,9 @@ bool CWeapon::Action(s32 cmd, u32 flags)
 		case kWPN_FIRE: 
 			{
 				//если оружие чем-то занято, то ничего не делать
-				{				
+				{			
+					Update_WPN_HUD();
+
 					if(IsPending())		
 						return				false;
 
@@ -2467,6 +2466,8 @@ bool CWeapon::Action(s32 cmd, u32 flags)
 				{
 					if (flags & CMD_START)
 					{
+						Update_WPN_HUD();
+
 						if (!IsZoomed())
 						{
 							if (!IsPending())
@@ -2504,6 +2505,8 @@ bool CWeapon::Action(s32 cmd, u32 flags)
 				{
 					if (flags & CMD_START)
 					{
+						Update_WPN_HUD();
+
 						if (!IsZoomed() && !IsPending())
 						{
 							if (GetState() != eIdle)
@@ -4953,6 +4956,8 @@ void CWeapon::OnStateSwitch	(u32 S)
 				}
 			}
 		}
+		if ((GetState() == eReload || GetState() == eUnMisfire || (GetState() == eBore) || (GetState() == eFire)))
+			Update_WPN_HUD();
 	}
 }
 
@@ -6359,61 +6364,6 @@ void CWeapon::UpdateOverheatLights()
 	}
 }
 
-void CWeapon::Update_WPN_HUD()
-{
-	attachable_hud_item* hi = HudItemData();
-
-	if (!hi)
-		return;
-
-	bool is_16x9 = UI().is_widescreen();
-	string64	_prefix;
-	xr_sprintf(_prefix, "%s", is_16x9 ? "_16x9" : "");
-	string128	val_name;
-
-	// UPDATE HUD GRIP HORIZONTAL
-	if (IsGripAttached())
-	{
-		strconcat(sizeof(val_name), val_name, "hands_position_grip_h", _prefix);
-		hi->m_measures.m_hands_attach[0] = pSettings->r_fvector3(m_hud_sect, val_name);
-		strconcat(sizeof(val_name), val_name, "hands_orientation_grip_h", _prefix);
-		hi->m_measures.m_hands_attach[1] = pSettings->r_fvector3(m_hud_sect, val_name);
-
-		strconcat(sizeof(val_name), val_name, "gl_hud_offset_grip_h_pos", _prefix);
-		hi->m_measures.m_hands_offset[0][2] = pSettings->r_fvector3(m_hud_sect, val_name);
-		strconcat(sizeof(val_name), val_name, "gl_hud_offset_grip_h_rot", _prefix);
-		hi->m_measures.m_hands_offset[1][2] = pSettings->r_fvector3(m_hud_sect, val_name);
-	}
-
-	// UPDATE HUD GRIP VERTICAL 
-	else if (IsGripvAttached())
-	{
-		strconcat(sizeof(val_name), val_name, "hands_position_grip_v", _prefix);
-		hi->m_measures.m_hands_attach[0] = pSettings->r_fvector3(m_hud_sect, val_name);
-		strconcat(sizeof(val_name), val_name, "hands_orientation_grip_v", _prefix);
-		hi->m_measures.m_hands_attach[1] = pSettings->r_fvector3(m_hud_sect, val_name);
-
-		strconcat(sizeof(val_name), val_name, "gl_hud_offset_grip_v_pos", _prefix);
-		hi->m_measures.m_hands_offset[0][2] = pSettings->r_fvector3(m_hud_sect, val_name);
-		strconcat(sizeof(val_name), val_name, "gl_hud_offset_grip_v_rot", _prefix);
-		hi->m_measures.m_hands_offset[1][2] = pSettings->r_fvector3(m_hud_sect, val_name);
-	}
-
-	// UPDATE HUD DEFAULT
-	else
-	{
-		strconcat(sizeof(val_name), val_name, "hands_position", _prefix);
-		hi->m_measures.m_hands_attach[0] = pSettings->r_fvector3(m_hud_sect, val_name);
-		strconcat(sizeof(val_name), val_name, "hands_orientation", _prefix);
-		hi->m_measures.m_hands_attach[1] = pSettings->r_fvector3(m_hud_sect, val_name);
-
-		strconcat(sizeof(val_name), val_name, "gl_hud_offset_pos", _prefix);
-		hi->m_measures.m_hands_offset[0][2] = pSettings->r_fvector3(m_hud_sect, val_name);
-		strconcat(sizeof(val_name), val_name, "gl_hud_offset_rot", _prefix);
-		hi->m_measures.m_hands_offset[1][2] = pSettings->r_fvector3(m_hud_sect, val_name);
-	}
-}
-
 void CWeapon::UpdateFOVZoomIn()
 {
 	shared_str cur_scope_sect = (m_sScopeAttachSection.size() ? m_sScopeAttachSection : (m_eScopeStatus == ALife::eAddonAttachable) ? m_scopes[m_cur_scope].c_str() : "scope");
@@ -6542,3 +6492,159 @@ void CWeapon::UpdateZoomFocus()
 	}
 }
 
+void CWeapon::Update_WPN_HUD()
+{
+	attachable_hud_item* hi = HudItemData();
+
+	if (!hi)
+		return;
+
+	bool is_16x9 = UI().is_widescreen();
+	string64	_prefix;
+	xr_sprintf(_prefix, "%s", is_16x9 ? "_16x9" : "");
+	string128	val_name;
+
+	// UPDATE HUD GRIP HORIZONTAL
+	if (IsGripAttached())
+	{
+		strconcat(sizeof(val_name), val_name, "hands_position_grip_h", _prefix);
+		hi->m_measures.m_hands_attach[0] = pSettings->r_fvector3(m_hud_sect, val_name);
+		strconcat(sizeof(val_name), val_name, "hands_orientation_grip_h", _prefix);
+		hi->m_measures.m_hands_attach[1] = pSettings->r_fvector3(m_hud_sect, val_name);
+
+		strconcat(sizeof(val_name), val_name, "gl_hud_offset_grip_h_pos", _prefix);
+		hi->m_measures.m_hands_offset[0][2] = pSettings->r_fvector3(m_hud_sect, val_name);
+		strconcat(sizeof(val_name), val_name, "gl_hud_offset_grip_h_rot", _prefix);
+		hi->m_measures.m_hands_offset[1][2] = pSettings->r_fvector3(m_hud_sect, val_name);
+	}
+
+	// UPDATE HUD GRIP VERTICAL 
+	else if (IsGripvAttached())
+	{
+		strconcat(sizeof(val_name), val_name, "hands_position_grip_v", _prefix);
+		hi->m_measures.m_hands_attach[0] = pSettings->r_fvector3(m_hud_sect, val_name);
+		strconcat(sizeof(val_name), val_name, "hands_orientation_grip_v", _prefix);
+		hi->m_measures.m_hands_attach[1] = pSettings->r_fvector3(m_hud_sect, val_name);
+
+		strconcat(sizeof(val_name), val_name, "gl_hud_offset_grip_v_pos", _prefix);
+		hi->m_measures.m_hands_offset[0][2] = pSettings->r_fvector3(m_hud_sect, val_name);
+		strconcat(sizeof(val_name), val_name, "gl_hud_offset_grip_v_rot", _prefix);
+		hi->m_measures.m_hands_offset[1][2] = pSettings->r_fvector3(m_hud_sect, val_name);
+	}
+
+	// UPDATE HUD DEFAULT
+	else
+	{
+		strconcat(sizeof(val_name), val_name, "hands_position", _prefix);
+		hi->m_measures.m_hands_attach[0] = pSettings->r_fvector3(m_hud_sect, val_name);
+		strconcat(sizeof(val_name), val_name, "hands_orientation", _prefix);
+		hi->m_measures.m_hands_attach[1] = pSettings->r_fvector3(m_hud_sect, val_name);
+
+		strconcat(sizeof(val_name), val_name, "gl_hud_offset_pos", _prefix);
+		hi->m_measures.m_hands_offset[0][2] = pSettings->r_fvector3(m_hud_sect, val_name);
+		strconcat(sizeof(val_name), val_name, "gl_hud_offset_rot", _prefix);
+		hi->m_measures.m_hands_offset[1][2] = pSettings->r_fvector3(m_hud_sect, val_name);
+	}
+}
+
+void CWeapon::Update_WPN_HUD_HIDING()
+{
+	attachable_hud_item* hi = HudItemData();
+
+	if (!hi)
+		return;
+
+	bool is_16x9 = UI().is_widescreen();
+	string64	_prefix;
+	xr_sprintf(_prefix, "%s", is_16x9 ? "_16x9" : "");
+	string128	val_name;
+
+	luabind::functor<void> funct;
+
+	if (!IsZoomed())
+	{
+		PlaySound("sndHideBtt", get_LastFP());
+
+		if (ai().script_engine().functor("lfo_weapons.on_actor_weapon_hide", funct))
+			funct();
+
+		if (pSettings->line_exist(m_hud_sect, "hide_hands_position") && pSettings->line_exist(m_hud_sect, "hide_hands_orientation"))
+		{
+			strconcat(sizeof(val_name), val_name, "hide_hands_position", _prefix);
+			hi->m_measures.m_hands_attach[0] = pSettings->r_fvector3(m_hud_sect, val_name);
+			strconcat(sizeof(val_name), val_name, "hide_hands_orientation", _prefix);
+			hi->m_measures.m_hands_attach[1] = pSettings->r_fvector3(m_hud_sect, val_name);
+		}
+
+		// UPDATE HUD GRIP HORIZONTAL
+		if (IsGripAttached())
+		{
+			PlayHUDMotionIfExists({ "anm_hide_weapons_grip_h" }, true, GetState());
+		}
+
+		// UPDATE HUD GRIP VERTICAL 
+		else if (IsGripvAttached())
+		{
+			PlayHUDMotionIfExists({ "anm_hide_weapons_grip_v" }, true, GetState());
+		}
+
+		// UPDATE HUD GL 
+		else if (IsGrenadeLauncherAttached())
+		{
+			PlayHUDMotionIfExists({ "anm_hide_weapons_gl" }, true, GetState());
+		}
+		// UPDATE HUD DEFAULT
+		else
+		{
+			PlayHUDMotionIfExists({ "anm_hide_weapons" }, true, GetState());
+		}
+	}
+}
+
+void CWeapon::Update_WPN_HUD_UNHIDING()
+{
+	attachable_hud_item* hi = HudItemData();
+
+	if (!hi)
+		return;
+
+	bool is_16x9 = UI().is_widescreen();
+	string64	_prefix;
+	xr_sprintf(_prefix, "%s", is_16x9 ? "_16x9" : "");
+	string128	val_name;
+
+	luabind::functor<void> funct;
+
+	if (!IsZoomed())
+	{
+		PlaySound("sndUnHideBtt", get_LastFP());
+
+		if (ai().script_engine().functor("lfo_weapons.on_actor_weapon_unhide", funct))
+			funct();
+
+		Update_WPN_HUD();
+
+		// UPDATE HUD GRIP HORIZONTAL
+		if (IsGripAttached())
+		{
+			PlayHUDMotionIfExists({ "anm_unhide_weapons_grip_h" }, true, GetState());
+		}
+
+		// UPDATE HUD GRIP VERTICAL 
+		else if (IsGripvAttached())
+		{
+			PlayHUDMotionIfExists({ "anm_unhide_weapons_grip_v" }, true, GetState());
+		}
+
+		// UPDATE HUD GL 
+		else if (IsGrenadeLauncherAttached())
+		{
+			PlayHUDMotionIfExists({ "anm_unhide_weapons_gl" }, true, GetState());
+		}
+		// UPDATE HUD DEFAULT
+		else
+		{
+			PlayHUDMotionIfExists({ "anm_unhide_weapons" }, true, GetState());
+		}
+	}
+}

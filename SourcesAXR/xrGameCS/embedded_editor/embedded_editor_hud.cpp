@@ -109,6 +109,9 @@ void ShowHudEditor(bool& show)
 		ImGui::DragFloat3("hands_orientation_grip_h 0", (float*)&item->m_measures.m_hands_attach[1], drag_intensity, NULL, NULL, "%.6f");
 		ImGui::DragFloat3("hands_position_grip_v 0", (float*)&item->m_measures.m_hands_attach[0], drag_intensity, NULL, NULL, "%.6f");
 		ImGui::DragFloat3("hands_orientation_grip_v 0", (float*)&item->m_measures.m_hands_attach[1], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("hide_hands_position 0", (float*)&item->m_measures.m_hands_attach[0], drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("hide_hands_orientation 0", (float*)&item->m_measures.m_hands_attach[1], drag_intensity, NULL, NULL, "%.6f");
+
 
 		ImGui::DragFloat3("item_position 0", (float*)&item->m_measures.m_item_attach[0], drag_intensity, NULL, NULL, "%.6f");
 		ImGui::DragFloat3("item_orientation 0", (float*)&item->m_measures.m_item_attach[1], drag_intensity, NULL, NULL, "%.6f");

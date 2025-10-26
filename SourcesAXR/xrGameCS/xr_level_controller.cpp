@@ -60,6 +60,8 @@ _action  actions[]		= {
 	{ "wpn_zoom_dec",		kWPN_ZOOM_DEC			,_both},	
 	{ "wpn_reload",			kWPN_RELOAD				,_both},	
 	{ "wpn_inspect_weapon",	kWPN_INSPECT			,_both},
+	{ "wpn_hide_weapon",	kWPN_HIDE_WEAPON		,_both},
+	{ "wpn_unhide_weapon",	kWPN_UNHIDE_WEAPON		,_both},
 	{ "wpn_func",			kWPN_FUNC				,_both},	
 	{ "wpn_firemode_prev",	kWPN_FIREMODE_PREV		,_both},	
 	{ "wpn_firemode_next",	kWPN_FIREMODE_NEXT		,_both},

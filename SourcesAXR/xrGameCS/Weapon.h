@@ -88,6 +88,8 @@ public:
 	void					UpdateAltScope();
 	void					UpdateAimOffsets();
 	void					Update_WPN_HUD();
+	void					Update_WPN_HUD_HIDING();
+	void					Update_WPN_HUD_UNHIDING();
 	void					UpdateAimFOV();
 	void					UpdateAltAimZoomFactor();
 	void					UpdateFOVZoomIn();

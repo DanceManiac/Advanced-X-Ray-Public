@@ -60,6 +60,7 @@ enum
 	AF_LFO_WEATHER_FALLOUT_SIREN		= (1 << 25),
 	AF_LFO_NO_AI_MAP_POINTS				= (1 << 27),
 	AF_LFO_NO_AI_INDICATORS				= (1 << 28),
+	AF_LFO_WPN_BORE_DBG					= (1 << 29),
 	//	AF_TAKE_ITEM_ANIMATIONS					= (1<<21),
 };
 

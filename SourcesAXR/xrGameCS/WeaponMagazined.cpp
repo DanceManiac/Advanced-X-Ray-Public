@@ -111,8 +111,10 @@ void CWeaponMagazined::Load	(LPCSTR section)
 	SetAnimFlag(ANM_SHOT_AIM,		"anm_shots_when_aim");
 	
 	// Sounds
-	m_sounds.LoadSound(section,"snd_draw",			"sndShow",			false,	m_eSoundShow		);
-	m_sounds.LoadSound(section,"snd_holster",		"sndHide",			false,	m_eSoundHide		);
+	m_sounds.LoadSound(section,"snd_draw",			"sndShow",				false,	m_eSoundShow		);
+	m_sounds.LoadSound(section,"snd_holster",		"sndHide",				false,	m_eSoundHide		);
+	m_sounds.LoadSound(section, "snd_holster_btt",	"sndHideBtt",			false, m_eSoundHide);
+	m_sounds.LoadSound(section, "snd_show_btt",		"sndUnHideBtt",			false, m_eSoundHide);
 
 	//Alundaio: LAYERED_SND_SHOOT
 	m_sounds.LoadSound(section, "snd_shoot", "sndShot", false, m_eSoundShot);
@@ -1111,6 +1113,12 @@ void CWeaponMagazined::UpdateSounds	()
 		m_sounds.SetPosition("sndInspectWeaponEmptyGlUsed", P);
 	if (WeaponSoundExist(m_section_id.c_str(), "sndInspectWeaponMisfireGlUsed"))
 		m_sounds.SetPosition("sndInspectWeaponMisfireGlUsed", P);
+
+	if (WeaponSoundExist(m_section_id.c_str(), "sndHideBtt"))
+		m_sounds.SetPosition("sndHideBtt", P);
+
+	if (WeaponSoundExist(m_section_id.c_str(), "sndUnHideBtt"))
+		m_sounds.SetPosition("sndUnHideBtt", P);
 
 //. nah	m_sounds.SetPosition("sndShot", P);
 	m_sounds.SetPosition("sndReload", P);
@@ -2410,41 +2418,100 @@ bool CWeaponMagazined::Action(s32 cmd, u32 flags)
 	{
 		if (flags & CMD_START)
 		{
-
-		//	UpdateWeaponDoFInspect();
+			Update_WPN_HUD();
 
 			if (isHUDAnimationExist("anm_inspect_weapon") && (!IsMisfire()))
 			{
-				if (iAmmoElapsed == 0)
+				if (IsGripAttached())
 				{
-					if (IsGrenadeLauncherAttached() && isHUDAnimationExist("anm_inspect_weapon_empty_gl"))
+					PlaySound("sndInspectWeapon", get_LastFP());
+
+					if (IsMisfireNow())
 					{
-						PlayHUDMotion("anm_inspect_weapon_empty_gl", FALSE, this, GetState());
-						PlaySound("sndInspectWeaponEmptyGl", get_LastFP());
-						//Msg("Weapon Inspect Empty GL");
+						PlayHUDMotionIfExists({ "anm_inspect_weapon_misfire_grip_h" }, true, GetState());
+					}
+					else if (IsMagazineEmpty())
+					{
+						PlayHUDMotionIfExists({ "anm_inspect_weapon_empty_grip_h" }, true, GetState());
 					}
 					else
 					{
-						PlayHUDMotion("anm_inspect_weapon_empty", FALSE, this, GetState());
-						PlaySound("sndInspectWeaponEmpty", get_LastFP());
-						//Msg("Weapon Inspect Empty");
+						PlayHUDMotion("anm_inspect_weapon_grip_h", TRUE, this, GetState());
+					}
+				}
+				else if (IsGripvAttached())
+				{
+					PlaySound("sndInspectWeapon", get_LastFP());
+
+					if (IsMisfireNow())
+					{
+						PlayHUDMotionIfExists({ "anm_inspect_weapon_misfire_grip_v" }, true, GetState());
+					}
+					else if (IsMagazineEmpty())
+					{
+						PlayHUDMotionIfExists({ "anm_inspect_weapon_empty_grip_v" }, true, GetState());
+					}
+					else
+					{
+						PlayHUDMotion("anm_inspect_weapon_grip_v", TRUE, this, GetState());
+					}
+				}
+				else if (IsGrenadeLauncherAttached())
+				{
+					PlaySound("sndInspectWeaponGl", get_LastFP());
+
+					if (IsMisfireNow())
+					{
+						PlayHUDMotionIfExists({ "anm_inspect_weapon_gl" }, true, GetState());
+					}
+					else if (IsMagazineEmpty())
+					{
+						PlayHUDMotionIfExists({ "anm_inspect_weapon_gl" }, true, GetState());
+					}
+					else
+					{
+						PlayHUDMotion("anm_inspect_weapon_gl", TRUE, this, GetState());
 					}
 				}
 				else
 				{
-					if (IsGrenadeLauncherAttached() && isHUDAnimationExist("anm_inspect_weapon_gl"))
+					PlaySound("sndInspectWeapon", get_LastFP());
+
+					if (IsMisfireNow())
 					{
-						PlayHUDMotion("anm_inspect_weapon_gl", FALSE, this, GetState());
-						PlaySound("sndInspectWeaponGl", get_LastFP());
-						//Msg("Weapon Inspect GL");
+						PlayHUDMotionIfExists({ "anm_inspect_weapon_misfire" }, true, GetState());
+					}
+					else if (IsMagazineEmpty())
+					{
+						PlayHUDMotionIfExists({ "anm_inspect_weapon_empty" }, true, GetState());
 					}
 					else
 					{
-						PlayHUDMotion("anm_inspect_weapon", FALSE, this, GetState());
-						PlaySound("sndInspectWeapon", get_LastFP());
-						//Msg("Weapon Inspect");
+						PlayHUDMotion("anm_inspect_weapon", TRUE, this, GetState());
 					}
 				}
+			}
+		};
+	}
+	return true;
+	case kWPN_HIDE_WEAPON:
+	{
+		if (flags & CMD_START)
+		{
+			if (!IsPending() && !IsZoomed())
+			{
+				Update_WPN_HUD_HIDING();
+			}
+		};
+	}
+	return true;
+	case kWPN_UNHIDE_WEAPON:
+	{
+		if (flags & CMD_START)
+		{
+			if (!IsPending() && !IsZoomed())
+			{
+				Update_WPN_HUD_UNHIDING();
 			}
 		};
 	}
