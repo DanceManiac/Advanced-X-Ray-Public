@@ -2102,6 +2102,40 @@ void CActor::UpdateRestores()
 		}
 	}
 
+	CHelmet* helmet = GetHelmet();
+	if (helmet)
+	{
+		conditions().ChangeBleeding(helmet->m_fBleedingRestoreSpeed * f_update_time);
+		conditions().ChangeHealth(helmet->m_fHealthRestoreSpeed * f_update_time);
+		conditions().ChangePower(helmet->m_fPowerRestoreSpeed * f_update_time);
+		conditions().ChangeSatiety(helmet->m_fSatietyRestoreSpeed * f_update_time);
+		conditions().ChangeThirst(helmet->m_fThirstRestoreSpeed * f_update_time);
+		conditions().ChangeRadiation(helmet->m_fRadiationRestoreSpeed * f_update_time);
+		conditions().ChangeIntoxication(helmet->m_fIntoxicationRestoreSpeed * f_update_time);
+		conditions().ChangeSleepeness(helmet->m_fSleepenessRestoreSpeed * f_update_time);
+		conditions().ChangeAlcoholism(helmet->m_fAlcoholismRestoreSpeed * f_update_time);
+		conditions().ChangeNarcotism(helmet->m_fNarcotismRestoreSpeed * f_update_time);
+		conditions().ChangePsyHealth(helmet->m_fPsyHealthRestoreSpeed * f_update_time);
+		conditions().ChangeFrostbite(helmet->m_fFrostbiteRestoreSpeed * f_update_time);
+	}
+
+	CHelmet* second_helmet = GetSecondHelmet();
+	if (second_helmet)
+	{
+		conditions().ChangeBleeding(second_helmet->m_fBleedingRestoreSpeed * f_update_time);
+		conditions().ChangeHealth(second_helmet->m_fHealthRestoreSpeed * f_update_time);
+		conditions().ChangePower(second_helmet->m_fPowerRestoreSpeed * f_update_time);
+		conditions().ChangeSatiety(second_helmet->m_fSatietyRestoreSpeed * f_update_time);
+		conditions().ChangeThirst(second_helmet->m_fThirstRestoreSpeed * f_update_time);
+		conditions().ChangeRadiation(second_helmet->m_fRadiationRestoreSpeed * f_update_time);
+		conditions().ChangeIntoxication(second_helmet->m_fIntoxicationRestoreSpeed * f_update_time);
+		conditions().ChangeSleepeness(second_helmet->m_fSleepenessRestoreSpeed * f_update_time);
+		conditions().ChangeAlcoholism(second_helmet->m_fAlcoholismRestoreSpeed * f_update_time);
+		conditions().ChangeNarcotism(second_helmet->m_fNarcotismRestoreSpeed * f_update_time);
+		conditions().ChangePsyHealth(second_helmet->m_fPsyHealthRestoreSpeed * f_update_time);
+		conditions().ChangeFrostbite(second_helmet->m_fFrostbiteRestoreSpeed * f_update_time);
+	}
+
 	CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
 	if (backpack)
 	{
@@ -2526,351 +2560,479 @@ bool CActor::is_ai_obstacle				() const
 	return							(false);//true);
 }
 
-float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
+float CActor::GetRestoreSpeed(ALife::EConditionRestoreType const& type)
 {
 	float res = 0.0f;
-	switch ( type )
+	switch (type)
 	{
-		case ALife::eHealthRestoreSpeed:
+	case ALife::eHealthRestoreSpeed:
+	{
+		res = conditions().change_v().m_fV_HealthRestore;
+		res += conditions().V_SatietyHealth() * ((conditions().GetSatiety() > 0.0f) ? 1.0f : -1.0f);
+
+		TIItemContainer::iterator itb = inventory().m_belt.begin();
+		TIItemContainer::iterator ite = inventory().m_belt.end();
+		for (; itb != ite; ++itb)
 		{
-			res = conditions().change_v().m_fV_HealthRestore;
-			res += conditions().V_SatietyHealth() * ( (conditions().GetSatiety() > 0.0f) ? 1.0f : -1.0f );
-			res += conditions().V_InfectionHealth() * ((conditions().GetInfection() > 0.0f) ? 1.0f : -1.0f);
-
-			TIItemContainer::iterator itb = inventory().m_belt.begin();
-			TIItemContainer::iterator ite = inventory().m_belt.end();
-			for( ; itb != ite; ++itb ) 
+			CArtefact* artefact = smart_cast<CArtefact*>(*itb);
+			if (artefact)
 			{
-				CArtefact*	artefact = smart_cast<CArtefact*>( *itb );
-				if ( artefact )
-				{
-					res += artefact->m_fHealthRestoreSpeed;
-				}
+				res += artefact->m_fHealthRestoreSpeed;
 			}
-			CCustomOutfit* outfit = GetOutfit();
-			if ( outfit )
-			{
-				res += outfit->m_fHealthRestoreSpeed;
-			}
-
-			CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
-			if (backpack)
-			{
-				res += backpack->m_fHealthRestoreSpeed;
-			}
-			break;
 		}
-		case ALife::eRadiationRestoreSpeed:
-		{	
-			TIItemContainer::iterator itb = inventory().m_belt.begin();
-			TIItemContainer::iterator ite = inventory().m_belt.end();
-			for( ; itb != ite; ++itb ) 
-			{
-				CArtefact*	artefact = smart_cast<CArtefact*>( *itb );
-				if ( artefact )
-				{
-					res += artefact->m_fRadiationRestoreSpeed;
-				}
-			}
-			CCustomOutfit* outfit = GetOutfit();
-			if ( outfit )
-			{
-				res += outfit->m_fRadiationRestoreSpeed;
-			}
-
-			CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
-			if (backpack)
-			{
-				res += backpack->m_fRadiationRestoreSpeed;
-			}
-			break;
-		}
-		case ALife::eSatietyRestoreSpeed:
+		CCustomOutfit* outfit = GetOutfit();
+		if (outfit)
 		{
-			res = conditions().V_Satiety();
-
-			TIItemContainer::iterator itb = inventory().m_belt.begin();
-			TIItemContainer::iterator ite = inventory().m_belt.end();
-			for( ; itb != ite; ++itb ) 
-			{
-				CArtefact*	artefact = smart_cast<CArtefact*>( *itb );
-				if ( artefact )
-				{
-					res += artefact->m_fSatietyRestoreSpeed;
-				}
-			}
-			CCustomOutfit* outfit = GetOutfit();
-			if ( outfit )
-			{
-				res += outfit->m_fSatietyRestoreSpeed;
-			}
-
-			CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
-			if (backpack)
-			{
-				res += backpack->m_fSatietyRestoreSpeed;
-			}
-			break;
+			res += outfit->m_fHealthRestoreSpeed;
 		}
-		case ALife::ePowerRestoreSpeed:
+
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
 		{
-			res = conditions().GetSatietyPower();
-
-			TIItemContainer::iterator itb = inventory().m_belt.begin();
-			TIItemContainer::iterator ite = inventory().m_belt.end();
-			for( ; itb != ite; ++itb ) 
-			{
-				CArtefact*	artefact = smart_cast<CArtefact*>( *itb );
-				if ( artefact )
-				{
-					res += artefact->m_fPowerRestoreSpeed;
-				}
-			}
-			CCustomOutfit* outfit = GetOutfit();
-			if ( outfit )
-			{
-				res += outfit->m_fPowerRestoreSpeed;
-			}
-
-			CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
-			if (backpack)
-			{
-				res += backpack->m_fPowerRestoreSpeed;
-			}
-			break;
+			res += helmet->m_fHealthRestoreSpeed;
 		}
-		case ALife::eBleedingRestoreSpeed:
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
 		{
-			res = conditions().change_v().m_fV_WoundIncarnation;
-	
-			TIItemContainer::iterator itb = inventory().m_belt.begin();
-			TIItemContainer::iterator ite = inventory().m_belt.end();
-			for( ; itb != ite; ++itb ) 
-			{
-				CArtefact*	artefact = smart_cast<CArtefact*>( *itb );
-				if ( artefact )
-				{
-					res += artefact->m_fBleedingRestoreSpeed;
-				}
-			}
-			CCustomOutfit* outfit = GetOutfit();
-			if ( outfit )
-			{
-				res += outfit->m_fBleedingRestoreSpeed;
-			}
-
-			CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
-			if (backpack)
-			{
-				res += backpack->m_fBleedingRestoreSpeed;
-			}
-			break;
+			res += second_helmet->m_fHealthRestoreSpeed;
 		}
-		case ALife::eThirstRestoreSpeed:
+
+		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+		if (backpack)
 		{
-			res = conditions().V_Thirst();
-
-			TIItemContainer::iterator itb = inventory().m_belt.begin();
-			TIItemContainer::iterator ite = inventory().m_belt.end();
-			for (; itb != ite; ++itb)
-			{
-				CArtefact*	artefact = smart_cast<CArtefact*>(*itb);
-				if (artefact)
-				{
-					res += artefact->m_fThirstRestoreSpeed;
-				}
-			}
-			CCustomOutfit* outfit = GetOutfit();
-			if (outfit)
-			{
-				res += outfit->m_fThirstRestoreSpeed;
-			}
-
-			CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
-			if (backpack)
-			{
-				res += backpack->m_fThirstRestoreSpeed;
-			}
-			break;
+			res += backpack->m_fHealthRestoreSpeed;
 		}
-		case ALife::eInfectionRestoreSpeed: //LFO
+		break;
+	}
+	case ALife::eRadiationRestoreSpeed:
+	{
+		TIItemContainer::iterator itb = inventory().m_belt.begin();
+		TIItemContainer::iterator ite = inventory().m_belt.end();
+		for (; itb != ite; ++itb)
 		{
-			TIItemContainer::iterator itb = inventory().m_belt.begin();
-			TIItemContainer::iterator ite = inventory().m_belt.end();
-			for (; itb != ite; ++itb)
+			CArtefact* artefact = smart_cast<CArtefact*>(*itb);
+			if (artefact)
 			{
-				CArtefact* artefact = smart_cast<CArtefact*>(*itb);
-				if (artefact)
-				{
-					res += artefact->m_fInfectionRestoreSpeed;
-				}
+				res += artefact->m_fRadiationRestoreSpeed;
 			}
-			/*
-			CCustomOutfit* outfit = GetOutfit();
-			if (outfit)
-			{
-				res += outfit->m_fInfectionRestoreSpeed;
-			}
-
-			CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
-			if (backpack)
-			{
-				res += backpack->m_fInfectionRestoreSpeed;
-			}
-			*/
-			break;
 		}
-		case ALife::eIntoxicationRestoreSpeed:
+		CCustomOutfit* outfit = GetOutfit();
+		if (outfit)
 		{
-			TIItemContainer::iterator itb = inventory().m_belt.begin();
-			TIItemContainer::iterator ite = inventory().m_belt.end();
-			for (; itb != ite; ++itb)
-			{
-				CArtefact* artefact = smart_cast<CArtefact*>(*itb);
-				if (artefact)
-				{
-					res += artefact->m_fIntoxicationRestoreSpeed;
-				}
-			}
-			CCustomOutfit* outfit = GetOutfit();
-			if (outfit)
-			{
-				res += outfit->m_fIntoxicationRestoreSpeed;
-			}
-
-			CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
-			if (backpack)
-			{
-				res += backpack->m_fIntoxicationRestoreSpeed;
-			}
-			break;
+			res += outfit->m_fRadiationRestoreSpeed;
 		}
-		case ALife::eSleepenessRestoreSpeed:
+
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
 		{
-			TIItemContainer::iterator itb = inventory().m_belt.begin();
-			TIItemContainer::iterator ite = inventory().m_belt.end();
-			for (; itb != ite; ++itb)
-			{
-				CArtefact* artefact = smart_cast<CArtefact*>(*itb);
-				if (artefact)
-				{
-					res += artefact->m_fSleepenessRestoreSpeed;
-				}
-			}
-			CCustomOutfit* outfit = GetOutfit();
-			if (outfit)
-			{
-				res += outfit->m_fSleepenessRestoreSpeed;
-			}
-
-			CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
-			if (backpack)
-			{
-				res += backpack->m_fSleepenessRestoreSpeed;
-			}
-			break;
+			res += helmet->m_fRadiationRestoreSpeed;
 		}
-		case ALife::eAlcoholismRestoreSpeed:
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
 		{
-			TIItemContainer::iterator itb = inventory().m_belt.begin();
-			TIItemContainer::iterator ite = inventory().m_belt.end();
-			for (; itb != ite; ++itb)
-			{
-				CArtefact* artefact = smart_cast<CArtefact*>(*itb);
-				if (artefact)
-				{
-					res += artefact->m_fAlcoholismRestoreSpeed;
-				}
-			}
-			CCustomOutfit* outfit = GetOutfit();
-			if (outfit)
-			{
-				res += outfit->m_fAlcoholismRestoreSpeed;
-			}
-
-			CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
-			if (backpack)
-			{
-				res += backpack->m_fAlcoholismRestoreSpeed;
-			}
-			break;
+			res += second_helmet->m_fRadiationRestoreSpeed;
 		}
-		case ALife::eNarcotismRestoreSpeed:
+
+		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+		if (backpack)
 		{
-			TIItemContainer::iterator itb = inventory().m_belt.begin();
-			TIItemContainer::iterator ite = inventory().m_belt.end();
-			for (; itb != ite; ++itb)
-			{
-				CArtefact* artefact = smart_cast<CArtefact*>(*itb);
-				if (artefact)
-				{
-					res += artefact->m_fNarcotismRestoreSpeed;
-				}
-			}
-			CCustomOutfit* outfit = GetOutfit();
-			if (outfit)
-			{
-				res += outfit->m_fNarcotismRestoreSpeed;
-			}
-
-			CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
-			if (backpack)
-			{
-				res += backpack->m_fNarcotismRestoreSpeed;
-			}
-			break;
+			res += backpack->m_fRadiationRestoreSpeed;
 		}
-		case ALife::ePsyHealthRestoreSpeed:
+		break;
+	}
+	case ALife::eSatietyRestoreSpeed:
+	{
+		res = conditions().V_Satiety();
+
+		TIItemContainer::iterator itb = inventory().m_belt.begin();
+		TIItemContainer::iterator ite = inventory().m_belt.end();
+		for (; itb != ite; ++itb)
 		{
-			TIItemContainer::iterator itb = inventory().m_belt.begin();
-			TIItemContainer::iterator ite = inventory().m_belt.end();
-			for (; itb != ite; ++itb)
+			CArtefact* artefact = smart_cast<CArtefact*>(*itb);
+			if (artefact)
 			{
-				CArtefact* artefact = smart_cast<CArtefact*>(*itb);
-				if (artefact)
-				{
-					res += artefact->m_fPsyHealthRestoreSpeed;
-				}
+				res += artefact->m_fSatietyRestoreSpeed;
 			}
-			CCustomOutfit* outfit = GetOutfit();
-			if (outfit)
-			{
-				res += outfit->m_fPsyHealthRestoreSpeed;
-			}
-
-			CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
-			if (backpack)
-			{
-				res += backpack->m_fPsyHealthRestoreSpeed;
-			}
-			break;
 		}
-		case ALife::eFrostbiteRestoreSpeed:
+		CCustomOutfit* outfit = GetOutfit();
+		if (outfit)
 		{
-			TIItemContainer::iterator itb = inventory().m_belt.begin();
-			TIItemContainer::iterator ite = inventory().m_belt.end();
-			for (; itb != ite; ++itb)
-			{
-				CArtefact* artefact = smart_cast<CArtefact*>(*itb);
-				if (artefact)
-				{
-					res += artefact->m_fFrostbiteRestoreSpeed;
-				}
-			}
-			CCustomOutfit* outfit = GetOutfit();
-			if (outfit)
-			{
-				res += outfit->m_fFrostbiteRestoreSpeed;
-			}
-
-			CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
-			if (backpack)
-			{
-				res += backpack->m_fFrostbiteRestoreSpeed;
-			}
-			break;
+			res += outfit->m_fSatietyRestoreSpeed;
 		}
+
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
+		{
+			res += helmet->m_fSatietyRestoreSpeed;
+		}
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
+		{
+			res += second_helmet->m_fSatietyRestoreSpeed;
+		}
+
+		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+		if (backpack)
+		{
+			res += backpack->m_fSatietyRestoreSpeed;
+		}
+		break;
+	}
+	case ALife::ePowerRestoreSpeed:
+	{
+		res = conditions().GetSatietyPower();
+
+		TIItemContainer::iterator itb = inventory().m_belt.begin();
+		TIItemContainer::iterator ite = inventory().m_belt.end();
+		for (; itb != ite; ++itb)
+		{
+			CArtefact* artefact = smart_cast<CArtefact*>(*itb);
+			if (artefact)
+			{
+				res += artefact->m_fPowerRestoreSpeed;
+			}
+		}
+		CCustomOutfit* outfit = GetOutfit();
+		if (outfit)
+		{
+			res += outfit->m_fPowerRestoreSpeed;
+			VERIFY(outfit->m_fPowerLoss != 0.0f);
+			res /= outfit->m_fPowerLoss;
+		}
+		else
+			res /= 0.5f;
+
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
+		{
+			res += helmet->m_fPowerRestoreSpeed;
+			VERIFY(helmet->m_fPowerLoss != 0.0f);
+			res /= helmet->m_fPowerLoss;
+		}
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
+		{
+			res += second_helmet->m_fPowerRestoreSpeed;
+			VERIFY(second_helmet->m_fPowerLoss != 0.0f);
+			res /= second_helmet->m_fPowerLoss;
+		}
+
+		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+		if (backpack)
+		{
+			res += backpack->m_fPowerRestoreSpeed;
+			VERIFY(backpack->m_fPowerLoss != 0.0f);
+			res /= backpack->m_fPowerLoss;
+		}
+
+		break;
+	}
+	case ALife::eBleedingRestoreSpeed:
+	{
+		res = conditions().change_v().m_fV_WoundIncarnation;
+
+		TIItemContainer::iterator itb = inventory().m_belt.begin();
+		TIItemContainer::iterator ite = inventory().m_belt.end();
+		for (; itb != ite; ++itb)
+		{
+			CArtefact* artefact = smart_cast<CArtefact*>(*itb);
+			if (artefact)
+			{
+				res += artefact->m_fBleedingRestoreSpeed;
+			}
+		}
+		CCustomOutfit* outfit = GetOutfit();
+		if (outfit)
+		{
+			res += outfit->m_fBleedingRestoreSpeed;
+		}
+
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
+		{
+			res += helmet->m_fBleedingRestoreSpeed;
+		}
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
+		{
+			res += second_helmet->m_fBleedingRestoreSpeed;
+		}
+
+		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+		if (backpack)
+		{
+			res += backpack->m_fBleedingRestoreSpeed;
+		}
+		break;
+	}
+	case ALife::eThirstRestoreSpeed:
+	{
+		res = conditions().V_Thirst();
+
+		TIItemContainer::iterator itb = inventory().m_belt.begin();
+		TIItemContainer::iterator ite = inventory().m_belt.end();
+		for (; itb != ite; ++itb)
+		{
+			CArtefact* artefact = smart_cast<CArtefact*>(*itb);
+			if (artefact)
+			{
+				res += artefact->m_fThirstRestoreSpeed;
+			}
+		}
+		CCustomOutfit* outfit = GetOutfit();
+		if (outfit)
+		{
+			res += outfit->m_fThirstRestoreSpeed;
+		}
+
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
+		{
+			res += helmet->m_fThirstRestoreSpeed;
+		}
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
+		{
+			res += second_helmet->m_fThirstRestoreSpeed;
+		}
+
+		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+		if (backpack)
+		{
+			res += backpack->m_fThirstRestoreSpeed;
+		}
+		break;
+	}
+	case ALife::eIntoxicationRestoreSpeed:
+	{
+		TIItemContainer::iterator itb = inventory().m_belt.begin();
+		TIItemContainer::iterator ite = inventory().m_belt.end();
+		for (; itb != ite; ++itb)
+		{
+			CArtefact* artefact = smart_cast<CArtefact*>(*itb);
+			if (artefact)
+			{
+				res += artefact->m_fIntoxicationRestoreSpeed;
+			}
+		}
+		CCustomOutfit* outfit = GetOutfit();
+		if (outfit)
+		{
+			res += outfit->m_fIntoxicationRestoreSpeed;
+		}
+
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
+		{
+			res += helmet->m_fIntoxicationRestoreSpeed;
+		}
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
+		{
+			res += second_helmet->m_fIntoxicationRestoreSpeed;
+		}
+
+		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+		if (backpack)
+		{
+			res += backpack->m_fIntoxicationRestoreSpeed;
+		}
+		break;
+	}
+	case ALife::eSleepenessRestoreSpeed:
+	{
+		TIItemContainer::iterator itb = inventory().m_belt.begin();
+		TIItemContainer::iterator ite = inventory().m_belt.end();
+		for (; itb != ite; ++itb)
+		{
+			CArtefact* artefact = smart_cast<CArtefact*>(*itb);
+			if (artefact)
+			{
+				res += artefact->m_fSleepenessRestoreSpeed;
+			}
+		}
+		CCustomOutfit* outfit = GetOutfit();
+		if (outfit)
+		{
+			res += outfit->m_fSleepenessRestoreSpeed;
+		}
+
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
+		{
+			res += helmet->m_fSleepenessRestoreSpeed;
+		}
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
+		{
+			res += second_helmet->m_fSleepenessRestoreSpeed;
+		}
+
+		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+		if (backpack)
+		{
+			res += backpack->m_fSleepenessRestoreSpeed;
+		}
+		break;
+	}
+	case ALife::eAlcoholismRestoreSpeed:
+	{
+		TIItemContainer::iterator itb = inventory().m_belt.begin();
+		TIItemContainer::iterator ite = inventory().m_belt.end();
+		for (; itb != ite; ++itb)
+		{
+			CArtefact* artefact = smart_cast<CArtefact*>(*itb);
+			if (artefact)
+			{
+				res += artefact->m_fAlcoholismRestoreSpeed;
+			}
+		}
+		CCustomOutfit* outfit = GetOutfit();
+		if (outfit)
+		{
+			res += outfit->m_fAlcoholismRestoreSpeed;
+		}
+
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
+		{
+			res += helmet->m_fAlcoholismRestoreSpeed;
+		}
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
+		{
+			res += second_helmet->m_fAlcoholismRestoreSpeed;
+		}
+
+		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+		if (backpack)
+		{
+			res += backpack->m_fAlcoholismRestoreSpeed;
+		}
+		break;
+	}
+	case ALife::eNarcotismRestoreSpeed:
+	{
+		TIItemContainer::iterator itb = inventory().m_belt.begin();
+		TIItemContainer::iterator ite = inventory().m_belt.end();
+		for (; itb != ite; ++itb)
+		{
+			CArtefact* artefact = smart_cast<CArtefact*>(*itb);
+			if (artefact)
+			{
+				res += artefact->m_fNarcotismRestoreSpeed;
+			}
+		}
+		CCustomOutfit* outfit = GetOutfit();
+		if (outfit)
+		{
+			res += outfit->m_fNarcotismRestoreSpeed;
+		}
+
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
+		{
+			res += helmet->m_fNarcotismRestoreSpeed;
+		}
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
+		{
+			res += second_helmet->m_fNarcotismRestoreSpeed;
+		}
+
+		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+		if (backpack)
+		{
+			res += backpack->m_fNarcotismRestoreSpeed;
+		}
+		break;
+	}
+	case ALife::ePsyHealthRestoreSpeed:
+	{
+		TIItemContainer::iterator itb = inventory().m_belt.begin();
+		TIItemContainer::iterator ite = inventory().m_belt.end();
+		for (; itb != ite; ++itb)
+		{
+			CArtefact* artefact = smart_cast<CArtefact*>(*itb);
+			if (artefact)
+			{
+				res += artefact->m_fPsyHealthRestoreSpeed;
+			}
+		}
+		CCustomOutfit* outfit = GetOutfit();
+		if (outfit)
+		{
+			res += outfit->m_fPsyHealthRestoreSpeed;
+		}
+
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
+		{
+			res += helmet->m_fPsyHealthRestoreSpeed;
+		}
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
+		{
+			res += second_helmet->m_fPsyHealthRestoreSpeed;
+		}
+
+		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+		if (backpack)
+		{
+			res += backpack->m_fPsyHealthRestoreSpeed;
+		}
+		break;
+	}
+	case ALife::eFrostbiteRestoreSpeed:
+	{
+		TIItemContainer::iterator itb = inventory().m_belt.begin();
+		TIItemContainer::iterator ite = inventory().m_belt.end();
+		for (; itb != ite; ++itb)
+		{
+			CArtefact* artefact = smart_cast<CArtefact*>(*itb);
+			if (artefact)
+			{
+				res += artefact->m_fFrostbiteRestoreSpeed;
+			}
+		}
+		CCustomOutfit* outfit = GetOutfit();
+		if (outfit)
+		{
+			res += outfit->m_fFrostbiteRestoreSpeed;
+		}
+
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
+		{
+			res += helmet->m_fFrostbiteRestoreSpeed;
+		}
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
+		{
+			res += second_helmet->m_fFrostbiteRestoreSpeed;
+		}
+
+		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+		if (backpack)
+		{
+			res += backpack->m_fFrostbiteRestoreSpeed;
+		}
+		break;
+	}
 	}//switch
+
 	return res;
 }
 

@@ -138,6 +138,7 @@ public:
 
 	virtual CCustomOutfit*			GetOutfit()	const {return nullptr;};
 			CInventoryItem*			GetHelmet() const;
+			CInventoryItem*			GetSecondHelmet () const;
 
 	//////////////////////////////////////////////////////////////////////////
 	//игровые характеристики персонажа

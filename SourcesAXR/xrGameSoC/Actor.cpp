@@ -1944,6 +1944,40 @@ void CActor::UpdateRestores()
 		}
 	}
 
+	CHelmet* helmet = GetHelmet();
+	if (helmet)
+	{
+		conditions().ChangeBleeding(helmet->m_fBleedingRestoreSpeed * f_update_time);
+		conditions().ChangeHealth(helmet->m_fHealthRestoreSpeed * f_update_time);
+		conditions().ChangePower(helmet->m_fPowerRestoreSpeed * f_update_time);
+		conditions().ChangeSatiety(helmet->m_fSatietyRestoreSpeed * f_update_time);
+		conditions().ChangeThirst(helmet->m_fThirstRestoreSpeed * f_update_time);
+		conditions().ChangeRadiation(helmet->m_fRadiationRestoreSpeed * f_update_time);
+		conditions().ChangeIntoxication(helmet->m_fIntoxicationRestoreSpeed * f_update_time);
+		conditions().ChangeSleepeness(helmet->m_fSleepenessRestoreSpeed * f_update_time);
+		conditions().ChangeAlcoholism(helmet->m_fAlcoholismRestoreSpeed * f_update_time);
+		conditions().ChangeNarcotism(helmet->m_fNarcotismRestoreSpeed * f_update_time);
+		conditions().ChangePsyHealth(helmet->m_fPsyHealthRestoreSpeed * f_update_time);
+		conditions().ChangeFrostbite(helmet->m_fFrostbiteRestoreSpeed * f_update_time);
+	}
+
+	CHelmet* second_helmet = GetSecondHelmet();
+	if (second_helmet)
+	{
+		conditions().ChangeBleeding(second_helmet->m_fBleedingRestoreSpeed * f_update_time);
+		conditions().ChangeHealth(second_helmet->m_fHealthRestoreSpeed * f_update_time);
+		conditions().ChangePower(second_helmet->m_fPowerRestoreSpeed * f_update_time);
+		conditions().ChangeSatiety(second_helmet->m_fSatietyRestoreSpeed * f_update_time);
+		conditions().ChangeThirst(second_helmet->m_fThirstRestoreSpeed * f_update_time);
+		conditions().ChangeRadiation(second_helmet->m_fRadiationRestoreSpeed * f_update_time);
+		conditions().ChangeIntoxication(second_helmet->m_fIntoxicationRestoreSpeed * f_update_time);
+		conditions().ChangeSleepeness(second_helmet->m_fSleepenessRestoreSpeed * f_update_time);
+		conditions().ChangeAlcoholism(second_helmet->m_fAlcoholismRestoreSpeed * f_update_time);
+		conditions().ChangeNarcotism(second_helmet->m_fNarcotismRestoreSpeed * f_update_time);
+		conditions().ChangePsyHealth(second_helmet->m_fPsyHealthRestoreSpeed * f_update_time);
+		conditions().ChangeFrostbite(second_helmet->m_fFrostbiteRestoreSpeed * f_update_time);
+	}
+
 	CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
 	if (backpack)
 	{
@@ -2318,8 +2352,20 @@ bool CActor::is_on_ground()
 
 CCustomOutfit* CActor::GetOutfit() const
 {
-	PIItem _of	= inventory().m_slots[OUTFIT_SLOT].m_pIItem;
-	return _of?smart_cast<CCustomOutfit*>(_of):NULL;
+	PIItem outfit	= inventory().m_slots[OUTFIT_SLOT].m_pIItem;
+	return outfit ? smart_cast<CCustomOutfit*>(outfit) : nullptr;
+}
+
+CHelmet* CActor::GetHelmet() const
+{
+	PIItem helmet = inventory().m_slots[HELMET_SLOT].m_pIItem;
+	return helmet ? smart_cast<CHelmet*>(helmet) : nullptr;
+}
+
+CHelmet* CActor::GetSecondHelmet() const
+{
+	PIItem second_helmet = inventory().m_slots[SECOND_HELMET_SLOT].m_pIItem;
+	return second_helmet ? smart_cast<CHelmet*>(second_helmet) : nullptr;
 }
 
 void CActor::NVGAnimCheckDetector()
