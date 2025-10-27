@@ -63,6 +63,14 @@ void CHelmet::Load(LPCSTR section)
 	m_fSatietyRestoreSpeed			= READ_IF_EXISTS(pSettings, r_float, section, "satiety_restore_speed",   0.0f );
 	m_fPowerRestoreSpeed			= READ_IF_EXISTS(pSettings, r_float, section, "power_restore_speed",     0.0f );
 	m_fBleedingRestoreSpeed			= READ_IF_EXISTS(pSettings, r_float, section, "bleeding_restore_speed",  0.0f );
+	m_fThirstRestoreSpeed			= READ_IF_EXISTS(pSettings, r_float, section, "thirst_restore_speed",	 0.0f );
+	m_fIntoxicationRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "intoxication_restore_speed", 0.0f);
+	m_fSleepenessRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "sleepeness_restore_speed", 0.0f);
+	m_fAlcoholismRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "alcoholism_restore_speed", 0.0f);
+	m_fNarcotismRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "narcotism_restore_speed", 0.0f);
+	m_fPsyHealthRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "psy_health_restore_speed", 0.0f);
+	m_fFrostbiteRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "frostbite_restore_speed", 0.0f);
+
 	m_fPowerLoss					= READ_IF_EXISTS(pSettings, r_float, section, "power_loss",    1.0f );
 	m_fFilterDegradation			= READ_IF_EXISTS(pSettings, r_float, section, "filter_degradation_speed", 0.0f);
 	m_fMaxFilterCondition			= READ_IF_EXISTS(pSettings, r_float, section, "max_filter_condition", 1.0f);
