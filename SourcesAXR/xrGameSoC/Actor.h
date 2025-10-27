@@ -720,6 +720,8 @@ protected:
 public:
 		void							SetWeaponHideState				(u32 State, bool bSet, bool bBlockQuickWpn = true);
 		virtual CCustomOutfit*			GetOutfit() const;
+		virtual CHelmet*				GetHelmet() const;
+		virtual CHelmet*				GetSecondHelmet() const;
 private:
 	CActorCondition				*m_entity_condition;
 

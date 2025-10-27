@@ -2125,6 +2125,40 @@ void CActor::UpdateRestores()
 		}
 	}
 
+	CHelmet* helmet = GetHelmet();
+	if (helmet)
+	{
+		conditions().ChangeBleeding(helmet->m_fBleedingRestoreSpeed * f_update_time);
+		conditions().ChangeHealth(helmet->m_fHealthRestoreSpeed * f_update_time);
+		conditions().ChangePower(helmet->m_fPowerRestoreSpeed * f_update_time);
+		conditions().ChangeSatiety(helmet->m_fSatietyRestoreSpeed * f_update_time);
+		conditions().ChangeThirst(helmet->m_fThirstRestoreSpeed * f_update_time);
+		conditions().ChangeRadiation(helmet->m_fRadiationRestoreSpeed * f_update_time);
+		conditions().ChangeIntoxication(helmet->m_fIntoxicationRestoreSpeed * f_update_time);
+		conditions().ChangeSleepeness(helmet->m_fSleepenessRestoreSpeed * f_update_time);
+		conditions().ChangeAlcoholism(helmet->m_fAlcoholismRestoreSpeed * f_update_time);
+		conditions().ChangeNarcotism(helmet->m_fNarcotismRestoreSpeed * f_update_time);
+		conditions().ChangePsyHealth(helmet->m_fPsyHealthRestoreSpeed * f_update_time);
+		conditions().ChangeFrostbite(helmet->m_fFrostbiteRestoreSpeed * f_update_time);
+	}
+
+	CHelmet* second_helmet = GetSecondHelmet();
+	if (second_helmet)
+	{
+		conditions().ChangeBleeding(second_helmet->m_fBleedingRestoreSpeed * f_update_time);
+		conditions().ChangeHealth(second_helmet->m_fHealthRestoreSpeed * f_update_time);
+		conditions().ChangePower(second_helmet->m_fPowerRestoreSpeed * f_update_time);
+		conditions().ChangeSatiety(second_helmet->m_fSatietyRestoreSpeed * f_update_time);
+		conditions().ChangeThirst(second_helmet->m_fThirstRestoreSpeed * f_update_time);
+		conditions().ChangeRadiation(second_helmet->m_fRadiationRestoreSpeed * f_update_time);
+		conditions().ChangeIntoxication(second_helmet->m_fIntoxicationRestoreSpeed * f_update_time);
+		conditions().ChangeSleepeness(second_helmet->m_fSleepenessRestoreSpeed * f_update_time);
+		conditions().ChangeAlcoholism(second_helmet->m_fAlcoholismRestoreSpeed * f_update_time);
+		conditions().ChangeNarcotism(second_helmet->m_fNarcotismRestoreSpeed * f_update_time);
+		conditions().ChangePsyHealth(second_helmet->m_fPsyHealthRestoreSpeed * f_update_time);
+		conditions().ChangeFrostbite(second_helmet->m_fFrostbiteRestoreSpeed * f_update_time);
+	}
+
 	CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
 	if (backpack)
 	{
@@ -2583,6 +2617,18 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 			res += outfit->m_fHealthRestoreSpeed;
 		}
 
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
+		{
+			res += helmet->m_fHealthRestoreSpeed;
+		}
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
+		{
+			res += second_helmet->m_fHealthRestoreSpeed;
+		}
+
 		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
 		if (backpack)
 		{
@@ -2606,6 +2652,18 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 		if ( outfit )
 		{
 			res += outfit->m_fRadiationRestoreSpeed;
+		}
+
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
+		{
+			res += helmet->m_fRadiationRestoreSpeed;
+		}
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
+		{
+			res += second_helmet->m_fRadiationRestoreSpeed;
 		}
 
 		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
@@ -2633,6 +2691,18 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 		if ( outfit )
 		{
 			res += outfit->m_fSatietyRestoreSpeed;
+		}
+
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
+		{
+			res += helmet->m_fSatietyRestoreSpeed;
+		}
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
+		{
+			res += second_helmet->m_fSatietyRestoreSpeed;
 		}
 
 		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
@@ -2666,6 +2736,22 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 		else
 			res /= 0.5f;
 
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
+		{
+			res += helmet->m_fPowerRestoreSpeed;
+			VERIFY(helmet->m_fPowerLoss != 0.0f);
+			res /= helmet->m_fPowerLoss;
+		}
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
+		{
+			res += second_helmet->m_fPowerRestoreSpeed;
+			VERIFY(second_helmet->m_fPowerLoss != 0.0f);
+			res /= second_helmet->m_fPowerLoss;
+		}
+
 		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
 		if (backpack)
 		{
@@ -2696,6 +2782,18 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 			res += outfit->m_fBleedingRestoreSpeed;
 		}
 
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
+		{
+			res += helmet->m_fBleedingRestoreSpeed;
+		}
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
+		{
+			res += second_helmet->m_fBleedingRestoreSpeed;
+		}
+
 		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
 		if (backpack)
 		{
@@ -2723,6 +2821,18 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 			res += outfit->m_fThirstRestoreSpeed;
 		}
 
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
+		{
+			res += helmet->m_fThirstRestoreSpeed;
+		}
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
+		{
+			res += second_helmet->m_fThirstRestoreSpeed;
+		}
+
 		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
 		if (backpack)
 		{
@@ -2746,6 +2856,18 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 		if (outfit)
 		{
 			res += outfit->m_fIntoxicationRestoreSpeed;
+		}
+
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
+		{
+			res += helmet->m_fIntoxicationRestoreSpeed;
+		}
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
+		{
+			res += second_helmet->m_fIntoxicationRestoreSpeed;
 		}
 
 		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
@@ -2773,6 +2895,18 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 			res += outfit->m_fSleepenessRestoreSpeed;
 		}
 
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
+		{
+			res += helmet->m_fSleepenessRestoreSpeed;
+		}
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
+		{
+			res += second_helmet->m_fSleepenessRestoreSpeed;
+		}
+
 		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
 		if (backpack)
 		{
@@ -2796,6 +2930,18 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 		if (outfit)
 		{
 			res += outfit->m_fAlcoholismRestoreSpeed;
+		}
+
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
+		{
+			res += helmet->m_fAlcoholismRestoreSpeed;
+		}
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
+		{
+			res += second_helmet->m_fAlcoholismRestoreSpeed;
 		}
 
 		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
@@ -2823,6 +2969,18 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 			res += outfit->m_fNarcotismRestoreSpeed;
 		}
 
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
+		{
+			res += helmet->m_fNarcotismRestoreSpeed;
+		}
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
+		{
+			res += second_helmet->m_fNarcotismRestoreSpeed;
+		}
+
 		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
 		if (backpack)
 		{
@@ -2848,6 +3006,18 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 			res += outfit->m_fPsyHealthRestoreSpeed;
 		}
 
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
+		{
+			res += helmet->m_fPsyHealthRestoreSpeed;
+		}
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
+		{
+			res += second_helmet->m_fPsyHealthRestoreSpeed;
+		}
+
 		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
 		if (backpack)
 		{
@@ -2871,6 +3041,18 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 		if (outfit)
 		{
 			res += outfit->m_fFrostbiteRestoreSpeed;
+		}
+
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
+		{
+			res += helmet->m_fFrostbiteRestoreSpeed;
+		}
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
+		{
+			res += second_helmet->m_fFrostbiteRestoreSpeed;
 		}
 
 		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));

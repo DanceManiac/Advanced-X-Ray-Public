@@ -554,6 +554,11 @@ CHelmet* CInventoryOwner::GetHelmet() const
 	return smart_cast<CHelmet*>(inventory().ItemFromSlot(HELMET_SLOT));
 }
 
+CHelmet* CInventoryOwner::GetSecondHelmet() const
+{
+	return smart_cast<CHelmet*>(inventory().ItemFromSlot(SECOND_HELMET_SLOT));
+}
+
 void CInventoryOwner::on_weapon_shot_start		(CWeapon *weapon)
 {
 }

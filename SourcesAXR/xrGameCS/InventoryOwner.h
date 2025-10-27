@@ -153,6 +153,7 @@ public:
 
 	CCustomOutfit*	GetOutfit				() const;
 	CHelmet*		GetHelmet				() const;
+	CHelmet*		GetSecondHelmet			() const;
 	
 	bool CanPlayShHdRldSounds				() const {return m_play_show_hide_reload_sounds;};
 	void SetPlayShHdRldSounds				(bool play) {m_play_show_hide_reload_sounds = play;};

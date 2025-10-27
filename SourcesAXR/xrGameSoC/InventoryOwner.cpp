@@ -507,6 +507,11 @@ CInventoryItem* CInventoryOwner::GetHelmet() const
 	return inventory().m_slots[HELMET_SLOT].m_pIItem;
 }
 
+CInventoryItem* CInventoryOwner::GetSecondHelmet() const
+{
+	return inventory().m_slots[SECOND_HELMET_SLOT].m_pIItem;
+}
+
 void CInventoryOwner::on_weapon_shot_start		(CWeapon *weapon)
 {
 }
