@@ -316,6 +316,9 @@ CEnvDescriptor::CEnvDescriptor	(shared_str const& identifier) : m_identifier(ide
 
 	m_fAirTemperature	= 0.0f;
 
+	m_fAuroraIntensity	= 0.0f;
+	aurora_color.set	(0.0f, 0.0f, 0.0f);
+
 	color_grading.set	(0.0f, 0.0f, 0.0f, 0.0f);
 
 	rain_density		= 0.0f;
@@ -439,6 +442,12 @@ void CEnvDescriptor::load	(CEnvironment& environment, CInifile& config, bool isW
 	if (config.line_exist(m_identifier.c_str(), "air_temperature"))
 		m_fAirTemperature = config.r_float(m_identifier.c_str(), "air_temperature");
 
+	if (config.line_exist(m_identifier.c_str(), "aurora_intensity"))
+		m_fAuroraIntensity = config.r_float(m_identifier.c_str(), "aurora_intensity");
+
+	if (config.line_exist(m_identifier.c_str(), "aurora_color"))
+		aurora_color = config.r_fvector3(m_identifier.c_str(), "aurora_color");
+
 	if (config.line_exist(m_identifier.c_str(), "color_grading"))
 		color_grading = config.r_fvector4(m_identifier.c_str(), "color_grading");
 
@@ -471,6 +480,7 @@ void CEnvDescriptor::load	(CEnvironment& environment, CInifile& config, bool isW
 	C_CHECK					(hemi_color	);
 	C_CHECK					(sun_color	);
 	C_CHECK					(color_grading);
+	C_CHECK					(aurora_color);
 	on_device_create		();
 }
 
@@ -570,6 +580,12 @@ void CEnvDescriptor::load_shoc(float exec_tm, LPCSTR S, CEnvironment& environmen
 
 	if (pSettings->line_exist(m_identifier.c_str(), "air_temperature"))
 		m_fAirTemperature = pSettings->r_float(m_identifier.c_str(), "air_temperature");
+
+	if (pSettings->line_exist(m_identifier.c_str(), "aurora_intensity"))
+		m_fAuroraIntensity = pSettings->r_float(m_identifier.c_str(), "aurora_intensity");
+
+	if (pSettings->line_exist(m_identifier.c_str(), "aurora_color"))
+		aurora_color = pSettings->r_fvector3(m_identifier.c_str(), "aurora_color");
 
 	if (pSettings->line_exist(m_identifier.c_str(), "color_grading"))
 		color_grading = pSettings->r_fvector4(m_identifier.c_str(), "color_grading");
@@ -803,6 +819,9 @@ void CEnvDescriptorMixer::lerp	(CEnvironment* , CEnvDescriptor& A, CEnvDescripto
 	lowland_fog_density = fi * A.lowland_fog_density + f * B.lowland_fog_density;
 
 	m_fAirTemperature = fi * A.m_fAirTemperature + f * B.m_fAirTemperature;
+
+	m_fAuroraIntensity = fi * A.m_fAuroraIntensity + f * B.m_fAuroraIntensity;
+	aurora_color.lerp(A.aurora_color, B.aurora_color, f);
 
 	color_grading.lerp(A.color_grading, B.color_grading, f);
 

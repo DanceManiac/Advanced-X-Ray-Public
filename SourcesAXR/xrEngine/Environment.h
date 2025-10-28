@@ -164,6 +164,9 @@ public:
 
 	float				m_fAirTemperature;
 
+	float				m_fAuroraIntensity;
+	Fvector3			aurora_color;
+
 	Fvector4			color_grading;
 
 	float				rain_density;

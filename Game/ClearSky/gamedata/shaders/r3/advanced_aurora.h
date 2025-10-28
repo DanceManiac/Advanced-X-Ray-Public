@@ -1,7 +1,7 @@
 /**
  * @ Version: Advanced X-Ray Update 5
  * @ Description: Advanced X-Ray Aurora Shader (based on goLLuMz shader)
- * @ Modified: 22.09.25
+ * @ Modified: 28.10.25
  * @ Authors: Dance Maniac, goLLuMz
  * @ Mod: https://ap-pro.ru/forums/topic/2813-advanced-x-ray/
  * @ Original shader: https://www.shadertoy.com/view/McSfWm
@@ -10,7 +10,7 @@
 #define MAX_DIST 100.0
 #define PI 3.1415926535
 
-float4 device_influence;
+uniform float4 aurora_params; // xyz - RGB цвет, w - интенсивность
 
 float random(float2 p)
 {
@@ -65,16 +65,22 @@ float4 aurora(float3 rd, float4 tc)
     float4 col = float4(0, 0, 0, 0);
     float4 avgCol = float4(0, 0, 0, 0);
 
-    float auroraIntensity = device_influence.x;
+    float auroraIntensity = aurora_params.w;
     
     if (auroraIntensity < 0.05)
         return col;
 
     int sampleCount = lerp(30, 55, auroraIntensity);
 
-    float baseSpeed = 0.02;
-    float maxBoost = 0.03;
-    float animationSpeed = baseSpeed + (maxBoost * auroraIntensity * auroraIntensity);
+    float baseSpeed = 0.008;
+    float maxBoost = 0.015;
+
+    float speedMultiplier = lerp(0.3, 1.0, auroraIntensity);
+    float animationSpeed = (baseSpeed + (maxBoost * auroraIntensity * auroraIntensity)) * speedMultiplier;
+    
+    float3 currentClassicGreen = float3(0.2, 0.7, 0.3);
+    float3 currentTeal = float3(0.1, 0.5, 0.4);
+    float3 currentSoftPurple = float3(0.3, 0.2, 0.5);
     
     for (int idx = 0; idx < sampleCount; idx++)
     {
@@ -92,12 +98,17 @@ float4 aurora(float3 rd, float4 tc)
         
         float4 col2 = float4(0, 0, 0, rzt);
 
-        float3 classicGreen = float3(0.2, 0.7, 0.3) * rzt;
-        float3 teal = float3(0.1, 0.5, 0.4) * (rzt * 0.8);
-        float3 softPurple = float3(0.3, 0.2, 0.5) * ((1.0 - rzt) * 0.3);
+        float3 baseColor = aurora_params.xyz;
 
-        float3 dynamicColors = classicGreen + teal + softPurple;
-        dynamicColors *= (0.9 + 0.1 * sin(timeOffset * 0.5 + i * 0.1));
+        float3 colorVariant1 = baseColor * float3(1.0, 1.2, 0.8);
+        float3 colorVariant2 = baseColor * float3(0.8, 0.9, 1.2);
+        float3 colorVariant3 = baseColor * float3(1.1, 0.7, 1.0);
+
+        float3 dynamicColors = colorVariant1 * rzt + 
+                              colorVariant2 * (rzt * 0.8) + 
+                              colorVariant3 * ((1.0 - rzt) * 0.3);
+
+        dynamicColors *= (0.9 + 0.1 * sin(timeOffset * 0.3 + i * 0.05));
         
         col2.rgb = dynamicColors * rzt;
         
