@@ -2105,35 +2105,37 @@ void CActor::UpdateRestores()
 	CHelmet* helmet = GetHelmet();
 	if (helmet)
 	{
-		conditions().ChangeBleeding(helmet->m_fBleedingRestoreSpeed * f_update_time);
-		conditions().ChangeHealth(helmet->m_fHealthRestoreSpeed * f_update_time);
-		conditions().ChangePower(helmet->m_fPowerRestoreSpeed * f_update_time);
-		conditions().ChangeSatiety(helmet->m_fSatietyRestoreSpeed * f_update_time);
-		conditions().ChangeThirst(helmet->m_fThirstRestoreSpeed * f_update_time);
-		conditions().ChangeRadiation(helmet->m_fRadiationRestoreSpeed * f_update_time);
-		conditions().ChangeIntoxication(helmet->m_fIntoxicationRestoreSpeed * f_update_time);
-		conditions().ChangeSleepeness(helmet->m_fSleepenessRestoreSpeed * f_update_time);
-		conditions().ChangeAlcoholism(helmet->m_fAlcoholismRestoreSpeed * f_update_time);
-		conditions().ChangeNarcotism(helmet->m_fNarcotismRestoreSpeed * f_update_time);
-		conditions().ChangePsyHealth(helmet->m_fPsyHealthRestoreSpeed * f_update_time);
-		conditions().ChangeFrostbite(helmet->m_fFrostbiteRestoreSpeed * f_update_time);
+		conditions().ChangeBleeding		(helmet->m_fBleedingRestoreSpeed		* f_update_time);
+		conditions().ChangeHealth		(helmet->m_fHealthRestoreSpeed			* f_update_time);
+		conditions().ChangePower		(helmet->m_fPowerRestoreSpeed			* f_update_time);
+		conditions().ChangeSatiety		(helmet->m_fSatietyRestoreSpeed			* f_update_time);
+		conditions().ChangeThirst		(helmet->m_fThirstRestoreSpeed			* f_update_time);
+		conditions().ChangeRadiation	(helmet->m_fRadiationRestoreSpeed		* f_update_time);
+		conditions().ChangeIntoxication	(helmet->m_fIntoxicationRestoreSpeed	* f_update_time);
+		conditions().ChangeSleepeness	(helmet->m_fSleepenessRestoreSpeed		* f_update_time);
+		conditions().ChangeAlcoholism	(helmet->m_fAlcoholismRestoreSpeed		* f_update_time);
+		conditions().ChangeNarcotism	(helmet->m_fNarcotismRestoreSpeed		* f_update_time);
+		conditions().ChangePsyHealth	(helmet->m_fPsyHealthRestoreSpeed		* f_update_time);
+		conditions().ChangeFrostbite	(helmet->m_fFrostbiteRestoreSpeed		* f_update_time);
+		conditions().ChangeRadiation	(helmet->m_fInfectionRestoreSpeed		* f_update_time);
 	}
 
 	CHelmet* second_helmet = GetSecondHelmet();
 	if (second_helmet)
 	{
-		conditions().ChangeBleeding(second_helmet->m_fBleedingRestoreSpeed * f_update_time);
-		conditions().ChangeHealth(second_helmet->m_fHealthRestoreSpeed * f_update_time);
-		conditions().ChangePower(second_helmet->m_fPowerRestoreSpeed * f_update_time);
-		conditions().ChangeSatiety(second_helmet->m_fSatietyRestoreSpeed * f_update_time);
-		conditions().ChangeThirst(second_helmet->m_fThirstRestoreSpeed * f_update_time);
-		conditions().ChangeRadiation(second_helmet->m_fRadiationRestoreSpeed * f_update_time);
-		conditions().ChangeIntoxication(second_helmet->m_fIntoxicationRestoreSpeed * f_update_time);
-		conditions().ChangeSleepeness(second_helmet->m_fSleepenessRestoreSpeed * f_update_time);
-		conditions().ChangeAlcoholism(second_helmet->m_fAlcoholismRestoreSpeed * f_update_time);
-		conditions().ChangeNarcotism(second_helmet->m_fNarcotismRestoreSpeed * f_update_time);
-		conditions().ChangePsyHealth(second_helmet->m_fPsyHealthRestoreSpeed * f_update_time);
-		conditions().ChangeFrostbite(second_helmet->m_fFrostbiteRestoreSpeed * f_update_time);
+		conditions().ChangeBleeding		(second_helmet->m_fBleedingRestoreSpeed		* f_update_time);
+		conditions().ChangeHealth		(second_helmet->m_fHealthRestoreSpeed		* f_update_time);
+		conditions().ChangePower		(second_helmet->m_fPowerRestoreSpeed		* f_update_time);
+		conditions().ChangeSatiety		(second_helmet->m_fSatietyRestoreSpeed		* f_update_time);
+		conditions().ChangeThirst		(second_helmet->m_fThirstRestoreSpeed		* f_update_time);
+		conditions().ChangeRadiation	(second_helmet->m_fRadiationRestoreSpeed	* f_update_time);
+		conditions().ChangeIntoxication	(second_helmet->m_fIntoxicationRestoreSpeed	* f_update_time);
+		conditions().ChangeSleepeness	(second_helmet->m_fSleepenessRestoreSpeed	* f_update_time);
+		conditions().ChangeAlcoholism	(second_helmet->m_fAlcoholismRestoreSpeed	* f_update_time);
+		conditions().ChangeNarcotism	(second_helmet->m_fNarcotismRestoreSpeed	* f_update_time);
+		conditions().ChangePsyHealth	(second_helmet->m_fPsyHealthRestoreSpeed	* f_update_time);
+		conditions().ChangeFrostbite	(second_helmet->m_fFrostbiteRestoreSpeed	* f_update_time);
+		conditions().ChangeRadiation	(second_helmet->m_fInfectionRestoreSpeed	* f_update_time);
 	}
 
 	CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
@@ -2151,6 +2153,7 @@ void CActor::UpdateRestores()
 		conditions().ChangeNarcotism	(backpack->m_fNarcotismRestoreSpeed		* f_update_time);
 		conditions().ChangePsyHealth	(backpack->m_fPsyHealthRestoreSpeed		* f_update_time);
 		conditions().ChangeFrostbite	(backpack->m_fFrostbiteRestoreSpeed		* f_update_time);
+		conditions().ChangeRadiation	(backpack->m_fInfectionRestoreSpeed		* f_update_time);
 	}
 }
 
@@ -2699,36 +2702,25 @@ float CActor::GetRestoreSpeed(ALife::EConditionRestoreType const& type)
 		if (outfit)
 		{
 			res += outfit->m_fPowerRestoreSpeed;
-			VERIFY(outfit->m_fPowerLoss != 0.0f);
-			res /= outfit->m_fPowerLoss;
 		}
-		else
-			res /= 0.5f;
 
 		CHelmet* helmet = GetHelmet();
 		if (helmet)
 		{
 			res += helmet->m_fPowerRestoreSpeed;
-			VERIFY(helmet->m_fPowerLoss != 0.0f);
-			res /= helmet->m_fPowerLoss;
 		}
 
 		CHelmet* second_helmet = GetSecondHelmet();
 		if (second_helmet)
 		{
 			res += second_helmet->m_fPowerRestoreSpeed;
-			VERIFY(second_helmet->m_fPowerLoss != 0.0f);
-			res /= second_helmet->m_fPowerLoss;
 		}
 
 		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
 		if (backpack)
 		{
 			res += backpack->m_fPowerRestoreSpeed;
-			VERIFY(backpack->m_fPowerLoss != 0.0f);
-			res /= backpack->m_fPowerLoss;
 		}
-
 		break;
 	}
 	case ALife::eBleedingRestoreSpeed:
@@ -2806,6 +2798,45 @@ float CActor::GetRestoreSpeed(ALife::EConditionRestoreType const& type)
 		if (backpack)
 		{
 			res += backpack->m_fThirstRestoreSpeed;
+		}
+		break;
+	}
+	case ALife::eInfectionRestoreSpeed:
+	{
+		res = conditions().V_Infection();
+
+		TIItemContainer::iterator itb = inventory().m_belt.begin();
+		TIItemContainer::iterator ite = inventory().m_belt.end();
+		for (; itb != ite; ++itb)
+		{
+			CArtefact* artefact = smart_cast<CArtefact*>(*itb);
+			if (artefact)
+			{
+				res += artefact->m_fInfectionRestoreSpeed;
+			}
+		}
+		CCustomOutfit* outfit = GetOutfit();
+		if (outfit)
+		{
+			res += outfit->m_fInfectionRestoreSpeed;
+		}
+
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
+		{
+			res += helmet->m_fInfectionRestoreSpeed;
+		}
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
+		{
+			res += second_helmet->m_fInfectionRestoreSpeed;
+		}
+
+		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+		if (backpack)
+		{
+			res += backpack->m_fInfectionRestoreSpeed;
 		}
 		break;
 	}
@@ -3035,7 +3066,6 @@ float CActor::GetRestoreSpeed(ALife::EConditionRestoreType const& type)
 
 	return res;
 }
-
 
 void CActor::On_SetEntity()
 {

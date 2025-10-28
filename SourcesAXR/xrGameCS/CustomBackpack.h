@@ -52,6 +52,7 @@ public:
 	float 			m_fNarcotismRestoreSpeed;
 	float 			m_fPsyHealthRestoreSpeed;
 	float 			m_fFrostbiteRestoreSpeed;
+	float			m_fInfectionRestoreSpeed;
 
 	float			m_fJumpSpeed;
 	float			m_fWalkAccel;

@@ -42,6 +42,7 @@ CCustomBackpack::CCustomBackpack()
 	m_fNarcotismRestoreSpeed	= 0.0f;
 	m_fPsyHealthRestoreSpeed	= 0.0f;
 	m_fFrostbiteRestoreSpeed	= 0.0f;
+	m_fInfectionRestoreSpeed	= 0.0f;
 
 	m_fJumpSpeed				= 1.0f;
 	m_fWalkAccel				= 1.0f;
@@ -89,6 +90,7 @@ void CCustomBackpack::Load(LPCSTR section)
 	m_fNarcotismRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "narcotism_restore_speed", 0.0f);
 	m_fPsyHealthRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "psy_health_restore_speed", 0.0f);
 	m_fFrostbiteRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "frostbite_restore_speed", 0.0f);
+	m_fInfectionRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "infection_restore_speed", 0.0f);
 
 	m_fJumpSpeed				= READ_IF_EXISTS(pSettings, r_float, section, "jump_speed", 1.f);
 	m_fWalkAccel				= READ_IF_EXISTS(pSettings, r_float, section, "walk_accel", 1.f);
@@ -309,26 +311,27 @@ bool CCustomBackpack::install_upgrade_impl(LPCSTR section, bool test)
 {
 	bool result = inherited::install_upgrade_impl(section, test);
 
-	result |= process_if_exists(section, "power_loss", &CInifile::r_float, m_fPowerLoss, test);
-	result |= process_if_exists(section, "additional_inventory_weight", &CInifile::r_float, m_additional_weight, test);
-	result |= process_if_exists(section, "additional_inventory_weight2", &CInifile::r_float, m_additional_weight2, test);
-	result |= process_if_exists(section, "health_restore_speed", &CInifile::r_float, m_fHealthRestoreSpeed, test);
-	result |= process_if_exists(section, "radiation_restore_speed", &CInifile::r_float, m_fRadiationRestoreSpeed, test);
-	result |= process_if_exists(section, "satiety_restore_speed", &CInifile::r_float, m_fSatietyRestoreSpeed, test);
-	result |= process_if_exists(section, "power_restore_speed", &CInifile::r_float, m_fPowerRestoreSpeed, test);
-	result |= process_if_exists(section, "bleeding_restore_speed", &CInifile::r_float, m_fBleedingRestoreSpeed, test);
-	result |= process_if_exists(section, "thirst_restore_speed", &CInifile::r_float, m_fThirstRestoreSpeed, test);
-	result |= process_if_exists(section, "intoxication_restore_speed", &CInifile::r_float, m_fIntoxicationRestoreSpeed, test);
-	result |= process_if_exists(section, "sleepeness_restore_speed", &CInifile::r_float, m_fSleepenessRestoreSpeed, test);
-	result |= process_if_exists(section, "alcoholism_restore_speed", &CInifile::r_float, m_fAlcoholismRestoreSpeed, test);
-	result |= process_if_exists(section, "narcotism_restore_speed", &CInifile::r_float, m_fNarcotismRestoreSpeed, test);
-	result |= process_if_exists(section, "psy_health_restore_speed", &CInifile::r_float, m_fPsyHealthRestoreSpeed, test);
-	result |= process_if_exists(section, "frostbite_restore_speed", &CInifile::r_float, m_fFrostbiteRestoreSpeed, test);
-	result |= process_if_exists(section, "jump_speed", &CInifile::r_float, m_fJumpSpeed, test);
-	result |= process_if_exists(section, "walk_accel", &CInifile::r_float, m_fWalkAccel, test);
-	result |= process_if_exists(section, "overweight_walk_k", &CInifile::r_float, m_fOverweightWalkK, test);
-	result |= process_if_exists(section, "inventory_capacity", &CInifile::r_float, m_fInventoryCapacity, test);
-	result |= process_if_exists(section, "radiation_protection", &CInifile::r_float, m_fRadiationProtection, test);
+	result |= process_if_exists(section, "power_loss",						&CInifile::r_float, m_fPowerLoss, test);
+	result |= process_if_exists(section, "additional_inventory_weight",		&CInifile::r_float, m_additional_weight, test);
+	result |= process_if_exists(section, "additional_inventory_weight2",	&CInifile::r_float, m_additional_weight2, test);
+	result |= process_if_exists(section, "health_restore_speed",			&CInifile::r_float, m_fHealthRestoreSpeed, test);
+	result |= process_if_exists(section, "radiation_restore_speed",			&CInifile::r_float, m_fRadiationRestoreSpeed, test);
+	result |= process_if_exists(section, "satiety_restore_speed",			&CInifile::r_float, m_fSatietyRestoreSpeed, test);
+	result |= process_if_exists(section, "power_restore_speed",				&CInifile::r_float, m_fPowerRestoreSpeed, test);
+	result |= process_if_exists(section, "bleeding_restore_speed",			&CInifile::r_float, m_fBleedingRestoreSpeed, test);
+	result |= process_if_exists(section, "thirst_restore_speed",			&CInifile::r_float, m_fThirstRestoreSpeed, test);
+	result |= process_if_exists(section, "intoxication_restore_speed",		&CInifile::r_float, m_fIntoxicationRestoreSpeed, test);
+	result |= process_if_exists(section, "sleepeness_restore_speed",		&CInifile::r_float, m_fSleepenessRestoreSpeed, test);
+	result |= process_if_exists(section, "alcoholism_restore_speed",		&CInifile::r_float, m_fAlcoholismRestoreSpeed, test);
+	result |= process_if_exists(section, "narcotism_restore_speed",			&CInifile::r_float, m_fNarcotismRestoreSpeed, test);
+	result |= process_if_exists(section, "psy_health_restore_speed",		&CInifile::r_float, m_fPsyHealthRestoreSpeed, test);
+	result |= process_if_exists(section, "frostbite_restore_speed",			&CInifile::r_float, m_fFrostbiteRestoreSpeed, test);
+	result |= process_if_exists(section, "jump_speed",						&CInifile::r_float, m_fJumpSpeed, test);
+	result |= process_if_exists(section, "walk_accel",						&CInifile::r_float, m_fWalkAccel, test);
+	result |= process_if_exists(section, "overweight_walk_k",				&CInifile::r_float, m_fOverweightWalkK, test);
+	result |= process_if_exists(section, "inventory_capacity",				&CInifile::r_float, m_fInventoryCapacity, test);
+	result |= process_if_exists(section, "radiation_protection",			&CInifile::r_float, m_fRadiationProtection, test);
+	result |= process_if_exists(section, "infection_restore_speed",			&CInifile::r_float, m_fInfectionRestoreSpeed, test);
 
 	result |= process_if_exists(section, "inv_weight", &CInifile::r_float, m_weight, test);
 

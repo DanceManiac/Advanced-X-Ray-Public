@@ -128,7 +128,6 @@ void saveWeather(shared_str name, const xr_vector<CEnvDescriptor*>& env)
 		f.w_float(el->m_identifier.c_str(), "dof_sky", el->dof_sky);
 		f.w_float(el->m_identifier.c_str(), "aurora_intensity", el->m_fAuroraIntensity);
 		f.w_fvector3(el->m_identifier.c_str(), "aurora_color", el->aurora_color);
-		f.w_float(el->m_identifier.c_str(), "air_temperature", el->m_fAirTemperature);
 		f.w_string(el->m_identifier.c_str(), "weather_type", el->m_sWeatherType.c_str());
 		f.w_float(el->m_identifier.c_str(), "bloom_threshold", el->bloom_threshold);
 		f.w_float(el->m_identifier.c_str(), "bloom_exposure", el->bloom_exposure);
@@ -354,7 +353,10 @@ void ShowWeatherEditor(bool& show)
 	// --------------------------------------------------------------------------------------------------------
 	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_other_options").c_str()).c_str());
 
-	if (ImGui::SliderFloat("air_temperature", &cur->m_fAirTemperature, -50.0f, 50.0f))
+	if (ImGui::SliderFloat("aurora_intensity", &cur->m_fAuroraIntensity, 0.0f, 1.0f))
+		changed = true;
+
+	if (ImGui::ColorEdit3("aurora_color", (float*)&cur->aurora_color))
 		changed = true;
 
 	static char newType[256]{};
@@ -600,24 +602,6 @@ void ShowWeatherEditor(bool& show)
 		if (ImGui::SliderFloat("dof_sky", &cur->dof_sky, -10000.0f, 10000.0f))
 			changed = true;
 	}
-
-	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_other_options").c_str()).c_str());
-
-	if (ImGui::SliderFloat("aurora_intensity", &cur->m_fAuroraIntensity, 0.0f, 1.0f))
-		changed = true;
-
-	if (ImGui::ColorEdit3("aurora_color", (float*)&cur->aurora_color))
-		changed = true;
-
-	if (ImGui::SliderFloat("air_temperature", &cur->m_fAirTemperature, -50.0f, 50.0f))
-		changed = true;
-
-	static char newType[256]{};
-
-	if (cur->m_sWeatherType.size())
-		strcpy(newType, cur->m_sWeatherType.c_str());
-	else
-		memset(newType, 0, sizeof(newType));
 
 	if (ImGui::InputText("weather_type", newType, 512))
 		changed = true;
