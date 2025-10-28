@@ -279,6 +279,17 @@ class cl_sky_color : public R_constant_setup
 };
 static cl_sky_color binder_sky_color;
 
+class cl_aurora_params : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		Fvector4 result;
+		CEnvDescriptor& desc = *g_pGamePersistent->Environment().CurrentEnv;
+		RCache.set_c(C, desc.aurora_color.x, desc.aurora_color.y, desc.aurora_color.z, desc.m_fAuroraIntensity);
+	}
+};
+static cl_aurora_params binder_aurora_params;
+
 class cl_temperature_params : public R_constant_setup
 {
 	virtual void setup(R_constant* C)
@@ -928,6 +939,7 @@ void	CBlender_Compile::SetMapping	()
 	r_Constant("screen_res_alt", &binder_screen_res);
     r_Constant("rain_params", &binder_rain_params);
 	r_Constant("wind_params", &binder_wind_params);
+	r_Constant("aurora_params", &binder_aurora_params);
 
 	r_Constant("temperature_params", &binder_temperature_params);
 
