@@ -126,7 +126,7 @@ public:
 	  u32		dx11_ss_contact_shadows : 1;
 	  u32		dx11_wet_hands			: 1;
 	  u32		dx11_ss_fog_scattering	: 1;
-
+	  u32		dx11_ss_weapon_ssr_allways : 1;
 	  u32		dx11_enable_tessellation : 1;
 
 		u32		forcegloss			: 1;

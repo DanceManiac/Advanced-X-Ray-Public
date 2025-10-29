@@ -1462,6 +1462,7 @@ void		xrRender_initconsole	()
 	CMD3(CCC_Mask,			"r4_ss_bloom",					&ps_r4_shaders_flags,		R4FLAG_SS_BLOOM); //Need restart
 	CMD3(CCC_Mask,			"r4_ss_bloom_mask_dirt",		&ps_r4_shaders_flags,		R4FLAG_SS_BLOOM_MASK_DIRT); //Need restart
 	CMD3(CCC_Shader_Preset, "shaders_preset",				&ps_ShaderPreset,			qshader_preset_token);
+	CMD3(CCC_Mask,			"r4_ss_weapon_ssr_allways",		&ps_r4_shaders_flags, R4FLAG_SS_WPN_SSR_ALLWAYS); //Need restart
 
 	CMD3(CCC_Mask,			"r3_cloud_shadows",				&ps_r4_shaders_flags,		R4FLAG_CLOUD_SHADOWS);				// Need restart
 	CMD3(CCC_Mask,			"r4_ss_contact_shadows",		&ps_r4_shaders_flags,		R4FLAG_SS_CONTACT_SHADOWS);		// Need restart

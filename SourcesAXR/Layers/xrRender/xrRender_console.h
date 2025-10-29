@@ -351,6 +351,7 @@ enum
 	R4FLAG_SS_CONTACT_SHADOWS   = (1 << 17),
 	R4FLAG_WET_HANDS			= (1 << 19),
 	R4FLAG_FOG_SCATTERING		= (1 << 20),
+	R4FLAG_SS_WPN_SSR_ALLWAYS	= (1 << 21),
 };
 
 extern ECORE_API Flags32		ps_r__common_flags;

@@ -357,23 +357,24 @@ void					CRender::create					()
 
 	o.dx11_es_aces_tonemapping	= ps_r4_shaders_flags.test(R4FLAG_ES_ACES_TONEMAPPING);
 
-	o.dx11_ss_sky_debanding		= ps_r4_shaders_flags.test(R4FLAG_SS_DEBANDING);
-	o.dx11_ss_flora_fix			= ps_r4_shaders_flags.test(R4FLAG_SS_FLORAFIX);
-	o.dx11_ss_fog				= ps_r4_shaders_flags.test(R4FLAG_SS_FOG);
-	o.dx11_ss_indirect_light	= ps_r4_shaders_flags.test(R4FLAG_SS_INDIRECT_LIGHT);
-	o.dx11_ss_new_gloss			= ps_r4_shaders_flags.test(R4FLAG_SS_NEW_GLOSS);
-	o.dx11_ss_sss				= ps_r4_shaders_flags.test(R4FLAG_SS_SSS);
-	o.dx11_ss_shadows			= ps_r4_shaders_flags.test(R4FLAG_SS_SHADOWS);
-	o.dx11_ss_lut				= ps_r4_shaders_flags.test(R4FLAG_SS_LUT);
-	o.dx11_ss_wind				= ps_r4_shaders_flags.test(R4FLAG_SS_WIND);
-	o.dx11_ss_puddles			= ps_r4_shaders_flags.test(R4FLAG_SS_PUDDLES);
-	o.dx11_ss_puddles_allways	= ps_r4_shaders_flags.test(R4FLAG_SS_PUDDLES_ALLWAYS);
-	o.dx11_ss_bloom				= ps_r4_shaders_flags.test(R4FLAG_SS_BLOOM);
-	o.dx11_ss_bloom_mask_dirt	= ps_r4_shaders_flags.test(R4FLAG_SS_BLOOM_MASK_DIRT);
-	o.dx11_ss_contact_shadows	= ps_r4_shaders_flags.test(R4FLAG_SS_CONTACT_SHADOWS);
-	o.dx11_cloud_shadows		= ps_r4_shaders_flags.test(R4FLAG_CLOUD_SHADOWS);
-	o.dx11_wet_hands			= ps_r4_shaders_flags.test(R4FLAG_WET_HANDS);
-	o.dx11_ss_fog_scattering	= ps_r4_shaders_flags.test(R4FLAG_FOG_SCATTERING);
+	o.dx11_ss_sky_debanding			= ps_r4_shaders_flags.test(R4FLAG_SS_DEBANDING);
+	o.dx11_ss_flora_fix				= ps_r4_shaders_flags.test(R4FLAG_SS_FLORAFIX);
+	o.dx11_ss_fog					= ps_r4_shaders_flags.test(R4FLAG_SS_FOG);
+	o.dx11_ss_indirect_light		= ps_r4_shaders_flags.test(R4FLAG_SS_INDIRECT_LIGHT);
+	o.dx11_ss_new_gloss				= ps_r4_shaders_flags.test(R4FLAG_SS_NEW_GLOSS);
+	o.dx11_ss_sss					= ps_r4_shaders_flags.test(R4FLAG_SS_SSS);
+	o.dx11_ss_shadows				= ps_r4_shaders_flags.test(R4FLAG_SS_SHADOWS);
+	o.dx11_ss_lut					= ps_r4_shaders_flags.test(R4FLAG_SS_LUT);
+	o.dx11_ss_wind					= ps_r4_shaders_flags.test(R4FLAG_SS_WIND);
+	o.dx11_ss_puddles				= ps_r4_shaders_flags.test(R4FLAG_SS_PUDDLES);
+	o.dx11_ss_puddles_allways		= ps_r4_shaders_flags.test(R4FLAG_SS_PUDDLES_ALLWAYS);
+	o.dx11_ss_bloom					= ps_r4_shaders_flags.test(R4FLAG_SS_BLOOM);
+	o.dx11_ss_bloom_mask_dirt		= ps_r4_shaders_flags.test(R4FLAG_SS_BLOOM_MASK_DIRT);
+	o.dx11_ss_contact_shadows		= ps_r4_shaders_flags.test(R4FLAG_SS_CONTACT_SHADOWS);
+	o.dx11_cloud_shadows			= ps_r4_shaders_flags.test(R4FLAG_CLOUD_SHADOWS);
+	o.dx11_wet_hands				= ps_r4_shaders_flags.test(R4FLAG_WET_HANDS);
+	o.dx11_ss_fog_scattering		= ps_r4_shaders_flags.test(R4FLAG_FOG_SCATTERING);
+	o.dx11_ss_weapon_ssr_allways	= ps_r4_shaders_flags.test(R4FLAG_SS_PUDDLES_ALLWAYS);
 
 	o.dx11_enable_tessellation = HW.FeatureLevel>=D3D_FEATURE_LEVEL_11_0 && ps_r2_ls_flags_ext.test(R2FLAGEXT_ENABLE_TESSELLATION);
 
@@ -1775,6 +1776,19 @@ HRESULT	CRender::shader_compile			(
 		defines[def_it].Definition = "1";
 		def_it++;
 		sh_name[len] = '0' + char(o.dx11_ss_puddles_allways); ++len;
+	}
+	else
+	{
+		sh_name[len] = '0';
+		++len;
+	}
+
+	if (o.dx11_sss_addon_enabled && o.dx11_ss_puddles && o.dx11_ss_weapon_ssr_allways)
+	{
+		defines[def_it].Name = "SSFX_WPN_SSR_ALLWAYS";
+		defines[def_it].Definition = "1";
+		def_it++;
+		sh_name[len] = '0' + char(o.dx11_ss_weapon_ssr_allways); ++len;
 	}
 	else
 	{
