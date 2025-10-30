@@ -59,10 +59,11 @@
 
 #include "player_hud.h"
 
+#include "debug_renderer.h"
+
 #ifdef DEBUG
 #	include "level_debug.h"
 #	include "ai/stalker/ai_stalker.h"
-#	include "debug_renderer.h"
 #	include "physicobject.h"
 #endif
 
@@ -129,9 +130,9 @@ CLevel::CLevel():IPureClient	(Device.GetTimerGlobal())
 		m_space_restriction_manager = xr_new<CSpaceRestrictionManager>();
 		m_client_spawn_manager		= xr_new<CClientSpawnManager>();
 		m_autosave_manager			= xr_new<CAutosaveManager>();
-
-	#ifdef DEBUG
 		m_debug_renderer			= xr_new<CDebugRenderer>();
+
+#ifdef DEBUG
 		m_level_debug				= xr_new<CLevelDebug>();
 		m_bEnvPaused				= false;
 	#endif
@@ -253,10 +254,8 @@ CLevel::~CLevel()
 	xr_delete					(m_client_spawn_manager);
 
 	xr_delete					(m_autosave_manager);
-	
-#ifdef DEBUG
+
 	xr_delete					(m_debug_renderer);
-#endif
 
 	ai().script_engine().remove_script_process(ScriptEngine::eScriptProcessorLevel);
 
@@ -806,9 +805,11 @@ void CLevel::OnRender()
 		DBG().draw_text						();
 		DBG().draw_level_info				();
 	}
+#endif
 
 	debug_renderer().render					();
 
+#ifdef DEBUG
 	if (psAI_Flags.is(aiVision)) {
 		for (u32 I=0; I < Level().Objects.o_count(); I++) {
 			CObject						*object = Objects.o_get_by_iterator(I);

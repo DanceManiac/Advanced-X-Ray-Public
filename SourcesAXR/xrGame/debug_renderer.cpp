@@ -7,8 +7,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#ifdef DEBUG
-#	include "debug_renderer.h"
+#include "debug_renderer.h"
 
 void CDebugRenderer::add_lines		(Fvector const *vertices, u32 const &vertex_count, u16 const *pairs, u32 const &pair_count, u32 const &color, bool hud_mode)
 {
@@ -177,4 +176,3 @@ void CDebugRenderer::draw_cone(const Fmatrix& transform, float height, float rad
 
 	add_lines(&vertices.front(), (u32)vertices.size(), &pairs.front(), (u32)(pairs.size() / 2), color, hud_mode);
 }
-#endif // DEBUG

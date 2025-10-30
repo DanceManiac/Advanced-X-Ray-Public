@@ -16,6 +16,7 @@
 #include "ai_space.h"
 #include "level_graph.h"
 #include "game_level_cross_table.h"
+#include "debug_renderer.h"
 
 #include "HudManager.h"
 #include "UIGameSP.h"
@@ -194,13 +195,9 @@ void CLevelChanger::update_actor_invitation()
 		}
 	}
 }
-#ifdef DEBUG
-#include "debug_renderer.h"
+
 void CLevelChanger::OnRender	()
 {
-	if(!bDebug) return;
-	if (!(dbg_net_Draw_Flags.is_any(dbg_draw_lchangers))) return;
-	//RCache.OnFrameEnd();
 	DRender->OnFrameEnd();
 	Fvector l_half; l_half.set(.5f, .5f, .5f);
 	Fmatrix l_ball, l_box;
@@ -269,7 +266,6 @@ void CLevelChanger::OnRender	()
 		UI().Font().pFontMedium->OutNext	( Name() );
 	}
 }
-#endif // DEBUG
 
 void CLevelChanger::save(NET_Packet &output_packet)
 {

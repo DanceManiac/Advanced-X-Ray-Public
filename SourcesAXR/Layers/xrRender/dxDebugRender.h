@@ -2,8 +2,6 @@
 
 #include "../../Include/xrRender/DebugRender.h"
 
-#ifdef DEBUG
-
 class dxDebugRender : public IDebugRender
 {
 public:
@@ -38,9 +36,4 @@ private:
 };
 
 extern dxDebugRender DebugRenderImpl;
-
-#ifdef DEBUG
 extern dxDebugRender* rdebug_render;
-#endif
-
-#endif

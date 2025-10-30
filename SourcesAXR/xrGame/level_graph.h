@@ -226,12 +226,20 @@ public:
 
 	IC		CVertex* vertices					() { return m_nodes; }
 
-
-#ifdef DEBUG
-#	ifndef AI_COMPILER
+#ifndef AI_COMPILER
 private:
-	//ref_shader			sh_debug;
 	debug_shader			sh_debug;
+
+	public:
+		void		render			();
+
+#ifndef DEBUG
+
+private:
+	void		draw_nodes			();
+	void		draw_restrictions	();
+
+#else
 
 private:
 	int					m_current_level_id;
@@ -257,9 +265,6 @@ private:
 			void		draw_game_graph			();
 			void		draw_objects			();
 			void		draw_debug_node			();
-
-public:
-			void		render					();
 #	endif
 #endif
 };

@@ -63,9 +63,8 @@ public:
 	IC RestrictionSpace::ERestrictorTypes restrictor_type() const; 
 
 public:
-#ifdef DEBUG
 	virtual void				OnRender			();
-#endif
+
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };
 add_to_type_list(CSpaceRestrictor)

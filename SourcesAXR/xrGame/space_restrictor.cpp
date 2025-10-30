@@ -15,9 +15,7 @@
 #include "ai_space.h"
 #include "CustomZone.h"
 #include "../xrengine/xr_collide_form.h"
-#ifdef DEBUG
-#	include "debug_renderer.h"
-#endif
+#include "debug_renderer.h"
 
 CSpaceRestrictor::~CSpaceRestrictor	()
 {
@@ -200,19 +198,10 @@ continue_loop:
 	}
 	return							(false);
 }
-
-#ifdef DEBUG
-
-#include "customzone.h"
 #include "ui_base.h"
-
-extern	Flags32	dbg_net_Draw_Flags;
 
 void CSpaceRestrictor::OnRender	()
 {
-	if(!bDebug) return;
-	if (!(dbg_net_Draw_Flags.is_any(dbg_draw_customzone))) return;
-	//RCache.OnFrameEnd();
 	DRender->OnFrameEnd();
 	Fvector l_half; l_half.set(.5f, .5f, .5f);
 	Fmatrix l_ball, l_box;
@@ -295,7 +284,4 @@ void CSpaceRestrictor::OnRender	()
 			UI().Font().pFontMedium->OutNext	( str );
 		}
 	}
-
-
 }
-#endif

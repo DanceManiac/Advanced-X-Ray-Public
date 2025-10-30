@@ -14,9 +14,7 @@ XRAPI_API IUIRender* UIRender = NULL;
 XRAPI_API CGameMtlLibrary*	PGMLib = NULL;
 #endif
 
-#ifdef DEBUG
-	XRAPI_API IDebugRender*	DRender = NULL;
-#endif // DEBUG
+XRAPI_API IDebugRender*	DRender = NULL;
 
 
 /*
