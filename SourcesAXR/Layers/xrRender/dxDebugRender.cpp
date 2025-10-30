@@ -1,7 +1,5 @@
 #include "stdafx.h"
 
-#ifdef DEBUG
-
 #include "dxDebugRender.h"
 #include "dxUIShader.h"
 #include "dxRenderDeviceRender.h"
@@ -51,7 +49,7 @@ void dxDebugRender::Render()
 
 			RCache.set_xform_world(Fidentity);
 
-#if defined(USE_DX10) || defined(USE_DX11)
+#if defined(USE_DX11)
 			RCache.set_Shader(dxRenderDeviceRender::Instance().m_WireShader);
 			RCache.set_c("tfactor", float(color_get_R(color)) / 255.f, float(color_get_G(color)) / 255.f, float(color_get_B(color)) / 255.f, float(color_get_A(color)) / 255.f);
 #endif
@@ -59,13 +57,13 @@ void dxDebugRender::Render()
 			RCache.dbg_Draw_Near(D3DPT_LINELIST, &vert_vec.front(), static_cast<int>(vert_vec.size()), &ind_vec.front(), static_cast<int>(ind_vec.size() / 2));
 		}
 
-		{
+		/*{
 			//RImplementation.rmNormal();
 			Device.mProject = Pold;
 			Device.mFullTransform = FTold;
 			RCache.set_xform_project(Device.mProject);
 			//ApplyTexgen(Device.mFullTransform);
-		}
+		}*/
 
 		m_line_vertices_hud.clear();
 		m_line_indices_hud.clear();
@@ -190,8 +188,6 @@ void dxDebugRender::dbg_DrawTRI(Fmatrix& T, Fvector& p1, Fvector& p2, Fvector& p
 	RCache.dbg_DrawTRI(T, p1, p2, p3, C);
 }
 
-#ifdef DEBUG
-
 struct RDebugRender: 
 	public dxDebugRender,
 	public pureRender
@@ -216,7 +212,3 @@ virtual void	add_lines			(Fvector const *vertices, u32 const &vertex_count, u16 
 }
 } rdebug_render_impl;
 dxDebugRender *rdebug_render = &rdebug_render_impl;
-
-#endif
-
-#endif

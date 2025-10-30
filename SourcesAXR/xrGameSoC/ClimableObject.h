@@ -26,9 +26,9 @@ public:
 	virtual void	UpdateCL			( );								// Called each frame, so no need for dt
 	virtual void	Center				(Fvector &C) const;
 	virtual float	Radius				() const;
-#ifdef DEBUG
+
 	virtual void	OnRender			();
-#endif
+
 protected:
 	virtual BOOL	UsedAI_Locations	();
 public:

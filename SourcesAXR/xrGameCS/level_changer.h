@@ -47,8 +47,5 @@ public:
 	virtual BOOL	net_SaveRelevant		();
 	virtual void	save					(NET_Packet &output_packet);
 	virtual void	load					(IReader &input_packet);
-
-#ifdef DEBUG
-	virtual void				OnRender();
-#endif
+	virtual void	OnRender				();
 };
