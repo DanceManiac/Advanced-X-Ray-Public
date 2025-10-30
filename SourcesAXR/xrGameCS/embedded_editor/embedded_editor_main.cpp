@@ -21,7 +21,7 @@
 #include "string_table.h"
 
 bool bShowWindow = true;
-bool show_test_window = true;
+//bool show_test_window = true;
 bool show_weather_window = false;
 bool show_hud_editor = false;
 bool show_person_attach_editor = false;
@@ -65,9 +65,9 @@ void ShowMain()
 		return;
 
 	ImGui::Text(toUtf8(CStringTable().translate("st_editor_imgui_name").c_str()).c_str());
-	if (ImGui::Button(toUtf8(CStringTable().translate("st_editor_imgui_test_wnd").c_str()).c_str()))
-		show_test_window ^= 1;
-/*	if (ImGui::Button("Test Node Editor"))
+	/*if (ImGui::Button(toUtf8(CStringTable().translate("st_editor_imgui_test_wnd").c_str()).c_str()))
+		show_test_window ^= 1;*/
+    /*if (ImGui::Button("Test Node Editor"))
 		show_node_editor ^= 1;*/
 	if (ImGui::Button(toUtf8(CStringTable().translate("st_editor_imgui_weather").c_str()).c_str()))
 		show_weather_window ^= 1;
@@ -109,11 +109,11 @@ void ShowEditor()
 
 	ShowMain();
 
-    if (show_test_window) {
+    /*if (show_test_window) {
         ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver);
         ImGui::ShowDemoWindow(&show_test_window);
-    }
-/*    if (show_node_editor) {
+    }*/
+    /*if (show_node_editor) {
         ImGui::SetNextWindowSize(ImVec2(700, 600), ImGuiCond_FirstUseEver);
         if (ImGui::Begin("Example: Custom Node Graph", &show_node_editor)) {
             ImGui::TestNodeGraphEditor();
