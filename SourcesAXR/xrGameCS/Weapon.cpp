@@ -6413,7 +6413,6 @@ void CWeapon::Update_WPN_HUD()
 
 void CWeapon::UpdateFOVZoomIn()
 {
-	//m_zoom_params.m_fScopeZoomFactor = pSettings->r_float(cNameSect(), "scope_zoom_factor_NEW_IN");
 	shared_str cur_scope_sect = (m_sScopeAttachSection.size() ? m_sScopeAttachSection : (m_eScopeStatus == ALife::eAddonAttachable) ? m_scopes[m_cur_scope].c_str() : "scope");
 
 	psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, "weapon_hud_fov_zoom_focus", GetHudFov());
