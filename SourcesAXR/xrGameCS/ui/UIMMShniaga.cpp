@@ -123,6 +123,7 @@ void CUIMMShniaga::CreateList(xr_vector<CUIStatic*>& lst, CUIXml& xml_doc, LPCST
 	CGameFont* pF;
 	u32	color;
 	float button_height				= xml_doc.ReadAttribFlt("button", 0, "h");
+	shared_str al					= xml_doc.ReadAttrib(path, 0, "btn_align", "c");
 	R_ASSERT						(button_height);
 
 	CUIXmlInit::InitFont			(xml_doc, path, 0, color, pF);
@@ -150,7 +151,12 @@ void CUIMMShniaga::CreateList(xr_vector<CUIStatic*>& lst, CUIXml& xml_doc, LPCST
 
 		st->SetTextY				( (button_height-font_height)/2.0f );
 		st->SetTextColor			(color);
-		st->SetTextAlignment		(CGameFont::alCenter);
+		if (0 == xr_strcmp(al, "c"))
+			st->SetTextAlignment(CGameFont::alCenter);
+		else if (0 == xr_strcmp(al, "r"))
+			st->SetTextAlignment(CGameFont::alRight);
+		else if (0 == xr_strcmp(al, "l"))
+			st->SetTextAlignment(CGameFont::alLeft);
 		st->SetWindowName			(xml_doc.ReadAttrib("btn", i, "name"));
 		st->SetMessageTarget		(this);
 
