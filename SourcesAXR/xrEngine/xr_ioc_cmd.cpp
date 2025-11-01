@@ -759,6 +759,8 @@ ENGINE_API int			ps_detail_enable_collision	= 0;
 
 ENGINE_API bool			ps_enchanted_shaders		= 0; // For xrGame
 
+ENGINE_API int			ps_lfo_weather_max_far_plane = 0;
+
 extern float		g_fontWidthScale;
 extern float		g_fontHeightScale;
 
@@ -838,6 +840,8 @@ void CCC_Register()
 	CMD3(CCC_Mask,		"rs_occ_stats",			&psDeviceFlags,		rsOcclusionStats		);
 	//CMD4(CCC_Integer,	"rs_skeleton_update",	&psSkeletonUpdate,	2,		128	);
 #endif // DEBUG
+
+	CMD4(CCC_Integer, "g_lfo_weather_max_far_plane", &ps_lfo_weather_max_far_plane, 0, 1);
 
 	CMD2(CCC_Gamma,		"rs_c_gamma"			,&ps_gamma			);
 	CMD2(CCC_Gamma,		"rs_c_brightness"		,&ps_brightness		);

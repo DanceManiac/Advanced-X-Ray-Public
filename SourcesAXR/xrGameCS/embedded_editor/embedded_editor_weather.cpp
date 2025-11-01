@@ -89,7 +89,9 @@ void saveWeather(shared_str name, const xr_vector<CEnvDescriptor*>& env)
 		f.w_float(el->m_identifier.c_str(), "clouds_velocity_0", el->clouds_velocity_0);
 		f.w_float(el->m_identifier.c_str(), "clouds_velocity_1", el->clouds_velocity_1);
 		f.w_float(el->m_identifier.c_str(), "far_plane", el->far_plane);
+		f.w_float(el->m_identifier.c_str(), "far_plane_max", el->far_plane);
 		f.w_float(el->m_identifier.c_str(), "fog_distance", el->fog_distance);
+		f.w_float(el->m_identifier.c_str(), "fog_distance_max", el->fog_distance);
 		f.w_float(el->m_identifier.c_str(), "fog_density", el->fog_density);
 		f.w_float(el->m_identifier.c_str(), "lowland_fog_density", el->lowland_fog_density);
 		f.w_float(el->m_identifier.c_str(), "lowland_fog_height", el->lowland_fog_height);
@@ -350,6 +352,12 @@ void ShowWeatherEditor(bool& show)
 			sel = i;
 	}
 
+	if (ImGui::Button(toUtf8(CStringTable().translate("st_editor_imgui_save").c_str()).c_str())) {
+		for (auto name : modifiedWeathers)
+			saveWeather(name, env.WeatherCycles[name]);
+		modifiedWeathers.clear();
+	}
+
 	// --------------------------------------------------------------------------------------------------------
 	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_other_options").c_str()).c_str());
 
@@ -403,7 +411,11 @@ void ShowWeatherEditor(bool& show)
 
 	if (ImGui::SliderFloat("far_plane", &cur->far_plane, 0.01f, 10000.0f))
 		changed = true;
+	if (ImGui::SliderFloat("far_plane_max", &cur->far_plane, 0.01f, 10000.0f))
+		changed = true;
 	if (ImGui::SliderFloat("fog_distance", &cur->fog_distance, 0.0f, 10000.0f))
+		changed = true;
+	if (ImGui::SliderFloat("fog_distance_max", &cur->fog_distance, 0.0f, 10000.0f))
 		changed = true;
 	if (ImGui::SliderFloat("fog_density", &cur->fog_density, 0.0f, 10.0f))
 		changed = true;

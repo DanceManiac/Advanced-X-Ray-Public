@@ -17,6 +17,8 @@ extern ENGINE_API float ps_weather_fog_clamping;
 
 extern float ps_r2_sun_shafts_min;
 extern float ps_r2_sun_shafts_value;
+extern int ps_lfo_weather_max_far_plane;
+
 
 void CEnvModifier::load	(IReader* fs, u32 version)
 {
@@ -415,10 +417,27 @@ void CEnvDescriptor::load	(CEnvironment& environment, CInifile& config, bool isW
 	
 	if (config.line_exist(m_identifier.c_str(),"sky_rotation"))	sky_rotation	= deg2rad(config.r_float(m_identifier.c_str(),"sky_rotation"));
 	else											sky_rotation	= 0;
-	far_plane				= config.r_float	(m_identifier.c_str(),"far_plane");
+
+	if (ps_lfo_weather_max_far_plane == 1)
+	{
+		if (config.line_exist(m_identifier.c_str(), "far_plane_max"))
+			far_plane				= config.r_float(m_identifier.c_str(),"far_plane_max");
+		else
+			far_plane				= config.r_float(m_identifier.c_str(), "far_plane");
+
+		if (config.line_exist(m_identifier.c_str(), "fog_distance_max"))
+			fog_distance			= config.r_float(m_identifier.c_str(), "fog_distance_max");
+		else
+			fog_distance			= config.r_float(m_identifier.c_str(), "fog_distance");
+	}
+	else
+	{
+		far_plane				= config.r_float(m_identifier.c_str(), "far_plane");
+		fog_distance			= config.r_float(m_identifier.c_str(), "fog_distance");
+	}
+
 	fog_color				= config.r_fvector3	(m_identifier.c_str(),"fog_color");
 	fog_density				= config.r_float	(m_identifier.c_str(),"fog_density");
-	fog_distance			= config.r_float	(m_identifier.c_str(),"fog_distance");
 	rain_density			= config.r_float	(m_identifier.c_str(),"rain_density");		clamp(rain_density,0.f,1.f);
 	rain_color				= config.r_fvector3	(m_identifier.c_str(),"rain_color");            
 	wind_velocity			= config.r_float	(m_identifier.c_str(),"wind_velocity");
