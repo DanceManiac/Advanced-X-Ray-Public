@@ -164,6 +164,8 @@ void CHudItem::Load(LPCSTR section)
 	m_shooting_params.m_shot_max_offset_LRUD_aim = READ_IF_EXISTS(pSettings, r_fvector4, m_hud_sect, "shooting_max_LRUD_aim", Fvector4().set(0, 0, 0, 0));
 	m_shooting_params.m_shot_max_rot_UD = READ_IF_EXISTS(pSettings, r_fvector2, m_hud_sect, "shooting_max_UD_rot", Fvector2().set(0, 0));
 	m_shooting_params.m_shot_max_rot_UD_aim = READ_IF_EXISTS(pSettings, r_fvector2, m_hud_sect, "shooting_max_UD_rot_aim", Fvector2().set(0, 0));
+	m_shooting_params.m_shot_max_rot_LRFB = READ_IF_EXISTS(pSettings, r_fvector4, m_hud_sect, "shooting_max_LRFB_rot", Fvector4().set(0, 0, 0, 0));
+	m_shooting_params.m_shot_max_rot_LRFB_aim = READ_IF_EXISTS(pSettings, r_fvector4, m_hud_sect, "shooting_max_LRFB_rot_aim", Fvector4().set(0, 0, 0, 0));
 	m_shooting_params.m_shot_offset_BACKW = READ_IF_EXISTS(pSettings, r_float, m_hud_sect, "shooting_backward_offset", 0.0f);
 	m_shooting_params.m_shot_offset_BACKW_aim = READ_IF_EXISTS(pSettings, r_float, m_hud_sect, "shooting_backward_offset_aim", 0.0f);
 	m_shooting_params.m_shot_offsets_strafe = READ_IF_EXISTS(pSettings, r_fvector2, m_hud_sect, "shooting_strafe_offsets", Fvector2().set(0, 0));
@@ -1430,6 +1432,7 @@ void CHudItem::UpdateHudAdditional(Fmatrix& trans)
 
 		//--> Поворот по оси X
 		Fvector4 vShRotX; // 0 = При смещении вверх, 1 = при смещении вниз
+		Fvector4 vShRotYZ;
 		vShRotX[0] = lerp(
 			m_shooting_params.m_shot_max_rot_UD[0], //--> от бедра
 			m_shooting_params.m_shot_max_rot_UD_aim[0], //--> в зуме
@@ -1437,6 +1440,22 @@ void CHudItem::UpdateHudAdditional(Fmatrix& trans)
 		vShRotX[1] = lerp(
 			m_shooting_params.m_shot_max_rot_UD[1], //--> от бедра
 			m_shooting_params.m_shot_max_rot_UD_aim[1], //--> в зуме
+			wpn->m_zoom_params.m_fZoomRotationFactor);
+		vShRotYZ[0] = lerp(
+			m_shooting_params.m_shot_max_rot_LRFB[0], //--> от бедра
+			m_shooting_params.m_shot_max_rot_LRFB_aim[0], //--> в зуме
+			wpn->m_zoom_params.m_fZoomRotationFactor);
+		vShRotYZ[1] = lerp(
+			m_shooting_params.m_shot_max_rot_LRFB[1], //--> от бедра
+			m_shooting_params.m_shot_max_rot_LRFB_aim[1], //--> в зуме
+			wpn->m_zoom_params.m_fZoomRotationFactor);
+		vShRotYZ[2] = lerp(
+			m_shooting_params.m_shot_max_rot_LRFB[2], //--> от бедра
+			m_shooting_params.m_shot_max_rot_LRFB_aim[2], //--> в зуме
+			wpn->m_zoom_params.m_fZoomRotationFactor);
+		vShRotYZ[3] = lerp(
+			m_shooting_params.m_shot_max_rot_LRFB[3], //--> от бедра
+			m_shooting_params.m_shot_max_rot_LRFB_aim[3], //--> в зуме
 			wpn->m_zoom_params.m_fZoomRotationFactor);
 
 		// Применяем сдвиг от стрельбы к HUD-у
@@ -1455,8 +1474,10 @@ void CHudItem::UpdateHudAdditional(Fmatrix& trans)
 			shoot_rot = {
 				//--> Поворот по вертикали
 				lerp(vShRotX[0], vShRotX[1], m_fShootingFactorUD) * m_fShootingCurPowerLRUD,
-				0.0f,
-				0.0f
+				//--> Вертикальный сдвиг
+				lerp(vShRotYZ[0], vShRotYZ[1], m_fShootingFactorLR)* m_fShootingCurPowerLRUD,
+				//--> Глубинный сдвиг
+				lerp(vShRotYZ[2], vShRotYZ[3], m_fShootingFactorFB)* m_fShootingCurPowerBACKW,
 			};
 			shoot_rot.mul(-PI / 180.f);
 
@@ -1550,6 +1571,9 @@ void CHudItem::AddHUDShootingEffect()
 
 	m_fShootingFactorUD += ::Random.randF(-fLRUDDiffPerShot, fLRUDDiffPerShot); //--> m_fShootingFactorUD будет 0.5f на момент начала стрельбы
 	clamp(m_fShootingFactorUD, 0.0f, 1.0f);
+
+	m_fShootingFactorFB += ::Random.randF(-fLRUDDiffPerShot, fLRUDDiffPerShot); //--> m_fShootingFactorFB будет 0.5f на момент начала стрельбы
+	clamp(m_fShootingFactorFB, 0.0f, 1.0f);
 
 	//--> С каждым выстрелом разрешаем оружию всё ближе приближаться к текущим границам сдвига
 	m_fShootingCurPowerLRUD += lerp(m_shooting_params.m_shot_power_per_shot[0],
