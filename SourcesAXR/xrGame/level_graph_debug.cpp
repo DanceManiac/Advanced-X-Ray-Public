@@ -37,12 +37,7 @@ void CLevelGraph::render()
 			draw_game_graph	();
 	}
 
-	if (!bDebug && !psAI_Flags.test(aiMotion))
-		return;
-
-	if (bDebug && psAI_Flags.test(aiDebug))
-		draw_nodes			();
-
+	draw_nodes				();
 	draw_restrictions		();
 
 	if (psAI_Flags.test(aiCover))

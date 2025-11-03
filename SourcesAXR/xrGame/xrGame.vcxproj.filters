@@ -7456,12 +7456,6 @@
     <ClInclude Include="embedded_editor\editor_render.h">
       <Filter>EmbeddedEditor</Filter>
     </ClInclude>
-    <ClInclude Include="embedded_editor\editor_render_ai_map.h">
-      <Filter>EmbeddedEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="embedded_editor\editor_render_spawn_element.h">
-      <Filter>EmbeddedEditor</Filter>
-    </ClInclude>
     <ClInclude Include="CustomTimer.h" />
     <ClInclude Include="CustomBackpack.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Devices\Backpack</Filter>
@@ -11217,12 +11211,6 @@
       <Filter>Core\Client\Objects\items &amp; weapons\Devices\ArtefactContainer</Filter>
     </ClCompile>
     <ClCompile Include="embedded_editor\editor_render.cpp">
-      <Filter>EmbeddedEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="embedded_editor\editor_render_ai_map.cpp">
-      <Filter>EmbeddedEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="embedded_editor\editor_render_spawn_element.cpp">
       <Filter>EmbeddedEditor</Filter>
     </ClCompile>
     <ClCompile Include="CustomTimer.cpp" />

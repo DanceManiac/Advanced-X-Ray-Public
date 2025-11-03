@@ -82,20 +82,17 @@ void ShowMain()
     if (ImGui::Button(toUtf8(CStringTable().translate("st_editor_imgui_ui_debugger").c_str()).c_str()))
         show_ui_editor = !show_ui_editor;
 
-    if (psDeviceFlags.test(rsR1))
-    {
-        ImGui::Separator();
-        ImGui::Text(toUtf8(CStringTable().translate("st_editor_imgui_level").c_str()).c_str());
-        ImGui::Checkbox(toUtf8(CStringTable().translate("st_editor_imgui_draw_ai_map").c_str()).c_str(), &isRenderAiMap);
-        ImGui::Checkbox(toUtf8(CStringTable().translate("st_editor_imgui_draw_spawn_element").c_str()).c_str(), &isRenderSpawnElement);
-        ImGui::Separator();
-    }
+    ImGui::Separator();
+    ImGui::Text(toUtf8(CStringTable().translate("st_editor_imgui_level").c_str()).c_str());
+    ImGui::Checkbox(toUtf8(CStringTable().translate("st_editor_imgui_draw_ai_map").c_str()).c_str(), &isRenderAiMap);
+    ImGui::Checkbox(toUtf8(CStringTable().translate("st_editor_imgui_draw_spawn_element").c_str()).c_str(), &isRenderSpawnElement);
+    ImGui::Separator();
 
 	bool full = stage == EditorStage::Full;
 	if (ImGui::Checkbox(toUtf8(CStringTable().translate("st_editor_imgui_active").c_str()).c_str(), &full))
 		stage = full ? EditorStage::Full : EditorStage::Light;
-	ImGui::Text(
-		"Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+
+	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 }
 
 void ShowEditor()

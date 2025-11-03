@@ -878,16 +878,11 @@ void CLevel::OnRender()
 	if (psDeviceFlags.test(rsR4))
 		::Render->RenderApplyRTandZB();
 
+	embedded_editor_render();
+
 #ifdef DEBUG
 	draw_wnds_rects();
 	physics_world()->OnRender	();
-#endif // DEBUG
-
-#ifdef DEBUG
-	if (ai().get_level_graph())
-		ai().level_graph().render();
-
-	embedded_editor_render();
 
 #ifdef DEBUG_PRECISE_PATH
 	test_precise_path		();
@@ -913,16 +908,6 @@ void CLevel::OnRender()
 			if (physic_object)
 				physic_object->OnRender();
 
-			CSpaceRestrictor	*space_restrictor = smart_cast<CSpaceRestrictor*>	(_O);
-			if (space_restrictor)
-				space_restrictor->OnRender();
-
-			CLevelChanger*		lchanger = smart_cast<CLevelChanger*>	(_O);
-			if (lchanger)
-				lchanger->OnRender();
-			CClimableObject		*climable		  = smart_cast<CClimableObject*>	(_O);
-			if(climable)
-				climable->OnRender();
 			CTeamBaseZone	*team_base_zone = smart_cast<CTeamBaseZone*>(_O);
 			if (team_base_zone)
 				team_base_zone->OnRender();
@@ -968,17 +953,15 @@ void CLevel::OnRender()
 	}
 #endif
 
+	debug_renderer().render();
+
 #ifdef DEBUG
 	if (bDebug) {
 		DBG().draw_object_info				();
 		DBG().draw_text						();
 		DBG().draw_level_info				();
 	}
-#endif
 
-	debug_renderer().render();
-
-#ifdef DEBUG
 	DBG().draw_debug_text();
 
 	if (psAI_Flags.is(aiVision)) {

@@ -1413,8 +1413,6 @@
     <ClInclude Include="ElectricBall.h" />
     <ClInclude Include="EliteDetector.h" />
     <ClInclude Include="embedded_editor\editor_render.h" />
-    <ClInclude Include="embedded_editor\editor_render_ai_map.h" />
-    <ClInclude Include="embedded_editor\editor_render_spawn_element.h" />
     <ClInclude Include="embedded_editor\embedded_editor_person_attach.h" />
     <ClInclude Include="embedded_editor\embedded_editor_helper.h" />
     <ClInclude Include="embedded_editor\embedded_editor_hud.h" />
@@ -4763,8 +4761,6 @@
     <ClCompile Include="ElectricBall.cpp" />
     <ClCompile Include="EliteDetector.cpp" />
     <ClCompile Include="embedded_editor\editor_render.cpp" />
-    <ClCompile Include="embedded_editor\editor_render_ai_map.cpp" />
-    <ClCompile Include="embedded_editor\editor_render_spawn_element.cpp" />
     <ClCompile Include="embedded_editor\embedded_editor_person_attach.cpp" />
     <ClCompile Include="embedded_editor\embedded_editor_helper.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">pch_script.h</PrecompiledHeaderFile>
