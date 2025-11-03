@@ -202,27 +202,31 @@ continue_loop:
 
 void CSpaceRestrictor::OnRender	()
 {
-	DRender->OnFrameEnd();
-	Fvector l_half; l_half.set(.5f, .5f, .5f);
-	Fmatrix l_ball, l_box;
-	xr_vector<CCF_Shape::shape_def> &l_shapes = ((CCF_Shape*)CFORM())->Shapes();
-	xr_vector<CCF_Shape::shape_def>::iterator l_pShape;
-	
-	u32 Color = 0;
-	CCustomZone	*custom_zone = smart_cast<CCustomZone*>(this);
-	if (custom_zone && custom_zone->IsEnabled())
-		Color = color_xrgb(0,255,255);
-	else
-		Color = color_xrgb(255,0,0);
-
-	
-	for(l_pShape = l_shapes.begin(); l_shapes.end() != l_pShape; ++l_pShape) 
+	if (Device.vCameraPosition.distance_to(XFORM().c) < 100.0f)
 	{
-		switch(l_pShape->type)
+		DRender->OnFrameEnd();
+		Fvector l_half;
+		l_half.set(.5f, .5f, .5f);
+		Fmatrix l_ball, l_box;
+		xr_vector<CCF_Shape::shape_def>& l_shapes = ((CCF_Shape*)CFORM())->Shapes();
+		xr_vector<CCF_Shape::shape_def>::iterator l_pShape;
+
+		u32 Color = 0;
+		CCustomZone* custom_zone = smart_cast<CCustomZone*>(this);
+
+		if (custom_zone && custom_zone->IsEnabled())
+			Color = color_xrgb(0, 255, 255);
+		else
+			Color = color_xrgb(255, 0, 0);
+
+
+		for (l_pShape = l_shapes.begin(); l_shapes.end() != l_pShape; ++l_pShape)
 		{
-		case 0:
+			switch (l_pShape->type)
 			{
-                Fsphere &l_sphere = l_pShape->data.sphere;
+			case 0:
+			{
+				Fsphere& l_sphere = l_pShape->data.sphere;
 				l_ball.scale(l_sphere.R, l_sphere.R, l_sphere.R);
 				//l_ball.scale(1.f, 1.f, 1.f);
 				Fvector l_p; XFORM().transform(l_p, l_sphere.P);
@@ -232,21 +236,18 @@ void CSpaceRestrictor::OnRender	()
 				Level().debug_renderer().draw_ellipse(l_ball, Color);
 			}
 			break;
-		case 1:
+			case 1:
 			{
 				l_box.mul(XFORM(), l_pShape->data.box);
 				Level().debug_renderer().draw_obb(l_box, l_half, Color);
 			}
 			break;
+			}
 		}
-	}
 
-	if( Level().CurrentViewEntity()->Position().distance_to(XFORM().c)<100.0f ){
-	
-//DRAW name
-
+		//DRAW name
 		Fmatrix		res;
-		res.mul		(Device.mFullTransform, XFORM());
+		res.mul(Device.mFullTransform, XFORM());
 
 		Fvector4	v_res;
 
@@ -257,31 +258,36 @@ void CSpaceRestrictor::OnRender	()
 		static float gx = 0.0f;
 		static float gy = 2.0f;
 		static float gz = 0.0f;
-		shift.set(gx,gy,gz);
+		shift.set(gx, gy, gz);
 		res.transform(v_res, shift);
 
-// check if the object in sight
-		if (v_res.z < 0 || v_res.w < 0)										return;
-		if (v_res.x < -1.f || v_res.x > 1.f || v_res.y<-1.f || v_res.y>1.f) return;
+		// check if the object in sight
+		if (v_res.z < 0 || v_res.w < 0)
+			return;
+
+		if (v_res.x < -1.f || v_res.x > 1.f || v_res.y < -1.f || v_res.y>1.f)
+			return;
 
 		// get real (x,y)
-		float x = (1.f + v_res.x)/2.f * (Device.dwWidth);
-		float y = (1.f - v_res.y)/2.f * (Device.dwHeight) - delta_height;
+		float x = (1.f + v_res.x) / 2.f * (Device.dwWidth);
+		float y = (1.f - v_res.y) / 2.f * (Device.dwHeight) - delta_height;
 
-		UI().Font().pFontMedium->SetColor	(Color);
-		UI().Font().pFontMedium->OutSet	(x, y-=delta_height);
-		UI().Font().pFontMedium->OutNext	( Name() );
+		UI().Font().pFontMedium->SetColor(Color);
+		UI().Font().pFontMedium->OutSet(x, y -= delta_height);
+		UI().Font().pFontMedium->OutNext(Name());
 		CCustomZone* z = smart_cast<CCustomZone*>(this);
-		if(z){
+		if (z)
+		{
 			string64 str;
-			switch (z->ZoneState()){
-				case CCustomZone::eZoneStateIdle:		xr_strcpy(str,"IDLE"); break;
-				case CCustomZone::eZoneStateAwaking:	xr_strcpy(str,"AWAKING"); break;
-				case CCustomZone::eZoneStateBlowout:	xr_strcpy(str,"BLOWOUT"); break;
-				case CCustomZone::eZoneStateAccumulate: xr_strcpy(str,"ACCUMULATE"); break;
-				case CCustomZone::eZoneStateDisabled:	xr_strcpy(str,"DISABLED"); break;
+			switch (z->ZoneState())
+			{
+			case CCustomZone::eZoneStateIdle:		xr_strcpy(str, "IDLE"); break;
+			case CCustomZone::eZoneStateAwaking:	xr_strcpy(str, "AWAKING"); break;
+			case CCustomZone::eZoneStateBlowout:	xr_strcpy(str, "BLOWOUT"); break;
+			case CCustomZone::eZoneStateAccumulate: xr_strcpy(str, "ACCUMULATE"); break;
+			case CCustomZone::eZoneStateDisabled:	xr_strcpy(str, "DISABLED"); break;
 			};
-			UI().Font().pFontMedium->OutNext	( str );
+			UI().Font().pFontMedium->OutNext(str);
 		}
 	}
 }
