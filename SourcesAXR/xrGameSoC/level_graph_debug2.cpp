@@ -41,137 +41,222 @@
 #include "graph_engine.h"
 #include "debug_renderer.h"
 
-void CLevelGraph::draw_nodes	()
+typedef Fvector2 t_node_tc[4];
+static const float dtc = 0.25f;
+static t_node_tc node_tc[16] = {
+	{ { 0.f + 0 * dtc, 0.25f + 0 * dtc }, { 0.25f + 0 * dtc, 0.25f + 0 * dtc }, { 0.25f + 0 * dtc, 0.f + 0 * dtc },
+		{ 0.f + 0 * dtc, 0.f + 0 * dtc } },
+	{ { 0.f + 1 * dtc, 0.25f + 0 * dtc }, { 0.25f + 1 * dtc, 0.25f + 0 * dtc }, { 0.25f + 1 * dtc, 0.f + 0 * dtc },
+		{ 0.f + 1 * dtc, 0.f + 0 * dtc } },
+	{ { 0.f + 2 * dtc, 0.25f + 0 * dtc }, { 0.25f + 2 * dtc, 0.25f + 0 * dtc }, { 0.25f + 2 * dtc, 0.f + 0 * dtc },
+		{ 0.f + 2 * dtc, 0.f + 0 * dtc } },
+	{ { 0.f + 3 * dtc, 0.25f + 0 * dtc }, { 0.25f + 3 * dtc, 0.25f + 0 * dtc }, { 0.25f + 3 * dtc, 0.f + 0 * dtc },
+		{ 0.f + 3 * dtc, 0.f + 0 * dtc } },
+
+	{ { 0.f + 0 * dtc, 0.25f + 1 * dtc }, { 0.25f + 0 * dtc, 0.25f + 1 * dtc }, { 0.25f + 0 * dtc, 0.f + 1 * dtc },
+		{ 0.f + 0 * dtc, 0.f + 1 * dtc } },
+	{ { 0.f + 1 * dtc, 0.25f + 1 * dtc }, { 0.25f + 1 * dtc, 0.25f + 1 * dtc }, { 0.25f + 1 * dtc, 0.f + 1 * dtc },
+		{ 0.f + 1 * dtc, 0.f + 1 * dtc } },
+	{ { 0.f + 2 * dtc, 0.25f + 1 * dtc }, { 0.25f + 2 * dtc, 0.25f + 1 * dtc }, { 0.25f + 2 * dtc, 0.f + 1 * dtc },
+		{ 0.f + 2 * dtc, 0.f + 1 * dtc } },
+	{ { 0.f + 3 * dtc, 0.25f + 1 * dtc }, { 0.25f + 3 * dtc, 0.25f + 1 * dtc }, { 0.25f + 3 * dtc, 0.f + 1 * dtc },
+		{ 0.f + 3 * dtc, 0.f + 1 * dtc } },
+
+	{ { 0.f + 0 * dtc, 0.25f + 2 * dtc }, { 0.25f + 0 * dtc, 0.25f + 2 * dtc }, { 0.25f + 0 * dtc, 0.f + 2 * dtc },
+		{ 0.f + 0 * dtc, 0.f + 2 * dtc } },
+	{ { 0.f + 1 * dtc, 0.25f + 2 * dtc }, { 0.25f + 1 * dtc, 0.25f + 2 * dtc }, { 0.25f + 1 * dtc, 0.f + 2 * dtc },
+		{ 0.f + 1 * dtc, 0.f + 2 * dtc } },
+	{ { 0.f + 2 * dtc, 0.25f + 2 * dtc }, { 0.25f + 2 * dtc, 0.25f + 2 * dtc }, { 0.25f + 2 * dtc, 0.f + 2 * dtc },
+		{ 0.f + 2 * dtc, 0.f + 2 * dtc } },
+	{ { 0.f + 3 * dtc, 0.25f + 2 * dtc }, { 0.25f + 3 * dtc, 0.25f + 2 * dtc }, { 0.25f + 3 * dtc, 0.f + 2 * dtc },
+		{ 0.f + 3 * dtc, 0.f + 2 * dtc } },
+
+	{ { 0.f + 0 * dtc, 0.25f + 3 * dtc }, { 0.25f + 0 * dtc, 0.25f + 3 * dtc }, { 0.25f + 0 * dtc, 0.f + 3 * dtc },
+		{ 0.f + 0 * dtc, 0.f + 3 * dtc } },
+	{ { 0.f + 1 * dtc, 0.25f + 3 * dtc }, { 0.25f + 1 * dtc, 0.25f + 3 * dtc }, { 0.25f + 1 * dtc, 0.f + 3 * dtc },
+		{ 0.f + 1 * dtc, 0.f + 3 * dtc } },
+	{ { 0.f + 2 * dtc, 0.25f + 3 * dtc }, { 0.25f + 2 * dtc, 0.25f + 3 * dtc }, { 0.25f + 2 * dtc, 0.f + 3 * dtc },
+		{ 0.f + 2 * dtc, 0.f + 3 * dtc } },
+	{ { 0.f + 3 * dtc, 0.25f + 3 * dtc }, { 0.25f + 3 * dtc, 0.25f + 3 * dtc }, { 0.25f + 3 * dtc, 0.f + 3 * dtc },
+		{ 0.f + 3 * dtc, 0.f + 3 * dtc } },
+};
+
+void CLevelGraph::draw_nodes()
 {
-	auto O = smart_cast<CGameObject*>(Level().CurrentEntity());
+	CGameObject* O = smart_cast<CGameObject*>(Level().CurrentEntity());
+
 	if (!O)
 		return;
-	Fvector	POSITION	= O->Position();
+
+	Fvector POSITION = O->Position();
 	POSITION.y += 0.5f;
 
-	// display
-	Fvector P			= POSITION;
+	Fvector P = POSITION;
+	u32 ID = O->ai_location().level_vertex_id();
 
-//	CPosition			Local;
-//	vertex_position		(Local,P);
+	CGameFont* F = UI().Font().pFontDI;
+	F->SetHeightI(.02f);
+	F->OutI(0.f, 0.5f, "%f,%f,%f", VPUSH(P));
 
-	u32 ID				= O->ai_location().level_vertex_id();
-
-	CGameFont* F		= UI().Font().pFontDI;
-	F->SetHeightI		(.02f);
-	F->OutI				(0.f,0.5f,"%f,%f,%f",VPUSH(P));
-//	float				x,z;
-//	unpack_xz			(Local,x,z);
-//	F->Out				(0.f,0.55f,"%3d,%4d,%3d -> %d",	iFloor(x),iFloor(Local.y()),iFloor(z),u32(ID));
-
-	svector<u32,128>	linked;
+	svector<u32, 128> linked;
 	{
-		const_iterator	i,e;
-		begin			(ID,i,e);
-		for(; i != e; ++i)
-			linked.push_back(value(ID,i));
+		const_iterator i, e;
+		begin(ID, i, e);
+
+		for (; i != e; ++i)
+			linked.push_back(value(ID, i));
 	}
 
-	// render
-	float	sc		= header().cell_size()/16;
-	float	st		= 0.98f*header().cell_size()/2;
-	float	tt		= 0.01f;
+	float st = 0.98f * header().cell_size() / 2;
+	float tt = 0.01f;
+	Fvector DUP;
+	DUP.set(0, 1, 0);
 
-	Fvector	DUP;		DUP.set(0,1,0);
+	F->SetColor(color_rgba(255, 255, 255, 255));
 
-	DRender->OnFrameEnd	();
-	DRender->SetShader	(sh_debug);
-	F->SetColor			(color_rgba(255,255,255,255));
-
-	// если включён ai_dbg_frustum раскрасить ноды по light
-	// иначе раскрашивать по cover
-	bool			b_light = false;
-	
-	//////////////////////////////////////////////////////////////////////////
-	Fvector min_position,max_position;
+	Fvector min_position, max_position;
 	max_position = min_position = Device.vCameraPosition;
 	min_position.sub(30.f);
 	max_position.add(30.f);
-	
-	CLevelGraph::const_vertex_iterator	 I, E;
+
+	CLevelGraph::const_vertex_iterator I, E;
+
 	if (valid_vertex_position(min_position))
-		I = std::lower_bound(begin(),end(),vertex_position(min_position).xz(),&vertex::predicate2);
+		I = std::lower_bound(begin(), end(), vertex_position(min_position).xz(), &vertex::predicate2);
 	else
 		I = begin();
 
-	if (valid_vertex_position(max_position)) {
-		E = std::upper_bound(begin(),end(),vertex_position(max_position).xz(),&vertex::predicate);
+	if (valid_vertex_position(max_position))
+	{
+		E = std::upper_bound(begin(), end(), vertex_position(max_position).xz(), &vertex::predicate);
 		if (E != end()) ++E;
 	}
 	else
 		E = end();
 
-	//////////////////////////////////////////////////////////////////////////
+	u32 DvbSize = 1536 * 1024;
+	u32 PointSize = 24;
+	u32 PointCount = 6;
+	u32 nodeBatch = DvbSize / PointSize / PointCount;
 
-	for ( ; I != E; ++I)
+	UIRender->StartPrimitive(nodeBatch * PointCount, IUIRender::ptTriList, IUIRender::pttLIT);
+
+	u32 iNode = 0;
+	for (; I != E; ++I)
 	{
-		const CLevelGraph::CVertex&	N	= *I;
-		Fvector			PC;
-		PC				= vertex_position(N);
+		const CLevelGraph::CVertex& N = *I;
+		Fvector PC = vertex_position(N);
+		u32 Nid = vertex_id(I);
 
-		u32 Nid			= vertex_id(I);
+		if (Device.vCameraPosition.distance_to(PC) > 30)
+			continue;
 
-		if (Device.vCameraPosition.distance_to(PC)>30) continue;
+		float sr = header().cell_size();
+		if (!::Render->ViewBase.testSphere_dirty(PC, sr))
+			continue;
 
-		float			sr	= header().cell_size();
-		if (::Render->ViewBase.testSphere_dirty(PC,sr)) {
-			
-			u32	LL = 255;
-			
-			u32	CC		= color_xrgb(0,0,255);
-			u32	CT		= color_xrgb(LL,LL,LL);
-			u32	CH		= color_xrgb(0,128,0);
+		u32 color = color_xrgb(255, 255, 255);
 
-			BOOL	bHL		= FALSE;
-			if (Nid==u32(ID))	{ bHL = TRUE; CT = color_xrgb(0,255,0); }
-			else {
-				for (u32 t=0; t<linked.size(); ++t) {
-					if (linked[t]==Nid) { bHL = TRUE; CT = CH; break; }
+		BOOL bHL = FALSE;
+		if (Nid == u32(ID))
+		{
+			bHL = TRUE;
+			color = color_xrgb(0, 255, 0);
+		}
+		else
+		{
+			for (u32 t = 0; t < linked.size(); ++t)
+			{
+				if (linked[t] == Nid)
+				{
+					bHL = TRUE;
+					color = color_xrgb(0, 128, 0);
+					break;
 				}
 			}
-
-			if (!m_access_mask[Nid])
-			{
-				CT = D3DCOLOR_XRGB(255, 0, 0);
-			}
-
-			// unpack plane
-			Fplane PL; Fvector vNorm;
-			pvDecompress(vNorm,N.plane());
-			PL.build	(PC,vNorm);
-
-			// create vertices
-			Fvector		v,v1,v2,v3,v4;
-			v.set(PC.x-st,PC.y,PC.z-st);	PL.intersectRayPoint(v,DUP,v1);	v1.mad(v1,PL.n,tt);	// minX,minZ
-			v.set(PC.x+st,PC.y,PC.z-st);	PL.intersectRayPoint(v,DUP,v2);	v2.mad(v2,PL.n,tt);	// maxX,minZ
-			v.set(PC.x+st,PC.y,PC.z+st);	PL.intersectRayPoint(v,DUP,v3);	v3.mad(v3,PL.n,tt);	// maxX,maxZ
-			v.set(PC.x-st,PC.y,PC.z+st);	PL.intersectRayPoint(v,DUP,v4);	v4.mad(v4,PL.n,tt);	// minX,maxZ
-
-			// render quad
-			DRender->dbg_DrawTRI(Fidentity, v3, v2, v1, CT);
-			DRender->dbg_DrawTRI(Fidentity, v1, v4, v3, CT);
-
-			// render center
-			Level().debug_renderer().draw_aabb	(PC,sc,sc,sc,CC);
-
-			// render id
-			if (bHL) {
-				Fvector		T;
-				Fvector4	S;
-				T.set		(PC); T.y+=0.3f;
-				Device.mFullTransform.transform	(S,T);
-				if (S.z < 0 || S.z < 0)												continue;
-				if (S.x < -1.f || S.x > 1.f || S.y<-1.f || S.x>1.f)					continue;
-				F->SetHeightI	(0.05f/_sqrt(_abs(S.w)));
-				F->SetColor	(0xffffffff);
-				F->OutI		(S.x,-S.y,"~%d",Nid);
-			}
 		}
+
+		if (!m_access_mask[Nid])
+			color = color_xrgb(255, 0, 0);
+
+		int k = 0;
+
+		if (valid_vertex_id(N.link(0)))
+			k |= 1 << 0;
+
+		if (valid_vertex_id(N.link(1)))
+			k |= 1 << 1;
+
+		if (valid_vertex_id(N.link(2)))
+			k |= 1 << 2;
+
+		if (valid_vertex_id(N.link(3)))
+			k |= 1 << 3;
+
+		// unpack plane
+		Fplane PL;
+		Fvector vNorm;
+		pvDecompress(vNorm, N.plane());
+		PL.build(PC, vNorm);
+
+		Fvector v, v1, v2, v3, v4;
+		v.set(PC.x - st, PC.y, PC.z - st);
+		PL.intersectRayPoint(v, DUP, v1); v1.mad(v1, PL.n, tt);
+		v.set(PC.x + st, PC.y, PC.z - st);
+		PL.intersectRayPoint(v, DUP, v2); v2.mad(v2, PL.n, tt);
+		v.set(PC.x + st, PC.y, PC.z + st);
+		PL.intersectRayPoint(v, DUP, v3); v3.mad(v3, PL.n, tt);
+		v.set(PC.x - st, PC.y, PC.z + st);
+		PL.intersectRayPoint(v, DUP, v4); v4.mad(v4, PL.n, tt);
+
+		UIRender->PushPoint(v3.x, v3.y, v3.z, color, node_tc[k][2].x, node_tc[k][2].y);
+		UIRender->PushPoint(v2.x, v2.y, v2.z, color, node_tc[k][1].x, node_tc[k][1].y);
+		UIRender->PushPoint(v1.x, v1.y, v1.z, color, node_tc[k][0].x, node_tc[k][0].y);
+
+		UIRender->PushPoint(v4.x, v4.y, v4.z, color, node_tc[k][3].x, node_tc[k][3].y);
+		UIRender->PushPoint(v3.x, v3.y, v3.z, color, node_tc[k][2].x, node_tc[k][2].y);
+		UIRender->PushPoint(v1.x, v1.y, v1.z, color, node_tc[k][0].x, node_tc[k][0].y);
+
+		iNode++;
+		if (iNode == nodeBatch)
+		{
+			UIRender->CacheSetXformWorld(Fidentity);
+			UIRender->SetShader(*sh_debug);
+			UIRender->FlushPrimitive();
+
+			UIRender->StartPrimitive(nodeBatch * PointCount, IUIRender::ptTriList, IUIRender::pttLIT);
+			iNode = 0;
+		}
+
+		float sc = header().cell_size() / 16;
+		u32 CC = color_xrgb(0, 0, 255);
+		Level().debug_renderer().draw_aabb(PC, sc, sc, sc, CC);
+
+		if (bHL)
+		{
+			Fvector T;
+			Fvector4 S;
+			T.set(PC);
+			T.y += 0.3f;
+			Device.mFullTransform.transform(S, T);
+
+			if (S.z < 0 || S.z < 0)
+				continue;
+
+			if (S.x < -1.f || S.x > 1.f || S.y < -1.f || S.y > 1.f)
+				continue;
+
+			F->SetHeightI(0.05f / _sqrt(_abs(S.w)));
+			F->SetColor(0xffffffff);
+			F->OutI(S.x, -S.y, "~%d", Nid);
+		}
+	}
+
+	if (iNode > 0)
+	{
+		UIRender->CacheSetXformWorld(Fidentity);
+		UIRender->SetShader(*sh_debug);
+		UIRender->FlushPrimitive();
 	}
 }
 
