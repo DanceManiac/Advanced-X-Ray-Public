@@ -12,7 +12,6 @@ class CMotionDef;
 #include "inventory_space.h"
 #include "hudsound.h"
 
-
 class CHUDState
 {
 public:
@@ -213,7 +212,8 @@ public:
 	virtual CHudItem*			cast_hud_item			()				{ return this; }
 
 	float						GetHudFov				();
-	
+	void						Update_Actor_Sprint();
+
 	bool						m_bSprintType;
 	bool						HeadLampSwitch{}, NightVisionSwitch{}, CleanMaskAction{}, LaserSwitchAction{}, FlashlightSwitchAction{};
 

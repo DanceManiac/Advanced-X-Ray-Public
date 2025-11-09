@@ -2579,6 +2579,7 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask, "g_lfo_hud_dof_wpn_aim",				&psActorFlags3, AF_HUD_DOF_WPN_AIM);
 	CMD3(CCC_Mask, "g_lfo_hud_dof_wpn_fire",			&psActorFlags3, AF_HUD_DOF_WPN_FIRE);
 	CMD3(CCC_Mask, "g_lfo_hud_dof_wpn_idle",			&psActorFlags3, AF_HUD_DOF_WPN_IDLE);
+	CMD3(CCC_Mask, "g_lfo_hud_dof_wpn_sprint",			&psActorFlags3, AF_HUD_DOF_WPN_SPRINT);
 
 	CMD3(CCC_Token, "g_lfo_scope_type",					&lfo_scope_type, lfo_scope_type_token);
 
@@ -2768,42 +2769,39 @@ CMD4(CCC_Integer,			"hit_anims_tune",						&tune_hit_anims,		0, 1);
 
 	if (bDeveloperMode)
 	{
-		CMD1(CCC_Spawn,			"g_spawn");
-		CMD1(CCC_SetWeather,	"set_weather");
-		CMD1(CCC_TimeFactor,	"time_factor");
-		CMD1(CCC_JumpToLevel,	"jump_to_level");
-		CMD1(CCC_Spawn_to_inv,	"g_spawn_to_inventory");
-		CMD1(CCC_UI_Reload,		"ui_reload");
-		CMD1(CCC_Giveinfo,		"g_info");
-		CMD1(CCC_Disinfo,		"d_info");
-		CMD1(CCC_GiveTask,		"g_task");
-		CMD1(CCC_GiveMoney,		"g_money");
-		CMD1(CCC_KillEntity,	"kill");
-		CMD1(CCC_TeleportToSID, "tp_to_sid");
-		CMD1(CCC_ReloadSystemLtx, "reload_system_ltx");
+		CMD1(CCC_Spawn,					"g_spawn");
+		CMD1(CCC_SetWeather,			"set_weather");
+		CMD1(CCC_TimeFactor,			"time_factor");
+		CMD1(CCC_JumpToLevel,			"jump_to_level");
+		CMD1(CCC_Spawn_to_inv,			"g_spawn_to_inventory");
+		CMD1(CCC_Giveinfo,				"g_info");
+		CMD1(CCC_Disinfo,				"d_info");
+		CMD1(CCC_GiveTask,				"g_task");
+		CMD1(CCC_GiveMoney,				"g_money");
+		CMD1(CCC_KillEntity,			"kill");
+		CMD1(CCC_TeleportToSID,			"tp_to_sid");
+		CMD1(CCC_ReloadSystemLtx,		"reload_system_ltx");
 		CMD1(CCC_ReloadAdvancedXRayCfg, "reload_axr_cfg");
-		CMD1(CCC_ReloadWeather, "reload_weather");
-		CMD1(DumpTxrsForPrefetching, "ui_textures_for_prefetching");//Prints the list of UI textures, which caused stutterings during game
-		CMD3(CCC_Mask,			"g_god",			&psActorFlags, AF_GODMODE);
-		CMD3(CCC_Mask,			"g_unlimitedammo",	&psActorFlags, AF_UNLIMITEDAMMO);
-		CMD4(CCC_Integer,		"hud_adjust_mode",	&hud_adj_mode, 0, 5);
-		CMD4(CCC_Integer,		"dbg_show_material_info", &g_dbgShowMaterialInfo, 0, 1);
-		CMD1(CCC_TuneAttachableItem, "dbg_adjust_attachable_item");
-		CMD3(CCC_Mask, "dbg_mode", &psActorFlags2, AF_DEV_MODE);
-		CMD3(CCC_Mask, "dbg_hud_infos", &psActorFlags2, AF_LFO_DEBUG_HUD_INFOS);
+		CMD1(CCC_ReloadWeather,			"reload_weather");
+		CMD1(DumpTxrsForPrefetching,	"ui_textures_for_prefetching");//Prints the list of UI textures, which caused stutterings during game
+		CMD3(CCC_Mask,					"g_god",						&psActorFlags, AF_GODMODE);
+		CMD3(CCC_Mask,					"g_unlimitedammo",				&psActorFlags, AF_UNLIMITEDAMMO);
+		CMD4(CCC_Integer,				"hud_adjust_mode",				&hud_adj_mode, 0, 5);
+		CMD4(CCC_Integer,				"dbg_show_material_info",		&g_dbgShowMaterialInfo, 0, 1);
+		CMD1(CCC_TuneAttachableItem,	"dbg_adjust_attachable_item");
+		CMD3(CCC_Mask,					"dbg_mode",						&psActorFlags2, AF_DEV_MODE);
+		CMD3(CCC_Mask,					"dbg_hud_infos",				&psActorFlags2, AF_LFO_DEBUG_HUD_INFOS);
+		CMD3(CCC_Mask,					"dbg_mode_anm_bore_disable",	&psActorFlags2, AF_LFO_WPN_BORE_DBG);
 	}
 
 	LoadTokensFromIni(qhud_type_token, "ui_hud_types");
-	CMD3(CCC_UiHud_Mode, "ui_hud_type", &ui_hud_type, qhud_type_token.data());
+	CMD3(CCC_UiHud_Mode,	"ui_hud_type",			&ui_hud_type, qhud_type_token.data());
 
 	CMD3(CCC_Mask,			"g_3d_scopes",			&psActorFlags,	AF_3DSCOPE_ENABLE);
 	CMD3(CCC_Mask,			"g_pnv_in_scope",		&psActorFlags,	AF_PNV_W_SCOPE_DIS);
 
 
-
-
-
-
+	CMD1(CCC_UI_Reload,		"ui_reload");
 
 	CMD3(CCC_Mask,			"g_autopickup",			&psActorFlags,	AF_AUTOPICKUP);
 	CMD3(CCC_Mask,			"g_dynamic_music",		&psActorFlags,	AF_DYNAMIC_MUSIC);

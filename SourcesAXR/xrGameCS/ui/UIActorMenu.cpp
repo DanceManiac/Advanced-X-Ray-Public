@@ -1121,8 +1121,16 @@ void CUIActorMenu::ResetMode()
 
 	if (SSFX_UI_DoF_active)
 	{
-		ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
-		ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
+		if (psActorFlags3.test(AF_HUD_DOF_WPN_ALL) && psActorFlags3.test(AF_HUD_DOF_WPN_IDLE))
+		{
+			ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_WeaponDoFIdle();
+			ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_WeaponDoFIdle().z;
+		}
+		else
+		{
+			ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
+			ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
+		}
 		SSFX_UI_DoF_active = false;
 	}
 }

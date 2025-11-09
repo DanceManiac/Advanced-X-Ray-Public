@@ -6,6 +6,9 @@
 #include "inventory.h"
 #include "level.h"
 #include "actor.h"
+#include "../xrEngine/x_ray.h"
+#include "AdvancedXrayGameConstants.h"
+
 
 CWeaponShotgun::CWeaponShotgun()
 {
@@ -181,6 +184,15 @@ void CWeaponShotgun::OnStateSwitch	(u32 S)
 			switch2_EndReload		();
 		break;
 	};
+
+	if (psActorFlags3.test(AF_HUD_DOF_WPN_ALL) && psActorFlags3.test(AF_HUD_DOF_WPN_IDLE))
+	{
+		if (GetState() == eIdle && !IsZoomed())
+		{
+			ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_WeaponDoFIdle();
+			ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_WeaponDoFIdle().z;
+		}
+	}
 }
 
 void CWeaponShotgun::switch2_StartReload()
@@ -312,6 +324,9 @@ void CWeaponShotgun::PlayAnimAim()
 
 	if (isHUDAnimationExist("anm_idle_aim"))
 		PlayHUDMotion("anm_idle_aim", TRUE, NULL, GetState());
+
+	UpdateWeaponDoF();
+
 }
 
 bool CWeaponShotgun::HaveCartridgeInInventory		(u8 cnt)

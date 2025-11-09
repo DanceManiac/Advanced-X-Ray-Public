@@ -17,6 +17,9 @@
 #include "Weapon.h"
 #include "WeaponMagazinedWGrenade.h"
 #include "PDA.h"
+#include "../xrEngine/x_ray.h"
+#include "AdvancedXrayGameConstants.h"
+
 #include <array>
 
 #include "script_callback_ex.h"
@@ -1093,6 +1096,10 @@ void CHudItem::PlayAnimIdleSprint()
 	CWeapon* weapon = smart_cast<CWeapon*>(this);
 	CPda* pda = smart_cast<CPda*>(this);
 
+	Update_Actor_Sprint();
+
+
+
 	if (g_actor->IsDetectorActive() || !weapon)
 	{
 		if (IsMisfireNow())
@@ -2157,4 +2164,14 @@ void CHudItem::TimeLockAnimation()
 
 	if (time && current_time >= time)
 		DeviceUpdate();
+}
+
+void CHudItem::Update_Actor_Sprint()
+{
+	if (psActorFlags3.test(AF_HUD_DOF_WPN_ALL) && psActorFlags3.test(AF_HUD_DOF_WPN_SPRINT))
+	{
+		ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_WeaponDoFStprint();
+		ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_WeaponDoFStprint().z;
+	}
+	//Msg("ACTOR SPRINT");
 }

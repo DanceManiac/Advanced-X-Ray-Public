@@ -218,6 +218,9 @@ void CPda::OnStateSwitch(u32 S)
 	{
 		PlayAnimIdlePDA();
 
+		ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
+		ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
+
 		if (m_joystick_bone && joystick == BI_NONE && HudItemData())
 			joystick = HudItemData()->m_model->LL_BoneID(m_joystick_bone);
 

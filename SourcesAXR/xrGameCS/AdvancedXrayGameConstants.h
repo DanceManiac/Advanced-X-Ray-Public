@@ -44,6 +44,7 @@ namespace GameConstants
 	Fvector4 GetSSFX_WeaponDoFAim();
 	Fvector4 GetSSFX_WeaponDoFShoot();
 	Fvector4 GetSSFX_WeaponDoFIdle();
+	Fvector4 GetSSFX_WeaponDoFStprint();
 	bool GetSSFX_EnableBoreDoF();
 	LPCSTR GetAfInfluenceMode();
 	LPCSTR GetArtefactDegradationMode();

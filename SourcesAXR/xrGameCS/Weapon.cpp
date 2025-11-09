@@ -4405,7 +4405,7 @@ CUIWindow* CWeapon::ZoomTexture()
 	else
 		return NULL;
 
-	EnableHudInertion(TRUE);
+//	EnableHudInertion(TRUE);
 }
 
 void CWeapon::SwitchState(u32 S)
@@ -4918,7 +4918,7 @@ void CWeapon::OnStateSwitch	(u32 S)
 					}
 					else
 					{
-						if (psActorFlags3.test(AF_HUD_DOF_WPN_IDLE) && GetState() == eFire && !IsZoomed())
+						if (psActorFlags3.test(AF_HUD_DOF_WPN_IDLE))
 						{
 							ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_WeaponDoFIdle();
 							ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_WeaponDoFIdle().z;
@@ -4937,16 +4937,19 @@ void CWeapon::OnStateSwitch	(u32 S)
 						ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_WeaponDoFIdle();
 						ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_WeaponDoFIdle().z;
 					}
+				}
+				else
+				{
+					if (psActorFlags3.test(AF_HUD_DOF_WPN_IDLE))
+					{
+						ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_WeaponDoFIdle();
+						ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_WeaponDoFIdle().z;
+					}
 					else
 					{
 						ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
 						ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
 					}
-				}
-				else
-				{
-					ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
-					ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
 				}
 			}
 		}
@@ -6491,8 +6494,16 @@ void CWeapon::UpdateWeaponDoF()
 		}
 		else
 		{
-			ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
-			ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
+			if (psActorFlags3.test(AF_HUD_DOF_WPN_IDLE))
+			{
+				ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_WeaponDoFIdle();
+				ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_WeaponDoFIdle().z;
+			}
+			else
+			{
+				ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
+				ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
+			}
 		}
 	}
 }
@@ -6506,8 +6517,16 @@ void CWeapon::UpdateWeaponDoFInspect()
 	}
 	else
 	{
-		ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
-		ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
+		if (psActorFlags3.test(AF_HUD_DOF_WPN_IDLE))
+		{
+			ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_WeaponDoFIdle();
+			ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_WeaponDoFIdle().z;
+		}
+		else
+		{
+			ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
+			ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
+		}
 	}
 }
 

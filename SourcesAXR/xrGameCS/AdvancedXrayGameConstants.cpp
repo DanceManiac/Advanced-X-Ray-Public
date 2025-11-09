@@ -58,6 +58,7 @@ Fvector4 m_FV4FocusDoF			= Fvector4().set(0.1f, 0.25f, 0.0f, 0.0f);
 Fvector4 m_FV4WeaponDoFAim		= Fvector4().set(0.1f, 0.10f, 0.0f, 2.0f);//XXX
 Fvector4 m_FV4WeaponDoFShoot	= Fvector4().set(0.1f, 0.10f, 1.0f, 2.0f);
 Fvector4 m_FV4WeaponDoFIdle		= Fvector4().set(0.2f, 0.35f, 0.0f, 2.0f);
+Fvector4 m_FV4WeaponDoFSprint	= Fvector4().set(0.2f, 0.35f, 0.0f, 2.0f);
 
 namespace GameConstants
 {
@@ -98,19 +99,20 @@ namespace GameConstants
 		m_bShowSaveName = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "show_saved_game_name", false);
 		m_sAfInfluenceMode = READ_IF_EXISTS(pAdvancedSettings, r_string, "gameplay", "artefacts_infl_mode", "from_belt"); //from_belt|from_ruck|from_ruck_only_rad
 		m_sArtefactsDegradationMode = READ_IF_EXISTS(pAdvancedSettings, r_string, "gameplay", "artefacts_degradation_mode", "from_belt"); //from_belt|from_ruck
-		m_FV4DefaultDoF = READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ssfx_dof", "default_dof", Fvector4().set(0.1f, 0.25f, 0.0f, 0.0f));
-		m_FV4FocusDoF = READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ssfx_dof", "focus_dof", Fvector4().set(0.1f, 0.25f, 0.0f, 0.0f));
-		m_bEnableBoreDoF = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ssfx_dof", "bore_dof_enabled", true);
 		m_sMoonPhasesMode = READ_IF_EXISTS(pAdvancedSettings, r_string, "environment", "moon_phases_mode", "off"); //off|8days|28days
 		m_bFogInfluenceVolumetricLight = READ_IF_EXISTS(pAdvancedSettings, r_bool, "environment", "fog_infl_volumetric_light", false);
 		m_bLimitedInvBoxes = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "enable_limited_inv_boxes", false);
 		m_bGlobalAchEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "enable_global_achievements", false);
 		m_b_smooth_scroll = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "enable_smooth_scrolling", false);
 		m_b_centering_cursor_global_disable = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "disable_cursor_global_centering", false);
-	
-		m_FV4WeaponDoFAim		= READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ssfx_dof", "wpn_dof_aim",		Fvector4().set(0.1f, 0.10f, 0.0f, 2.0f));
-		m_FV4WeaponDoFShoot		= READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ssfx_dof", "wpn_dof_shoot",	Fvector4().set(0.1f, 0.10f, 1.0f, 2.0f));
-		m_FV4WeaponDoFIdle		= READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ssfx_dof", "wpn_dof_idle",		Fvector4().set(0.1f, 0.25f, 0.0f, 2.0f));
+
+		m_bEnableBoreDoF		= READ_IF_EXISTS(pAdvancedSettings, r_bool,		"ssfx_dof", "bore_dof_enabled",		true);
+		m_FV4DefaultDoF			= READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ssfx_dof", "default_dof",			Fvector4().set(0.1f, 0.25f, 0.0f, 0.0f));
+		m_FV4FocusDoF			= READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ssfx_dof", "focus_dof",			Fvector4().set(0.1f, 0.25f, 1.0f, 0.0f));
+		m_FV4WeaponDoFAim		= READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ssfx_dof", "wpn_dof_aim",			Fvector4().set(0.1f, 0.10f, 0.0f, 2.0f));
+		m_FV4WeaponDoFShoot		= READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ssfx_dof", "wpn_dof_shoot",		Fvector4().set(0.1f, 0.10f, 1.0f, 2.0f));
+		m_FV4WeaponDoFIdle		= READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ssfx_dof", "wpn_dof_idle",			Fvector4().set(0.1f, 0.25f, 0.0f, 2.0f));
+		m_FV4WeaponDoFSprint	= READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ssfx_dof", "wpn_dof_sprint",		Fvector4().set(0.1f, 0.10f, 1.0f, 2.0f));
 
 		Msg("# Advanced X-Ray GameConstants are loaded");
 	}
@@ -326,6 +328,11 @@ namespace GameConstants
 	bool GetSSFX_EnableBoreDoF()
 	{
 		return m_bEnableBoreDoF;
+	}
+
+	Fvector4 GetSSFX_WeaponDoFStprint()
+	{
+		return m_FV4WeaponDoFSprint;
 	}
 
 	LPCSTR GetAfInfluenceMode()
