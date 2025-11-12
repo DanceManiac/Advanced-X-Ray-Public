@@ -24,6 +24,8 @@
 #include "../ui/UIInventoryUtilities.h"
 #include "../ui_base.h"
 
+#include <regex>
+
 xr_map<xr_string, xr_string> m_ItemsVec{}, m_CarsVec{}, m_WeaponsVec{}, m_FoodVec{}, m_QuestItemsVec{}, m_DevicesVec{}, m_EntitiesVec{}, m_AnomaliesVec{}, m_ArtefactsVec{}, m_AmmoVec{}, m_OutfitVec{};
 LPCSTR m_sSelectedName = nullptr, m_sSelectedSection = nullptr;
 static int objects_type{10}, objects_count{1};
@@ -191,7 +193,7 @@ void FillSectionsList()
 		// Игнорируем мультиплеерные предметы
 		const std::string& sectionName = sect->Name.c_str();
 
-		if (sectionName.find("_mp") != std::string::npos || sectionName.find("mp_") != std::string::npos)
+		if (std::regex_search(sectionName, std::regex("(^|_)mp($|_)")))
 			continue;
 
 		if (sect->line_exist("class") && sect->line_exist("$spawn"))

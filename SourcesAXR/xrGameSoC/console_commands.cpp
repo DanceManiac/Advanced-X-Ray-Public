@@ -69,6 +69,8 @@
 #include "GametaskManager.h"
 #include "AdvancedXrayGameConstants.h"
 
+#include <regex>
+
 // Hud Type
 xr_token			qhud_type_token[] = {
 	{ "hud_1",					1},
@@ -288,7 +290,7 @@ public:
 		{
 			const std::string& sectionName = sect->Name.c_str();
 
-			if (sectionName.find("_mp") != std::string::npos || sectionName.find("mp_") != std::string::npos)
+			if (std::regex_search(sectionName, std::regex("(^|_)mp($|_)")))
 				continue;
 
 			if (sect->line_exist("class") && sect->line_exist("$spawn"))
@@ -421,7 +423,7 @@ public:
 		{
 			const std::string& sectionName = sect->Name.c_str();
 
-			if (sectionName.find("_mp") != std::string::npos || sectionName.find("mp_") != std::string::npos)
+			if (std::regex_search(sectionName, std::regex("(^|_)mp($|_)")))
 				continue;
 
 			if (sect->line_exist("class") && sect->line_exist("inv_weight"))
