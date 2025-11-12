@@ -355,7 +355,8 @@ void ShowWeatherEditor(bool& show)
 	char buf[100];
 	if (editTexture("clouds_texture", cur->clouds_texture_name))
 	{
-		cur->on_device_create();
+		cur->on_unload();
+		cur->on_prepare();
 		changed = true;
 	}
 
@@ -406,7 +407,8 @@ void ShowWeatherEditor(bool& show)
 	if (editTexture("sky_texture", cur->sky_texture_name)) {
 		strconcat(sizeof(buf), buf, cur->sky_texture_name.data(), "#small");
 		cur->sky_texture_env_name = buf;
-		cur->on_device_create();
+		cur->on_unload();
+		cur->on_prepare();
 		changed = true;
 	}
 
