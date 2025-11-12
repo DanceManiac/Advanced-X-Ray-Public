@@ -3226,18 +3226,34 @@ void CWeaponMagazined::InitAddons()
 
 	if (m_sLaserAttachSection.size() && pSettings->line_exist(m_sLaserAttachSection, "attach_hud_visual"))
 	{
+		DestroyLaserLight();
+		LoadLaserLightParams(cNameSect().c_str());
+
 		if (IsLaserAttached())
 			WeaponAttach().CreateAttach(m_sLaserAttachSection, m_weapon_attaches);
 		else
 			WeaponAttach().RemoveAttach(m_sLaserAttachSection, m_weapon_attaches);
 	}
+	else
+	{
+		DestroyLaserLight();
+		LoadLaserLightParams(cNameSect().c_str());
+	}
 
 	if (m_sTacticalTorchAttachSection.size() && pSettings->line_exist(m_sTacticalTorchAttachSection, "attach_hud_visual"))
 	{
+		DestroyFlashlightLight();
+		LoadTacticalTorchLightParams(cNameSect().c_str());
+
 		if (IsTacticalTorchAttached())
 			WeaponAttach().CreateAttach(m_sTacticalTorchAttachSection, m_weapon_attaches);
 		else
 			WeaponAttach().RemoveAttach(m_sTacticalTorchAttachSection, m_weapon_attaches);
+	}
+	else
+	{
+		DestroyFlashlightLight();
+		LoadTacticalTorchLightParams(cNameSect().c_str());
 	}
 
 	inherited::InitAddons();
