@@ -66,5 +66,7 @@ public:
 
 protected:
 	virtual bool	install_upgrade_impl(LPCSTR section, bool test);
+
+	virtual bool	use_parent_ai_locations() const override { return (!H_Parent()); }
 };
 

@@ -61,7 +61,7 @@ void CAttachmentOwner::renderable_Render		()
 {
 	xr_vector<CAttachableItem*>::iterator	I = m_attached_objects.begin();
 	xr_vector<CAttachableItem*>::iterator	E = m_attached_objects.end();
-	for ( ; I != E; ++I)
+	for (; I != E; ++I)
 		(*I)->renderable_Render();
 }
 

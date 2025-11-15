@@ -20,7 +20,6 @@ private:
 	bool						m_enabled;
 	bool						m_valid;
 
-
 public:
 	IC							CAttachableItem			();
 	virtual						~CAttachableItem		();

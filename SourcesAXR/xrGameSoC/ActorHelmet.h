@@ -77,5 +77,7 @@ public:
 protected:
 	HitImmunity::HitTypeSVec	m_ConstHitTypeProtection;
 	HitImmunity::HitTypeSVec	m_HitTypeProtection;
-	SBoneProtections*		m_boneProtection;	
+	SBoneProtections*		m_boneProtection;
+
+	virtual bool			use_parent_ai_locations	() const override { return (!H_Parent()); }
 };
