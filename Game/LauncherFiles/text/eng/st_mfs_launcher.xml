@@ -1,0 +1,492 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="ui_launcher_version_text">
+		<text>Launcher: v</text>
+	</string>
+	<string id="ui_launcher_engine_version_text">
+		<text>Engine: v</text>
+	</string>
+	<string id="ui_launcher_engine_version_actual_text">
+		<text>(actual)</text>
+	</string>
+	<string id="ui_launcher_start_game">
+		<text>NEW GAME</text>
+	</string>
+	<string id="ui_launcher_load_game">
+		<text>LOAD GAME</text>
+	</string>
+	<string id="ui_launcher_graphic_opt">
+		<text>GRAPHICS OPTIONS</text>
+	</string>
+	<string id="ui_launcher_mods_manager">
+		<text>MODS MANAGER</text>
+	</string>
+	<string id="ui_launcher_delete_shaders_cache">
+		<text>CLEAR SHADERS CACHE</text>
+	</string>
+	<string id="ui_launcher_lua_dbg">
+		<text>Lua debug</text>
+	</string>
+	<string id="ui_launcher_jpg_screenshots">
+		<text>JPG screenshots</text>
+	</string>
+	<string id="ui_launcher_no_prefetch">
+		<text>Disable prefetch</text>
+	</string>
+	<string id="ui_launcher_open_error_log">
+		<text>Error log</text>
+	</string>
+	<string id="ui_launcher_enter_keys">
+		<text>Enter keys</text>
+	</string>
+	<string id="ui_launcher_user_key">
+		<text>User key</text>
+	</string>
+	<string id="ui_launcher_app_language">
+		<text>Language (english)</text>
+	</string>
+	<string id="ui_launcher_quit">
+		<text>QUIT</text>
+	</string>
+	<string id="ui_launcher_right_panel_empty_text">
+		<text>Choose actions from left panel</text>
+	</string>
+	<string id="ui_launcher_save_name">
+		<text>Save name:</text>
+	</string>
+	<string id="ui_launcher_load_save">
+		<text>Load</text>
+	</string>
+	<string id="ui_launcher_mods_conflict">
+		<text>Mods conflict</text>
+	</string>
+	<string id="ui_launcher_mods_conflict_name">
+		<text>Conflicts detected when enabling mod:</text>
+	</string>
+	<string id="ui_launcher_mods_conflict_with">
+		<text>Conflicts with mod:</text>
+	</string>
+	<string id="ui_launcher_mods_conflict_warning_desc">
+		<text>Enabling will overwrite conflicting files!</text>
+	</string>
+	<string id="ui_launcher_mods_manager_force">
+		<text>Enable</text>
+	</string>
+	<string id="ui_launcher_mods_manager_cancel">
+		<text>Cancel</text>
+	</string>
+	<string id="ui_launcher_download_mods">
+		<text>Addons download</text>
+	</string>
+	<string id="ui_launcher_installed_mods">
+		<text>Installed addons</text>
+	</string>
+	<string id="ui_launcher_back">
+		<text>Back</text>
+	</string>
+	<string id="ui_launcher_available_mods">
+		<text>Available to download</text>
+	</string>
+	<string id="ui_launcher_mod_authors">
+		<text>Authors:</text>
+	</string>
+	<string id="ui_launcher_already_download">
+		<text>Installed</text>
+	</string>
+	<string id="ui_launcher_downloading">
+		<text>Downloading:</text>
+	</string>
+	<string id="ui_launcher_installing">
+		<text>Installing:</text>
+	</string>
+	<string id="ui_launcher_pb_files">
+		<text>files)</text>
+	</string>
+	<string id="ui_launcher_download">
+		<text>Download</text>
+	</string>
+	<string id="ui_launcher_mod_descr">
+		<text>Description:</text>
+	</string>
+	
+	<string id="ui_launcher_options">
+		<text>Options</text>
+	</string>
+	<string id="ui_launcher_main_opt">
+		<text>Main</text>
+	</string>
+	<string id="ui_launcher_render_mode">
+		<text>Renderer</text>
+	</string>
+	<string id="renderer_r1">
+		<text>Static lights</text>
+	</string>
+	<string id="renderer_r2">
+		<text>Dynamic lights</text>
+	</string>
+	<string id="renderer_r2.5">
+		<text>Full dynamic lights</text>
+	</string>
+	<string id="renderer_r3">
+		<text>Adv. full dynamic lights (DX10)</text>
+	</string>
+	<string id="renderer_r4">
+		<text>Adv. full dynamic lights (DX11)</text>
+	</string>
+	<string id="ui_launcher_resolution">
+		<text>Resolution</text>
+	</string>
+	<string id="ui_launcher_fullscreen">
+		<text>Fullscreen</text>
+	</string>
+	<string id="ui_launcher_vision_opt">
+		<text>Vision</text>
+	</string>
+	<string id="ui_launcher_vis_dist">
+		<text>Vision distance</text>
+	</string>
+	<string id="ui_launcher_fov">
+		<text>Camera FOV</text>
+	</string>
+	<string id="ui_launcher_hud_fov">
+		<text>HUD FOV</text>
+	</string>
+	<string id="ui_launcher_sun_and_light">
+		<text>Sun and light</text>
+	</string>
+	<string id="ui_launcher_light_dist">
+		<text>Light distance</text>
+	</string>
+	<string id="ui_launcher_sun_shafts">
+		<text>Sunshafts</text>
+	</string>
+	<string id="ui_launcher_sunshafts_mode">
+		<text>Sunshafts mode</text>
+	</string>
+	<string id="ui_launcher_flares">
+		<text>Flares mode</text>
+	</string>
+	<string id="ui_launcher_sun_quality">
+		<text>Sun quality</text>
+	</string>
+	<string id="ui_launcher_volumetric_lights">
+		<text>Volumetric lights</text>
+	</string>
+	<string id="ui_launcher_npc_use_torch">
+		<text>NPC use torch</text>
+	</string>
+	<string id="ui_launcher_actor_shadow">
+		<text>Actor shadow</text>
+	</string>
+	<string id="ui_launcher_grass_shadow">
+		<text>Grass shadow</text>
+	</string>
+	<string id="ui_launcher_r2_sun">
+		<text>Sun light</text>
+	</string>
+	<string id="ui_launcher_static_sun">
+		<text>Static sun</text>
+	</string>
+	<string id="ui_launcher_grass_opt">
+		<text>Flora</text>
+	</string>
+	<string id="ui_launcher_grass_height">
+		<text>Grass height</text>
+	</string>
+	<string id="ui_launcher_grass_density">
+		<text>Grass density</text>
+	</string>
+	<string id="ui_launcher_grass_dist">
+		<text>Grass distance</text>
+	</string>
+	<string id="ui_launcher_grass_collision">
+		<text>Grass collision</text>
+	</string>
+	<string id="ui_launcher_grass_collision_dist">
+		<text>Grass collision distance</text>
+	</string>
+	<string id="ui_launcher_optimization_opt">
+		<text>Optimization</text>
+	</string>
+	<string id="ui_launcher_shadow_map_size">
+		<text>Shadow map size</text>
+	</string>
+	<string id="ui_launcher_textures_quality">
+		<text>Textures quality</text>
+	</string>
+	<string id="ui_launcher_aniso">
+		<text>Anisotropic filtration</text>
+	</string>
+	<string id="ui_launcher_supersample">
+		<text>Supersampling</text>
+	</string>
+	<string id="ui_launcher_optimize_static_geom">
+		<text>Static geometry opt.</text>
+	</string>
+	<string id="ui_launcher_optimize_dynamic_geom">
+		<text>Dynamic geometry opt.</text>
+	</string>
+	<string id="ui_launcher_optimize_shadow_geom">
+		<text>Shadows optimization</text>
+	</string>
+	<string id="ui_launcher_reflections_dist">
+		<text>Reflections distance</text>
+	</string>
+	<string id="ui_launcher_water_opt">
+		<text>Water</text>
+	</string>
+	<string id="ui_launcher_reflections_quality">
+		<text>Reflections quality</text>
+	</string>
+	<string id="ui_launcher_soft_water">
+		<text>Soft water</text>
+	</string>
+	<string id="ui_launcher_aa_and_ao_opt">
+		<text>AA and AO</text>
+	</string>
+	<string id="ui_launcher_aa_mode">
+		<text>AA mode</text>
+	</string>
+	<string id="ui_launcher_msaa">
+		<text>MSAA</text>
+	</string>
+	<string id="ui_launcher_ao_mode">
+		<text>AO mode</text>
+	</string>
+	<string id="ui_launcher_ao_quality">
+		<text>AO quality</text>
+	</string>
+	<string id="ui_launcher_sss_opt">
+		<text>Screen Space Shaders</text>
+	</string>
+	<string id="ui_launcher_ss_sky_debanding">
+		<text>SSS: Sky debanding</text>
+	</string>
+	<string id="ui_launcher_ss_flora_fix">
+		<text>SSS: Flora fix</text>
+	</string>
+	<string id="ui_launcher_ss_fog">
+		<text>SSS: Screen Space Fog</text>
+	</string>
+	<string id="ui_launcher_ss_il">
+		<text>SSS: Indirect light</text>
+	</string>
+	<string id="ui_launcher_ss_new_gloss">
+		<text>SSS: New gloss</text>
+	</string>
+	<string id="ui_launcher_ss_screen_space_shadows">
+		<text>SSS: Screen Space Shadows</text>
+	</string>
+	<string id="ui_launcher_ss_shadows">
+		<text>SSS: Advanced Shadows</text>
+	</string>
+	<string id="ui_launcher_ss_wind">
+		<text>SSS: Wind</text>
+	</string>
+	<string id="ui_launcher_ss_puddles">
+		<text>SSS: Puddles</text>
+	</string>
+	<string id="ui_launcher_ss_bloom">
+		<text>SSS: Bloom</text>
+	</string>
+	<string id="ui_launcher_ss_bloom_mask_dirt">
+		<text>SSS: Bloom Mask Dirt</text>
+	</string>
+	<string id="ui_launcher_es_opt">
+		<text>Enhanced Shaders</text>
+	</string>
+	<string id="ui_launcher_es_pseudo_pbr">
+		<text>ES: Pseudo-PBR</text>
+	</string>
+	<string id="ui_launcher_es_aces_tonemap">
+		<text>ES: ACES Tonemap</text>
+	</string>
+	<string id="ui_launcher_effects_opt">
+		<text>Effects</text>
+	</string>
+	<string id="ui_launcher_mblur_enable">
+		<text>Motion blur</text>
+	</string>
+	<string id="ui_launcher_mblur">
+		<text>Motion blur intensity</text>
+	</string>
+	<string id="ui_launcher_3d_scopes">
+		<text>3D scopes</text>
+	</string>
+	<string id="ui_launcher_3d_pda">
+		<text>3D PDA</text>
+	</string>
+	<string id="ui_launcher_skeleton_wallmarks">
+		<text>Dyn. objects bloodmarks</text>
+	</string>
+	<string id="ui_launcher_hud_mask">
+		<text>HUD mask</text>
+	</string>
+	<string id="ui_launcher_hud_dyn_effects">
+		<text>Dynamic HUD effects</text>
+	</string>
+	<string id="ui_launcher_shader_nvg">
+		<text>Shader night vision</text>
+	</string>
+	<string id="ui_launcher_raindrops">
+		<text>Raindrops on screen</text>
+	</string>
+	<string id="ui_launcher_vignette">
+		<text>Vignette</text>
+	</string>
+	<string id="ui_launcher_parallax">
+		<text>Steep Parallax</text>
+	</string>
+	<string id="ui_launcher_dynamic_wet_surfaces">
+		<text>Wetness effect</text>
+	</string>
+	<string id="ui_launcher_dynamic_wet_surfaces_far">
+		<text>Wetness effect radius</text>
+	</string>
+	<string id="ui_launcher_dof_enable">
+		<text>Depth of field</text>
+	</string>
+	<string id="ui_launcher_volumetric_smoke">
+		<text>Volumetric smoke</text>
+	</string>
+	<string id="ui_launcher_chromatic_aberration">
+		<text>Chromatic aberration</text>
+	</string>
+	<string id="ui_launcher_film_grain">
+		<text>Film grain</text>
+	</string>
+	<string id="ui_launcher_other_opt">
+		<text>Other</text>
+	</string>
+	<string id="ui_launcher_detail_textures">
+		<text>Detail textures</text>
+	</string>
+	<string id="ui_launcher_use_bumps">
+		<text>Use bump maps</text>
+	</string>
+	<string id="ui_launcher_detail_bump">
+		<text>Detail bump</text>
+	</string>
+	<string id="ui_launcher_vsync">
+		<text>Vertical synchronization</text>
+	</string>
+	<string id="ui_launcher_refresh_60hz">
+		<text>Frequency 60Hz</text>
+	</string>
+	<string id="ui_launcher_soft_particles">
+		<text>Soft particles</text>
+	</string>
+	<string id="ui_launcher_tessellation">
+		<text>Tesselation</text>
+	</string>
+	<string id="ui_launcher_fog_clamper_max">
+		<text>Weather fog clamper</text>
+	</string>
+	
+	<string id="Default">
+		<text>Medium</text>
+	</string>
+	<string id="Minimum">
+		<text>Minimum</text>
+	</string>
+	<string id="Low">
+		<text>Low</text>
+	</string>
+	<string id="High">
+		<text>High</text>
+	</string>
+	<string id="Extreme">
+		<text>Extreme</text>
+	</string>
+	
+	<string id="dtssr_off">
+		<text>Disabled</text>
+	</string>
+	<string id="dtssr_lowest">
+		<text>Minimum</text>
+	</string>
+	<string id="dtssr_low">
+		<text>Low</text>
+	</string>
+	<string id="dtssr_medium">
+		<text>Medium</text>
+	</string>
+	<string id="dtssr_high">
+		<text>High</text>
+	</string>
+	
+	<string id="volumetric">
+		<text>Volumetric</text>
+	</string>
+	<string id="screen_space">
+		<text>Screen Space</text>
+	</string>
+	<string id="combine_sunshafts">
+		<text>Combine</text>
+	</string>
+	
+	<string id="opt_noaa">
+		<text>Disabled</text>
+	</string>
+	<string id="opt_fxaa">
+		<text>FXAA</text>
+	</string>
+	<string id="opt_dlaa">
+		<text>DLAA</text>
+	</string>
+	<string id="opt_smaa">
+		<text>SMAA</text>
+	</string>
+	
+	<string id="st_opt_off">
+		<text>Disabled</text>
+	</string>
+	<string id="st_opt_always">
+		<text>Always</text>
+	</string>
+	<string id="st_opt_on_helmet">
+		<text>With helmet</text>
+	</string>
+	
+	<string id="st_opt_low">
+		<text>Low</text>
+	</string>
+	<string id="st_opt_medium">
+		<text>Medium</text>
+	</string>
+	<string id="st_opt_high">
+		<text>High</text>
+	</string>
+	<string id="st_opt_ultra">
+		<text>Ultra</text>
+	</string>
+	<string id="st_opt_extreme">
+		<text>Extreme</text>
+	</string>
+	
+	<string id="disabled">
+		<text>Disabled</text>
+	</string>
+	<string id="default">
+		<text>SSAO</text>
+	</string>
+	<string id="hdao">
+		<text>HDAO</text>
+	</string>
+	<string id="hbao">
+		<text>HBAO</text>
+	</string>
+	<string id="ssdo">
+		<text>SSDO</text>
+	</string>
+	
+	<string id="rus">
+		<text>Russian</text>
+	</string>
+	<string id="eng">
+		<text>English</text>
+	</string>
+	<string id="ukr">
+		<text>Ukrainian</text>
+	</string>
+</string_table>
