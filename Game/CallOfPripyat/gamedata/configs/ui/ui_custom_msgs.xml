@@ -85,6 +85,10 @@
 			<texture>mfs_team\ui\quicksave_icon\ui_quicksave_icon_blocked</texture>
 		</game_save_blocked_icon>
 
+		<game_save_blocked_text x="540" y="27" width="800" height="30" ttl="6">
+			<text font="arial_14" r="240" g="217" b="182" a="255" align="c"/>
+		</game_save_blocked_text>
+
         <autosave  x="-350" y="680" width="800" height="30" ttl="3">
                 <text font="arial_14"  r="240" g="217" b="182" a="255" align="c">st_autosave</text>
         </autosave>

@@ -1,75 +1,75 @@
 <?xml version="1.0" encoding="windows-1251" ?>
 <string_table>
 	<string id="pda_btn_skills">
-		<text>Skills</text>
+		<text>Навыки</text>
 	</string>
 	<string id="pda_btn_skills_hint">
-		<text>Show skills menu</text>
+		<text>Открыть меню навыков</text>
 	</string>
 	<string id="st_skills_points">
-		<text>Skill points: </text>
+		<text>Очки навыков: </text>
 	</string>
 	<string id="st_survival_name">
-		<text>Survival</text>
+		<text>Выживание</text>
 	</string>
 	<string id="st_survival_descr">
 		<text>Навык выживания влияет на скорость выведения радиации, восстановления здоровья, заживление ран, аппетит, жажду и интоксикацию.</text>
 	</string>
 	<string id="st_survival_lvl">
-		<text>Survival: </text>
+		<text>Выживание: </text>
 	</string>
 	<string id="st_power_name">
-		<text>Power</text>
+		<text>Сила</text>
 	</string>
 	<string id="st_power_descr">
 		<text>Сила даёт прибавку к переносимому весу и урону от холодного оружия, а также увеличивает высоту прыжка и скорость передвижения.</text>
 	</string>
 	<string id="st_power_lvl">
-		<text>Power: </text>
+		<text>Сила: </text>
 	</string>
 	<string id="st_repair_name">
-		<text>Repair</text>
+		<text>Ремонт</text>
 	</string>
 	<string id="st_repair_descr">
 		<text>Навык ремонта позволяет самостоятельно ремонтировать своё снаряжение. С каждым уровнем навыка качество ремонта увеличивается.</text>
 	</string>
 	<string id="st_repair_lvl">
-		<text>Repair: </text>
+		<text>Ремонт: </text>
 	</string>
 	<string id="st_endurance_name">
-		<text>Endurance</text>
+		<text>Выносливость</text>
 	</string>
 	<string id="st_endurance_descr">
 		<text>Навык выносливости помогает меньше уставать и влияет на сонливость.</text>
 	</string>
 	<string id="st_endurance_lvl">
-		<text>Endurance: </text>
+		<text>Выносливость: </text>
 	</string>
 	<string id="st_packing_name">
-		<text>Packing</text>
+		<text>Упаковка</text>
 	</string>
 	<string id="st_packing_descr">
 		<text>Навык упаковки позволяет более эффективно укладывать предметы в личном ящике и рюкзаке, тем самым они занимают меньше места. С каждым новым уровнем занимаемое предметами место уменьшается.</text>
 	</string>
 	<string id="st_packing_lvl">
-		<text>Packing: </text>
+		<text>Упаковка: </text>
 	</string>
 	<string id="st_buy">
-		<text>Learn</text>
+		<text>Изучить</text>
 	</string>
 	<string id="st_buy_survival_descr">
-		<text>Learn a new level of "Survival" skill.</text>
+		<text>Изучить новый уровень навыка "Выживание".</text>
 	</string>
 	<string id="st_buy_power_descr">
-		<text>Learn a new level of "Power" skill</text>
+		<text>Изучить новый уровень навыка "Сила".</text>
 	</string>
 	<string id="st_buy_repair_descr">
-		<text>Learn a new level of "Repair" skill</text>
+		<text>Изучить новый уровень навыка "Ремонт".</text>
 	</string>
 	<string id="st_buy_endurance_descr">
-		<text>Learn a new level of "Endurance" skill</text>
+		<text>Изучить новый уровень навыка "Выносливость".</text>
 	</string>
 	<string id="st_buy_packing_descr">
-		<text>Learn a new level of "Packing" skill</text>
+		<text>Изучить новый уровень навыка "Упаковка".</text>
 	</string>
 </string_table>

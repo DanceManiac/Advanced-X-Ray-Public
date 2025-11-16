@@ -694,10 +694,10 @@
 		<text>Данная опция включает текстурный слой, который добавляет "загрязнения" или "пыль" к эффекту блума. Это создает более реалистичный или атмосферный вид. Этот эффект будет применяться только при надетом шлеме и влюченной опции динамического худа шлемов.\n \n %c[pda_green] • Нагрузка: Низкая</text>
 	</string>
 	<string id="ui_mm_enchanted_shaders">
-		<text>Enchanted Shaders</text>
+		<text>Enhanced Shaders</text>
 	</string>
 	<string id="ui_mm_enchanted_shaders_hint">
-		<text>Данная опция включает аддон Enchanted Shaders. \n \n %c[pda_yellow] • Нагрузка: Средняя</text>
+		<text>Данная опция включает аддон Enhanced Shaders. \n \n %c[pda_yellow] • Нагрузка: Средняя</text>
 	</string>
 	<string id="ui_mm_death_cam_mode">
 		<text>Камера при смерти</text>
