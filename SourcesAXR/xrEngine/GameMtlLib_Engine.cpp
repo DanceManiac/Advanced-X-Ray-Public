@@ -25,40 +25,53 @@ void DestroyPSs(PSVec& lst)
 
 void CreateSounds(SoundVec& lst, LPCSTR buf)
 {
-	string128 tmp;
-	int cnt			=	_GetItemCount(buf);	R_ASSERT(cnt<=GAMEMTL_SUBITEM_COUNT+2);
-	lst.resize		(cnt);
-	for (int k=0; k<cnt; ++k)
-		lst[k].create	(_GetItem(buf,k,tmp),st_Effect,sg_SourceType);
-}
-/*
-void CreateMarks(ShaderVec& lst, LPCSTR buf)
-{
-	string256	tmp;
-	int cnt		=_GetItemCount(buf);	R_ASSERT(cnt<=GAMEMTL_SUBITEM_COUNT);
-	ref_shader	s;
-	for (int k=0; k<cnt; ++k)
+	string256 tmp;
+	int cnt = _GetItemCount(buf);
+
+	lst.resize(cnt);
+
+	for (int k = 0; k < cnt; ++k)
 	{
-		s.create		("effects\\wallmark",_GetItem(buf,k,tmp));
-		lst.push_back	(s);
+#ifdef DEBUG
+		if (cnt > GAMEMTL_SUBITEM_COUNT)
+			Msg("[GameMtlLib_Engine (CreateSounds())]: Items count ([%d]) specified for the material [%s] exceeds the limit from GAMEMTL_SUBITEM_COUNT ([%d]). Check your gamemtl.xr.", cnt, _GetItem(buf, k, tmp), GAMEMTL_SUBITEM_COUNT);
+#endif
+
+		lst[k].create(_GetItem(buf, k, tmp), st_Effect, sg_SourceType);
 	}
 }
-*/
+
 void CreateMarks(IWallMarkArray *pMarks, LPCSTR buf)
 {
-	string256	tmp;
-	int cnt		=_GetItemCount(buf);	R_ASSERT(cnt<=GAMEMTL_SUBITEM_COUNT);
-	for (int k=0; k<cnt; ++k)
-		pMarks->AppendMark(_GetItem(buf,k,tmp));
+	string256 tmp;
+	int cnt =_GetItemCount(buf);
+
+	for (int k = 0; k < cnt; ++k)
+	{
+#ifdef DEBUG
+		if (cnt > GAMEMTL_SUBITEM_COUNT)
+			Msg("[GameMtlLib_Engine (CreateMarks())]: Items count ([%d]) specified for the material [%s] exceeds the limit from GAMEMTL_SUBITEM_COUNT ([%d]). Check your gamemtl.xr.", cnt, _GetItem(buf, k, tmp), GAMEMTL_SUBITEM_COUNT);
+#endif
+
+		pMarks->AppendMark(_GetItem(buf, k, tmp));
+	}
 }
 
 
 void CreatePSs(PSVec& lst, LPCSTR buf)
 {
 	string256 tmp;
-	int cnt=_GetItemCount(buf);	R_ASSERT(cnt<=GAMEMTL_SUBITEM_COUNT);
-	for (int k=0; k<cnt; ++k)
-		lst.push_back	(_GetItem(buf,k,tmp));
+	int cnt = _GetItemCount(buf);
+
+	for (int k = 0; k < cnt; ++k)
+	{
+#ifdef DEBUG
+		if (cnt > GAMEMTL_SUBITEM_COUNT)
+			Msg("[GameMtlLib_Engine (CreatePSs())]: Items count ([%d]) specified for the material [%s] exceeds the limit from GAMEMTL_SUBITEM_COUNT ([%d]). Check your gamemtl.xr.", cnt, _GetItem(buf, k, tmp), GAMEMTL_SUBITEM_COUNT);
+#endif
+
+		lst.push_back(_GetItem(buf, k, tmp));
+	}
 }
 
 SGameMtlPair::~SGameMtlPair()

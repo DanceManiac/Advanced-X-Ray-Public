@@ -64,9 +64,9 @@ xr_token					tbmode_token							[ ]={
 	{ 0,					0											}
 };
 
-void STextureParams::Load(IReader& F)
+void STextureParams::Load(IReader& F, string128 tex_name)
 {
-    R_ASSERT(F.find_chunk(THM_CHUNK_TEXTUREPARAM));
+    R_ASSERT2(F.find_chunk(THM_CHUNK_TEXTUREPARAM), make_string("Chunk error in THM file [%s]!", tex_name));
     F.r					(&fmt,sizeof(ETFormat));
     flags.assign(F.r_u32());
     border_color= F.r_u32();

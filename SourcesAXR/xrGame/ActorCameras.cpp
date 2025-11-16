@@ -57,7 +57,7 @@ void CActor::cam_SetLadder()
 }
 void CActor::camUpdateLadder(float dt)
 {
-	if(!character_physics_support()->movement()->ElevatorState())
+	if(!character_physics_support()->get_movement()->ElevatorState())
 															return;
 	if(cameras[eacFirstEye]->bClampYaw) return;
 	float yaw				= (-XFORM().k.getH());
@@ -77,12 +77,12 @@ void CActor::camUpdateLadder(float dt)
 		cam_yaw								+= delta * _min(dt*10.f,1.f) ;
 	}
 
-	IElevatorState* es = character_physics_support()->movement()->ElevatorState();
+	IElevatorState* es = character_physics_support()->get_movement()->ElevatorState();
 	if(es && es->State()==clbClimbingDown)
 	{
 		float &cam_pitch					= cameras[eacFirstEye]->pitch;
 		const float ldown_pitch				= cameras[eacFirstEye]->lim_pitch.y;
-		float delta							= angle_difference_signed(ldown_pitch,cam_pitch);
+		delta							= angle_difference_signed(ldown_pitch,cam_pitch);
 		if(delta>0.f)
 			cam_pitch						+= delta* _min(dt*10.f,1.f) ;
 	}
@@ -99,7 +99,7 @@ float cammera_into_collision_shift = 0.05f;
 float CActor::CameraHeight()
 {
 	Fvector						R;
-	character_physics_support()->movement()->Box().getsize		(R);
+	character_physics_support()->get_movement()->Box().getsize		(R);
 	return						m_fCamHeightFactor*( R.y - cammera_into_collision_shift );
 }
 
@@ -259,9 +259,9 @@ void	CActor::cam_Lookout	( const Fmatrix &xform, float camera_height )
 						da		*= r_torso.roll/_abs(r_torso.roll);
 					for (float angle=0.f; _abs(angle)<_abs(alpha); angle+=da)
 					{
-						Fvector				pt;
-						calc_gl_point( pt, xform, radius, angle );
-						if (test_point( pt, mat,ext, this )) 
+						Fvector				pt_;
+						calc_gl_point( pt_, xform, radius, angle );
+						if (test_point( pt_, mat,ext, this )) 
 							{ bIntersect=TRUE; break; } 
 					}
 					valid_angle	= bIntersect?angle:alpha;
@@ -292,6 +292,8 @@ void CActor::cam_Update(float dt, float fFOV)
 {
 	if (m_holder)
 		return;
+
+	ZoneScoped;
 
 	// HUD FOV Update
 	if (this == Level().CurrentControlEntity())
@@ -367,7 +369,7 @@ void CActor::cam_Update(float dt, float fFOV)
 	float flCurrentPlayerY	= xform.c.y;
 
 	// Smooth out stair step ups
-	if ((character_physics_support()->movement()->Environment()==CPHMovementControl::peOnGround) && (flCurrentPlayerY-fPrevCamPos>0)){
+	if ((character_physics_support()->get_movement()->Environment()==CPHMovementControl::peOnGround) && (flCurrentPlayerY-fPrevCamPos>0)){
 		fPrevCamPos			+= dt*1.5f;
 		if (fPrevCamPos > flCurrentPlayerY)
 			fPrevCamPos		= flCurrentPlayerY;
@@ -452,6 +454,7 @@ void CActor::cam_Update(float dt, float fFOV)
 			Cameras().ApplyDevice	(_viewport_near);
 		}
 	}
+	collide::rq_result RQ = Level().GetPickResult(Device.vCameraPosition, Device.vCameraDirection, 1000.0f, Level().CurrentControlEntity());
 }
 
 // shot effector stuff
@@ -497,7 +500,7 @@ void CActor::OnRender	()
 	if (!bDebug)				return;
 
 	if ((dbg_net_Draw_Flags.is_any(dbg_draw_actor_phys)))
-		character_physics_support()->movement()->dbg_Draw	();
+		character_physics_support()->get_movement()->dbg_Draw	();
 
 	OnRender_Network();
 

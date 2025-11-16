@@ -29,6 +29,23 @@ CScriptIniFile *get_spawn_ini(CSE_Abstract *abstract)
 	return	((CScriptIniFile*)&abstract->spawn_ini());
 }
 
+LPCSTR get_ini_string_script(const CSE_Abstract* abstract)
+{
+	return abstract->m_ini_string.c_str();
+}
+
+void set_ini_string_script(CSE_Abstract* abstract, LPCSTR cd)
+{
+	abstract->m_ini_string = cd;
+	abstract->m_ini_file = nullptr;
+}
+
+void save_spawn_ini(CSE_Abstract* abstract)
+{
+    auto str = abstract->spawn_ini().get_as_string();
+    abstract->m_ini_string = shared_str(str.c_str());
+}
+
 template <typename T>
 struct CWrapperBase : public T, public luabind::wrap_base {
 	typedef T inherited;
@@ -115,6 +132,8 @@ void CSE_Abstract::script_register(lua_State *L)
 			.def			("STATE_Write",		&BaseType::STATE_Write, &WrapType::STATE_Write_static)
 			.def			("UPDATE_Read",		&BaseType::UPDATE_Read, &WrapType::UPDATE_Read_static)
 			.def			("UPDATE_Write",	&BaseType::UPDATE_Write, &WrapType::UPDATE_Write_static)
+			.property		("custom_data",		&get_ini_string_script, &set_ini_string_script)
+            .def			("save_spawn_ini", &save_spawn_ini)
 //			.def(		constructor<LPCSTR>())
 	];
 }

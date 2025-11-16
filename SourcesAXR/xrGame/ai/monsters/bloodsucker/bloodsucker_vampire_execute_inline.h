@@ -39,7 +39,7 @@ void CStateBloodsuckerVampireExecuteAbstract::initialize()
 	HUD().SetRenderable				(false);
 	NET_Packet			P;
 	Actor()->u_EventGen	(P, GEG_PLAYER_WEAPON_HIDE_STATE, Actor()->ID());
-	P.w_u16				(INV_STATE_BLOCK_ALL);
+	P.w_u32				(INV_STATE_BLOCK_ALL);
 	P.w_u8				(u8(true));
 	Actor()->u_EventSend(P);
 
@@ -116,7 +116,7 @@ void CStateBloodsuckerVampireExecuteAbstract::show_hud()
 	NET_Packet			P;
 
 	Actor()->u_EventGen	(P, GEG_PLAYER_WEAPON_HIDE_STATE, Actor()->ID());
-	P.w_u16				(INV_STATE_BLOCK_ALL);
+	P.w_u32				(INV_STATE_BLOCK_ALL);
 	P.w_u8				(u8(false));
 	Actor()->u_EventSend(P);
 }
@@ -152,7 +152,7 @@ void CStateBloodsuckerVampireExecuteAbstract::critical_finalize()
 TEMPLATE_SPECIALIZATION
 bool CStateBloodsuckerVampireExecuteAbstract::check_start_conditions()
 {
-	const CEntityAlive	*enemy = object->EnemyMan.get_enemy();
+	const CEntityAlive	*enemy_ = object->EnemyMan.get_enemy();
 	
 	// проверить дистанцию
 // 	float dist		= object->MeleeChecker.distance_to_enemy	(enemy);
@@ -163,28 +163,28 @@ bool CStateBloodsuckerVampireExecuteAbstract::check_start_conditions()
 
 	u32 const vertex_id	=	ai().level_graph().check_position_in_direction(object->ai_location().level_vertex_id(), 
 																		   object->Position(), 
-																		   enemy->Position());
+																		   enemy_->Position());
 	if ( !ai().level_graph().valid_vertex_id(vertex_id) )
 		return false;
 
-	if ( !object->MeleeChecker.can_start_melee(enemy) ) 
+	if ( !object->MeleeChecker.can_start_melee(enemy_) ) 
 		return false;
 
 	// проверить направление на врага
-	if ( !object->control().direction().is_face_target(enemy, PI_DIV_2) ) 
+	if ( !object->control().get_direction().is_face_target(enemy_, PI_DIV_2) ) 
 		return false;
 
 	if ( !object->WantVampire() ) 
 		return false;
 	
 	// является ли враг актером
-	if ( !smart_cast<CActor const*>(enemy) )
+	if ( !smart_cast<CActor const*>(enemy_) )
 		return false;
 
 	if ( object->CControlledActor::is_controlling() )	
 		return false;
 
-	const CActor *actor = smart_cast<const CActor *>(enemy);
+	const CActor *actor = smart_cast<const CActor *>(enemy_);
 	
 	VERIFY(actor);
 
@@ -208,7 +208,7 @@ void CStateBloodsuckerVampireExecuteAbstract::execute_vampire_prepare()
 	object->com_man().ta_activate		(object->anim_triple_vampire);
 	time_vampire_started				= Device.dwTimeGlobal;
 	
-	object->sound().play(CAI_Bloodsucker::eVampireGrasp);
+	object->get_sound().play(CAI_Bloodsucker::eVampireGrasp);
 }
 
 TEMPLATE_SPECIALIZATION
@@ -223,7 +223,7 @@ void CStateBloodsuckerVampireExecuteAbstract::execute_vampire_continue()
 		return;
 	}
 	
-	object->sound().play(CAI_Bloodsucker::eVampireSucking);
+	object->get_sound().play(CAI_Bloodsucker::eVampireSucking);
 
 	// проверить на грави удар
 	if (time_vampire_started + VAMPIRE_TIME_HOLD < Device.dwTimeGlobal) {
@@ -235,7 +235,7 @@ TEMPLATE_SPECIALIZATION
 void CStateBloodsuckerVampireExecuteAbstract::execute_vampire_hit()
 {
 	object->com_man().ta_pointbreak				();
-	object->sound().play						(CAI_Bloodsucker::eVampireHit);
+	object->get_sound().play						(CAI_Bloodsucker::eVampireHit);
 	object->SatisfyVampire						();
 }
 

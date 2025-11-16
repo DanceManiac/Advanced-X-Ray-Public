@@ -282,6 +282,8 @@ void CCameraManager::UpdateFromCamera(const CCameraBase* C)
 
 void CCameraManager::Update(const Fvector& P, const Fvector& D, const Fvector& N, float fFOV_Dest, float fASPECT_Dest, float fFAR_Dest, u32 flags, ECameraStyle style, CObject* parent)
 {
+	ZoneScoped;
+
 #ifdef DEBUG
 	if (!Device.Paused()) {
 		VERIFY				(dbg_upd_frame!=Device.dwFrame);// already updated !!!
@@ -354,7 +356,7 @@ void CCameraManager::Update(const Fvector& P, const Fvector& D, const Fvector& N
 bool CCameraManager::ProcessCameraEffector(CEffectorCam* eff)
 {
 	bool res = false;
-	if(eff->Valid() && eff->ProcessCam(m_cam_info))
+	if(eff->Valid() && eff->ProcessCam(m_cam_info, eff->m_fFactorModifier))
 	{
 		res = true;
 	}
@@ -439,6 +441,8 @@ void CCameraManager::UpdatePPEffectors()
 
 void CCameraManager::ApplyDevice (float _viewport_near)
 {
+	ZoneScoped;
+
 	g_pGameLevel->lastApplyCamera = fastdelegate::FastDelegate1<float>(this, &CCameraManager::ApplyDeviceInternal);
 	g_pGameLevel->lastApplyCameraVPNear = _viewport_near;
 	ApplyDeviceInternal(_viewport_near);
@@ -446,6 +450,8 @@ void CCameraManager::ApplyDevice (float _viewport_near)
 
 void CCameraManager::ApplyDeviceInternal(float _viewport_near)
 {
+	ZoneScoped;
+
 	// Device params
 	if (Device.m_bMakeLevelMap)
 	{

@@ -55,7 +55,7 @@ xrClientData::~xrClientData()
 }
 
 
-xrServer::xrServer():IPureServer(Device.GetTimerGlobal(), g_dedicated_server)
+xrServer::xrServer():IPureServer(Device.GetTimerGlobal())
 {
 	m_iCurUpdatePacket = 0;
 	m_file_transfers = NULL;
@@ -220,6 +220,8 @@ INT g_sv_SendUpdate = 0;
 
 void xrServer::Update	()
 {
+	ZoneScoped;
+
 	if (Level().IsDemoPlayStarted() || Level().IsDemoPlayFinished())
 		return;								//diabling server when demo is playing
 
@@ -405,6 +407,8 @@ void xrServer::SendUpdatePacketsToClient(ClientID clientId)
 
 void xrServer::SendUpdatesToAll()
 {
+	ZoneScoped;
+
 	if (IsGameTypeSingle())
 		return;
 	
@@ -1029,6 +1033,8 @@ void xrServer::create_direct_client()
 
 void xrServer::ProceedDelayedPackets()
 {
+	ZoneScoped;
+
 	DelayedPackestCS.Enter();
 	while (!m_aDelayedPackets.empty())
 	{
@@ -1058,6 +1064,8 @@ u8	g_sv_maxPingWarningsCount	= 5;
 
 void xrServer::PerformCheckClientsForMaxPing()
 {
+	ZoneScoped;
+
 	struct MaxPingClientDisconnector
 	{
 		xrServer* m_owner;
@@ -1205,10 +1213,6 @@ void xrServer::KickCheaters			()
 
 void xrServer::MakeScreenshot(ClientID const & admin_id, ClientID const & cheater_id)
 {
-	if ((cheater_id == SV_Client->ID) && g_dedicated_server)
-	{
-		return;
-	}
 	for (int i = 0; i < sizeof(m_screenshot_proxies)/sizeof(clientdata_proxy*); ++i)
 	{
 		if (!m_screenshot_proxies[i]->is_active())
@@ -1223,10 +1227,6 @@ void xrServer::MakeScreenshot(ClientID const & admin_id, ClientID const & cheate
 
 void xrServer::MakeConfigDump(ClientID const & admin_id, ClientID const & cheater_id)
 {
-	if ((cheater_id == SV_Client->ID) && g_dedicated_server)
-	{
-		return;
-	}
 	for (int i = 0; i < sizeof(m_screenshot_proxies)/sizeof(clientdata_proxy*); ++i)
 	{
 		if (!m_screenshot_proxies[i]->is_active())

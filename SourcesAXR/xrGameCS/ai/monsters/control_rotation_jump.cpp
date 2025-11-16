@@ -31,7 +31,7 @@ void CControlRotationJump::activate()
 	m_man->move_stop	(this);
 
 	float yaw			= Fvector().sub(m_object->EnemyMan.get_enemy()->Position(), m_object->Position()).getH();
-	m_right_side		=  m_man->direction().is_from_right(angle_normalize(-yaw));
+	m_right_side		=  m_man->get_direction().is_from_right(angle_normalize(-yaw));
 	
 	//////////////////////////////////////////////////////////////////////////
 	if (m_data.flags.is(SControlRotationJumpData::eStopAtOnce)) 
@@ -65,10 +65,10 @@ bool CControlRotationJump::check_start_conditions()
 
 	Fvector									enemy_position;
 	enemy_position.set						(m_object->EnemyMan.get_enemy()->Position());
-	if (m_man->direction().is_face_target(enemy_position, CHECK_YAW))	return false;
+	if (m_man->get_direction().is_face_target(enemy_position, CHECK_YAW))	return false;
 	
 	SVelocityParam &velocity_run			= m_object->move().get_velocity(MonsterMovement::eVelocityParameterRunNormal);
-	if (!fsimilar(m_man->movement().velocity_current(), velocity_run.velocity.linear, START_SPEED_DELTA)) return false;
+	if (!fsimilar(m_man->get_movement().velocity_current(), velocity_run.velocity.linear, START_SPEED_DELTA)) return false;
 	
 	return true;
 }
@@ -87,7 +87,7 @@ void CControlRotationJump::on_event(ControlCom::EEventType type, ControlCom::IEv
 
 void CControlRotationJump::stop_at_once()
 {
-	m_time = m_man->animation().motion_time(m_right_side ? m_data.anim_stop_rs : m_data.anim_stop_ls, m_object->Visual());	
+	m_time = m_man->get_animation().motion_time(m_right_side ? m_data.anim_stop_rs : m_data.anim_stop_ls, m_object->Visual());	
 
 	// set angular speed in exclusive force mode
 	SControlDirectionData					*ctrl_data_dir = (SControlDirectionData*)m_man->data(this, ControlCom::eControlDir); 
@@ -107,7 +107,7 @@ void CControlRotationJump::stop_at_once()
 	ctrl_data_dir->heading.target_angle		= target_yaw;
 
 	float cur_yaw;
-	m_man->direction().get_heading			(cur_yaw, target_yaw);
+	m_man->get_direction().get_heading			(cur_yaw, target_yaw);
 	ctrl_data_dir->heading.target_speed		= angle_difference(cur_yaw,target_yaw)/ m_time;
 	ctrl_data_dir->linear_dependency		= false;
 	VERIFY									(!fis_zero(ctrl_data_dir->heading.target_speed));
@@ -118,16 +118,16 @@ void CControlRotationJump::stop_at_once()
 	SControlAnimationData		*ctrl_data = (SControlAnimationData*)m_man->data(this, ControlCom::eControlAnimation); 
 	VERIFY						(ctrl_data);
 
-	ctrl_data->global.motion	= m_right_side ? m_data.anim_stop_rs : m_data.anim_stop_ls;
+	ctrl_data->global.set_motion (m_right_side ? m_data.anim_stop_rs : m_data.anim_stop_ls);
 	ctrl_data->global.actual	= false;
 }
 
 void CControlRotationJump::build_line_first()
 {
 	// get animation time
-	m_time						= m_man->animation().motion_time(m_right_side ? m_data.anim_stop_rs : m_data.anim_stop_ls, m_object->Visual());
+	m_time						= m_man->get_animation().motion_time(m_right_side ? m_data.anim_stop_rs : m_data.anim_stop_ls, m_object->Visual());
 	// set acceleration and velocity
-	m_start_velocity			= m_man->movement().velocity_current();
+	m_start_velocity			= m_man->get_movement().velocity_current();
 	m_target_velocity			= 0.f;
 	
 	// acceleration
@@ -145,7 +145,7 @@ void CControlRotationJump::build_line_first()
 	ctrl_data_dir->heading.target_angle		= target_yaw;
 	
 	float cur_yaw;
-	m_man->direction().get_heading			(cur_yaw, target_yaw);
+	m_man->get_direction().get_heading			(cur_yaw, target_yaw);
 	ctrl_data_dir->heading.target_speed		= angle_difference(cur_yaw,target_yaw)/ m_time;
 	ctrl_data_dir->linear_dependency		= false;
 
@@ -176,7 +176,7 @@ void CControlRotationJump::build_line_first()
 		SControlAnimationData		*ctrl_data = (SControlAnimationData*)m_man->data(this, ControlCom::eControlAnimation); 
 		VERIFY						(ctrl_data);
 
-		ctrl_data->global.motion	= m_right_side ? m_data.anim_stop_rs : m_data.anim_stop_ls;
+		ctrl_data->global.set_motion (m_right_side ? m_data.anim_stop_rs : m_data.anim_stop_ls);
 		ctrl_data->global.actual	= false;
 	}
 }
@@ -193,7 +193,7 @@ void CControlRotationJump::build_line_second()
 	m_start_velocity			= 0;
 	
 	// get animation time
-	m_time						= m_man->animation().motion_time(m_right_side ? m_data.anim_run_rs : m_data.anim_run_ls, m_object->Visual());
+	m_time						= m_man->get_animation().motion_time(m_right_side ? m_data.anim_run_rs : m_data.anim_run_ls, m_object->Visual());
 
 	// acceleration
 	m_accel = (m_target_velocity - m_start_velocity) / m_time;
@@ -214,7 +214,7 @@ void CControlRotationJump::build_line_second()
 	ctrl_data_dir->heading.target_angle		= target_yaw;
 
 	float cur_yaw;
-	m_man->direction().get_heading			(cur_yaw, target_yaw);
+	m_man->get_direction().get_heading			(cur_yaw, target_yaw);
 	ctrl_data_dir->heading.target_speed		= angle_difference(cur_yaw,target_yaw)/ m_time;
 	ctrl_data_dir->linear_dependency		= false;
 
@@ -248,7 +248,7 @@ void CControlRotationJump::build_line_second()
 		SControlAnimationData		*ctrl_data = (SControlAnimationData*)m_man->data(this, ControlCom::eControlAnimation); 
 		VERIFY						(ctrl_data);
 
-		ctrl_data->global.motion	= m_right_side ? m_data.anim_run_rs : m_data.anim_run_ls;
+		ctrl_data->global.set_motion (m_right_side ? m_data.anim_run_rs : m_data.anim_run_ls);
 		ctrl_data->global.actual	= false;
 	}
 }

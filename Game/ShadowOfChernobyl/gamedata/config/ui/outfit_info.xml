@@ -1,0 +1,235 @@
+<outfit_info x="5" y="5" width="280" height="180">
+	<caption x="0" y="0" width="280" height="20">
+		<text font="letterica18" r="238" g="155" b="23" align="c" vert_align="c">ui_st_outfit_protect</text>
+	</caption>
+
+	<burn_protection x="0" y="0" width="18" height="18">
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_inv_icon_burn_immunity</texture>
+			<text font="letterica16" x="22" y="0" color="ui_3" align="l" vert_align="c"/>
+		</caption>
+		<progress_bar x="130" y="4" width="100" height="8" horz="1">
+			<progress>
+				<texture a="255" r="55" g="255" b="255">cs_ui_buymenu_progBar</texture>
+			</progress>
+			<background>
+				<texture a="90" r="55" g="255" b="255">cs_ui_buymenu_progBar</texture>
+			</background>
+			<color_less color="pda_red"  />
+			<color_more color="pda_green"/>
+		</progress_bar>
+		<static_value x="225" y="0" width="40" height="18" magnitude="100">
+			<text font="letterica16" color="ui_6" align="r" vert_align="c"/>
+		</static_value>
+	</burn_protection>
+
+	<strike_protection x="0" y="0" width="18" height="18">
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_inv_icon_strike_immunity</texture>
+			<text font="letterica16" x="22" y="0" color="ui_3" align="l" vert_align="c"/>
+		</caption>
+		<progress_bar x="130" y="4" width="100" height="8" horz="1">
+			<progress>
+				<texture a="255" r="55" g="255" b="255">cs_ui_buymenu_progBar</texture>
+			</progress>
+			<background>
+				<texture a="90" r="55" g="255" b="255">cs_ui_buymenu_progBar</texture>
+			</background>
+			<color_less color="pda_red"  />
+			<color_more color="pda_green"/>
+		</progress_bar>
+		<static_value x="225" y="0" width="40" height="18" magnitude="100">
+			<text font="letterica16" color="ui_6" align="r" vert_align="c"/>
+		</static_value>
+	</strike_protection>
+
+	<shock_protection x="0" y="0" width="18" height="18">
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_inv_icon_shock_immunity</texture>
+			<text font="letterica16" x="22" y="0" color="ui_3" align="l" vert_align="c"/>
+		</caption>
+		<progress_bar x="130" y="4" width="100" height="8" horz="1">
+			<progress>
+				<texture a="255" r="55" g="255" b="255">cs_ui_buymenu_progBar</texture>
+			</progress>
+			<background>
+				<texture a="90" r="55" g="255" b="255">cs_ui_buymenu_progBar</texture>
+			</background>
+			<color_less color="pda_red"  />
+			<color_more color="pda_green"/>
+		</progress_bar>
+		<static_value x="225" y="0" width="40" height="18" magnitude="100">
+			<text font="letterica16" color="ui_6" align="r" vert_align="c"/>
+		</static_value>
+	</shock_protection>
+
+	<wound_protection x="0" y="0" width="18" height="18">
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_inv_icon_wound_immunity</texture>
+			<text font="letterica16" x="22" y="0" color="ui_3" align="l" vert_align="c"/>
+		</caption>
+		<progress_bar x="130" y="4" width="100" height="8" horz="1">
+			<progress>
+				<texture a="255" r="55" g="255" b="255">cs_ui_buymenu_progBar</texture>
+			</progress>
+			<background>
+				<texture a="90" r="55" g="255" b="255">cs_ui_buymenu_progBar</texture>
+			</background>
+			<color_less color="pda_red"  />
+			<color_more color="pda_green"/>
+		</progress_bar>
+		<static_value x="225" y="0" width="40" height="18" magnitude="100">
+			<text font="letterica16" color="ui_6" align="r" vert_align="c"/>
+		</static_value>
+	</wound_protection>
+
+	<radiation_protection x="0" y="0" width="18" height="18">
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_inv_icon_radiation_immunity</texture>
+			<text font="letterica16" x="22" y="0" color="ui_3" align="l" vert_align="c"/>
+		</caption>
+		<progress_bar x="130" y="4" width="100" height="8" horz="1">
+			<progress>
+				<texture a="255" r="55" g="255" b="255">cs_ui_buymenu_progBar</texture>
+			</progress>
+			<background>
+				<texture a="90" r="55" g="255" b="255">cs_ui_buymenu_progBar</texture>
+			</background>
+			<color_less color="pda_red"  />
+			<color_more color="pda_green"/>
+		</progress_bar>
+		<static_value x="225" y="0" width="40" height="18" magnitude="100">
+			<text font="letterica16" color="ui_6" align="r" vert_align="c"/>
+		</static_value>
+	</radiation_protection>
+
+	<telepatic_protection x="0" y="0" width="18" height="18">
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_inv_icon_telepatic_immunity</texture>
+			<text font="letterica16" x="22" y="0" color="ui_3" align="l" vert_align="c"/>
+		</caption>
+		<progress_bar x="130" y="4" width="100" height="8" horz="1">
+			<progress>
+				<texture a="255" r="55" g="255" b="255">cs_ui_buymenu_progBar</texture>
+			</progress>
+			<background>
+				<texture a="90" r="55" g="255" b="255">cs_ui_buymenu_progBar</texture>
+			</background>
+			<color_less color="pda_red"  />
+			<color_more color="pda_green"/>
+		</progress_bar>
+		<static_value x="225" y="0" width="40" height="18" magnitude="100">
+			<text font="letterica16" color="ui_6" align="r" vert_align="c"/>
+		</static_value>
+	</telepatic_protection>
+
+	<chemical_burn_protection x="0" y="0" width="18" height="18">
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_inv_icon_chemical_burn_immunity</texture>
+			<text font="letterica16" x="22" y="0" color="ui_3" align="l" vert_align="c"/>
+		</caption>
+		<progress_bar x="130" y="4" width="100" height="8" horz="1">
+			<progress>
+				<texture a="255" r="55" g="255" b="255">cs_ui_buymenu_progBar</texture>
+			</progress>
+			<background>
+				<texture a="90" r="55" g="255" b="255">cs_ui_buymenu_progBar</texture>
+			</background>
+			<color_less color="pda_red"  />
+			<color_more color="pda_green"/>
+		</progress_bar>
+		<static_value x="225" y="0" width="40" height="18" magnitude="100">
+			<text font="letterica16" color="ui_6" align="r" vert_align="c"/>
+		</static_value>
+	</chemical_burn_protection>
+
+	<explosion_protection x="0" y="0" width="18" height="18">
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_inv_icon_explosion_immunity</texture>
+			<text font="letterica16" x="22" y="0" color="ui_3" align="l" vert_align="c"/>
+		</caption>
+		<progress_bar x="130" y="4" width="100" height="8" horz="1">
+			<progress>
+				<texture a="255" r="55" g="255" b="255">cs_ui_buymenu_progBar</texture>
+			</progress>
+			<background>
+				<texture a="90" r="55" g="255" b="255">cs_ui_buymenu_progBar</texture>
+			</background>
+			<color_less color="pda_red"  />
+			<color_more color="pda_green"/>
+		</progress_bar>
+		<static_value x="225" y="0" width="40" height="18" magnitude="100">
+			<text font="letterica16" color="ui_6" align="r" vert_align="c"/>
+		</static_value>
+	</explosion_protection>
+
+	<fire_wound_protection x="0" y="0" width="18" height="18">
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_inv_icon_fire_wound_immunity</texture>
+			<text font="letterica16" x="22" y="0" color="ui_3" align="l" vert_align="c"/>
+		</caption>
+		<progress_bar x="130" y="4" width="100" height="8" horz="1">
+			<progress>
+				<texture a="255" r="55" g="255" b="255">cs_ui_buymenu_progBar</texture>
+			</progress>
+			<background>
+				<texture a="90" r="55" g="255" b="255">cs_ui_buymenu_progBar</texture>
+			</background>
+			<color_less color="pda_red"  />
+			<color_more color="pda_green"/>
+		</progress_bar>
+		<static_value x="225" y="0" width="40" height="18" magnitude="100">
+			<text font="letterica16" color="ui_6" align="r" vert_align="c"/>
+		</static_value>
+	</fire_wound_protection>
+		
+	<antigas_filter x="0" y="0" width="18" height="18">
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_item_filter_icon</texture>
+			<text font="letterica16" x="22" y="0" color="ui_3" align="l" vert_align="c"/>
+		</caption>
+		<progress_bar x="130" y="4" width="100" height="8" horz="1">
+			<progress>
+				<texture a="255" r="55" g="255" b="255">cs_ui_buymenu_progBar</texture>
+			</progress>
+			<background>
+				<texture a="90" r="55" g="255" b="255">cs_ui_buymenu_progBar</texture>
+			</background>
+			<color_less color="pda_red"  />
+			<color_more color="pda_green"/>
+		</progress_bar>
+		<static_value x="225" y="0" width="40" height="18">
+			<text font="letterica16" color="ui_6" align="r" vert_align="c"/>
+		</static_value>
+	</antigas_filter>
+	
+	<artefact_count x="0" y="0" width="257" height="20" >
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_am_prop_artefact</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="130" y="0" width="30" height="20" magnitude="1" show_sign="0">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</artefact_count>
+	
+	<additional_weight x="0" y="0" width="257" height="20" >
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_inv_icon_additional_weight</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="130" y="0" width="30" height="20" magnitude="1" show_sign="1" unit_str="st_kg">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</additional_weight>
+	
+	<inventory_capacity x="0" y="0" width="257" height="20" >
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_am_prop_artefact</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="130" y="0" width="30" height="20" magnitude="1" show_sign="1" unit_str="st_liters">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</inventory_capacity>
+</outfit_info>

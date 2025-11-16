@@ -3,8 +3,7 @@
 class CUICursor;
 
 #include "ui_defs.h"
-
-
+#include "embedded_editor/embedded_editor_ui.h"
 
 class CDeviceResetNotifier :public pureDeviceReset
 {
@@ -29,11 +28,13 @@ struct CFontManager :public pureDeviceReset			{
 	CGameFont*				pFontDI;
 
 	CGameFont*				pFontArial14;
+	CGameFont*				pFontArial21;
 	CGameFont*				pFontGraffiti19Russian;
 	CGameFont*				pFontGraffiti22Russian;
 	CGameFont*				pFontLetterica16Russian;
 	CGameFont*				pFontLetterica18Russian;
 	CGameFont*				pFontGraffiti32Russian;
+	CGameFont*				pFontGraffiti40Russian;
 	CGameFont*				pFontGraffiti50Russian;
 	CGameFont*				pFontLetterica25;
 	CGameFont*				pFontStat;
@@ -56,6 +57,7 @@ class ui_core: public CDeviceResetNotifier
 
 	CFontManager*	m_pFontManager;
 	CUICursor*		m_pUICursor;
+	CUIDebugger		m_debugger;
 
 	Fvector2		m_pp_scale_;
 	Fvector2		m_scale_;
@@ -68,6 +70,7 @@ public:
 					~ui_core						();
 	CFontManager&	Font							()								{return *m_pFontManager;}
 	CUICursor&		GetUICursor						()								{return *m_pUICursor;}
+	auto&			Debugger						()								{return m_debugger;}
 
 	IC float		ClientToScreenScaledX			(float left)	const			{return left * m_current_scale->x;};
 	IC float		ClientToScreenScaledY			(float top)		const			{return top * m_current_scale->y;};
@@ -90,6 +93,10 @@ public:
 	virtual void	OnDeviceReset					();
 	static	bool	is_widescreen					();
 	static	float	get_current_kx					();
+	static	float	get_icons_kx					();
+	static	float	inv_grid						(){ return (50.0f); };
+	static	float	inv_grid_40						(){ return (40.0f/* * get_icons_kx()*/); };
+	static	float	inv_grid_kx						(){ return (inv_grid() * get_icons_kx()); };
 	shared_str		get_xml_name					(LPCSTR fn);
 	
 	IUIRender::ePointType		m_currentPointType;

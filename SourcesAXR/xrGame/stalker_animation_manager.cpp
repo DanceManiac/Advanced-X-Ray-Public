@@ -70,6 +70,8 @@ void CStalkerAnimationManager::reinit				()
 
 void CStalkerAnimationManager::reload				()
 {
+	ZoneScoped;
+
 	m_visual					= object().Visual();
 
 	m_crouch_state_config		= object().SpecificCharacter().crouch_type();
@@ -104,17 +106,23 @@ void CStalkerAnimationManager::reload				()
 	legs().set_dbg_info			(*object().cName(),"Legs  ");
 	script().set_dbg_info		(*object().cName(),"Script");
 #endif
+
+	m_global.reset();
+	m_head.reset();
+	m_torso.reset();
+	m_legs.reset();
+	m_script.reset();
 };
 
 void CStalkerAnimationManager::play_fx(float power_factor, int fx_index)
 {
 	VERIFY						(fx_index >= 0);
-	VERIFY						(fx_index < (int)m_data_storage->m_part_animations.A[object().movement().body_state()].m_global.A[0].A.size());
+	VERIFY						(fx_index < (int)m_data_storage->m_part_animations.A[object().get_movement().body_state()].m_global.A[0].A.size());
 #ifdef DEBUG
 	if (psAI_Flags.is(aiAnimation)) {
-		LPCSTR					name = m_skeleton_animated->LL_MotionDefName_dbg(m_data_storage->m_part_animations.A[object().movement().body_state()].m_global.A[0].A[fx_index]).first;
+		LPCSTR					name = m_skeleton_animated->LL_MotionDefName_dbg(m_data_storage->m_part_animations.A[object().get_movement().body_state()].m_global.A[0].A[fx_index]).first;
 		Msg						("%6d [%s][%s][%s][%f]",Device.dwTimeGlobal,*object().cName(),"FX",name,power_factor);
 	}
 #endif
-	m_skeleton_animated->PlayFX	(m_data_storage->m_part_animations.A[object().movement().body_state()].m_global.A[0].A[fx_index],power_factor);
+	m_skeleton_animated->PlayFX	(m_data_storage->m_part_animations.A[object().get_movement().body_state()].m_global.A[0].A[fx_index],power_factor);
 }

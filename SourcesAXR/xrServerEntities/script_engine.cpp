@@ -11,6 +11,7 @@
 #include "ai_space.h"
 #include "object_factory.h"
 #include "script_process.h"
+#include "script_storage.h"
 
 #ifdef USE_DEBUGGER
 #	ifndef USE_LUA_STUDIO
@@ -33,6 +34,8 @@
 		extern Flags32 psAI_Flags;
 #	endif
 #endif
+
+#include <tracy/TracyLua.hpp>
 
 void jit_command(lua_State*, LPCSTR);
 
@@ -274,6 +277,8 @@ extern void export_classes(lua_State *L);
 
 void CScriptEngine::init				()
 {
+	ZoneScoped;
+
 #ifdef USE_LUA_STUDIO
 	bool lua_studio_connected = !!m_lua_studio_world;
 	if (lua_studio_connected)
@@ -295,6 +300,7 @@ void CScriptEngine::init				()
 #endif // #ifdef USE_LUA_STUDIO
 
 	luabind::open						(lua());
+	tracy::LuaRegister					(lua());
 	setup_callbacks						();
 	export_classes						(lua());
 	setup_auto_load						();

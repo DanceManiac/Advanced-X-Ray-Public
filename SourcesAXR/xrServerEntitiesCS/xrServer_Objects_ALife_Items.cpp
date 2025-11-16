@@ -1286,3 +1286,48 @@ BOOL CSE_ALifeItemCustomOutfit::Net_Relevant		()
 {
 	return							(true);
 }
+
+////////////////////////////////////////////////////////////////////////////
+// CSE_ALifeItemHelmet
+////////////////////////////////////////////////////////////////////////////
+CSE_ALifeItemHelmet::CSE_ALifeItemHelmet(LPCSTR caSection) : CSE_ALifeItem(caSection)
+{
+}
+
+CSE_ALifeItemHelmet::~CSE_ALifeItemHelmet()
+{
+}
+
+void CSE_ALifeItemHelmet::STATE_Read(NET_Packet& tNetPacket, u16 size)
+{
+	inherited::STATE_Read(tNetPacket, size);
+}
+
+void CSE_ALifeItemHelmet::STATE_Write(NET_Packet& tNetPacket)
+{
+	inherited::STATE_Write(tNetPacket);
+}
+
+void CSE_ALifeItemHelmet::UPDATE_Read(NET_Packet& tNetPacket)
+{
+	inherited::UPDATE_Read(tNetPacket);
+	tNetPacket.r_float_q8(m_fCondition, 0.0f, 1.0f);
+}
+
+void CSE_ALifeItemHelmet::UPDATE_Write(NET_Packet& tNetPacket)
+{
+	inherited::UPDATE_Write(tNetPacket);
+	tNetPacket.w_float_q8(m_fCondition, 0.0f, 1.0f);
+}
+
+#ifndef XRGAME_EXPORTS
+void CSE_ALifeItemHelmet::FillProps(LPCSTR pref, PropItemVec& items)
+{
+	inherited::FillProps(pref, items);
+}
+#endif // #ifndef XRGAME_EXPORTS
+
+BOOL CSE_ALifeItemHelmet::Net_Relevant()
+{
+	return							(true);
+}

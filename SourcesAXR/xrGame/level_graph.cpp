@@ -19,9 +19,8 @@ CLevelGraph::CLevelGraph		()
 #endif
 {
 #ifndef AI_COMPILER
-#ifdef DEBUG
-	sh_debug->create				("debug\\ai_nodes","$null");
-#endif
+	sh_debug->create			("editor\\ai_node", "ed\\ed_ai_arrows_01");
+
 	string_path					file_name;
 	FS.update_path				(file_name,"$level$",LEVEL_GRAPH_NAME);
 #else

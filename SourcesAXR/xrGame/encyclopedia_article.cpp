@@ -77,10 +77,10 @@ void CEncyclopediaArticle::load_shared	(LPCSTR)
 	{
 		data()->image.SetShader(InventoryUtilities::GetEquipmentIconsShader());
 		Frect				tex_rect;
-		tex_rect.x1			= float(pSettings->r_u32(ltx, "inv_grid_x") * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()));
-		tex_rect.y1			= float(pSettings->r_u32(ltx, "inv_grid_y") * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()));
-		tex_rect.x2			= float(pSettings->r_u32(ltx, "inv_grid_width") * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()));
-		tex_rect.y2			= float(pSettings->r_u32(ltx, "inv_grid_height") * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()));
+		tex_rect.x1			= float(pSettings->r_u32(ltx, "inv_grid_x") * UI().inv_grid_kx());
+		tex_rect.y1			= float(pSettings->r_u32(ltx, "inv_grid_y") * UI().inv_grid_kx());
+		tex_rect.x2			= float(pSettings->r_u32(ltx, "inv_grid_width") * UI().inv_grid_kx());
+		tex_rect.y2			= float(pSettings->r_u32(ltx, "inv_grid_height") * UI().inv_grid_kx());
 		tex_rect.rb.add		(tex_rect.lt);
 		data()->image.GetUIStaticItem().SetTextureRect(tex_rect);
 	}
@@ -106,14 +106,14 @@ void CEncyclopediaArticle::load_shared	(LPCSTR)
 		{
 			float dx = minSize - r.width();
 			r.x2 += dx;
-			data()->image.SetTextureOffset(dx / 2, data()->image.GetTextureOffeset()[1]);
+			data()->image.SetBaseTextureOffset(dx / 2, data()->image.GetBaseTextureOffset()[1]);
 		}
 
 		if (r.height() < minSize)
 		{
 			float dy = minSize - r.height();
 			r.y2 += dy;
-			data()->image.SetTextureOffset(data()->image.GetTextureOffeset()[0], dy / 2);
+			data()->image.SetBaseTextureOffset(data()->image.GetBaseTextureOffset()[0], dy / 2);
 		}
 
 		data()->image.SetWndRect(Frect().set(0,0,r.width(),r.height()));

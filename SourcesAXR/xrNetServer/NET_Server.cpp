@@ -574,6 +574,8 @@ HRESULT	IPureServer::net_Handler(u32 dwMessageType, PVOID pMessage)
 
 void	IPureServer::Flush_Clients_Buffers	()
 {
+	ZoneScoped;
+
     #if NET_LOG_PACKETS
     Msg( "#flush server send-buf" );
     #endif
@@ -1002,6 +1004,8 @@ bool banned_client_comparer(IBannedClient* C1, IBannedClient* C2)
 
 void IPureServer::UpdateBannedList()
 {
+	ZoneScoped;
+
 	if(!BannedAddresses.size())		return;
 	std::sort(BannedAddresses.begin(),BannedAddresses.end(), banned_client_comparer );
 	time_t						T;

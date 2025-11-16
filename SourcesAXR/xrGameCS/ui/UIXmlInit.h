@@ -44,14 +44,14 @@ public:
 	CUIXmlInit();
 	virtual ~CUIXmlInit();
 		
-	static bool InitWindow				(CUIXml& xml_doc, LPCSTR path,	int index, CUIWindow* pWnd);
+	static bool InitWindow				(CUIXml& xml_doc, LPCSTR path,	int index, CUIWindow* pWnd, bool fatal = true);
 	static bool InitFrameWindow			(CUIXml& xml_doc, LPCSTR path,	int index, CUIFrameWindow* pWnd);
 	static bool InitFrameLine			(CUIXml& xml_doc, LPCSTR path, int index, CUIFrameLineWnd* pWnd);
 //	static bool InitLabel				(CUIXml& xml_doc, LPCSTR path, int index, CUILabel* pWnd);
 	static bool InitCustomEdit			(CUIXml& xml_doc, LPCSTR paht, int index, CUICustomEdit* pWnd);
 	static bool InitEditBox				(CUIXml& xml_doc, LPCSTR paht, int index, CUIEditBox* pWnd);
 	static bool InitEditBoxEx			(CUIXml& xml_doc, LPCSTR paht, int index, CUIEditBoxEx* pWnd);
-	static bool InitStatic				(CUIXml& xml_doc, LPCSTR path, int index, CUIStatic* pWnd);
+	static bool InitStatic				(CUIXml& xml_doc, LPCSTR path, int index, CUIStatic* pWnd, bool fatal = true);
 	static bool	InitCheck				(CUIXml& xml_doc, LPCSTR path, int index, CUICheckButton* pWnd);
 	static bool InitSpin				(CUIXml& xml_doc, LPCSTR path, int index, CUICustomSpin* pWnd);
 	static bool InitText				(CUIXml& xml_doc, LPCSTR path, int index, CUIStatic* pWnd);
@@ -71,7 +71,7 @@ public:
 	static bool InitTextBanner			(CUIXml& xml_doc, LPCSTR path,	int index, CUITextBanner *pBnr);
 	static bool InitMultiTextStatic		(CUIXml& xml_doc, LPCSTR path,	int index, CUIMultiTextStatic *pWnd);
 	static bool InitAnimatedStatic		(CUIXml& xml_doc, LPCSTR path,	int index, CUIAnimatedStatic *pWnd);
-	static bool 	InitSleepStatic			(CUIXml& xml_doc, LPCSTR path,	int index, CUISleepStatic *pWnd);
+	static bool InitSleepStatic			(CUIXml& xml_doc, LPCSTR path,	int index, CUISleepStatic *pWnd, bool fatal = true);
 	static bool InitTextureOffset		(CUIXml& xml_doc, LPCSTR path, int index, CUIStatic* pWnd);
 	static bool InitSound				(CUIXml& xml_doc, LPCSTR path, int index, CUI3tButton* pWnd);
 	static bool InitMultiTexture		(CUIXml& xml_doc, LPCSTR path, int index, CUI3tButton* pWnd);

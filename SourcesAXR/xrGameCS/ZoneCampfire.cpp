@@ -3,6 +3,10 @@
 #include "ParticlesObject.h"
 #include "GamePersistent.h"
 #include "../xrEngine/LightAnimLibrary.h"
+
+#include "Actor.h"
+#include "AdvancedXrayGameConstants.h"
+
 /*
 CZoneCampfire* g_zone = NULL;
 void turn_zone()
@@ -46,12 +50,15 @@ void CZoneCampfire::GoEnabledState()
 
 	LPCSTR str						= pSettings->r_string(cNameSect(),"enabling_particles");
 	m_pEnablingParticles			= CParticlesObject::Create(str,FALSE);
-	m_pEnablingParticles->UpdateParent(XFORM(),zero_vel);
+	m_pEnablingParticles->UpdateParent(XFORM(), m_zero_vel);
 	m_pEnablingParticles->Play		(false);
-
-	str = pSettings->r_string(cNameSect(), "enabling_sound");
-	m_sound.create(str, st_Effect, sg_SourceType);
-	m_sound.play_at_pos(this, Position(), true);
+	
+	if (pSettings->line_exist(cNameSect(), "enabling_sound"))
+	{
+		str = pSettings->r_string(cNameSect(), "enabling_sound");
+		m_sound.create(str, st_Effect, sg_SourceType);
+		m_sound.play_at_pos(this, Position(), true);
+	}
 }
 
 void CZoneCampfire::GoDisabledState()
@@ -61,15 +68,18 @@ void CZoneCampfire::GoDisabledState()
 	R_ASSERT						(NULL==m_pDisabledParticles);
 	LPCSTR str						= pSettings->r_string(cNameSect(),"disabled_particles");
 	m_pDisabledParticles			= CParticlesObject::Create(str,FALSE);
-	m_pDisabledParticles->UpdateParent	(XFORM(),zero_vel);
+	m_pDisabledParticles->UpdateParent	(XFORM(), m_zero_vel);
 	m_pDisabledParticles->Play			(false);
 	
 	m_sound.stop();
 	m_sound.destroy();
 
-	str = pSettings->r_string(cNameSect(), "disabled_sound");
-	m_sound.create(str, st_Effect, sg_SourceType);
-	m_sound.play_at_pos(this, Position(), true);
+	if (pSettings->line_exist(cNameSect(), "disabled_sound"))
+	{
+		str = pSettings->r_string(cNameSect(), "disabled_sound");
+		m_sound.create(str, st_Effect, sg_SourceType);
+		m_sound.play_at_pos(this, Position(), true);
+	}
 }
 
 #define OVL_TIME 3000
@@ -103,10 +113,18 @@ void CZoneCampfire::shedule_Update(u32	dt	)
 	if (m_pIdleParticles)
 	{
 		Fvector vel;
-		vel.mul(GamePersistent().Environment().wind_blast_direction,GamePersistent().Environment().wind_strength_factor);
+		vel.mul(GamePersistent().Environment().m_wind_blast_direction,GamePersistent().Environment().wind_strength_factor);
 		m_pIdleParticles->UpdateParent(XFORM(),vel);
 	}
 	inherited::shedule_Update(dt);
+
+	if (Actor() && GameConstants::GetActorFrostbite())
+	{
+		float dist_to_actor = Actor()->Position().distance_to_sqr(Position());
+
+		if (is_on() && dist_to_actor <= 3.f)
+			Actor()->SetHeatingStatus(true, RelativePower(dist_to_actor));
+	}
 }
 
 

@@ -213,7 +213,8 @@ void			CGameSpy_Browser::RefreshList_Full(bool Local, const char* FilterStr)
 			m_bTryingToConnectToMasterServer = true;
 			if (MainMenu()) MainMenu()->Show_CTMS_Dialog();
 
-			std::thread t(RefreshInternetList, this);
+			std::thread t(RefreshInternetList, pRData);
+			t.detach();
 		}
 		if (error != sbe_noerror || !m_bAbleToConnectToMasterServer)
 		{			

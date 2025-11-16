@@ -32,12 +32,59 @@ void CControlAnimationBase::update()
 	SelectVelocities	();
 
 	// применить
-	if (prev_motion	!= cur_anim_info().motion) {
-		prev_motion	= cur_anim_info().motion;
+	if (prev_motion	!= cur_anim_info().get_motion()) {
+		prev_motion	= cur_anim_info().get_motion();
 		select_animation();
 	}
 }
 
+void CControlAnimationBase::clear_override_animation ()
+{
+	m_override_animation		=	eAnimUndefined;
+	m_override_animation_index	=	(u32)-1;
+}
+
+void CControlAnimationBase::set_override_animation (EMotionAnim anim, u32 index)
+{
+	if ( m_override_animation == anim )
+		return;
+
+	if ( anim != eAnimUndefined )
+	{
+		VERIFY2						(m_override_animation == eAnimUndefined, 
+									"animation already overriden, call clear_override_animation");
+	}
+
+	m_override_animation		=	anim;
+	m_override_animation_index	=	index;
+}
+
+void CControlAnimationBase::set_override_animation (pcstr name)
+{
+	for (	u32 anim_type	=	0;
+				anim_type	<	m_anim_storage.size();
+			  ++anim_type	)
+	{
+		SAnimItem const * const anim_item	=	m_anim_storage[anim_type];
+
+		if ( !anim_item )
+			continue;
+
+		pcstr anim_name						=	anim_item->target_name.c_str();
+		if ( strstr(name, anim_name ? anim_name : "") == name )
+		{
+			pcstr const anim_index_string	=	name + anim_item->target_name.size();
+
+			u32 anim_index			=	0;
+			sscanf						(anim_index_string, "%d", &anim_index);
+			set_override_animation		((EMotionAnim)anim_type, anim_index);
+
+			return;
+		}
+	}
+	
+	NODEFAULT;
+}
 
 //////////////////////////////////////////////////////////////////////////
 // SelectAnimation
@@ -45,14 +92,27 @@ void CControlAnimationBase::update()
 // Out:	установить анимацию в cur_anim_info().motion
 void CControlAnimationBase::SelectAnimation()
 {
+	// Lain: added
+	if ( m_override_animation != eAnimUndefined )
+ 	{
+ 		SetCurAnim(m_override_animation);
+		return;
+	}
+
 	EAction							action = m_tAction;
-	if (m_object->control().path_builder().is_moving_on_path() && m_object->path().enabled()) action = GetActionFromPath();
 
-	cur_anim_info().motion			= m_tMotions[action].anim;
+	if (m_object->control().path_builder().is_moving_on_path() && 
+		m_object->path().enabled()) 
+	{
+									action = GetActionFromPath();
+	}
 
-	m_object->CheckSpecParams		(spec_params);	
-	if (prev_motion	!= cur_anim_info().motion) 
-		if (CheckTransition(prev_motion, cur_anim_info().motion)) return;
+	cur_anim_info().set_motion( m_tMotions[action].anim );
+
+	m_object->CheckSpecParams		(spec_params);
+
+	if (prev_motion	!= cur_anim_info().get_motion()) 
+		if (CheckTransition(prev_motion, cur_anim_info().get_motion())) return;
 
 	CheckReplacedAnim				();
 	SetTurnAnimation				();
@@ -63,13 +123,13 @@ void CControlAnimationBase::SelectAnimation()
 void CControlAnimationBase::SetTurnAnimation()
 {
 	float yaw_current, yaw_target;
-	m_man->direction().get_heading(yaw_current, yaw_target);
+	m_man->get_direction().get_heading(yaw_current, yaw_target);
 	float delta_yaw	= angle_difference(yaw_target, yaw_current);
 
 	bool turn_left = true;
 	if (from_right(yaw_target, yaw_current)) turn_left = false; 
 
-	EPState	anim_state = GetState(cur_anim_info().motion);
+	EPState	anim_state = GetState(cur_anim_info().get_motion());
 	if (IsStandCurAnim() && (anim_state == PS_STAND) && (!fis_zero(delta_yaw))) {
 		m_object->SetTurnAnimation(turn_left);
 		return;
@@ -96,24 +156,24 @@ void CControlAnimationBase::SelectVelocities()
 
 	if (b_moving) {
 
-		u32 cur_point_velocity_index = m_object->movement().detail().path()[m_object->movement().detail().curr_travel_point_index()].velocity;
+		u32 cur_point_velocity_index = m_object->get_movement().detail().path()[m_object->get_movement().detail().curr_travel_point_index()].velocity;
 
 		u32 next_point_velocity_index = u32(-1);
-		if (m_object->movement().detail().path().size() > m_object->movement().detail().curr_travel_point_index() + 1) 
-			next_point_velocity_index = m_object->movement().detail().path()[m_object->movement().detail().curr_travel_point_index() + 1].velocity;
+		if (m_object->get_movement().detail().path().size() > m_object->get_movement().detail().curr_travel_point_index() + 1) 
+			next_point_velocity_index = m_object->get_movement().detail().path()[m_object->get_movement().detail().curr_travel_point_index() + 1].velocity;
 
 		// если сейчас стоит на месте и есть след точка (т.е. должен быть в движении),
 		// то реализовать поворот на месте, а дальше форсировать скорость со следующей точки
 		if ((cur_point_velocity_index == MonsterMovement::eVelocityParameterStand) && (next_point_velocity_index != u32(-1))) {
-			if (!m_object->control().direction().is_turning()) 
+			if (!m_object->control().get_direction().is_turning()) 
 				cur_point_velocity_index = next_point_velocity_index;
 		} 
 
-		const CDetailPathManager::STravelParams &current_velocity = m_object->movement().detail().velocity(cur_point_velocity_index);
+		const CDetailPathManager::STravelParams &current_velocity = m_object->get_movement().detail().velocity(cur_point_velocity_index);
 		path_vel.set(_abs(current_velocity.linear_velocity), current_velocity.real_angular_velocity);
 	}
 
-	SAnimItem *item_it = m_anim_storage[cur_anim_info().motion];
+	SAnimItem *item_it = m_anim_storage[cur_anim_info().get_motion()];
 	VERIFY(item_it);
 	
 	// получить скорости движения по анимации
@@ -150,8 +210,8 @@ void CControlAnimationBase::SelectVelocities()
 		EMotionAnim new_anim;
 		float		a_speed;
 
-		if (accel_chain_get(m_man->movement().real_velocity(), cur_anim_info().motion, new_anim, a_speed)) {
-			cur_anim_info().motion			= new_anim;
+		if (accel_chain_get(m_man->get_movement().real_velocity(), cur_anim_info().get_motion(), new_anim, a_speed)) {
+			cur_anim_info().set_motion(new_anim);
 			
 			if (a_speed < 0.5f) a_speed		+= 0.5f;
 
@@ -167,7 +227,7 @@ void CControlAnimationBase::SelectVelocities()
 	if (m_object->state_invisible) 
 		m_object->dir().set_heading_speed(path_vel.angular);
 	else { 
-		item_it = m_anim_storage[cur_anim_info().motion];
+		item_it = m_anim_storage[cur_anim_info().get_motion()];
 		VERIFY(item_it);
 		
 		// Melee?
@@ -184,7 +244,7 @@ void CControlAnimationBase::SelectVelocities()
 void CControlAnimationBase::CheckVelocityBounce()
 {
 	Fvector		temp_vec;
-	m_object->character_physics_support()->movement()->GetCharacterVelocity(temp_vec);
+	m_object->character_physics_support()->get_movement()->GetCharacterVelocity(temp_vec);
 	float		prev_speed	= m_prev_character_velocity;
 	float		cur_speed	= temp_vec.magnitude();
 

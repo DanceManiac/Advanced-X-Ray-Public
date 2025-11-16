@@ -1,0 +1,492 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="ui_launcher_version_text">
+		<text>Лаунчер: v</text>
+	</string>
+	<string id="ui_launcher_engine_version_text">
+		<text>Движок: v</text>
+	</string>
+	<string id="ui_launcher_engine_version_actual_text">
+		<text>(актуально)</text>
+	</string>
+	<string id="ui_launcher_start_game">
+		<text>НАЧАТЬ ИГРУ</text>
+	</string>
+	<string id="ui_launcher_load_game">
+		<text>ЗАГРУЗИТЬ ИГРУ</text>
+	</string>
+	<string id="ui_launcher_graphic_opt">
+		<text>НАСТРОЙКИ ГРАФИКИ</text>
+	</string>
+	<string id="ui_launcher_mods_manager">
+		<text>МЕНЕДЖЕР МОДОВ</text>
+	</string>
+	<string id="ui_launcher_delete_shaders_cache">
+		<text>ОЧИСТИТЬ КЭШ ШЕЙДЕРОВ</text>
+	</string>
+	<string id="ui_launcher_lua_dbg">
+		<text>Отладка Lua</text>
+	</string>
+	<string id="ui_launcher_jpg_screenshots">
+		<text>JPG скриншоты</text>
+	</string>
+	<string id="ui_launcher_no_prefetch">
+		<text>Откл. префетч</text>
+	</string>
+	<string id="ui_launcher_open_error_log">
+		<text>Лог при ошибке</text>
+	</string>
+	<string id="ui_launcher_enter_keys">
+		<text>Ввести ключи</text>
+	</string>
+	<string id="ui_launcher_user_key">
+		<text>Пользовательский ключ</text>
+	</string>
+	<string id="ui_launcher_app_language">
+		<text>Язык (русский)</text>
+	</string>
+	<string id="ui_launcher_quit">
+		<text>ВЫЙТИ</text>
+	</string>
+	<string id="ui_launcher_right_panel_empty_text">
+		<text>Выберите действие слева</text>
+	</string>
+	<string id="ui_launcher_save_name">
+		<text>Название сохранения:</text>
+	</string>
+	<string id="ui_launcher_load_save">
+		<text>Загрузить</text>
+	</string>
+	<string id="ui_launcher_mods_conflict">
+		<text>Конфликт модов</text>
+	</string>
+	<string id="ui_launcher_mods_conflict_name">
+		<text>Обнаружены конфликты при включении мода:</text>
+	</string>
+	<string id="ui_launcher_mods_conflict_with">
+		<text>Конфликтует с модом:</text>
+	</string>
+	<string id="ui_launcher_mods_conflict_warning_desc">
+		<text>Включение перезапишет конфликтующие файлы!</text>
+	</string>
+	<string id="ui_launcher_mods_manager_force">
+		<text>Включить</text>
+	</string>
+	<string id="ui_launcher_mods_manager_cancel">
+		<text>Отменить</text>
+	</string>
+	<string id="ui_launcher_download_mods">
+		<text>Загрузка аддонов</text>
+	</string>
+	<string id="ui_launcher_installed_mods">
+		<text>Установленные аддоны</text>
+	</string>
+	<string id="ui_launcher_back">
+		<text>Назад</text>
+	</string>
+	<string id="ui_launcher_available_mods">
+		<text>Доступные аддоны</text>
+	</string>
+	<string id="ui_launcher_mod_authors">
+		<text>Авторы:</text>
+	</string>
+	<string id="ui_launcher_already_download">
+		<text>Установлен</text>
+	</string>
+	<string id="ui_launcher_downloading">
+		<text>Загрузка:</text>
+	</string>
+	<string id="ui_launcher_installing">
+		<text>Установка:</text>
+	</string>
+	<string id="ui_launcher_pb_files">
+		<text>файлов)</text>
+	</string>
+	<string id="ui_launcher_download">
+		<text>Загрузить</text>
+	</string>
+	<string id="ui_launcher_mod_descr">
+		<text>Описание:</text>
+	</string>
+	
+	<string id="ui_launcher_options">
+		<text>Опции</text>
+	</string>
+	<string id="ui_launcher_main_opt">
+		<text>Основные</text>
+	</string>
+	<string id="ui_launcher_render_mode">
+		<text>Рендер</text>
+	</string>
+	<string id="renderer_r1">
+		<text>Статическое освещение</text>
+	</string>
+	<string id="renderer_r2">
+		<text>Динамическое освещение</text>
+	</string>
+	<string id="renderer_r2.5">
+		<text>Полное динамическое освещение</text>
+	</string>
+	<string id="renderer_r3">
+		<text>Ул. полное динамическое освещение (DX10)</text>
+	</string>
+	<string id="renderer_r4">
+		<text>Ул. полное динамическое освещение (DX11)</text>
+	</string>
+	<string id="ui_launcher_resolution">
+		<text>Разрешение</text>
+	</string>
+	<string id="ui_launcher_fullscreen">
+		<text>Полноэкранный режим</text>
+	</string>
+	<string id="ui_launcher_vision_opt">
+		<text>Обзор</text>
+	</string>
+	<string id="ui_launcher_vis_dist">
+		<text>Дальность видимости</text>
+	</string>
+	<string id="ui_launcher_fov">
+		<text>FOV камеры</text>
+	</string>
+	<string id="ui_launcher_hud_fov">
+		<text>FOV худа</text>
+	</string>
+	<string id="ui_launcher_sun_and_light">
+		<text>Солнце и освещение</text>
+	</string>
+	<string id="ui_launcher_light_dist">
+		<text>Дальность освещения</text>
+	</string>
+	<string id="ui_launcher_sun_shafts">
+		<text>Солнечные лучи</text>
+	</string>
+	<string id="ui_launcher_sunshafts_mode">
+		<text>Режим солнечных лучей</text>
+	</string>
+	<string id="ui_launcher_flares">
+		<text>Режим фларов</text>
+	</string>
+	<string id="ui_launcher_sun_quality">
+		<text>Качество солнца</text>
+	</string>
+	<string id="ui_launcher_volumetric_lights">
+		<text>Объёмный свет</text>
+	</string>
+	<string id="ui_launcher_npc_use_torch">
+		<text>НПС используют фонарики</text>
+	</string>
+	<string id="ui_launcher_actor_shadow">
+		<text>Тень от героя</text>
+	</string>
+	<string id="ui_launcher_grass_shadow">
+		<text>Тень от травы</text>
+	</string>
+	<string id="ui_launcher_r2_sun">
+		<text>Освещение от солнца</text>
+	</string>
+	<string id="ui_launcher_static_sun">
+		<text>Статическое солнце</text>
+	</string>
+	<string id="ui_launcher_grass_opt">
+		<text>Флора</text>
+	</string>
+	<string id="ui_launcher_grass_height">
+		<text>Высота травы</text>
+	</string>
+	<string id="ui_launcher_grass_density">
+		<text>Плотность травы</text>
+	</string>
+	<string id="ui_launcher_grass_dist">
+		<text>Дальность отрисовки травы</text>
+	</string>
+	<string id="ui_launcher_grass_collision">
+		<text>Коллизия травы</text>
+	</string>
+	<string id="ui_launcher_grass_collision_dist">
+		<text>Дальность коллизии травы</text>
+	</string>
+	<string id="ui_launcher_optimization_opt">
+		<text>Оптимизация</text>
+	</string>
+	<string id="ui_launcher_shadow_map_size">
+		<text>Размер карты теней</text>
+	</string>
+	<string id="ui_launcher_textures_quality">
+		<text>Качество текстур</text>
+	</string>
+	<string id="ui_launcher_aniso">
+		<text>Фильтрация текстур</text>
+	</string>
+	<string id="ui_launcher_supersample">
+		<text>Суперсэмплинг</text>
+	</string>
+	<string id="ui_launcher_optimize_static_geom">
+		<text>Опт. стат. геометрии</text>
+	</string>
+	<string id="ui_launcher_optimize_dynamic_geom">
+		<text>Опт. динам. геометрии</text>
+	</string>
+	<string id="ui_launcher_optimize_shadow_geom">
+		<text>Оптимизация теней</text>
+	</string>
+	<string id="ui_launcher_reflections_dist">
+		<text>Дальность отражений</text>
+	</string>
+	<string id="ui_launcher_water_opt">
+		<text>Вода</text>
+	</string>
+	<string id="ui_launcher_reflections_quality">
+		<text>Качество отражений</text>
+	</string>
+	<string id="ui_launcher_soft_water">
+		<text>Мягкая вода</text>
+	</string>
+	<string id="ui_launcher_aa_and_ao_opt">
+		<text>Сглаживание и затенение</text>
+	</string>
+	<string id="ui_launcher_aa_mode">
+		<text>Тип сглаживания</text>
+	</string>
+	<string id="ui_launcher_msaa">
+		<text>MSAA</text>
+	</string>
+	<string id="ui_launcher_ao_mode">
+		<text>Режим затенения</text>
+	</string>
+	<string id="ui_launcher_ao_quality">
+		<text>Качество затенения</text>
+	</string>
+	<string id="ui_launcher_sss_opt">
+		<text>Screen Space Shaders</text>
+	</string>
+	<string id="ui_launcher_ss_sky_debanding">
+		<text>SSS: Сглаживание неба</text>
+	</string>
+	<string id="ui_launcher_ss_flora_fix">
+		<text>SSS: Ул. освещение флоры</text>
+	</string>
+	<string id="ui_launcher_ss_fog">
+		<text>SSS: Screen Space Туман</text>
+	</string>
+	<string id="ui_launcher_ss_il">
+		<text>SSS: Непрямое освещение</text>
+	</string>
+	<string id="ui_launcher_ss_new_gloss">
+		<text>SSS: Улучш. блеск</text>
+	</string>
+	<string id="ui_launcher_ss_screen_space_shadows">
+		<text>SSS: Screen Space Тени</text>
+	</string>
+	<string id="ui_launcher_ss_shadows">
+		<text>SSS: Улучшение теней</text>
+	</string>
+	<string id="ui_launcher_ss_wind">
+		<text>SSS: Ветер</text>
+	</string>
+	<string id="ui_launcher_ss_puddles">
+		<text>SSS: Лужи</text>
+	</string>
+	<string id="ui_launcher_ss_bloom">
+		<text>SSS: Блум</text>
+	</string>
+	<string id="ui_launcher_ss_bloom_mask_dirt">
+		<text>SSS: Маска грязи блума</text>
+	</string>
+	<string id="ui_launcher_es_aces_tonemap">
+		<text>ES: ACES Tonemap</text>
+	</string>
+	<string id="ui_launcher_es_opt">
+		<text>Enhanced Shaders</text>
+	</string>
+	<string id="ui_launcher_es_pseudo_pbr">
+		<text>ES: Псевдо-ПБР</text>
+	</string>
+	<string id="ui_launcher_effects_opt">
+		<text>Эффекты</text>
+	</string>
+	<string id="ui_launcher_mblur_enable">
+		<text>Размытие движений</text>
+	</string>
+	<string id="ui_launcher_mblur">
+		<text>Сила размытия движений</text>
+	</string>
+	<string id="ui_launcher_3d_scopes">
+		<text>3D прицелы</text>
+	</string>
+	<string id="ui_launcher_3d_pda">
+		<text>3D КПК</text>
+	</string>
+	<string id="ui_launcher_skeleton_wallmarks">
+		<text>Бладмарки на трупах</text>
+	</string>
+	<string id="ui_launcher_hud_mask">
+		<text>HUD маска</text>
+	</string>
+	<string id="ui_launcher_hud_dyn_effects">
+		<text>Динамические эффекты худа</text>
+	</string>
+	<string id="ui_launcher_shader_nvg">
+		<text>Шейдерный ПНВ</text>
+	</string>
+	<string id="ui_launcher_raindrops">
+		<text>Капли на экране</text>
+	</string>
+	<string id="ui_launcher_vignette">
+		<text>Виньетка</text>
+	</string>
+	<string id="ui_launcher_parallax">
+		<text>Steep Parallax</text>
+	</string>
+	<string id="ui_launcher_dynamic_wet_surfaces">
+		<text>Эффект намокания</text>
+	</string>
+	<string id="ui_launcher_dynamic_wet_surfaces_far">
+		<text>Радиус эффекта намокания</text>
+	</string>
+	<string id="ui_launcher_dof_enable">
+		<text>Глубина резкости</text>
+	</string>
+	<string id="ui_launcher_volumetric_smoke">
+		<text>Объёмный дым</text>
+	</string>
+	<string id="ui_launcher_chromatic_aberration">
+		<text>Хроматическая аберрация</text>
+	</string>
+	<string id="ui_launcher_film_grain">
+		<text>Зернистость</text>
+	</string>
+	<string id="ui_launcher_other_opt">
+		<text>Прочее</text>
+	</string>
+	<string id="ui_launcher_detail_textures">
+		<text>Детальные текстуры</text>
+	</string>
+	<string id="ui_launcher_use_bumps">
+		<text>Использовать бампы</text>
+	</string>
+	<string id="ui_launcher_detail_bump">
+		<text>Детальный рельеф</text>
+	</string>
+	<string id="ui_launcher_vsync">
+		<text>Вертикальная синхронизация</text>
+	</string>
+	<string id="ui_launcher_refresh_60hz">
+		<text>Частота 60Hz</text>
+	</string>
+	<string id="ui_launcher_soft_particles">
+		<text>Мягкие частицы</text>
+	</string>
+	<string id="ui_launcher_tessellation">
+		<text>Тесселяция</text>
+	</string>
+	<string id="ui_launcher_fog_clamper_max">
+		<text>Ограничитель дальности тумана</text>
+	</string>
+	
+	<string id="Default">
+		<text>Средние</text>
+	</string>
+	<string id="Minimum">
+		<text>Минимальные</text>
+	</string>
+	<string id="Low">
+		<text>Низкие</text>
+	</string>
+	<string id="High">
+		<text>Высокие</text>
+	</string>
+	<string id="Extreme">
+		<text>Максимальные</text>
+	</string>
+	
+	<string id="dtssr_off">
+		<text>Откл.</text>
+	</string>
+	<string id="dtssr_lowest">
+		<text>Минимальное</text>
+	</string>
+	<string id="dtssr_low">
+		<text>Низкое</text>
+	</string>
+	<string id="dtssr_medium">
+		<text>Среднее</text>
+	</string>
+	<string id="dtssr_high">
+		<text>Высокое</text>
+	</string>
+	
+	<string id="volumetric">
+		<text>Волюметрические</text>
+	</string>
+	<string id="screen_space">
+		<text>Screen Space</text>
+	</string>
+	<string id="combine_sunshafts">
+		<text>Комбинированные</text>
+	</string>
+	
+	<string id="opt_noaa">
+		<text>Откл.</text>
+	</string>
+	<string id="opt_fxaa">
+		<text>FXAA</text>
+	</string>
+	<string id="opt_dlaa">
+		<text>DLAA</text>
+	</string>
+	<string id="opt_smaa">
+		<text>SMAA</text>
+	</string>
+	
+	<string id="st_opt_off">
+		<text>Откл.</text>
+	</string>
+	<string id="st_opt_always">
+		<text>Всегда</text>
+	</string>
+	<string id="st_opt_on_helmet">
+		<text>Со шлемом</text>
+	</string>
+	
+	<string id="st_opt_low">
+		<text>Низко</text>
+	</string>
+	<string id="st_opt_medium">
+		<text>Средне</text>
+	</string>
+	<string id="st_opt_high">
+		<text>Высоко</text>
+	</string>
+	<string id="st_opt_ultra">
+		<text>Оч. высоко</text>
+	</string>
+	<string id="st_opt_extreme">
+		<text>Максимально</text>
+	</string>
+	
+	<string id="disabled">
+		<text>Откл.</text>
+	</string>
+	<string id="default">
+		<text>SSAO</text>
+	</string>
+	<string id="hdao">
+		<text>HDAO</text>
+	</string>
+	<string id="hbao">
+		<text>HBAO</text>
+	</string>
+	<string id="ssdo">
+		<text>SSDO</text>
+	</string>
+	
+	<string id="rus">
+		<text>Русский</text>
+	</string>
+	<string id="eng">
+		<text>Английский</text>
+	</string>
+	<string id="ukr">
+		<text>Украинский</text>
+	</string>
+</string_table>

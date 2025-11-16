@@ -14,7 +14,7 @@ IC	CALifeOnlineOfflineGroupBrain::object_type &CALifeOnlineOfflineGroupBrain::ob
 	return						(*m_object);
 }
 
-IC	CALifeOnlineOfflineGroupBrain::movement_manager_type &CALifeOnlineOfflineGroupBrain::movement	() const
+IC	CALifeOnlineOfflineGroupBrain::movement_manager_type &CALifeOnlineOfflineGroupBrain::get_movement	() const
 {
 	VERIFY						(m_movement_manager);
 	return						(*m_movement_manager);

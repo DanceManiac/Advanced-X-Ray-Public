@@ -12,15 +12,15 @@
 
 IC	CStalkerAnimationManager::EBodyState CStalkerAnimationManager::body_state	() const
 {
-	return					(object().movement().body_state());
+	return					(object().get_movement().body_state());
 }
 
 IC	bool CStalkerAnimationManager::standing										() const
 {
 	CAI_Stalker				&obj = object();
-	stalker_movement_manager_smart_cover	&movement = obj.movement();
+	stalker_movement_manager_smart_cover	&movement = obj.get_movement();
 	
-	if (movement.speed(obj.character_physics_support()->movement()) < EPS_L)
+	if (movement.speed(obj.character_physics_support()->get_movement()) < EPS_L)
 		return				(true);
 
 	if (eMovementTypeStand == movement.movement_type())

@@ -247,7 +247,7 @@ void  CScientificDetector::Load(LPCSTR section)
 	m_zones.load(section,"zone");
 }
 
-void CScientificDetector::UpfateWork()
+void CScientificDetector::UpdateWork()
 {
 	ui().Clear							();
 

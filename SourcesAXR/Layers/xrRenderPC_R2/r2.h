@@ -135,6 +135,9 @@ public:
 
 	xr_vector<sun::cascade>										m_sun_cascades;
 
+	xr_multimap<xr_string, xr_string>							LevelShadersDetList;
+	xr_vector<xr_string>										LevelShadersVec;
+
 private:
 	// Loading / Unloading
 	void							LoadBuffers					(CStreamReader	*fs,	BOOL	_alternative);
@@ -176,6 +179,8 @@ public:
 	IRenderVisual*					model_CreatePE				(LPCSTR name);
 	IRender_Sector*					detectSector				(const Fvector& P, Fvector& D);
 	int								translateSector				(IRender_Sector* pSector);
+
+	virtual SurfaceParams			getSurface					(const char* nameTexture) override;
 
 	// HW-occlusion culling
 	IC u32							occq_begin					(u32&	ID		)	{ return HWOCC.occq_begin	(ID);	}
@@ -303,9 +308,13 @@ public:
 	virtual void					ScreenshotAsyncEnd			(CMemoryWriter& memory_writer);
 	virtual void	_BCL			OnFrame						();
 
+	virtual	void					CreatePanorama				();
+
 	// [FFT++]
 	virtual void					BeforeWorldRender			(); //--#SM+#-- +SecondVP+       -
 	virtual void					AfterWorldRender			();  //--#SM+#-- +SecondVP+       UI
+
+	virtual void					Render3DStatic				() {};
 
 	// Render mode
 	virtual void					rmNear						();
@@ -314,6 +323,10 @@ public:
 
 	virtual							u32 active_phase() { return phase; };
 	void							RenderToTarget(RRT target);
+
+	virtual bool					isActorShadowEnabled		() override { return ps_actor_shadow_flags.test(RFLAG_ACTOR_SHADOW); }
+
+	virtual void					RenderApplyRTandZB			() override {}
 
 	// Constructor/destructor/loader
 	CRender							();

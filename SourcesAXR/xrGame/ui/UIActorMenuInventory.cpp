@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "pch_script.h"
 #include "UIActorMenu.h"
 #include "../inventory.h"
 #include "../inventoryOwner.h"
@@ -34,17 +35,27 @@
 #include "../MPPlayersBag.h"
 #include "../player_hud.h"
 #include "../CustomDetector.h"
+#include "../AnomalyDetector.h"
+#include "../Torch.h"
 #include "../PDA.h"
 #include "../Battery.h"
 #include "../AntigasFilter.h"
 #include "../RepairKit.h"
 #include "../ArtefactContainer.h"
 #include "../SleepingBag.h"
+#include "UI3tButton.h"
 
 #include "../actor_defs.h"
 #include "../Actor.h"
 #include "AdvancedXrayGameConstants.h"
 
+#include "../ai_space.h"
+#include "script_engine.h"
+#include "script_game_object.h"
+#include "script_export_space.h"
+#include "script_storage.h"
+
+using namespace luabind;
 
 void move_item_from_to(u16 from_id, u16 to_id, u16 what_id);
 
@@ -57,8 +68,14 @@ void CUIActorMenu::InitInventoryMode()
 	m_pInventoryDetectorList->Show		(true);
 	m_pInventoryPistolList->Show		(true);
 	m_pInventoryAutomaticList->Show		(true);
-	m_pQuickSlot->Show					(true);
+	if (m_pQuickSlot)
+		m_pQuickSlot->Show				(true);
+	
 	m_pTrashList->Show					(true);
+
+	if (m_sleep_button)
+		m_sleep_button->Show			(true);
+
 	m_RightDelimiter->Show				(false);
 
 	if (GameConstants::GetKnifeSlotEnabled())
@@ -118,6 +135,9 @@ void CUIActorMenu::InitInventoryMode()
 void CUIActorMenu::DeInitInventoryMode()
 {
 	m_pTrashList->Show					(false);
+
+	if (m_sleep_button)
+		m_sleep_button->Show			(false);
 //	m_clock_value->Show					(false);
 }
 
@@ -487,7 +507,6 @@ void CUIActorMenu::InitInventoryContents(CUIDragDropListEx* pBagList)
 	InitCellForSlot				(INV_SLOT_3);
 	InitCellForSlot				(OUTFIT_SLOT);
 	InitCellForSlot				(DETECTOR_SLOT);
-	InitCellForSlot				(GRENADE_SLOT);
 	InitCellForSlot				(HELMET_SLOT);
 
 	if (GameConstants::GetKnifeSlotEnabled())
@@ -570,7 +589,8 @@ void CUIActorMenu::InitInventoryContents(CUIDragDropListEx* pBagList)
 			ColorizeItem( itm, !CanMoveToPartner( *itb ) );
 		}
 	}
-	m_pQuickSlot->ReloadReferences(m_pActorInvOwner);
+	if (m_pQuickSlot)
+		m_pQuickSlot->ReloadReferences(m_pActorInvOwner);
 }
 
 bool CUIActorMenu::TryActiveSlot(CUICellItem* itm)
@@ -602,45 +622,33 @@ bool CUIActorMenu::ToSlot(CUICellItem* itm, bool force_place, u16 slot_id)
 	PIItem	iitem							= (PIItem)itm->m_pData;
 
 	bool b_own_item							= (iitem->parent_id()==m_pActorInvOwner->object_id());
+	
+	CCustomOutfit* pOutfit = m_pActorInvOwner->GetOutfit();
+	CHelmet* pHelmet1 = smart_cast<CHelmet*>(m_pActorInvOwner->inventory().ItemFromSlot(HELMET_SLOT));
+	CHelmet* pHelmet2 = smart_cast<CHelmet*>(m_pActorInvOwner->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
+
 	if (slot_id == HELMET_SLOT || slot_id == SECOND_HELMET_SLOT)
 	{
-		CCustomOutfit* pOutfit = m_pActorInvOwner->GetOutfit();
-		if(pOutfit && !pOutfit->bIsHelmetAvaliable)
-			return false;
-
-		CHelmet* helmet = smart_cast<CHelmet*>(iitem);
-
-		if (helmet)
+		if (pOutfit || pHelmet1 || pHelmet2)
 		{
 			CHelmet* pHelmet1 = smart_cast<CHelmet*>(m_pActorInvOwner->inventory().ItemFromSlot(HELMET_SLOT));
 			CHelmet* pHelmet2 = smart_cast<CHelmet*>(m_pActorInvOwner->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
 
-			CUIDragDropListEx* currentHelmetList = nullptr;
-			CUICellItem* currentHelmetCell = nullptr;
-
-			if (helmet->BaseSlot() == HELMET_SLOT)
+			if (slot_id == HELMET_SLOT)
 			{
-				if (pHelmet2 && (!helmet->m_bSecondHelmetEnabled || !pHelmet2->m_bSecondHelmetEnabled))
-				{
-					currentHelmetList = GetSlotList(SECOND_HELMET_SLOT);
-				}
+				if (pOutfit && !pOutfit->bIsHelmetAvaliable)
+					return false;
+
+				if (pHelmet2 && !pHelmet2->m_bSecondHelmetEnabled)
+					return false;
 			}
-			else if (helmet->BaseSlot() == SECOND_HELMET_SLOT)
+			else if (slot_id == SECOND_HELMET_SLOT)
 			{
-				if (pHelmet1 && (!helmet->m_bSecondHelmetEnabled || !pHelmet1->m_bSecondHelmetEnabled))
-				{
-					currentHelmetList = GetSlotList(HELMET_SLOT);
-				}
-			}
+				if (pOutfit && !pOutfit->bIsSecondHelmetAvaliable)
+					return false;
 
-			if (currentHelmetList)
-			{
-				currentHelmetCell = (currentHelmetList->ItemsCount() == 1) ? currentHelmetList->GetItemIdx(0) : nullptr;
-
-				if (currentHelmetCell)
-				{
-					ToBag(currentHelmetCell, false);
-				}
+				if (pHelmet1 && !pHelmet1->m_bSecondHelmetEnabled)
+					return false;
 			}
 		}
 	}
@@ -657,17 +665,59 @@ bool CUIActorMenu::ToSlot(CUICellItem* itm, bool force_place, u16 slot_id)
 		if(slot_id==OUTFIT_SLOT)
 		{
 			CCustomOutfit* pOutfit = smart_cast<CCustomOutfit*>(iitem);
-			if(pOutfit && !pOutfit->bIsHelmetAvaliable)
+			if(pOutfit)
 			{
-				CUIDragDropListEx* helmet_list		= GetSlotList(HELMET_SLOT);
-				if(helmet_list->ItemsCount()==1)
+				if (!pOutfit->bIsHelmetAvaliable)
 				{
-					CUICellItem* helmet_cell		= helmet_list->GetItemIdx(0);
-					ToBag(helmet_cell, false);
+					CUIDragDropListEx* helmet_list = GetSlotList(HELMET_SLOT);
+					if (helmet_list->ItemsCount() == 1)
+					{
+						CUICellItem* helmet_cell = helmet_list->GetItemIdx(0);
+						ToBag(helmet_cell, false);
+					}
+				}
+
+				if (GameConstants::GetSecondHelmetSlotEnabled() && !pOutfit->bIsSecondHelmetAvaliable)
+				{
+					CUIDragDropListEx* second_helmet_list = GetSlotList(SECOND_HELMET_SLOT);
+					if (second_helmet_list->ItemsCount() == 1)
+					{
+						CUICellItem* second_helmet_cell = second_helmet_list->GetItemIdx(0);
+						ToBag(second_helmet_cell, false);
+					}
 				}
 			}
 		}
 
+		if (GameConstants::GetSecondHelmetSlotEnabled())
+		{
+			CHelmet* helmet = smart_cast<CHelmet*>(iitem);
+
+			if (slot_id == HELMET_SLOT)
+			{
+				if (helmet && !helmet->m_bSecondHelmetEnabled)
+				{
+					CUIDragDropListEx* second_helmet_list = GetSlotList(SECOND_HELMET_SLOT);
+					if (second_helmet_list->ItemsCount() == 1)
+					{
+						CUICellItem* second_helmet_cell = second_helmet_list->GetItemIdx(0);
+						ToBag(second_helmet_cell, false);
+					}
+				}
+			}
+			else if (slot_id == SECOND_HELMET_SLOT)
+			{
+				if (helmet && !helmet->m_bSecondHelmetEnabled)
+				{
+					CUIDragDropListEx* helmet_list = GetSlotList(HELMET_SLOT);
+					if (helmet_list->ItemsCount() == 1)
+					{
+						CUICellItem* helmet_cell = helmet_list->GetItemIdx(0);
+						ToBag(helmet_cell, false);
+					}
+				}
+			}
+		}
 
 		bool result							= (!b_own_item) || m_pActorInvOwner->inventory().Slot(slot_id, iitem);
 		VERIFY								(result);
@@ -851,75 +901,84 @@ CUIDragDropListEx* CUIActorMenu::GetSlotList(u16 slot_idx)
 			break;
 
 		case GRENADE_SLOT://fake
-			if ( m_currMenuMode == mmTrade )
+		{
+			if (m_currMenuMode == mmTrade)
 			{
 				return m_pTradeActorBagList;
 			}
-			return m_pInventoryBagList;
-			break;
+		}break;
 
+		case KNIFE_SLOT:
+		{
 			if (GameConstants::GetKnifeSlotEnabled())
 			{
-				case KNIFE_SLOT:
-					return m_pInventoryKnifeList;
-					break;
+				return m_pInventoryKnifeList;
 			}
+		}break;
 
+		case BINOCULAR_SLOT:
+		{
 			if (GameConstants::GetBinocularSlotEnabled())
 			{
-				case BINOCULAR_SLOT:
-					return m_pInventoryBinocularList;
-					break;
+				return m_pInventoryBinocularList;
 			}
+		}break;
 
+		case TORCH_SLOT:
+		{
 			if (GameConstants::GetTorchSlotEnabled())
 			{
-				case TORCH_SLOT:
-					return m_pInventoryTorchList;
-					break;
+				return m_pInventoryTorchList;
 			}
+		}break;
 
+		case BACKPACK_SLOT:
+		{
 			if (GameConstants::GetBackpackSlotEnabled())
 			{
-				case BACKPACK_SLOT:
-					return m_pInventoryBackpackList;
-					break;
+				return m_pInventoryBackpackList;
 			}
+		}break;
 
-			if (GameConstants::GetSecondHelmetSlotEnabled())
-			{
-				case SECOND_HELMET_SLOT:
-					return m_pInventorySecondHelmetList;
-					break;
-			}
-
+		case DOSIMETER_SLOT:
+		{
 			if (GameConstants::GetDosimeterSlotEnabled())
 			{
-				case DOSIMETER_SLOT:
-					return m_pInventoryDosimeterList;
-					break;
+				return m_pInventoryDosimeterList;
 			}
+		}break;
 
+		case PANTS_SLOT:
+		{
 			if (GameConstants::GetPantsSlotEnabled())
 			{
-				case PANTS_SLOT:
-					return m_pInventoryPantsList;
-					break;
+				return m_pInventoryPantsList;
 			}
+		}break;
 
+		case PDA_SLOT:
+		{
 			if (GameConstants::GetPdaSlotEnabled())
 			{
-				case PDA_SLOT:
-					return m_pInventoryPdaList;
-					break;
+				return m_pInventoryPdaList;
 			}
+		}break;
 
+		case PISTOL_SLOT:
+		{
 			if (GameConstants::GetPistolSlotEnabled())
 			{
-				case PISTOL_SLOT:
-					return m_pInventoryPistolNewList;
-					break;
+				return m_pInventoryPistolNewList;
 			}
+		}break;
+
+		case SECOND_HELMET_SLOT:
+		{
+			if (GameConstants::GetSecondHelmetSlotEnabled())
+			{
+				return m_pInventorySecondHelmetList;
+			}
+		}break;
 	};
 	return NULL;
 }
@@ -988,13 +1047,22 @@ bool CUIActorMenu::ToQuickSlot(CUICellItem* itm)
 	if (iWH.x > 1 || iWH.y > 1)
 		return false;
 	//Alundaio: END
+		
+    if (m_pQuickSlot)
+    {
+		u8 slot_idx = 0;
 
-	u8 slot_idx = u8(m_pQuickSlot->PickCell(GetUICursor().GetCursorPosition()).x);
-	if(slot_idx==255)
-		return false;
+		if (!b_quick_vert)
+			slot_idx = u8(m_pQuickSlot->PickCell(GetUICursor().GetCursorPosition()).x);
+		else
+			slot_idx = u8(m_pQuickSlot->PickCell(GetUICursor().GetCursorPosition()).y);
 
-	m_pQuickSlot->SetItem(create_cell_item(iitem), GetUICursor().GetCursorPosition());
-	xr_strcpy(ACTOR_DEFS::g_quick_use_slots[slot_idx], iitem->m_section_id.c_str());
+		if(slot_idx==255)
+			return false;
+
+		m_pQuickSlot->SetItem(create_cell_item(iitem), GetUICursor().GetCursorPosition());
+		xr_strcpy(ACTOR_DEFS::g_quick_use_slots[slot_idx], iitem->m_section_id.c_str());
+	}
 	return true;
 }
 
@@ -1059,12 +1127,12 @@ void CUIActorMenu::ActivatePropertiesBox()
 	{
 		m_UIPropertiesBox->AutoUpdateSize();
 
-		Fvector2 cursor_pos;
+		Fvector2 cursor_pos_;
 		Frect						vis_rect;
 		GetAbsoluteRect				(vis_rect);
-		cursor_pos					= GetUICursor().GetCursorPosition();
-		cursor_pos.sub				(vis_rect.lt);
-		m_UIPropertiesBox->Show		(vis_rect, cursor_pos);
+		cursor_pos_					= GetUICursor().GetCursorPosition();
+		cursor_pos_.sub				(vis_rect.lt);
+		m_UIPropertiesBox->Show		(vis_rect, cursor_pos_);
 		PlaySnd						(eProperties);
 	}
 }
@@ -1118,7 +1186,12 @@ void CUIActorMenu::PropertiesBoxForSlots( PIItem item, bool& b_show )
 	}
 
 	CCustomOutfit* outfit_in_slot = m_pActorInvOwner->GetOutfit();
-	if ( pHelmet && !bAlreadyDressed && (!outfit_in_slot || outfit_in_slot->bIsHelmetAvaliable))
+	CHelmet* helmet_in_slot = smart_cast<CHelmet*>(m_pActorInvOwner->inventory().ItemFromSlot(HELMET_SLOT));
+	CHelmet* second_helmet_in_slot = smart_cast<CHelmet*>(m_pActorInvOwner->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
+	
+	if (pHelmet && !bAlreadyDressed && (!outfit_in_slot || outfit_in_slot->bIsHelmetAvaliable) && 
+		(!helmet_in_slot || helmet_in_slot->m_bSecondHelmetEnabled) && 
+		(!second_helmet_in_slot || second_helmet_in_slot->m_bSecondHelmetEnabled))
 	{
 		m_UIPropertiesBox->AddItem( "st_dress_helmet",  NULL, INVENTORY_TO_SLOT_ACTION );
 		b_show			= true;
@@ -1368,24 +1441,16 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 	CSleepingBag*	pSleepingBag	= smart_cast<CSleepingBag*>	(item);
 
 	CInventory*	inv = &m_pActorInvOwner->inventory();
-	PIItem	item_in_torch_slot = inv->ItemFromSlot(TORCH_SLOT);
-	PIItem	item_in_art_detector_slot = inv->ItemFromSlot(DETECTOR_SLOT);
-	PIItem	item_in_anomaly_detector_slot = inv->ItemFromSlot(DOSIMETER_SLOT);
-	PIItem	item_in_outfit_slot = inv->ItemFromSlot(OUTFIT_SLOT);
-	PIItem	item_in_helmet_slot = inv->ItemFromSlot(HELMET_SLOT);
-	PIItem	item_in_helmet2_slot = inv->ItemFromSlot(SECOND_HELMET_SLOT);
-	PIItem	item_in_knife_slot = inv->ItemFromSlot(KNIFE_SLOT);
-	PIItem	item_in_wpn1_slot = inv->ItemFromSlot(INV_SLOT_2);
-	PIItem	item_in_wpn2_slot = inv->ItemFromSlot(INV_SLOT_3);
-	PIItem	item_in_wpn3_slot = inv->ItemFromSlot(PISTOL_SLOT);
-
-	CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(Actor()->inventory().ItemFromSlot(OUTFIT_SLOT));
-	CHelmet* helmet = smart_cast<CHelmet*>(Actor()->inventory().ItemFromSlot(HELMET_SLOT));
-	CHelmet* helmet2 = smart_cast<CHelmet*>(Actor()->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
-	CWeapon* knife = smart_cast<CWeapon*>(Actor()->inventory().ItemFromSlot(KNIFE_SLOT));
-	CWeapon* wpn1 = smart_cast<CWeapon*>(Actor()->inventory().ItemFromSlot(INV_SLOT_2));
-	CWeapon* wpn2 = smart_cast<CWeapon*>(Actor()->inventory().ItemFromSlot(INV_SLOT_3));
-	CWeapon* wpn3 = smart_cast<CWeapon*>(Actor()->inventory().ItemFromSlot(PISTOL_SLOT));
+	CTorch* item_in_torch_slot = smart_cast<CTorch*>(inv->ItemFromSlot(TORCH_SLOT));
+	CCustomDetector* item_in_art_detector_slot = smart_cast<CCustomDetector*>(inv->ItemFromSlot(DETECTOR_SLOT));
+	CDetectorAnomaly* item_in_anomaly_detector_slot = smart_cast<CDetectorAnomaly*>(inv->ItemFromSlot(DOSIMETER_SLOT));
+	CCustomOutfit* item_in_outfit_slot = smart_cast<CCustomOutfit*>(inv->ItemFromSlot(OUTFIT_SLOT));
+	CHelmet* item_in_helmet_slot = smart_cast<CHelmet*>(inv->ItemFromSlot(HELMET_SLOT));
+	CHelmet* item_in_helmet2_slot = smart_cast<CHelmet*>(inv->ItemFromSlot(SECOND_HELMET_SLOT));
+	CWeapon* item_in_knife_slot = smart_cast<CWeapon*>(inv->ItemFromSlot(KNIFE_SLOT));
+	CWeapon* item_in_wpn1_slot = smart_cast<CWeapon*>(inv->ItemFromSlot(INV_SLOT_2));
+	CWeapon* item_in_wpn2_slot = smart_cast<CWeapon*>(inv->ItemFromSlot(INV_SLOT_3));
+	CWeapon* item_in_wpn3_slot = smart_cast<CWeapon*>(inv->ItemFromSlot(PISTOL_SLOT));
 
 	bool outfit_use_filter = false;
 	bool helmet_use_filter = false;
@@ -1399,62 +1464,65 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 	bool can_repair_wpn2 = false;
 	bool can_repair_wpn3 = false;
 
-	if (outfit && pFilter)
-		outfit_use_filter = outfit->m_bUseFilter && outfit->m_fFilterCondition <= 0.99f && outfit->IsNecessaryItem(pFilter->cNameSect().c_str(), outfit->m_SuitableFilters);
-	if (helmet && pFilter)
-		helmet_use_filter = helmet->m_bUseFilter && helmet->m_fFilterCondition <= 0.99f && helmet->IsNecessaryItem(pFilter->cNameSect().c_str(), helmet->m_SuitableFilters);
-	if (helmet2 && pFilter)
-		helmet2_use_filter = helmet2->m_bUseFilter && helmet2->m_fFilterCondition <= 0.99f && helmet2->IsNecessaryItem(pFilter->cNameSect().c_str(), helmet2->m_SuitableFilters);
+	if (item_in_outfit_slot && pFilter)
+		outfit_use_filter = item_in_outfit_slot->m_bUseFilter && item_in_outfit_slot->m_fFilterCondition <= 0.99f && item_in_outfit_slot->IsNecessaryItem(pFilter->cNameSect().c_str(), item_in_outfit_slot->m_SuitableFilters);
+	if (item_in_helmet_slot && pFilter)
+		helmet_use_filter = item_in_helmet_slot->m_bUseFilter && item_in_helmet_slot->m_fFilterCondition <= 0.99f && item_in_helmet_slot->IsNecessaryItem(pFilter->cNameSect().c_str(), item_in_helmet_slot->m_SuitableFilters);
+	if (item_in_helmet2_slot && pFilter)
+		helmet2_use_filter = item_in_helmet2_slot->m_bUseFilter && item_in_helmet2_slot->m_fFilterCondition <= 0.99f && item_in_helmet2_slot->IsNecessaryItem(pFilter->cNameSect().c_str(), item_in_helmet2_slot->m_SuitableFilters);
 
-	if (outfit && pRepairKit)
-		can_repair_outfit = outfit->GetCondition() < 0.9f && outfit->GetCondition() >= 0.4f && outfit->IsNecessaryItem(pRepairKit->cNameSect().c_str(), outfit->m_SuitableRepairKits);
-	if (helmet && pRepairKit)
-		can_repair_helmet = helmet->GetCondition() < 0.9f && helmet->GetCondition() >= 0.4f && helmet->IsNecessaryItem(pRepairKit->cNameSect().c_str(), helmet->m_SuitableRepairKits);
-	if (helmet2 && pRepairKit)
-		can_repair_helmet2 = helmet2->GetCondition() < 0.9f && helmet2->GetCondition() >= 0.4f && helmet2->IsNecessaryItem(pRepairKit->cNameSect().c_str(), helmet2->m_SuitableRepairKits);
-	if (knife && pRepairKit)
-		can_repair_knife = knife->GetCondition() < 0.9f && knife->GetCondition() >= 0.4f && knife->IsNecessaryItem(pRepairKit->cNameSect().c_str(), knife->m_SuitableRepairKits);
-	if (wpn1 && pRepairKit)
-		can_repair_wpn1 = wpn1->GetCondition() < 0.9f && wpn1->GetCondition() >= 0.4f && wpn1->IsNecessaryItem(pRepairKit->cNameSect().c_str(), wpn1->m_SuitableRepairKits);
-	if (wpn2 && pRepairKit)
-		can_repair_wpn2 = wpn2->GetCondition() < 0.9f && wpn2->GetCondition() >= 0.4f && wpn2->IsNecessaryItem(pRepairKit->cNameSect().c_str(), wpn2->m_SuitableRepairKits);
-	if (wpn3 && pRepairKit)
-		can_repair_wpn3 = wpn3->GetCondition() < 0.9f && wpn3->GetCondition() >= 0.4f && wpn3->IsNecessaryItem(pRepairKit->cNameSect().c_str(), wpn3->m_SuitableRepairKits);
+	if (item_in_outfit_slot && pRepairKit)
+		can_repair_outfit = item_in_outfit_slot->GetCondition() < 0.9f && item_in_outfit_slot->GetCondition() >= 0.4f && item_in_outfit_slot->IsNecessaryItem(pRepairKit->cNameSect().c_str(), item_in_outfit_slot->m_SuitableRepairKits);
+	if (item_in_helmet_slot && pRepairKit)
+		can_repair_helmet = item_in_helmet_slot->GetCondition() < 0.9f && item_in_helmet_slot->GetCondition() >= 0.4f && item_in_helmet_slot->IsNecessaryItem(pRepairKit->cNameSect().c_str(), item_in_helmet_slot->m_SuitableRepairKits);
+	if (item_in_helmet2_slot && pRepairKit)
+		can_repair_helmet2 = item_in_helmet2_slot->GetCondition() < 0.9f && item_in_helmet2_slot->GetCondition() >= 0.4f && item_in_helmet2_slot->IsNecessaryItem(pRepairKit->cNameSect().c_str(), item_in_helmet2_slot->m_SuitableRepairKits);
+	if (item_in_knife_slot && pRepairKit)
+		can_repair_knife = item_in_knife_slot->GetCondition() < 0.9f && item_in_knife_slot->GetCondition() >= 0.4f && item_in_knife_slot->IsNecessaryItem(pRepairKit->cNameSect().c_str(), item_in_knife_slot->m_SuitableRepairKits);
+	if (item_in_wpn1_slot && pRepairKit)
+		can_repair_wpn1 = item_in_wpn1_slot->GetCondition() < 0.9f && item_in_wpn1_slot->GetCondition() >= 0.4f && item_in_wpn1_slot->IsNecessaryItem(pRepairKit->cNameSect().c_str(), item_in_wpn1_slot->m_SuitableRepairKits);
+	if (item_in_wpn2_slot && pRepairKit)
+		can_repair_wpn2 = item_in_wpn2_slot->GetCondition() < 0.9f && item_in_wpn2_slot->GetCondition() >= 0.4f && item_in_wpn2_slot->IsNecessaryItem(pRepairKit->cNameSect().c_str(), item_in_wpn2_slot->m_SuitableRepairKits);
+	if (item_in_wpn3_slot && pRepairKit)
+		can_repair_wpn3 = item_in_wpn3_slot->GetCondition() < 0.9f && item_in_wpn3_slot->GetCondition() >= 0.4f && item_in_wpn3_slot->IsNecessaryItem(pRepairKit->cNameSect().c_str(), item_in_wpn3_slot->m_SuitableRepairKits);
 
 	LPCSTR act_str = NULL;
+	CGameObject* GO = smart_cast<CGameObject*>(item);
 
-	if (!item->Useful() || (pFilter && !pFilter->UseAllowed()) || (pRepairKit && !pRepairKit->UseAllowed()))
+	if (!item->Useful() || (pFilter && !pFilter->UseAllowed()))
 		return;
+
+	LPCSTR use_text = item->GetPropertyBoxUseText().c_str();
 
 	if ( pMedkit || pAntirad )
 	{
-		act_str = "st_use";
+		act_str = use_text ? use_text : "st_use";
 	}
 	else if ( pBottleItem )
 	{
-		act_str = "st_drink";
+		act_str = use_text ? use_text : "st_drink";
 	}
 	else if (pBattery)
 	{
-		if (item_in_torch_slot)
+		if (item_in_torch_slot && item_in_torch_slot->IsNecessaryItem(pBattery->cNameSect().c_str(), item_in_torch_slot->m_SuitableBatteries) && item_in_torch_slot->GetChargeLevel() <= 0.99f)
 		{
-			shared_str str = CStringTable().translate("st_charge_item");
+			shared_str str = CStringTable().translate(use_text ? use_text : "st_charge_item");
 			str.printf("%s %s", str.c_str(), item_in_torch_slot->m_name.c_str());
 			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_torch_slot, BATTERY_CHARGE_TORCH);
 			b_show = true;
 		}
 
-		if (item_in_art_detector_slot)
+		if (item_in_art_detector_slot && item_in_art_detector_slot->IsNecessaryItem(pBattery->cNameSect().c_str(), item_in_art_detector_slot->m_SuitableBatteries) && item_in_art_detector_slot->GetChargeLevel() <= 0.99f)
 		{
-			shared_str str = CStringTable().translate("st_charge_item");
+			shared_str str = CStringTable().translate(use_text ? use_text : "st_charge_item");
 			str.printf("%s %s", str.c_str(), item_in_art_detector_slot->m_name.c_str());
 			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_art_detector_slot, BATTERY_CHARGE_DETECTOR);
 			b_show = true;
 		}
 
-		if (item_in_anomaly_detector_slot)
+		if (item_in_anomaly_detector_slot && item_in_anomaly_detector_slot->IsNecessaryItem(pBattery->cNameSect().c_str(), item_in_anomaly_detector_slot->m_SuitableBatteries) && item_in_anomaly_detector_slot->GetChargeLevel() <= 0.99f)
 		{
-			shared_str str = CStringTable().translate("st_charge_item");
+			shared_str str = CStringTable().translate(use_text ? use_text : "st_charge_item");
 			str.printf("%s %s", str.c_str(), item_in_anomaly_detector_slot->m_name.c_str());
 			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_anomaly_detector_slot, BATTERY_CHARGE_DOSIMETER);
 			b_show = true;
@@ -1463,9 +1531,9 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 	}
 	else if (pFilter)
 	{
-		if (item_in_outfit_slot && outfit_use_filter )
+		if (item_in_outfit_slot && outfit_use_filter)
 		{
-			shared_str str = CStringTable().translate("st_change_filter");
+			shared_str str = CStringTable().translate(use_text ? use_text : "st_change_filter");
 			str.printf("%s %s", str.c_str(), item_in_outfit_slot->m_name.c_str());
 			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_outfit_slot, FILTER_CHANGE_OUTFIT);
 			b_show = true;
@@ -1473,7 +1541,7 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 
 		if (item_in_helmet_slot && helmet_use_filter)
 		{
-			shared_str str = CStringTable().translate("st_change_filter");
+			shared_str str = CStringTable().translate(use_text ? use_text : "st_change_filter");
 			str.printf("%s %s", str.c_str(), item_in_helmet_slot->m_name.c_str());
 			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_helmet_slot, FILTER_CHANGE_HELMET);
 			b_show = true;
@@ -1481,7 +1549,7 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 
 		if (item_in_helmet2_slot && helmet2_use_filter)
 		{
-			shared_str str = CStringTable().translate("st_change_filter");
+			shared_str str = CStringTable().translate(use_text ? use_text : "st_change_filter");
 			str.printf("%s %s", str.c_str(), item_in_helmet2_slot->m_name.c_str());
 			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_helmet2_slot, FILTER_CHANGE_HELMET);
 			b_show = true;
@@ -1492,57 +1560,148 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 	{
 		if (item_in_outfit_slot && can_repair_outfit)
 		{
-			shared_str str = CStringTable().translate("st_repair");
+			shared_str str = CStringTable().translate(use_text ? use_text : "st_repair");
 			str.printf("%s %s", str.c_str(), item_in_outfit_slot->m_name.c_str());
-			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_outfit_slot, REPAIR_KIT_OUTFIT);
+			
+			shared_str repair_hint{};
+
+			if (!item_in_outfit_slot->m_ItemsForRepair.empty())
+			{
+				repair_hint = CStringTable().translate("st_materials_for_repair");
+
+				for (int i = 0; i < item_in_outfit_slot->m_ItemsForRepair.size(); i++)
+				{
+					repair_hint.printf("%s\\n%s: x%s;\\n", repair_hint.c_str(), CStringTable().translate(item_in_outfit_slot->m_ItemsForRepairNames[i]).c_str(), std::to_string(item_in_outfit_slot->m_ItemsForRepair[i].second));
+				}
+			}
+
+			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_outfit_slot, REPAIR_KIT_OUTFIT, repair_hint.c_str());
 			b_show = true;
 		}
 
 		if (item_in_helmet_slot && can_repair_helmet)
 		{
-			shared_str str = CStringTable().translate("st_repair");
+			shared_str str = CStringTable().translate(use_text ? use_text : "st_repair");
 			str.printf("%s %s", str.c_str(), item_in_helmet_slot->m_name.c_str());
-			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_helmet_slot, REPAIR_KIT_HELMET);
+
+			shared_str repair_hint{};
+
+			if (!item_in_helmet_slot->m_ItemsForRepair.empty())
+			{
+				repair_hint = CStringTable().translate("st_materials_for_repair");
+
+				for (int i = 0; i < item_in_helmet_slot->m_ItemsForRepair.size(); i++)
+				{
+					repair_hint.printf("%s\\n%s: x%s;\\n", repair_hint.c_str(), CStringTable().translate(item_in_helmet_slot->m_ItemsForRepairNames[i]).c_str(), std::to_string(item_in_helmet_slot->m_ItemsForRepair[i].second));
+				}
+			}
+
+			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_helmet_slot, REPAIR_KIT_HELMET, repair_hint.c_str());
 			b_show = true;
 		}
 
 		if (item_in_helmet2_slot && can_repair_helmet2)
 		{
-			shared_str str = CStringTable().translate("st_repair");
+			shared_str str = CStringTable().translate(use_text ? use_text : "st_repair");
 			str.printf("%s %s", str.c_str(), item_in_helmet2_slot->m_name.c_str());
-			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_helmet2_slot, REPAIR_KIT_SECOND_HELMET);
+
+			shared_str repair_hint{};
+
+			if (!item_in_helmet2_slot->m_ItemsForRepair.empty())
+			{
+				repair_hint = CStringTable().translate("st_materials_for_repair");
+
+				for (int i = 0; i < item_in_helmet2_slot->m_ItemsForRepair.size(); i++)
+				{
+					repair_hint.printf("%s\\n%s: x%s;\\n", repair_hint.c_str(), CStringTable().translate(item_in_helmet2_slot->m_ItemsForRepairNames[i]).c_str(), std::to_string(item_in_helmet2_slot->m_ItemsForRepair[i].second));
+				}
+			}
+
+			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_helmet2_slot, REPAIR_KIT_SECOND_HELMET, repair_hint.c_str());
 			b_show = true;
 		}
 
 		if (item_in_knife_slot && can_repair_knife)
 		{
-			shared_str str = CStringTable().translate("st_repair");
+			shared_str str = CStringTable().translate(use_text ? use_text : "st_repair");
 			str.printf("%s %s", str.c_str(), item_in_knife_slot->m_name.c_str());
-			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_knife_slot, REPAIR_KIT_KNIFE);
+
+			shared_str repair_hint{};
+
+			if (!item_in_knife_slot->m_ItemsForRepair.empty())
+			{
+				repair_hint = CStringTable().translate("st_materials_for_repair");
+
+				for (int i = 0; i < item_in_knife_slot->m_ItemsForRepair.size(); i++)
+				{
+					repair_hint.printf("%s\\n%s: x%s;\\n", repair_hint.c_str(), CStringTable().translate(item_in_knife_slot->m_ItemsForRepairNames[i]).c_str(), std::to_string(item_in_knife_slot->m_ItemsForRepair[i].second));
+				}
+			}
+
+			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_knife_slot, REPAIR_KIT_KNIFE, repair_hint.c_str());
 			b_show = true;
 		}
 
 		if (item_in_wpn1_slot && can_repair_wpn1)
 		{
-			shared_str str = CStringTable().translate("st_repair");
+			shared_str str = CStringTable().translate(use_text ? use_text : "st_repair");
 			str.printf("%s %s", str.c_str(), item_in_wpn1_slot->m_name.c_str());
-			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_wpn1_slot, REPAIR_KIT_WPN1);
+
+			shared_str repair_hint{};
+
+			if (!item_in_wpn1_slot->m_ItemsForRepair.empty())
+			{
+				repair_hint = CStringTable().translate("st_materials_for_repair");
+
+				for (int i = 0; i < item_in_wpn1_slot->m_ItemsForRepair.size(); i++)
+				{
+					repair_hint.printf("%s\\n%s: x%s;\\n", repair_hint.c_str(), CStringTable().translate(item_in_wpn1_slot->m_ItemsForRepairNames[i]).c_str(), std::to_string(item_in_wpn1_slot->m_ItemsForRepair[i].second));
+				}
+			}
+
+			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_wpn1_slot, REPAIR_KIT_WPN1, repair_hint.c_str());
 			b_show = true;
 		}
 
 		if (item_in_wpn2_slot && can_repair_wpn2)
 		{
-			shared_str str = CStringTable().translate("st_repair");
+			shared_str str = CStringTable().translate(use_text ? use_text : "st_repair");
 			str.printf("%s %s", str.c_str(), item_in_wpn2_slot->m_name.c_str());
-			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_wpn2_slot, REPAIR_KIT_WPN2);
+
+			shared_str repair_hint{};
+
+			if (!item_in_wpn2_slot->m_ItemsForRepair.empty())
+			{
+				repair_hint = CStringTable().translate("st_materials_for_repair");
+
+				for (int i = 0; i < item_in_wpn2_slot->m_ItemsForRepair.size(); i++)
+				{
+					repair_hint.printf("%s\\n%s: x%s;\\n", repair_hint.c_str(), CStringTable().translate(item_in_wpn2_slot->m_ItemsForRepairNames[i]).c_str(), std::to_string(item_in_wpn2_slot->m_ItemsForRepair[i].second));
+				}
+			}
+
+			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_wpn2_slot, REPAIR_KIT_WPN2, repair_hint.c_str());
 			b_show = true;
 		}
 
 		if (item_in_wpn3_slot && can_repair_wpn3)
 		{
-			shared_str str = CStringTable().translate("st_repair");
+			shared_str str = CStringTable().translate(use_text ? use_text : "st_repair");
 			str.printf("%s %s", str.c_str(), item_in_wpn3_slot->m_name.c_str());
-			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_wpn3_slot, REPAIR_KIT_WPN3);
+
+			shared_str repair_hint{};
+
+			if (!item_in_wpn3_slot->m_ItemsForRepair.empty())
+			{
+				repair_hint = CStringTable().translate("st_materials_for_repair");
+
+				for (int i = 0; i < item_in_wpn3_slot->m_ItemsForRepair.size(); i++)
+				{
+					repair_hint.printf("%s\\n%s: x%s;\\n", repair_hint.c_str(), CStringTable().translate(item_in_wpn3_slot->m_ItemsForRepairNames[i]).c_str(), std::to_string(item_in_wpn3_slot->m_ItemsForRepair[i].second));
+				}
+			}
+
+			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_wpn3_slot, REPAIR_KIT_WPN3, repair_hint.c_str());
 			b_show = true;
 		}
 		return;
@@ -1558,7 +1717,7 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 
 			if (container && !container->IsFull())
 			{
-				shared_str str = CStringTable().translate("st_put_to");
+				shared_str str = CStringTable().translate(use_text ? use_text : "st_put_to");
 				str.printf("%s %s", str.c_str(), container->m_name.c_str());
 				m_UIPropertiesBox->AddItem(str.c_str(), (void*)container, ARTEFACT_TO_CONTAINER);
 				b_show = true;
@@ -1573,7 +1732,7 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 
 			if (af_in_container_casted)
 			{
-				shared_str str = CStringTable().translate("st_take_from");
+				shared_str str = CStringTable().translate(use_text ? use_text : "st_take_from");
 				str.printf("%s %s", str.c_str(), af_in_container_casted->m_name.c_str());
 				m_UIPropertiesBox->AddItem(str.c_str(), (void*)af_in_container_casted, ARTEFACT_FROM_CONTAINER);
 				b_show = true;
@@ -1582,7 +1741,7 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 	}
 	else if (pSleepingBag)
 	{
-		m_UIPropertiesBox->AddItem("st_use", NULL, INVENTORY_SLEEP_ACTION);
+		m_UIPropertiesBox->AddItem(use_text ? use_text : "st_use", NULL, INVENTORY_SLEEP_ACTION);
 		b_show = true;
 	}
 	else if ( pEatableItem )
@@ -1591,15 +1750,15 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 		shared_str	section_name	= pObj->cNameSect();
 		if ( !xr_strcmp(section_name,"vodka") || !(xr_strcmp(section_name,"energy_drink")) )
 		{
-			act_str = "st_drink";
+			act_str = use_text ? use_text : "st_drink";
 		}
 		else if( !xr_strcmp(section_name,"bread") || !xr_strcmp(section_name,"kolbasa") || !xr_strcmp(section_name,"conserva"))
 		{
-			act_str = "st_eat";
+			act_str = use_text ? use_text : "st_eat";
 		}
 		else
 		{
-			act_str = "st_use";
+			act_str = use_text ? use_text : "st_use";
 		}
 	}
 
@@ -1608,6 +1767,36 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 		m_UIPropertiesBox->AddItem( act_str,  NULL, INVENTORY_EAT_ACTION );
 		b_show			= true;
 	}
+	
+	auto CustomEatAction = [&](const char* use_action_name, enum EUIMessages message)
+		{
+			LPCSTR functor_name = READ_IF_EXISTS(pSettings, r_string, GO->cNameSect(), use_action_name, 0);
+			if (functor_name)
+			{
+				luabind::functor<LPCSTR> funct1;
+				if (ai().script_engine().functor(functor_name, funct1))
+				{
+					act_str = funct1(GO->lua_game_object());
+					if (act_str)
+					{
+						m_UIPropertiesBox->AddItem(act_str, NULL, message);
+						b_show = true;
+					}
+				}
+			}
+		};
+
+	//Custom Use actions
+	CustomEatAction("use1_functor", INVENTORY_EAT2_ACTION);
+	CustomEatAction("use2_functor", INVENTORY_EAT3_ACTION);
+	CustomEatAction("use3_functor", INVENTORY_EAT4_ACTION);
+	CustomEatAction("use4_functor", INVENTORY_EAT5_ACTION);
+	CustomEatAction("use5_functor", INVENTORY_EAT6_ACTION);
+	CustomEatAction("use6_functor", INVENTORY_EAT7_ACTION);
+	CustomEatAction("use7_functor", INVENTORY_EAT8_ACTION);
+	CustomEatAction("use8_functor", INVENTORY_EAT9_ACTION);
+	CustomEatAction("use9_functor", INVENTORY_EAT10_ACTION);
+	CustomEatAction("use10_functor", INVENTORY_EAT11_ACTION);
 }
 
 void CUIActorMenu::PropertiesBoxForPlaying(PIItem item, bool& b_show)
@@ -1658,6 +1847,24 @@ void CUIActorMenu::ProcessPropertiesBoxClicked( CUIWindow* w, void* d )
 	}
 	CWeapon* weapon = smart_cast<CWeapon*>( item );
 
+	auto CustomEatAction = [&](const char* use_action_name)
+		{
+			CGameObject* GO = smart_cast<CGameObject*>(item);
+			LPCSTR functor_name = READ_IF_EXISTS(pSettings, r_string, GO->cNameSect(), use_action_name, 0);
+			if (functor_name)
+			{
+				luabind::functor<bool> funct1;
+				if (ai().script_engine().functor(functor_name, funct1))
+				{
+					if (funct1(GO->lua_game_object()))
+					{
+						CurrentGameUI()->ActorMenu().SetCurrentConsumable(cell_item);
+						TryUseItem(cell_item);
+					}
+				}
+			}
+		};
+
 	switch ( m_UIPropertiesBox->GetClickedItem()->GetTAG() )
 	{
 	case INVENTORY_TO_SLOT_ACTION:	ToSlot( cell_item, true, item->BaseSlot() );		break;
@@ -1669,10 +1876,30 @@ void CUIActorMenu::ProcessPropertiesBoxClicked( CUIWindow* w, void* d )
 			TryUseItem(cell_item);
 			break;
 		}
+	case INVENTORY_EAT2_ACTION:
+		{ CustomEatAction("use1_action_functor"); break; }
+	case INVENTORY_EAT3_ACTION:
+		{ CustomEatAction("use2_action_functor"); break; }
+	case INVENTORY_EAT4_ACTION:
+		{ CustomEatAction("use3_action_functor"); break; }
+	case INVENTORY_EAT5_ACTION:
+		{ CustomEatAction("use4_action_functor"); break; }
+	case INVENTORY_EAT6_ACTION:
+		{ CustomEatAction("use5_action_functor"); break; }
+	case INVENTORY_EAT7_ACTION:
+		{ CustomEatAction("use6_action_functor"); break; }
+	case INVENTORY_EAT8_ACTION:
+		{ CustomEatAction("use7_action_functor"); break; }
+	case INVENTORY_EAT9_ACTION:
+		{ CustomEatAction("use8_action_functor"); break; }
+	case INVENTORY_EAT10_ACTION:
+		{ CustomEatAction("use9_action_functor"); break; }
+	case INVENTORY_EAT11_ACTION:
+		{ CustomEatAction("use10_action_functor"); break; }
 	case INVENTORY_DROP_ACTION:
 		{
-			void* d = m_UIPropertiesBox->GetClickedItem()->GetData();
-			if ( d == (void*)33 )
+			void* dd = m_UIPropertiesBox->GetClickedItem()->GetData();
+			if ( dd == (void*)33 )
 			{
 				DropAllCurrentItem();
 			}
@@ -1869,6 +2096,10 @@ void CUIActorMenu::ProcessPropertiesBoxClicked( CUIWindow* w, void* d )
 			CRepairKit* repair_kit = smart_cast<CRepairKit*>(item);
 			if (!repair_kit)
 				break;
+
+			if (!repair_kit->UseAllowed())
+				break;
+
 			repair_kit->m_iUseFor = 1;
 			TryUseItem(cell_item);
 			break;
@@ -1937,6 +2168,9 @@ void CUIActorMenu::ProcessPropertiesBoxClicked( CUIWindow* w, void* d )
 
 			af_container->PutArtefactToContainer(*artefact);
 
+			if (m_currMenuMode == mmDeadBodySearch)
+				RemoveItemFromList(m_pDeadBodyBagList, item);
+
 			artefact->DestroyObject();
 
 			break;
@@ -1986,10 +2220,33 @@ void CUIActorMenu::UpdateOutfit()
 
 	VERIFY( m_pInventoryBeltList );
 	CCustomOutfit* outfit    = m_pActorInvOwner->GetOutfit();
+	
 	if(outfit && !outfit->bIsHelmetAvaliable)
 		m_HelmetOver->Show(true);
 	else
 		m_HelmetOver->Show(false);
+
+	if (GameConstants::GetSecondHelmetSlotEnabled())
+	{
+		if (outfit && !outfit->bIsSecondHelmetAvaliable)
+			m_SecondHelmetOver->Show(true);
+		else
+			m_SecondHelmetOver->Show(false);
+
+		CHelmet* pHelmet1 = smart_cast<CHelmet*>(m_pActorInvOwner->inventory().ItemFromSlot(HELMET_SLOT));
+		CHelmet* pHelmet2 = smart_cast<CHelmet*>(m_pActorInvOwner->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
+
+		if (pHelmet1 && !pHelmet1->m_bSecondHelmetEnabled)
+		{
+			if (!pHelmet2)
+				m_SecondHelmetOver->Show(true);
+		}
+		else if (pHelmet2 && !pHelmet2->m_bSecondHelmetEnabled)
+		{
+			if (!pHelmet1)
+				m_HelmetOver->Show(true);
+		}
+	}
 
 	if (outfit && !m_bNeedMoveAfsToBag)
 		m_bNeedMoveAfsToBag = true;

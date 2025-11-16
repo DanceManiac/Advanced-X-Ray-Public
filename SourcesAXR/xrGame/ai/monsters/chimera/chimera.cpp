@@ -166,7 +166,7 @@ void   CChimera::HitEntityInJump (const CEntity *pEntity)
 void   CChimera::jump (Fvector const &position, float const factor)
 {
 	com_man().script_jump					(position, factor);
-	sound().play							(MonsterSound::eMonsterSoundAggressive);
+	get_sound().play							(MonsterSound::eMonsterSoundAggressive);
 }
 
 void CChimera::UpdateCL()

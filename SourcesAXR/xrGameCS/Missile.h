@@ -48,6 +48,9 @@ public:
 
 	virtual void 			State						(u32 state);
 	virtual void 			OnStateSwitch				(u32 S);
+
+	virtual void			PlayAnimDeviceSwitch		() override;
+
 	virtual bool			GetBriefInfo				(II_BriefInfo& info);
 
 protected:
@@ -61,12 +64,13 @@ protected:
 
 	//для сети
 	virtual void			net_Relcase			(CObject* O );
+	virtual void			DeviceUpdate		() override;
 protected:
 
 	//время нахождения в текущем состоянии
 	u32						m_dwStateTime;
 	bool					m_throw;
-	
+
 	//время уничтожения
 	u32						m_dwDestroyTime;
 	u32						m_dwDestroyTimeMax;
@@ -84,6 +88,7 @@ protected:
 	float					m_fThrowForce;
 
 	bool					m_bIsContactGrenade;
+	float					m_safe_dist_to_explode{};
 	bool					m_bQuickThrowActive;
 	CGameObject*			m_pOwner;
 protected:
@@ -110,5 +115,5 @@ public:
 	virtual u32				ef_weapon_type			() const;
 	IC		u32				destroy_time			() const { return m_dwDestroyTime; }
 	IC		int				time_from_begin_throw	() const { return (Device.dwTimeGlobal + m_dwDestroyTimeMax - m_dwDestroyTime); }
-	static	void			ExitContactCallback		(bool& do_colide,bool bo1,dContact& c,SGameMtl *material_1,SGameMtl* material_2);
+	static	void			ExitContactCallback		(bool& do_colide,bool bo1,dContact& c,SGameMtl * /*material_1*/,SGameMtl * /*material_2*/);
 };

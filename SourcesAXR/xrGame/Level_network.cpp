@@ -19,9 +19,9 @@
 #include "UI/UIGameTutorial.h"
 #include "ui/UIPdaWnd.h"
 #include "../xrNetServer/NET_AuthCheck.h"
+#include "script_vars_storage.h"
 
 #include "../xrphysics/physicscommon.h"
-ENGINE_API bool g_dedicated_server;
 
 const int max_objects_size			= 2*1024;
 const int max_objects_size_in_save	= 8*1024;
@@ -78,14 +78,12 @@ void CLevel::remove_objects	()
 	ph_commander().clear		();
 	ph_commander_scripts().clear();
 
-	if(!g_dedicated_server)
-		space_restriction_manager().clear	();
+	space_restriction_manager().clear	();
 
 	psDeviceFlags.set			(rsDisableObjectsAsCrows, b_stored);
 	g_b_ClearGameCaptions		= true;
 
-	if (!g_dedicated_server)
-		ai().script_engine().collect_all_garbage	();
+	ai().script_engine().collect_all_garbage	();
 
 	stalker_animation_data_storage().clear		();
 	
@@ -95,18 +93,18 @@ void CLevel::remove_objects	()
 	Render->clear_static_wallmarks				();
 
 #ifdef DEBUG
-	if(!g_dedicated_server)
-		if (!client_spawn_manager().registry().empty())
-			client_spawn_manager().dump				();
+	if (!client_spawn_manager().registry().empty())
+		client_spawn_manager().dump				();
 #endif // DEBUG
-	if(!g_dedicated_server)
 	{
 		VERIFY										(client_spawn_manager().registry().empty());
 		client_spawn_manager().clear			();
 	}
 
 	g_pGamePersistent->destroy_particles		(false);
-
+	
+	g_ScriptVars.clear();
+	
 //.	xr_delete									(m_seniority_hierarchy_holder);
 //.	m_seniority_hierarchy_holder				= xr_new<CSeniorityHierarchyHolder>();
 	if (!IsGameTypeSingle()) Msg("CLevel::remove_objects - End");
@@ -167,8 +165,7 @@ void CLevel::net_Stop		()
 		xr_delete				(Server);
 	}
 
-	if (!g_dedicated_server)
-		ai().script_engine().collect_all_garbage	();
+	ai().script_engine().collect_all_garbage	();
 
 #ifdef DEBUG
 	show_animation_stats		();
@@ -314,6 +311,8 @@ void CLevel::Send		(NET_Packet& P, u32 dwFlags, u32 dwTimeout)
 
 void CLevel::net_Update	()
 {
+	ZoneScoped;
+
 	if(game_configured){
 		// If we have enought bandwidth - replicate client data on to server
 		Device.Statistic->netClient2.Begin	();

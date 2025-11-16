@@ -56,7 +56,7 @@ void CStalkerAnimationManager::torso_play_callback	(CBlend *blend)
 	CAI_Stalker						*object = (CAI_Stalker*)blend->CallbackParam;
 	VERIFY							(object);
 
-	CStalkerAnimationManager		&animation = object->animation();
+	CStalkerAnimationManager		&animation = object->get_animation();
 	CStalkerAnimationPair			&pair = animation.torso();
 	pair.on_animation_end			();
 
@@ -69,7 +69,7 @@ void CStalkerAnimationManager::torso_play_callback	(CBlend *blend)
 MotionID CStalkerAnimationManager::no_object_animation(const EBodyState &body_state) const
 {
 	const CAI_Stalker				&stalker = object();
-	const stalker_movement_manager_smart_cover	&movement = stalker.movement();
+	const stalker_movement_manager_smart_cover	&movement = stalker.get_movement();
 	const xr_vector<CAniVector>		&animation = m_data_storage->m_part_animations.A[body_state].m_torso.A[0].A;
 
 	if (eMentalStateFree == movement.mental_state()) {
@@ -105,7 +105,7 @@ MotionID CStalkerAnimationManager::unknown_object_animation(u32 slot, const EBod
 	
 	// stalker shortcuts
 	const CAI_Stalker				&stalker = object();
-	const stalker_movement_manager_smart_cover	&movement = stalker.movement();
+	const stalker_movement_manager_smart_cover	&movement = stalker.get_movement();
 	u32								id = stalker.CObjectHandler::planner().current_action_state_id();
 
 	switch (id) {
@@ -176,7 +176,7 @@ MotionID CStalkerAnimationManager::weapon_animation	(u32 slot, const EBodyState 
 	const xr_vector<CAniVector>		&animation = m_data_storage->m_part_animations.A[body_state].m_torso.A[slot].A;
 
 	//Alun: Fix stalker sprint
-	if (eMentalStatePanic == object().movement().mental_state() && eMovementTypeRun == object().movement().movement_type() && body_state == eBodyStateStand && !fis_zero(object().movement().speed(object().character_physics_support()->movement())))
+	if (eMentalStatePanic == object().get_movement().mental_state() && eMovementTypeRun == object().get_movement().movement_type() && body_state == eBodyStateStand && !fis_zero(object().get_movement().speed(object().character_physics_support()->get_movement())))
 	{
 		return (animation[15].A[0]);
 	}
@@ -226,7 +226,7 @@ MotionID CStalkerAnimationManager::weapon_animation	(u32 slot, const EBodyState 
 		case CWeapon::eFire:
 		case CWeapon::eFire2 : {
 			CAI_Stalker				&stalker = object();
-			stalker_movement_manager_smart_cover	&movement = stalker.movement();
+			stalker_movement_manager_smart_cover	&movement = stalker.get_movement();
 			if (standing())
 				return				(animation[1].A[0]);
 
@@ -331,7 +331,7 @@ MotionID CStalkerAnimationManager::missile_animation	(u32 slot, const EBodyState
 		case CMissile::eIdle	 :
 		default					 : {
 			CAI_Stalker				&stalker = object();
-			stalker_movement_manager_smart_cover	&movement = stalker.movement();
+			stalker_movement_manager_smart_cover	&movement = stalker.get_movement();
 			if (standing()) {
 #ifdef DEBUG
 				if (animation[6].A.empty()) {

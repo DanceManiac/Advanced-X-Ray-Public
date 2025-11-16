@@ -118,7 +118,7 @@ void CDangerManager::update			()
 	OBJECTS::const_iterator	I = m_objects.begin();
 	OBJECTS::const_iterator	E = m_objects.end();
 	for ( ; I != E; ++I) {
-//		Msg					("%6d : Danger : [%d][%d]",(*I).time(),(*I).type(),(*I).perceive_type());
+//		Msg					("%6d : Danger : [%d][%d]",(*I).get_time(),(*I).type(),(*I).perceive_type());
 		float				value = do_evaluate(*I);
 		if (result > value) {
 			result			= value;
@@ -309,7 +309,7 @@ void CDangerManager::add			(const CHitObject &object)
 
 void CDangerManager::add			(const CDangerObject &object)
 {
-	if (m_object->memory().enemy().selected() && object.object())// && !object.object()->g_Alive())
+	if (m_object->get_memory().get_enemy().selected() && object.object())// && !object.object()->g_Alive())
 		ignore				(object.object());
 
 	if (!is_useful(object))

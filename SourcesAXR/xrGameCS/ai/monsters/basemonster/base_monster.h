@@ -54,6 +54,8 @@ class squad_grouping_behaviour;
 namespace debug { class text_tree; }
 #endif
 
+class anti_aim_ability;
+
 class CBaseMonster : public CCustomMonster, public CStepManager, public CInventoryOwner 
 {
 	typedef	CCustomMonster								inherited;
@@ -76,6 +78,7 @@ public:
 	virtual CBaseMonster*				cast_base_monster			()	{return this;}
 
 	virtual CInventoryOwner				*cast_inventory_owner		() {return this;}
+	virtual bool						unlimited_ammo				() {return false;}
 	virtual CGameObject*				cast_game_object			() {return this;}
 
 public:
@@ -131,7 +134,7 @@ public:
 	virtual BOOL			UsedAI_Locations				()							{return inherited::UsedAI_Locations();}
 
 	virtual const SRotation	Orientation						() const					{return inherited::Orientation();}
-	virtual void			renderable_Render				()							{return inherited::renderable_Render();} 
+	virtual void			renderable_Render				();
 
 	virtual	void			on_restrictions_change			();
 
@@ -240,6 +243,9 @@ protected:
 
 // members
 public:
+	void			set_force_anti_aim	(bool force_anti_aim) { m_force_anti_aim = force_anti_aim; }
+	bool 			get_force_anti_aim	() const { return m_force_anti_aim; }
+
 	// --------------------------------------------------------------------------------------
 	// Monster Settings 
 	ref_smem<SMonsterSettings>	m_base_settings;
@@ -311,6 +317,7 @@ public:
 	// Anomaly Detector
 private:
 	CAnomalyDetector		*m_anomaly_detector;
+	bool					m_force_anti_aim;
 
 public:
 	CAnomalyDetector		&anomaly_detector	() {return (*m_anomaly_detector);}
@@ -382,8 +389,13 @@ public:
 	bool						m_bEnablePsyAuraAfterDie;
 	bool						m_bEnableRadAuraAfterDie;
 	bool						m_bEnableFireAuraAfterDie;
+	bool						m_bEnableAcidAuraAfterDie;
 	bool						m_bDropItemAfterSuperAttack;
 	int							m_iSuperAttackDropItemPer;
+	bool						m_bModelScaleRandom;
+	float						m_fModelScale;
+	float						m_fModelScaleRandomMin;
+	float						m_fModelScaleRandomMax;
 
 	shared_str					light_bone;
 	shared_str					particles_bone;
@@ -573,16 +585,25 @@ public:
 	float							get_psy_influence				();
 	float							get_radiation_influence			();
 	float							get_fire_influence				();
+	float							get_acid_influence				();
 	bool							get_enable_psy_aura_after_die	();
 	bool							get_enable_rad_aura_after_die	();
 	bool							get_enable_fire_aura_after_die	();
+	bool							get_enable_acid_aura_after_die	();
 	void							play_detector_sound				();
 
 private:
 	monster_aura					m_psy_aura;
 	monster_aura					m_radiation_aura;
 	monster_aura					m_fire_aura;
+	monster_aura					m_acid_aura;
 	monster_aura					m_base_aura;
+
+protected:
+//-------------------------------------------------------------------
+// CBaseMonster's  Anti-Aim Ability
+//-------------------------------------------------------------------
+	anti_aim_ability*				m_anti_aim;
 
 //-------------------------------------------------------------------
 // CBaseMonster's  protections
@@ -601,6 +622,7 @@ public:
 	pcstr							get_head_bone_name	()	const { return m_head_bone_name; }
 	shared_str						get_section			()	const { return m_section; }
 
+	anti_aim_ability*				get_anti_aim		() { return m_anti_aim; }
 	virtual void					on_attack_on_run_hit () {}
 
 private:

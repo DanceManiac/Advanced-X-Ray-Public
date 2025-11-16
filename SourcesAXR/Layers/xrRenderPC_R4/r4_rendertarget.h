@@ -16,6 +16,7 @@ class CRenderTarget		: public IRender_Target
 private:
 	u32							dwWidth;
 	u32							dwHeight;
+	u32							dwFlareClearMark;
 public:
 	enum	eStencilOptimizeMode
 	{
@@ -57,10 +58,10 @@ public:
 	IBlender*					b_hud_power;
 	IBlender*					b_hud_bleeding;
 	IBlender*					b_hud_intoxication;
+	IBlender*					b_hud_frost;
 	IBlender*					b_nightvision;
 	IBlender*					b_blur;
 	IBlender*					b_pp_bloom;
-	IBlender*					b_lfx;
 	IBlender*					b_dof;
 	IBlender* 					b_chromatic_aberration;
 	IBlender*					b_film_grain;
@@ -70,6 +71,15 @@ public:
     // compute shader for hdao
     IBlender*                   b_hdao_cs;
     IBlender*                   b_hdao_msaa_cs;
+
+	// [SSS Stuff]
+	IBlender*					b_ssfx_ssr;
+	IBlender*					b_ssfx_volumetric_blur;
+	IBlender*					b_ssfx_ao;
+	IBlender*					b_ssfx_bloom_downsample;
+	IBlender*					b_ssfx_bloom_upsample;
+	IBlender*					b_ssfx_bloom;
+	IBlender*					b_ssfx_bloom_lens;
 
 #ifdef DEBUG
 	struct		dbg_line_t		{
@@ -101,6 +111,8 @@ public:
 	ref_rt						rt_Generic_0;		// 32bit		(r,g,b,a)				// post-process, intermidiate results, etc.
 	ref_rt						rt_Generic_1;		// 32bit		(r,g,b,a)				// post-process, intermidiate results, etc.
 
+	ref_rt						rt_Generic_0_temp;
+
 	//  Second viewport
 	ref_rt						rt_secondVP;		// 32bit		(r,g,b,a) --//#SM+#-- +SecondVP+
 	ref_rt						rt_dof;
@@ -112,6 +124,7 @@ public:
 	ref_rt						rt_Bloom_2;			// 32bit, dim/4	(r,g,b,?)
 	ref_rt						rt_LUM_64;			// 64bit, 64x64,	log-average in all components
 	ref_rt						rt_LUM_8;			// 64bit, 8x8,		log-average in all components
+	ref_rt						rt_flares;
 
 	ref_rt						rt_LUM_pool[CHWCaps::MAX_GPUS*2]	;	// 1xfp32,1x1,		exp-result -> scaler
 	ref_texture				t_LUM_src		;	// source
@@ -127,6 +140,37 @@ public:
 	ref_rt						rt_smap_depth_minmax;	//	is used for min/max sm
 //	TODO: DX10: CHeck if we need old-style SMAP
 //	IDirect3DSurface9*			rt_smap_ZB;		//
+
+	// Screen Space Shaders Stuff
+	ref_rt						rt_ssfx;
+	ref_rt						rt_ssfx_temp;
+	ref_rt						rt_ssfx_temp2;
+	ref_rt						rt_ssfx_temp3;
+	ref_rt						rt_ssfx_accum;
+	ref_rt						rt_ssfx_hud;
+	ref_shader					s_ssfx_dumb;
+	ref_rt						rt_ssfx_ao;
+	ref_rt						rt_ssfx_il;
+	ref_rt						rt_ssfx_prevPos;
+	ref_rt						rt_ssfx_water_waves;
+	ref_rt						rt_ssfx_bloom1;
+	ref_rt						rt_ssfx_bloom_emissive;
+	ref_rt						rt_ssfx_bloom_lens;
+	ref_rt						rt_ssfx_bloom_tmp2;
+	ref_rt						rt_ssfx_bloom_tmp4;
+	ref_rt						rt_ssfx_bloom_tmp8;
+	ref_rt						rt_ssfx_bloom_tmp16;
+	ref_rt						rt_ssfx_bloom_tmp32;
+	ref_rt						rt_ssfx_bloom_tmp64;
+	ref_rt						rt_ssfx_bloom_tmp32_2;
+	ref_rt						rt_ssfx_bloom_tmp16_2;
+	ref_rt						rt_ssfx_bloom_tmp8_2;
+	ref_rt						rt_ssfx_bloom_tmp4_2;
+
+	Fmatrix Matrix_previous, Matrix_current;
+	Fmatrix Matrix_HUD_previous, Matrix_HUD_current;
+	Fvector3 Position_previous;
+	//bool RVelocity;
 
 	//	Igor: for async screenshots
 	ID3DTexture2D*			t_ss_async;				//32bit		(r,g,b,a) is situated in the system memory
@@ -172,14 +216,14 @@ private:
 	ref_shader					s_hud_bleeding;
 	//Hud Intoxication
 	ref_shader					s_hud_intoxication;
+	//Hud Frost
+	ref_shader					s_hud_frost;
 	//Nightvision
 	ref_shader					s_nightvision;
 	//Blur
 	ref_shader					s_blur;
 	//PP Bloom
 	ref_shader					s_pp_bloom;
-	//SFZ Lens Falres
-	ref_shader					s_lfx;
 	//Anomaly DoF
 	ref_shader					s_dof;
 	//Chromatic Aberration
@@ -190,6 +234,8 @@ private:
 	ref_shader					s_cut;
 	// Anomaly lut
 	ref_shader					s_lut;
+	//OGSE Flares
+	ref_shader					s_flare;
 
 	ref_rt						rt_blur_h_2;
 	ref_rt						rt_blur_2;
@@ -236,10 +282,16 @@ private:
 	ref_shader					s_accum_reflected_msaa[8];
 	ref_shader					s_accum_volume_msaa[8];
 
+	// Screen Space Shaders Stuff
+	ref_shader					s_ssfx_ssr;
+	ref_shader					s_ssfx_volumetric_blur;
+	ref_shader					s_ssfx_ao;
+
 	ref_geom						g_accum_point	;
 	ref_geom						g_accum_spot	;
 	ref_geom						g_accum_omnipart;
 	ref_geom						g_accum_volumetric;
+	ref_geom						g_flare;
 
 	ID3DVertexBuffer*		g_accum_point_vb;
 	ID3DIndexBuffer*		g_accum_point_ib;
@@ -262,6 +314,11 @@ private:
 	ref_shader				s_bloom_msaa;
 	float					f_bloom_factor;
 
+	ref_shader				s_ssfx_bloom;
+	ref_shader				s_ssfx_bloom_lens;
+	ref_shader				s_ssfx_bloom_upsample;
+	ref_shader				s_ssfx_bloom_downsample;
+
 	// Luminance
 	ref_shader				s_luminance;
 	float					f_luminance_adapt;
@@ -276,7 +333,6 @@ private:
 	ref_geom				g_combine_cuboid;
 	ref_geom				g_aa_blur;
 	ref_geom				g_aa_AA;
-	ref_geom				g_lfx;
 	ref_shader				s_combine_dbg_0;
 	ref_shader				s_combine_dbg_1;
 	ref_shader				s_combine_dbg_Accumulator;
@@ -291,6 +347,7 @@ public:
 	ref_geom				g_postprocess;
 	ref_shader				s_menu;
 	ref_geom				g_menu;
+	ref_rt					rt_UI3dStatic; //3d UI Static
 private:
 	float						im_noise_time;
 	u32							im_noise_shift_w;
@@ -349,15 +406,17 @@ public:
 	void						phase_hud_power			();
 	void						phase_hud_bleeding		();
 	void						phase_hud_intoxication	();
+	void						phase_hud_frost			();
 	void						phase_nightvision		();
 	void						phase_blur				();
 	void						phase_pp_bloom			();
-	void						phase_lfx				(int i);
 	void						phase_dof				();
 	void						phase_chrom_aberration	();
 	void						phase_film_grain		();
 	void						phase_cut				();
 	void						phase_lut				();
+	void						phase_flares			();
+	void						render_flare			(light* L);
 
 	void						phase_sunshafts			();
 	void						phase_scene_prepare		();
@@ -378,6 +437,12 @@ public:
 	void 						PhaseRainDrops			();
 	void						shadow_direct			(light* L, u32 dls_phase);
 	void						SwitchViewPort			(ViewPort vp);
+	void						phase_ssfx_ssr			(); // SSR Phase
+	void						phase_ssfx_volumetric_blur(); // Volumetric Blur
+	void						phase_ssfx_ao			(); // AO
+	void						phase_ssfx_il			(); // IL
+	void						phase_ssfx_water_waves	(); // Water Waves
+	void						set_viewport_size		(ID3DDeviceContext* dev, float w, float h);
 
 	//	Generates min/max sm
 	void						create_minmax_SM();
@@ -408,6 +473,7 @@ public:
 	//	Igor: for volumetric lights
 	void						accum_volumetric		(light* L);
 	void						phase_bloom				();
+	void						phase_ssfx_bloom		();
 	void						phase_luminance			();
 	void						phase_combine			();
 	void						phase_combine_volumetric();
@@ -452,10 +518,6 @@ public:
 	IC void						dbg_addline				(Fvector& P0, Fvector& P1, u32 c)					{}
 	IC void						dbg_addplane			(Fplane& P0,  u32 c)								{}
 #endif
-
-	//SFZ Lens Flares
-	xr_vector<Fvector4>			m_miltaka_lfx_coords;
-	xr_vector<Fvector4>			m_miltaka_lfx_color;
 
 private:
 	void						RenderScreenQuad(u32 w, u32 h, ID3DRenderTargetView* rt, ref_selement &sh, xr_unordered_map<LPCSTR, Fvector4*>* consts = nullptr);

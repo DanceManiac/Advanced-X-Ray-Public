@@ -125,11 +125,11 @@ void CAI_Rat::reload					(LPCSTR	section)
 	inherited::reload		(section);
 	CEatableItem::reload	(section);
 	LPCSTR					head_bone_name = pSettings->r_string(section,"bone_head");
-	sound().add		(pSettings->r_string(section,"sound_death"),	100, SOUND_TYPE_MONSTER_DYING,		0, u32(eRatSoundMaskDie),		eRatSoundDie,		head_bone_name);
-	sound().add		(pSettings->r_string(section,"sound_hit"),		100, SOUND_TYPE_MONSTER_INJURING,	1, u32(eRatSoundMaskInjuring),	eRatSoundInjuring,	head_bone_name);
-	sound().add		(pSettings->r_string(section,"sound_attack"),	100, SOUND_TYPE_MONSTER_ATTACKING,	2, u32(eRatSoundMaskAttack),	eRatSoundAttack,	head_bone_name);
-	sound().add		(pSettings->r_string(section,"sound_voice"),	100, SOUND_TYPE_MONSTER_TALKING,	4, u32(eRatSoundMaskVoice),		eRatSoundVoice,		head_bone_name);
-	sound().add		(pSettings->r_string(section,"sound_eat"),		100, SOUND_TYPE_MONSTER_EATING	,	3, u32(eRatSoundMaskEat),		eRatSoundEat,		head_bone_name);
+	get_sound().add		(pSettings->r_string(section,"sound_death"),	100, SOUND_TYPE_MONSTER_DYING,		0, u32(eRatSoundMaskDie),		eRatSoundDie,		head_bone_name);
+	get_sound().add		(pSettings->r_string(section,"sound_hit"),		100, SOUND_TYPE_MONSTER_INJURING,	1, u32(eRatSoundMaskInjuring),	eRatSoundInjuring,	head_bone_name);
+	get_sound().add		(pSettings->r_string(section,"sound_attack"),	100, SOUND_TYPE_MONSTER_ATTACKING,	2, u32(eRatSoundMaskAttack),	eRatSoundAttack,	head_bone_name);
+	get_sound().add		(pSettings->r_string(section,"sound_voice"),	100, SOUND_TYPE_MONSTER_TALKING,	4, u32(eRatSoundMaskVoice),		eRatSoundVoice,		head_bone_name);
+	get_sound().add		(pSettings->r_string(section,"sound_eat"),		100, SOUND_TYPE_MONSTER_EATING	,	3, u32(eRatSoundMaskEat),		eRatSoundEat,		head_bone_name);
 }
 
 void CAI_Rat::Die(CObject* who)
@@ -140,9 +140,9 @@ void CAI_Rat::Die(CObject* who)
 
 	m_flags.set		(FCanTake, TRUE);
 
-	SelectAnimation(XFORM().k,movement().detail().direction(),movement().speed());
+	SelectAnimation(XFORM().k,get_movement().detail().get_direction(),get_movement().speed());
 
-	sound().play		(eRatSoundDie);
+	get_sound().play		(eRatSoundDie);
 
 	update_morale_broadcast(m_fMoraleDeathQuant,m_fMoraleDeathDistance);
 
@@ -226,9 +226,9 @@ BOOL CAI_Rat::net_Spawn	(CSE_Abstract* DC)
 	monster_squad().register_member			((u8)g_Team(),(u8)g_Squad(),(u8)g_Group(), this);
 
 	// personal characteristics
-	movement().m_body.current.yaw	= movement().m_body.target.yaw	= -tpSE_Rat->o_torso.yaw;
-	movement().m_body.current.pitch	= movement().m_body.target.pitch	= 0;
-	movement().m_body.speed			= PI_MUL_2;
+	get_movement().m_body.current.yaw	= get_movement().m_body.target.yaw	= -tpSE_Rat->o_torso.yaw;
+	get_movement().m_body.current.pitch	= get_movement().m_body.target.pitch	= 0;
+	get_movement().m_body.speed			= PI_MUL_2;
 
 	eye_fov							= tpSE_Rat->fEyeFov;
 	eye_range						= tpSE_Rat->fEyeRange;
@@ -258,9 +258,9 @@ BOOL CAI_Rat::net_Spawn	(CSE_Abstract* DC)
 	//	m_tNextGP						= tpSE_Rat->m_tNextGraphID;
 	m_current_graph_point			= m_next_graph_point = ai_location().game_vertex_id();
 
-	int								iPointCount	= (int)movement().locations().vertex_types().size();
+	int								iPointCount	= (int)get_movement().locations().vertex_types().size();
 	for (int j=0; j<iPointCount; ++j)
-		if (ai().game_graph().mask(movement().locations().vertex_types()[j].tMask,ai().game_graph().vertex(ai_location().game_vertex_id())->vertex_type())) {
+		if (ai().game_graph().mask(get_movement().locations().vertex_types()[j].tMask,ai().game_graph().vertex(ai_location().game_vertex_id())->vertex_type())) {
 			m_time_to_change_graph_point= Device.dwTimeGlobal + ::Random32.random(60000) + 60000;
 			break;
 		}
@@ -282,11 +282,11 @@ BOOL CAI_Rat::net_Spawn	(CSE_Abstract* DC)
 	m_bStateChanged					= true;
 	ai_location().game_vertex		(ai().cross_table().vertex(ai_location().level_vertex_id()).game_vertex_id());
 
-	m_tHPB.x						= -movement().m_body.current.yaw;
-	m_tHPB.y						= -movement().m_body.current.pitch;
+	m_tHPB.x						= -get_movement().m_body.current.yaw;
+	m_tHPB.y						= -get_movement().m_body.current.pitch;
 	m_tHPB.z						= 0;
 
-	movement().enable_movement		(false);
+	get_movement().enable_movement		(false);
 
 	load_animations					();
 

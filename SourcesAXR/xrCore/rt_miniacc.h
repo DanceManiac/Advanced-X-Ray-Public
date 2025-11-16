@@ -1996,7 +1996,7 @@ extern "C" {
 #  if (ACC_OS_WIN16)
 #    undef HAVE_ALLOCA
 #  endif
-#  define snprintf _snprintf
+#  define snprintf sprintf_s
 #  define vsnprintf _vsnprintf
 #elif (ACC_OS_DOS32 && ACC_CC_GNUC) && defined(__DJGPP__)
 #  undef HAVE_SNPRINTF
@@ -2008,7 +2008,7 @@ extern "C" {
 #  undef HAVE_SNPRINTF
 #  undef HAVE_VSNPRINTF
 #elif (ACC_CC_INTELC)
-#  define snprintf _snprintf
+#  define snprintf sprintf_s
 #  define vsnprintf _vsnprintf
 #elif (ACC_CC_LCCWIN32)
 #  define utime _utime
@@ -2020,7 +2020,7 @@ extern "C" {
 #    undef HAVE_SNPRINTF
 #    undef HAVE_VSNPRINTF
 #  else
-#    define snprintf _snprintf
+#    define snprintf sprintf_s
 #    define vsnprintf _vsnprintf
 #  endif
 #  if ((_MSC_VER < 800) && ACC_OS_WIN16)
@@ -2035,7 +2035,7 @@ extern "C" {
 #    undef HAVE_SNPRINTF
 #    undef HAVE_VSNPRINTF
 #  else
-#    define snprintf _snprintf
+#    define snprintf sprintf_s
 #    define vsnprintf _vsnprintf
 #  endif
 #elif (ACC_OS_WIN32 && ACC_LIBC_MSL)
@@ -2069,7 +2069,7 @@ extern "C" {
 #    undef HAVE_UTIME
 #  endif
 #elif (ACC_OS_WIN32 && ACC_CC_PGI) && defined(__MINGW32__)
-#  define snprintf _snprintf
+#  define snprintf sprintf_s
 #  define vsnprintf _vsnprintf
 #elif (ACC_OS_WIN32 && ACC_CC_GNUC) && defined(__PW32__)
 #  undef HAVE_SNPRINTF
@@ -2082,7 +2082,7 @@ extern "C" {
 #    undef HAVE_SNPRINTF
 #    undef HAVE_VSNPRINTF
 #  else
-#    define snprintf _snprintf
+#    define snprintf sprintf_s
 #    define vsnprintf _vsnprintf
 #  endif
 #  if (__SC__ < 0x700)
@@ -2112,7 +2112,7 @@ extern "C" {
 #    undef HAVE_SNPRINTF
 #    undef HAVE_VSNPRINTF
 #  elif (__WATCOMC__ < 1200)
-#    define snprintf _snprintf
+#    define snprintf sprintf_s
 #    define vsnprintf _vsnprintf
 #  endif
 #elif (ACC_CC_ZORTECHC)

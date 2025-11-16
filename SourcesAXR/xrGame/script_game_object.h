@@ -26,7 +26,7 @@ namespace MovementManager { enum EPathType; }
 namespace DetailPathManager { enum EDetailPathType; }
 namespace SightManager { enum ESightType; }
 namespace smart_cover { class object; }
-namespace doors { class door; }
+namespace doors { class CDoor; }
 
 class NET_Packet;
 class CGameTask;
@@ -197,6 +197,7 @@ public:
 	_DECLARE_FUNCTION10	(GetNarcotism		,			float);
 	_DECLARE_FUNCTION10	(GetWithdrawal		,			float);
 	_DECLARE_FUNCTION10	(GetAlcohol			,			float);
+	_DECLARE_FUNCTION10	(GetFrostbite		,			float);
 
 	_DECLARE_FUNCTION11	(SetHealth,			void, float);
 	_DECLARE_FUNCTION11	(SetPsyHealth,		void, float);
@@ -214,6 +215,7 @@ public:
 	_DECLARE_FUNCTION11	(ChangeNarcotism,	void, float);
 	_DECLARE_FUNCTION11	(ChangeWithdrawal,	void, float);
 	_DECLARE_FUNCTION11	(ChangeAlcohol,		void, float);
+	_DECLARE_FUNCTION11	(ChangeFrostbite,	void, float);
 
 			void				set_fov				(float new_fov);
 			void				set_range			(float new_range);
@@ -542,12 +544,12 @@ public:
 			void 				set_sight				(CScriptGameObject *object_to_look, bool torso_look, bool fire_object, bool no_pitch);
 			void 				set_sight				(const MemorySpace::CMemoryInfo *memory_object, bool	torso_look);
 			CHARACTER_RANK_VALUE GetRank				();
-			void				play_sound				(u32 internal_type);
-			void				play_sound				(u32 internal_type, u32 max_start_time);
-			void				play_sound				(u32 internal_type, u32 max_start_time, u32 min_start_time);
-			void				play_sound				(u32 internal_type, u32 max_start_time, u32 min_start_time, u32 max_stop_time);
-			void				play_sound				(u32 internal_type, u32 max_start_time, u32 min_start_time, u32 max_stop_time, u32 min_stop_time);
-			void				play_sound				(u32 internal_type, u32 max_start_time, u32 min_start_time, u32 max_stop_time, u32 min_stop_time, u32 id);
+			float				play_sound				(u32 internal_type);
+			float				play_sound				(u32 internal_type, u32 max_start_time);
+			float				play_sound				(u32 internal_type, u32 max_start_time, u32 min_start_time);
+			float				play_sound				(u32 internal_type, u32 max_start_time, u32 min_start_time, u32 max_stop_time);
+			float				play_sound				(u32 internal_type, u32 max_start_time, u32 min_start_time, u32 max_stop_time, u32 min_stop_time);
+			float				play_sound				(u32 internal_type, u32 max_start_time, u32 min_start_time, u32 max_stop_time, u32 min_stop_time, u32 id);
 
 			void				set_item				(MonsterSpace::EObjectAction object_action);
 			void				set_item				(MonsterSpace::EObjectAction object_action, CScriptGameObject *game_object);
@@ -650,7 +652,7 @@ public:
 			CHolderCustom*		get_custom_holder		();
 			CHolderCustom*		get_current_holder		(); //actor only
 
-			void				start_particles			(LPCSTR pname, LPCSTR bone);
+			void				start_particles			(LPCSTR pname, LPCSTR bone, bool auto_stop = false, bool hud_mode = false, bool ignore_playing = false);
 			void				stop_particles			(LPCSTR pname, LPCSTR bone);
 
 			Fvector 			bone_position			(LPCSTR bone_name, bool bHud = false) const;
@@ -662,9 +664,13 @@ public:
 			bool				weapon_strapped			() const;
 			bool				weapon_unstrapped		() const;
 			bool				weapon_shooting			() const;
+			bool				weapon_reloading		() const;
 			void				eat						(CScriptGameObject *item);
 			bool				inside					(const Fvector &position, float epsilon) const;
 			bool				inside					(const Fvector &position) const;
+
+			void				start_weapon_shoot		();
+			void				start_weapon_reload		();
 
 			Fvector				head_orientation		() const;
 			u32					vertex_in_direction		(u32 level_vertex_id, Fvector direction, float max_distance) const;
@@ -950,11 +956,13 @@ public:
 			float				GetActorClimbCoef() const;
 			void				SetActorClimbCoef(float);
 			
-			void 				SetRemainingUses(u8 value);
+			void 				SetRemainingUses(u32 value);
 			void 				DestroyObject();
-			u8 					GetRemainingUses();
-			u8 					GetMaxUses();
+			u32 				GetRemainingUses();
+			u32 				GetMaxUses();
 			//-Alundaio
+
+			bool				IsQuestItem() const;
 
 			void				SetArtefactChargeLevel(float charge_level);
 			float				GetArtefactChargeLevel() const;
@@ -963,6 +971,15 @@ public:
 
 			void				SetFilterChargeLevel(float charge_level);
 			float				GetFilterChargeLevel() const;
+			void				SetOutfitFilterCondition(float charge_level);
+			float				GetOutfitFilterCondition() const;
+
+			void				SetBatteryChargeLevel(float charge_level);
+			float				GetBatteryChargeLevel() const;
+			void				SetDetectorChargeLevel(float charge_level);
+			float				GetDetectorChargeLevel() const;
+			void				SetTorchChargeLevel(float charge_level);
+			float				GetTorchChargeLevel() const;
 
 			/*added by Ray Twitty (aka Shadows) START*/
 			float				GetActorMaxWeight						() const;
@@ -978,7 +995,7 @@ public:
 			void				SetWeight								(float w);
 			/*added by Ray Twitty (aka Shadows) END*/
 
-	doors::door*				m_door;
+	doors::CDoor*				m_door;
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };

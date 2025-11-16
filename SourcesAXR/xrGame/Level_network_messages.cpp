@@ -57,6 +57,8 @@ static bool SimmulateNetworkLag()
 
 void CLevel::ClientReceive()
 {
+	ZoneScoped;
+
 	m_dwRPC = 0;
 	m_dwRPS = 0;
 	
@@ -216,10 +218,10 @@ void CLevel::ClientReceive()
 				u8 Count = P->r_u8();
 				for (u8 i=0; i<Count; ++i)
 				{
-					u16 ID = P->r_u16();					
+					u16 ID1 = P->r_u16();
 					Fvector NewPos;
 					P->r_vec3(NewPos);
-					CArtefact * OArtefact = smart_cast<CArtefact*>(Objects.net_Find(ID));
+					CArtefact * OArtefact = smart_cast<CArtefact*>(Objects.net_Find(ID1));
 					if (!OArtefact)		break;
 					OArtefact->MoveTo(NewPos);
 					//destroy_physics_shell(OArtefact->PPhysicsShell());

@@ -32,6 +32,7 @@
 		<texture id="ui_inv_af_rank" 					x="57"	y="133"	width="19" height="19" />
 		<texture id="ui_item_filter_icon" 				x="76"	y="133"	width="19" height="19" />
 		<texture id="ui_item_repair_kit_icon" 			x="95"	y="133"	width="19" height="19" />
+		<texture id="ui_mfs_frostbite_restore_speed" 	x="114"	y="133"	width="19" height="19" />
 
 <!-- weapon - properties -->
 		<texture id="ui_wp_propery_01" 	x="0"	y="0"	width="19" height="19" />

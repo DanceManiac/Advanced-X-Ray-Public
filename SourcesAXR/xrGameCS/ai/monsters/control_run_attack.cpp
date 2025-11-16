@@ -33,14 +33,14 @@ void CControlRunAttack::activate()
 	SControlDirectionData		*ctrl_dir = (SControlDirectionData*)m_man->data(this, ControlCom::eControlDir); 
 	VERIFY						(ctrl_dir);
 	ctrl_dir->heading.target_speed	= 3.f;
-	ctrl_dir->heading.target_angle	= m_man->direction().angle_to_target(m_object->EnemyMan.get_enemy()->Position());
+	ctrl_dir->heading.target_angle	= m_man->get_direction().angle_to_target(m_object->EnemyMan.get_enemy()->Position());
 
 	//////////////////////////////////////////////////////////////////////////
 	
 	SControlAnimationData		*ctrl_anim = (SControlAnimationData*)m_man->data(this, ControlCom::eControlAnimation); 
 	VERIFY						(ctrl_anim);
 
-	ctrl_anim->global.motion	= smart_cast<IKinematicsAnimated*>(m_object->Visual())->ID_Cycle_Safe("stand_attack_run_0");
+	ctrl_anim->global.set_motion ( smart_cast<IKinematicsAnimated*>(m_object->Visual())->ID_Cycle_Safe("stand_attack_run_0") );
 	ctrl_anim->global.actual	= false;
 }
 
@@ -60,7 +60,7 @@ bool CControlRunAttack::check_start_conditions()
 	const CEntityAlive *enemy				= m_object->EnemyMan.get_enemy();
 	if (!enemy)	return false;
 	// check if faced enemy
-	if (!m_man->direction().is_face_target(enemy, PI_DIV_6)) return false;
+	if (!m_man->get_direction().is_face_target(enemy, PI_DIV_6)) return false;
 	
 	float dist = enemy->Position().distance_to(m_object->Position());
 	// check distance to enemy
@@ -68,7 +68,7 @@ bool CControlRunAttack::check_start_conditions()
 	
 	// check if run state, speed
 	SVelocityParam &velocity_run			= m_object->move().get_velocity(MonsterMovement::eVelocityParameterRunNormal);
-	if (!fsimilar(m_man->movement().velocity_current(), velocity_run.velocity.linear, 2.f)) return false;
+	if (!fsimilar(m_man->get_movement().velocity_current(), velocity_run.velocity.linear, 2.f)) return false;
 
 	if (m_time_next_attack > time())		return false;
 
@@ -88,7 +88,7 @@ void CControlRunAttack::on_event(ControlCom::EEventType type, ControlCom::IEvent
 			SControlAnimationData	*ctrl_data_anim = (SControlAnimationData*)m_man->data(this, ControlCom::eControlAnimation); 
 			VERIFY					(ctrl_data_anim);
 
-			CBlend					*blend = m_man->animation().current_blend();
+			CBlend					*blend = m_man->get_animation().current_blend();
 			VERIFY					(blend);
 
 			// animation time

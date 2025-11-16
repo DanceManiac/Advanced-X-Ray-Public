@@ -15,6 +15,7 @@ enum {eVertFlip=(1<<0),eNeedRecalc=(1<<1),eFixedScrollBar=(1<<2),eItemsSelectabe
 	CUIScrollBar*	m_VScrollBar;
 	CUIWindow*		m_pad;
 
+	float			m_targetScrollPosition{};
 	float			m_rightIndent;
 	float			m_leftIndent;
 	float			m_upIndent;
@@ -60,6 +61,7 @@ public:
 	CUIWindow*		GetSelected			();
 			Fvector2 GetPadSize			();
 			void	ForceUpdate			();
+			void	ForceScrollPosition	();
 			int		GetMinScrollPos		();
 			int		GetMaxScrollPos		();
 			int		GetCurrentScrollPos	();
@@ -71,6 +73,9 @@ IC			bool	NeedShowScrollBar	();		// no comment
 			void	UpdateChildrenLenght();		// set default width for all children
 			float	Scroll2ViewV		();		// calculate scale for scroll position
 	CUIScrollBar*	ScrollBar		() {return m_VScrollBar;}
+
+			pcstr	GetDebugType		() override { return "CUIScrollView"; }
+			void	FillDebugInfo		() override;
 	
 	typedef fastdelegate::FastDelegate2<CUIWindow*,CUIWindow*,bool>		cmp_function;
 	cmp_function	m_sort_function;

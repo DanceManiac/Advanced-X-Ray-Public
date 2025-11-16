@@ -21,19 +21,19 @@ public:
 	Fvector const&		get_position	( ) const;
 	bool				need_update		( ) const;
 	bool				update_doors	( doors_type const& doors, float average_speed );
-	void				on_door_destroy	( door& door );
+	void				on_door_destroy	(CDoor& door );
 	pcstr				get_name		( ) const;
 #ifdef DEBUG
 	void				render			( ) const;
 #endif // #ifdef DEBUG
 
 private:
-	typedef buffer_vector<door*>		temp_doors_type;
+	typedef buffer_vector<CDoor*>		temp_doors_type;
 
 private:
 	bool				add_new_door	(
 							float average_speed,
-							door* door,
+							CDoor* door,
 							doors_type const& processed_doors,
 							doors_type& locked_doors,
 							temp_doors_type& new_doors,

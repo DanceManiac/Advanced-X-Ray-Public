@@ -32,6 +32,11 @@
 		return(*(IPropHelper*)0);
 #	endif
 	}
+
+#	ifdef XRGAME_EXPORTS
+#		include "ai_space.h"
+#		include "alife_simulator.h"
+#	endif // #ifdef XRGAME_EXPORTS
 #endif
 
 LPCSTR script_section = "script";
@@ -77,6 +82,7 @@ CSE_Abstract::CSE_Abstract					(LPCSTR caSection)
 	m_editor_flags.zero			();
 	RespawnTime					= 0;
 	net_Ready					= FALSE;
+    net_Processed 				= FALSE;
 	ID							= 0xffff;
 	ID_Parent					= 0xffff;
 	ID_Phantom					= 0xffff;
@@ -111,23 +117,38 @@ CSE_Abstract::CSE_Abstract					(LPCSTR caSection)
 	m_ini_file					= 0;
 
 	if (pSettings->line_exist(caSection,"custom_data")) {
-		string_path				file_name;
-		FS.update_path			(file_name,"$game_config$",pSettings->r_string(caSection,"custom_data"));
-		if (!FS.exist(file_name)) {
-			Msg					("! cannot open config file %s",file_name);
+		pcstr const raw_file_name	= pSettings->r_string(caSection,"custom_data");
+		IReader const* config	= 0;
+#ifdef XRGAME_EXPORTS
+		if ( ai().get_alife() )
+			config				= ai().alife().get_config( raw_file_name );
+		else
+#endif // #ifdef XRGAME_EXPORTS
+		{
+			string_path			file_name;
+			FS.update_path		(file_name,"$game_config$", raw_file_name);
+			if ( FS.exist(file_name) )
+				config			= FS.r_open(file_name);
 		}
-		else {
-			IReader				*reader = FS.r_open(file_name);
-			VERIFY				(reader);
-			{
-				int				size = reader->length()*sizeof(char);
-				LPSTR			temp = (LPSTR)_alloca(size + 1);
-				CopyMemory		(temp,reader->pointer(),size);
-				temp[size]		= 0;
-				m_ini_string	= temp;
-			}
-			FS.r_close			(reader);
+
+		if ( config ) {
+			int					size = config->length()*sizeof(char);
+			LPSTR				temp = (LPSTR)_alloca(size + 1);
+			CopyMemory			(temp,config->pointer(),size);
+			temp[size]			= 0;
+			m_ini_string		= temp;
+
+#ifdef XRGAME_EXPORTS
+		if ( NULL==ai().get_alife() )
+#endif // #ifdef XRGAME_EXPORTS
+		{
+			IReader* _r	= (IReader*)config;
+			FS.r_close(_r);
 		}
+
+		}
+		else
+			Msg( "ERROR! cannot open config file %s", raw_file_name );
 	}
 
 #ifndef AI_COMPILER
@@ -158,17 +179,10 @@ CSE_Motion* CSE_Abstract::motion			()
 
 CInifile &CSE_Abstract::spawn_ini			()
 {
-	if (!m_ini_file) 
-#pragma warning(push)
-#pragma warning(disable:4238)
-		m_ini_file			= xr_new<CInifile>(
-			&IReader			(
-				(void*)(*(m_ini_string)),
-				m_ini_string.size()
-			),
-			FS.get_path("$game_config$")->m_Path
-		);
-#pragma warning(pop)
+	if (!m_ini_file) {
+		IReader r((void*)(*(m_ini_string)), m_ini_string.size());
+		m_ini_file = xr_new<CInifile>(&r, FS.get_path("$game_config$")->m_Path);
+	}
 	return						(*m_ini_file);
 }
 	
@@ -316,8 +330,8 @@ BOOL CSE_Abstract::Spawn_Read				(NET_Packet	&tNetPacket)
 
 		if (m_wVersion > 83) {
 			tNetPacket.r_u32		();//m_spawn_flags.assign(tNetPacket.r_u32());
-			xr_string				temp;
-			tNetPacket.r_stringZ	(temp);//tNetPacket.r_stringZ(m_spawn_control);
+			xr_string				temp_;
+			tNetPacket.r_stringZ	(temp_);//tNetPacket.r_stringZ(m_spawn_control);
 			tNetPacket.r_u32		();//m_max_spawn_count);
 			// this stuff we do not need even in case of uncomment
 			tNetPacket.r_u32		();//m_spawn_count);

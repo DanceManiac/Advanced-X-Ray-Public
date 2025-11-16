@@ -1,0 +1,15 @@
+#include "common.h"
+
+uniform	float4		svp_screen_res;
+
+float  resize(float input, float factor, float offset)
+{
+	return (input-0.5f+offset) / factor+0.5f-offset;
+}
+
+float4 main ( v2p_TL I ): SV_Target0
+{
+	float4 img = s_base.Sample(smp_base, I.Tex0);
+	I.Tex0.x = resize(I.Tex0.x, svp_screen_res.x / svp_screen_res.y, 0);
+	return img;
+}

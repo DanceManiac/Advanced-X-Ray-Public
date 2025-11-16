@@ -20,7 +20,6 @@
 #include "../xrengine/xr_collide_form.h"
 #include "weapon.h"
 #include "ik/math3d.h"
-#include "actor.h"
 #include "ai/monsters/basemonster/base_monster.h"
 
 extern ENGINE_API int ps_r__WallmarksOnSkeleton;
@@ -177,8 +176,7 @@ void CBulletManager::FireShotmark (SBullet* bullet, const Fvector& vDir, const F
 			//добавить отметку на материале
 			Fvector p;
 			p.mad(bullet->bullet_pos,bullet->dir,R.range-0.01f);
-			if(!g_dedicated_server)
-				::Render->add_SkeletonWallmark	(	&R.O->renderable.xform, 
+			::Render->add_SkeletonWallmark	(	&R.O->renderable.xform, 
 													PKinematics(R.O->Visual()), 
 													&*mtl_pair->m_pCollideMarks,
 													p, 
@@ -231,7 +229,7 @@ void CBulletManager::FireShotmark (SBullet* bullet, const Fvector& vDir, const F
 			//отыграть партиклы попадания в материал
 			CParticlesObject* ps = CParticlesObject::Create(ps_name,TRUE);
 
-			ps->UpdateParent( pos, zero_vel );
+			ps->UpdateParent( pos, m_zero_vel );
 			GamePersistent().ps_needtoplay.push_back( ps );
 		}
 
@@ -263,21 +261,12 @@ void CBulletManager::DynamicObjectHit	(CBulletManager::_event& E)
 		}
 	}
 
-	if (g_clear) E.Repeated = false;
-	if (GameID() == eGameIDSingle) E.Repeated = false;
-	bool NeedShootmark = true;//!E.Repeated;
+	E.Repeated = false;
+	bool NeedShootmark = (E.bullet.hit_type == ALife::eHitTypeFireWound || E.bullet.hit_type == ALife::eHitTypeWound || E.bullet.hit_type == ALife::eHitTypeWound_2);//!E.Repeated;
 	
-	if (smart_cast<CActor*>(E.R.O))
+	if (CBaseMonster * monster = smart_cast<CBaseMonster *>(E.R.O))
 	{
-		game_PlayerState* ps = Game().GetPlayerByGameID(E.R.O->ID());
-		if (ps && ps->testFlag(GAME_PLAYER_FLAG_INVINCIBLE))
-		{
-			NeedShootmark = false;
-		};
-	}
-	else if ( CBaseMonster * monster = smart_cast<CBaseMonster *>(E.R.O) )
-	{
-		NeedShootmark	=	monster->need_shotmark();
+		NeedShootmark = (NeedShootmark && monster->need_shotmark());
 	}
 	
 	//визуальное обозначение попадание на объекте

@@ -5,7 +5,7 @@ class CUI3tButton;
 class CUIScrollBox;
 class CUIFrameLineWnd;
 
-class CUIFixedScrollBar :public CUIScrollBar
+class CUIFixedScrollBar : public CUIScrollBar
 {
 private:
 	typedef CUIWindow inherited;
@@ -31,4 +31,5 @@ public:
 	virtual void OnMouseUp(int mouse_btn);
 	virtual bool OnKeyboardHold(int dik);
 
+			pcstr GetDebugType() override { return "CUIFixedScrollBar"; }
 };

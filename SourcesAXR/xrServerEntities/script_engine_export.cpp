@@ -7,7 +7,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #include "pch_script.h"
-
+#include <loki/Typelist.h>
 #define SCRIPT_REGISTRATOR
 #include "script_export_space.h"
 #include "script_engine_export.h"

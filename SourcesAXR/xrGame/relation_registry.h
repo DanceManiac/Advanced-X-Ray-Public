@@ -40,7 +40,7 @@ public:
 	//-100< (крайне враждебное) до >100 (очень дрюжелюбное)
 	
 	template<typename T>
-	CHARACTER_GOODWILL	 GetAttitude				(T from, T to)	const ;
+	CHARACTER_GOODWILL	GetAttitude				(T from, T to)	const ;
 
 	//личное отношение (благосклонность) одного персонажа к другому - 
 	//величина от -100< (крайне враждебное) до >100 (очень дрюжелюбное)
@@ -51,11 +51,15 @@ public:
 
 	//отношения группировки к персонажу (именно так, а не наоборот)
 	//т.е. персонаж сам помнит, как к нему какая группировка отностися
-	CHARACTER_GOODWILL	 GetCommunityGoodwill		(CHARACTER_COMMUNITY_INDEX from_community, u16 to_character) const ;
-	void				 SetCommunityGoodwill		(CHARACTER_COMMUNITY_INDEX from_community, u16 to_character, CHARACTER_GOODWILL goodwill);
-	void				 ChangeCommunityGoodwill	(CHARACTER_COMMUNITY_INDEX from_community, u16 to_character, CHARACTER_GOODWILL delta_goodwill);
-	
-	void				 ClearRelations				(u16 person_id);
+	CHARACTER_GOODWILL	GetCommunityGoodwill		(CHARACTER_COMMUNITY_INDEX from_community, u16 to_character) const ;
+	void				SetCommunityGoodwill		(CHARACTER_COMMUNITY_INDEX from_community, u16 to_character, CHARACTER_GOODWILL goodwill);
+	void				ChangeCommunityGoodwill	(CHARACTER_COMMUNITY_INDEX from_community, u16 to_character, CHARACTER_GOODWILL delta_goodwill);
+
+	void				ClearRelations				(u16 person_id);
+
+	int					m_sgoodwill_enemy;
+	int					m_sgoodwill_neutral;
+	int					m_sgoodwill_friend;
 
 	CHARACTER_GOODWILL	 GetCommunityRelation		(CHARACTER_COMMUNITY_INDEX, CHARACTER_COMMUNITY_INDEX) const;	
 	void				 SetCommunityRelation		(CHARACTER_COMMUNITY_INDEX index1, CHARACTER_COMMUNITY_INDEX index2, CHARACTER_GOODWILL goodwill);

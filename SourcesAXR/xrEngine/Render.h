@@ -1,5 +1,5 @@
-#ifndef _RENDER_H_
-#define _RENDER_H_
+#pragma once
+
 
 #include "../xrCDB/frustum.h"
 #include "vis_common.h"
@@ -67,6 +67,8 @@ public:
 	virtual void					set_color			(float r, float g, float b)			= 0;
 	virtual void					set_hud_mode		(bool b)							= 0;
 	virtual bool					get_hud_mode		()									= 0;
+	virtual void					set_moveable		(bool)								= 0;
+	virtual void					set_flare			(bool b)							= 0;
 	virtual ~IRender_Light()		;
 };
 struct ENGINE_API		resptrcode_light	: public resptr_base<IRender_Light>
@@ -240,12 +242,23 @@ public:
 	virtual IRender_Sector*			detectSector			(const Fvector& P)							= 0;
 	virtual IRender_Target*			getTarget				()											= 0;
 
+	struct SurfaceParams
+	{
+		float w = 0.0f;
+		float h = 0.0f;
+		void* Surface = nullptr;
+	};
+
+	virtual SurfaceParams			getSurface				(const char* nameTexture)					{ R_ASSERT(!"Method is not overridden"); return SurfaceParams(); };
+
 	// Main 
 	IC		void					set_Frustum				(CFrustum*	O	)							{ VERIFY(O);	View = O;			}
 	virtual void					set_Transform			(Fmatrix*	M	)							= 0;
 	virtual void					set_HUD					(BOOL 		V	)							= 0;
 	virtual BOOL					get_HUD					()											= 0;
 	virtual void					set_Invisible			(BOOL 		V	)							= 0;
+	virtual void					Render3DStatic			()											= 0;
+	virtual void					set_UI					(BOOL		V	)							= 0;
 	virtual void					flush					()											= 0;	
 	virtual void					set_Object				(IRenderable*		O	)					= 0;
 	virtual	void					add_Occluder			(Fbox2&	bb_screenspace	)					= 0;	// mask screen region as oclluded (-1..1, -1..1)
@@ -306,6 +319,8 @@ public:
 	virtual void					ScreenshotAsyncBegin	() = 0;
 	virtual void					ScreenshotAsyncEnd		(CMemoryWriter& memory_writer) = 0;
 
+	virtual	void					CreatePanorama			()											= 0;
+
 	// Render mode
 	virtual void					rmNear					()											= 0;
 	virtual void					rmFar					()											= 0;
@@ -315,6 +330,9 @@ public:
 	virtual							u32 active_phase		()											= 0;
 	virtual void					RenderToTarget			(RRT target)								= 0;
 
+	virtual bool					isActorShadowEnabled	()											= 0;
+
+	virtual void					RenderApplyRTandZB		()											= 0;
 
 	ViewPort	currentViewPort;
 	ViewPort	firstViewPort;
@@ -332,6 +350,24 @@ protected:
 	virtual	void					ScreenshotImpl			(ScreenshotMode mode, LPCSTR name, CMemoryWriter* memory_writer) = 0;
 };
 
+class ITexture
+{
+public:
+	virtual ~ITexture() = default;
+
+	virtual const char* GetName() const = 0;
+
+	virtual void Load(const char* Name) = 0;
+	virtual void Unload() = 0;
+};
+
+class IResourceManager
+{
+public:
+	virtual ~IResourceManager() = default;
+
+	virtual xr_vector<ITexture*> FindTexture(const char* Name) const = 0;
+};
+
 //extern ENGINE_API	IRender_interface*	Render;
 
-#endif

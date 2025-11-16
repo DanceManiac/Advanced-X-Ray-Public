@@ -96,7 +96,7 @@ public:
 
 	void		critical_wound			(LPCSTR anim);
 
-	void		remove_links			(CObject * object);
+	void		remove_links			(CObject * object_);
 
 	CControlJump*	get_jump_control	() { return m_jump; }
 private:

@@ -7,15 +7,14 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#ifdef DEBUG
-#	include "debug_renderer.h"
+#include "debug_renderer.h"
 
-void CDebugRenderer::add_lines		(Fvector const *vertices, u32 const &vertex_count, u16 const *pairs, u32 const &pair_count, u32 const &color)
+void CDebugRenderer::add_lines		(Fvector const *vertices, u32 const &vertex_count, u16 const *pairs, u32 const &pair_count, u32 const &color, bool hud_mode)
 {
-	DRender->add_lines				(vertices, vertex_count, pairs, pair_count, color);
+	DRender->add_lines				(vertices, vertex_count, pairs, pair_count, color, hud_mode);
 }
 
-void CDebugRenderer::draw_obb		(const Fmatrix &matrix, const u32 &color)
+void CDebugRenderer::draw_obb		(const Fmatrix &matrix, const u32 &color, bool hud_mode)
 {
 	Fvector							aabb[8];
 	matrix.transform_tiny			(aabb[0],Fvector().set( -1, -1, -1)); // 0
@@ -31,20 +30,20 @@ void CDebugRenderer::draw_obb		(const Fmatrix &matrix, const u32 &color)
 		0,1,  1,2,  2,3,  3,0,  4,5,  5,6,  6,7,  7,4,  1,5,  2,6,  3,7,  0,4
 	};
 
-	add_lines						(aabb, sizeof(aabb)/sizeof(Fvector), &aabb_id[0], sizeof(aabb_id)/(2*sizeof(u16)), color);
+	add_lines						(aabb, sizeof(aabb)/sizeof(Fvector), &aabb_id[0], sizeof(aabb_id)/(2*sizeof(u16)), color, hud_mode);
 }
 
-void CDebugRenderer::draw_obb		(const Fmatrix &matrix, const Fvector &half_size, const u32 &color)
+void CDebugRenderer::draw_obb		(const Fmatrix &matrix, const Fvector &half_size, const u32 &color, bool hud_mode)
 {
 	Fmatrix							mL2W_Transform,mScaleTransform;
 
 	mScaleTransform.scale			(half_size);
 	mL2W_Transform.mul_43			(matrix,mScaleTransform);
 
-	draw_obb						(mL2W_Transform,color);
+	draw_obb						(mL2W_Transform, color, hud_mode);
 }
 
-void CDebugRenderer::draw_ellipse	(const Fmatrix &matrix, const u32 &color)
+void CDebugRenderer::draw_ellipse	(const Fmatrix &matrix, const u32 &color, bool hud_mode)
 {
 	float vertices[114*3]			= {
 			0.0000f,0.0000f,1.0000f,  0.0000f,0.3827f,0.9239f,  -0.1464f,0.3536f,0.9239f,
@@ -135,6 +134,45 @@ void CDebugRenderer::draw_ellipse	(const Fmatrix &matrix, const u32 &color)
 	for ( ; I != E; ++I)
 		matrix.transform_tiny		(*I,Fvector().set(*I));
 
-	add_lines						((Fvector*)&vertices[0], sizeof(vertices)/sizeof(Fvector), &pairs[0], sizeof(pairs)/(2*sizeof(u16)), color);
+	add_lines						((Fvector*)&vertices[0], sizeof(vertices)/sizeof(Fvector), &pairs[0], sizeof(pairs)/(2*sizeof(u16)), color, hud_mode);
 }
-#endif // DEBUG
+
+void CDebugRenderer::draw_cone(const Fmatrix& transform, float height, float radius, u32 color, bool hud_mode)
+{
+	const int segments = 24;
+	xr_vector<Fvector> vertices;
+	xr_vector<u16> pairs;
+
+	Fvector apex = { 0.f, 0.f, 0.f };
+	Fvector base_center = { 0.f, 0.f, height };
+
+	vertices.push_back(apex);
+	u16 apex_index = 0;
+
+	for (int i = 0; i < segments; ++i)
+	{
+		float angle = 2 * PI * i / segments;
+		Fvector p = { radius * cosf(angle), radius * sinf(angle), height };
+		vertices.push_back(p);
+
+		u16 current_base_index = (u16)(i + 1);
+		u16 next_base_index = (u16)((i + 1) % segments + 1);
+
+		pairs.push_back(apex_index);
+		pairs.push_back(current_base_index);
+
+		if (i < segments - 1)
+		{
+			pairs.push_back(current_base_index);
+			pairs.push_back(next_base_index);
+		}
+	}
+
+	pairs.push_back(1);
+	pairs.push_back((u16)segments);
+
+	for (auto& vertex : vertices)
+		transform.transform_tiny(vertex);
+
+	add_lines(&vertices.front(), (u32)vertices.size(), &pairs.front(), (u32)(pairs.size() / 2), color, hud_mode);
+}

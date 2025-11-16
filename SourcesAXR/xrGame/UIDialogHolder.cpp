@@ -9,6 +9,8 @@
 #include "../xrEngine/CustomHud.h"
 #include "pda.h"
 #include "inventory.h"
+#include <imgui.h>
+#include "AdvancedXrayGameConstants.h"
 
 dlgItem::dlgItem(CUIWindow* pWnd)
 {
@@ -38,20 +40,23 @@ bool operator == (const recvItem& i1, const recvItem& i2)
 
 CDialogHolder::CDialogHolder()
 {
-	m_b_in_update			= false;
+	m_b_in_update = false;
+	RegisterDebuggable();
 }
 
 CDialogHolder::~CDialogHolder()
 {
+	UnregisterDebuggable();
 }
 
 void CDialogHolder::StartMenu(CUIDialogWnd* pDialog, bool bDoHideIndicators)
 {
 	R_ASSERT						( !pDialog->IsShown() );
 
-	if (psActorFlags.test(AF_3D_PDA) &&IsGameTypeSingle() && !smart_cast<CUIPdaWnd*>(pDialog) && Actor())
+	if (psActorFlags.test(AF_3D_PDA) && IsGameTypeSingle() && !smart_cast<CUIPdaWnd*>(pDialog) && Actor())
 	{
-		if (const auto pda = smart_cast<CPda*>(Actor()->inventory().ActiveItem()))
+		const auto pda = smart_cast<CPda*>(Actor()->inventory().ActiveItem());
+		if (pda && pda->Is3DPDA())
 		{
 			CurrentGameUI()->PdaMenu().HideDialog();
 			Actor()->inventory().Action(kACTIVE_JOBS, CMD_START);
@@ -61,7 +66,7 @@ void CDialogHolder::StartMenu(CUIDialogWnd* pDialog, bool bDoHideIndicators)
 	AddDialogToRender				(pDialog);
 	SetMainInputReceiver			(pDialog, false);
 
-	if(UseIndicators())
+	if(UseIndicators() && !m_input_receivers.empty())
 	{
 		bool b							= !!psHUD_Flags.test(HUD_CROSSHAIR_RT);
 		m_input_receivers.back().m_flags.set(recvItem::eCrosshair, b);
@@ -101,7 +106,7 @@ void CDialogHolder::StopMenu(CUIDialogWnd* pDialog)
 
 	if( TopInputReceiver()==pDialog )
 	{
-		if(UseIndicators())
+		if(UseIndicators() && !m_input_receivers.empty())
 		{
 			bool b					= !!m_input_receivers.back().m_flags.test(recvItem::eCrosshair);
 			psHUD_Flags.set			(HUD_CROSSHAIR_RT, b);
@@ -157,6 +162,8 @@ void CDialogHolder::RemoveDialogToRender(CUIWindow* pDialog)
 
 void CDialogHolder::DoRenderDialogs()
 {
+	ZoneScoped;
+
 	xr_vector<dlgItem>::iterator it = m_dialogsToRender.begin();
 	for(; it!=m_dialogsToRender.end();++it){
 		if( (*it).enabled && (*it).wnd->IsShown() )
@@ -214,7 +221,7 @@ void CDialogHolder::SetMainInputReceiver	(CUIDialogWnd* ir, bool _find_remove)
 
 void CDialogHolder::StartDialog(CUIDialogWnd* pDialog, bool bDoHideIndicators)
 {
-	if (pDialog && pDialog->NeedCenterCursor())
+	if (pDialog && (pDialog->NeedCenterCursor() && !GameConstants::GetCursorGlobalCenteringDisabled()))
 	{
 		GetUICursor().SetUICursorPosition	(Fvector2().set(512.0f,384.0f));
 	}
@@ -228,6 +235,8 @@ void CDialogHolder::StopDialog(CUIDialogWnd* pDialog)
 
 void CDialogHolder::OnFrame()
 {
+	ZoneScoped;
+
 	m_b_in_update = true;
 	CUIDialogWnd* wnd = TopInputReceiver();
 	if ( wnd && wnd->IsEnabled() )
@@ -238,7 +247,7 @@ void CDialogHolder::OnFrame()
 	{
 		xr_vector<dlgItem>::iterator it = m_dialogsToRender.begin();
 		for(; it!=m_dialogsToRender.end();++it)
-			if((*it).enabled && (*it).wnd->IsEnabled())
+			if ((*it).enabled && (*it).wnd && (*it).wnd->IsEnabled())
 				(*it).wnd->Update();
 	}
 
@@ -248,6 +257,9 @@ void CDialogHolder::OnFrame()
 		m_dialogsToRender.insert	(m_dialogsToRender.end(),m_dialogsToRender_new.begin(),m_dialogsToRender_new.end());
 		m_dialogsToRender_new.clear	();
 	}
+
+	if (m_dialogsToRender.empty())
+		return;
 
 	std::sort			(m_dialogsToRender.begin(), m_dialogsToRender.end());
 	while (!m_dialogsToRender.empty() && (!m_dialogsToRender[m_dialogsToRender.size()-1].enabled)) 
@@ -388,4 +400,41 @@ bool CDialogHolder::IR_UIOnMouseMove(int dx, int dy)
 		}
 	};
 	return true;
+}
+
+bool CDialogHolder::FillDebugTree(const CUIDebugState& debugState)
+{
+	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow;
+	if (m_input_receivers.empty())
+		ImGui::BulletText("Input receivers: 0");
+	else
+	{
+		if (ImGui::TreeNode(&m_input_receivers, "Input receivers: %zu", m_input_receivers.size()))
+		{
+			for (const auto& item : m_input_receivers)
+				item.m_item->FillDebugTree(debugState);
+			ImGui::TreePop();
+		}
+	}
+	if (m_dialogsToRender.empty())
+		ImGui::BulletText("Dialogs to render: 0");
+	else
+	{
+		if (ImGui::TreeNode(&m_dialogsToRender, "Dialogs to render: %zu", m_dialogsToRender.size()))
+		{
+			for (const auto& item : m_dialogsToRender)
+				item.wnd->FillDebugTree(debugState);
+			ImGui::TreePop();
+		}
+	}
+	return true;
+}
+
+void CDialogHolder::FillDebugInfo()
+{
+#ifndef MASTER_GOLD
+	if (ImGui::CollapsingHeader(CDialogHolder::GetDebugType()))
+	{
+	}
+#endif
 }

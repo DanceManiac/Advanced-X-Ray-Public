@@ -15,6 +15,7 @@ class demo_info_loader;
 #include "ui/UIWndCallback.h"
 #include "ui_base.h"
 #include "DemoInfo.h"
+#include "GlobalAchievements.h"
 
 namespace gamespy_gp
 {
@@ -128,6 +129,8 @@ protected:
 	
 	xr_vector<CUIMessageBoxEx*>	m_pMB_ErrDlgs;
 	bool			ReloadUI						();
+
+	CGlobalAchievementsManager* AchievementsManager{};
 public:
 	u32				m_deactivated_frame;
 	bool			m_activatedScreenRatio;
@@ -180,6 +183,9 @@ public:
 	void xr_stdcall OnDownloadPatch					(CUIWindow*, void*);
 	void xr_stdcall OnConnectToMasterServerOkClicked(CUIWindow*, void*);
 
+	pcstr			GetDebugType					() override {return "CMainMenu";}
+	bool			FillDebugTree					(const CUIDebugState& debugState) override;
+
 	void			Show_DownloadMPMap				(LPCSTR text, LPCSTR url);
 	void xr_stdcall OnDownloadMPMap_CopyURL			(CUIWindow*, void*);
 	void xr_stdcall OnDownloadMPMap					(CUIWindow*, void*);
@@ -207,6 +213,8 @@ public:
 	LPCSTR			GetCDKeyFromRegistry			();
 	
 	demo_info const *	GetDemoInfo					(LPCSTR file_name);
+
+	CGlobalAchievementsManager* GetGlobalAchievementsManager() { return AchievementsManager; }
 };
 
 extern CMainMenu*	MainMenu();

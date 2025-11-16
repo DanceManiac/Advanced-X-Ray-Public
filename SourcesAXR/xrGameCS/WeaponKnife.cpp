@@ -14,6 +14,11 @@
 #include "../xrEngine/SkeletonMotions.h"
 #include "player_hud.h"
 #include "ActorEffector.h"
+#include "Torch.h"
+#include "Actor.h"
+#include "Inventory.h"
+#include "ActorNightvision.h"
+#include "CustomDetector.h"
 #include "Level_Bullet_Manager.h"
 #include <iterator>
 
@@ -39,6 +44,8 @@ CWeaponKnife::CWeaponKnife()
 
 	m_Hit1SpashDir.set	(0.f,0.f,1.f);
 	m_Hit2SpashDir.set	(0.f,0.f,1.f);
+
+	m_bIsAltShootNow		= false;
 }
 
 CWeaponKnife::~CWeaponKnife()
@@ -51,7 +58,15 @@ void CWeaponKnife::Load	(LPCSTR section)
 	inherited::Load		(section);
 
 	fWallmarkSize = pSettings->r_float(section,"wm_size");
-	m_sounds.LoadSound(section,"snd_shoot"		, "sndShot"		, false, SOUND_TYPE_WEAPON_SHOOTING		);
+
+	m_sounds.LoadSound(section, "snd_shoot", "m_sndShot", false, SOUND_TYPE_WEAPON_SHOOTING);
+	m_sounds.LoadSound(section, "snd_shoot2", "m_sndShot2", false, SOUND_TYPE_WEAPON_SHOOTING);
+	m_sounds.LoadSound(section, "snd_draw", "m_sndDraw", false, SOUND_TYPE_ITEM_HIDING);
+	m_sounds.LoadSound(section, "snd_holster", "m_sndHolster", false, SOUND_TYPE_ITEM_HIDING);
+
+	m_sounds.LoadSound(section, "snd_sprint_start",	"sndSprintStart", true, SOUND_TYPE_ITEM_HIDING);
+	m_sounds.LoadSound(section, "snd_sprint_end",	"sndSprintEnd", true, SOUND_TYPE_ITEM_HIDING);
+	m_sounds.LoadSound(section, "snd_sprint_idle",	"sndSprintIdle", true, SOUND_TYPE_ITEM_HIDING);
 	
 	m_Hit1SpashDir		=	pSettings->r_fvector3(section, "splash1_direction");
 	m_Hit2SpashDir		=	pSettings->r_fvector3(section, "splash2_direction");
@@ -92,6 +107,7 @@ void CWeaponKnife::OnStateSwitch	(u32 S)
 		break;
 	case eFire:
 		{
+			m_bIsAltShootNow = false;
 			//-------------------------------------------
 			m_eHitType		= m_eHitType_1;
 			//fHitPower		= fHitPower_1;
@@ -113,9 +129,10 @@ void CWeaponKnife::OnStateSwitch	(u32 S)
 			fHitImpulse_cur	= fHitImpulse_1;
 			//-------------------------------------------
 			switch2_Attacking	(S);
-		}break;
+		} break;
 	case eFire2:
 		{
+			m_bIsAltShootNow = true;
 			//-------------------------------------------
 			m_eHitType		= m_eHitType_2;
 			//fHitPower		= fHitPower_2;
@@ -137,7 +154,48 @@ void CWeaponKnife::OnStateSwitch	(u32 S)
 			fHitImpulse_cur	= fHitImpulse_2;
 			//-------------------------------------------
 			switch2_Attacking	(S);
-		}break;
+		} break;
+	case eDeviceSwitch:
+		{
+			SetPending(TRUE);
+			PlayAnimDeviceSwitch();
+		} break;
+	}
+}
+
+void CWeaponKnife::PlayAnimDeviceSwitch()
+{
+	CActor* actor = Actor();
+	CTorch* torch = smart_cast<CTorch*>(actor->inventory().ItemFromSlot(TORCH_SLOT));
+	CCustomDetector* det = smart_cast<CCustomDetector*>(g_actor->inventory().ItemFromSlot(DETECTOR_SLOT));
+
+	if (!actor->GetNightVision())
+		actor->SetNightVision(xr_new<CNightVisionEffector>(actor->cNameSect()));
+
+	CNightVisionEffector* nvg = actor->GetNightVision();
+
+	PlaySound(HeadLampSwitch && torch ? (!torch->IsSwitchedOn() ? "sndHeadlampOn" : "sndHeadlampOff") : NightVisionSwitch && nvg ? (!nvg->IsActive() ? "sndNvOn" : "sndNvOff") : CleanMaskAction ? "sndCleanMask" : "", get_LastFP());
+
+	LPCSTR guns_device_switch_anm = HeadLampSwitch && torch ? (!torch->IsSwitchedOn() ? "anm_headlamp_on" : "anm_headlamp_off") : NightVisionSwitch && nvg ? (!nvg->IsActive() ? "anm_nv_on" : "anm_nv_off") : CleanMaskAction ? "anm_clean_mask" : "";
+
+	if (isHUDAnimationExist(guns_device_switch_anm))
+	{
+		if (CleanMaskAction)
+		{
+			actor->SetMaskAnimLength(Device.dwTimeGlobal + PlayHUDMotionNew(guns_device_switch_anm, true, GetState()));
+			actor->SetMaskAnimActive(true);
+			actor->SetActionAnimInProcess(true);
+		}
+		else
+			PlayHUDMotionNew(guns_device_switch_anm, true, GetState());
+
+		if (g_actor->IsDetectorActive())
+			det->PlayDetectorAnimation(true, eDetAction, guns_device_switch_anm);
+	}
+	else
+	{
+		DeviceUpdate();
+		SwitchState(eIdle);
 	}
 }
 
@@ -194,8 +252,7 @@ void CWeaponKnife::KnifeStrike(const Fvector& pos, const Fvector& dir)
 		MakeShot(pos, dir, new_khit);
 		return;
 	}
-	
-	
+
 	shot_targets_t	dest_hits(_alloca(sizeof(Fvector)*m_hits_count), m_hits_count);
 	
 	if (SelectHitsToShot(dest_hits, pos))
@@ -240,10 +297,8 @@ void CWeaponKnife::MakeShot(Fvector const & pos, Fvector const & dir, float cons
 	iAmmoElapsed					= m_magazine.size();
 	bool SendHit					= SendHitAllowed(H_Parent());
 
-	PlaySound						("sndShot",pos);
-
 	CActor*	actor = smart_cast<CActor*>(H_Parent());
-	if (actor->active_cam() != eacFirstEye) 
+	if (actor && actor->active_cam() != eacFirstEye)
 	{
 		if (ParentIsActor() && !fis_zero(conditionDecreasePerShotOnHit) && GetCondition() < 0.95f)
 			fCurrentHit = fCurrentHit * (GetCondition() / 0.95f);
@@ -327,6 +382,7 @@ void CWeaponKnife::OnAnimationEnd(u32 state)
 	case eFire2: 	SwitchState(eIdle);		break;
 
 	case eShowing:
+	case eDeviceSwitch:
 	case eIdle:		SwitchState(eIdle);		break;	
 
 	default:		inherited::OnAnimationEnd(state);
@@ -341,10 +397,28 @@ void CWeaponKnife::switch2_Attacking	(u32 state)
 {
 	if(IsPending())	return;
 
-	if(state==eFire)
-		PlayHUDMotion("anm_attack",		FALSE, this, state);
+	auto det = smart_cast<CCustomDetector*>(g_actor->inventory().ItemFromSlot(DETECTOR_SLOT));
+
+	if (state == eFire)
+	{
+		PlayHUDMotion("anm_attack", FALSE, this, state);
+		PlaySound("m_sndShot", get_LastFP());
+
+		if (g_actor->IsDetectorActive())
+			det->PlayDetectorAnimation(true, eDetAction, "anm_knife_kick_1");
+	}
 	else //eFire2
-		PlayHUDMotion("anm_attack2",	FALSE, this, state);
+	{
+		PlayHUDMotion("anm_attack2", FALSE, this, state);
+
+		if (m_sounds.FindSoundItem("m_sndShot2", false))
+			PlaySound("m_sndShot2", get_LastFP());
+		else
+			PlaySound("m_sndShot", get_LastFP());
+
+		if (g_actor->IsDetectorActive())
+			det->PlayDetectorAnimation(true, eDetAction, "anm_knife_kick_2");
+	}
 
 	SetPending			(TRUE);
 }
@@ -362,6 +436,9 @@ void CWeaponKnife::switch2_Hiding	()
 	FireEnd					();
 	VERIFY(GetState()==eHiding);
 	PlayHUDMotion("anm_hide", TRUE, this, GetState());
+
+	if (m_sounds.FindSoundItem("m_sndHolster", false))
+		PlaySound("m_sndHolster", get_LastFP());
 }
 
 void CWeaponKnife::switch2_Hidden()
@@ -374,6 +451,9 @@ void CWeaponKnife::switch2_Showing	()
 {
 	VERIFY(GetState()==eShowing);
 	PlayHUDMotion("anm_show", FALSE, this, GetState());
+
+	if (m_sounds.FindSoundItem("m_sndDraw", false))
+		PlaySound("m_sndDraw", get_LastFP());
 }
 
 
@@ -402,6 +482,40 @@ bool CWeaponKnife::Action(s32 cmd, u32 flags)
 			return true;
 	}
 	return false;
+}
+
+void CWeaponKnife::DeviceUpdate()
+{
+	if (auto pA = smart_cast<CActor*>(H_Parent()))
+	{
+		if (HeadLampSwitch)
+		{
+			auto pActorTorch = smart_cast<CTorch*>(pA->inventory().ItemFromSlot(TORCH_SLOT));
+			pActorTorch->Switch(!pActorTorch->IsSwitchedOn());
+			HeadLampSwitch = false;
+		}
+		else if (NightVisionSwitch)
+		{
+			if (pA->GetNightVision())
+			{
+				pA->SwitchNightVision(!pA->GetNightVisionStatus());
+				NightVisionSwitch = false;
+			}
+		}
+		else if (CleanMaskAction)
+		{
+			pA->SetMaskClear(true);
+			CleanMaskAction = false;
+		}
+	}
+}
+
+void CWeaponKnife::UpdateCL()
+{
+	inherited::UpdateCL();
+	
+	if (IsActionInProcessNow())
+		TimeLockAnimation();
 }
 
 void CWeaponKnife::LoadFireParams(LPCSTR section)

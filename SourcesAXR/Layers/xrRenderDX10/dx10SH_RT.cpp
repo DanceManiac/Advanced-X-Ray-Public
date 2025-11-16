@@ -122,6 +122,11 @@ void CRT::create(LPCSTR Name, xr_vector<RtCreationParams>& vp_params, D3DFORMAT 
 #endif // DEBUG
 	//R_CHK		(pSurface->GetSurfaceLevel	(0,&pRT));
 
+	if (pSurface)
+	{
+		pSurface->SetPrivateData(WKPDID_D3DDebugObjectName, cName.size(), cName.c_str());
+	}
+
 	D3D_DEPTH_STENCIL_VIEW_DESC	ViewDesc;
 
 	if (bUseAsDepth)

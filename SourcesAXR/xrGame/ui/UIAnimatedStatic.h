@@ -51,6 +51,8 @@ public:
 	bool m_bCyclic;
 
 	virtual void Update();
+
+			pcstr GetDebugType() override { return "CUIAnimatedStatic"; }
 };
 
 class CUISleepStatic: public CUIStatic

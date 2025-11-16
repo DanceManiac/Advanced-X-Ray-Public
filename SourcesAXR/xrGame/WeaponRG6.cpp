@@ -46,15 +46,19 @@ void CWeaponRG6::Load(LPCSTR section)
 {
 	inheritedRL::Load(section);
 	inheritedSG::Load(section);
+
+	m_bUseRG6_AddCartridgeAlt = READ_IF_EXISTS(pSettings, r_bool, section, "use_add_cartridge_alt", false);
 }
 #include "inventory.h"
 #include "inventoryOwner.h"
 void CWeaponRG6::FireStart ()
 {
-
-	if(GetState() == eIdle	&& getRocketCount() ) 
+	if (GetState() == eIdle	&& getRocketCount())
 	{
 		inheritedSG::FireStart ();
+
+		if (!iAmmoElapsed)
+			return;
 	
 		Fvector p1, d; 
 		p1.set(get_LastFP()); 
@@ -119,7 +123,7 @@ void CWeaponRG6::FireStart ()
 		d.normalize();
 		d.mul(m_fLaunchSpeed);
 		VERIFY2(_valid(launch_matrix),"CWeaponRG6::FireStart. Invalid launch_matrix");
-		CRocketLauncher::LaunchRocket(launch_matrix, d, zero_vel);
+		CRocketLauncher::LaunchRocket(launch_matrix, d, m_zero_vel);
 
 		CExplosiveRocket* pGrenade = smart_cast<CExplosiveRocket*>(getCurrentRocket());
 		VERIFY(pGrenade);
@@ -133,7 +137,12 @@ void CWeaponRG6::FireStart ()
 			u_EventSend(P);
 		}
 		dropCurrentRocket();
+
+		return;
 	}
+
+	if (eReload != GetState() && iAmmoElapsed == 0)
+		OnMagazineEmpty();
 }
 
 u8 CWeaponRG6::AddCartridge		(u8 cnt)
@@ -146,6 +155,23 @@ u8 CWeaponRG6::AddCartridge		(u8 cnt)
 		inheritedRL::SpawnRocket(*fake_grenade_name, this);
 	}
 	return k;
+}
+
+void CWeaponRG6::Reload()
+{
+	if (m_bTriStateReload)
+		inheritedSG::TriStateReload();
+	else
+	{
+		if (!smart_cast<CWeaponAmmo*>(m_pInventory->GetAny(m_ammoTypes[m_ammoType].c_str())))
+			return;
+
+		shared_str fake_grenade_name = pSettings->r_string(m_ammoTypes[m_ammoType].c_str(), "fake_grenade_name");
+		inheritedSG::Reload();
+
+		for (int i = 0; i < iMagazineSize; i++)
+			inheritedRL::SpawnRocket(*fake_grenade_name, this);
+	}
 }
 
 void CWeaponRG6::OnEvent(NET_Packet& P, u16 type) 
@@ -166,4 +192,19 @@ void CWeaponRG6::OnEvent(NET_Packet& P, u16 type)
 			inheritedRL::DetachRocket	(id, bLaunch);
 		} break;
 	}
+}
+
+void CWeaponRG6::PlayAnimAddOneCartridgeWeapon()
+{
+	VERIFY(GetState() == eReload);
+
+	if (m_bUseRG6_AddCartridgeAlt)
+	{
+		string128 reload_anim{};
+		strconcat(sizeof(reload_anim), reload_anim, "anm_add_cartridge_", std::to_string(iAmmoElapsed + 1).c_str());
+
+		PlayHUDMotionIfExists({ reload_anim, "anm_add_cartridge" }, true, GetState());
+	}
+	else
+		inheritedSG::PlayAnimAddOneCartridgeWeapon();
 }

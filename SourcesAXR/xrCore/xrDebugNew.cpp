@@ -12,8 +12,6 @@
 #include <direct.h>
 #pragma warning(pop)
 
-//#define USE_BUG_TRAP
-
 #ifdef DEBUG
 #define DEBUG_INVOKE	DebugBreak();
 #else
@@ -22,16 +20,7 @@
 
 static BOOL bException = FALSE;
 
-#ifndef USE_BUG_TRAP
-#	include <exception>
-#endif
-
 #include <dbghelp.h>						// MiniDump flags
-
-#ifdef USE_BUG_TRAP
-#	include "../3rd party/BugTrap/Client/bugtrap.h"						// for BugTrap functionality
-        #pragma comment(lib,"BugTrap-x64.lib")		// Link to ANSI DLL
-#endif // USE_BUG_TRAP
 
 #include <new.h>							// for _set_new_mode
 #include <signal.h>							// for signals
@@ -206,9 +195,6 @@ void xrDebug::backend	(const char *expression, const char *description, const ch
 		{
 			case IDCANCEL :
 			{
-#ifdef USE_BUG_TRAP
-				BT_SetUserMessage	(assertion_info);
-#endif // USE_BUG_TRAP
 				if (strstr(GetCommandLine(), "-show_log"))
 					ShellExecute(nullptr, "open", logFullName(), nullptr, nullptr, SW_SHOWNORMAL);
 
@@ -229,9 +215,6 @@ void xrDebug::backend	(const char *expression, const char *description, const ch
 			default : DebugBreak();
 		}
 #	else // USE_OWN_ERROR_MESSAGE_WINDOW
-#		ifdef USE_BUG_TRAP
-			BT_SetUserMessage	(assertion_info);
-#		endif // USE_BUG_TRAP
 			if (strstr(GetCommandLine(), "-show_log"))
 				ShellExecute(nullptr, "open", logFullName(), nullptr, nullptr, SW_SHOWNORMAL);
 
@@ -340,128 +323,11 @@ XRCORE_API string_path g_bug_report_file;
 
 void CALLBACK PreErrorHandler	(INT_PTR)
 {
-#ifdef USE_BUG_TRAP
-	if (!xr_FS || !FS.m_Flags.test(CLocatorAPI::flReady))
-		return;
-
-	string_path				log_folder;
-
-	__try {
-		FS.update_path		(log_folder,"$logs$","");
-		if ((log_folder[0] != '\\') && (log_folder[1] != ':')) {
-			string256		current_folder;
-			_getcwd			(current_folder,sizeof(current_folder));
-			
-			string256		relative_path;
-			xr_strcpy		(relative_path,sizeof(relative_path),log_folder);
-			strconcat		(sizeof(log_folder),log_folder,current_folder,"\\",relative_path);
-		}
-	}
-	__except(EXCEPTION_EXECUTE_HANDLER) {
-		xr_strcpy				(log_folder,sizeof(log_folder),"logs");
-	}
-
-	string_path				temp;
-	strconcat				(sizeof(temp), temp, log_folder, log_name());
-	BT_AddLogFile			(temp);
-
-	if (*g_bug_report_file)
-		BT_AddLogFile		(g_bug_report_file);
-
-	BT_SaveSnapshot			( 0 );
-#endif // USE_BUG_TRAP
 }
 
 void xrDebug::OnFileSystemInitialized()
 {
-#ifdef USE_BUG_TRAP
-	string_path dumpPath;
-	if (FS.path_exist("$app_data_root$"))
-	{
-		if (FS.update_path(dumpPath, "$app_data_root$", "reports"))
-			BT_SetReportFilePath(dumpPath);
-	}
-#endif // USE_BUG_TRAP
 }
-
-
-#ifdef USE_BUG_TRAP
-void SetupExceptionHandler	(const bool &dedicated)
-{
-	BT_InstallSehFilter		();
-#if 1//ndef USE_OWN_ERROR_MESSAGE_WINDOW
-	if (!dedicated && !strstr(GetCommandLine(),"-silent_error_mode"))
-		BT_SetActivityType	(BTA_SHOWUI);
-	else
-		BT_SetActivityType	(BTA_SAVEREPORT);
-#else // USE_OWN_ERROR_MESSAGE_WINDOW
-	BT_SetActivityType		(BTA_SAVEREPORT);
-#endif // USE_OWN_ERROR_MESSAGE_WINDOW
-
-	BT_SetDialogMessage				(
-		BTDM_INTRO2,
-		"\
-This is Advanced X-Ray Engine crash reporting client. \
-To help the development process, \
-please Submit Bug or save report and email it manually (button More...).\
-\r\nMany thanks in advance and sorry for the inconvenience."
-	);
-
-	BT_SetPreErrHandler		(PreErrorHandler,0);
-	BT_SetAppName			("Advanced X-Ray Engine " GAME_VERSION);
-	BT_SetReportFormat		(BTRF_TEXT);
-	BT_SetFlags				(/**/BTF_DETAILEDMODE | /**BTF_EDIETMAIL | /**/BTF_ATTACHREPORT /**| BTF_LISTPROCESSES /**| BTF_SHOWADVANCEDUI /**| BTF_SCREENCAPTURE/**/);
-
-	u32 const minidump_flags	=
-#ifndef MASTER_GOLD
-		(
-			MiniDumpWithDataSegs |
-//			MiniDumpWithFullMemory |
-//			MiniDumpWithHandleData |
-//			MiniDumpFilterMemory |
-//			MiniDumpScanMemory |
-//			MiniDumpWithUnloadedModules |
-#	ifndef _EDITOR
-			MiniDumpWithIndirectlyReferencedMemory |
-#	endif // _EDITOR
-//			MiniDumpFilterModulePaths |
-//			MiniDumpWithProcessThreadData |
-//			MiniDumpWithPrivateReadWriteMemory |
-//			MiniDumpWithoutOptionalData |
-//			MiniDumpWithFullMemoryInfo |
-//			MiniDumpWithThreadInfo |
-//			MiniDumpWithCodeSegs |
-			0
-		);
-#else // #ifndef MASTER_GOLD
-		dedicated ?
-		MiniDumpNoDump :
-		(
-			MiniDumpWithDataSegs |
-//			MiniDumpWithFullMemory |
-//			MiniDumpWithHandleData |
-//			MiniDumpFilterMemory |
-//			MiniDumpScanMemory |
-//			MiniDumpWithUnloadedModules |
-#	ifndef _EDITOR
-			MiniDumpWithIndirectlyReferencedMemory |
-#	endif // _EDITOR
-//			MiniDumpFilterModulePaths |
-//			MiniDumpWithProcessThreadData |
-//			MiniDumpWithPrivateReadWriteMemory |
-//			MiniDumpWithoutOptionalData |
-//			MiniDumpWithFullMemoryInfo |
-//			MiniDumpWithThreadInfo |
-//			MiniDumpWithCodeSegs |
-			0
-		);
-#endif // #ifndef MASTER_GOLD
-
-	BT_SetDumpType			(minidump_flags);
-	BT_SetSupportEMail		("mfs.team@yandex.ru");
-	BT_SetSupportURL		("https://vk.com/mfs_studio");
-}
-#endif // USE_BUG_TRAP
 
 #if 1
 extern void BuildStackTrace(struct _EXCEPTION_POINTERS *pExceptionInfo);
@@ -718,7 +584,6 @@ LONG WINAPI UnhandledFilter	(_EXCEPTION_POINTERS *pExceptionInfo)
     }
 #else
 
-#ifndef USE_BUG_TRAP
 	void _terminate		()
 	{
 		if (strstr(GetCommandLine(),"-silent_error_mode"))
@@ -761,7 +626,6 @@ LONG WINAPI UnhandledFilter	(_EXCEPTION_POINTERS *pExceptionInfo)
 		std::exit(0);
 	//	FATAL					("Unexpected application termination");
 	}
-#endif // USE_BUG_TRAP
 
 	static void handler_base				(LPCSTR reason_string)
 	{
@@ -877,11 +741,7 @@ LONG WINAPI UnhandledFilter	(_EXCEPTION_POINTERS *pExceptionInfo)
 
 	void debug_on_thread_spawn			()
 	{
-#ifdef USE_BUG_TRAP
-		BT_SetTerminate					();
-#else // USE_BUG_TRAP
 		//std::set_terminate				(_terminate);
-#endif // USE_BUG_TRAP
 
 		_set_abort_behavior				(0,_WRITE_ABORT_MSG | _CALL_REPORTFAULT);
 		signal							(SIGABRT,		abort_handler);
@@ -907,15 +767,14 @@ LONG WINAPI UnhandledFilter	(_EXCEPTION_POINTERS *pExceptionInfo)
 
     void	xrDebug::_initialize		(const bool &dedicated)
     {
+		ZoneScoped;
+
 		static bool is_dedicated		= dedicated;
 
 		*g_bug_report_file				= 0;
 
 		debug_on_thread_spawn			();
 
-#ifdef USE_BUG_TRAP
-		SetupExceptionHandler			( is_dedicated );
-#endif // USE_BUG_TRAP
 		previous_filter					= ::SetUnhandledExceptionFilter(UnhandledFilter);	// exception handler to all "unhandled" exceptions
 
 #if 0

@@ -44,7 +44,7 @@ bool CStateMonsterAttackRunAttackAbstract::check_start_conditions()
 	if (dist < object->MeleeChecker.get_min_distance())		return false;
 	
 	// check angle
-	if (!object->control().direction().is_face_target(object->EnemyMan.get_enemy(), deg(30))) return false;
+	if (!object->control().get_direction().is_face_target(object->EnemyMan.get_enemy(), deg(30))) return false;
 	
 	// try to build path
 	Fvector target_position;

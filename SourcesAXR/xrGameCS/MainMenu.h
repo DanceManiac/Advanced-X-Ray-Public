@@ -11,6 +11,7 @@ class CGameSpy_Full;
 #include "UIDialogHolder.h"
 #include "ui/UIWndCallback.h"
 #include "ui_base.h"
+#include "GlobalAchievements.h"
 
 struct  Patch_Dawnload_Progress{
 	bool		IsInProgress;
@@ -97,6 +98,8 @@ protected:
 	
 	xr_vector<CUIMessageBoxEx*>	m_pMB_ErrDlgs;
 	bool			ReloadUI						();
+
+	CGlobalAchievementsManager* AchievementsManager{};
 public:
 	u32				m_deactivated_frame;
 	bool			m_activatedScreenRatio;
@@ -147,6 +150,9 @@ public:
 	void  __stdcall OnDownloadPatch					(CUIWindow*, void*);
 	void  __stdcall OnConnectToMasterServerOkClicked(CUIWindow*, void*);
 
+	pcstr			GetDebugType					() override { return "CMainMenu"; }
+	bool			FillDebugTree					(const CUIDebugState& debugState) override;
+
 	void			Show_DownloadMPMap				(LPCSTR text, LPCSTR url);
 	void  __stdcall OnDownloadMPMap_CopyURL			(CUIWindow*, void*);
 	void  __stdcall OnDownloadMPMap					(CUIWindow*, void*);
@@ -175,6 +181,7 @@ public:
 	LPCSTR			GetPlayerNameFromRegistry		();
 	LPCSTR			GetCDKeyFromRegistry			();
 
+	CGlobalAchievementsManager* GetGlobalAchievementsManager() { return AchievementsManager; }
 };
 
 extern CMainMenu*	MainMenu();

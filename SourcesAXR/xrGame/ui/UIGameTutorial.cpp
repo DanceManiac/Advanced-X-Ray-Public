@@ -110,20 +110,27 @@ CUISequencer::CUISequencer()
 	m_flags.zero();
 }
 
-void CUISequencer::Start(LPCSTR tutor_name)
+bool CUISequencer::Start(LPCSTR tutor_name)
 {
-
-	VERIFY						(m_sequencer_items.size()==0);
-	Device.seqFrame.Add			(this, REG_PRIORITY_LOW-10000);
+	VERIFY						(m_sequencer_items.empty());
 	
-	m_name						= tutor_name;
-	m_UIWindow					= xr_new<CUIWindow>();
-
 	CUIXml uiXml;
 	uiXml.Load					(CONFIG_PATH, UI_PATH, "game_tutorials.xml");
 	
-	int items_count				= uiXml.GetNodesNum	(tutor_name, 0, "item");	VERIFY(items_count>0);
+	int items_count				= uiXml.GetNodesNum	(tutor_name, 0, "item");	
+	if (items_count <= 0)
+	{
+		Msg("! can't find tutorial [%s]", tutor_name);
+		return false;
+    }
+
+	m_name						= tutor_name;
+
 	uiXml.SetLocalRoot			(uiXml.NavigateToNode(tutor_name, 0));
+
+	Device.seqFrame.Add			(this, REG_PRIORITY_LOW-10000);
+
+	m_UIWindow					= xr_new<CUIWindow>();
 
 	m_flags.set(etsPlayEachItem, !!uiXml.ReadInt("play_each_item", 0, 0));
 	m_flags.set(etsPersistent, !!uiXml.Read("persistent", 0, 0));
@@ -198,6 +205,8 @@ void CUISequencer::Start(LPCSTR tutor_name)
 
 	if(m_start_lua_function.size())
 		CallFunction(m_start_lua_function);
+
+    return true;
 }
 
 CUISequenceItem* CUISequencer::GetNextItem()
@@ -237,30 +246,34 @@ extern CUISequencer * g_tutorial2;
 
 void CUISequencer::Destroy()
 {
-	m_name = nullptr;
-
 	if(m_stop_lua_function.size())
 		CallFunction(m_stop_lua_function);
 
 	m_global_sound.stop			();
 	Device.seqFrame.Remove		(this);
 	Device.seqRender.Remove		(this);
-	delete_data					(m_sequencer_items);
-	delete_data					(m_UIWindow);
+
+	if (!m_sequencer_items.empty())
+		delete_data				(m_sequencer_items);
+
+	if (m_UIWindow)
+		delete_data				(m_UIWindow);
+
+	m_name						= nullptr;
 	IR_Release					();
 	m_flags.set					(etsActive, FALSE);
-	m_pStoredInputReceiver		= NULL;
-	
+	m_pStoredInputReceiver		= nullptr;
+
 	if(!m_on_destroy_event.empty())
 		m_on_destroy_event		();
 
 	if(g_tutorial==this)
 	{
-		g_tutorial = NULL;
+		g_tutorial = nullptr;
 	}
 	if(g_tutorial2==this)
 	{
-		g_tutorial2 = NULL;
+		g_tutorial2 = nullptr;
 	}
 }
 
@@ -290,6 +303,8 @@ void CUISequencer::Stop()
 
 void CUISequencer::OnFrame()
 {  
+	ZoneScoped;
+
 	if(!Device.b_is_Active)		return;
 	if(!IsActive() )			return;
 
@@ -317,6 +332,8 @@ void CUISequencer::OnFrame()
 
 void CUISequencer::OnRender	()
 {
+	ZoneScoped;
+
 	if (m_UIWindow->IsShown())	
 		m_UIWindow->Draw();
 

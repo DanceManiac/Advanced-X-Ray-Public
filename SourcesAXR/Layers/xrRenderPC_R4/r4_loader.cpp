@@ -39,6 +39,13 @@ void CRender::level_Load(IReader* fs)
 		R_ASSERT2					(chunk,"Level doesn't builded correctly.");
 		u32 count = chunk->r_u32	();
 		Shaders.resize				(count);
+
+		if (strstr(Core.Params, "-lvl_shaders_log"))
+		{
+			LevelShadersVec.clear();
+			LevelShadersDetList.clear();
+		}
+
 		for(u32 i=0; i<count; i++)	// skip first shader as "reserved" one
 		{
 			string512				n_sh,n_tlist;
@@ -50,15 +57,43 @@ void CRender::level_Load(IReader* fs)
 			*delim					= 0;
 			xr_strcpy					(n_tlist,delim+1);
 			Shaders[i]				= dxRenderDeviceRender::Instance().Resources->Create(n_sh,n_tlist);
+
+			if (strstr(Core.Params, "-lvl_shaders_log"))
+			{
+				if (std::find_if(LevelShadersVec.begin(), LevelShadersVec.end(), [&](const xr_string& name) { return name == n_sh; }) == LevelShadersVec.end())
+					LevelShadersVec.push_back(n_sh);
+
+				LevelShadersDetList.insert(std::make_pair(n_sh, n_tlist));
+			}
 		}
 		chunk->close();
+
+		if (strstr(Core.Params, "-lvl_shaders_log"))
+		{
+			bool firstIt = true;
+			for (const xr_string& shader : LevelShadersVec)
+			{
+				if (firstIt)
+				{
+					Msg("\nUnique level shaders from shaders.xr: \n");
+					firstIt = false;
+				}
+
+				Msg("Shader: '%s'", shader.c_str());
+			}
+
+			Msg("\nDetailed list of level shaders:\n\n");
+
+			for (const auto& pair : LevelShadersDetList)
+				Msg("Loading level shader from shaders.xr: shader: '%s', shader texture: '%s'", pair.first.c_str(), pair.second.c_str());
+		}
 	}
 
 	// Components
 	Wallmarks					= xr_new<CWallmarksEngine>	();
 	Details						= xr_new<CDetailManager>	();
 
-	if	(!g_dedicated_server)	{
+	{
 		// VB,IB,SWI
 		g_pGamePersistent->SetLoadStageTitle("st_loading_geometry");
 		g_pGamePersistent->LoadTitle();
@@ -114,6 +149,7 @@ void CRender::level_Load(IReader* fs)
 	lstLODs.clear				();
 	lstLODgroups.clear			();
 	mapLOD.clear				();
+	mapWater.clear				();
 
 	// signal loaded
 	b_loaded					= TRUE	;
@@ -199,14 +235,14 @@ void CRender::LoadBuffers		(CStreamReader *base_fs,	BOOL _alternative)
 		u32 count				= fs->r_u32();
 		_DC.resize				(count);
 		_VB.resize				(count);
+
+		u32 bufferSize			= (MAXD3DDECLLENGTH + 1) * sizeof(D3DVERTEXELEMENT9);
+		D3DVERTEXELEMENT9* dcl	= (D3DVERTEXELEMENT9*)_alloca(bufferSize);
+
 		for (u32 i=0; i<count; i++)
 		{
-			// decl
-//			D3DVERTEXELEMENT9*	dcl		= (D3DVERTEXELEMENT9*) fs().pointer();
-			u32					buffer_size = (MAXD3DDECLLENGTH+1)*sizeof(D3DVERTEXELEMENT9);
-			D3DVERTEXELEMENT9	*dcl = (D3DVERTEXELEMENT9*)_alloca(buffer_size);
-			fs->r				(dcl,buffer_size);
-			fs->advance			(-(int)buffer_size);
+			fs->r				(dcl,bufferSize);
+			fs->advance			(-(int)bufferSize);
 
 			u32 dcl_len			= D3DXGetDeclLength		(dcl)+1;
 			_DC[i].resize		(dcl_len);
@@ -454,8 +490,22 @@ void CRender::Load3DFluid()
 				dx103DFluidVolume *pVolume = xr_new<dx103DFluidVolume>();
 				pVolume->Load("", F, 0);
 
+				const auto& v = pVolume->getVisData().sphere.P;
+
 				//	Attach to sector's static geometry
 				CSector *pSector = (CSector*)detectSector(pVolume->getVisData().sphere.P);
+
+				if (!pSector)
+				{
+					const auto& v = pVolume->getVisData().sphere.P;
+
+					Msg("!!Cannot find sector for fog volume. Position x=[%f] y=[%f] z=[%f]!", v.x, v.y, v.z);
+
+					xr_delete(pVolume);
+
+					continue;
+				}
+
 				//	3DFluid volume must be in render sector
 				VERIFY(pSector);
 

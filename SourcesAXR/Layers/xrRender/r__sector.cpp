@@ -35,15 +35,22 @@ void CPortal::OnRender	()
 		// draw rect
 		DEFINE_VECTOR		(FVF::L,LVec,LVecIt);
 		static LVec	V;		V.resize(poly.size()+2);
-		Fvector C			= {0,0,0};
-		for (u32 k=0; k<poly.size(); k++){ C.add(poly[k]); V[k+1].set(poly[k],0x800000FF);}
-		V.back().set		(poly[0],0x800000FF);
+		constexpr u32 portalColor = 0x800000FF;
+		Fvector C{};
+		for (u32 k = 0; k < poly.size(); k++) { C.add(poly[k]); V[k + 1].set(poly[k], portalColor); }
+		V.back().set(poly[0], portalColor);
 		C.div				((float)poly.size());
-		V[0].set			(C,0x800000FF);
+		V[0].set			(C, portalColor);
 
 		RCache.set_xform_world(Fidentity);
 		// draw solid
 		RCache.set_Shader	(dxRenderDeviceRender::Instance().m_SelectionShader);
+
+#if defined(USE_DX11)
+		RCache.set_c("tfactor", float(color_get_R(portalColor)) / 255.f, float(color_get_G(portalColor)) / 255.f, \
+			float(color_get_B(portalColor)) / 255.f, float(color_get_A(portalColor)) / 255.f);
+#endif
+
 		RCache.dbg_Draw		(D3DPT_TRIANGLEFAN,&*V.begin(),V.size()-2);
 
 		// draw wire
@@ -53,6 +60,12 @@ void CPortal::OnRender	()
 			Device.SetNearer(TRUE);
 		}
 		RCache.set_Shader	(dxRenderDeviceRender::Instance().m_WireShader);
+
+#if defined(USE_DX11)
+		RCache.set_c("tfactor", float(color_get_R(portalColor)) / 255.f, float(color_get_G(portalColor)) / 255.f, \
+			float(color_get_B(portalColor)) / 255.f, float(color_get_A(portalColor)) / 255.f);
+#endif
+
 		RCache.dbg_Draw		(D3DPT_LINESTRIP,&*(V.begin()+1),V.size()-2);
 		if (bDebug){
 			RImplementation.rmNormal();
@@ -245,8 +258,7 @@ void CSector::load		(IReader& fs)
 		count--;
 	}
 
-	if	(g_dedicated_server)	m_root	= 0;
-	else {
+	{
 		// Assign visual
 		size	= fs.find_chunk(fsP_Root);	R_ASSERT(size==4);
 		m_root	= (dxRender_Visual*)RImplementation.getVisual	(fs.r_u32());

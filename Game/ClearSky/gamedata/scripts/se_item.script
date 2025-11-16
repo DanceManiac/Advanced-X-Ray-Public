@@ -21,6 +21,27 @@ function se_outfit:on_unregister()
 	task_manager.get_task_manager():unregister_target(self)
 end
 
+class "se_helmet" (cse_alife_item_helmet)
+function se_helmet:__init (section) super (section)
+end
+function se_helmet:on_register()
+	cse_alife_item_helmet.on_register( self )
+	-- Регистрация в таскменеджере
+	task_manager.get_task_manager():register_target(self)
+
+	-- Собираем статистику по предметам.
+	if registred_items[self:section_name()] == nil then
+		registred_items[self:section_name()] = 1
+	else
+		registred_items[self:section_name()] = registred_items[self:section_name()] + 1
+	end
+end
+function se_helmet:on_unregister()
+	cse_alife_item_helmet.on_unregister( self )
+	--' Отрегистрация в таскменеджере
+	task_manager.get_task_manager():unregister_target(self)
+end
+
 class "se_weapon" (cse_alife_item_weapon)
 function se_weapon:__init (section) super (section)
 end

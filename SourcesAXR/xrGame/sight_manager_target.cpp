@@ -108,23 +108,23 @@ void CSightManager::SetFirePointLookAngles(const Fvector &tPosition, float &yaw,
 
 void CSightManager::SetDirectionLook()
 {
-//	MonsterSpace::SBoneRotation				orientation = object().movement().m_head, body_orientation = object().movement().body_orientation();
+//	MonsterSpace::SBoneRotation				orientation = object().get_movement().m_head, body_orientation = object().get_movement().body_orientation();
 //	orientation.target						= orientation.current;
 //	body_orientation.target					= body_orientation.current;
-	if (GetDirectionAngles(object().movement().m_head.target.yaw,object().movement().m_head.target.pitch)) {
-		object().movement().m_head.target.yaw	*= -1;
-		object().movement().m_head.target.pitch	*= 0;//-1;
+	if (GetDirectionAngles(object().get_movement().m_head.target.yaw,object().get_movement().m_head.target.pitch)) {
+		object().get_movement().m_head.target.yaw	*= -1;
+		object().get_movement().m_head.target.pitch	*= 0;//-1;
 	}
 	else
-		object().movement().m_head.target	= object().movement().m_head.current;
-	object().movement().m_body.target		= object().movement().m_head.target;
+		object().get_movement().m_head.target	= object().get_movement().m_head.current;
+	object().get_movement().m_body.target		= object().get_movement().m_head.target;
 }
 
 void CSightManager::SetLessCoverLook(const CLevelGraph::CVertex *tpNode, bool bDifferenceLook)
 {
 	SetDirectionLook	();
 
-	if (m_object->movement().detail().path().empty())
+	if (m_object->get_movement().detail().path().empty())
 		return;
 
 	SetLessCoverLook	(tpNode, MAX_HEAD_TURN_ANGLE, bDifferenceLook);
@@ -132,14 +132,14 @@ void CSightManager::SetLessCoverLook(const CLevelGraph::CVertex *tpNode, bool bD
 
 void CSightManager::SetLessCoverLook(const CLevelGraph::CVertex *tpNode, float fMaxHeadTurnAngle, bool bDifferenceLook)
 {
-	float					fAngleOfView, range, fMaxSquare = -1.f, fBestAngle = object().movement().m_head.target.yaw;
+	float					fAngleOfView, range, fMaxSquare = -1.f, fBestAngle = object().get_movement().m_head.target.yaw;
 	m_object->update_range_fov(range,fAngleOfView,m_object->eye_range,m_object->eye_fov);
 	fAngleOfView			= (fAngleOfView/180.f*PI)/2.f;
 
 	CLevelGraph::CVertex	*tpNextNode = 0;
 	u32						node_id;
 	bool bOk = false;
-	if (bDifferenceLook && !m_object->movement().detail().path().empty() && (m_object->movement().detail().path().size() - 1 > m_object->movement().detail().curr_travel_point_index())) {
+	if (bDifferenceLook && !m_object->get_movement().detail().path().empty() && (m_object->get_movement().detail().path().size() - 1 > m_object->get_movement().detail().curr_travel_point_index())) {
 		CLevelGraph::const_iterator	i, e;
 		ai().level_graph().begin(tpNode,i,e);
 		for ( ; i != e; ++i) {
@@ -147,7 +147,7 @@ void CSightManager::SetLessCoverLook(const CLevelGraph::CVertex *tpNode, float f
 			if (!ai().level_graph().valid_vertex_id(node_id))
 				continue;
 			tpNextNode = ai().level_graph().vertex(node_id);
-			if (ai().level_graph().inside(tpNextNode,m_object->movement().detail().path()[m_object->movement().detail().curr_travel_point_index() + 1].position)) {
+			if (ai().level_graph().inside(tpNextNode,m_object->get_movement().detail().path()[m_object->get_movement().detail().curr_travel_point_index() + 1].position)) {
 				bOk = true;
 				break;
 			}
@@ -155,7 +155,7 @@ void CSightManager::SetLessCoverLook(const CLevelGraph::CVertex *tpNode, float f
 	}
 
 	if (!bDifferenceLook || !bOk) 
-		for (float fIncrement = object().movement().m_body.target.yaw - fMaxHeadTurnAngle; fIncrement <= object().movement().m_body.target.yaw + fMaxHeadTurnAngle; fIncrement += fMaxHeadTurnAngle/18.f) {
+		for (float fIncrement = object().get_movement().m_body.target.yaw - fMaxHeadTurnAngle; fIncrement <= object().get_movement().m_body.target.yaw + fMaxHeadTurnAngle; fIncrement += fMaxHeadTurnAngle/18.f) {
 			float fSquare = ai().level_graph().compute_high_square(-fIncrement,fAngleOfView,tpNode);
 			if (fSquare > fMaxSquare) {
 				fMaxSquare = fSquare;
@@ -163,15 +163,15 @@ void CSightManager::SetLessCoverLook(const CLevelGraph::CVertex *tpNode, float f
 			}
 		}
 	else {
-		float fMaxSquareSingle = -1.f, fSingleIncrement = object().movement().m_head.target.yaw;
-		for (float fIncrement = object().movement().m_body.target.yaw - fMaxHeadTurnAngle; fIncrement <= object().movement().m_body.target.yaw + fMaxHeadTurnAngle; fIncrement += 2*fMaxHeadTurnAngle/60.f) {
+		float fMaxSquareSingle = -1.f, fSingleIncrement = object().get_movement().m_head.target.yaw;
+		for (float fIncrement = object().get_movement().m_body.target.yaw - fMaxHeadTurnAngle; fIncrement <= object().get_movement().m_body.target.yaw + fMaxHeadTurnAngle; fIncrement += 2*fMaxHeadTurnAngle/60.f) {
 			float fSquare0 = ai().level_graph().compute_high_square(-fIncrement,fAngleOfView,tpNode);
 			float fSquare1 = ai().level_graph().compute_high_square(-fIncrement,fAngleOfView,tpNextNode);
 			if	(
 					(fSquare1 - fSquare0 > fMaxSquare) || 
 					(
 						fsimilar(fSquare1 - fSquare0,fMaxSquare,EPS_L) && 
-						(_abs(fIncrement - object().movement().m_body.target.yaw) < _abs(fBestAngle - object().movement().m_body.target.yaw))
+						(_abs(fIncrement - object().get_movement().m_body.target.yaw) < _abs(fBestAngle - object().get_movement().m_body.target.yaw))
 					)
 				)
 			{
@@ -188,19 +188,19 @@ void CSightManager::SetLessCoverLook(const CLevelGraph::CVertex *tpNode, float f
 			fBestAngle = fSingleIncrement;
 	}
 
-	object().movement().m_head.target.yaw = angle_normalize_signed(fBestAngle);
-	object().movement().m_head.target.pitch = 0;
-	VERIFY					(_valid(object().movement().m_head.target.yaw));
+	object().get_movement().m_head.target.yaw = angle_normalize_signed(fBestAngle);
+	object().get_movement().m_head.target.pitch = 0;
+	VERIFY					(_valid(object().get_movement().m_head.target.yaw));
 }
 
 
 bool CSightManager::GetDirectionAngles				(float &yaw, float &pitch)
 {
-	if (!object().movement().path().empty() && (m_object->movement().detail().curr_travel_point_index() + 1 < m_object->movement().detail().path().size())) {
+	if (!object().get_movement().path().empty() && (m_object->get_movement().detail().curr_travel_point_index() + 1 < m_object->get_movement().detail().path().size())) {
 		Fvector				t;
 		t.sub					(
-			object().movement().path()[m_object->movement().detail().curr_travel_point_index() + 1].position,
-			object().movement().path()[m_object->movement().detail().curr_travel_point_index()].position
+			object().get_movement().path()[m_object->get_movement().detail().curr_travel_point_index() + 1].position,
+			object().get_movement().path()[m_object->get_movement().detail().curr_travel_point_index()].position
 		);
 		t.getHP				(yaw,pitch);
 		return				(true);

@@ -25,11 +25,13 @@ CFontManager::CFontManager()
 	m_all_fonts.push_back(&pFontMedium				);// used cpp
 	m_all_fonts.push_back(&pFontDI					);// used cpp
 	m_all_fonts.push_back(&pFontArial14				);// used xml
+	m_all_fonts.push_back(&pFontArial21				);// used xml
 	m_all_fonts.push_back(&pFontGraffiti19Russian	);
 	m_all_fonts.push_back(&pFontGraffiti22Russian	);
 	m_all_fonts.push_back(&pFontLetterica16Russian	);
 	m_all_fonts.push_back(&pFontLetterica18Russian	);
 	m_all_fonts.push_back(&pFontGraffiti32Russian	);
+	m_all_fonts.push_back(&pFontGraffiti40Russian	);
 	m_all_fonts.push_back(&pFontGraffiti50Russian	);
 	m_all_fonts.push_back(&pFontLetterica25			);
 	m_all_fonts.push_back(&pFontStat				);
@@ -49,11 +51,13 @@ void CFontManager::InitializeFonts()
 	InitializeFont(pFontMedium				,"hud_font_medium"				);
 	InitializeFont(pFontDI					,"hud_font_di",					CGameFont::fsGradient|CGameFont::fsDeviceIndependent);
 	InitializeFont(pFontArial14				,"ui_font_arial_14"				);
+	InitializeFont(pFontArial21				,"ui_font_arial_21"				);
 	InitializeFont(pFontGraffiti19Russian	,"ui_font_graffiti19_russian"	);
 	InitializeFont(pFontGraffiti22Russian	,"ui_font_graffiti22_russian"	);
 	InitializeFont(pFontLetterica16Russian	,"ui_font_letterica16_russian"	);
 	InitializeFont(pFontLetterica18Russian	,"ui_font_letterica18_russian"	);
 	InitializeFont(pFontGraffiti32Russian	,"ui_font_graff_32"				);
+	InitializeFont(pFontGraffiti40Russian	,"ui_font_graff_40"				);
 	InitializeFont(pFontGraffiti50Russian	,"ui_font_graff_50"				);
 	InitializeFont(pFontLetterica25			,"ui_font_letter_25"			);
 	InitializeFont(pFontStat				,"stat_font",					CGameFont::fsDeviceIndependent);
@@ -65,13 +69,7 @@ LPCSTR CFontManager::GetFontTexName (LPCSTR section)
 	static char* tex_names[] = { "texture800", "texture", "texture1600", "texture2k", "texture4k" };
 	int def_idx		= 1;//default 1024x768
 	int idx			= def_idx;
-#if 0
-	u32 w = Device.dwWidth;
 
-	if(w<=800)		idx = 0;
-	else if(w<=1280)idx = 1;
-	else 			idx = 2;
-#else
 	u32 h = Device.dwHeight;
 
 	if		(h<=600)	idx = 0;
@@ -79,7 +77,6 @@ LPCSTR CFontManager::GetFontTexName (LPCSTR section)
 	else if (h<1200)	idx = 2;
 	else if (h<1440)	idx = 3;
 	else				idx = 4;
-#endif
 
 	while(idx>=0){
 		if( pSettings->line_exist(section,tex_names[idx]) )
@@ -94,22 +91,47 @@ void CFontManager::InitializeFont(CGameFont*& F, LPCSTR section, u32 flags)
 	LPCSTR font_tex_name = GetFontTexName(section);
 	R_ASSERT(font_tex_name);
 
-	if(!F)
-		F = xr_new<CGameFont> ("font", font_tex_name, flags);
-	else
-		F->Initialize("font",font_tex_name);
+	const char* sh_name = READ_IF_EXISTS(pSettings, r_string, section, "shader", "font");
 
-#ifdef DEBUG
+	if(!F)
+		F = xr_new<CGameFont>(sh_name, font_tex_name, flags);
+	else
+		F->Initialize(sh_name, font_tex_name);
+
 	F->m_font_name = section;
-#endif
+
+	if (!(flags & CGameFont::fsDeviceIndependent))
+	{
+		if (pSettings->line_exist(section, "scale_x"))
+		{
+			F->SetWidthScale(pSettings->r_float(section, "scale_x"));
+		}
+		if (pSettings->line_exist(section, "scale_y"))
+		{
+			F->SetHeightScale(pSettings->r_float(section, "scale_y"));
+		}
+	}
+
+	if (pSettings->line_exist(section, "font_shadow_enabled"))
+		F->SetFontShadowEnabled(pSettings->r_bool(section, "font_shadow_enabled"));
+		
+	if (pSettings->line_exist(section, "font_shadow_for_black_text"))
+		F->SetFontShadowForBlackText(pSettings->r_bool(section, "font_shadow_for_black_text"));
+		
+	if (pSettings->line_exist(section, "font_shadow_x"))
+		F->SetFontShadowX(pSettings->r_float(section, "font_shadow_x"));
+		
+	if (pSettings->line_exist(section, "font_shadow_y"))
+		F->SetFontShadowY(pSettings->r_float(section, "font_shadow_y"));
+
 	if (pSettings->line_exist(section,"size")){
 		float sz = pSettings->r_float(section,"size");
 		if (flags&CGameFont::fsDeviceIndependent)	F->SetHeightI(sz);
 		else										F->SetHeight(sz);
 	}
-	if (pSettings->line_exist(section,"interval"))
-	F->SetInterval(pSettings->r_fvector2(section,"interval"));
 
+	if (pSettings->line_exist(section,"interval"))
+		F->SetInterval(pSettings->r_fvector2(section,"interval"));
 }
 
 CFontManager::~CFontManager()
@@ -161,6 +183,8 @@ void CHUDManager::Load()
 //--------------------------------------------------------------------
 void CHUDManager::OnFrame()
 {
+	ZoneScoped;
+
 	if ( !m_Renderable )
 	{
 		return;
@@ -176,6 +200,8 @@ ENGINE_API extern float psHUD_FOV;
 
 void CHUDManager::Render_First()
 {
+	ZoneScoped;
+
 	if ( !m_Renderable )
 	{
 		return;
@@ -198,13 +224,19 @@ void CHUDManager::Render_First()
 
 void CHUDManager::Render_Last()
 {
+	ZoneScoped;
+
 	if ( !m_Renderable )
 	{
 		return;
 	}
 
-	if (!psHUD_Flags.is(HUD_WEAPON|HUD_WEAPON_RT|HUD_WEAPON_RT2))return;
-	if (0==pUI)						return;
+	if (0 == pUI)
+		return;
+
+	if (!psHUD_Flags.is(HUD_WEAPON | HUD_WEAPON_RT | HUD_WEAPON_RT2))
+		return;
+
 	CObject*	O					= g_pGameLevel->CurrentViewEntity();
 	if (0==O)						return;
 	CActor*		A					= smart_cast<CActor*> (O);
@@ -219,19 +251,6 @@ void CHUDManager::Render_Last()
 	::Render->set_Object			(O->H_Root());
 	O->OnHUDDraw					(this);
 	::Render->set_HUD				(FALSE);
-}
-
-void CHUDManager::Render_Actor_Shadow() // added by KD
-{
-	if (0 == pUI) return;
-	CObject* O = g_pGameLevel->CurrentViewEntity();
-	if (0 == O) return;
-	CActor* A = smart_cast<CActor*> (O);
-	if (!A) return;
-	if (A->active_cam() != eacFirstEye) return; // KD: we need to render actor shadow only in first eye cam mode because
-	// in other modes actor model already in scene graph and renders well
-	::Render->set_Object(O->H_Root());
-	O->renderable_Render();
 }
 
 #include "player_hud.h"
@@ -261,26 +280,27 @@ extern ENGINE_API BOOL bShowPauseString;
 #include "string_table.h"
 void  CHUDManager::RenderUI()
 {
-	if ( !m_Renderable )
-	{
-		return;
-	}
+	ZoneScoped;
 
-	if(!b_online)					return;
+	if (!m_Renderable)
+		return;
+
+	if (!b_online)
+		return;
 
 	BOOL bAlready					= FALSE;
-	if (true || psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT))
-	{
-		HitMarker.Render			();
-		bAlready					= ! (pUI && !pUI->Render());
-		UI().RenderFont				();
-	}
 
-	if (/* psHUD_Flags.is(HUD_CROSSHAIR|HUD_CROSSHAIR_RT|HUD_CROSSHAIR_RT2) &&*/ !bAlready)	
+	if (psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT))
+		HitMarker.Render		();
+		
+	bAlready					= ! (pUI && !pUI->Render());
+	UI().RenderFont				();
+
+	if (!bAlready)	
 		m_pHUDTarget->Render();
 
-
-	if( Device.Paused() && bShowPauseString){
+	if (Device.Paused() && bShowPauseString)
+	{
 		CGameFont* pFont	= UI().Font().pFontGraffiti50Russian;
 		pFont->SetColor		(0x80FF0000	);
 		LPCSTR _str			= CStringTable().translate("st_game_paused").c_str();
@@ -355,6 +375,8 @@ extern CUIXml*			pWpnScopeXml;
 
 void CHUDManager::OnScreenResolutionChanged()
 {
+	ZoneScoped;
+
 	if(pUI->UIGame())
 		pUI->UIGame()->HideShownDialogs	();
 
@@ -379,6 +401,8 @@ void CHUDManager::OnScreenResolutionChanged()
 
 void CHUDManager::OnDisconnected()
 {
+	ZoneScoped;
+
 	b_online				= false;
 	if(pUI)
 		Device.seqFrame.Remove	(pUI);
@@ -386,6 +410,8 @@ void CHUDManager::OnDisconnected()
 
 void CHUDManager::OnConnected()
 {
+	ZoneScoped;
+
 	if(b_online)			return;
 	b_online				= true;
 	if(pUI){
@@ -395,6 +421,8 @@ void CHUDManager::OnConnected()
 
 void CHUDManager::net_Relcase( CObject* obj )
 {
+	ZoneScoped;
+
 	HitMarker.net_Relcase		( obj );
 	
 	VERIFY						( m_pHUDTarget );

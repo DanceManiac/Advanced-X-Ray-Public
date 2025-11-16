@@ -5,6 +5,8 @@
 #include 	"SkeletonCustom.h"
 #include	"SkeletonX.h"
 #include	"../../xrEngine/fmesh.h"
+#include "dxRenderDeviceRender.h"
+
 #ifndef _EDITOR
 #include	"../../xrEngine/Render.h"
 #endif
@@ -54,6 +56,10 @@ LPCSTR CKinematics::LL_BoneName_dbg	(u16 ID)
 #ifdef DEBUG
 void CKinematics::DebugRender(Fmatrix& XFORM)
 {
+#if defined(USE_DX11)
+	RCache.set_Shader(dxRenderDeviceRender::Instance().m_WireShader);
+#endif
+
 	CalculateBones	();
 
 	CBoneData::BoneDebug	dbgLines;
@@ -482,6 +488,8 @@ void CKinematics::LL_SetBonesVisible(u64 mask)
 
 void CKinematics::Visibility_Update	()
 {
+	ZoneScoped;
+
 	Update_Visibility	= FALSE		;
 	// check visible
 	for (u32 c_it=0; c_it<children.size(); c_it++)				{
@@ -568,6 +576,8 @@ bool	CKinematics::	PickBone			(const Fmatrix &parent_xform, IKinematics::pick_re
 
 void CKinematics::AddWallmark(const Fmatrix* parent_xform, const Fvector3& start, const Fvector3& dir, ref_shader shader, float size)
 {
+	ZoneScoped;
+
 	Fvector S,D,normal		= {0,0,0};
 	// transform ray from world to model
 	Fmatrix P;	P.invert	(*parent_xform);
@@ -609,7 +619,7 @@ void CKinematics::AddWallmark(const Fmatrix* parent_xform, const Fvector3& start
     test_sphere.set			(cp,size); 
 	U16Vec					test_bones;
 	test_bones.reserve		(LL_BoneCount());
-	for (k=0; k<LL_BoneCount(); k++){
+	for (u16 k=0; k<LL_BoneCount(); k++){
 		CBoneData& BD		= LL_GetData(k);  
 		if (LL_GetBoneVisible(k)&&!BD.shape.flags.is(SBoneShape::sfNoPickable)){
 			Fobb& obb		= cache_obb[k];
@@ -662,6 +672,8 @@ struct zero_wm_pred
 
 void CKinematics::CalculateWallmarks()
 {
+	ZoneScoped;
+
 	if (!wallmarks.empty()&&(wm_frame!=RDEVICE.dwFrame)){
 		wm_frame			= RDEVICE.dwFrame;
 		bool need_remove	= false; 
@@ -679,7 +691,7 @@ void CKinematics::CalculateWallmarks()
 			}
 		}
 		if (need_remove){
-			SkeletonWMVecIt new_end= std::remove_if(wallmarks.begin(),wallmarks.end(),zero_wm_pred());
+			auto new_end= std::remove_if(wallmarks.begin(),wallmarks.end(),zero_wm_pred());
 			wallmarks.erase	(new_end,wallmarks.end());
 		}
 	}
@@ -687,6 +699,8 @@ void CKinematics::CalculateWallmarks()
 
 void CKinematics::RenderWallmark(intrusive_ptr<CSkeletonWallmark> wm, FVF::LIT* &V)
 {
+	ZoneScoped;
+
 	VERIFY(wm);
 	VERIFY(V);
 	VERIFY2(bones, "Invalid visual. Bones already released.");

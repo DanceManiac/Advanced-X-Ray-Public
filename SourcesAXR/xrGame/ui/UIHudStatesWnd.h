@@ -69,6 +69,46 @@ public:
 	bool				m_fake_indicators_update;
 //	bool				m_cur_state_LA[it_max];
 	bool				m_b_force_update;
+	
+protected:
+
+	CUIStatic*			_ind_position_set;
+	CUIStatic*			_ind_block_icon;
+	int					_ind_max_icons{};
+	bool				_ind_is_vertical_attrib{};
+	bool				_ind_clr_only_one_attrib{};
+	u32					_ind_clr_fixed{};
+	u32					_ind_pos_shift_add{};
+	bool				_ind_dir_left{};
+	bool				_ind_dir_bottom{};
+	//bool				_ind_is_centered{};
+	CUIStatic*			_ind_radiation;
+	CUIStatic*			_ind_alcohol;
+	CUIStatic*			_ind_starvation;
+	CUIStatic*			_ind_thirst;
+	CUIStatic*			_ind_weapon_broken;
+	CUIStatic*			_ind_bleeding;
+	CUIStatic*			_ind_psyhealth;
+	CUIStatic*			_ind_overweight;
+	CUIStatic*			_ind_stamina;
+	CUIStatic*			_ind_health;
+
+	CUIStatic*			_ind_intoxication;
+	CUIStatic*			_ind_sleepeness;
+	CUIStatic*			_ind_alcoholism;
+	CUIStatic*			_ind_hangover;
+	CUIStatic*			_ind_narcotism;
+	CUIStatic*			_ind_withdrawal;
+	CUIStatic*			_ind_drugs;
+	CUIStatic*			_ind_frostbite;
+	CUIStatic*			_ind_heating;
+	CUIStatic*			_ind_outfit_broken;
+	CUIStatic*			_ind_filter;
+	CUIStatic*			_ind_helmet_broken;
+	CUIStatic*			_ind_helmet_2_broken;
+	CUIStatic*			_ind_battery;
+
+public:
 
 					CUIHudStatesWnd		();
 	virtual			~CUIHudStatesWnd	();
@@ -81,6 +121,7 @@ public:
 			void	on_connected		();
 			void	reset_ui			();
 			void	UpdateHealth		( CActor* actor );
+			void	UpdateIndicatorIcons	( CActor* actor );
 			void	SetAmmoIcon			( const shared_str& sect_name );
 			void	UpdateActiveItemInfo( CActor* actor );
 

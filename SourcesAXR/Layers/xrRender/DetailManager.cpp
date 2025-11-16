@@ -88,6 +88,8 @@ void CDetailManager::SSwingValue::lerp(const SSwingValue& A, const SSwingValue& 
 
 CDetailManager::CDetailManager	()
 {
+	ZoneScoped;
+
 	dtFS 		= 0;
 	dtSlots		= 0;
 	soft_Geom	= 0;
@@ -146,6 +148,8 @@ CDetailManager::CDetailManager	()
 
 CDetailManager::~CDetailManager	()
 {
+	ZoneScoped;
+
 	if (dtFS)
 	{
 		FS.r_close(dtFS);
@@ -183,6 +187,8 @@ void dump	(CDetailManager::vis_list& lst)
 */
 void CDetailManager::Load		()
 {
+	ZoneScoped;
+
 	// Open file stream
 	if (!FS.exist("$level$","level.details"))
 	{
@@ -244,6 +250,8 @@ void CDetailManager::Load		()
 #endif
 void CDetailManager::Unload		()
 {
+	ZoneScoped;
+
 	if (UseVS())	hw_Unload	();
 	else			soft_Unload	();
 
@@ -264,14 +272,12 @@ extern int ps_no_scale_on_fade;
 
 void CDetailManager::UpdateVisibleM()
 {
-	for (int i = 0; i != 3; i++)
-	{
-		vis_list::iterator it = m_visibles[i].begin();
-		vis_list::iterator ite = m_visibles[i].end();
-	
-		for (; it != ite; ++it)
-			it->clear_not_free();
-	}
+	ZoneScoped;
+
+	// Clean up
+	for (auto& vec : m_visibles)
+		for (auto& vis : vec)
+			vis.clear_not_free();
 
 	Fvector		EYE				= RDEVICE.vCameraPosition_saved;
 
@@ -290,8 +296,8 @@ void CDetailManager::UpdateVisibleM()
 	// Initialize 'vis' and 'cache'
 	// Collect objects for rendering
 	RDEVICE.Statistic->RenderDUMP_DT_VIS.Begin	();
-	for (int _mz=0; _mz<dm_cache1_line; _mz++){
-		for (int _mx=0; _mx<dm_cache1_line; _mx++){
+	for (u32 _mz=0; _mz<dm_cache1_line; _mz++){
+		for (u32 _mx=0; _mx<dm_cache1_line; _mx++){
 			CacheSlot1& MS		= cache_level1[_mz][_mx];
 			if (MS.empty)
 			{
@@ -343,7 +349,12 @@ void CDetailManager::UpdateVisibleM()
 				if (RDEVICE.dwFrame>S.frame){
 					// Calc fade factor	(per slot)
 					float	dist_sq		= EYE.distance_to_sqr	(S.vis.sphere.P);
-					if		(dist_sq>fade_limit)				continue;
+					if (dist_sq > fade_limit)
+					{
+						S.hidden = true;
+						continue;
+					}
+
 					float	alpha		= (dist_sq<fade_start)?0.f:(dist_sq-fade_start)/fade_range;
 					float	alpha_i		= 1.f - alpha;
 					float	dist_sq_rcp	= 1.f / dist_sq;
@@ -360,20 +371,32 @@ void CDetailManager::UpdateVisibleM()
 						float				R		= objects	[sp.id]->bv_sphere.R;
 						float				Rq_drcp	= R*R*dist_sq_rcp;	// reordered expression for 'ssa' calc
 
-						SlotItem			**siIT=&(*sp.items.begin()), **siEND=&(*sp.items.end());
-						for (; siIT!=siEND; siIT++){
-							SlotItem& Item			= *(*siIT);
+						for (auto& el: sp.items){
+
+							if (el == nullptr) continue;
+
+							SlotItem& Item			= *el;
 							float   scale = ps_no_scale_on_fade ? (Item.scale_calculated = Item.scale) : (Item.scale_calculated = Item.scale*alpha_i);
 							float	ssa = ps_no_scale_on_fade ? scale : scale * scale*Rq_drcp;
+							
 							if (ssa < r_ssaDISCARD)
 							{
+								Item.alpha_target = 0;
 								continue;
 							}
+
 							u32		vis_id			= 0;
 							if (ssa > r_ssaCHEAP)	vis_id = Item.vis_ID;
 							
-							sp.r_items[vis_id].push_back	(*siIT);
+							sp.r_items[vis_id].push_back	(el);
 
+							if (S.hidden)
+							{
+								Item.alpha = 0;
+								S.hidden = false;
+							}
+
+							Item.alpha_target = 1;
 							Item.distance = dist_sq;
 							Item.position = S.vis.sphere.P;
 
@@ -405,13 +428,17 @@ void CDetailManager::UpdateVisibleM()
 
 void CDetailManager::Render	()
 {
-#ifndef _EDITOR
-	if (0==dtFS)						return;
-	if (!psDeviceFlags.is(rsDetails))	return;
-#endif
+	if (!RImplementation.Details) return;	// possibly deleted
+	if (!dtFS) return;
+	if (!psDeviceFlags.is(rsDetails)) return;
+
+	//if (g_pGamePersistent && g_pGamePersistent->m_pMainMenu && g_pGamePersistent->m_pMainMenu->IsActive())
+	//	return;
+
+	ZoneScoped;
 
 	// MT wait
-	if (ps_r2_ls_flags.test(R2FLAG_EXP_MT_DETAILS))
+	if (ps_r2_ls_flags.test((u32)R2FLAG_EXP_MT_DETAILS) && async_started && !m_bCubemapScreenshotInProcess && !Device.m_SecondViewport.IsSVPFrame())
 		WaitAsync();
 	else
 		MT_CALC();
@@ -443,8 +470,11 @@ u32 reset_frame = 0;
 
 void CDetailManager::StartAsync()
 {
-	if (!ps_r2_ls_flags.test(R2FLAG_EXP_MT_DETAILS))
+	if (!(ps_r2_ls_flags.test((u32)R2FLAG_EXP_MT_DETAILS)) || m_bCubemapScreenshotInProcess || Device.m_SecondViewport.IsSVPFrame())
+	{
+		async_started = false;
 		return;
+	}
 
 	if (reset_frame == Device.dwFrame)
 		return;
@@ -459,6 +489,7 @@ void CDetailManager::StartAsync()
 		return;
 
 	awaiter = std::async(std::launch::async, [&](CDetailManager* self) { return self->MT_CALC(); }, this);
+	async_started = true;
 }
 
 void CDetailManager::WaitAsync() const
@@ -469,16 +500,14 @@ void CDetailManager::WaitAsync() const
 
 void __stdcall CDetailManager::MT_CALC()
 {
-#ifndef _EDITOR
-	if (reset_frame == Device.dwFrame)
-		return;
-	if (0 == RImplementation.Details)
-		return; // possibly deleted
-	//if (0 == dtFS)                     return;
-	if (!psDeviceFlags.is(rsDetails))
-		return;
-#endif
+	if (reset_frame == Device.dwFrame) return;
+	if (!RImplementation.Details) return;	// possibly deleted
+	if (!dtFS) return;
+	if (!psDeviceFlags.is(rsDetails)) return;
+	//if (g_pGamePersistent && g_pGamePersistent->m_pMainMenu && g_pGamePersistent->m_pMainMenu->IsActive())
+	//	return;
 
+	ZoneScoped;
 
 	std::lock_guard<xrCriticalSection> lock(MT);
 

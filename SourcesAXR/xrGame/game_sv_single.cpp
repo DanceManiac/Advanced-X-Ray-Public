@@ -9,8 +9,6 @@
 #include "gamepersistent.h"
 #include "xrServer.h"
 #include "../xrEngine/x_ray.h"
-#include "../xrEngine/dedicated_server_only.h"
-#include "../xrEngine/no_single.h"
 #include "ui/UILoadingScreen.h"
 
 game_sv_Single::game_sv_Single			()
@@ -28,27 +26,11 @@ void	game_sv_Single::Create			(shared_str& options)
 {
 	inherited::Create					(options);
 
-#ifndef NO_SINGLE
 	if (strstr(*options,"/alife"))
 		m_alife_simulator				= xr_new<CALifeSimulator>(&server(),&options);
-#endif //#ifndef NO_SINGLE
 
 	switch_Phase						(GAME_PHASE_INPROGRESS);
 }
-
-/**
-CSE_Abstract*		game_sv_Single::get_entity_from_eid		(u16 id)
-{
-	if (!ai().get_alife())
-		return			(inherited::get_entity_from_eid(id));
-
-	CSE_Abstract		*object = ai().alife().objects().object(id,true);
-	if (!object)
-		return			(inherited::get_entity_from_eid(id));
-
-	return				(object);
-}
-/**/
 
 void	game_sv_Single::OnCreate		(u16 id_who)
 {
@@ -356,11 +338,11 @@ void game_sv_Single::restart_simulator			(LPCSTR saved_game_name)
 	xr_strcpy					(g_pGamePersistent->m_game_params.m_game_or_spawn,saved_game_name);
 	xr_strcpy					(g_pGamePersistent->m_game_params.m_new_or_load,"load");
 
-	pApp->SetLoadingScreen(new UILoadingScreen());
+	pApp->SetLoadingScreen(xr_new<UILoadingScreen>());
 	pApp->LoadBegin			();
 	m_alife_simulator		= xr_new<CALifeSimulator>(&server(),&options);
 	g_pGamePersistent->SetLoadStageTitle("st_client_synchronising");
-	pApp->LoadForceFinish();
+	//pApp->LoadForceFinish();
 	g_pGamePersistent->LoadTitle();
 	Device.PreCache			(60, true, true);
 	pApp->LoadEnd			();

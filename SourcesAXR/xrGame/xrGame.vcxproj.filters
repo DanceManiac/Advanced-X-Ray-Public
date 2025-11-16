@@ -2524,6 +2524,9 @@
     <Filter Include="UI\Common\PDA\Diary">
       <UniqueIdentifier>{05e38e5e-60ed-412e-8a86-28bfe2870c6e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="AI\AScript\ScriptClasses\ScriptVarsStorage">
+      <UniqueIdentifier>{749ef268-3fbe-427f-95b5-a63cba31ea15}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mt_config.h">
@@ -6219,15 +6222,6 @@
     <ClInclude Include="..\xrServerEntities\smart_cast.h">
       <Filter>Core\Common\SmartCast</Filter>
     </ClInclude>
-    <ClInclude Include="..\xrServerEntities\smart_cast_impl0.h">
-      <Filter>Core\Common\SmartCast</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrServerEntities\smart_cast_impl1.h">
-      <Filter>Core\Common\SmartCast</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrServerEntities\smart_cast_impl2.h">
-      <Filter>Core\Common\SmartCast</Filter>
-    </ClInclude>
     <ClInclude Include="string_table.h">
       <Filter>Core\Common\StringTable</Filter>
     </ClInclude>
@@ -7462,12 +7456,6 @@
     <ClInclude Include="embedded_editor\editor_render.h">
       <Filter>EmbeddedEditor</Filter>
     </ClInclude>
-    <ClInclude Include="embedded_editor\editor_render_ai_map.h">
-      <Filter>EmbeddedEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="embedded_editor\editor_render_spawn_element.h">
-      <Filter>EmbeddedEditor</Filter>
-    </ClInclude>
     <ClInclude Include="CustomTimer.h" />
     <ClInclude Include="CustomBackpack.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Devices\Backpack</Filter>
@@ -7510,6 +7498,25 @@
     </ClInclude>
     <ClInclude Include="ui\UIDiaryWnd.h">
       <Filter>UI\Common\PDA\Diary</Filter>
+    </ClInclude>
+    <ClInclude Include="embedded_editor\embedded_editor_spawner.h">
+      <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="script_vars_storage.h">
+      <Filter>AI\AScript\ScriptClasses\ScriptVarsStorage</Filter>
+    </ClInclude>
+    <ClInclude Include="embedded_editor\embedded_editor_person_attach.h">
+      <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="embedded_editor\embedded_editor_ui.h">
+      <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="GlobalAchievements.h" />
+    <ClInclude Include="ui\UI3dStatic.h">
+      <Filter>UI\UIWindows\Static</Filter>
+    </ClInclude>
+    <ClInclude Include="embedded_editor\embedded_editor_postprocess.h">
+      <Filter>EmbeddedEditor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -9898,12 +9905,6 @@
     <ClCompile Include="random32.cpp">
       <Filter>Core\Common\Random\32bit</Filter>
     </ClCompile>
-    <ClCompile Include="..\xrServerEntities\smart_cast.cpp">
-      <Filter>Core\Common\SmartCast</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrServerEntities\smart_cast_stats.cpp">
-      <Filter>Core\Common\SmartCast</Filter>
-    </ClCompile>
     <ClCompile Include="string_table.cpp">
       <Filter>Core\Common\StringTable</Filter>
     </ClCompile>
@@ -11212,12 +11213,6 @@
     <ClCompile Include="embedded_editor\editor_render.cpp">
       <Filter>EmbeddedEditor</Filter>
     </ClCompile>
-    <ClCompile Include="embedded_editor\editor_render_ai_map.cpp">
-      <Filter>EmbeddedEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="embedded_editor\editor_render_spawn_element.cpp">
-      <Filter>EmbeddedEditor</Filter>
-    </ClCompile>
     <ClCompile Include="CustomTimer.cpp" />
     <ClCompile Include="CustomBackpack.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Devices\Backpack</Filter>
@@ -11260,6 +11255,25 @@
     </ClCompile>
     <ClCompile Include="ui\UIDiaryWnd2.cpp">
       <Filter>UI\Common\PDA\Diary</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_spawner.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="script_vars_storage.cpp">
+      <Filter>AI\AScript\ScriptClasses\ScriptVarsStorage</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_person_attach.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_ui.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GlobalAchievements.cpp" />
+    <ClCompile Include="ui\UI3dStatic.cpp">
+      <Filter>UI\UIWindows\Static</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_postprocess.cpp">
+      <Filter>EmbeddedEditor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

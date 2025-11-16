@@ -38,15 +38,15 @@ void CStalkerActionGetReadyToKillLowCover::initialize					()
 {
 	inherited::initialize				();
 
-	object().brain().affect_cover		(true);
+	object().get_brain().affect_cover		(true);
 }
 
 void CStalkerActionGetReadyToKillLowCover::execute						()
 {
 	inherited::execute					();
 	
-	object().movement().set_body_state	(eBodyStateCrouch);
-	object().sight().setup				(CSightAction(SightManager::eSightTypeCurrentDirection));
+	object().get_movement().set_body_state	(eBodyStateCrouch);
+	object().get_sight().setup				(CSightAction(SightManager::eSightTypeCurrentDirection));
 	aim_ready_force_full				();
 }
 
@@ -54,7 +54,7 @@ void CStalkerActionGetReadyToKillLowCover::finalize						()
 {
 	inherited::finalize					();
 
-	object().brain().affect_cover		(false);
+	object().get_brain().affect_cover		(false);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -70,9 +70,9 @@ void CStalkerActionKillEnemyLowCover::initialize						()
 {
 	inherited::initialize				();
 
-	object().movement().set_body_state	(eBodyStateStand);
+	object().get_movement().set_body_state	(eBodyStateStand);
 
-	object().brain().affect_cover		(true);
+	object().get_brain().affect_cover		(true);
 
 #ifndef SILENT_COMBAT
 	play_attack_sound					(0,0,6000,4000);
@@ -83,14 +83,14 @@ void CStalkerActionKillEnemyLowCover::execute							()
 {
 	inherited::execute					();
 
-	object().sight().setup				(CSightAction(object().memory().enemy().selected(),true,true));
+	object().get_sight().setup				(CSightAction(object().get_memory().get_enemy().selected(),true,true));
 
 	fire								();
 
-	if (!object().memory().enemy().selected())
+	if (!object().get_memory().get_enemy().selected())
 		return;
 
-	CMemoryInfo							mem_object = object().memory().memory(object().memory().enemy().selected());
+	CMemoryInfo							mem_object = object().get_memory().memory(object().get_memory().get_enemy().selected());
 
 	if (!mem_object.m_object)
 		return;
@@ -102,7 +102,7 @@ void CStalkerActionKillEnemyLowCover::finalize							()
 {
 	inherited::finalize					();
 
-	object().brain().affect_cover		(false);
+	object().get_brain().affect_cover		(false);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -118,9 +118,9 @@ void CStalkerActionHoldPositionLowCover::initialize							()
 {
 	inherited::initialize				();
 
-	object().brain().affect_cover		(true);
+	object().get_brain().affect_cover		(true);
 
-	object().movement().set_body_state	(eBodyStateStand);
+	object().get_movement().set_body_state	(eBodyStateStand);
 
 	aim_ready							();
 
@@ -131,36 +131,36 @@ void CStalkerActionHoldPositionLowCover::execute							()
 {
 	inherited::execute					();
 
-	CMemoryInfo							mem_object = object().memory().memory(object().memory().enemy().selected());
+	CMemoryInfo							mem_object = object().get_memory().memory(object().get_memory().get_enemy().selected());
 
 	if (!mem_object.m_object)
 		return;
 
-	object().sight().setup				(CSightAction(SightManager::eSightTypePosition,mem_object.m_object_params.m_position,true));
+	object().get_sight().setup				(CSightAction(SightManager::eSightTypePosition,mem_object.m_object_params.m_position,true));
 
 	if (completed()) {
 		if	(
-				object().agent_manager().member().can_detour() ||
-				!object().agent_manager().member().cover_detouring() ||
+				object().agent_manager().get_member().can_detour() ||
+				!object().agent_manager().get_member().cover_detouring() ||
 				!fire_make_sense()
 			) {
-			CStalkerCombatPlanner		&planner = smart_cast<CStalkerCombatPlanner&>(object().brain().current_action());
+			CStalkerCombatPlanner		&planner = smart_cast<CStalkerCombatPlanner&>(object().get_brain().current_action());
 			planner.CScriptActionPlanner::m_storage.set_property(eWorldPropertyLookedOut,true);
 			planner.CScriptActionPlanner::m_storage.set_property(eWorldPropertyPositionHolded,true);
 			planner.CScriptActionPlanner::m_storage.set_property(eWorldPropertyInCover,false);
 		}
 	}
 
-	if (object().agent_manager().member().cover_detouring() && fire_make_sense()) {
-		object().sound().play			(StalkerSpace::eStalkerSoundNeedBackup,3000,3000,10000,10000);
+	if (object().agent_manager().get_member().cover_detouring() && fire_make_sense()) {
+		object().get_sound().play			(StalkerSpace::eStalkerSoundNeedBackup,3000,3000,10000,10000);
 		fire							();
 	}
 	else {
 		aim_ready						();
 	}
 
-	if (object().memory().enemy().selected()) {
-		CMemoryInfo						mem_object = object().memory().memory(object().memory().enemy().selected());
+	if (object().get_memory().get_enemy().selected()) {
+		CMemoryInfo						mem_object = object().get_memory().memory(object().get_memory().get_enemy().selected());
 
 		if (mem_object.m_object) {
 			object().best_cover			(mem_object.m_object_params.m_position);
@@ -172,5 +172,5 @@ void CStalkerActionHoldPositionLowCover::finalize							()
 {
 	inherited::finalize					();
 
-	object().brain().affect_cover		(false);
+	object().get_brain().affect_cover		(false);
 }

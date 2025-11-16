@@ -55,7 +55,7 @@ void CAI_Trader::reinit	()
 	CEntityAlive::reinit	();
 	CInventoryOwner::reinit	();
 	sound().reinit			();
-	animation().reinit		();
+	get_animation().reinit		();
 
 	m_busy_now				= false;
 }
@@ -181,10 +181,10 @@ void CAI_Trader::OnEvent		(NET_Packet& P, u16 type)
 				inventory().Take(smart_cast<CGameObject*>(Obj), false, false);
 			}else
 			{
-				NET_Packet				P;
-				u_EventGen				(P,GE_OWNERSHIP_REJECT,ID());
-				P.w_u16					(u16(Obj->ID()));
-				u_EventSend				(P);
+				NET_Packet				P_;
+				u_EventGen				(P_,GE_OWNERSHIP_REJECT,ID());
+				P_.w_u16				(u16(Obj->ID()));
+				u_EventSend				(P_);
 			}
 			break;
 		case GE_TRADE_SELL:
@@ -284,7 +284,7 @@ void CAI_Trader::UpdateCL()
 
 
 	if (!GetScriptControl() && !bfScriptAnimation()) 
-		animation().update_frame();
+		get_animation().update_frame();
 }
 
 BOOL CAI_Trader::UsedAI_Locations()
@@ -388,10 +388,10 @@ bool CAI_Trader::AllowItemToTrade 	(CInventoryItem const * item, EItemPlace plac
 
 void CAI_Trader::dialog_sound_start(LPCSTR phrase)
 {
-	animation().external_sound_start(phrase);
+	get_animation().external_sound_start(phrase);
 }
 
 void CAI_Trader::dialog_sound_stop()
 {
-	animation().external_sound_stop();
+	get_animation().external_sound_stop();
 }

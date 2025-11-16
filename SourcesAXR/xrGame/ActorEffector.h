@@ -23,12 +23,53 @@ public:
 	IC void					hud_camera_Matrix		(Fmatrix& M){M.set(m_cam_info_hud.r, m_cam_info_hud.n, m_cam_info_hud.d, m_cam_info_hud.p);}
 };
 
+struct SPPEffect
+{
+	shared_str section{};
+	xr_vector<shared_str> pp_effects{};
+	xr_vector<shared_str> cam_effects{};
+	bool m_bIsCustomEffect = false;
+	float duality_h = 0.f;
+	float duality_v = 0.f;
+	float blur = 0.f;
+	float gray = 0.f;
+	float noise = 0.f;
+	float noise_scale = 0.f;
+	float noise_intensity = 0.f;
+	float noise_grain = 0.f;
+	float noise_fps = 0.f;
+	float time = 0.f;
+	float time_attack = 0.f;
+	float time_release = 0.f;
+	Fvector4 noise_color = { 0,0,0,0 };
+	Fvector3 color_base = { 0,0,0 };
+	Fvector3 color_gray = { 0,0,0 };
+	Fvector3 color_add = { 0,0,0 };
+	float ce_time = 0.f;
+	float ce_amplitude = 0.f;
+	float ce_period_number = 0.f;
+	float ce_power = 0.f;
+	float radius_min = 0.f;
+	float radius_max = 0.f;
+	float m_fShootEffectorFactor = 0.0f;
+	float m_fShootEffectorFactorAim = 0.0f;
+	float m_fShootEffectorFactorCrouch = 0.0f;
+	bool random_cam_effects = false;
+	bool m_bIsShootEffector = false;
+	bool m_bOverlap = false;
+	bool m_bHudAffect = false;
+	BOOL m_PPE_Cyclic = 0;
+	BOOL m_CamEffectCyclic = 0;
+};
+
 typedef fastdelegate::FastDelegate0<float>		GET_KOEFF_FUNC;
 
 void AddEffector		(CActor* A, int type, const shared_str& sect_name);
 void AddEffector		(CActor* A, int type, const shared_str& sect_name, float factor);
 void AddEffector		(CActor* A, int type, const shared_str& sect_name, GET_KOEFF_FUNC);
 void AddEffector		(CActor* A, int type, const shared_str& sect_name, CEffectorController*);
+void AddEffectorEditor	(CActor* A, int type, const shared_str& sect_name, float factor, const SPPEffect* eff);
+void AddEffector		(LPCSTR path, int type, float factor, bool hud_affect = false, bool cyclic = false);
 void RemoveEffector		(CActor* A, int type);
 
 class CEffectorController
@@ -60,7 +101,7 @@ public:
 						CAnimatorCamEffector	();
 	virtual				~CAnimatorCamEffector	();
 			void		Start					(LPCSTR fn);
-	virtual BOOL		ProcessCam				(SCamEffectorInfo& info);
+	virtual BOOL		ProcessCam				(SCamEffectorInfo& info, float m_fFactorMod = 1.0f);
 			void		SetCyclic				(bool b)				{m_bCyclic=b;}
 	virtual	BOOL		Valid					();
 			float		GetAnimatorLength		()						{return fLifeTime;};
@@ -87,7 +128,7 @@ protected:
 	GET_KOEFF_FUNC									m_func;
 public:
 			void		SetFactorFunc				(GET_KOEFF_FUNC f)	{m_func=f;}
-	virtual BOOL		ProcessCam					(SCamEffectorInfo& info);
+	virtual BOOL		ProcessCam					(SCamEffectorInfo& info, float m_fFactorMod = 1.0f);
 };
 
 class CAnimatorCamLerpEffectorConst :public CAnimatorCamLerpEffector
@@ -148,6 +189,6 @@ class CControllerPsyHitCamEffector :public CEffectorCam {
 public:
 						CControllerPsyHitCamEffector	(ECamEffectorType type, const Fvector &src_pos, const Fvector &target_pos, 
 														float time, float base_fov, float dest_fov);
-	virtual BOOL		ProcessCam						(SCamEffectorInfo& info);
+	virtual BOOL		ProcessCam						(SCamEffectorInfo& info, float m_fFactorMod = 1.0f);
 };
 //////////////////////////////////////////////////////////////////////////

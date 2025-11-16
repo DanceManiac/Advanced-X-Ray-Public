@@ -21,6 +21,12 @@ void	CRenderTarget::phase_scene_prepare	()
 	//	TODO: add multiplication by sun color here
 	//if (fValue<0.0001) FlagSunShafts = 0;
 
+	// Thx to K.D.
+	// We need to clean up G-buffer every frame to avoid "ghosting" on sky
+	u_setrt(rt_Position, rt_Normal, rt_Color, 0);
+	float ColorRGBA[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	HW.pContext->ClearRenderTargetView(RCache.get_RT(), ColorRGBA);
+
 	//	TODO: DX10: Check if complete clear of _ALL_ rendertargets will increase
 	//	FPS. Make check for SLI configuration.
 	if ( RImplementation.o.advancedpp &&

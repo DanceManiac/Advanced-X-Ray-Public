@@ -76,7 +76,7 @@ target_fire::target_fire			(animation_planner *object, LPCSTR name, StalkerDecis
 
 void target_fire::initialize		()
 {
-	if ( this->m_object->m_object->agent_manager().enemy().enemies().size() > 1 )
+	if ( this->m_object->m_object->agent_manager().get_enemy().enemies().size() > 1 )
 		set_inertia_time				( 6000 + ::Random.randI(3000) );
 	else
 		set_inertia_time				( 0 );

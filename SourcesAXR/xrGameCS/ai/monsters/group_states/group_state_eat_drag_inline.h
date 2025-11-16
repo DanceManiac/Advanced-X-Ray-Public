@@ -82,11 +82,11 @@ void CStateGroupDragAbstract::initialize()
 		}
 	} cb( K, vbones, bone_number );
 
-	object->character_physics_support()->movement()->PHCaptureObject(const_cast<CEntityAlive* >( object->EatedCorpse ), &cb);
+	object->character_physics_support()->get_movement()->PHCaptureObject(const_cast<CEntityAlive* >( object->EatedCorpse ), &cb);
 	
 	m_failed = false;
 	
-	IPHCapture *capture = object->character_physics_support()->movement()->PHCapture();
+	IPHCapture *capture = object->character_physics_support()->get_movement()->PHCapture();
 	if (capture && !capture->Failed()) {
 		m_cover_vertex_id = object->Home->get_place_in_min_home();
 		if (m_cover_vertex_id != u32(-1)) {
@@ -134,8 +134,8 @@ void CStateGroupDragAbstract::finalize()
 	inherited::finalize();	
 
 	// бросить труп
-	if (object->character_physics_support()->movement()->PHCapture())
-		object->character_physics_support()->movement()->PHReleaseObject();
+	if (object->character_physics_support()->get_movement()->PHCapture())
+		object->character_physics_support()->get_movement()->PHReleaseObject();
 }
 
 TEMPLATE_SPECIALIZATION
@@ -144,8 +144,8 @@ void CStateGroupDragAbstract::critical_finalize()
 	inherited::critical_finalize();
 
 	// бросить труп
-	if (object->character_physics_support()->movement()->PHCapture())
-			object->character_physics_support()->movement()->PHReleaseObject();
+	if (object->character_physics_support()->get_movement()->PHCapture())
+			object->character_physics_support()->get_movement()->PHReleaseObject();
 }
 
 TEMPLATE_SPECIALIZATION
@@ -155,7 +155,7 @@ bool CStateGroupDragAbstract::check_completion()
 		return true;
 	}
 
-	if (!object->character_physics_support()->movement()->PHCapture())  {
+	if (!object->character_physics_support()->get_movement()->PHCapture())  {
 		return true;
 	}
 

@@ -21,11 +21,14 @@
 #include <shellapi.h>
 #pragma comment(lib, "shell32.lib")
 
-
 #include "object_broker.h"
 
 #include "../xrEngine/DiscordRichPresense.h"
 #include "../xrEngine/x_ray.h"
+
+#include "AdvancedXrayGameConstants.h"
+
+#include <imgui.h>
 
 //#define DEMO_BUILD
 
@@ -59,6 +62,8 @@ CMainMenu*	MainMenu()	{return (CMainMenu*)g_pGamePersistent->m_pMainMenu; };
 
 CMainMenu::CMainMenu()
 {
+	ZoneScoped;
+
 	m_Flags.zero					();
 	m_startDialog					= NULL;
 	m_screenshotFrame				= u32(-1);
@@ -83,7 +88,6 @@ CMainMenu::CMainMenu()
 	GetPlayerNameFromRegistry		();
 	GetCDKeyFromRegistry			();
 
-	if(!g_dedicated_server)
 	{
 		g_btnHint						= xr_new<CUIButtonHint>();
 		g_statHint						= xr_new<CUIButtonHint>();
@@ -109,12 +113,18 @@ CMainMenu::CMainMenu()
 
 CMainMenu::~CMainMenu()
 {
+	ZoneScoped;
+
 	ReportTxrsForPrefetching();
 	xr_delete						(g_btnHint);
 	xr_delete						(g_statHint);
 	xr_delete						(m_startDialog);
 	g_pGamePersistent->m_pMainMenu	= NULL;
 	xr_delete						(m_pGameSpyFull);
+
+	if (AchievementsManager)
+		xr_delete(AchievementsManager);
+
 	delete_data						(m_pMB_ErrDlgs);
 }
 
@@ -148,8 +158,6 @@ void CMainMenu::Activate	(bool bActivate)
 		(m_screenshotFrame == Device.dwFrame+1))	return;
 
 	bool b_is_single				= IsGameTypeSingle();
-
-	if(g_dedicated_server && bActivate) return;
 
 	if(bActivate)
 	{
@@ -194,7 +202,9 @@ void CMainMenu::Activate	(bool bActivate)
 			snprintf(rpc_settings.Detail, 128, ToUTF8(*CStringTable().translate("st_discord_menu")).c_str());
 			g_discord.SetStatus();
 		}
-	}else{
+	}
+	else
+	{
 		m_deactivated_frame					= Device.dwFrame;
 		m_Flags.set							(flActive,				FALSE);
 		m_Flags.set							(flNeedChangeCapture,	TRUE);
@@ -369,6 +379,8 @@ bool CMainMenu::OnRenderPPUI_query()
 extern void draw_wnds_rects();
 void CMainMenu::OnRender	()
 {
+	ZoneScoped;
+
 	if(m_Flags.test(flGameSaveScreenshot))
 		return;
 
@@ -432,6 +444,8 @@ void CMainMenu::StartStopMenu(CUIDialogWnd* pDialog, bool bDoHideIndicators)
 //pureFrame
 void CMainMenu::OnFrame()
 {
+	ZoneScoped;
+
 	if (m_Flags.test(flNeedChangeCapture))
 	{
 		m_Flags.set					(flNeedChangeCapture,FALSE);
@@ -473,6 +487,11 @@ void CMainMenu::OnFrame()
 
 void CMainMenu::OnDeviceCreate()
 {
+	if (GameConstants::GetGlobalAchEnabled() && !AchievementsManager)
+		AchievementsManager = xr_new<CGlobalAchievementsManager>();
+
+	if (AchievementsManager && !AchievementsManager->HasAchievements())
+		AchievementsManager->LoadAchievements();
 }
 
 
@@ -483,7 +502,7 @@ void CMainMenu::Screenshot(IRender_interface::ScreenshotMode mode, LPCSTR name)
 		::Render->Screenshot		(mode,name);
 	}else{
 		m_Flags.set					(flGameSaveScreenshot, TRUE);
-		strcpy_s(m_screenshot_name,name);
+		xr_strcpy(m_screenshot_name,name);
 		if(g_pGameLevel && m_Flags.test(flActive)){
 			Device.seqFrame.Add		(g_pGameLevel);
 			Device.seqRender.Add	(g_pGameLevel);
@@ -638,7 +657,7 @@ void	CMainMenu::OnLoadError				(LPCSTR module)
 	LPCSTR str=CStringTable().translate("ui_st_error_loading").c_str();
 	string1024 Text;
 	strconcat(sizeof(Text),Text,str," ");
-	strcat_s(Text,sizeof(Text),module);
+	xr_strcat(Text,sizeof(Text),module);
 	m_pMB_ErrDlgs[LoadingError]->SetText(Text);
 	SetErrorDialog(CMainMenu::LoadingError);
 }
@@ -653,9 +672,9 @@ extern ENGINE_API string512  g_sLaunchOnExit_params;
 extern ENGINE_API string_path	g_sLaunchWorkingFolder;
 void	CMainMenu::OnRunDownloadedPatch			(CUIWindow*, void*)
 {
-	strcpy_s					(g_sLaunchOnExit_app,*m_sPatchFileName);
-	strcpy_s					(g_sLaunchOnExit_params,"");
-	strcpy_s					(g_sLaunchWorkingFolder, "");
+	xr_strcpy					(g_sLaunchOnExit_app,*m_sPatchFileName);
+	xr_strcpy					(g_sLaunchOnExit_params,"");
+	xr_strcpy					(g_sLaunchWorkingFolder, "");
 	Console->Execute		("quit");
 }
 
@@ -768,13 +787,44 @@ void CMainMenu::OnConnectToMasterServerOkClicked(CUIWindow*, void*)
 	Hide_CTMS_Dialog();
 }
 
+bool CMainMenu::FillDebugTree(const CUIDebugState& debugState)
+{
+#ifndef MASTER_GOLD
+	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow;
+
+	if (debugState.selected == this)
+		flags |= ImGuiTreeNodeFlags_Selected;
+
+	const bool open = ImGui::TreeNodeEx(this, flags, "Main menu (%s)", GetDebugType());
+
+	if (ImGui::IsItemClicked())
+		debugState.select(this);
+
+	if (open)
+	{
+		CDialogHolder::FillDebugTree(debugState);
+
+		if (m_startDialog)
+			m_startDialog->FillDebugTree(debugState);
+		else
+			ImGui::BulletText(toUtf8(CStringTable().translate("st_editor_imgui_ui_debugger_mm_warning").c_str()).c_str());
+
+		ImGui::TreePop();
+	}
+
+	return open;
+#else
+	return nullptr;
+#endif
+}
+
 LPCSTR CMainMenu::GetGSVer()
 {
 	static string256	buff;
 	static string256	buff2;
 	if(m_pGameSpyFull)
 	{
-		strcpy_s(buff2, m_pGameSpyFull->GetGameVersion(buff));
+		xr_strcpy(buff2, m_pGameSpyFull->GetGameVersion(buff));
 	}else
 	{
 		buff[0]		= 0;
@@ -790,7 +840,7 @@ LPCSTR CMainMenu::GetAxrPlatform()
 	static string256	buff2;
 	if (m_pGameSpyFull)
 	{
-		strcpy_s(buff2, m_pGameSpyFull->GetAxrPlatform(buff));
+		xr_strcpy(buff2, m_pGameSpyFull->GetAxrPlatform(buff));
 	}
 	else
 	{

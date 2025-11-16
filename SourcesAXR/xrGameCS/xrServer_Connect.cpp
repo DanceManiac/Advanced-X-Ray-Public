@@ -77,7 +77,7 @@ xrServer::EConnect xrServer::Connect(shared_str &session_name, GameDescriptionDa
 	ZeroMemory(&game_descr, sizeof(game_descr));
 	strcpy_s(game_descr.map_name, game->level_name(session_name.c_str()).c_str());
 	strcpy_s(game_descr.map_version, game_sv_GameState::parse_level_version(session_name.c_str()).c_str());
-	strcpy_s(game_descr.download_url, get_map_download_url(game_descr.map_name, game_descr.map_version));
+	//strcpy_s(game_descr.download_url, get_map_download_url(game_descr.map_name, game_descr.map_version));
 
 	game->Create			(session_name);
 

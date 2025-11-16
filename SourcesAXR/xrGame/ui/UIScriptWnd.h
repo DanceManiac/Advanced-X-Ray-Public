@@ -33,5 +33,8 @@ public:
 template<typename T>
 IC	T*	GetControl(LPCSTR name);
 */
+
+			pcstr				GetDebugType		() override					{ return typeid(*this).name(); }
+
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };

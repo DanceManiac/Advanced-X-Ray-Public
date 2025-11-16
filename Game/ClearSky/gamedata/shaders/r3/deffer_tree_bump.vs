@@ -65,7 +65,7 @@ v2p_bumped 	main 	(v_tree I)
 	//Normal mapping
 	
 #ifdef SSFX_FLORAFIX
-	float3 	N 	= unpack_bx4(I.Nh);
+	float3 	N 	= unpack_bx4(I.Nh) * normal_strength_params.w;
 	float3 	T 	= unpack_bx4(I.T);
 	float3 	B 	= unpack_bx4(I.B);
 #else

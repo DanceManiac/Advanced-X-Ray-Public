@@ -13,6 +13,7 @@ public:
 
 protected:
 	virtual void	PlayAnimShoot					();
+	virtual bool	PlayAnimFakeShoot				();
 	virtual void	PlayAnimReload					();
 	virtual void	PlayReloadSound					();
 	virtual void	PlayAnimIdle					();
@@ -26,6 +27,9 @@ protected:
 	virtual void	PlayAnimIdleMovingCrouchSlow	() override;
 	virtual void	PlayAnimSprintStart				() override;
 	virtual void	PlayAnimSprintEnd				() override;
+	virtual	bool	PlayAnimAimEnd					();
+	virtual void	PlayAnimDeviceSwitch			() override;
+
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };
 add_to_type_list(CWeaponBM16)

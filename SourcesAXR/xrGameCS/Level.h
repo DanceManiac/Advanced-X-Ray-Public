@@ -39,10 +39,7 @@ class	CLevelSoundManager;
 class	CGameTaskManager;
 class	CZoneList;
 class	message_filter;
-
-#ifdef DEBUG
 class	CDebugRenderer;
-#endif
 
 extern float g_fov;
 
@@ -81,10 +78,8 @@ protected:
 	CClientSpawnManager			*m_client_spawn_manager;
 	// autosave manager
 	CAutosaveManager			*m_autosave_manager;
-#ifdef DEBUG
 	// debug renderer
 	CDebugRenderer				*m_debug_renderer;
-#endif
 
 	CPHCommander				*m_ph_commander;
 	CPHCommander				*m_ph_commander_scripts;
@@ -313,9 +308,7 @@ public:
 	IC CSeniorityHierarchyHolder	&seniority_holder			();
 	IC CClientSpawnManager			&client_spawn_manager		();
 	IC CAutosaveManager				&autosave_manager			();
-#ifdef DEBUG
 	IC CDebugRenderer				&debug_renderer				();
-#endif
 
 	void		_BCL				script_gc					();			// GC-cycle
 
@@ -394,6 +387,8 @@ public:
 			virtual void	OnSessionTerminate		(LPCSTR reason);
 			void			OnDestroyObject			(std::uint16_t id) override;
 
+			void			stop_gc					() override;
+
 			file_transfer::client_site*					m_file_transfer;
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION
@@ -444,13 +439,11 @@ IC CAutosaveManager &CLevel::autosave_manager()
 	return				(*m_autosave_manager);
 }
 
-#ifdef DEBUG
 IC CDebugRenderer &CLevel::debug_renderer()
 {
 	VERIFY				(m_debug_renderer);
 	return				(*m_debug_renderer);
 }
-#endif
 
 IC CPHCommander	& CLevel::ph_commander()
 {

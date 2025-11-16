@@ -17,15 +17,18 @@
 #include "Level.h"
 #include "game_cl_base.h"
 #include "Actor.h"
+#include "ActorCondition.h"
 #include "HUDManager.h"
 #include "string_table.h"
 #include "../Include/xrRender/Kinematics.h"
 #include "ai_object_location.h"
+#include "ai_space.h"
 #include "object_broker.h"
 #include "ui_base.h"
 #include "UIFontDefines.h"
 #include "../xrEngine/igame_persistent.h"
 #include "../xrEngine/xr_collide_form.h"
+#include "../xrServerEntitiesCS/script_engine.h"
 
 #include "AdvancedXrayGameConstants.h"
 #include "Artefact.h"
@@ -58,6 +61,7 @@ CInventoryItem::CInventoryItem()
 	m_can_trade			= TRUE;
 	m_flags.set			(FCanTrade, m_can_trade);
 	m_flags.set			(FUsingCondition,FALSE);
+	m_flags.set			(FIsDropInProcess,FALSE);
 	m_fCondition		= 1.0f;
 	m_fCurrentChargeLevel = 1.0f;
 	m_fUnchargeSpeed	= 0.0f;
@@ -65,7 +69,7 @@ CInventoryItem::CInventoryItem()
 
 	m_name = m_nameShort = NULL;
 
-	m_eItemCurrPlace	= EItemPlaceUndefined;
+	m_eItemCurrPlace	= eItemPlaceUndefined;
 	m_Description		= "";
 	m_section_id		= 0;
 	m_bCanUse			= true;
@@ -77,6 +81,16 @@ CInventoryItem::CInventoryItem()
 	m_custom_text_clr_hud = 0;
 
 	m_fOccupiedInvSpace = 0.0f;
+
+	m_sPropertyBoxUseText = nullptr;
+
+	m_use_functor_str			= nullptr;
+	m_use_precondition_func		= nullptr;
+	m_take_precondition_func	= nullptr;
+
+	m_bUpgradesIcon3D			= false;
+
+	m_bCanPickTroughGeom		= false;
 }
 
 CInventoryItem::~CInventoryItem() 
@@ -146,7 +160,8 @@ void CInventoryItem::Load(LPCSTR section)
 	m_bCanUse					= READ_IF_EXISTS(pSettings, r_bool, section, "can_use", true);
 
 	
-	m_custom_text				= READ_IF_EXISTS(pSettings, r_string, section,"item_custom_text", nullptr);
+	m_custom_text				= READ_IF_EXISTS(pSettings, r_string, section, "item_custom_text", nullptr);
+	m_sPropertyBoxUseText		= READ_IF_EXISTS(pSettings, r_string, section, "property_box_use_text", nullptr);
 
 	if (!GameConstants::GetInventoryItemsAutoVolume())
 		m_fOccupiedInvSpace			= READ_IF_EXISTS(pSettings, r_float, section, "occupied_inv_space", 0.0f);
@@ -167,13 +182,21 @@ void CInventoryItem::Load(LPCSTR section)
 		{
 			m_custom_text_font = UI().Font().pFontGraffiti32Russian;
 		}
+		else if(!xr_strcmp(font_str, GRAFFITI40_FONT_NAME))
+		{
+			m_custom_text_font = UI().Font().pFontGraffiti40Russian;
+		}
 		else if(!xr_strcmp(font_str, GRAFFITI50_FONT_NAME))
 		{
 			m_custom_text_font = UI().Font().pFontGraffiti50Russian;
 		}
-		else if(!xr_strcmp(font_str, ARIAL_FONT_NAME))
+		else if(!xr_strcmp(font_str, ARIAL14_FONT_NAME))
 		{
 			m_custom_text_font = UI().Font().pFontArial14;
+		}
+		else if(!xr_strcmp(font_str, ARIAL21_FONT_NAME))
+		{
+			m_custom_text_font = UI().Font().pFontArial21;
 		}
 		else if(!xr_strcmp(font_str, MEDIUM_FONT_NAME))
 		{
@@ -223,6 +246,24 @@ void CInventoryItem::Load(LPCSTR section)
 		else
 			m_custom_text_clr_hud = 0;
 	}
+
+	m_use_functor_str = READ_IF_EXISTS(pSettings, r_string, section, "use_functor", "");
+	m_use_precondition_func = READ_IF_EXISTS(pSettings, r_string, section, "use_precondition", "");
+	m_take_precondition_func = READ_IF_EXISTS(pSettings, r_string, section, "take_precondition", "");
+
+	m_bUpgradesIcon3D = READ_IF_EXISTS(pSettings, r_bool, section, "use_upgrades_3d_icon", false);
+
+	m_bCanPickTroughGeom = READ_IF_EXISTS(pSettings, r_bool, section, "can_pick_through_geom", false);
+}
+
+void CInventoryItem::ReloadNames()
+{
+	m_name = CStringTable().translate(pSettings->r_string(m_object->cNameSect(), "inv_name"));
+	m_nameShort = CStringTable().translate(pSettings->r_string(m_object->cNameSect(), "inv_name_short"));
+	if (pSettings->line_exist(m_object->cNameSect(), "description"))
+		m_Description = CStringTable().translate(pSettings->r_string(m_object->cNameSect(), "description"));
+	else
+		m_Description = "";
 }
 
 void  CInventoryItem::ChangeCondition(float fDeltaCondition)
@@ -282,6 +323,26 @@ bool CInventoryItem::Useful() const
 {
 	if (!m_bCanUse) return false;
 
+	if (xr_strcmp(m_use_precondition_func, ""))
+	{
+		luabind::functor<bool> m_functor;
+		if (ai().script_engine().functor(m_use_precondition_func.c_str(), m_functor))
+		{
+			if (!m_functor())
+				return false;
+
+#ifdef DEBUG
+			Msg("[CInventoryItem::Useful]: Lua function [%s] called from item [%s] by use_precondition.", m_use_precondition_func.c_str(), m_section_id.c_str());
+#endif
+		}
+#ifdef DEBUG
+		else
+		{
+			Msg("[CInventoryItem::Useful]: ERROR: Lua function [%s] called from item [%s] by use_precondition not found!", m_use_precondition_func.c_str(), m_section_id.c_str());
+		}
+#endif
+	}
+
 	return CanTake();
 }
 
@@ -297,13 +358,14 @@ void CInventoryItem::DeactivateItem()
 void CInventoryItem::OnH_B_Independent(bool just_before_destroy)
 {
 	UpdateXForm();
-	m_eItemCurrPlace = EItemPlaceUndefined ;
+	m_eItemCurrPlace = eItemPlaceUndefined ;
+	SetItemDropNowFlag(FALSE);
 }
 
 void CInventoryItem::OnH_A_Independent()
 {
 	m_dwItemIndependencyTime	= Level().timeServer();
-	m_eItemCurrPlace			= EItemPlaceUndefined;	
+	m_eItemCurrPlace			= eItemPlaceUndefined;	
 	inherited::OnH_A_Independent();
 }
 
@@ -403,7 +465,7 @@ bool CInventoryItem::Detach(const char* item_section_name, bool b_spawn_item)
 								smart_cast<CSE_ALifeDynamicObject*>(D);
 		R_ASSERT			(l_tpALifeDynamicObject);
 		
-		l_tpALifeDynamicObject->m_tNodeID = (g_dedicated_server)?u32(-1):object().ai_location().level_vertex_id();
+		l_tpALifeDynamicObject->m_tNodeID = object().ai_location().level_vertex_id();
 			
 		// Fill
 		D->s_name			=	item_section_name;
@@ -491,16 +553,16 @@ void CInventoryItem::save(NET_Packet &packet)
 	packet.w_float			(m_fCurrentChargeLevel);
 //--	save_data				(m_upgrades, packet);
 
-	if (object().H_Parent()) {
-		packet.w_u8			(0);
-		return;
-	}
-
 	CArtefact* artefact = smart_cast<CArtefact*>(this);
 
 	if (artefact && artefact->IsInContainer())
 	{
 		packet.w_u8(0);
+		return;
+	}
+
+	if (object().H_Parent()) {
+		packet.w_u8			(0);
 		return;
 	}
 
@@ -1322,7 +1384,7 @@ void CInventoryItem::reload		(LPCSTR section)
 void CInventoryItem::reinit		()
 {
 	m_pInventory	= NULL;
-	m_eItemCurrPlace = EItemPlaceUndefined;
+	m_eItemCurrPlace = eItemPlaceUndefined;
 }
 
 bool CInventoryItem::can_kill			() const
@@ -1636,5 +1698,27 @@ float CInventoryItem::GetOccupiedInvSpace()
 			m_fOccupiedInvSpace = cast_physics_shell_holder()->CFORM()->getRadius() * 10.0f;
 	}
 
+	if (GameConstants::GetActorSkillsEnabled() && Actor() && Actor()->ActorSkills)
+	{
+		if (int packing_skill_lvl = Actor()->ActorSkills->get_packing_skill())
+		{
+			float packing_skill_infl = Actor()->conditions().m_fPackingSkill;
+			m_fOccupiedInvSpace *= (1.0f - (packing_skill_infl * packing_skill_lvl));
+		}
+	}
+
 	return m_fOccupiedInvSpace;
+}
+
+bool CInventoryItem::ParentIsActor()
+{
+	CObject* O = object().H_Parent();
+	if (!O)
+		return false;
+
+	CEntityAlive* EA = smart_cast<CEntityAlive*>(O);
+	if (!EA)
+		return false;
+
+	return EA->cast_actor() != nullptr;
 }

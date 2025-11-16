@@ -27,6 +27,7 @@ class CTradeParameters;
 class CPurchaseList;
 class CWeapon;
 class CCustomOutfit;
+class CHelmet;
 
 class CInventoryOwner : public CAttachmentOwner {
 public:
@@ -151,6 +152,8 @@ public:
 	virtual float MaxCarryWeight			() const;
 
 	CCustomOutfit*	GetOutfit				() const;
+	CHelmet*		GetHelmet				() const;
+	CHelmet*		GetSecondHelmet			() const;
 	
 	bool CanPlayShHdRldSounds				() const {return m_play_show_hide_reload_sounds;};
 	void SetPlayShHdRldSounds				(bool play) {m_play_show_hide_reload_sounds = play;};
@@ -210,6 +213,7 @@ public:
 	IC		const u32			&ammo_in_box_to_spawn	() const {return m_ammo_in_box_to_spawn;}
 
 public:
+	virtual bool				unlimited_ammo			()	= 0;
 	virtual	void				on_weapon_shot_start	(CWeapon *weapon);
 	virtual	void				on_weapon_shot_update	();
 	virtual	void				on_weapon_shot_stop		();

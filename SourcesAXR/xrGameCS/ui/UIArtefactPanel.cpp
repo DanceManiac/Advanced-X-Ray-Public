@@ -9,7 +9,7 @@ using namespace InventoryUtilities;
 
 CUIArtefactPanel::CUIArtefactPanel()
 {		
-	m_cell_size.set(50.f, 50.f);
+	m_cell_size.set(UI().inv_grid_kx(), UI().inv_grid_kx());
 	m_fScale = 1.0f;
 	m_bVert = false;
 	m_bShowInInventory = false;
@@ -23,8 +23,8 @@ CUIArtefactPanel::~CUIArtefactPanel()
 void CUIArtefactPanel::InitFromXML	(CUIXml& xml, LPCSTR path, int index)
 {
 	CUIXmlInit::InitWindow		(xml, path, index, this);
-	m_cell_size.x				= xml.ReadAttribFlt(path, index, "cell_width", 50.0f);
-	m_cell_size.y				= xml.ReadAttribFlt(path, index, "cell_height", 50.0f);
+	m_cell_size.x				= xml.ReadAttribFlt(path, index, "cell_width", UI().inv_grid_kx());
+	m_cell_size.y				= xml.ReadAttribFlt(path, index, "cell_height", UI().inv_grid_kx());
 	m_fScale					= xml.ReadAttribFlt(path, index, "scale", 1.0f);
 	m_bVert						= xml.ReadAttribInt(path, index, "vert", 0) == 1;
 	m_bShowInInventory			= xml.ReadAttribInt(path, index, "show_in_inv", 0) == 1;
@@ -41,10 +41,10 @@ void CUIArtefactPanel::InitIcons(const xr_vector<const CArtefact*>& artefacts)
 		const CArtefact* artefact = *it;
 
 		Frect rect;
-		rect.left = pSettings->r_float(artefact->cNameSect(), "inv_grid_x") * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons());
-		rect.top = pSettings->r_float(artefact->cNameSect(), "inv_grid_y") * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons());
-		rect.right = rect.left + pSettings->r_float(artefact->cNameSect(), "inv_grid_width") * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons());
-		rect.bottom = rect.top + pSettings->r_float(artefact->cNameSect(), "inv_grid_height") * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons());
+		rect.left = pSettings->r_float(artefact->cNameSect(), "inv_grid_x") * UI().inv_grid_kx();
+		rect.top = pSettings->r_float(artefact->cNameSect(), "inv_grid_y") * UI().inv_grid_kx();
+		rect.right = rect.left + pSettings->r_float(artefact->cNameSect(), "inv_grid_width") * UI().inv_grid_kx();
+		rect.bottom = rect.top + pSettings->r_float(artefact->cNameSect(), "inv_grid_height") * UI().inv_grid_kx();
 		m_vRects.push_back(rect);
 	}
 }
@@ -63,12 +63,12 @@ void CUIArtefactPanel::Draw()
 
 	float _s = m_cell_size.x / m_cell_size.y;
 
-	for (ITr it = m_vRects.begin(); it != m_vRects.end(); ++it)
+	for (const Frect& r : m_vRects)
 	{
-		const Frect& r = *it;
+		Fvector2 size;
 
-		iHeight = m_fScale * (r.bottom - r.top);
-		iWidth = _s * m_fScale * (r.right - r.left);
+		iHeight = m_fScale * (r.bottom - r.top) * (1 / UI().get_icons_kx());
+		iWidth = _s * m_fScale * (r.right - r.left) * (1 / UI().get_icons_kx());
 
 		if (m_bVert)
 			y = y + m_fIndent + iHeight;

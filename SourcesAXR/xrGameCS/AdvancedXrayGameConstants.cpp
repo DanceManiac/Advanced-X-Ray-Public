@@ -10,6 +10,8 @@ bool	m_bKnifeSlotEnabled = false;
 bool	m_bBinocularSlotEnabled = false;
 bool	m_bTorchSlotEnabled = false;
 bool	m_bBackpackSlotEnabled = false;
+bool	m_bHelmetSlotEnabled = false;
+bool	m_bSecondHelmetSlotEnabled = false;
 bool	m_bDosimeterSlotEnabled = false;
 bool	m_bPantsSlotEnabled = false;
 bool	m_bPdaSlotEnabled = false;
@@ -22,7 +24,9 @@ bool	m_bActorIntoxication = false;
 bool	m_bActorSleepeness = false;
 bool	m_bActorAlcoholism = false;
 bool	m_bActorNarcotism = false;
+bool	m_bActorFrostbite = false;
 bool	m_bArtefactsDegradation = false;
+bool	m_bMultiItemPickup = true;
 bool	m_bShowWpnInfo = true;
 bool	m_bJumpSpeedWeightCalc = false;
 bool	m_bHideWeaponInInventory = false;
@@ -39,7 +43,6 @@ bool	m_bAfPanelEnabled = false;
 bool	m_bHUD_UsedItemText = true;
 bool	m_bLimitedInventory = false;
 bool	m_bInventoryItemsAutoVolume = false;
-bool	m_bBackpackAnimsEnabled = false;
 bool	m_bFoodIrradiation = false;
 bool	m_bFoodRotting = false;
 bool	m_bOGSE_WpnZoomSystem = false;
@@ -47,20 +50,27 @@ bool	m_bQuickThrowGrenadesEnabled = true;
 bool	m_bPDA_FlashingIconsEnabled = false;
 bool	m_bPDA_FlashingIconsQuestsEnabled = false;
 bool	m_bFogInfluenceVolumetricLight = false;
+bool	m_bEnableBoreDoF = true;
+bool	m_bBackpackAnimsEnabled = false;
+bool	m_bShowSaveName = false;
+bool	m_bLimitedInvBoxes = false;
+bool	m_bGlobalAchEnabled = false;
+BOOL	m_b_animated_backpack = 0;
+bool	m_b_smooth_scroll = false;
+bool	m_b_centering_cursor_global_disable = false;
 int		m_iArtefactsCount = 5;
 int		m_i_CMD_Count = 1;
 int		m_B_CMD_Count = 1;
 float	m_fDistantSndDistance = 150.f;
-Fvector4 m_FV4RedColor = Fvector4().set(255, 0, 0, 255);
-Fvector4 m_FV4GreenColor = Fvector4().set(0, 255, 0, 255);
-Fvector4 m_FV4NeutralColor = Fvector4().set(170, 170, 170, 255);
+Ivector4 m_IV4RedColor = Ivector4().set(255, 0, 0, 255);
+Ivector4 m_IV4GreenColor = Ivector4().set(0, 255, 0, 255);
+Ivector4 m_IV4NeutralColor = Ivector4().set(170, 170, 170, 255);
 LPCSTR	m_sAfInfluenceMode = "from_belt";
 LPCSTR	m_sArtefactsDegradationMode = "from_belt";
-LPCSTR	m_sMoonPhasesMode = "off";
+shared_str	m_sMoonPhasesMode = "off";
 //SSFX DoF
 Fvector4 m_FV4DefaultDoF = Fvector4().set(0.1f, 0.25f, 0.0f, 0.0f);
 Fvector4 m_FV4FocusDoF = Fvector4().set(0.1f, 0.25f, 0.0f, 0.0f);
-bool	m_bEnableBoreDoF = true;
 
 namespace GameConstants
 {
@@ -73,6 +83,8 @@ namespace GameConstants
 		m_bBinocularSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_binocular_slot", false);
 		m_bTorchSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_torch_slot", false);
 		m_bBackpackSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_backpack_slot", false);
+		m_bHelmetSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_helmet_slot", false);
+		m_bSecondHelmetSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_second_helmet_slot", false);
 		m_bDosimeterSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_dosimeter_slot", false);
 		m_bPantsSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_pants_slot", false);
 		m_bPdaSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_pda_slot", false);
@@ -82,7 +94,9 @@ namespace GameConstants
 		m_bActorSleepeness = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "actor_sleepeness_enabled", false);
 		m_bActorAlcoholism = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "actor_alcoholism_enabled", false);
 		m_bActorNarcotism = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "actor_narcotism_enabled", false);
+		m_bActorFrostbite = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "actor_frostbite_enabled", false);
 		m_bArtefactsDegradation = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "artefacts_degradation", false);
+		m_bMultiItemPickup = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "multi_item_pickup", true);
 		m_bShowWpnInfo = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "show_wpn_info", true);
 		m_bJumpSpeedWeightCalc = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "jump_and_speed_weight_calc", false);
 		m_bHideWeaponInInventory = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "hide_weapon_in_inventory", false);
@@ -105,14 +119,15 @@ namespace GameConstants
 		m_B_CMD_Count = READ_IF_EXISTS(pAdvancedSettings, r_u32, "custom_commands", "bool_cmd_count", 1);
 		m_fDistantSndDistance = READ_IF_EXISTS(pAdvancedSettings, r_float, "gameplay", "distant_snd_distance", 150.f);
 		m_bColorizeValues = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "colorize_values", false);
-		m_FV4RedColor = READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ui_settings", "colorize_values_red", Fvector4().set(255, 0, 0, 255));
-		m_FV4GreenColor = READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ui_settings", "colorize_values_green", Fvector4().set(0, 255, 0, 255));
-		m_FV4NeutralColor = READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ui_settings", "colorize_values_neutral", Fvector4().set(170, 170, 170, 255));
+		m_IV4RedColor = READ_IF_EXISTS(pAdvancedSettings, r_ivector4, "ui_settings", "colorize_values_red", Ivector4().set(255, 0, 0, 255));
+		m_IV4GreenColor = READ_IF_EXISTS(pAdvancedSettings, r_ivector4, "ui_settings", "colorize_values_green", Ivector4().set(0, 255, 0, 255));
+		m_IV4NeutralColor = READ_IF_EXISTS(pAdvancedSettings, r_ivector4, "ui_settings", "colorize_values_neutral", Ivector4().set(170, 170, 170, 255));
 		m_bUseHQ_Icons = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "hq_icons", false);
 		m_bAfPanelEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "enable_artefact_panel", false);
 		m_bHUD_UsedItemText = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "enable_hud_used_item_text", true);
 		m_bPDA_FlashingIconsEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "enable_pda_info_icons", false);
 		m_bPDA_FlashingIconsQuestsEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "enable_new_task_icon", false);
+		m_bShowSaveName = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "show_saved_game_name", false);
 		m_sAfInfluenceMode = READ_IF_EXISTS(pAdvancedSettings, r_string, "gameplay", "artefacts_infl_mode", "from_belt"); //from_belt|from_ruck|from_ruck_only_rad
 		m_sArtefactsDegradationMode = READ_IF_EXISTS(pAdvancedSettings, r_string, "gameplay", "artefacts_degradation_mode", "from_belt"); //from_belt|from_ruck
 		m_FV4DefaultDoF = READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ssfx_dof", "default_dof", Fvector4().set(0.1f, 0.25f, 0.0f, 0.0f));
@@ -120,6 +135,10 @@ namespace GameConstants
 		m_bEnableBoreDoF = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ssfx_dof", "bore_dof_enabled", true);
 		m_sMoonPhasesMode = READ_IF_EXISTS(pAdvancedSettings, r_string, "environment", "moon_phases_mode", "off"); //off|8days|28days
 		m_bFogInfluenceVolumetricLight = READ_IF_EXISTS(pAdvancedSettings, r_bool, "environment", "fog_infl_volumetric_light", false);
+		m_bLimitedInvBoxes = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "enable_limited_inv_boxes", false);
+		m_bGlobalAchEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "enable_global_achievements", false);
+		m_b_smooth_scroll = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "enable_smooth_scrolling", false);
+		m_b_centering_cursor_global_disable = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "disable_cursor_global_centering", false);
 
 		Msg("# Advanced X-Ray GameConstants are loaded");
 	}
@@ -157,6 +176,16 @@ namespace GameConstants
 	bool GetBackpackSlotEnabled()
 	{
 		return m_bBackpackSlotEnabled;
+	}
+
+	bool GetHelmetSlotEnabled()
+	{
+		return m_bHelmetSlotEnabled;
+	}
+
+	bool GetSecondHelmetSlotEnabled()
+	{
+		return m_bSecondHelmetSlotEnabled;
 	}
 
 	bool GetDosimeterSlotEnabled()
@@ -204,9 +233,19 @@ namespace GameConstants
 		return m_bActorNarcotism;
 	}
 
+	bool GetActorFrostbite()
+	{
+		return m_bActorFrostbite;
+	}
+
 	bool GetArtefactsDegradation()
 	{
 		return m_bArtefactsDegradation;
+	}
+
+	bool GetMultiItemPickup()
+	{
+		return m_bMultiItemPickup;
 	}
 
 	bool GetShowWpnInfo()
@@ -221,9 +260,15 @@ namespace GameConstants
 
 	bool GetHideWeaponInInventory()
 	{
-		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(Actor()->inventory().ItemFromSlot(BACKPACK_SLOT));
+		if (GetBackpackAnimsEnabled())
+		{
+			//if (smart_cast<CCustomBackpack*>(Actor()->inventory().ItemFromSlot(BACKPACK_SLOT)))
+			return false;
+			//else
+			//	return m_bHideWeaponInInventory;
+		}
 
-		return (backpack) ? ((Actor()->inventory().ActiveItem() != backpack) && m_bHideWeaponInInventory) : m_bHideWeaponInInventory;
+		return m_bHideWeaponInInventory;
 	}
 
 	bool GetStopActorIfShoot()
@@ -296,6 +341,16 @@ namespace GameConstants
 		return m_bQuickThrowGrenadesEnabled;
 	}
 
+	bool GetLimitedInvBoxes()
+	{
+		return m_bLimitedInvBoxes;
+	}
+
+	bool GetGlobalAchEnabled()
+	{
+		return m_bGlobalAchEnabled;
+	}
+
 	int GetArtefactsCount()
 	{
 		return m_iArtefactsCount;
@@ -333,7 +388,7 @@ namespace GameConstants
 
 	bool GetBackpackAnimsEnabled()
 	{
-		return m_bBackpackAnimsEnabled;
+		return (m_bBackpackAnimsEnabled && m_b_animated_backpack);
 	}
 
 	bool GetPDA_FlashingIconsEnabled()
@@ -351,19 +406,24 @@ namespace GameConstants
 		return m_bFogInfluenceVolumetricLight;
 	}
 
-	Fvector4 GetRedColor()
+	bool GetShowSaveName()
 	{
-		return m_FV4RedColor;
+		return m_bShowSaveName;
 	}
 
-	Fvector4 GetGreenColor()
+	Ivector4 GetRedColor()
 	{
-		return m_FV4GreenColor;
+		return m_IV4RedColor;
 	}
 
-	Fvector4 GetNeutralColor()
+	Ivector4 GetGreenColor()
 	{
-		return m_FV4NeutralColor;
+		return m_IV4GreenColor;
+	}
+
+	Ivector4 GetNeutralColor()
+	{
+		return m_IV4NeutralColor;
 	}
 
 	Fvector4 GetSSFX_DefaultDoF()
@@ -391,8 +451,18 @@ namespace GameConstants
 		return m_sArtefactsDegradationMode;
 	}
 
-	LPCSTR GetMoonPhasesMode()
+	shared_str GetMoonPhasesMode()
 	{
 		return m_sMoonPhasesMode;
+	}
+
+	bool GetSmoothScrollEnabled()
+	{
+		return m_b_smooth_scroll;
+	}
+
+	bool GetCursorGlobalCenteringDisabled()
+	{
+		return m_b_centering_cursor_global_disable;
 	}
 }

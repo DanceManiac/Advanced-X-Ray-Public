@@ -1,0 +1,996 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="st_game_window_name">
+		<text>Advanced X-Ray</text>
+	</string>
+	<string id="st_discord_menu">
+		<text>Главное Меню</text>
+	</string>
+	<string id="ui_mm_cam_fov">
+		<text>Поле зрения</text>
+	</string>
+	<string id="ui_mm_hud_fov">
+		<text>HUD FOV</text>
+	</string>
+	<string id="ui_mm_detail_radius">
+		<text>Дальность отр. травы</text>
+	</string>
+	<string id="ui_mm_detail_scale">
+		<text>Высота травы</text>
+	</string>
+	<string id="ui_mm_ssr_quality">
+		<text>Качество отражений</text>
+	</string>
+	<string id="dtssr_off">
+		<text>Отключено</text>
+	</string>
+	<string id="dtssr_lowest">
+		<text>Оч. низкое</text>
+	</string>
+	<string id="dtssr_low">
+		<text>Низкое</text>
+	</string>
+	<string id="dtssr_medium">
+		<text>Среднее</text>
+	</string>
+	<string id="dtssr_high">
+		<text>Высокое</text>
+	</string>
+	<string id="ui_mm_bloodmarks_on_skeleton">
+		<text>Блудмарки на трупах</text>
+	</string>
+	<string id="ui_mm_actor_shadow">
+		<text>Тень от ГГ</text>
+	</string>
+	<string id="ui_mm_mblur_enable">
+		<text>Motion Blur</text>
+	</string>
+	<string id="ui_mm_mblur">
+		<text>Инт. Motion Blur</text>
+	</string>
+	<string id="ui_mm_sunshafts_mode">
+		<text>Режим солн. лучей</text>
+	</string>
+	<string id="volumetric">
+		<text>Волюметрические</text>
+	</string>
+	<string id="screen_space">
+		<text>Screen Space</text>
+	</string>
+	<string id="combine_sunshafts">
+		<text>Комбинированные</text>
+	</string>
+	<string id="ui_mm_raindrops">
+		<text>Эффект Raindrops</text>
+	</string>
+	<string id="ui_mm_sun_details">
+		<text>Тень от травы</text>
+	</string>
+	<string id="ui_mm_clr_drag_preset">
+		<text>Пресет Цветокоррекции</text>
+	</string>
+	<string id="clr_default">
+		<text>Оригинальный</text>
+	</string>
+	<string id="clr_sepia">
+		<text>Сепия</text>
+	</string>
+	<string id="clr_gray_moss">
+		<text>Серый Мох</text>
+	</string>
+	<string id="clr_graphite_gray">
+		<text>Графитовый Серый</text>
+	</string>
+	<string id="clr_zone">
+		<text>Мрачная Зона</text>
+	</string>
+	<string id="clr_warm_tone">
+		<text>Тёплые Тона</text>
+	</string>
+	<string id="clr_blue">
+		<text>Оттенок Синего</text>
+	</string>
+	<string id="ui_mm_clr_red">
+		<text>Цветокоррекция: Красный</text>
+	</string>
+	<string id="ui_mm_clr_green">
+		<text>Цветокоррекция: Зелёный</text>
+	</string>
+	<string id="ui_mm_clr_blue">
+		<text>Цветокоррекция: Синий</text>
+	</string>
+	<string id="ui_st_corpse_collision">
+		<text>Коллизия трупов</text>
+	</string>
+	<string id="ui_mm_smap_size">
+		<text>Размер карты теней</text>
+	</string>
+	<string id="ui_mm_saturation">
+		<text>Насыщенность цветов</text>
+	</string>
+	<string id="ui_mm_r2_aa_mode">
+		<text>Тип доп. сглаживания</text>
+	</string>
+	<string id="opt_noaa">
+		<text>Отключено</text>
+	</string>
+	<string id="opt_smaa">
+		<text>SMAA</text>
+	</string>
+	<string id="opt_dlaa">
+		<text>DLAA</text>
+	</string>
+	<string id="opt_fxaa">
+		<text>FXAA</text>
+	</string>
+	<string id="ui_mm_vignette_effect">
+		<text>Эффект виньетки</text>
+	</string>
+	<string id="ui_mm_hud_mask">
+		<text>Динам. HUD масок</text>
+	</string>
+	<string id="ui_st_hud_collision">
+		<text>Коллизия HUD оружия</text>
+	</string>
+	<string id="ui_mm_hud_draw">
+		<text>Показывать интерфейс</text>
+	</string>
+	<string id="renderer_r2.5">
+		<text>Улучшенное полное освещение</text>
+	</string>
+	<string id="renderer_r4">
+		<text>Ул. полное освещение (DX11)</text>
+	</string>
+	<string id="camera_1">
+		<text>Вид от 1-ого лица</text>
+	</string>
+	<string id="camera_2">
+		<text>Вид от 2-ого лица</text>
+	</string>
+	<string id="camera_3">
+		<text>Вид от 3-ого лица</text>
+	</string>
+	<string id="ui_mm_quick_saves_count">
+		<text>Кол-во быстрых сохранений</text>
+	</string>
+	<string id="ui_st_loading_stages">
+		<text>Стадии загрузки игры</text>
+	</string>
+	<string id="st_press_any_key">
+		<text>Нажмите любую клавишу для перехода к игре</text>
+	</string>
+	<string id="ui_st_keypress_on_start">
+		<text>Автопауза после загрузки</text>
+	</string>
+	<string id="ui_mm_hud_dynamic_effects">
+		<text>Динам. эффекты HUD</text>
+	</string>
+	<string id="ui_mm_ssao_quality">
+		<text>Качество SSAO</text>
+	</string>
+	<string id="ui_mm_ssao">
+		<text>по умолчанию</text>
+	</string>
+	<string id="ui_mm_ssao_text">
+		<text>Режим SSAO</text>
+	</string>
+	<string id="disabled">
+		<text>Отключено</text>
+	</string>
+	<string id="default">
+		<text>SSAO</text>
+	</string>
+	<string id="hdao">
+		<text>HDAO</text>
+	</string>
+	<string id="hbao">
+		<text>HBAO</text>
+	</string>
+	<string id="ssdo">
+		<text>SSDO</text>
+	</string>
+	<string id="ui_mm_snd_delay">
+		<text>Задержка звуков вдалеке</text>
+	</string>
+	<string id="kb_grp_auto">
+		<text>Транспорт</text>
+	</string>
+	<string id="ui_inv_battery">
+		<text>Заряд батареи</text>
+	</string>
+	<string id="ui_inv_max_charge">
+		<text>Макс. заряд</text>
+	</string>
+	<string id="ui_inv_uncharge_speed">
+		<text>Расход батареи</text>
+	</string>
+	<string id="st_battery">
+		<text>Батарейка</text>
+	</string>
+	<string id="st_battery_descr">
+		<text>Стандартная пальчиковая батарейка. Повсеместно применяется сталкерами для зарядки различных приборов.</text>
+	</string>
+	<string id="st_device_torch">
+		<text>Фонарик</text>
+	</string>
+	<string id="st_device_torch_descr">
+		<text>Фонарь с креплением на голову. Пригодится сталкеру, которого ночь застала в дороге. C другой стороны, может привлечь чьё-то нежелательное внимание.</text>
+	</string>
+	<string id="st_charge_item">
+		<text>Зарядить:</text>
+	</string>
+	<string id="st_charge">
+		<text>заряд</text>
+	</string>
+	<string id="ui_st_walk_inertion">
+		<text>Инерция ходьбы героя</text>
+	</string>
+	<string id="ui_mm_fp_death">
+		<text>Смерть от первого лица</text>
+	</string>
+	<string id="ui_inv_thirst">
+		<text>Утоление жажды</text>
+	</string>
+	<string id="ui_mm_3d_scopes">
+		<text>3D Прицелы</text>
+	</string>
+	<string id="ui_inv_artefact_charge">
+		<text>Заряд артефакта</text>
+	</string>
+	<string id="ui_walk_accel">
+		<text>Скорость</text>
+	</string>
+	<string id="ui_jump_speed">
+		<text>Высота прыжка</text>
+	</string>
+	<string id="ui_mm_crosshair_type">
+		<text>Тип перекрестия прицела</text>
+	</string>
+	<string id="default_crosshair">
+		<text>Стандартный</text>
+	</string>
+	<string id="builds_crosshair">
+		<text>Билдовский</text>
+	</string>
+	<string id="point_crosshair">
+		<text>Точка</text>
+	</string>
+	<string id="ui_mm_snd_precache">
+		<text>Предзагрузка звуков</text>
+	</string>
+	<string id="ui_mm_shader_nvg">
+		<text>Шейдерный ПНВ</text>
+	</string>
+	<string id="ui_mm_3d_pda">
+		<text>3D КПК</text>
+	</string>
+	<string id="ui_inv_intoxication">
+		<text>Интоксикация</text>
+	</string>
+	<string id="ui_inv_sleepeness">
+		<text>Сонливость</text>
+	</string>
+	<string id="ui_mm_r2_use_bump">
+		<text>Использовать бампы</text>
+	</string>
+	<string id="st_bolt_descr">
+		<text>Металлическое крепёжное изделие в виде стержня с наружной резьбой и шестигранной головкой под гаечный ключ. Используется сталкерами для обнаружения, определения границ и разрядки аномалий, а также для обнаружения мин.</text>
+	</string>
+	<string id="ui_mm_optimize_static_geom">
+		<text>Оптим. стат. геометрии</text>
+	</string>
+	<string id="ui_mm_optimize_dynamic_geom">
+		<text>Оптим. дин. геометрии</text>
+	</string>
+	<string id="ui_mm_optimize_shadow_geom">
+		<text>Оптимизация карт теней</text>
+	</string>
+	<string id="ui_mm_r2_static_sun">
+		<text>Статическое солнце</text>
+	</string>
+	<string id="ui_inv_af_radius">
+		<text>Радиус действия</text>
+	</string>
+	<string id="ui_inv_af_vis_radius">
+		<text>Радиус обнаружения</text>
+	</string>
+	<string id="ui_mm_snd_targets">
+		<text>Источники звука</text>
+	</string>
+	<string id="ui_mm_flares_render">
+		<text>Рендеринг бликов</text>
+	</string>
+	<string id="st_opt_always">
+		<text>Всегда</text>
+	</string>
+	<string id="st_opt_on_helmet">
+		<text>В зависимости от шлема</text>
+	</string>
+	<string id="ui_inv_alcoholism">
+		<text>Алкозависимость</text>
+	</string>
+	<string id="ui_inv_hangover">
+		<text>Похмелье</text>
+	</string>
+	<string id="ui_inv_narcotism">
+		<text>Наркозависимость</text>
+	</string>
+	<string id="ui_inv_withdrawal">
+		<text>Ломка</text>
+	</string>
+	<string id="ui_inv_af_rank">
+		<text>Ранг</text>
+	</string>
+	<string id="ui_inv_filter_condition">
+		<text>Чистота фильтра</text>
+	</string>
+	<string id="st_filter">
+		<text>Фильтр противогаза</text>
+	</string>
+	<string id="st_filter_descr">
+		<text>Обычный фильтр для противогаза.</text>
+	</string>
+	<string id="st_change_filter">
+		<text>Заменить фильтр:</text>
+	</string>
+	<string id="ui_inv_portions">
+		<text>Кол-во порций</text>
+	</string>
+	<string id="ui_mm_crouch_toggle">
+		<text>Режим сесть-встать</text>
+	</string>
+	<string id="ui_mm_mt_textures_load">
+		<text>MT загрузка текстур</text>
+	</string>
+	<string id="agroprom_underground">
+		<text>Подземелья Агропрома</text>
+	</string>
+	<string id="ui_mm_adv_crosshair">
+		<text>Улучшенное перекрестие</text>
+	</string>
+	<string id="st_opt_extreme">
+		<text>макс. высоко</text>
+	</string>
+	<string id="ui_mm_lowland_fog_type">
+		<text>Тип низинного тумана</text>
+	</string>
+	<string id="st_gswr">
+		<text>G.S.W.R.</text>
+	</string>
+	<string id="st_screen_space_shaders">
+		<text>Screen Space Shaders</text>
+	</string>
+	<string id="st_repair">
+		<text>Отремонтировать:</text>
+	</string>
+	<string id="st_repair_kit">
+		<text>Ремнабор</text>
+	</string>
+	<string id="st_repair_kit_descr">
+		<text>Обычный ремонтный набор. Позволяет отремонтировать снаряжение, если руки из нужного места растут.</text>
+	</string>
+	<string id="ui_inv_psy_health">
+		<text>Пси-здоровье</text>
+	</string>
+	<string id="ui_mm_reflections_distance">
+		<text>Дальность отражений</text>
+	</string>
+	<string id="st_no_trade_tip_1">
+		<text>Торговец не интересуется подобными предметами.</text>
+	</string>
+	<string id="st_no_trade_tip_2">
+		<text>Предмет в слишком плохом состоянии для продажи.</text>
+	</string>
+	<string id="ui_mm_vis_dist_hint">
+		<text>Эта настройка регулирует величину, на которую умножается предельное расстояние видимости, установленное в профиле текущей погоды. Например, в погоде установлена дальность обзора 150 метров. На минимуме ползунка вы будете видеть на 60 метров, на максимуме на 225.\n \n %c[pda_yellow] • Нагрузка: Средняя</text>
+	</string>
+	<string id="ui_mm_geometry_lod_hint">
+		<text>Эта настройка регулирует детализацию прорисовки и освещения моделей людей, монстров и оружия в игре. Чем дальше ползунок, тем более детализованными они будут.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_detail_density_hint">
+		<text>Эта настройка регулирует насколько плотно отрисовываются кустики травы в игре. Чем дальше ползунок, тем ближе друг к другу будут отрисовываться элементы травы и тем гуще она будет.\n \n %c[pda_red] • Нагрузка: Высокая</text>
+	</string>
+	<string id="ui_mm_detail_radius_hint">
+		<text>Эта настройка регулирует максимальное расстояние, на котором отрисовывается трава. Чем дальше ползунок, тем дальше будет край травы. ВНИМАНИЕ! Алгоритм отрисовки травы игрой такой, что при увеличении радиуса травы нагрузка на видеокарту увеличивается в геометрической прогресии. Более-менее приемлемые величины лежат в пределах 150-200 метров.\n \n %c[pda_red] • Нагрузка: Высокая</text>
+	</string>
+	<string id="ui_mm_texture_lod_hint">
+		<text>Эта настройка регулирует степень детализации текстур игрой. Чем дальше ползунок, тем более отчетливы текстуры и больше они требуют видеопамяти. При снижении этой настройки текстуры будут размыливаться, но соответственно, потреблять меньше памяти.\n \n %c[pda_yellow] • Нагрузка: Средняя</text>
+	</string>
+	<string id="ui_mm_aniso_hint">
+		<text>Эта настройка регулирует степень анизотропной фильтрации текстур. Чем значение выше, тем четче будут выглядеть текстуры с увеличением расстояния до них.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_bloodmarks_on_skeleton_hint">
+		<text>Эта настройка включает cледы от пулевых попаданий на телах.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_r2_sun_hint">
+		<text>Эта настройка включает отбрасывание объектами теней от солнечного света. На слабых ПК отключение этой настройки может дать серьезный прирост скорости.\n \n %c[pda_yellow] • Нагрузка: Средняя</text>
+	</string>
+	<string id="ui_mm_sun_details_hint">
+		<text>Эта настройка включает отбрасывание травой теней от солнечного света и других источников динамического освещения. ВНИМАНИЕ! Настройка очень сильно просаживает производительность. Не используйте её с большим радиусом отрисовки травы или высокой плотностью травы!\n \n %c[pda_red] • Нагрузка: ОЧЕНЬ ВЫСОКАЯ</text>
+	</string>
+	<string id="ui_mm_light_distance_hint">
+		<text>Эта настройка регулирует сохранение аккуратности обсчета освещения с увеличением расстояния до них. Чем она выше, тем детальней будут выглядеть тени от динамических источников света на расстоянии.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_npc_torch_hint">
+		<text>Эта настройка разрешает игре обрабатывать объёмный свет фонариков NPC. На слабых ПК отключение этой настройки может дать серьезный прирост скорости ночью, в лагерях с большим числом NPC.\n \n %c[pda_yellow] • Нагрузка: Средняя</text>
+	</string>
+	<string id="ui_mm_particles_distance_hint">
+		<text>Эта настройка регулирует качество прорисовки теней в игре. Чем она выше, тем глаже будут у теней края.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_vsync_hint">
+		<text>Эта настройка позволяет включить вертикальную синхронизацию, т.е. синхронизацию частоты кадров с частотой обновления монитора. При включении пропадет эффект небольшого горизонтального смещения частей экрана при резких движениях мышкой, но может немного снизиться производительность.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_60hz_hint">
+		<text>Эта настройка заставляет игру всегда использовать видеорежим с частотой обновления экрана 60 Герц. Настройка полезна для обладателей мониторов, у которых игра при запуске неверно определяет частоту обновления экрана. Однако, включать эту настройку рекомендуется только если у вас есть такая проблема. В некоторых редких случаях включение этой настройки может вызывать лаги в полноэкранном режиме.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_r2_aa_mode_hint">
+		<text>Эта настройка позволяет выбрать или отключить дополнительное сглаживание. Дополнительное сглаживание работает одновременно с основным (MSAA). Либо без него, в качестве основного.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_sunshafts_mode_hint">
+		<text>Эта настройка переключает тип солнечных лучей. Выберите тот, который больше понравится.\n \n %c[pda_green] • Screen Space: Низкая нагрузка\n %c[pda_red] • Volumetric: Высокая нагрузка\n %c[pda_red] • Комбинированные: Высокая нагрузка</text>
+	</string>
+	<string id="ui_mm_soft_water_hint">
+		<text>Эта настройка включает эффект смягчения края водных поверхностей. При её включении вода у края водоемов будет плавно набирать прозрачность вплоть до полной незаметности, что позволяет устранить эффект резкой и сильно заметной границы между водой и сушей.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_soft_particles_hint">
+		<text>Эта настройка включает эффект мягких частиц. При её включении сильно улучшится вид таких эффектов как огонь, дым, взрывы, искры и т.п. Рекомендуется всегда держать эту настройку включенной.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_ssao_hint">
+		<text>Эта настройка позволяет отрегулировать качество глобального освещения в игре. Этот эффект, при включении, производит расчет дополнительно затеняемых геометрией моделей областей, делая освещение более похожим на освещение в реальном мире, на моделях появляются полутени и затенения от элементов снаряжения, одежды, деталей машин, и других небольших частей геометрии.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_ssao_mode_hint">
+		<text>Эта настройка регулирует режим работы эффекта глобального освещения в игре.\n \n %c[pda_yellow] • Нагрузка: Средняя</text>
+	</string>
+	<string id="ui_mm_steep_parallax_hint">
+		<text>Эта настройка регулирует эффект улучшенной рельефности поверхностей с использованием алгоритма Steep parallax mapping. Этот алгоритм использует для расчета рельефности трассировку лучей в пространтсве карты высот, что дает более реалистичный и качественный эффект.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_dof_hint">
+		<text>Эта настройка включает компонент эффекта глубины поля зрения - фокусировку глаз в реальном времени.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_r2_detail_bump_hint">
+		<text>Эта настройка включает Детальный рельеф - отображение мелких деталей и шероховатостей на объектах.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_r3_lfx">
+		<text>Включение фларов от лампочек.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_raindrops_hint">
+		<text>Эта настройка включает появление капель на стекле шлемов и противогазов во время дождя.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_r3_dynamic_wet_surfaces_hint">
+		<text>Настройка включает намокание поверхностей во время дождя.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_volumetric_light_hint">
+		<text>Настройка включает объемный свет для некоторых ламп.\n \n %c[pda_yellow] • Нагрузка: Средняя</text>
+	</string>
+	<string id="ui_mm_ssr_quality_hint">
+		<text>Эта настройка позволяет отрегулировать качество или выключить отражения от воды и мокрых поверхностей.\n \n %c[pda_yellow] • Нагрузка: Средняя</text>
+	</string>
+	<string id="ui_mm_volumetric_smoke_hint">
+		<text>Настройка включает технологию объёмного тумана. Он применяется для имитации мутной воды, дымки в низинах и для тому подобных эффектов.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_actor_shadow_hint">
+		<text>Данная настройка включает тень от главного героя.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_smap_size_hint">
+		<text>Чем выше разрешение карт теней - тем более чёткие тени будут вдали. Рекомендуется выставлять разрешение не ниже 4096x4096. Настройка очень сильно влияет на производительность.\n \n %c[pda_red] • Нагрузка: ОЧЕНЬ ВЫСОКАЯ</text>
+	</string>
+	<string id="ui_mm_mt_textures_load_hint">
+		<text>Активирует одновременную загрузку текстур несколькими потоками. Может немного сократить время загрузки сейва при наличии SSD.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_fov_hint">
+		<text>Имеет смысл увеличивать угол обзора для широких мониторов и в зависимости от индвивидуальных предпочтений.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_hud_fov_hint">
+		<text>Угол обзора игрока. Если значение, например 0.45 и меньше, то оружие будет ближе, если же стоит значение 0.65 и больше, то оружие при игре будет казаться дальше. Имеет смысл индивидуально настраивать для широких мониторов и в зависимости от FOV.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_ssample_hint">
+		<text>Данная настройка позволяет изменять кратность MSAA. ВНИМАНИЕ! Высокие значения могут ощутимо снизить производительность. Рекомендуется устанавливать кратность 4х. \n \n %c[pda_red] • Нагрузка: Высокая</text>
+	</string>
+	<string id="ui_mm_detail_scale_hint">
+		<text>Данная настройка позволяет изменять высоту травы.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_r2_static_sun_hint">
+		<text>Данная опция включает статические тени от солнца. При включенной опции, тени не будут менять свой размер и поворот в зависимости от положения солнца на небе. На слабых ПК может ощутимо прибавить FPS.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_flares_hint">
+		<text>Эта настройка позволяет выбрать режим работы бликов источников света на камере или отключить их.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_r2_use_bump_hint">
+		<text>Эта настройка позволяет принудительно отключить использование карт рельефа в игре. Качество геометрии при этом будет ниже, но немного вырастит производительность.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_sun_quality_hint">
+		<text>Эта настройка позволяет отрегулировать качество солнца.\n \n %c[pda_yellow] • Нагрузка: Средняя</text>
+	</string>
+	<string id="ui_mm_sunshafts_hint">
+		<text>Эта настройка позволяет отрегулировать качество солнцечных лучей.\n \n %c[pda_yellow] • Нагрузка: Средняя</text>
+	</string>
+	<string id="ui_mm_reflections_distance_hint">
+		<text>Эта настройка позволяет отрегулировать дальность отражений. Рекомендуются значения от 300 до 500 метров.\n \n %c[pda_red] • Нагрузка: Высокая</text>
+	</string>
+	<string id="ui_mm_r4_tesselation_hint">
+		<text>Данная опция включает или выключает тесселяцию. Алгоритмы тесселяции позволяют разбить один примитив, например, треугольник, на несколько по определённому закону, из-за чего геометрия выглядит более гладкой.\n \n %c[pda_yellow] • Нагрузка: Средняя</text>
+	</string>
+	<string id="ui_mm_r3_lowland_fog_type_hint">
+		<text>Эта настройка позволяет выбрать тип низинного тумана. Либо родной из G.S.W.R. либо из аддона Screen Space Shaders.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_3d_scopes_hint">
+		<text>Эта настройка включает или выключает 3D прицелы в игре. Данная опция не будет работать с оригинальным оружием.\n \n %c[pda_red] • Нагрузка: Высокая</text>
+	</string>
+	<string id="ui_mm_3d_pda_hint">
+		<text>Данная опция включает или выключает 3D КПК.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_vignette_hint">
+		<text>Данная опция включает или выключает эффект виньетки.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_hud_mask_hint">
+		<text>Данная опция включает или выключает динамический эффект стекла шлема или противогаза на экране.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_hud_effects_hint">
+		<text>Данная опция включает или выключает динамические эффекты на экране. При включенном эффекте будет покраснение экрана по краям при снижении здоровья, потемнение при снижении стамины и т.д.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_shader_nvg_hint">
+		<text>Эта настройка включает или выключает шейдерный эффект прибора ночного видения. Если опция выключена, используется оригинальный эффект.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_mblur_enable_hint">
+		<text>Эта настройка включает или выключает эффект размытия картинки при резких движениях.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_mblur_hint">
+		<text>Эта опция позволяет отрегулировать интенсивность размытия картинки при резких движениях.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_optimize_static_geom_hint">
+		<text>Эта опция позволяет настроить оптимизацию статической геометрии (локации). Данная опция сильно портит картинку, отключая всю геометрию на расстоянии, но для слабых ПК может быть решением низкой производительности. Чем дальше ползунок - тем ближе будет граница обрезки статической геометрии. При нулевом значении, эффект отключается.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_optimize_dynamic_geom_hint">
+		<text>Эта опция позволяет настроить оптимизацию динамической геометрии (ящиков, бочек, НПС и т.д.). Чем дальше ползунок - тем ближе будет граница обрезки динамической геометрии. При нулевом значении, эффект отключается.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_optimize_shadow_geom_hint">
+		<text>Эта опция позволяет включить или выключить оптимизацию теней.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_color_r_hint">
+		<text>Эта настройка позволяет откорректировать интенсивность красного цвета для цветокоррекции.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_color_g_hint">
+		<text>Эта настройка позволяет откорректировать интенсивность зелёного цвета для цветокоррекции.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_color_b_hint">
+		<text>Эта настройка позволяет откорректировать интенсивность синего цвета для цветокоррекции.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_saturation_hint">
+		<text>Эта настройка позволяет откорректировать насыщенность цветов для цветокоррекции.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_renderer_hint">
+		<text>Эта опция позволяет выбрать тип освещения. Статическое освещение подойдёт для слабых ПК, а динамическое для более мощных.</text>
+	</string>
+	<string id="ui_mm_preset_hint">
+		<text>Эта опция позволяет выбрать готовый пресет настроек. Высокие настройки могут снизить производительность. Рекомендуется подбирать настройки вручную.</text>
+	</string>
+	<string id="ui_mm_resolution_hint">
+		<text>Эта опция позволяет настроить разрешение экрана в игре. Рекомендуется устанавливать разрешение соответствующее монитору.</text>
+	</string>
+	<string id="ui_mm_clr_drag_preset_hint">
+		<text>Эта настройка позволяет выбрать готовую настройку цветокоррекции.</text>
+	</string>
+	<string id="ui_mm_snd_targets_hint">
+		<text>Эта настройка позволяет настроить максимально допустимое количество источников звука. Чем больше источников - тем меньше вероятность щелчков и тресков в местах, где играет сразу большое количество звуков. Как правило, это аномальные зоны.</text>
+	</string>
+	<string id="ui_mm_eax_hint">
+		<text>Эта опция включает или выключает использование эффекта объёмного звука. Если опция включена, в некоторых помещениях можно слышать эхо.</text>
+	</string>
+	<string id="ui_mm_dynamic_music_hint">
+		<text>Эта опция включает или выключает динамическую музыку в игре. Это музыка, которая начинает играть во время боя с противником.</text>
+	</string>
+	<string id="ui_mm_snd_delay_hint">
+		<text>Эта опция включает или выключает задержку звука. Чем дальше звук от камеры, тем больше будет время, через которое он отыграется.</text>
+	</string>
+	<string id="ui_mm_snd_precache_hint">
+		<text>Данная опция включает кэширование звуков. При включении, при старте игры будут загружены абсолютно все звуки. Скорость старта игры до главного меню возрастает, но в игре уменьшается вероятность фризов при прогрузке НПС.</text>
+	</string>
+	<string id="ui_mm_crosshair_type_hint">
+		<text>Эта опция позволяет настроить тип перекрестия на экране.</text>
+	</string>
+	<string id="ui_mm_dyn_crosshair_hint">
+		<text>Если данная опция включена, перекрестие будет менять размер в зависимости от расстояния до объекта на который он указывает.</text>
+	</string>
+	<string id="ui_mm_adv_crosshair_hint">
+		<text>Эта настройка включает или выключает улучшенное перекрестие, которое движется вместе с изменением направления ствола оружия.</text>
+	</string>
+	<string id="ui_mm_hud_collision_hint">
+		<text>Эта настройка включает или выключает коллизию оружия в руках героя. Если опция включена, герой будет убирать оружие от препятствий.</text>
+	</string>
+	<string id="ui_mm_corpse_collision_hint">
+		<text>Эта настройка включает или выключает коллизию мёртвых тел. Если опция включена, трупы становятся реальным препятствием и главный герой не проходит сквозь них. ВНИМАНИЕ! Данная опция может вызвать проблемы проходимости в закрытых помещениях.</text>
+	</string>
+	<string id="ui_mm_walk_inertion_hint">
+		<text>Данная опция включает симуляцию инерции ходьбы героя. То есть, когда мы движемся вперёд и останавливаемся - камера ещё немного продвинется вперёд и после, отодвинется обратно на исходную позицию.</text>
+	</string>
+	<string id="ui_mm_loading_stages_hint">
+		<text>Эта настройка включает или выключает стадии загрузки игры в загрузочном экране.</text>
+	</string>
+	<string id="ui_mm_quick_saves_count_hint">
+		<text>Эта опция позволяет настроить количество быстрых сохранений. Если значение опции больше 0, создаются сохранения с припиской в виде порядкового номера. Когда быстрое сохранение достигает потолка, указанного в опции - начинает перезаписывать старые. Настоятельно рекомендуется ставить максимально возможное количество быстрых сохранений.</text>
+	</string>
+	<string id="ui_mm_detail_collision">
+		<text>Коллизия травы</text>
+	</string>
+	<string id="ui_mm_detail_collision_hint">
+		<text>Эта опция включает применание травы героем и персонажами.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_chromatic_aberration">
+		<text>Хроматическая аберрация</text>
+	</string>
+	<string id="ui_mm_chromatic_aberration_hint">
+		<text>Эта опция включает эффект хроматической аберрации в игре.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_film_grain">
+		<text>Зернистость</text>
+	</string>
+	<string id="ui_mm_film_grain_hint">
+		<text>Эта опция включает эффект зернистости в игре.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_screen_space_shaders">
+		<text>Screen Space Shaders</text>
+	</string>
+	<string id="ui_mm_screen_space_shaders_hint">
+		<text>Данная опция включает аддон Screen Space Shaders. \n \n %c[pda_red] • Нагрузка: Высокая</text>
+	</string>
+	<string id="ui_mm_sss_sky_debanding">
+		<text>SSS: Сглаживание неба</text>
+	</string>
+	<string id="ui_mm_sss_sky_debanding_hint">
+		<text>Данная опция сглаживает текстуры неба, делая переходы между пикселями более плавными. \n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_sss_flora_fix">
+		<text>SSS: Улучш. осв. флоры</text>
+	</string>
+	<string id="ui_mm_sss_flora_fix_hint">
+		<text>Данная опция улучшает взаимодействие кустов, веток и травы с освещением, а также исправляет недочёты. \n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_sss_fog">
+		<text>SSS: Screen Space туман</text>
+	</string>
+	<string id="ui_mm_sss_fog_hint">
+		<text>Эта опция активирует поддержку низинного тумана из Screen Space Shaders. \n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_sss_indirect_light">
+		<text>SSS: Непрямое освещение</text>
+	</string>
+	<string id="ui_mm_sss_indirect_light_hint">
+		<text>Эта опция включает непрямое освещение, которое, попадая на поверхность, отражается от нее в разных направлениях и тем самым освещает другие поверхности вокруг. \n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_sss_screen_space_shadows">
+		<text>SSS: Screen Space тени</text>
+	</string>
+	<string id="ui_mm_sss_screen_space_shadows_hint">
+		<text>Данная опция добавляет тени на оружии и мелких деталей. \n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_sss_shadows">
+		<text>SSS: Смещение теней</text>
+	</string>
+	<string id="ui_mm_sss_shadows_hint">
+		<text>Эта опция включает смещение теней из Screen Space Shaders 19. \n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_sss_wind">
+		<text>SSS: Ветер</text>
+	</string>
+	<string id="ui_mm_sss_wind_hint">
+		<text>Данная опция включает влияние ветра на траву и деревья из Screen Space Shaders 19. Если включить эту опцию, влияние ветра из Advanced X-Ray будет отключено. \n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_sss_puddles">
+		<text>SSS: Лужи</text>
+	</string>
+	<string id="ui_mm_sss_puddles_hint">
+		<text>Эта опция позволяет включить или отключить эффект динамических луж из Screen Space Shaders во время дождя.\n \n %c[pda_yellow] • Нагрузка: Средняя</text>
+	</string>
+	<string id="ui_mm_sss_bloom">
+		<text>SSS: Блум</text>
+	</string>
+	<string id="ui_mm_sss_bloom_hint">
+		<text>Данная опция включает эффект блума из Screen Space Shaders Update 22. Это визуальный эффект, который имитирует рассеивание света за пределами ярких объектов на экране. Это часто используется для создания более реалистичного освещения или для художественного эффекта.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_sss_bloom_mask_dirt">
+		<text>SSS: Маска грязи блума</text>
+	</string>
+	<string id="ui_mm_sss_bloom_mask_dirt_hint">
+		<text>Данная опция включает текстурный слой, который добавляет "загрязнения" или "пыль" к эффекту блума. Это создает более реалистичный или атмосферный вид. Этот эффект будет применяться только при надетом шлеме и влюченной опции динамического худа шлемов.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_enchanted_shaders">
+		<text>Enhanced Shaders</text>
+	</string>
+	<string id="ui_mm_enchanted_shaders_hint">
+		<text>Данная опция включает аддон Enhanced Shaders. \n \n %c[pda_yellow] • Нагрузка: Средняя</text>
+	</string>
+	<string id="ui_mm_death_cam_mode">
+		<text>Камера при смерти</text>
+	</string>
+	<string id="freelook">
+		<text>Оригинальная</text>
+	</string>
+	<string id="fixedlook">
+		<text>С фиксацией к телу</text>
+	</string>
+	<string id="firsteye">
+		<text>От первого лица</text>
+	</string>
+	<string id="ui_mm_death_cam_mode_hint">
+		<text>Данная опция позволяет настроить поведение камеры во время смерти героя.</text>
+	</string>
+	<string id="ui_mm_r1_detail_textures_hint">
+		<text>Эта опция способствует улучшению графики игры, что делает ее более реалистичной и красивой.\n \n %c[pda_yellow] • Нагрузка: Средняя</text>
+	</string>
+	<string id="st_m">
+		<text>м</text>
+	</string>
+	<string id="ui_inv_repair_kit_condition">
+		<text>Прочность</text>
+	</string>
+	<string id="ui_mm_dynamic_wet_surfaces_far">
+		<text>Радиус намокания</text>
+	</string>
+	<string id="ui_mm_dynamic_wet_surfaces_far_hint">
+		<text>Эта опция позволяет регулировать радиус эффекта намокания поверхностей во время дождя.\n \n %c[pda_yellow] • Нагрузка: Средняя</text>
+	</string>
+	<string id="ui_mm_r4_es_pseudo_pbr">
+		<text>Псевдо PBR</text>
+	</string>
+	<string id="ui_mm_r4_es_pseudo_pbr_hint">
+		<text>Эта опция включает реализацию псевдо PBR. Позволяет добиться красивых бликов на текстурах, но не всегда выглядит хорошо.\n \n %c[pda_yellow] • Нагрузка: Средняя</text>
+	</string>
+	<string id="ui_mm_r4_es_aces_tonemap">
+		<text>ACES Tone Mapping</text>
+	</string>
+	<string id="ui_mm_r4_es_aces_tonemap_hint">
+		<text>ACES Tonemap - метод обработки изображений, который используется для имитации того, как человеческий глаз воспринимает свет и цвета в реальном мире. Технология помогает создать более динамичный и широкий диапазон цветов, особенно в сценах с высоким контрастом, где присутствуют очень темные и очень светлые участки. Это позволяет играм выглядеть более реалистично и визуально привлекательно, улучшая общее впечатление от игры.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_fps_limit">
+		<text>Ограничитель FPS</text>
+	</string>
+	<string id="ui_mm_fps_limit_hint">
+		<text>Данная настройка позволяет ограничить максимальную частоту кадров в игре. Это позволяет более стабильно отображать игру и снижает нагрузку на оборудование и ресурсы системы, обеспечивая более плавный и комфортный игровой процесс.</text>
+	</string>
+	<string id="ui_mm_fog_clamper_max">
+		<text>Ограничитель дальности тумана</text>
+	</string>
+	<string id="ui_mm_fog_clamper_max_hint">
+		<text>Эта опция позволяет ограничить максимальную дальность тумана в погоде. Это положительно сказывается на производительности, а также позволяет скрыть края локаций, не предназначенных для такой дальности видимости.\n \n %c[pda_yellow] • Нагрузка: Средняя</text>
+	</string>
+	<string id="ui_inv_alcohol">
+		<text>Алк. опьянение</text>
+	</string>
+	<string id="ui_inv_drugs">
+		<text>Нарк. опьянение</text>
+	</string>
+	<string id="ui_inv_effect_time">
+		<text>Время действия</text>
+	</string>
+	<string id="ui_inv_seconds_short">
+		<text>сек.</text>
+	</string>
+	<string id="st_put_to">
+		<text>Положить в</text>
+	</string>
+	<string id="st_take_from">
+		<text>Достать</text>
+	</string>
+	<string id="ui_inv_artefacts_count">
+		<text>Вместительность</text>
+	</string>
+	<string id="st_af_container">
+		<text>Контейнер для артефактов</text>
+	</string>
+	<string id="st_af_container_descr">
+		<text>Свинцово-изолированный металлический контейнер для артефактов представляет собой простой металлический ящик с толстыми стенками, обшитыми пенопластом, а также тяжёлой крышкой с уплотнительными резинками. Разработан специально для транспортировки артефактов. Специальный раствор, в котором содержится артефакт, удерживает его аномальную энергию, а герметичность и свинцовая обшивка позволяет блокировать всё негативное излучение, исходящее от артефактов, обеспечивая тем самым безопасность пользователя. Тем не менее, его нельзя прикрепить к поясу - это означает, что он блокирует как положительные свойства артефактов, так и негативные.</text>
+	</string>
+	<string id="st_addon_laser">
+		<text>Лазерный целеуказатель</text>
+	</string>
+	<string id="st_addon_laser_descr">
+		<text>Надежный компаньон для тех, кто ценит точность и надежность в мире стрелковых искусств.</text>
+	</string>
+	<string id="st_detach_laser">
+		<text>Отсоединить ЛЦУ</text>
+	</string>
+	<string id="st_attach_laser_to_pistol">
+		<text>Присоединить ЛЦУ к пистолету</text>
+	</string>
+	<string id="st_attach_laser_to_rifle">
+		<text>Присоединить ЛЦУ к винтовке</text>
+	</string>
+	<string id="st_addon_tactical_torch">
+		<text>Тактический фонарик</text>
+	</string>
+	<string id="st_addon_tactical_torch_descr">
+		<text>Тактический фонарик.</text>
+	</string>
+	<string id="st_detach_tactical_torch">
+		<text>Отсоединить тактический фонарик</text>
+	</string>
+	<string id="st_attach_tactical_torch_to_pistol">
+		<text>Присоединить тактический фонарик к пистолету</text>
+	</string>
+	<string id="st_attach_tactical_torch_to_rifle">
+		<text>Присоединить тактический фонарик к винтовке</text>
+	</string>
+	<string id="st_backpack_full">
+		<text>Рюкзак переполнен!</text>
+	</string>
+	<string id="ui_inv_inventory_capacity">
+		<text>Вместительность</text>
+	</string>
+	<string id="ui_inventory_capacity">
+		<text>Вместительность:</text>
+	</string>
+	<string id="st_liters">
+		<text>л</text>
+	</string>
+	<string id="st_alt_aim_switched_on">
+		<text>Режим прицеливания: Мушка</text>
+	</string>
+	<string id="st_alt_aim_switched_off">
+		<text>Режим прицеливания: Оптика</text>
+	</string>
+	<string id="st_sleep_hours">
+		<text>ч</text>
+	</string>
+	<string id="sleep_ok_button">
+		<text>Спать</text>
+	</string>
+	<string id="ui_mm_svp_mouse_sense">
+		<text>Чувст. мыши в 3D прицелах</text>
+	</string>
+	<string id="ui_mm_grass_shadows_dintance">
+		<text>Радиус теней от травы</text>
+	</string>
+	<string id="ui_mm_grass_shadows_dintance_hint">
+		<text>Данная опция позволяет отрегулировать радиус отрисовки теней от травы. Понижая значение, можно выиграть какое-то количество FPS.\n \n %c[pda_yellow] • Нагрузка: Средняя</text>
+	</string>
+	<string id="ui_inv_outfit_artefacts_count">
+		<text>Ячейки артефактов</text>
+	</string>
+	<string id="ui_inv_outfit_inventory_capacity">
+		<text>Вместительность</text>
+	</string>
+	<string id="st_saves_locked">
+		<text>Сохранения заблокированы</text>
+	</string>
+	<string id="ui_st_animated_backpack">
+		<text>Анимированный рюкзак</text>
+	</string>
+	<string id="ui_mm_snd_device">
+		<text>Звуковое устройство</text>
+	</string>
+	<string id="ui_mm_soft_particles">
+		<text>Мягкие частицы</text>
+	</string>
+	<string id="ui_mm_soft_water">
+		<text>Мягкая вода</text>
+	</string>
+	<string id="ui_mm_r1_no_detail_textures">
+		<text>Детальные текстуры</text>
+	</string>
+	<string id="ui_mm_r2_detail_bump">
+		<text>Детальный рельеф</text>
+	</string>
+	<string id="ui_mm_r2_steep_parallax">
+		<text>Steep parallax</text>
+	</string>
+	<string id="ui_mm_r2_sun_quality">
+		<text>Качество солнца</text>
+	</string>
+	<string id="ui_mm_r3_MSAA">
+		<text>Полноэкранное сглаживание</text>
+	</string>
+	<string id="ui_mm_r3_dynamic_wet_surfaces">
+		<text>Намокание плоскостей</text>
+	</string>
+	<string id="ui_mm_sun_shafts">
+		<text>Солнечные лучи</text>
+	</string>
+	<string id="ui_mm_r3_volumetric_smoke">
+		<text>Объёмный дым</text>
+	</string>
+	<string id="ui_mm_dof">
+		<text>Глубина резкости</text>
+	</string>
+	<string id="ui_mm_volumetric_light">
+		<text>Объёмный свет</text>
+	</string>
+	<string id="ui_mm_localization">
+		<text>Язык игры</text>
+	</string>
+	<string id="cze">
+		<text>Чешский</text>
+	</string>
+	<string id="jpn">
+		<text>Японский</text>
+	</string>
+	<string id="eng">
+		<text>Английский</text>
+	</string>
+	<string id="fra">
+		<text>Французский</text>
+	</string>
+	<string id="ger">
+		<text>Немецкий</text>
+	</string>
+	<string id="ita">
+		<text>Итальянский</text>
+	</string>
+	<string id="pol">
+		<text>Польский</text>
+	</string>
+	<string id="rus">
+		<text>Русский</text>
+	</string>
+	<string id="spa">
+		<text>Испанский</text>
+	</string>
+	<string id="ukr">
+		<text>Украинский</text>
+	</string>
+	<string id="ui_inv_frostbite">
+		<text>Обморожение</text>
+	</string>
+	<string id="st_kg">
+		<text>кг</text>
+	</string>
+	<string id="st_move_to_partners_bag">
+		<text>переместить в труп</text>
+	</string>
+	<string id="st_move_to_box">
+		<text>переместить в ящик</text>
+	</string>
+	<string id="st_move_all_to_partners_bag">
+		<text>переместить всё в труп</text>
+	</string>
+	<string id="st_move_all_to_box">
+		<text>переместить всё в ящик</text>
+	</string>
+	<string id="st_opt_off">
+		<text>отключено</text>
+	</string>
+	<string id="st_opt_low">
+		<text>низко</text>
+	</string>
+	<string id="st_opt_medium">
+		<text>средне</text>
+	</string>
+	<string id="st_opt_high">
+		<text>высоко</text>
+	</string>
+	<string id="st_opt_ultra">
+		<text>очень высоко</text>
+	</string>
+	<string id="st_line_break">
+		<text>\n </text>
+	</string>
+	<string id="st_bullet_symbol">
+		<text>•</text>
+	</string>
+	<string id="st_ammos">
+		<text>Боеприпасы:\n </text>
+	</string>
+	<string id="st_for_gl">
+		<text>\n Для подствольника:\n </text>
+	</string>
+	<string id="ui_st_currency">
+		<text>RU</text>
+	</string>
+	<string id="st_inv_box_full">
+		<text>Ящик полон</text>
+	</string>
+	<string id="st_car_trunk_full">
+		<text>Багажник полон</text>
+	</string>
+	<string id="st_degree">
+		<text>°</text>
+	</string>
+	<string id="st_materials_for_repair">
+		<text>Необходимо для ремонта:</text>
+	</string>
+	<string id="st_undress_helmet">
+		<text>снять шлем</text>
+	</string>
+	<string id="st_dress_helmet">
+		<text>надеть шлем</text>
+	</string>
+</string_table>

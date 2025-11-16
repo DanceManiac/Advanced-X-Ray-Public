@@ -27,6 +27,4 @@ public:
 	void					SetFilterCondition(float val);
 	float					GetFilterCondition(void) const;
 	bool					UseAllowed();
-protected:
-	int						m_iPortionsNum;
 };

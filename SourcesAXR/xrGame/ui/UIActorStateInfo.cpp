@@ -233,8 +233,8 @@ void ui_actor_state_wnd::UpdateActorInfo( CInventoryOwner* owner )
 		fwou_value += outfit->GetBoneArmor(spine_bone)*outfit->GetCondition();					
 		if(!outfit->bIsHelmetAvaliable)
 		{
-			u16 spine_bone = ikv->LL_BoneID("bip01_head");
-			fwou_value += outfit->GetBoneArmor(spine_bone)*outfit->GetCondition();
+			u16 head_bone = ikv->LL_BoneID("bip01_head");
+			fwou_value += outfit->GetBoneArmor(head_bone)*outfit->GetCondition();
 		}
 	}
 
@@ -251,14 +251,14 @@ void ui_actor_state_wnd::UpdateActorInfo( CInventoryOwner* owner )
 
 		IKinematics* ikv = smart_cast<IKinematics*>(actor->Visual());
 		VERIFY(ikv);
-		const auto spine_bone = ikv->LL_BoneID("bip01_spine");
+		u16 spine_bone = ikv->LL_BoneID("bip01_spine");
 
 		value = pants->GetBoneArmor(spine_bone);
 
 		fwou_value += value * pants->GetCondition();
 		if (!pants->bIsHelmetAvaliable)
 		{
-			const auto head_bone = ikv->LL_BoneID("bip01_head");
+			u16 head_bone = ikv->LL_BoneID("bip01_head");
 			fwou_value += pants->GetBoneArmor(head_bone) * pants->GetCondition();
 		}
 	}
@@ -366,7 +366,7 @@ void ui_actor_state_wnd::update_round_states( CActor* actor, ALife::EHitType hit
 	CHelmet* helmet = smart_cast<CHelmet*>(itm);
 	float value = (outfit)? outfit->GetDefHitTypeProtection( hit_type ) : 0.0f;
 	value += actor->GetProtection_ArtefactsOnBelt( hit_type );
-	value += helmet?helmet->GetDefHitTypeProtection(ALife::eHitTypeShock):0.0f;
+	value += helmet?helmet->GetDefHitTypeProtection(hit_type):0.0f;
 	
 	float max_power = actor->conditions().GetZoneMaxPower( hit_type );
 	value = value / max_power; //  = 0..1
@@ -445,9 +445,9 @@ void ui_actor_state_item::init_from_xml( CUIXml& xml, LPCSTR path )
 		m_texture._set(texture);
 	}
 
-	Fvector4 red = GameConstants::GetRedColor();
-	Fvector4 green = GameConstants::GetGreenColor();
-	Fvector4 neutral = GameConstants::GetNeutralColor();
+	Ivector4 red = GameConstants::GetRedColor();
+	Ivector4 green = GameConstants::GetGreenColor();
+	Ivector4 neutral = GameConstants::GetNeutralColor();
 
 	if (xml.NavigateToNode("state_caption:negative_color", 0))
 		m_negative_color = CUIXmlInit::GetColor(xml, "state_caption:negative_color", 0, color_rgba(red.x, red.y, red.z, red.w));

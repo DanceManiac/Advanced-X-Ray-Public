@@ -83,6 +83,8 @@ public:
 	bool														m_bMakeAsyncSS;
 	bool														m_bFirstFrameAfterReset;	// Determines weather the frame is the first after resetting device.
 
+	xr_multimap<xr_string, xr_string>							LevelShadersDetList;
+	xr_vector<xr_string>										LevelShadersVec;
 private:
 	// Loading / Unloading
 	void								LoadBuffers				(CStreamReader	*fs);
@@ -145,6 +147,7 @@ public:
 	virtual IRender_Sector*			detectSector			(const Fvector& P);
 	int								translateSector			(IRender_Sector* pSector);
 	virtual IRender_Target*			getTarget				();
+	virtual SurfaceParams			getSurface				(const char* nameTexture) override;
 	
 	// Main 
 	virtual void					flush					();
@@ -203,9 +206,13 @@ public:
 	virtual void					ScreenshotAsyncEnd		(CMemoryWriter& memory_writer);
 	virtual void	_BCL			OnFrame					();
 
+	virtual	void					CreatePanorama			();
+
 	// [FFT++]
 	virtual void					BeforeWorldRender		(); //--#SM+#-- +SecondVP+       -
 	virtual void					AfterWorldRender		();  //--#SM+#-- +SecondVP+       UI
+
+	virtual void					Render3DStatic			() {};
 	
 	// Render mode
 	virtual void					rmNear					();
@@ -214,6 +221,10 @@ public:
 
 	virtual u32						active_phase() { return phase; };
 	void							RenderToTarget(RRT target);
+
+	virtual bool					isActorShadowEnabled	() override { return ps_actor_shadow_flags.test(RFLAG_ACTOR_SHADOW); }
+
+	virtual void					RenderApplyRTandZB		() override {}
 
 	// Constructor/destructor/loader
 	CRender							();

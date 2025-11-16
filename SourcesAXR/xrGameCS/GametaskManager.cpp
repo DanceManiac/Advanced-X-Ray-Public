@@ -193,6 +193,8 @@ void CGameTaskManager::SetTaskState(const shared_str& id, ETaskState state)
 
 void CGameTaskManager::UpdateTasks						()
 {
+	ZoneScoped;
+
 	Level().MapManager().DisableAllPointers();
 
 	u32					task_count = GetGameTasks().size();

@@ -311,7 +311,7 @@ bool CBaseMonster::bfAssignWatch(CScriptEntityAction *tpEntityAction)
 	}
 
 
-	if (!control().direction().is_turning())
+	if (!control().get_direction().is_turning())
 		l_tWatchAction.m_bCompleted = true;
 	else
 		l_tWatchAction.m_bCompleted = false;
@@ -354,15 +354,15 @@ bool CBaseMonster::bfAssignSound(CScriptEntityAction *tpEntityAction)
 	}
 
 	switch (l_tAction.m_monster_sound) {
-	case	eMonsterSoundIdle:			sound().play(eMonsterSoundIdle,			0, 0, (l_tAction.m_monster_sound_delay == int(-1)) ? db().m_dwIdleSndDelay		: l_tAction.m_monster_sound_delay);		break;
-	case 	eMonsterSoundEat:			sound().play(eMonsterSoundEat,			0, 0, (l_tAction.m_monster_sound_delay == int(-1)) ? db().m_dwEatSndDelay		: l_tAction.m_monster_sound_delay);		break;
-	case 	eMonsterSoundAggressive:	sound().play(eMonsterSoundAggressive,	0, 0, (l_tAction.m_monster_sound_delay == int(-1)) ? db().m_dwAttackSndDelay	: l_tAction.m_monster_sound_delay);		break;
-	case	eMonsterSoundAttackHit:		sound().play(eMonsterSoundAttackHit);	break;
-	case	eMonsterSoundTakeDamage:	sound().play(eMonsterSoundTakeDamage);	break;
-	case	eMonsterSoundDie:			sound().play(eMonsterSoundDie);			break;
-	case	eMonsterSoundThreaten:		sound().play(eMonsterSoundThreaten,		0, 0, (l_tAction.m_monster_sound_delay == int(-1)) ? db().m_dwAttackSndDelay : l_tAction.m_monster_sound_delay);		break;
-	case	eMonsterSoundSteal:			sound().play(eMonsterSoundSteal,		0, 0, (l_tAction.m_monster_sound_delay == int(-1)) ? db().m_dwAttackSndDelay : l_tAction.m_monster_sound_delay);		break;
-	case	eMonsterSoundPanic:			sound().play(eMonsterSoundPanic,		0, 0, (l_tAction.m_monster_sound_delay == int(-1)) ? db().m_dwAttackSndDelay : l_tAction.m_monster_sound_delay);		break;
+	case	eMonsterSoundIdle:			get_sound().play(eMonsterSoundIdle,			0, 0, (l_tAction.m_monster_sound_delay == int(-1)) ? db().m_dwIdleSndDelay		: l_tAction.m_monster_sound_delay);		break;
+	case 	eMonsterSoundEat:			get_sound().play(eMonsterSoundEat,			0, 0, (l_tAction.m_monster_sound_delay == int(-1)) ? db().m_dwEatSndDelay		: l_tAction.m_monster_sound_delay);		break;
+	case 	eMonsterSoundAggressive:	get_sound().play(eMonsterSoundAggressive,	0, 0, (l_tAction.m_monster_sound_delay == int(-1)) ? db().m_dwAttackSndDelay	: l_tAction.m_monster_sound_delay);		break;
+	case	eMonsterSoundAttackHit:		get_sound().play(eMonsterSoundAttackHit);	break;
+	case	eMonsterSoundTakeDamage:	get_sound().play(eMonsterSoundTakeDamage);	break;
+	case	eMonsterSoundDie:			get_sound().play(eMonsterSoundDie);			break;
+	case	eMonsterSoundThreaten:		get_sound().play(eMonsterSoundThreaten,		0, 0, (l_tAction.m_monster_sound_delay == int(-1)) ? db().m_dwAttackSndDelay : l_tAction.m_monster_sound_delay);		break;
+	case	eMonsterSoundSteal:			get_sound().play(eMonsterSoundSteal,		0, 0, (l_tAction.m_monster_sound_delay == int(-1)) ? db().m_dwAttackSndDelay : l_tAction.m_monster_sound_delay);		break;
+	case	eMonsterSoundPanic:			get_sound().play(eMonsterSoundPanic,		0, 0, (l_tAction.m_monster_sound_delay == int(-1)) ? db().m_dwAttackSndDelay : l_tAction.m_monster_sound_delay);		break;
 	}
 
 	return				(true);
@@ -419,7 +419,7 @@ void CBaseMonster::ProcessScripts()
 	m_bRunTurnRight								= false;
 	m_bRunTurnLeft								= false;
 
-	//movement().Update_Initialize			();
+	//get_movement().Update_Initialize			();
 	
 	// Выполнить скриптовые actions
 	m_script_state_must_execute					= false;
@@ -439,12 +439,12 @@ void CBaseMonster::ProcessScripts()
 	TranslateActionToPathParams					();
 
 	// обновить путь
-	//movement().Update_Execute			();
+	//get_movement().Update_Execute			();
 
 	//anim().Update							();
 	
 	// установить текущую скорость
-	//movement().Update_Finalize			();
+	//get_movement().Update_Finalize			();
 
 	// Удалить все враги и объекты, которые были принудительно установлены
 	// во время выполнения скриптового действия

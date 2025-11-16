@@ -6,7 +6,7 @@ struct SBoneProtections;
 
 class CHelmet: public CInventoryItemObject {
 private:
-    typedef	CInventoryItemObject inherited;
+	typedef	CInventoryItemObject inherited;
 public:
 							CHelmet					();
 	virtual					~CHelmet				();
@@ -22,6 +22,7 @@ public:
 	xr_vector<shared_str>	m_SuitableFilters;
 	xr_vector<shared_str>	m_SuitableRepairKits;
 	xr_vector<std::pair<shared_str, int>> m_ItemsForRepair;
+	xr_vector<LPCSTR>		m_ItemsForRepairNames;
 
 	virtual void			OnMoveToSlot			(const SInvItemPlace& previous_place);
 	virtual void			OnMoveToRuck			(const SInvItemPlace& previous_place);
@@ -52,6 +53,14 @@ public:
 	float 					m_fSatietyRestoreSpeed;
 	float					m_fPowerRestoreSpeed;
 	float					m_fBleedingRestoreSpeed;
+	float 					m_fThirstRestoreSpeed;
+	float 					m_fIntoxicationRestoreSpeed;
+	float 					m_fSleepenessRestoreSpeed;
+	float 					m_fAlcoholismRestoreSpeed;
+	float 					m_fNarcotismRestoreSpeed;
+	float 					m_fPsyHealthRestoreSpeed;
+	float 					m_fFrostbiteRestoreSpeed;
+
 	float					m_fFilterDegradation;
 	float					m_fMaxFilterCondition;
 	float					m_fFilterCondition;
@@ -61,6 +70,8 @@ public:
 	bool					m_bSecondHelmetEnabled;
 	bool					m_b_HasGlass;
 	bool					m_bUseFilter;
+	bool					m_bFilterProtectionDropsInstantly;
+	bool					m_bUseAttach;
 
 	shared_str				m_sShaderNightVisionSect;
 	u32						m_NightVisionType;
@@ -75,4 +86,6 @@ protected:
 
 protected:
 	virtual bool			install_upgrade_impl	( LPCSTR section, bool test );
+
+	virtual bool			use_parent_ai_locations	() const override { return (!H_Parent()); }
 };

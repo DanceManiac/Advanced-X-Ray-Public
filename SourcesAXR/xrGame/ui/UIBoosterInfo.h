@@ -17,8 +17,7 @@ public:
 			void	SetInfo					(CInventoryItem& pInvItem);
 
 protected:
-
-	enum 
+	enum
 	{
 		_item_start = 0,
 		_item_boost_health_restore = _item_start,
@@ -36,6 +35,7 @@ protected:
 		_item_boost_drugs_restore,
 		_item_boost_narcotism_restore,
 		_item_boost_withdrawal_restore,
+		_item_boost_frostbite_restore,
 		_item_boost_max_weight,
 		_item_boost_radiation_protection,
 		_item_boost_telepat_protection,
@@ -66,10 +66,6 @@ protected:
 		_item_quick_thirst,
 		_item_quick_psy_health,
 
-		_item_quick_battery,
-		_item_quick_filter,
-		_item_quick_repair_condition,
-
 		_item_quick_intoxication,
 		_item_quick_radiation,
 		_item_quick_sleepeness,
@@ -81,6 +77,8 @@ protected:
 		_item_quick_drugs,
 		_item_quick_narcotism,
 		_item_quick_withdrawal,
+
+		_item_quick_frostbite,
 
 		eQuickItemLast
 	};

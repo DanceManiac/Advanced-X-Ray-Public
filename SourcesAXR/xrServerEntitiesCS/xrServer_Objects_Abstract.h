@@ -121,7 +121,7 @@ public:
 	virtual BOOL		__stdcall	Spawn_Read				(NET_Packet &tNetPacket) = 0;
 #ifndef XRGAME_EXPORTS
 	virtual void		__stdcall	FillProp				(LPCSTR pref, PropItemVec &items) = 0;
-	virtual void 		__stdcall	on_render				(CDUInterface* du, ISE_AbstractLEOwner* owner, bool bSelected, const Fmatrix& parent,int priority, bool strictB2F) = 0;
+	virtual void 		__stdcall	on_render				(CDUInterface* du, ISE_AbstractLEOwner* owner_, bool bSelected, const Fmatrix& parent,int priority, bool strictB2F) = 0;
 	virtual	visual_data*__stdcall	visual_collection		() const = 0;
 	virtual	u32			__stdcall	visual_collection_size	() const = 0;
 #endif // #ifndef XRGAME_EXPORTS

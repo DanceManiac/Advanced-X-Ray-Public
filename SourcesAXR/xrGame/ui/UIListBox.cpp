@@ -6,11 +6,12 @@
 
 CUIListBox::CUIListBox()
 {
-	m_pFont					= NULL;
+	m_pFont					= nullptr;
 	m_flags.set				(eItemsSelectabe, TRUE);
 
 	m_def_item_height		 = 20;
 	m_text_color			= 0xff000000;
+	m_text_al				= CGameFont::alLeft;
 
 	m_bImmediateSelection	= false;
 
@@ -316,6 +317,15 @@ CGameFont* CUIListBox::GetFont()
 	return m_pFont;
 }
 
+void CUIListBox::SetTextAlignment(ETextAlignment alignment)
+{
+	m_text_al = alignment;
+}
+
+ETextAlignment CUIListBox::GetTextAlignment()
+{
+	return m_text_al;
+}
 
 float CUIListBox::GetLongestLength()
 {

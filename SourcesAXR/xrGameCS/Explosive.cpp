@@ -76,6 +76,8 @@ void CExplosive::LightCreate()
 {
 	m_pLight				= ::Render->light_create();
 	m_pLight->set_shadow	(true);
+	m_pLight->set_flare		(true);
+	m_pLight->set_moveable	(true);
 }
 
 void CExplosive::LightDestroy()
@@ -126,6 +128,8 @@ void CExplosive::Load(CInifile const *ini,LPCSTR section)
 	m_fFragmentSpeed			= ini->r_float	(section,"fragment_speed"				);
 
 	m_layered_sounds.LoadSound(ini, section, "snd_explode", "sndExplode", false, m_eSoundExplode);
+	m_layered_sounds.LoadSound(ini, section, "snd_explode_indoor", "sndExplodeIndoor", false, m_eSoundExplode);
+
 	m_fExplodeDurationMax	= ini->r_float(section, "explode_duration");
 
 	effector.effect_sect_name= ini->r_string("explode_effector","effect_sect_name");
@@ -340,11 +344,15 @@ void CExplosive::Explode()
 	OnBeforeExplosion();
 	//играем звук взрыва
 
-	CObject* who = nullptr;
-	if (Initiator() != ALife::_OBJECT_ID(-1))
-		who = Level().Objects.net_Find(Initiator());
+	bool bIndoor = false;
 
-	m_layered_sounds.PlaySound("sndExplode", pos, smart_cast<CObject*>(this), false, false, (u8)-1);
+	if (g_pGamePersistent)
+		bIndoor = g_pGamePersistent->IsActorInHideout();
+
+	if (bIndoor && m_layered_sounds.FindSoundItem("sndExplodeIndoor", false))
+		m_layered_sounds.PlaySound("sndExplodeIndoor", pos, smart_cast<CObject*>(this), false, false, (u8)-1);
+	else
+		m_layered_sounds.PlaySound("sndExplode", pos, smart_cast<CObject*>(this), false, false, (u8)-1);
 	
 	//показываем эффекты
 

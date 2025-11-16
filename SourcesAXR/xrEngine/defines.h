@@ -12,6 +12,7 @@
 
 ENGINE_API extern	bool		CallOfPripyatMode;
 ENGINE_API extern	bool		ClearSkyMode;
+ENGINE_API extern	bool		ShadowOfChernobylMode;
 // textures
 ENGINE_API extern	int		psTextureLOD		;
 
@@ -65,7 +66,7 @@ enum
 #define _game_sounds_			"$game_sounds$"
 #define _game_meshes_			"$game_meshes$"
 #define _game_shaders_			"$game_shaders$"
-#define _game_config_			"$game_congif$"
+#define _game_config_			"$game_config$"
 
 // editor path definition
 #define _server_root_		    "$server_root$"

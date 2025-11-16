@@ -247,7 +247,11 @@ void CCar::SDoor::Update()
 	{
 	case closing:
 		{
-			if(pos_open*closed_angle>pos_open*GetAngle()) ClosingToClosed();
+			if (pos_open * closed_angle > pos_open * GetAngle())
+			{
+				pcar->m_car_sound->DoorCloseStop(bone_id);
+				ClosingToClosed();
+			}
 
 			break;
 		}
@@ -275,16 +279,38 @@ void CCar::SDoor::Update()
 
 void CCar::SDoor::Use()
 {
-	switch(state) {
-case opened:
-case opening: 
-	Close();
-	break;
-case closed: 
-case closing:
-	Open();
-	break;
-default:	return;
+	xr_vector<u16>::iterator l_doors;
+
+	switch(state)
+	{
+	case opened:
+	case opening:
+		{
+			Close();
+			pcar->m_car_sound->DoorCloseStart(bone_id);
+
+			xr_map<u16, SDoor>::iterator i = pcar->m_doors.begin(), e = pcar->m_doors.end();
+
+			for (; e != i; ++i)
+			{
+				if (pcar->is_IndoorLightsDoor(i->second.bone_id, l_doors) && i->second.IsOpened())
+					return;
+			}
+
+			if (pcar->is_IndoorLightsDoor(bone_id, l_doors))
+				pcar->m_indoor_lights.TurnOffIndoorLights();
+		} break;
+	case closed: 
+	case closing:
+		{
+			Open();
+			pcar->m_car_sound->DoorOpenStart(bone_id);
+
+			if (pcar->is_IndoorLightsDoor(bone_id, l_doors))
+				pcar->m_indoor_lights.TurnOnIndoorLights();
+		} break;
+	default:
+		return;
 	}
 }
 
@@ -612,7 +638,7 @@ bool CCar::SDoor::TestPass(const Fvector& pos,const Fvector& dir)
 bool CCar::SDoor::CanEnter(const Fvector& pos,const Fvector& dir,const Fvector& foot_pos)
 {
 	//if(!joint) return true;//temp for fake doors
-	return (state==opened || state == broken || !joint) && TestPass(foot_pos,dir)&& IsInArea(pos,dir);//
+	return (state == opened || state == broken || !joint) && TestPass(foot_pos, dir) /*&& IsInArea(pos, dir)*/;
 }
 
 void CCar::SDoor::SaveNetState(NET_Packet& P)
@@ -808,4 +834,24 @@ default: NODEFAULT;
 void CCar::SDoor::SDoorway::Trace(const Fvector &point,const Fvector &dir)
 {
 
+}
+
+bool CCar::IsBackDoor(u16 id)
+{
+	IKinematics* K = smart_cast<IKinematics*>(Visual());
+
+	if (id == K->LL_BoneID(m_sTrunkBone))
+		return true;
+
+	return false;
+}
+
+bool CCar::IsFrontDoor(u16 id)
+{
+	IKinematics* K = smart_cast<IKinematics*>(Visual());
+
+	if (id == K->LL_BoneID(m_sBonnetBone))
+		return true;
+
+	return false;
 }

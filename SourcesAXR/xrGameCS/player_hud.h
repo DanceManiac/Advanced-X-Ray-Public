@@ -4,6 +4,7 @@
 #include "../Include/xrRender/Kinematics.h"
 #include "../Include/xrRender/KinematicsAnimated.h"
 #include "actor_defs.h"
+#include "Weapon.h"
 
 class player_hud;
 class CHudItem;
@@ -13,10 +14,21 @@ struct motion_descr
 {
 	MotionID		mid;
 	shared_str		name;
+	
+	const char*		eff_name{};
+};
+
+struct motion_params
+{
+	float speed_k{1.0f};
+	float start_k{0.0f};
+	float stop_k{1.0f};
 };
 
 struct player_hud_motion
 {
+	motion_params params	{};
+	
 	shared_str				m_alias_name;
 	shared_str				m_base_name;
 	shared_str				m_additional_name;
@@ -27,7 +39,7 @@ struct player_hud_motion
 struct player_hud_motion_container
 {
 	xr_vector<player_hud_motion>	m_anims;
-	player_hud_motion*				find_motion(const shared_str& name);
+	player_hud_motion*				find_motion(const shared_str& name, bool withSuffix = false);
 	void		load				(IKinematicsAnimated* model, const shared_str& sect);
 };
 
@@ -179,7 +191,8 @@ struct script_layer
 
 struct hud_item_measures
 {
-	enum{e_fire_point=(1<<0), e_fire_point2=(1<<1), e_shell_point=(1<<2), e_16x9_mode_now=(1<<3)};
+	enum{e_fire_point=(1<<0), e_fire_point2=(1<<1), e_shell_point=(1<<2), e_overheating_smoke_point=(1<<3), e_16x9_mode_now=(1<<4)};
+	void							merge_measures_params();
 	Flags8							m_prop_flags;
 
 	Fvector							m_item_attach[2];//pos,rot
@@ -193,34 +206,13 @@ struct hud_item_measures
 	Fvector							m_fire_point2_offset;
 	u16								m_shell_bone;
 	Fvector							m_shell_point_offset;
+	u16								m_overheating_smoke_bone;
+	Fvector							m_overheating_smoke_offset;
 
 	Fvector							m_hands_attach[2];//pos,rot
 
 	void load						(const shared_str& sect_name, IKinematics* K);
-
-
-	struct inertion_params
-	{
-		float m_pitch_offset_r;
-		float m_pitch_offset_n;
-		float m_pitch_offset_d;
-		float m_pitch_low_limit;
-		float m_origin_offset;      //<-- outdated
-		float m_origin_offset_aim;  //<-- outdated
-		float m_tendto_speed;
-		float m_tendto_speed_aim;
-		float m_tendto_ret_speed;
-		float m_tendto_ret_speed_aim;
-
-		float m_min_angle;
-		float m_min_angle_aim;
-
-		Fvector4 m_offset_LRUD;
-		Fvector4 m_offset_LRUD_aim;
-	};
-	inertion_params m_inertion_params; //--#SM+#--
 };
-
 struct attachable_hud_item
 {
 	player_hud*						m_parent;
@@ -240,7 +232,6 @@ struct attachable_hud_item
 			~attachable_hud_item	();
 	void load						(const shared_str& sect_name);
 	void update						(bool bForce);
-	void update_hud_additional		(Fmatrix& trans);
 	void setup_firedeps				(firedeps& fd);
 	void render						();	
 	void render_item_ui				();
@@ -278,10 +269,12 @@ public:
 	void			StopBlendAnm		(LPCSTR name, bool bForce = false);
 	void			StopAllBlendAnms	(bool bForce);
 	float			SetBlendAnmTime		(LPCSTR name, float time);
+	bool			IsBlendAnmActive	(LPCSTR name);
+
 	void			render_hud			();	
 	void			render_item_ui		();
 	bool			render_item_ui_query();
-	u32				anim_play			(u16 part, const MotionID& M, BOOL bMixIn, const CMotionDef*& md, float speed, u16 override_part = u16(-1));
+	u32				anim_play			(u16 part, const motion_params& P, const MotionID& M, BOOL bMixIn, const CMotionDef*& md, float speed, u16 override_part = u16(-1));
 	u32				script_anim_play	(u8 hand, LPCSTR itm_name, LPCSTR anm_name, bool bMixIn = true, float speed = 1.f, LPCSTR attach_visual = nullptr);
 	const shared_str& section_name		() const {return m_sect_name;}
 
@@ -299,16 +292,13 @@ public:
 	void			calc_transform		(u16 attach_slot_idx, const Fmatrix& offset, Fmatrix& result);
 	void			tune				(Ivector values);
 	void			SaveCfg				(const int idx) const;
-	u32				motion_length		(const MotionID& M, const CMotionDef*& md, float speed);
-	u32				motion_length		(const shared_str& anim_name, const shared_str& hud_name, const CMotionDef*& md);
+	void			SaveAttachesCfg		(LPCSTR parent_section, CWeapon* parent_wpn) const;
+	u32				motion_length		(const motion_params& P, const MotionID& M, const CMotionDef*& md, float speed);
+	u32				motion_length		(const shared_str& anim_name, const shared_str& hud_name, const CMotionDef*& md, float speed = 1.f);
 	u32				motion_length_script(LPCSTR section, LPCSTR anm_name, float speed);
-	void			OnMovementChanged	(ACTOR_DEFS::EMoveCommand cmd)	;
+	void			OnMovementChanged	(ACTOR_DEFS::EMoveCommand cmd);
+	void			OnMotionMark		(const motion_marks&);
 	void			SetScriptItemVisible(bool visible);
-private:
-	void			update_inertion		(Fmatrix& trans);
-	void			update_additional	(Fmatrix& trans);
-public:
-	bool			inertion_allowed	();
 private:
 	const Fvector&	attach_rot			(u8 part) const;
 	const Fvector&	attach_pos			(u8 part) const;
@@ -330,7 +320,12 @@ private:
 	Fvector								script_anim_offset[2];
 	u32									script_anim_end;
 	float								script_anim_offset_factor;
+	const CMotionDef*					m_current_motion_def;
+	u32									m_dwMotionCurrTm;
+	u32									m_dwMotionStartTm;
+	u32									m_dwMotionEndTm;
 	bool								m_bStopAtEndAnimIsRunning;
+	bool								m_bStopAtEndScriptAnimIsRunning;
 	bool								script_anim_item_attached;
 	bool								script_anim_item_visible;
 	IKinematics*						script_anim_item_model;

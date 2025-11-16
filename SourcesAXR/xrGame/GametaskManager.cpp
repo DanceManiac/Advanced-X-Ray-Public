@@ -185,6 +185,8 @@ void CGameTaskManager::UpdateTasks						()
 {
 	if(Device.Paused())		return;
 
+	ZoneScoped;
+
 	Level().MapManager().DisableAllPointers();
 
 	u32					task_count = GetGameTasks().size();

@@ -1086,6 +1086,12 @@ void CRenderTarget::accum_direct_volumetric	(u32 sub_phase, const u32 Offset, co
 
 	if ( (sub_phase!=SE_SUN_NEAR) && (sub_phase!=SE_SUN_FAR) ) return;
 
+	float w = float(Device.dwWidth);
+	float h = float(Device.dwHeight);
+
+	if (RImplementation.o.ssfx_volumetric)
+		set_viewport_size(HW.pContext, w / ps_ssfx_volumetric.w, h / ps_ssfx_volumetric.w);
+
 	phase_vol_accumulator();
 
 	RCache.set_ColorWriteEnable();
@@ -1134,16 +1140,8 @@ void CRenderTarget::accum_direct_volumetric	(u32 sub_phase, const u32 Offset, co
 		light*			fuckingsun			= (light*)RImplementation.Lights.sun_adapted._get()	;
 
 		// Common constants (light-related)
-		Fvector L_dir, L_clr;
+		Fvector L_clr;
 		L_clr.set					(fuckingsun->color.r,fuckingsun->color.g,fuckingsun->color.b);
-		Device.mView.transform_dir(L_dir, fuckingsun->direction);
-		L_dir.normalize();
-
-		// setup
-		float intensity =
-			0.3f * fuckingsun->color.r + 0.48f * fuckingsun->color.g + 0.22f * fuckingsun->color.b;
-		Fvector dir = L_dir;
-		dir.normalize().mul(-_sqrt(intensity + EPS));
 		
 		//	Use g_combine_2UV that was set up by accum_direct
 		//	RCache.set_Geometry			(g_combine_2UV);
@@ -1152,8 +1150,8 @@ void CRenderTarget::accum_direct_volumetric	(u32 sub_phase, const u32 Offset, co
 		//RCache.set_Element			(s_accum_direct_volumetric->E[sub_phase]);
 		RCache.set_Element			(Element);
 		RCache.set_CullMode			(CULL_CCW); 
-		RCache.set_c				("Ldynamic_dir", dir.x, dir.y, dir.z, 0.f);
-		RCache.set_c				("Ldynamic_color", L_clr.x, L_clr.y, L_clr.z, 0.f);
+		//RCache.set_c				("Ldynamic_dir",		L_dir.x,L_dir.y,L_dir.z,0 );
+		RCache.set_c				("Ldynamic_color",		L_clr.x,L_clr.y,L_clr.z,0);
 		RCache.set_c				("m_shadow",			mShadow);
 		Fmatrix			m_Texgen;
 		m_Texgen.identity();
@@ -1262,5 +1260,8 @@ void CRenderTarget::accum_direct_volumetric	(u32 sub_phase, const u32 Offset, co
 //	TODO: DX10: Check if DX10 has analog for NV DBT
 		// disable depth bounds
 //		u_DBT_disable	();
+
+		if (RImplementation.o.ssfx_volumetric)
+			set_viewport_size(HW.pContext, w, h);
 	}
 }

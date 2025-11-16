@@ -24,7 +24,8 @@ BOOL CVampirePPEffector::Process(SPPInfo& pp)
 	if (time_past_perc < TIME_ATTACK) 
 	{
 		factor = 0.75f * time_past_perc / TIME_ATTACK;
-	} else if (time_past_perc > (1 - TIME_ATTACK)) 
+	}
+	else if (time_past_perc > (1 - TIME_ATTACK)) 
 	{
 		factor = 0.75f * (1-time_past_perc) / TIME_ATTACK;
 	} else {
@@ -68,7 +69,7 @@ CVampireCameraEffector::CVampireCameraEffector(float time, const Fvector &src, c
 	dangle_current.set	(0.f, 0.f, 0.f);
 }
 
-BOOL CVampireCameraEffector::ProcessCam(SCamEffectorInfo& info)
+BOOL CVampireCameraEffector::ProcessCam(SCamEffectorInfo& info, float m_fFactorMod)
 {
 	fLifeTime -= Device.fTimeDelta; 
 	if(fLifeTime<0) 

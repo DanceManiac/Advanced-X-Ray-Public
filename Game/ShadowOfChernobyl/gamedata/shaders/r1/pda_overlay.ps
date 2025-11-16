@@ -1,0 +1,38 @@
+#include "common.h"
+struct 	v2p
+{
+ 	float2 	tc0: 		TEXCOORD0;	// base
+  	half4	c0:			COLOR0;		// sun.(fog*fog)
+};
+
+uniform sampler2D s_pdascreen;
+uniform float4 pda_params;
+
+half3 glitch(half2 tc)
+{
+	half3 img = (0,0,0);
+
+	//glitch that bitch ayo
+	float amount = rand(timers.x)*16.;
+	amount *= sqrt(rand(tc.y));
+	amount *= noise(tc);
+	
+	//divide that stuff
+	amount /= 100.f;   
+
+	//sample pda screen with new tc's and render dat
+	img.r = tex2D(s_pdascreen,(tc-amount)).r;
+	img.g = tex2D(s_pdascreen,(tc+amount)).g;
+	img.b = tex2D(s_pdascreen,(tc+amount)).b;
+
+	return 	img;
+}
+
+half4 main( v2p I ): COLOR
+{
+	half4 col = tex2D(s_pdascreen, I.tc0);
+	//half3 col_mod = glitch(I.tc0);
+	//col.xyz = lerp(col.xyz, col_mod.xyz, pda_params.y);
+	
+	return half4(col.r, col.g, col.b, pda_params.x)*pda_params.z;
+}

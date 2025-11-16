@@ -481,10 +481,10 @@ void CActor::g_SetAnimation( u32 mstate_rl )
 						CPda			*P = smart_cast<CPda*>(_i);
 						if (W) 
 						{
-							bool K = inventory().GetActiveSlot() == KNIFE_SLOT;
+							bool K = smart_cast<CWeaponKnife*>(W) != nullptr;
 							bool R3 = W->IsTriStateReload();
 
-							if (smart_cast<CWeaponKnife*>(W))
+							if (K)
 							{
 								switch (W->GetState()) {
 								case CWeapon::eIdle:		M_torso = TW->moving[moving_idx];		break;

@@ -41,6 +41,8 @@ static void on_error_dialog			(bool before)
 
 CInput::CInput						( BOOL bExclusive, int deviceForInit)
 {
+	ZoneScoped;
+
 	g_exclusive							= !!bExclusive;
 
 	Log("Starting INPUT device...");
@@ -94,6 +96,8 @@ CInput::CInput						( BOOL bExclusive, int deviceForInit)
 
 CInput::~CInput(void)
 {
+	ZoneScoped;
+
 #ifdef ENGINE_BUILD
 	Device.seqFrame.Remove			(this);
 	Device.seqAppDeactivate.Remove	(this);
@@ -175,6 +179,8 @@ void CInput::SetKBDAcquire( BOOL bAcquire )
 BOOL b_altF4 = FALSE;
 void CInput::KeyUpdate	( )
 {
+	ZoneScoped;
+
 	if(b_altF4)					return;
 
 	HRESULT						hr;
@@ -343,6 +349,8 @@ BOOL CInput::iGetAsyncBtnState( int btn )
 
 void CInput::MouseUpdate( )
 {
+	ZoneScoped;
+
 	HRESULT hr;
 	DWORD dwElements	= MOUSEBUFFERSIZE;
 	DIDEVICEOBJECTDATA	od[MOUSEBUFFERSIZE];
@@ -519,6 +527,8 @@ void CInput::OnAppDeactivate	(void)
 
 void CInput::OnFrame			(void)
 {
+	ZoneScoped;
+
 	RDEVICE.Statistic->Input.Begin			();
 	dwCurTime		= RDEVICE.TimerAsync_MMT	();
 	if (pKeyboard)	KeyUpdate				();

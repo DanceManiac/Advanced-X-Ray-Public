@@ -20,6 +20,7 @@
 #include "Artefact.h"
 #include "CustomOutfit.h"
 #include "CustomBackpack.h"
+#include "PDA.h"
 #include "AdvancedXrayGameConstants.h"
 #include "ActorSkills.h"
 
@@ -61,10 +62,10 @@ void CActor::g_cl_ValidateMState(float dt, u32 mstate_wf)
 		}
 	}
 	// закончить падение
-	if (character_physics_support()->movement()->gcontact_Was){
+	if (character_physics_support()->get_movement()->gcontact_Was){
 		if (mstate_real&mcFall){
-			if (character_physics_support()->movement()->GetContactSpeed()>4.f){
-				if (fis_zero(character_physics_support()->movement()->gcontact_HealthLost)){	
+			if (character_physics_support()->get_movement()->GetContactSpeed()>4.f){
+				if (fis_zero(character_physics_support()->get_movement()->gcontact_HealthLost)){	
 					m_fLandingTime	= s_fLandingTime1;
 					mstate_real		|= mcLanding;
 				}else{
@@ -72,6 +73,10 @@ void CActor::g_cl_ValidateMState(float dt, u32 mstate_wf)
 					mstate_real		|= mcLanding2;
 				}
 			}
+			
+			// CActor_on_land
+			this->callback(GameObject::eOnActorLand)(this->lua_game_object(), character_physics_support()->get_movement()->GetContactSpeed());
+			StartActionSndAnm("OnLandSnd", "on_actor_land");
 		}
 		m_bJumpKeyPressed	=	TRUE;
 		m_fJumpTime			=	s_fJumpTime;
@@ -81,12 +86,12 @@ void CActor::g_cl_ValidateMState(float dt, u32 mstate_wf)
 		m_bJumpKeyPressed	=	FALSE;
 
 	// «ажало-ли мен€/уперс€ - не двигаюсь
-	if (((character_physics_support()->movement()->GetVelocityActual()<0.2f)&&(!(mstate_real&(mcFall|mcJump)))) || character_physics_support()->movement()->bSleep) 
+	if (((character_physics_support()->get_movement()->GetVelocityActual()<0.2f)&&(!(mstate_real&(mcFall|mcJump)))) || character_physics_support()->get_movement()->bSleep) 
 	{
 		//KRodin: этот код работает некорректно, условие срабатывает при входе-выходе из прис€да. »з-за этого происходит 'дергание' анимаций оружи€.  од этот не сильно важен, € думаю если актор застр€нет - он все равно не будет двигатьс€.
 		//mstate_real &=~ mcAnyMove;
 	}
-	if (character_physics_support()->movement()->Environment()==CPHMovementControl::peOnGround || character_physics_support()->movement()->Environment()==CPHMovementControl::peAtWall)
+	if (character_physics_support()->get_movement()->Environment()==CPHMovementControl::peOnGround || character_physics_support()->get_movement()->Environment()==CPHMovementControl::peAtWall)
 	{
 		// если на земле гарантированно снимать флажок Jump
 		if (((s_fJumpTime-m_fJumpTime)>s_fJumpGroundTime)&&(mstate_real&mcJump))
@@ -95,7 +100,7 @@ void CActor::g_cl_ValidateMState(float dt, u32 mstate_wf)
 			m_fJumpTime			= s_fJumpTime;
 		}
 	}
-	if(character_physics_support()->movement()->Environment()==CPHMovementControl::peAtWall)
+	if(character_physics_support()->get_movement()->Environment()==CPHMovementControl::peAtWall)
 	{
 		if(!(mstate_real & mcClimb))
 		{
@@ -115,7 +120,7 @@ void CActor::g_cl_ValidateMState(float dt, u32 mstate_wf)
 
 	if (mstate_wf != mstate_real){
 		if ((mstate_real&mcCrouch)&&((0==(mstate_wf&mcCrouch)) || mstate_real&mcClimb)){
-			if (character_physics_support()->movement()->ActivateBoxDynamic(0)){
+			if (character_physics_support()->get_movement()->ActivateBoxDynamic(0)){
 				mstate_real &= ~mcCrouch;
 			}
 		}
@@ -144,7 +149,7 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 	mstate_old				= mstate_real;
 	vControlAccel.set		(0,0,0);
 
-	if (!(mstate_real&mcFall) && (character_physics_support()->movement()->Environment()==CPHMovementControl::peInAir)) 
+	if (!(mstate_real&mcFall) && (character_physics_support()->get_movement()->Environment()==CPHMovementControl::peInAir)) 
 	{
 		m_fFallTime				-=	dt;
 		if (m_fFallTime<=0.f)
@@ -170,7 +175,7 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 	if (mstate_wf&mcLStrafe)	vControlAccel.x += -1;
 	if (mstate_wf&mcRStrafe)	vControlAccel.x +=  1;
 
-	CPHMovementControl::EEnvironment curr_env = character_physics_support()->movement()->Environment();
+	CPHMovementControl::EEnvironment curr_env = character_physics_support()->get_movement()->Environment();
 	if(curr_env==CPHMovementControl::peOnGround || curr_env==CPHMovementControl::peAtWall)
 	{
 		// crouch
@@ -182,12 +187,12 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 			}
 			else
 			{
-				character_physics_support()->movement()->EnableCharacter();
+				character_physics_support()->get_movement()->EnableCharacter();
 				bool Crouched = false;
 				if(isActorAccelerated(mstate_wf, IsZoomAimingMode()))
-					Crouched = character_physics_support()->movement()->ActivateBoxDynamic(1);
+					Crouched = character_physics_support()->get_movement()->ActivateBoxDynamic(1);
 				else
-					Crouched = character_physics_support()->movement()->ActivateBoxDynamic(2);
+					Crouched = character_physics_support()->get_movement()->ActivateBoxDynamic(2);
 				
 				if(Crouched) 
 					mstate_real			|=	mcCrouch;
@@ -207,15 +212,16 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 			float max_jump_speed = 10.0f;
 			float hangover = conditions().GetHangover();
 			float withdrawal = conditions().GetWithdrawal();
+			float frostbite = conditions().GetFrostbite() * 4;
 			float jumpSkill = 0.0f;
 
 			if (ActorSkills)
 				jumpSkill = conditions().m_fJumpSpeedSkill * ActorSkills->enduranceSkillLevel;
 
 			if (!psActorFlags.test(AF_GODMODE|AF_GODMODE_RT) && GameConstants::GetJumpSpeedWeightCalc() && inventory().TotalWeight() >= 25 && mstate_real&mcJump)
-				jump_k = (m_fJumpSpeed + jumpSkill - (hangover + withdrawal)) - ((inventory().TotalWeight() / MaxCarryWeight()) * 4);
+				jump_k = (m_fJumpSpeed + jumpSkill - (hangover + withdrawal + frostbite)) - ((inventory().TotalWeight() / MaxCarryWeight()) * m_fJumpWeightFactor);
 			else
-				jump_k = m_fJumpSpeed + jumpSkill - (hangover + withdrawal);
+				jump_k = m_fJumpSpeed + jumpSkill - (hangover + withdrawal + frostbite);
 
 			TIItemContainer::iterator it = inventory().m_belt.begin();
 			TIItemContainer::iterator ite = inventory().m_belt.end();
@@ -239,7 +245,7 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 
 			clamp(jump_k, 0.0f, max_jump_speed);
 
-			character_physics_support()->movement()->SetJumpUpVelocity(jump_k);
+			character_physics_support()->get_movement()->SetJumpUpVelocity(jump_k);
 
 
 			//уменьшить силу игрока из-за выполненого прыжка
@@ -247,6 +253,7 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 				conditions().ConditionJump(inventory().TotalWeight() / MaxCarryWeight());
 
 			this->callback(GameObject::eOnActorJump)(this->lua_game_object());
+			StartActionSndAnm("OnJumpSnd", "on_actor_jump");
 		}
 
 		// mask input into "real" state
@@ -256,14 +263,14 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 		{
 			if (!isActorAccelerated(mstate_real, IsZoomAimingMode()) && isActorAccelerated(mstate_wf, IsZoomAimingMode()))
 			{
-				character_physics_support()->movement()->EnableCharacter();
-				if(!character_physics_support()->movement()->ActivateBoxDynamic(1))move	&=~mcAccel;
+				character_physics_support()->get_movement()->EnableCharacter();
+				if(!character_physics_support()->get_movement()->ActivateBoxDynamic(1))move	&=~mcAccel;
 			}
 
 			if (isActorAccelerated(mstate_real, IsZoomAimingMode()) && !isActorAccelerated(mstate_wf, IsZoomAimingMode()))
 			{
-				character_physics_support()->movement()->EnableCharacter();
-				if(character_physics_support()->movement()->ActivateBoxDynamic(2))mstate_real	&=~mcAccel;
+				character_physics_support()->get_movement()->EnableCharacter();
+				if(character_physics_support()->get_movement()->ActivateBoxDynamic(2))mstate_real	&=~mcAccel;
 			}
 		}
 
@@ -296,6 +303,7 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 			float	scale			= vControlAccel.magnitude();
 			float hangover			= conditions().GetHangover();
 			float withdrawal		= conditions().GetWithdrawal();
+			float frostbite			= conditions().GetFrostbite() * 4;
 			float walkAccelSkill	= 0.0f;
 
 			if (ActorSkills)
@@ -303,11 +311,11 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 
 			if(scale>EPS)	
 			{
-				float accel_k = m_fWalkAccel + walkAccelSkill - (hangover + withdrawal);
+				float accel_k = m_fWalkAccel + walkAccelSkill - (hangover + withdrawal + frostbite);
 
 				if (!psActorFlags.test(AF_GODMODE|AF_GODMODE_RT) && GameConstants::GetJumpSpeedWeightCalc() && inventory().TotalWeight() >= 25)
 				{
-					accel_k -= ((inventory().TotalWeight() / MaxCarryWeight()) * 8);
+					accel_k -= ((inventory().TotalWeight() / MaxCarryWeight()) * m_fSpeedWeightFactor);
 				}
 
 				TIItemContainer::iterator it = inventory().m_belt.begin();
@@ -399,7 +407,12 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 			CActor*	control_entity		= static_cast_checked<CActor*>(Level().CurrentControlEntity());
 			R_ASSERT2					(control_entity, "current control entity is NULL");
 			CEffectorCam* ec			= control_entity->Cameras().GetCamEffector(eCEActorMoving);
-			if(NULL==ec)
+
+			auto Wpn = smart_cast<CWeapon*>(Actor()->inventory().ActiveItem());
+			auto Pda = smart_cast<CPda*>(Actor()->inventory().ActiveItem());
+			bool move_eff_blocked = (Wpn && Wpn->IsZoomed()) || (Pda && Pda->m_bZoomed);
+
+			if(NULL==ec && !move_eff_blocked)
 			{
 				string_path			eff_name;
 				xr_sprintf			(eff_name, sizeof(eff_name), "%s.anm", state_anm);
@@ -500,7 +513,7 @@ void CActor::g_Orientate	(u32 mstate_rl, float dt)
 bool CActor::g_LadderOrient()
 {
 	Fvector leader_norm;
-	character_physics_support()->movement()->GroundNormal(leader_norm);
+	character_physics_support()->get_movement()->GroundNormal(leader_norm);
 	if(_abs(leader_norm.y)>M_SQRT1_2) return false;
 	//leader_norm.y=0.f;
 	float mag=leader_norm.magnitude();
@@ -664,7 +677,7 @@ bool isActorAccelerated(u32 mstate, bool ZoomMode)
 bool CActor::CanAccelerate()
 {
 	bool can_accel = !conditions().IsLimping() &&
-		!character_physics_support()->movement()->PHCapture() && 
+		!character_physics_support()->get_movement()->PHCapture() && 
 		(m_time_lock_accel < Device.dwTimeGlobal)
 	;		
 
@@ -692,7 +705,7 @@ bool CActor::CanSprint()
 bool CActor::CanJump()
 {
 	bool can_Jump = 
-		!character_physics_support()->movement()->PHCapture() &&((mstate_real&mcJump)==0) && (m_fJumpTime<=0.f) 
+		!character_physics_support()->get_movement()->PHCapture() &&((mstate_real&mcJump)==0) && (m_fJumpTime<=0.f) 
 		&& !m_bJumpKeyPressed &&!IsZoomAimingMode();
 
 	return can_Jump;

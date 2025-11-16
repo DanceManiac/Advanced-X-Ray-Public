@@ -66,6 +66,9 @@ public:
 		float						c_sun;
 		float						distance;
         Fvector						position;
+		Fvector						normal;
+		float						alpha;
+		float						alpha_target;
 #if RENDER==R_R1
 		Fvector						c_rgb;
 #endif
@@ -90,7 +93,8 @@ public:
 		};
 		int							sx,sz;				// координаты слота X x Y
 		vis_data					vis;				// 
-		SlotPart					G[dm_obj_in_slot];	// 
+		SlotPart					G[dm_obj_in_slot];	//
+		bool						hidden;
 
 									Slot()				{ frame=0;empty=1; type=stReady; sx=sz=0; vis.clear(); }
 	};
@@ -104,7 +108,7 @@ public:
 	typedef	xr_vector<xr_vector <SlotItemVec* > >	vis_list;
 	typedef	svector<CDetail*,dm_max_objects>	DetailVec;
 	typedef	DetailVec::iterator					DetailIt;
-	typedef	poolSS<SlotItem,4096>				PSS;
+	typedef	poolSS<SlotItem, /*4096*/ 65536> PSS; // KD: try to avoid blinking
 public:
 	int								dither			[16][16];
 public:
@@ -211,6 +215,8 @@ public:
 	void							WaitAsync		() const;
 
 	std::future<void>				awaiter;
+	bool							async_started{};
+
 	void	__stdcall				MT_CALC			();
 
 	CDetailManager					();

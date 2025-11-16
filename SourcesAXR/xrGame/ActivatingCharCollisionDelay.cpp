@@ -11,13 +11,13 @@ char_support(*char_support_),
 activate_time(Device.dwTimeGlobal + delay )
 {
 	VERIFY(char_support_);
-	VERIFY(char_support.movement());
-	VERIFY( !char_support.movement()->CharacterExist() );
+	VERIFY(char_support.get_movement());
+	VERIFY( !char_support.get_movement()->CharacterExist() );
 }
 bool activating_character_delay::active()
 {
-	VERIFY(char_support.movement());
-	return !char_support.movement()->CharacterExist();
+	VERIFY(char_support.get_movement());
+	return !char_support.get_movement()->CharacterExist();
 }
 void activating_character_delay::update()
 {
@@ -36,7 +36,7 @@ void activating_character_delay::update()
 
 bool activating_character_delay::do_position_correct()
 {
-	CPHMovementControl *m = char_support.movement();
+	CPHMovementControl *m = char_support.get_movement();
 	VERIFY( m );
 	
 	CObject *obj =	m->ParentObject();

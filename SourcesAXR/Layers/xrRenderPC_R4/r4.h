@@ -113,10 +113,14 @@ public:
 	  u32		dx11_ss_indirect_light	: 1;
 	  u32		dx11_ss_new_gloss		: 1;
 	  u32		dx11_es_addon_enabled	: 1;
+	  u32		dx11_es_aces_tonemapping : 1;
 	  u32		dx11_ss_sss				: 1;
 	  u32		dx11_ss_shadows			: 1;
 	  u32		dx11_ss_lut				: 1;
 	  u32		dx11_ss_wind			: 1;
+	  u32		dx11_ss_puddles			: 1;
+	  u32		dx11_ss_bloom			: 1;
+	  u32		dx11_ss_bloom_mask_dirt : 1;
 
 	  u32		dx11_enable_tessellation : 1;
 
@@ -125,11 +129,18 @@ public:
 		float	forcegloss_v		;
 
 		// Ascii - Screen Space Shaders
+		u32		ssfx_core			: 1;
 		u32		ssfx_branches		: 1;
 		u32		ssfx_blood			: 1;
 		u32		ssfx_rain			: 1;
 		u32		ssfx_hud_raindrops	: 1;
-	}			o;
+		u32		ssfx_ssr			: 1;
+		u32		ssfx_terrain		: 1;
+		u32		ssfx_volumetric		: 1;
+		u32		ssfx_ao				: 1;
+		u32		ssfx_il				: 1;
+		u32		ssfx_bloom			: 1;
+	} o;
 	struct		_stats		{
 		u32		l_total,	l_visible;
 		u32		l_shadowed,	l_unshadowed;
@@ -186,7 +197,10 @@ public:
 
 	void init_cascades();
 
-	xr_vector<sun::cascade> m_sun_cascades;
+	xr_vector<sun::cascade>										m_sun_cascades;
+
+	xr_multimap<xr_string, xr_string>							LevelShadersDetList;
+	xr_vector<xr_string>										LevelShadersVec;
 
 private:
 	// Loading / Unloading
@@ -205,7 +219,7 @@ private:
 
 public:
 	IRender_Sector*					rimp_detectSector			(Fvector& P, Fvector& D);
-	void							render_main					(Fmatrix& mCombined, bool _fportals);
+	void							render_main					(Fmatrix& mCombined, bool _fportals, bool first_pass);
 	void							render_forward				();
 	void							render_smap_direct			(Fmatrix& mCombined);
 	void							render_indirect				(light*			L	);
@@ -232,6 +246,8 @@ public:
 	IRenderVisual*					model_CreatePE				(LPCSTR name);
 	IRender_Sector*					detectSector				(const Fvector& P, Fvector& D);
 	int								translateSector				(IRender_Sector* pSector);
+
+	virtual SurfaceParams			getSurface					(const char* nameTexture) override;
 
 	// HW-occlusion culling
 	IC u32							occq_begin					(u32&	ID		)	{ return HWOCC.occq_begin	(ID);	}
@@ -360,9 +376,13 @@ public:
 	virtual void					ScreenshotAsyncEnd			(CMemoryWriter& memory_writer);
 	virtual void		_BCL		OnFrame						();
 
+	virtual	void					CreatePanorama				();
+
 	// [FFT++]
 	virtual void					BeforeWorldRender			(); //--#SM+#-- +SecondVP+       -
 	virtual void					AfterWorldRender			();  //--#SM+#-- +SecondVP+       UI
+
+	virtual void					Render3DStatic				();
 
 	// Render mode
 	virtual void					rmNear						();
@@ -371,6 +391,10 @@ public:
 
 	virtual							u32 active_phase() { return phase; };
 	void							RenderToTarget(RRT target);
+
+	virtual bool					isActorShadowEnabled		() override { return ps_actor_shadow_flags.test(RFLAG_ACTOR_SHADOW); }
+
+	virtual void					RenderApplyRTandZB			() override { RCache.ApplyRTandZB(); }
 
 	// Constructor/destructor/loader
 	CRender							();

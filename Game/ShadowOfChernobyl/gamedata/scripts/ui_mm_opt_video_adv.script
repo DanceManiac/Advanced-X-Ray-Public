@@ -1,0 +1,516 @@
+class "opt_video_adv" (CUIWindow)
+
+function opt_video_adv:__init() super()
+end
+
+function opt_video_adv:__finalize()
+end
+
+function only_2_mode(ctrl, _id)
+	local bEnabled	= _id==2
+	ctrl:Enable		(bEnabled)
+end
+
+function only_12_mode(ctrl, _id)
+	local bEnabled	= _id==1 or _id==2
+	ctrl:Enable		(bEnabled)
+end
+
+function only_2_and_more_mode(ctrl, _id)
+	local bEnabled	= _id>=2
+	ctrl:Enable		(bEnabled)
+end
+
+function only_4_mode(ctrl, _id)
+	local bEnabled	= _id==4
+	ctrl:Enable		(bEnabled)
+end
+
+function only_not_4_mode_show(ctrl, _id)
+	local bEnabled	= _id<4
+	ctrl:Enable		(bEnabled)
+	ctrl:Show		(bEnabled)
+end
+
+function only_4_mode_show(ctrl, _id)
+	local bEnabled	= _id>=4
+	ctrl:Enable		(bEnabled)
+	ctrl:Show		(bEnabled)
+end
+
+function get_screen_space_shaders_status(ctrl, _id, _ssample_trb_val, _ssample_cb_val)
+	local bEnabled	= (get_console():get_bool("r4_screen_space_shaders") and _id>=4)
+	ctrl:Enable		(bEnabled)
+end
+
+function get_enchanted_shaders_status(ctrl, _id, _ssample_trb_val, _ssample_cb_val)
+	local bEnabled	= (get_console():get_bool("r4_enchanted_shaders") and _id>=4)
+	ctrl:Enable		(bEnabled)
+end
+
+function opt_video_adv:InitControls(x, y, xml, handler)
+	local ctl
+	self:Init									(x,y, 738, 416)
+	self:SetAutoDelete							(true)
+	
+	self.bk			= xml:InitFrame				("frame_videoadv", self)
+	self.scroll_v	= xml:InitScrollView		("video_adv:scroll_v", self)
+
+	local _st		= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_vis_dist",				_st)
+	xml:InitTrackBar							("video_adv:track_vis_dist",			_st)
+
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_geometry_lod",			_st)
+	xml:InitTrackBar							("video_adv:track_geometry_lod",		_st)
+
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_detail_density",		_st)
+	xml:InitTrackBar							("video_adv:track_detail_density",		_st)
+	
+--MSAA
+	--[[_st = xml:InitStatic("video_adv:templ_item", nil)
+	xml:InitStatic("video_adv:cap_ssample", _st)
+	ctl = xml:InitTrackBar("video_adv:track_ssample", _st)
+	handler.m_preconditions[ctl] = only_12_mode
+
+	ctl = xml:InitComboBox("video_adv:list_ssample",_st)
+	handler.m_preconditions[ctl] = only_12_mode]]--
+	
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_ssample",				_st)
+	ctl				= xml:InitTrackBar			("video_adv:track_ssample",				_st)
+	handler.ss_trb	= ctl
+	handler:Register(ctl, "trb_ssample")
+	handler.m_preconditions[ctl]				= only_not_4_mode_show
+
+	ctl				= xml:InitComboBox			("video_adv:list_ssample",				_st)
+	handler.ss_cb	= ctl
+	handler:Register(ctl, "cb_ssample")
+	handler.m_preconditions[ctl]				= only_4_mode_show
+	
+--Дальность отрисовки травы
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_detail_radius", _st)
+	xml:InitTrackBar("video_adv:track_detail_radius", _st)
+
+--Высота травы	
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_detail_scale", _st)
+	xml:InitTrackBar("video_adv:track_detail_scale", _st)
+	
+--Коллизия травы
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_detail_collision",		_st)
+	ctl			= xml:InitCheck					("video_adv:check_detail_collision",	_st)
+	handler.m_preconditions[ctl]		= only_3_and_more_mode
+	
+--Статическое солнце
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_r2_static_sun",			_st)
+	ctl			= xml:InitCheck					("video_adv:check_r2_static_sun",		_st)
+	handler.m_preconditions[ctl]		= only_2_and_more_mode
+
+--// Опции SSS и ES: Начало
+
+--Screen Space Shaders
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_screen_space_shaders",			_st)
+	ctl			= xml:InitCheck					("video_adv:check_screen_space_shaders",		_st)
+	handler.m_preconditions[ctl]		= only_3_and_more_mode
+
+--SSS Sky Debanding
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_sss_sky_debanding",			_st)
+	ctl			= xml:InitCheck					("video_adv:check_sss_sky_debanding",		_st)
+	handler.m_preconditions[ctl]		= get_screen_space_shaders_status
+
+--SSS Flora Fix
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_sss_flora_fix",			_st)
+	ctl			= xml:InitCheck					("video_adv:check_sss_flora_fix",		_st)
+	handler.m_preconditions[ctl]		= get_screen_space_shaders_status
+
+--SSS Fog
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_sss_fog",			_st)
+	ctl			= xml:InitCheck					("video_adv:check_sss_fog",		_st)
+	handler.m_preconditions[ctl]		= get_screen_space_shaders_status
+
+--SSS Indirect Light
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_sss_indirect_light",			_st)
+	ctl			= xml:InitCheck					("video_adv:check_sss_indirect_light",		_st)
+	handler.m_preconditions[ctl]		= get_screen_space_shaders_status
+	
+--SSS Screen Space Shadows
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_sss_screen_space_shadows",			_st)
+	ctl			= xml:InitCheck					("video_adv:check_sss_screen_space_shadows",		_st)
+	handler.m_preconditions[ctl]		= get_screen_space_shaders_status
+	
+--SSS Shadows
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_sss_shadows",			_st)
+	ctl			= xml:InitCheck					("video_adv:check_sss_shadows",		_st)
+	handler.m_preconditions[ctl]		= get_screen_space_shaders_status
+	
+--SSS Wind
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_sss_wind",			_st)
+	ctl			= xml:InitCheck					("video_adv:check_sss_wind",		_st)
+	handler.m_preconditions[ctl]		= get_screen_space_shaders_status
+	
+--SSS Puddles
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_sss_puddles",		_st)
+	ctl			= xml:InitCheck					("video_adv:check_sss_puddles",		_st)
+	handler.m_preconditions[ctl]		= get_screen_space_shaders_status
+	
+--SSS Bloom
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_sss_bloom",			_st)
+	ctl			= xml:InitCheck					("video_adv:check_sss_bloom",		_st)
+	handler.m_preconditions[ctl]		= get_screen_space_shaders_status
+	
+--SSS Bloom Mask Dirt
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_sss_bloom_mask_dirt", _st)
+	ctl			= xml:InitCheck					("video_adv:check_sss_bloom_mask_dirt", _st)
+	handler.m_preconditions[ctl]		= get_screen_space_shaders_status
+
+--Enchanted Shaders
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_enchanted_shaders",			_st)
+	ctl			= xml:InitCheck					("video_adv:check_enchanted_shaders",		_st)
+	handler.m_preconditions[ctl]		= only_3_and_more_mode
+	
+--Псевдо PBR
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_es_pseudo_pbr",			_st)
+	ctl			= xml:InitCheck					("video_adv:check_es_pseudo_pbr",		_st)
+	handler.m_preconditions[ctl]		= get_enchanted_shaders_status
+	
+--ACES Tonemapping
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_es_aces_tonemap",		_st)
+	ctl			= xml:InitCheck					("video_adv:check_aces_tonemap",		_st)
+	handler.m_preconditions[ctl]		= get_enchanted_shaders_status
+	
+--// Опции SSS и ES: Конец
+
+--Рендеринг бликов
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_flares", _st)
+	ctl = xml:InitComboBox("video_adv:list_flares", _st)
+	handler.combo_smap_size = ctl
+	handler.m_preconditions[ctl]		= only_2_and_more_mode
+
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_texture_lod",			_st)
+	xml:InitTrackBar							("video_adv:track_texture_lod",			_st)
+
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_aniso",					_st)
+	xml:InitTrackBar							("video_adv:track_aniso",				_st)
+
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_ssample",				_st)
+	xml:InitTrackBar							("video_adv:track_ssample",				_st)
+
+
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_r2_sun",				_st)
+	ctl			= xml:InitCheck					("video_adv:check_r2_sun",				_st)
+	handler.m_preconditions[ctl]		= only_2_and_more_mode
+
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_light_distance",		_st)
+	ctl				= xml:InitTrackBar			("video_adv:track_light_distance",		_st)
+	
+--Размер карты теней
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_smap_size", _st)
+	ctl = xml:InitComboBox("video_adv:list_smap_size", _st)
+	handler.combo_smap_size = ctl
+	handler.m_preconditions[ctl]		= only_2_and_more_mode
+	
+--Тень от ГГ
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_actor_shadow", _st)
+	ctl = xml:InitCheck("video_adv:check_actor_shadow", _st)
+	
+--Тень от травы
+	--[[_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_sun_details", _st)
+	ctl = xml:InitCheck("video_adv:check_sun_details", _st)
+	handler.m_preconditions[ctl]		= only_2_and_more_mode]]--
+	
+--Дальность тени от травы
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_grass_shadow_distance", _st)
+	ctl = xml:InitTrackBar("video_adv:track_grass_shadow_distance", _st)
+	handler.track_mblur = ctl
+	handler.m_preconditions[ctl]		= only_3_and_more_mode
+
+	_st											= xml:InitStatic						("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_npc_torch",				_st)
+	xml:InitCheck								("video_adv:check_npc_torch",			_st)
+
+-- r1_no_detail_textures	r1 only
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_r1_no_detail_textures",	_st)
+	ctl			= xml:InitCheck					("video_adv:check_r1_no_detail_textures",_st)
+	handler.m_preconditions[ctl]		= only_1_mode
+
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_particles_distance",	_st)
+	ctl				= xml:InitTrackBar			("video_adv:track_particles_distance",	_st)
+
+-- Использовать бампы
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_r2_use_bump",	_st)
+	ctl			= xml:InitCheck					("video_adv:check_r2_use_bump",_st)
+	handler.m_preconditions[ctl]		= only_2_and_more_mode
+
+-- r2_detail_bump			=>r2
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_r2_detail_bump",	_st)
+	ctl			= xml:InitCheck					("video_adv:check_r2_detail_bump",_st)
+	handler.m_preconditions[ctl]		= only_2_and_more_mode
+
+-- r2_steep_parallax		>r2
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_r2_steep_parallax",	_st)
+	ctl			= xml:InitCheck					("video_adv:check_r2_steep_parallax",_st)
+	handler.m_preconditions[ctl]		= only_25_and_more_mode
+	
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_r2_sun_quality",	_st)
+	ctl			= xml:InitComboBox				("video_adv:list_r2_sun_quality",_st)
+	handler.m_preconditions[ctl]		= only_25_and_more_mode
+	
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_sun_shafts",			_st)
+	ctl				= xml:InitComboBox			("video_adv:list_sun_shafts",			_st)
+	handler.m_preconditions[ctl]		= only_25_and_more_mode
+	
+--Режим солнечных лучей
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_sunshafts_mode", _st)
+	ctl = xml:InitComboBox("video_adv:list_sunshafts_mode", _st)
+	handler.combo_sunshafts_mode = ctl
+	handler.m_preconditions[ctl]		= only_25_and_more_mode
+
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_ssao_mode",					_st)
+	ctl				= xml:InitComboBox			("video_adv:list_ssao_mode",				_st)
+	handler.m_preconditions[ctl]		= only_25_and_more_mode
+	
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_ssao",					_st)
+	ctl				= xml:InitComboBox			("video_adv:list_ssao",				_st)
+	handler.m_preconditions[ctl]		= only_25_and_more_mode
+
+--Отражения от воды
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_ssr_quality", _st)
+	ctl = xml:InitComboBox("video_adv:list_ssr_quality", _st)
+	handler.combo_ssr_quality = ctl
+	handler.m_preconditions[ctl]		= only_3_and_more_mode
+	
+--Дальность отражений
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_reflections_distance", _st)
+	ctl = xml:InitTrackBar("video_adv:track_reflections_distance", _st)
+	handler.track_reflections_distance = ctl
+	handler.m_preconditions[ctl]		= only_3_and_more_mode
+
+--Дальность намокания
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_dynamic_wet_surfaces_far", _st)
+	ctl = xml:InitTrackBar("video_adv:track_dynamic_wet_surfaces_far", _st)
+	handler.track_reflections_distance = ctl
+	handler.m_preconditions[ctl]		= only_3_and_more_mode
+	
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_soft_water",			_st)
+	ctl				= xml:InitCheck				("video_adv:check_soft_water",			_st)
+	handler.m_preconditions[ctl]		= only_25_and_more_mode
+
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_soft_particles",		_st)
+	ctl				= xml:InitCheck				("video_adv:check_soft_particles",		_st)
+	handler.m_preconditions[ctl]		= only_25_and_more_mode
+
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_dof",					_st)
+	ctl				= xml:InitCheck				("video_adv:check_dof",					_st)
+	handler.m_preconditions[ctl]		= only_25_and_more_mode
+
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_volumetric_light",		_st)
+	ctl				= xml:InitCheck				("video_adv:check_volumetric_light",	_st)
+	handler.m_preconditions[ctl]		= only_25_and_more_mode
+
+-- r3_dynamic_wet_surfaces	>r25
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_r3_dynamic_wet_surfaces",	_st)
+	ctl			= xml:InitCheck					("video_adv:check_r3_dynamic_wet_surfaces",_st)
+	handler.m_preconditions[ctl]				= only_3_and_more_mode
+	
+-- r3_volumetric_smoke		>r25
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_r3_volumetric_smoke",	_st)
+	ctl			= xml:InitCheck					("video_adv:check_r3_volumetric_smoke",_st)
+	handler.m_preconditions[ctl]				= only_3_and_more_mode
+
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_vsync",					_st)
+	xml:InitCheck								("video_adv:check_vsync",				_st)
+	
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_60hz",					_st)
+	xml:InitCheck								("video_adv:check_60hz",				_st)
+
+--Ограничитель дальности тумана
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_fog_clamper_max", _st)
+	ctl = xml:InitTrackBar("video_adv:track_fog_clamper_max", _st)
+
+--Тип низинного тумана
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_r3_lowland_fog_type",	_st)
+	ctl				= xml:InitComboBox			("video_adv:list_r3_lowland_fog_type",	_st)
+	handler.m_preconditions[ctl]				= only_3_and_more_mode
+	
+--3D прицелы
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_3d_scopes_enable", _st)
+	ctl = xml:InitCheck("video_adv:check_3d_scopes_enable", _st)
+
+--3D КПК
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_3d_pda_enable", _st)
+	ctl = xml:InitCheck("video_adv:check_3d_pda_enable", _st)
+
+--Блудмарки на дин. объектах
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_bloodmarks_on_skeleton", _st)
+	ctl = xml:InitCheck("video_adv:check_bloodmarks_on_skeleton", _st)
+
+--Эффект Raindrops	
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_raindrops", _st)
+	ctl = xml:InitCheck("video_adv:check_raindrops", _st)
+	handler.m_preconditions[ctl]				= only_2_and_more_mode
+
+--Виньетка	
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_vignette_effect", _st)
+	ctl = xml:InitCheck("video_adv:check_vignette_effect", _st)
+	handler.m_preconditions[ctl]				= only_2_and_more_mode
+	
+--Хроматическая аберрация
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_chromatic_aberration", _st)
+	ctl = xml:InitCheck("video_adv:check_chromatic_aberration", _st)
+	handler.m_preconditions[ctl]				= only_3_and_more_mode
+	
+--Зернистость
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_film_grain", _st)
+	ctl = xml:InitCheck("video_adv:check_film_grain", _st)
+	handler.m_preconditions[ctl]				= only_3_and_more_mode
+
+--Динамический hud масок	
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_hud_mask", _st)
+	ctl = xml:InitCheck("video_adv:check_hud_mask", _st)
+	handler.m_preconditions[ctl]				= only_2_and_more_mode
+	
+--Динамические эффекты HUD	
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_hud_dyn_effects", _st)
+	ctl = xml:InitCheck("video_adv:check_hud_dyn_effects", _st)
+	handler.m_preconditions[ctl]				= only_2_and_more_mode
+
+--Шейдерный ПНВ	
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_shader_nvg", _st)
+	ctl = xml:InitCheck("video_adv:check_shader_nvg", _st)
+	handler.m_preconditions[ctl]		= only_3_and_more_mode
+
+--Тип сглаживания
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_r2_aa_mode", _st)
+	ctl = xml:InitComboBox("video_adv:list_r2_aa_mode", _st)
+	handler.combo_r2_aa_mode = ctl
+	handler.m_preconditions[ctl]		= only_2_and_more_mode
+
+--Motion Blur	
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_mblur_enable", _st)
+	ctl = xml:InitCheck("video_adv:check_mblur_enable", _st)
+	handler.m_preconditions[ctl]		= only_2_and_more_mode
+
+--Интенсивность Motion Blur
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_mblur", _st)
+	ctl = xml:InitTrackBar("video_adv:track_mblur", _st)
+	handler.track_mblur = ctl
+	handler.m_preconditions[ctl]		= only_2_and_more_mode
+
+--Cam FOV
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_fov", _st)
+	ctl = xml:InitTrackBar("video_adv:track_fov", _st)
+
+--HUD FOV
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_hud_fov", _st)
+	ctl = xml:InitTrackBar("video_adv:track_hud_fov", _st)
+	
+--Оптимизация статической геометрии	
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_optimize_static_geom", _st)
+	xml:InitTrackBar("video_adv:track_optimize_static_geom", _st)
+	
+--Оптимизация динамической геометрии	
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_optimize_dynamic_geom", _st)
+	xml:InitTrackBar("video_adv:track_optimize_dynamic_geom", _st)
+	
+--Оптимизация теневых карт	
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_optimize_shadow_geom", _st)
+	ctl = xml:InitCheck("video_adv:check_optimize_shadow_geom", _st)
+
+--Многопоточная загрузка текстур	
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_mt_textures_load", _st)
+	ctl = xml:InitCheck("video_adv:check_mt_textures_load", _st)
+
+--Цветокоррекция: Интенсивность красного
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_color_r", _st)
+	ctl = xml:InitTrackBar("video_adv:track_color_r", _st)
+
+--Цветокоррекция: Интенсивность зелёного
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_color_g", _st)
+	ctl = xml:InitTrackBar("video_adv:track_color_g", _st)
+
+--Цветокоррекция: Интенсивность синего
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_color_b", _st)
+	ctl = xml:InitTrackBar("video_adv:track_color_b", _st)
+
+--Цветокоррекция: Цветовая насыщенность
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_saturation", _st)
+	ctl = xml:InitTrackBar("video_adv:track_cap_saturation", _st)
+
+	btn		= xml:Init3tButton					("video_adv:btn_to_simply",	self)	
+	handler:Register							(btn, "btn_simply_graphic")	
+end

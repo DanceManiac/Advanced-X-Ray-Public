@@ -4,6 +4,7 @@
 #include "xrUIXmlParser.h"
 #include "UICharacterInfo.h"
 #include "UIDragDropListEx.h"
+#include "UIDragDropReferenceList.h"
 #include "UIActorStateInfo.h"
 #include "UIItemInfo.h"
 #include "UIFrameLineWnd.h"
@@ -19,6 +20,8 @@
 #include "object_broker.h"
 #include "UIWndCallback.h"
 #include "UIHelper.h"
+#include "ui_base.h"
+#include "../string_table.h"
 #include "AdvancedXrayGameConstants.h"
 
 CUIActorMenu::CUIActorMenu()
@@ -36,8 +39,10 @@ CUIActorMenu::~CUIActorMenu()
 	xr_delete			(m_hint_wnd);
 	xr_delete			(m_ItemInfo);
 
-	m_belt_list_over.clear();
-	m_ArtefactSlotsHighlight.clear();
+	if (m_bBeltSlotsOverInitialized)
+		m_belt_list_over.clear();
+	if (m_bArtefactSlotsHighlightInitialized)
+		m_ArtefactSlotsHighlight.clear();
 
 	ClearAllLists		();
 }
@@ -94,187 +99,252 @@ void CUIActorMenu::Construct()
 	m_PartnerBottomInfo->AdjustWidthToText();
 	m_PartnerWeight_end_x 				= m_PartnerWeight->GetWndPos().x;
 
+	if (GameConstants::GetLimitedInvBoxes())
+	{
+		m_PartnerInvCapacityInfo	= UIHelper::CreateStatic(uiXml, "partner_capacity_caption", this);
+		m_PartnerInvFullness		= UIHelper::CreateStatic(uiXml, "partner_inv_fullness", this);
+		m_PartnerInvCapacity		= UIHelper::CreateStatic(uiXml, "partner_inv_capacity", this);
+		m_PartnerInvCapacityInfo->AdjustWidthToText();
+	}
+
 	if (GameConstants::GetLimitedInventory())
 	{
-		m_ActorInvCapacityInfo	= UIHelper::CreateStatic(uiXml, "actor_inv_capacity_caption", this);
-		m_ActorInvFullness		= UIHelper::CreateStatic(uiXml, "actor_inv_fullness", this);
-		m_ActorInvCapacity		= UIHelper::CreateStatic(uiXml, "actor_inv_capacity", this);
-		m_ActorInvCapacityInfo->AdjustWidthToText();
+		if (m_ActorInvCapacityInfo	= UIHelper::CreateStatic(uiXml, "actor_inv_capacity_caption", this, false))
+			m_ActorInvCapacityInfo->AdjustWidthToText();
+			
+		m_ActorInvFullness		= UIHelper::CreateStatic(uiXml, "actor_inv_fullness", this, false);
+		m_ActorInvCapacity		= UIHelper::CreateStatic(uiXml, "actor_inv_capacity", this, false);
 	}
 
-	m_PistolSlotHighlight		= UIHelper::CreateStatic(uiXml, "pistol_slot_highlight", this);
-	m_PistolSlotHighlight		->Show(false);
-	m_RiffleSlotHighlight		= UIHelper::CreateStatic(uiXml, "riffle_slot_highlight", this);
-	m_RiffleSlotHighlight		->Show(false);
-	m_OutfitSlotHighlight		= UIHelper::CreateStatic(uiXml, "outfit_slot_highlight", this);
-	m_OutfitSlotHighlight		->Show(false);
-	m_DetectorSlotHighlight		= UIHelper::CreateStatic(uiXml, "detector_slot_highlight", this);
-	m_DetectorSlotHighlight		->Show(false);
+	// Try "inv_slot2_highlight" first and then "pistol_slot_highlight"
+	m_PistolSlotHighlight			= UIHelper::CreateStatic(uiXml, "inv_slot2_highlight", this, false);
+	if (!m_PistolSlotHighlight)
+		m_PistolSlotHighlight		= UIHelper::CreateStatic(uiXml, "pistol_slot_highlight", this, false);
+	if (m_PistolSlotHighlight)
+		m_PistolSlotHighlight		->Show(false);
+
+	// Try "inv_slot3_highlight" first and then "riffle_slot_highlight"
+	m_RiffleSlotHighlight			= UIHelper::CreateStatic(uiXml, "inv_slot3_highlight", this, false);
+	if (!m_RiffleSlotHighlight)
+		m_RiffleSlotHighlight		= UIHelper::CreateStatic(uiXml, "riffle_slot_highlight", this, false);	// riffle pringles cheeps
+	if (m_RiffleSlotHighlight)
+		m_RiffleSlotHighlight		->Show(false);
+
+	if (m_OutfitSlotHighlight		= UIHelper::CreateStatic(uiXml, "outfit_slot_highlight", this, false))
+		m_OutfitSlotHighlight		->Show(false);
+	if (m_DetectorSlotHighlight		= UIHelper::CreateStatic(uiXml, "detector_slot_highlight", this, false))
+		m_DetectorSlotHighlight		->Show(false);
+	if (m_QuickSlotsHighlight[0]	= UIHelper::CreateStatic(uiXml, "quick_slot_highlight", this, false))
+		m_QuickSlotsHighlight[0]->Show(false);
 
 	if (GameConstants::GetKnifeSlotEnabled())
-	{
-		if ((m_KnifeSlotHighlight = UIHelper::CreateStatic(uiXml, "knife_slot_highlight", this)))
+		if (m_KnifeSlotHighlight = UIHelper::CreateStatic(uiXml, "knife_slot_highlight", this, false))
 			m_KnifeSlotHighlight->Show(false);
-	}
-
+		
 	if (GameConstants::GetBinocularSlotEnabled())
-	{
-		if ((m_BinocularSlotHighlight = UIHelper::CreateStatic(uiXml, "binocular_slot_highlight", this)))
+		if (m_BinocularSlotHighlight = UIHelper::CreateStatic(uiXml, "binocular_slot_highlight", this, false))
 			m_BinocularSlotHighlight->Show(false);
-	}
 
 	if (GameConstants::GetTorchSlotEnabled())
-	{
-		if ((m_TorchSlotHighlight = UIHelper::CreateStatic(uiXml, "torch_slot_highlight", this)))
+		if (m_TorchSlotHighlight = UIHelper::CreateStatic(uiXml, "torch_slot_highlight", this, false))
 			m_TorchSlotHighlight->Show(false);
-	}
 
 	if (GameConstants::GetBackpackSlotEnabled())
-	{
-		if ((m_BackpackSlotHighlight = UIHelper::CreateStatic(uiXml, "backpack_slot_highlight", this)))
+		if (m_BackpackSlotHighlight = UIHelper::CreateStatic(uiXml, "backpack_slot_highlight", this, false))
 			m_BackpackSlotHighlight->Show(false);
-	}
+
+	if (GameConstants::GetHelmetSlotEnabled())
+		if ((m_HelmetSlotHighlight = UIHelper::CreateStatic(uiXml, "helmet_slot_highlight", this, false)))
+			m_HelmetSlotHighlight->Show(false);
+
+	if (GameConstants::GetSecondHelmetSlotEnabled())
+		if ((m_SecondHelmetSlotHighlight = UIHelper::CreateStatic(uiXml, "second_helmet_slot_highlight", this, false)))
+			m_SecondHelmetSlotHighlight->Show(false);
 
 	if (GameConstants::GetDosimeterSlotEnabled())
-	{
-		if ((m_DosimeterSlotHighlight = UIHelper::CreateStatic(uiXml, "dosimeter_slot_highlight", this)))
+		if (m_DosimeterSlotHighlight = UIHelper::CreateStatic(uiXml, "dosimeter_slot_highlight", this, false))
 			m_DosimeterSlotHighlight->Show(false);
-	}
 
 	if (GameConstants::GetPantsSlotEnabled())
-	{
-		if ((m_PantsSlotHighlight = UIHelper::CreateStatic(uiXml, "pants_slot_highlight", this)))
+		if (m_PantsSlotHighlight = UIHelper::CreateStatic(uiXml, "pants_slot_highlight", this, false))
 			m_PantsSlotHighlight->Show(false);
-	}
 
 	if (GameConstants::GetPdaSlotEnabled())
-	{
-		if ((m_PdaSlotHighlight = UIHelper::CreateStatic(uiXml, "pda_slot_highlight", this)))
+		if (m_PdaSlotHighlight = UIHelper::CreateStatic(uiXml, "pda_slot_highlight", this, false))
 			m_PdaSlotHighlight->Show(false);
-	}
 
 	m_pInventoryBagList			= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_bag", this);
 	m_pInventoryBeltList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_belt", this);
 	m_pInventoryOutfitList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_outfit", this);
 	m_pInventoryDetectorList	= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_detector", this);
-	m_pInventoryPistolList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_pistol", this);
-	m_pInventoryAutomaticList	= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_automatic", this);
+
+	// Try "dragdrop_inv_slot1" first and then "dragdrop_pistol"
+	m_pInventoryPistolList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_inv_slot1", this, false);
+	if (!m_pInventoryPistolList)
+		m_pInventoryPistolList	= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_pistol", this, false);
+	// Try "dragdrop_inv_slot2" first and then "dragdrop_automatic"
+	m_pInventoryAutomaticList	= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_inv_slot2", this, false);
+	if (!m_pInventoryAutomaticList)
+		m_pInventoryAutomaticList= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_automatic", this, false);
+
 	m_pTradeActorBagList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_actor_trade_bag", this);
 	m_pTradeActorList			= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_actor_trade", this);
 	m_pTradePartnerBagList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_partner_bag", this);
 	m_pTradePartnerList			= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_partner_trade", this);
 	m_pDeadBodyBagList			= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_deadbody_bag", this);
+	if (m_pQuickSlot				= UIHelper::CreateDragDropReferenceList(uiXml, "dragdrop_quick_slots", this, false))
+	{
+		m_quick_vert_attrib			= uiXml.ReadAttrib		("dragdrop_quick_slots", 0, "horizontal", "");
+		b_quick_vert				= (0==stricmp(m_quick_vert_attrib, "false") || 0==stricmp(m_quick_vert_attrib, "0"));
+		m_pQuickSlot->Initialize	(!b_quick_vert);
+	}
 
-	Fvector2 pos;
+	Fvector2 pos{};
+	float dx = 0.0f, dy = 0.0f;
+
+	if (m_QuickSlotsHighlight[0])
+	{
+		pos		= m_QuickSlotsHighlight[0]->GetWndPos();
+		dx		= uiXml.ReadAttribFlt("quick_slot_highlight", 0, "dx", 24.0f);
+		dy		= uiXml.ReadAttribFlt("quick_slot_highlight", 0, "dy", 0.0f);
+		for(u8 i=1;i<4;i++)
+		{
+			pos.x						+= dx;
+			pos.y						+= dy;
+			m_QuickSlotsHighlight[i]	= UIHelper::CreateStatic(uiXml, "quick_slot_highlight", this);
+			m_QuickSlotsHighlight[i]	->SetWndPos(pos);
+			m_QuickSlotsHighlight[i]	->Show(false);
+		}
+	}
 
 	int cols = m_pInventoryBeltList->CellsCapacity().x;
 	int rows = m_pInventoryBeltList->CellsCapacity().y;
 	int counter = 1;
-	float dx = uiXml.ReadAttribFlt("artefact_slot_highlight", 0, "dx", 24.0f);
-	float dy = uiXml.ReadAttribFlt("artefact_slot_highlight", 0, "dy", 24.0f);
-	for (u8 i = 0; i < rows; ++i)
+
+	if (uiXml.NavigateToNode("artefact_slot_highlight", 0))
 	{
-		for (u8 j = 0; j < cols; ++j)
+		m_bArtefactSlotsHighlightInitialized = true;
+		dx = uiXml.ReadAttribFlt("artefact_slot_highlight", 0, "dx", 24.0f);
+		dy = uiXml.ReadAttribFlt("artefact_slot_highlight", 0, "dy", 24.0f);
+		for (u8 i = 0; i < rows; ++i)
 		{
-			m_ArtefactSlotsHighlight.push_back(UIHelper::CreateStatic(uiXml, "artefact_slot_highlight", this));
-
-			if (i == 0 && j == 0)
+			for (u8 j = 0; j < cols; ++j)
 			{
-				pos = m_ArtefactSlotsHighlight[0]->GetWndPos();
-				m_ArtefactSlotsHighlight[0]->Show(false);
-				dx = uiXml.ReadAttribFlt("artefact_slot_highlight", 0, "dx", 24.0f);
-				dy = uiXml.ReadAttribFlt("artefact_slot_highlight", 0, "dy", 24.0f);
-			}
-			else
-			{
-				if (j != 0)
-					pos.x += dx;
+				m_ArtefactSlotsHighlight.push_back(UIHelper::CreateStatic(uiXml, "artefact_slot_highlight", this));
 
-				m_ArtefactSlotsHighlight[counter]->SetWndPos(pos);
-				m_ArtefactSlotsHighlight[i]->Show(false);
-				counter++;
+				if (i == 0 && j == 0)
+				{
+					pos = m_ArtefactSlotsHighlight[0]->GetWndPos();
+					m_ArtefactSlotsHighlight[0]->Show(false);
+					dx = uiXml.ReadAttribFlt("artefact_slot_highlight", 0, "dx", 24.0f);
+					dy = uiXml.ReadAttribFlt("artefact_slot_highlight", 0, "dy", 24.0f);
+				}
+				else
+				{
+					if (j != 0)
+						pos.x += dx;
+
+					m_ArtefactSlotsHighlight[counter]->SetWndPos(pos);
+					m_ArtefactSlotsHighlight[i]->Show(false);
+					counter++;
+				}
 			}
+
+			pos.x = m_ArtefactSlotsHighlight[0]->GetWndPos().x;
+			pos.y += dy;
 		}
-
-		pos.x = m_ArtefactSlotsHighlight[0]->GetWndPos().x;
-		pos.y += dy;
 	}
 
 	if (GameConstants::GetKnifeSlotEnabled())
-	{
-		m_pInventoryKnifeList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_knife", this);
-	}
+		m_pInventoryKnifeList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_knife", this, false);
 
 	if (GameConstants::GetBinocularSlotEnabled())
-	{
-		m_pInventoryBinocularList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_binocular", this);
-	}
+		m_pInventoryBinocularList	= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_binocular", this, false);
 
 	if (GameConstants::GetTorchSlotEnabled())
-	{
-		m_pInventoryTorchList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_torch", this);
-	}
+		m_pInventoryTorchList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_torch", this, false);
 
 	if (GameConstants::GetBackpackSlotEnabled())
-	{
-		m_pInventoryBackpackList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_backpack", this);
-	}
+		m_pInventoryBackpackList	= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_backpack", this, false);
+
+	if (GameConstants::GetHelmetSlotEnabled())
+		m_pInventoryHelmetList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_helmet", this, false);
+
+	if (GameConstants::GetSecondHelmetSlotEnabled())
+		m_pInventorySecondHelmetList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_second_helmet", this, false);
 
 	if (GameConstants::GetDosimeterSlotEnabled())
-	{
-		m_pInventoryDosimeterList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_dosimeter", this);
-	}
+		m_pInventoryDosimeterList	= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_dosimeter", this, false);
 
 	if (GameConstants::GetPantsSlotEnabled())
-	{
-		m_pInventoryPantsList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_pants", this);
-	}
+		m_pInventoryPantsList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_pants", this, false);
 
 	if (GameConstants::GetPdaSlotEnabled())
+		m_pInventoryPdaList			= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_pda", this, false);
+	
+	if (m_pTrashList				= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_trash", this, false))
 	{
-		m_pInventoryPdaList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_pda", this);
+		m_pTrashList->m_f_item_drop	= CUIDragDropListEx::DRAG_CELL_EVENT	(this,&CUIActorMenu::OnItemDrop);
+		m_pTrashList->m_f_drag_event= CUIDragDropListEx::DRAG_ITEM_EVENT	(this,&CUIActorMenu::OnDragItemOnTrash);
 	}
 
-	m_pTrashList				= UIHelper::CreateDragDropListEx		(uiXml, "dragdrop_trash", this);
-	m_pTrashList->m_f_item_drop	= CUIDragDropListEx::DRAG_CELL_EVENT	(this,&CUIActorMenu::OnItemDrop);
-	m_pTrashList->m_f_drag_event= CUIDragDropListEx::DRAG_ITEM_EVENT	(this,&CUIActorMenu::OnDragItemOnTrash);
-
-	counter = 1;
-
-	for (u8 i = 0; i < rows; ++i)
+	if (uiXml.NavigateToNode("belt_list_over", 0))
 	{
-		for (u8 j = 0; j < cols; ++j)
+		m_bBeltSlotsOverInitialized = true;
+		counter = 1;
+
+		for (u8 i = 0; i < rows; ++i)
 		{
-			m_belt_list_over.push_back(UIHelper::CreateStatic(uiXml, "belt_list_over", this));
-
-			if (i == 0 && j == 0)
+			for (u8 j = 0; j < cols; ++j)
 			{
-				pos = m_belt_list_over[0]->GetWndPos();
-				dx = uiXml.ReadAttribFlt("belt_list_over", 0, "dx", 10.0f);
-				dy = uiXml.ReadAttribFlt("belt_list_over", 0, "dy", 10.0f);
-			}
-			else
-			{
-				if (j != 0)
-					pos.x += dx;
+				m_belt_list_over.push_back(UIHelper::CreateStatic(uiXml, "belt_list_over", this));
 
-				m_belt_list_over[counter]->SetWndPos(pos);
-				counter++;
+				if (i == 0 && j == 0)
+				{
+					pos = m_belt_list_over[0]->GetWndPos();
+					dx = uiXml.ReadAttribFlt("belt_list_over", 0, "dx", 10.0f);
+					dy = uiXml.ReadAttribFlt("belt_list_over", 0, "dy", 10.0f);
+				}
+				else
+				{
+					if (j != 0)
+						pos.x += dx;
+
+					m_belt_list_over[counter]->SetWndPos(pos);
+					counter++;
+				}
 			}
+
+			pos.x = m_belt_list_over[0]->GetWndPos().x;
+			pos.y += dy;
 		}
+	}
 
-		pos.x = m_belt_list_over[0]->GetWndPos().x;
-		pos.y += dy;
+	if (GameConstants::GetHelmetSlotEnabled())
+	{
+		m_HelmetOver = UIHelper::CreateStatic(uiXml, "helmet_over", this);
+		m_HelmetOver->Show(false);
+	}
+
+	if (GameConstants::GetSecondHelmetSlotEnabled())
+	{
+		m_SecondHelmetOver = UIHelper::CreateStatic(uiXml, "second_helmet_over", this);
+		m_SecondHelmetOver->Show(false);
 	}
 
 	m_ActorMoney	= UIHelper::CreateStatic(uiXml, "actor_money_static", this);
 	m_PartnerMoney	= UIHelper::CreateStatic(uiXml, "partner_money_static", this);
-	
-	m_trade_button		= UIHelper::Create3tButtonEx(uiXml, "trade_button", this);
+	m_QuickSlot1	= UIHelper::CreateStatic(uiXml, "quick_slot1_text", this, false);
+	m_QuickSlot2	= UIHelper::CreateStatic(uiXml, "quick_slot2_text", this, false);
+	m_QuickSlot3	= UIHelper::CreateStatic(uiXml, "quick_slot3_text", this, false);
+	m_QuickSlot4	= UIHelper::CreateStatic(uiXml, "quick_slot4_text", this, false);
+
+	m_trade_button		= UIHelper::Create3tButtonEx(uiXml, "trade_button", this, false);
 	m_takeall_button	= UIHelper::Create3tButtonEx(uiXml, "takeall_button", this);
 	m_exit_button		= UIHelper::Create3tButtonEx(uiXml, "exit_button", this);
+	m_sleep_button		= UIHelper::Create3tButtonEx(uiXml, "sleep_button", this, false);
 
-	m_clock_value						= UIHelper::CreateStatic(uiXml, "clock_value", this);
+	m_clock_value		= UIHelper::CreateStatic(uiXml, "clock_value", this, false);
 
 /*
 	m_pDeadBodyBagList					= xr_new<CUIDragDropListEx>(); 
@@ -344,45 +414,40 @@ void CUIActorMenu::Construct()
 	BindDragDropListEvents				(m_pTradePartnerBagList);
 	BindDragDropListEvents				(m_pTradePartnerList);
 	BindDragDropListEvents				(m_pDeadBodyBagList);
+	if (m_pQuickSlot)
+		BindDragDropListEvents			(m_pQuickSlot);
 
-	if (GameConstants::GetKnifeSlotEnabled())
-	{
+	if (m_pInventoryKnifeList && GameConstants::GetKnifeSlotEnabled())
 		BindDragDropListEvents(m_pInventoryKnifeList);
-	}
 
-	if (GameConstants::GetBinocularSlotEnabled())
-	{
+	if (m_pInventoryBinocularList && GameConstants::GetBinocularSlotEnabled())
 		BindDragDropListEvents(m_pInventoryBinocularList);
-	}
 
-	if (GameConstants::GetTorchSlotEnabled())
-	{
+	if (m_pInventoryTorchList && GameConstants::GetTorchSlotEnabled())
 		BindDragDropListEvents(m_pInventoryTorchList);
-	}
 
-	if (GameConstants::GetBackpackSlotEnabled())
-	{
+	if (m_pInventoryBackpackList && GameConstants::GetBackpackSlotEnabled())
 		BindDragDropListEvents(m_pInventoryBackpackList);
-	}
 
-	if (GameConstants::GetDosimeterSlotEnabled())
-	{
+	if (m_pInventoryHelmetList && GameConstants::GetHelmetSlotEnabled())
+		BindDragDropListEvents(m_pInventoryHelmetList);
+
+	if (m_pInventorySecondHelmetList && GameConstants::GetSecondHelmetSlotEnabled())
+		BindDragDropListEvents(m_pInventorySecondHelmetList);
+
+	if (m_pInventoryDosimeterList && GameConstants::GetDosimeterSlotEnabled())
 		BindDragDropListEvents(m_pInventoryDosimeterList);
-	}
 
-	if (GameConstants::GetPantsSlotEnabled())
-	{
+	if (m_pInventoryPantsList && GameConstants::GetPantsSlotEnabled())
 		BindDragDropListEvents(m_pInventoryPantsList);
-	}
 
-	if (GameConstants::GetPdaSlotEnabled())
-	{
+	if (m_pInventoryPdaList && GameConstants::GetPdaSlotEnabled())
 		BindDragDropListEvents(m_pInventoryPdaList);
-	}
 
 	m_allowed_drops[iTrashSlot].push_back(iActorBag);
 	m_allowed_drops[iTrashSlot].push_back(iActorSlot);
 	m_allowed_drops[iTrashSlot].push_back(iActorBelt);
+	m_allowed_drops[iTrashSlot].push_back(iQuickSlot);
 
 	m_allowed_drops[iActorSlot].push_back(iActorBag);
 	m_allowed_drops[iActorSlot].push_back(iActorSlot);
@@ -394,6 +459,7 @@ void CUIActorMenu::Construct()
 	m_allowed_drops[iActorBag].push_back(iActorTrade);
 	m_allowed_drops[iActorBag].push_back(iDeadBodyBag);
 	m_allowed_drops[iActorBag].push_back(iActorBag);
+	m_allowed_drops[iActorBag].push_back(iQuickSlot);
 	
 	m_allowed_drops[iActorBelt].push_back(iActorBag);
 	m_allowed_drops[iActorBelt].push_back(iActorTrade);
@@ -404,6 +470,7 @@ void CUIActorMenu::Construct()
 	m_allowed_drops[iActorTrade].push_back(iActorBag);
 	m_allowed_drops[iActorTrade].push_back(iActorBelt);
 	m_allowed_drops[iActorTrade].push_back(iActorTrade);
+	m_allowed_drops[iActorTrade].push_back(iQuickSlot);
 
 	m_allowed_drops[iPartnerTradeBag].push_back(iPartnerTrade);
 	m_allowed_drops[iPartnerTradeBag].push_back(iPartnerTradeBag);
@@ -414,6 +481,10 @@ void CUIActorMenu::Construct()
 	m_allowed_drops[iDeadBodyBag].push_back(iActorBag);
 	m_allowed_drops[iDeadBodyBag].push_back(iActorBelt);
 	m_allowed_drops[iDeadBodyBag].push_back(iDeadBodyBag);
+
+	m_allowed_drops[iQuickSlot].push_back(iActorBag);
+	m_allowed_drops[iQuickSlot].push_back(iActorTrade);
+	m_allowed_drops[iQuickSlot].push_back(iQuickSlot);
 
 	m_upgrade_selected					= NULL;
 	SetCurrentItem						(NULL);
@@ -448,24 +519,30 @@ void CUIActorMenu::BindDragDropListEvents(CUIDragDropListEx* lst)
 
 void CUIActorMenu::InitCallbacks()
 {
-	Register						(m_trade_button );
+	if (m_trade_button)
+		Register						(m_trade_button );
 	Register						(m_takeall_button);
 	Register						(m_exit_button);
 	Register						(m_UIPropertiesBox);
 	VERIFY							(m_pUpgradeWnd);
 	Register						(m_pUpgradeWnd->m_btn_repair);
+	if (m_sleep_button)
+		Register(m_sleep_button);
 
-	AddCallback( m_trade_button->WindowName(),    BUTTON_CLICKED,   CUIWndCallback::void_function( this, &CUIActorMenu::OnBtnPerformTrade ) );
+	if (m_trade_button)
+		AddCallback( m_trade_button->WindowName(),    BUTTON_CLICKED,   CUIWndCallback::void_function( this, &CUIActorMenu::OnBtnPerformTrade ) );
 	AddCallback( m_takeall_button->WindowName(),  BUTTON_CLICKED,   CUIWndCallback::void_function( this, &CUIActorMenu::TakeAllFromPartner ) );
 	AddCallback( m_exit_button->WindowName(),     BUTTON_CLICKED,   CUIWndCallback::void_function( this, &CUIActorMenu::OnBtnExitClicked ) );
 	AddCallback( m_UIPropertiesBox->WindowName(), PROPERTY_CLICKED, CUIWndCallback::void_function( this, &CUIActorMenu::ProcessPropertiesBoxClicked ) );
 	AddCallback( m_pUpgradeWnd->m_btn_repair->WindowName(), BUTTON_CLICKED,   CUIWndCallback::void_function( this, &CUIActorMenu::TryRepairItem ) );
+	if (m_sleep_button)
+		AddCallback(m_sleep_button->WindowName(),    BUTTON_CLICKED,   CUIWndCallback::void_function(this, &CUIActorMenu::OnBtnSleepClicked));
 }
 
 void CUIActorMenu::UpdateButtonsLayout()
 {
 	Fvector2 btn_exit_pos;
-	if(m_trade_button->IsShown() || m_takeall_button->IsShown())
+	if((m_trade_button && m_trade_button->IsShown()) || m_takeall_button->IsShown())
 	{
 		btn_exit_pos	= m_trade_button->GetWndPos();
 		btn_exit_pos.x	+=m_trade_button->GetWndSize().x;
@@ -476,4 +553,44 @@ void CUIActorMenu::UpdateButtonsLayout()
 	}
 	
 	m_exit_button->SetWndPos(btn_exit_pos);
+
+	string32 tmp;
+	LPCSTR str;
+
+	if (m_QuickSlot1)
+	{
+		
+		str = CStringTable().translate("quick_use_str_1").c_str();
+		strncpy_s(tmp, sizeof(tmp), str, 3);
+		if(tmp[2]==',')
+			tmp[1] = '\0';
+		m_QuickSlot1->SetTextST(tmp);
+	}
+	
+	if (m_QuickSlot2)
+	{
+		str = CStringTable().translate("quick_use_str_2").c_str();
+		strncpy_s(tmp, sizeof(tmp), str, 3);
+		if(tmp[2]==',')
+			tmp[1] = '\0';
+		m_QuickSlot2->SetTextST(tmp);
+	}
+	
+	if (m_QuickSlot3)
+	{
+		str = CStringTable().translate("quick_use_str_3").c_str();
+		strncpy_s(tmp, sizeof(tmp), str, 3);
+		if(tmp[2]==',')
+			tmp[1] = '\0';
+		m_QuickSlot3->SetTextST(tmp);
+	}
+	
+	if (m_QuickSlot4)
+	{
+		str = CStringTable().translate("quick_use_str_4").c_str();
+		strncpy_s(tmp, sizeof(tmp), str, 3);
+		if(tmp[2]==',')
+			tmp[1] = '\0';
+		m_QuickSlot4->SetTextST(tmp);
+	}
 }

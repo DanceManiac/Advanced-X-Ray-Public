@@ -38,13 +38,13 @@ void CMonsterEnemyMemory::update()
 
 	typedef CObjectManager<const CEntityAlive>::OBJECTS	objects_list;
 
-	objects_list const& objects	=	monster->memory().enemy().objects();
+	objects_list const& objects	=	monster->get_memory().get_enemy().objects();
 
 	if ( monster_hit_memory.is_hit() && time() < monster_hit_memory.get_last_hit_time() + 1000 )
 	{
 		if ( CEntityAlive* enemy = smart_cast<CEntityAlive*>(monster->HitMemory.get_last_hit_object()) )
 		{
-			if ( monster->CCustomMonster::useful(&monster->memory().enemy(), enemy) && 
+			if ( monster->CCustomMonster::useful(&monster->get_memory().get_enemy(), enemy) && 
 				 monster->Position().distance_to(enemy->Position()) 
 				                        < 
 				 monster->get_feel_enemy_who_just_hit_max_distance() )
@@ -73,10 +73,10 @@ void CMonsterEnemyMemory::update()
 				float const xz_dist	=	monster->Position().distance_to_xz(g_actor->Position());
 				float const y_dist	=	_abs(monster->Position().y - g_actor->Position().y);
 
-				if ( monster->CCustomMonster::useful(&monster->memory().enemy(), enemy) && 
+				if ( monster->CCustomMonster::useful(&monster->get_memory().get_enemy(), enemy) && 
 					 y_dist < 10 &&
 					 xz_dist < monster->get_feel_enemy_who_made_sound_max_distance() &&
-					 g_actor->memory().visual().visible_now(monster)	)
+					 g_actor->get_memory().visual().visible_now(monster)	)
 				{
 					add_enemy					(enemy);
 
@@ -100,7 +100,7 @@ void CMonsterEnemyMemory::update()
 													< 
 									monster->get_feel_enemy_max_distance();
 
-		if ( feel_enemy || monster->memory().visual().visible_now(*I) )
+		if ( feel_enemy || monster->get_memory().visual().visible_now(*I) )
 			add_enemy(*I);
 	}
 
@@ -112,8 +112,8 @@ void CMonsterEnemyMemory::update()
 
 		if ( xz_dist < feel_enemy_max_distance && 
 			 y_dist < 10 &&
-			 monster->memory().enemy().is_useful(g_actor) &&
-			 g_actor->memory().visual().visible_now(monster) )
+			 monster->get_memory().get_enemy().is_useful(g_actor) &&
+			 g_actor->get_memory().visual().visible_now(monster) )
 		{
 			add_enemy(g_actor);
 		}
@@ -182,7 +182,7 @@ void CMonsterEnemyMemory::remove_non_actual()
 			 it->first->getDestroy()					||
 			 (it->second.time + time_memory < cur_time) ||
 			 (it->first->g_Team() == monster->g_Team()) ||
-			 !monster->memory().enemy().is_useful(it->first) ) 
+			 !monster->get_memory().get_enemy().is_useful(it->first) ) 
 		{
 			m_objects.erase (it);
 		}

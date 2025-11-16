@@ -69,6 +69,9 @@ RELATION_REGISTRY::RELATION_MAP_SPOTS*		RELATION_REGISTRY::m_spot_names			= NULL
 
 RELATION_REGISTRY::RELATION_REGISTRY  ()
 {
+	m_sgoodwill_enemy = pSettings->r_s16(GAME_RELATIONS_SECT, "goodwill_enemy");
+	m_sgoodwill_neutral = pSettings->r_s16(GAME_RELATIONS_SECT, "goodwill_neutal");
+	m_sgoodwill_friend = pSettings->r_s16(GAME_RELATIONS_SECT, "goodwill_friend");
 }
 
 RELATION_REGISTRY::~RELATION_REGISTRY ()

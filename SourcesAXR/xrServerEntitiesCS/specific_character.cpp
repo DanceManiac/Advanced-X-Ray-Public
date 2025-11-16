@@ -297,8 +297,8 @@ CHARACTER_REPUTATION_VALUE CSpecificCharacter::Reputation	() const
 
 LPCSTR CSpecificCharacter::Visual()
 {
-	string_path visual_randomized{};
 	xr_string visual_name = data()->m_sVisual.c_str();
+
 	int rnd_vis{};
 
 	if (visual_name.back() == '_')
@@ -310,21 +310,58 @@ LPCSTR CSpecificCharacter::Visual()
 		else
 			rnd_vis = data()->last_visual;
 
-		strconcat(sizeof(visual_randomized), visual_randomized, visual_name.c_str(), std::to_string(rnd_vis).c_str());
+		xr_string visual_randomized = visual_name;
+		visual_randomized += std::to_string(rnd_vis).c_str();
 
-		//Icon
+		// Icon
 		if (!data()->m_bForceDisabledRandomIcons)
 		{
-			string128 randomized_icon{};
-			size_t lastBackslashPos = std::string(visual_randomized).find_last_of('\\');
+			xr_string randomized_icon = "ui_npc_";
+			size_t lastBackslashPos = visual_randomized.find_last_of('\\');
 
-			std::string result = std::string(visual_randomized).substr(std::string(visual_randomized).find_last_of('\\') + 1);
-			strconcat(sizeof(randomized_icon), randomized_icon, "ui_npc_", result.c_str());
+			xr_string result = visual_randomized.substr(lastBackslashPos + 1);
+			randomized_icon += result.c_str();
 
-			data()->m_icon_name = randomized_icon;
+			data()->m_icon_name = randomized_icon.c_str();
 		}
 
-		return visual_randomized;
+		return visual_randomized.c_str();
+	}
+	else if (visual_name.back() == '*')
+	{
+		std::string visual_name = data()->m_sVisual.c_str();
+
+		string_path full_mask;
+		xr_strcpy(full_mask, data()->m_sVisual.c_str());
+		xr_strcat(full_mask, "*");
+
+		FS_FileSet fset;
+		FS.file_list(fset, "$game_meshes$", FS_ListFiles, full_mask);
+
+		if (fset.empty())
+		{
+			Msg("[CSpecificCharacter::Visual]: File list is empty! Check visuals folder!");
+			return data()->m_sVisual.c_str();
+		}
+
+		rnd_vis = ::Random.randI(0, fset.size());
+
+		FS_FileSetIt it = fset.begin();
+		std::advance(it, rnd_vis);
+
+		// Icon
+		if (!data()->m_bForceDisabledRandomIcons)
+		{
+			xr_string randomized_icon = "ui_npc_";
+			size_t lastBackslashPos = it->name.find_last_of('\\');
+
+			xr_string result = it->name.substr(lastBackslashPos + 1);
+			randomized_icon += result.c_str();
+
+			data()->m_icon_name = randomized_icon.c_str();
+		}
+
+		return it->name.c_str();
 	}
 
 	return data()->m_sVisual.c_str();
@@ -332,33 +369,58 @@ LPCSTR CSpecificCharacter::Visual()
 
 void CSpecificCharacter::SetRandomRange()
 {
-	int min_num = 1000000;
-	int max_num = -1;
+	int min_num = 1;
+	int max_num = 1;
 
 	std::string visual_name = data()->m_sVisual.c_str();
-	std::string relative_path = RemoveSymbolsAfterSlash(visual_name);
 
-	std::string userDir = FS.get_path("$game_meshes$")->m_Path;
-	std::string path = userDir + relative_path;
+	string_path full_mask;
+	xr_strcpy(full_mask, data()->m_sVisual.c_str());
+	xr_strcat(full_mask, "*");
 
-	visual_name = RemoveSymbolsBeforeSlash(visual_name);
+	FS_FileSet fset;
+	FS.file_list(fset, "$game_meshes$", FS_ListFiles, full_mask);
+	FS_FileSetIt fit = fset.begin();
+	const FS_FileSetIt fit_e = fset.end();
 
-	for (auto& p : fs::directory_iterator(path))
+	bool filesFound = false;
+
+	for (; fit != fit_e; ++fit)
 	{
-		std::string name = p.path().filename().string();
+		std::string name = fit->name.c_str();
 
 		if (name.find(visual_name) == 0)
 		{
-			int test = name.length();
-			int num = std::stoi(name.substr(visual_name.length()));
+			try
+			{
+				int num = std::stoi(name.substr(visual_name.length()));
 
-			if (num < min_num)
-				min_num = num;
-
-			if (num > max_num)
-				max_num = num;
+				if (!filesFound)
+				{
+					min_num = num;
+					max_num = num;
+					filesFound = true;
+				}
+				else
+				{
+					min_num = std::min(min_num, num);
+					max_num = std::max(max_num, num);
+				}
+			}
+			catch (const std::exception&)
+			{
+#ifdef DEBUG
+				Msg("[CSpecificCharacter::SetRandomRange]: Skip model with invalid numeric suffix: %s", name.c_str());
+#endif
+				continue;
+			}
 		}
 	}
+
+#ifdef DEBUG
+	if (!filesFound)
+		Msg("[CSpecificCharacter::SetRandomRange]: No valid numbered models found for visual name: %s, using default range [1,1]", visual_name.c_str());
+#endif
 
 	data()->first_visual = min_num;
 	data()->last_visual = max_num;

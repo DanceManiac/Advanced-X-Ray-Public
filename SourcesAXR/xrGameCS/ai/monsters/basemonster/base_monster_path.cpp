@@ -17,7 +17,7 @@
 // каждый монстр может по-разному реализвать эту функ (e.g. кровосос с поворотом головы и т.п.)
 void CBaseMonster::LookPosition(Fvector to_point, float angular_speed)
 {
-	// по-умолчанию просто изменить movement().m_body.target.yaw
+	// по-умолчанию просто изменить get_movement().m_body.target.yaw
 	Fvector	d;
 	d.set(to_point);
 	d.sub(Position());	

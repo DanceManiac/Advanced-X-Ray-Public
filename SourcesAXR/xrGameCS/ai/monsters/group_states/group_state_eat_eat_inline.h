@@ -49,7 +49,7 @@ bool CStateGroupEatingAbstract::check_start_conditions()
 	Fvector nearest_bone_pos;
 	if ((corpse->m_pPhysicsShell == NULL) || (!corpse->m_pPhysicsShell->isActive())) {
 		nearest_bone_pos	= corpse->Position(); 
-	} else nearest_bone_pos = object->character_physics_support()->movement()->PHCaptureGetNearestElemPos(corpse);
+	} else nearest_bone_pos = object->character_physics_support()->get_movement()->PHCaptureGetNearestElemPos(corpse);
 
 	float dist				= nearest_bone_pos.distance_to(object->Position());
 	float dist_to_corpse	= object->db().m_fDistToCorpse; 
@@ -81,7 +81,7 @@ bool CStateGroupEatingAbstract::check_completion()
 	Fvector nearest_bone_pos;
 	if ((corpse->m_pPhysicsShell == NULL) || (!corpse->m_pPhysicsShell->isActive())) {
 		nearest_bone_pos	= corpse->Position(); 
-	} else nearest_bone_pos = object->character_physics_support()->movement()->PHCaptureGetNearestElemPos(corpse);
+	} else nearest_bone_pos = object->character_physics_support()->get_movement()->PHCaptureGetNearestElemPos(corpse);
 
 	float dist				= nearest_bone_pos.distance_to(object->Position());
 	float dist_to_corpse	= object->db().m_fDistToCorpse; 
@@ -91,9 +91,9 @@ bool CStateGroupEatingAbstract::check_completion()
 }
 
 TEMPLATE_SPECIALIZATION
-void CStateGroupEatingAbstract::remove_links(CObject* object)
+void CStateGroupEatingAbstract::remove_links(CObject* object_)
 {
-	if (corpse == object)
+	if (corpse == object_)
 		corpse	= 0;
 }
 

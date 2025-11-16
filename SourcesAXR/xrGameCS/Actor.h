@@ -18,6 +18,7 @@
 #include "step_manager.h"
 #include "script_export_space.h"
 #include "xr_level_controller.h"
+#include "HudSound.h"
 
 #include "ActorSkills.h"
 #include "CustomTimer.h"
@@ -111,6 +112,7 @@ public:
 	// Render
 	virtual void						renderable_Render			();
 	virtual BOOL						renderable_ShadowGenerate	();
+	virtual bool						AllowActorShadow			();
 	virtual	void						feel_sound_new				(CObject* who, int type, CSound_UserDataPtr user_data, const Fvector& Position, float power);
 	virtual	Feel::Sound*				dcast_FeelSound				()	{ return this;	}
 			float						m_snd_noise;
@@ -196,6 +198,7 @@ public:
 	virtual	bool						use_default_throw_force	();
 	virtual	float						missile_throw_force		(); 
 
+	virtual bool						unlimited_ammo			();
 
 	virtual bool						NeedToDestroyObject()  const;
 	virtual ALife::_TIME_ID				TimePassedAfterDeath() const;
@@ -204,13 +207,13 @@ public:
 public:
 
 	//свойства артефактов
-	virtual void		UpdateArtefactsOnBeltAndOutfit();
-	virtual void		UpdateInventoryItems();
+	virtual void		UpdateRestores			();
+	virtual void		UpdateInventoryItems	();
 	virtual void		MoveArtefactBelt		(const CArtefact* artefact, bool on_belt);
 			float		HitArtefactsOnBelt		(float hit_power, ALife::EHitType hit_type);
 			float		GetProtection_ArtefactsOnBelt(ALife::EHitType hit_type);
-			void		UpdateArtefactsOnBelt();
-			void		UpdateArtefactsInRuck();
+			void		UpdateArtefactsOnBelt	();
+			void		UpdateArtefactsInRuck	();
 			void		UpdateSkills();
 			void		UpdateNVGUseAnim();
 			void		UpdateMaskUseAnim();
@@ -224,6 +227,8 @@ protected:
 	ref_sound			m_HeavyBreathSnd;
 	ref_sound			m_BloodSnd;
 	ref_sound			m_DangerSnd;
+
+	HUD_SOUND_COLLECTION_LAYERED m_layered_sounds;
 
 	xr_vector<const CArtefact*> m_ArtefactsOnBelt;
 
@@ -381,6 +386,7 @@ protected:
 	CInventoryOwner*		m_pPersonWeLookingAt;
 	CHolderCustom*			m_pVehicleWeLookingAt;
 	CGameObject*			m_pObjectWeLookingAt;
+	CGameObject*			m_pObjectToTake;
 	CInventoryBox*			m_pInvBoxWeLookingAt;
 
 	// Tip for action for object we're looking at
@@ -491,6 +497,8 @@ public:
 			float						get_additional_weight() const;
 			u32							GetBaseArtefactCount() const { return m_iBaseArtefactCount; }
 
+			int							m_head;
+
 protected:
 	CFireDispertionController			m_fdisp_controller;
 	//если актер целится в прицел
@@ -516,7 +524,6 @@ protected:
 	int									m_r_hand;
 	int									m_l_finger1;
     int									m_r_finger2;
-	int									m_head;
 	int									m_eye_left;
 	int									m_eye_right;
 
@@ -678,7 +685,7 @@ protected:
 		void							Check_for_AutoPickUp			();
 		void							SelectBestWeapon				(CObject* O);
 public:
-		void							SetWeaponHideState				(u32 State, bool bSet);
+		void							SetWeaponHideState				(u32 State, bool bSet, bool bBlockQuickWpn = true);
 private://IPhysicsShellHolder
 
 virtual	 void	_BCL	HideAllWeapons					( bool v ){ SetWeaponHideState(INV_STATE_BLOCK_ALL,v); }	
@@ -728,7 +735,12 @@ public:
 			void				SwitchTorch						();
 			void				CleanMask						();
 			void				QuickKick						();
+			void				TakeItemAnimCheck				(bool use_pickup_anim);
+			void				TakeItemAnim					(bool use_pickup_anim);
+			void				UpdateUseAnim					();
+
 			bool				IsReloadingWeapon				();
+
 #ifdef DEBUG
 			void				NoClipFly						(int cmd);
 #endif //DEBUG
@@ -752,7 +764,7 @@ private:
 
 public:
 			void				SetActorVisibility				(u16 who, float value);
-	IC		CActorMemory		&memory							() const {VERIFY(m_memory); return(*m_memory); };
+	IC		CActorMemory		&get_memory							() const {VERIFY(m_memory); return(*m_memory); };
 
 	void						OnDifficultyChanged				();
 
@@ -824,18 +836,38 @@ public:
 	bool					GetNightVisionStatus() {return m_bNightVisionOn;}
 	void					SetNightVisionAllowed(bool bAllow) {m_bNightVisionAllow = bAllow;}
 	CNightVisionEffector*	GetNightVision() {return m_night_vision;}
+	void					SetNightVision(CNightVisionEffector* night_vision) { m_night_vision = night_vision; }
 
 	// Real Wolf. Start. 14.10.2014
 	void					block_action(EGameActions cmd);
 	void					unblock_action(EGameActions cmd);
 	// Real Wolf. End. 14.10.2014
 
-	bool					MaskClearInProcess() { return m_bMaskClear; }
+	bool					is_actor_normal();
+	bool					is_actor_crouch();
+	bool					is_actor_creep();
+	bool					is_actor_climb();
+	bool					is_actor_walking();
+	bool					is_actor_running();
+	bool					is_actor_sprinting();
+	bool					is_actor_crouching();
+	bool					is_actor_creeping();
+	bool					is_actor_climbing();
+	bool					is_actor_moving();
+
+	bool					IsDetectorActive() const;
+	void					DetectorToogle(bool fastmode = false) const;
+
+	bool					MaskClearInProcess		() { return m_bMaskClear; }
+	void					SetMaskClear			(bool clear) { m_bMaskClear = clear; }
+	bool					GetMaskClear			() { return m_bMaskClear; }
+	void					SetMaskAnimActive		(bool status) { m_bMaskAnimActivated = status; }
+	void					SetMaskAnimLength		(int length) { m_iMaskAnimLength = length; }
+	void					SetActionAnimInProcess	(bool status) { m_bActionAnimInProcess = status; }
 
 	float					GetDevicesPsyFactor() { return m_fDevicesPsyFactor; }
 	void					SetDevicesPsyFactor(float psy_factor) { m_fDevicesPsyFactor = psy_factor; }
 
-	bool					m_bEatAnimActive;
 	bool					m_bActionAnimInProcess;
 	CActorSkills*			ActorSkills;
 	CTimerManager*			TimerManager;
@@ -847,7 +879,13 @@ public:
 	float					GetInventoryFullness() const { return m_fInventoryFullness; }
 	float					MaxCarryInvCapacity	() const;
 	void					ChangeInventoryFullness(float val);
-	u16						GetLastActiveSlot	() { return m_last_active_slot; }
+	u32						GetLastActiveSlot	() { return m_last_active_slot; }
+
+	void					SetHeatingStatus	(bool status, float power = 0.0f) { m_bHeating = status; m_fHeatingPower = power; }
+	bool					GetHeatingStatus	() const { return m_bHeating; }
+	float					GetCurrentHeating	() const { return m_fHeatingPower; }
+
+	void					StartActionSndAnm	(shared_str snd_name, shared_str eff_name);
 
 protected:
 	bool					m_bNightVisionOn;
@@ -858,21 +896,36 @@ protected:
 	bool					m_bMaskClear;
 	bool					m_bQuickKickActivated;
 	bool					m_bQuickKick;
+	bool					m_bTakeItemActivated;
+	bool					m_bItemTaked;
+	bool					m_bUsePickupAnim;
 	int						m_iNVGAnimLength;
 	int						m_iActionTiming;
 	int						m_iMaskAnimLength;
 	int						m_iQuickKickAnimLength;
+	int						m_iTakeAnimLength;
 	float					m_fInventoryCapacity;
 	float					m_fInventoryFullness;
 	float					m_fInventoryFullnessCtrl; // Для контроля эвента. Иначе эвент отправляется пачкой и дропает больше, чем нужно.
 
-	u16						m_last_active_slot;
+	bool					m_bHeating;
+	float					m_fHeatingPower;
+
+	shared_str				m_sColdSteamParticleBone;
+	shared_str				m_sColdSteamParticleName;
+
+	u32						m_last_active_slot;
 
 	float					m_fDevicesPsyFactor;
 
 	ref_sound				m_action_anim_sound;
 
 	CNightVisionEffector*	m_night_vision;
+
+	float					m_fJumpWeightFactor;
+	float					m_fSpeedWeightFactor;
+
+	bool					m_bQuickWeaponBlocked;
 
 DECLARE_SCRIPT_REGISTER_FUNCTION
 };

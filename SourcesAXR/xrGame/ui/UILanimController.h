@@ -115,4 +115,6 @@ public:
 	virtual void			Update							();
 	virtual void			ColorAnimationSetTextureColor	(u32 color, bool only_alpha);
 	virtual void			ColorAnimationSetTextColor		(u32 color, bool only_alpha);
+
+			pcstr			GetDebugType					() override { return "CUIColorAnimConrollerContainer"; }
 };

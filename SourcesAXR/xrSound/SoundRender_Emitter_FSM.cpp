@@ -6,23 +6,26 @@
 #include "SoundRender_Source.h"
 
 XRSOUND_API extern float psSoundCull;
+constexpr float TIME_TO_STOP_INFINITE = static_cast<float>(0xffffffff);
 
-inline u32 calc_cursor(const float& fTimeStarted, float& fTime, const float& fTimeTotal, const WAVEFORMATEX& wfx)
+inline u32 calc_cursor(const float& fTimeStarted, float& fTime, const float& fTimeTotal, const float& fFreq, const WAVEFORMATEX& wfx)
 {
 	
 	if( fTime < fTimeStarted )
 			fTime = fTimeStarted;// Андрюха посоветовал, ассерт что ниже вылетел из за паузы как то хитро
 	R_ASSERT	((fTime-fTimeStarted)>=0.0f);
-	while((fTime-fTimeStarted)>fTimeTotal) //looped
+	while((fTime-fTimeStarted)>fTimeTotal / fFreq) //looped
 	{
-		fTime -= fTimeTotal;
+		fTime -= fTimeTotal / fFreq;
 	}
-	u32 curr_sample_num = iFloor((fTime-fTimeStarted)*wfx.nSamplesPerSec);
+	u32 curr_sample_num = iFloor((fTime-fTimeStarted) * fFreq * wfx.nSamplesPerSec);
 	return				curr_sample_num * (wfx.wBitsPerSample/8) * wfx.nChannels;
 }
 
 void CSoundRender_Emitter::update(float dt)
 {
+	ZoneScoped;
+
 	float fTime			= SoundRender->fTimer_Value;
 	float fDeltaTime	= SoundRender->fTimer_Delta;
 
@@ -47,7 +50,7 @@ void CSoundRender_Emitter::update(float dt)
 	case stStarting:
 		if (iPaused)						break;
 		fTimeStarted						= fTime;
-		fTimeToStop							= fTime + (get_length_sec() / psSpeedOfSound);
+		fTimeToStop							= fTime + (get_length_sec() / p_source.freq);
 		fTimeToPropagade					= fTime;
 		fade_volume							= 1.f;
 		occluder_volume						= SoundRender->get_occlusion	(p_source.position,.2f,occluder);
@@ -71,7 +74,7 @@ void CSoundRender_Emitter::update(float dt)
 	case stStartingLooped:
 		if (iPaused)						break;
 		fTimeStarted						= fTime;
-		fTimeToStop							= 0xffffffff;
+		fTimeToStop							= TIME_TO_STOP_INFINITE;
 		fTimeToPropagade					= fTime;
 		fade_volume							= 1.f;
 		occluder_volume						= SoundRender->get_occlusion	(p_source.position,.2f,occluder);
@@ -132,6 +135,7 @@ void CSoundRender_Emitter::update(float dt)
 			u32 ptr						= calc_cursor(	fTimeStarted, 
 														fTime, 
 														get_length_sec(), 
+														p_source.freq,
 														source()->m_wformat); 
 			set_cursor					(ptr);
 
@@ -180,6 +184,7 @@ void CSoundRender_Emitter::update(float dt)
 			u32 ptr						= calc_cursor(	fTimeStarted, 
 														fTime, 
 														get_length_sec(), 
+														p_source.freq,
 														source()->m_wformat);
 			set_cursor					(ptr);
 
@@ -188,6 +193,58 @@ void CSoundRender_Emitter::update(float dt)
 		break;
 	}
 
+	//--#SM+# Begin--
+	// hard rewind
+	switch (m_current_state)
+	{
+	case stStarting:
+	case stStartingLooped:
+	case stPlaying:
+	case stSimulating:
+	case stPlayingLooped:
+	case stSimulatingLooped:
+		if (fTimeToRewind > 0.0f)
+		{
+			float fLength = get_length_sec();
+			bool bLooped = (fTimeToStop == 0xffffffff);
+
+			R_ASSERT2(fLength >= fTimeToRewind, "set_time: target time is bigger than length of sound");
+
+			float fRemainingTime = (fLength - fTimeToRewind) / p_source.freq;
+			float fPastTime = fTimeToRewind / p_source.freq;
+
+			fTimeStarted = SoundRender->fTimer_Value - fPastTime;
+			fTimeToPropagade = fTimeStarted; //--> For AI events
+
+			if (fTimeStarted < 0.0f)
+			{
+				//Log("fTimer_Value = ", SoundRender->fTimer_Value);
+				//Log("fTimeStarted = ", fTimeStarted);
+				//Log("fRemainingTime = ", fRemainingTime);
+				//Log("fPastTime = ", fPastTime);
+				R_ASSERT2(fTimeStarted >= 0.0f, "Possible error in sound rewind logic! See log.");
+
+				fTimeStarted = SoundRender->fTimer_Value;
+				fTimeToPropagade = fTimeStarted;
+			}
+
+			if (!bLooped)
+			{
+				//--> Пересчитываем время, когда звук должен остановиться [recalculate stop time]
+				fTimeToStop = SoundRender->fTimer_Value + fRemainingTime;
+			}
+
+			u32 ptr = calc_cursor(fTimeStarted, fTime, fLength, p_source.freq, source()->m_wformat);
+			set_cursor(ptr);
+
+			fTimeToRewind = 0.0f;
+		}
+	default: break;
+	}
+	//--#SM+# End--
+
+
+	// if deffered stop active and volume==0 -> physically stop sound
 	if (bStopping&&fis_zero(fade_volume)) 
 		i_stop();
 
@@ -221,7 +278,8 @@ IC void	volume_lerp(float& c, float t, float s, float dt)
 #include "..\xrServerEntities\ai_sounds.h"
 BOOL CSoundRender_Emitter::update_culling(float dt)
 {
-	
+	float fAttFactor = 1.0f; //--#SM+#--
+
 	if (b2D)
 	{
 		occluder_volume		= 1.f;
@@ -240,10 +298,23 @@ BOOL CSoundRender_Emitter::update_culling(float dt)
 		float occ			= (owner_data->g_type==SOUND_TYPE_WORLD_AMBIENT)?1.0f:SoundRender->get_occlusion	(p_source.position,.2f,occluder);
 		volume_lerp			(occluder_volume,occ,1.f,dt);
 		clamp				(occluder_volume,0.f,1.f);
+
+        // Calc linear fade --#SM+#--
+        // https://www.desmos.com/calculator/lojovfugle
+        float fMinDisDiff = dist - p_source.min_distance;
+        if (fMinDisDiff > 0.0f)
+        {
+            float fMaxDisDiff = p_source.max_distance - p_source.min_distance;
+            fAttFactor = pow(1.0f - (fMinDisDiff / fMaxDisDiff), psSoundLinearFadeFactor);
+        }
 	}
 	clamp				(fade_volume,0.f,1.f);
 	// Update smoothing
 	smooth_volume		= .9f*smooth_volume + .1f*(p_source.base_volume*p_source.volume*(owner_data->s_type==st_Effect?psSoundVEffects*psSoundVFactor:psSoundVMusic)*occluder_volume*fade_volume);
+
+    // Add linear fade --#SM+#--
+    smooth_volume *= fAttFactor;
+
 	if (smooth_volume<psSoundCull)							return FALSE;	// allow volume to go up
 	// Here we has enought "PRIORITY" to be soundable
 	// If we are playing already, return OK

@@ -186,15 +186,15 @@ void   CStateBurerAttack<Object>::execute ()
 	}
 	else 
 	{
-		Fvector	const	self2enemy			=	enemy_pos - self_pos;
-		bool  	const 	good_aiming			=	angle_between_vectors(self2enemy, object->Direction()) 
+		Fvector	const	self2enemy_			=	enemy_pos - self_pos;
+		bool  	const 	good_aiming			=	angle_between_vectors(self2enemy_, object->Direction()) 
 												< deg2rad(20.f);
 
 		select_state							(eStateBurerAttack_FaceEnemy);
 
 		if ( !good_aiming )
 		{
-			bool const rotate_right			=	object->control().direction().is_from_right(enemy_pos);
+			bool const rotate_right			=	object->control().get_direction().is_from_right(enemy_pos);
 			object->anim().set_override_animation
 												(rotate_right ? eAnimStandTurnRight : eAnimStandTurnLeft, 0);
 			object->dir().face_target			(enemy_pos);

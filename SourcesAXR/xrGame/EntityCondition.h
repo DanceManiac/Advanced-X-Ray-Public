@@ -26,6 +26,7 @@ enum EBoostParams
 	eBoostDrugsRestore,
 	eBoostNarcotismRestore,
 	eBoostWithdrawalRestore,
+	eBoostFrostbiteRestore,
 	eBoostMaxWeight,
 	eBoostRadiationProtection,
 	eBoostTelepaticProtection,
@@ -60,6 +61,7 @@ static const LPCSTR ef_boosters_section_names[] =
 	"boost_drugs_restore",
 	"boost_narcotism_restore",
 	"boost_withdrawal_restore",
+	"boost_frostbite_restore",
 	"boost_max_weight",
 	"boost_radiation_protection",
 	"boost_telepat_protection",
@@ -97,6 +99,7 @@ struct SMedicineInfluenceValues
 	float fHangover;
 	float fNarcotism;
 	float fWithdrawal;
+	float fFrostbite;
 	float fRadiation;
 	float fPsyHealth;
 	float fWoundsHeal;
@@ -156,6 +159,7 @@ public:
 	IC float				GetHangover				() const			{return m_fHangover;}
 	IC float				GetNarcotism			() const			{return m_fNarcotism;}
 	IC float				GetWithdrawal			() const			{return m_fWithdrawal;}
+	IC float				GetFrostbite			() const			{return m_fFrostbite;}
 
 	IC float 				GetEntityMorale			() const			{return m_fEntityMorale;}
 
@@ -172,6 +176,7 @@ public:
 	virtual void			ChangeNarcotism			(const float value)		{};
 	virtual void			ChangeWithdrawal		(const float value)		{};
 	virtual void 			ChangeDrugs				(const float value)		{};
+	virtual void			ChangeFrostbite			(const float value)		{};
 	void 					ChangeHealth			(const float value);
 	void 					ChangePower				(const float value);
 	void 					ChangeRadiation			(const float value);
@@ -205,6 +210,7 @@ public:
 
 	IC void 				SetCanBeHarmedState		(bool CanBeHarmed) 			{m_bCanBeHarmed = CanBeHarmed;}
 	IC bool					CanBeHarmed				() const					{return OnServer() && m_bCanBeHarmed;};
+	
 	virtual bool			ApplyInfluence			(const SMedicineInfluenceValues& V, const shared_str& sect, CEatableItem* cur_eatable);
 	virtual bool			ApplyBooster			(const SBooster& B, const shared_str& sect);
 	void					ClearWounds				();
@@ -212,6 +218,7 @@ public:
 	IC float				GetBoostRadiationImmunity() const {return m_fBoostRadiationImmunity;};
 
 	typedef					xr_map<EBoostParams, SBooster> BOOSTER_MAP;
+
 protected:
 	void					UpdateHealth			();
 	void					UpdatePower				();
@@ -230,8 +237,10 @@ protected:
 	//для подсчета состояния открытых ран,
 	//запоминается кость куда был нанесен хит
 	//и скорость потери крови из раны
+public:
 	DEFINE_VECTOR(CWound*, WOUND_VECTOR, WOUND_VECTOR_IT);
 	WOUND_VECTOR			m_WoundVector;
+protected:
 	//очистка массива ран
 	
 
@@ -249,6 +258,7 @@ protected:
 	float m_fHangover;				//Похмелье
 	float m_fNarcotism;				//Наркомания
 	float m_fWithdrawal;			//Ломка
+	float m_fFrostbite;				//Обморожение
 
 	//максимальные величины
 	//	float m_fSatietyMax;

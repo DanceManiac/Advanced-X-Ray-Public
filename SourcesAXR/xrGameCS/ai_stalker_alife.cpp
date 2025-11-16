@@ -136,7 +136,7 @@ void CAI_Stalker::choose_weapon					(ALife::EWeaponPriorityType weapon_priority_
 {
 	CTradeItem						*best_weapon	= 0;
 	float							best_value		= -1.f;
-	ai().ef_storage().non_alife().member()	= this;
+	ai().ef_storage().non_alife().get_member()	= this;
 
 	xr_vector<CTradeItem>::iterator	I = m_temp_items.begin();
 	xr_vector<CTradeItem>::iterator	E = m_temp_items.end();
@@ -196,7 +196,7 @@ void CAI_Stalker::choose_detector				()
 {
 	CTradeItem					*best_detector	= 0;
 	float						best_value		= -1.f;
-	ai().ef_storage().non_alife().member()	= this;
+	ai().ef_storage().non_alife().get_member()	= this;
 	xr_vector<CTradeItem>::iterator	I = m_temp_items.begin();
 	xr_vector<CTradeItem>::iterator	E = m_temp_items.end();
 	for ( ; I != E; ++I) {
@@ -386,20 +386,41 @@ bool CAI_Stalker::conflicted						(const CInventoryItem *item, const CWeapon *ne
 
 bool CAI_Stalker::can_take							(CInventoryItem const * item)
 {
-	const CWeapon				*new_weapon = smart_cast<const CWeapon*>(item);
-	if (!new_weapon)
-		return					(false);
+	const CWeapon* new_weapon = smart_cast<const CWeapon*>(item);
 
-	bool						new_weapon_enough_ammo = enough_ammo(new_weapon);
-	u32							new_weapon_rank = get_rank(new_weapon->cNameSect());
+	if (new_weapon)
+	{
+		bool new_weapon_enough_ammo = enough_ammo(new_weapon);
+		u32	 new_weapon_rank = get_rank(new_weapon->cNameSect());
 
-	TIItemContainer::iterator	I = inventory().m_all.begin();
-	TIItemContainer::iterator	E = inventory().m_all.end();
-	for ( ; I != E; ++I)
-		if (conflicted(*I,new_weapon,new_weapon_enough_ammo,new_weapon_rank))
-			return				(false);
+		TIItemContainer::iterator	I = inventory().m_all.begin();
+		TIItemContainer::iterator	E = inventory().m_all.end();
 
-	return						(true);
+		for (; I != E; ++I)
+		{
+			if (conflicted(*I, new_weapon, new_weapon_enough_ammo, new_weapon_rank))
+				return false;
+		}
+	}
+	else
+	{
+		if (!item || item->IsQuestItem())
+			return false;
+		else
+			return CheckCanPickedItem(item);
+	}
+
+	return true;
+}
+
+bool CAI_Stalker::CheckCanPickedItem(CInventoryItem const* item)
+{
+	if (!m_sCanPickedItemsVec.size() || std::find(m_sCanPickedItemsVec.begin(), m_sCanPickedItemsVec.end(), item->m_section_id) == m_sCanPickedItemsVec.end())
+		return false;
+	else if (item->Cost() < m_iAcceptableItemCost)
+		return false;
+
+	return true;
 }
 
 void CAI_Stalker::remove_personal_only_ammo			(const CInventoryItem *item)

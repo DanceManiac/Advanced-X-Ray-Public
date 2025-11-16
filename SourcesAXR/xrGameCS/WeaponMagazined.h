@@ -11,7 +11,6 @@ class ENGINE_API CMotionDef;
 //заканчиваем стрельбу, только, если кончились патроны
 #define WEAPON_ININITE_QUEUE -1
 
-
 class CWeaponMagazined: public CWeapon
 {
 private:
@@ -88,7 +87,11 @@ public:
 	virtual void	FireStart		();
 	virtual void	FireEnd			();
 	virtual void	Reload			();
-	
+
+	virtual void	DeviceSwitch	() override;
+protected:
+	virtual void	DeviceUpdate	() override;
+public:
 
 	virtual	void	UpdateCL		();
 	virtual void	net_Destroy		();
@@ -110,8 +113,12 @@ public:
 	virtual void	UnloadMagazine	(bool spawn_ammo = true);
 	virtual int     CheckAmmoBeforeReload(u8& v_ammoType);
 	virtual void	OnMotionMark	(u32 state, const motion_marks& M);
+			void	EngineMotionMarksUpdate(u32 state, const motion_marks& M);
 
 	virtual bool	GetBriefInfo	(II_BriefInfo& info);
+
+			bool	HaveCartridgeInInventory(u8 cnt);
+			u8		GetAvailableCartridgesToLoad(bool full_reload);
 
 public:
 	virtual bool	SwitchMode				();
@@ -146,6 +153,8 @@ protected:
 	int				m_iCurFireMode;
 	int				m_iPrefferedFireMode;
 
+	u32				m_iMagClickStartRound;
+
 	//переменная блокирует использование
 	//только разных типов патронов
 	bool m_bLockType;
@@ -176,6 +185,7 @@ protected:
 	virtual void	PlayAnimReload		();
 	virtual void	PlayAnimIdle		();
 	virtual void	PlayAnimShoot		();
+	virtual bool	PlayAnimFakeShoot	();
 	virtual void	PlayReloadSound		();
 	virtual void	PlayAnimAim			();
 	virtual void	PlayAnimBore		();
@@ -184,6 +194,8 @@ protected:
 	virtual void	PlayAnimFireMode	();
 	virtual void	PlayAnimLaserSwitch	();
 	virtual void	PlayAnimFlashlightSwitch();
+	virtual bool	PlayAnimAimEnd		();
+	virtual void	PlayAnimDeviceSwitch() override;
 
 protected:
 
@@ -208,8 +220,6 @@ protected:
 	};
 
 	Flags32 psWpnAnimsFlag;
-
-	bool WeaponSoundExist(LPCSTR section, LPCSTR sound_name, bool log = false) const;
 
 	virtual	int		ShotsFired			() { return m_iShotNum; }
 	virtual float	GetWeaponDeterioration	();

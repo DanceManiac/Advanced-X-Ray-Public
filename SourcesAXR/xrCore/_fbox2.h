@@ -22,7 +22,7 @@ public:
 	};
 
 	IC 	SelfRef	set			(const Tvector &_min, const Tvector &_max)	{ min.set(_min);	max.set(_max);	return *this;	};
-	IC	SelfRef	set			(T x1, T y1, T x2, T y2)	{ min.set(x1,y1);	max.set(x2,y2);					return *this;	};
+	IC	SelfRef	set			(T _x1, T _y1, T _x2, T _y2){ min.set(_x1,_y1);	max.set(_x2,_y2);					return *this;	};
 	IC	SelfRef	set			(SelfCRef b)				{ min.set(b.min);	max.set(b.max);					return *this;	};
 
 	IC	SelfRef	null		()							{ min.set(0.f,0.f);	max.set(0.f,0.f);				return *this;	};

@@ -2,6 +2,11 @@
 #include "uigamesp.h"
 #include "actor.h"
 #include "level.h"
+#include "../xrEngine/xr_input.h"
+
+#ifdef DEBUG
+#include "attachable_item.h"
+#endif
 
 #include "game_cl_Single.h"
 #include "xr_level_controller.h"
@@ -26,6 +31,8 @@
 #include "PDA.h"
 #include "CustomBackpack.h"
 
+#include <imgui.h>
+
 CUIGameSP::CUIGameSP()
 :m_game(NULL)
 {
@@ -39,18 +46,11 @@ CUIGameSP::~CUIGameSP()
 	delete_data(UIChangeLevelWnd);
 }
 
-void CUIGameSP::shedule_Update(u32 dt)
-{
-	inherited::shedule_Update			(dt);
-	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
-	if(!pActor)							return;
-	if(pActor->g_Alive())				return;
-
-	HideShownDialogs						();
-}
-
 void CUIGameSP::HideShownDialogs()
 {
+	HideActorMenu();
+	HidePdaMenu();
+
 	CUIDialogWnd* mir = MainInputReceiver();
 	if ( mir && mir == TalkMenu )
 	{
@@ -65,12 +65,26 @@ void CUIGameSP::SetClGame (game_cl_GameState* g)
 	R_ASSERT							(m_game);
 }
 
+void attach_adjust_mode_keyb(int dik);
+void attach_draw_adjust_mode();
+void hud_adjust_mode_keyb(int dik);
+void hud_draw_adjust_mode();
+
 
 bool CUIGameSP::IR_OnKeyboardPress(int dik) 
 {
 	if(inherited::IR_OnKeyboardPress(dik)) return true;
 
 	if( Device.Paused()		) return false;
+
+	if (Actor()->active_cam() == eacFirstEye)
+	{
+		hud_adjust_mode_keyb(dik);
+	}
+	if (Actor()->active_cam() == eacFreeLook)
+	{
+		attach_adjust_mode_keyb(dik);
+	}
 
 	CInventoryOwner* pInvOwner = smart_cast<CInventoryOwner*>( Level().CurrentEntity() );
 	if ( !pInvOwner )				return false;
@@ -81,14 +95,16 @@ bool CUIGameSP::IR_OnKeyboardPress(int dik)
 	if( !pActor ) 
 		return false;
 
-	if( !pActor->g_Alive() )	
+	if (pActor && !pActor->g_Alive())
 		return false;
+
+	auto Pda = pActor->GetPDA();
 
 	switch ( get_binded_action(dik) )
 	{
 	case kACTIVE_JOBS:
 		{
-			if (!psActorFlags.test(AF_3D_PDA))
+			if (!psActorFlags.test(AF_3D_PDA) || (psActorFlags.test(AF_3D_PDA) && Pda && !Pda->Is3DPDA()))
 			{
 				luabind::functor<bool> funct;
 				if (ai().script_engine().functor("pda.pda_use", funct))
@@ -96,13 +112,15 @@ bool CUIGameSP::IR_OnKeyboardPress(int dik)
 					if (funct())
 						ShowPdaMenu();
 				}
+				else
+					ShowPdaMenu();	// cari0us -- для совместимости с оригинальной игрой
 			}
 			break;
 		}
 	case kINVENTORY:
 		{
-		if (psActorFlags.test(AF_3D_PDA) && HUD().GetUI()->UIGame()->PdaMenu().IsShown())
-			pActor->inventory().Activate(NO_ACTIVE_SLOT);
+			if (Pda && Pda->Is3DPDA() && psActorFlags.test(AF_3D_PDA) && HUD().GetUI()->UIGame()->PdaMenu().IsShown())
+				pActor->inventory().Activate(NO_ACTIVE_SLOT);
 
 			CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(pActor->inventory().ItemFromSlot(BACKPACK_SLOT));
 
@@ -149,6 +167,13 @@ bool CUIGameSP::IR_OnKeyboardPress(int dik)
 	return false;
 }
 
+void CUIGameSP::Render()
+{
+	inherited::Render();
+	hud_draw_adjust_mode();
+	attach_draw_adjust_mode();
+}
+
 bool CUIGameSP::IR_OnKeyboardRelease(int dik) 
 {
 	if(inherited::IR_OnKeyboardRelease(dik)) return true;
@@ -186,6 +211,9 @@ void  CUIGameSP::StartUpgrade(CInventoryOwner* pActorInv, CInventoryOwner* pMech
 
 void CUIGameSP::StartTalk(bool disable_break)
 {
+	RemoveCustomStatic		("main_task");
+	RemoveCustomStatic		("secondary_task");
+
 	TalkMenu->b_disable_break = disable_break;
 	m_game->StartStopMenu(TalkMenu, true);
 }
@@ -258,6 +286,45 @@ void CUIGameSP::reset_ui()
 	inherited::reset_ui				();
 	TalkMenu->Reset					();
 	UIChangeLevelWnd->Reset			();
+}
+
+bool CUIGameSP::FillDebugTree(const CUIDebugState& debugState)
+{
+	if (!CUIGameCustom::FillDebugTree(debugState))
+		return false;
+
+	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow;
+
+	if (debugState.selected == this)
+		flags |= ImGuiTreeNodeFlags_Selected;
+
+	const bool open = ImGui::TreeNodeEx(this, flags, "Game UI (%s)", CUIGameSP::GetDebugType());
+
+	if (ImGui::IsItemClicked())
+		debugState.select(this);
+
+	if (open)
+	{
+		TalkMenu->FillDebugTree(debugState);
+		UIChangeLevelWnd->FillDebugTree(debugState);
+
+		//if (m_game_objective)
+		//	m_game_objective->wnd()->FillDebugTree(debugState);
+
+		ImGui::TreePop();
+	}
+
+	return open;
+}
+
+void CUIGameSP::FillDebugInfo()
+{
+#ifndef MASTER_GOLD
+	CUIGameCustom::FillDebugInfo();
+	if (ImGui::CollapsingHeader(CUIGameSP::GetDebugType()))
+	{
+	}
+#endif
 }
 
 CChangeLevelWnd::CChangeLevelWnd		()
@@ -335,3 +402,22 @@ void CChangeLevelWnd::Hide()
 	GAME_PAUSE								(FALSE, TRUE, TRUE, "CChangeLevelWnd_hide");
 }
 
+void CChangeLevelWnd::FillDebugInfo()
+{
+#ifndef MASTER_GOLD
+	CUIDialogWnd::FillDebugInfo();
+
+	if (ImGui::CollapsingHeader(CChangeLevelWnd::GetDebugType()))
+	{
+		ImGui::Checkbox("Level change allowed", &m_b_allow_change_level);
+		ImGui::DragScalar("Game vertex ID", ImGuiDataType_U16, &m_game_vertex_id);
+		ImGui::DragScalar("Level vertex ID", ImGuiDataType_U32, &m_level_vertex_id);
+		ImGui::DragFloat3("Position", (float*)&m_position);
+		ImGui::DragFloat3("Angles", (float*)&m_angles);
+		ImGui::Separator();
+		ImGui::Checkbox("Teleport Actor on cancel", &m_b_position_cancel);
+		ImGui::DragFloat3("Position on cancel", (float*)&m_position_cancel);
+		ImGui::DragFloat3("Angles on cancel", (float*)&m_angles_cancel);
+	}
+#endif
+}

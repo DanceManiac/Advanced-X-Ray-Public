@@ -23,7 +23,7 @@
 	>
 
 TEMPLATE_SPECIALIZATION
-IC	_associative_vector::associative_vector													(const key_compare &predicate, const allocator_type &allocator) :
+IC	_associative_vector::associative_vector													(const key_compare &predicate, const allocator_type &allocator_) :
 //	inherited			(allocator),
 	value_compare		(predicate)
 {
@@ -37,7 +37,7 @@ IC	_associative_vector::associative_vector													(const key_compare &predi
 
 TEMPLATE_SPECIALIZATION
 template <typename _iterator_type>
-IC	_associative_vector::associative_vector(_iterator_type first, _iterator_type last, const key_compare& predicate = key_compare(), const allocator_type& allocator = allocator_type()) :
+IC	_associative_vector::associative_vector													(_iterator_type first, _iterator_type last, const key_compare& predicate, const allocator_type& allocator) :
 //	inherited			(first,last,allocator),
 	inherited			(first,last),
 	value_compare		(predicate)
@@ -105,6 +105,12 @@ TEMPLATE_SPECIALIZATION
 IC	void _associative_vector::clear															()
 {
 	inherited::clear	();
+}
+
+TEMPLATE_SPECIALIZATION
+IC	void _associative_vector::reserve														(const size_t value)
+{
+	inherited::reserve(value);
 }
 
 TEMPLATE_SPECIALIZATION
@@ -198,32 +204,32 @@ TEMPLATE_SPECIALIZATION
 IC	typename _associative_vector::iterator _associative_vector::lower_bound					(const key_type &key)
 {
 	actualize			();
-	value_compare		&self = *this;
-	return				(std::lower_bound(begin(),end(),key,self));
+	value_compare		&self_ = *this;
+	return				(std::lower_bound(begin(),end(),key, self_));
 }
 
 TEMPLATE_SPECIALIZATION
 IC	typename _associative_vector::const_iterator _associative_vector::lower_bound			(const key_type &key) const
 {
 	actualize			();
-	const value_compare	&self = *this;
-	return				(std::lower_bound(begin(),end(),key,self));
+	const value_compare	&self_ = *this;
+	return				(std::lower_bound(begin(),end(),key, self_));
 }
 
 TEMPLATE_SPECIALIZATION
 IC	typename _associative_vector::iterator _associative_vector::upper_bound					(const key_type &key)
 {
 	actualize			();
-	value_compare		&self = *this;
-	return				(std::upper_bound(begin(),end(),key,self));
+	value_compare		&self_ = *this;
+	return				(std::upper_bound(begin(),end(),key, self_));
 }
 
 TEMPLATE_SPECIALIZATION
 IC	typename _associative_vector::const_iterator _associative_vector::upper_bound			(const key_type &key) const
 {
 	actualize			();
-	const value_compare	&self = *this;
-	return				(std::upper_bound(begin(),end(),key,self));
+	const value_compare	&self_ = *this;
+	return				(std::upper_bound(begin(),end(),key, self_));
 }
 
 TEMPLATE_SPECIALIZATION

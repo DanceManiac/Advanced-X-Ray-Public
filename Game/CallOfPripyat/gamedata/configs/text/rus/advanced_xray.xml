@@ -37,7 +37,7 @@
 		<text>Высокое</text>
 	</string>
 	<string id="ui_mm_bloodmarks_on_skeleton">
-		<text>Блудмарки на трупах</text>
+		<text>Блудмарки на телах</text>
 	</string>
 	<string id="ui_mm_actor_shadow">
 		<text>Тень от ГГ</text>
@@ -639,11 +639,29 @@
 	<string id="ui_mm_sss_wind_hint">
 		<text>Данная опция включает влияние ветра на траву и деревья из Screen Space Shaders 19. Если включить эту опцию, влияние ветра из Advanced X-Ray будет отключено. \n \n %c[pda_green] • Нагрузка: Низкая</text>
 	</string>
+	<string id="ui_mm_sss_puddles">
+		<text>SSS: Лужи</text>
+	</string>
+	<string id="ui_mm_sss_puddles_hint">
+		<text>Эта опция позволяет включить или отключить эффект динамических луж из Screen Space Shaders во время дождя.\n \n %c[pda_yellow] • Нагрузка: Средняя</text>
+	</string>
+	<string id="ui_mm_sss_bloom">
+		<text>SSS: Блум</text>
+	</string>
+	<string id="ui_mm_sss_bloom_hint">
+		<text>Данная опция включает эффект блума из Screen Space Shaders Update 22. Это визуальный эффект, который имитирует рассеивание света за пределами ярких объектов на экране. Это часто используется для создания более реалистичного освещения или для художественного эффекта.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_sss_bloom_mask_dirt">
+		<text>SSS: Маска грязи блума</text>
+	</string>
+	<string id="ui_mm_sss_bloom_mask_dirt_hint">
+		<text>Данная опция включает текстурный слой, который добавляет "загрязнения" или "пыль" к эффекту блума. Это создает более реалистичный или атмосферный вид. Этот эффект будет применяться только при надетом шлеме и влюченной опции динамического худа шлемов.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
 	<string id="ui_mm_enchanted_shaders">
-		<text>Enchanted Shaders</text>
+		<text>Enhanced Shaders</text>
 	</string>
 	<string id="ui_mm_enchanted_shaders_hint">
-		<text>Данная опция включает аддон Enchanted Shaders. \n \n %c[pda_yellow] • Нагрузка: Средняя</text>
+		<text>Данная опция включает аддон Enhanced Shaders. \n \n %c[pda_yellow] • Нагрузка: Средняя</text>
 	</string>
 	<string id="ui_mm_death_cam_mode">
 		<text>Камера при смерти</text>
@@ -681,11 +699,23 @@
 	<string id="ui_mm_r4_es_pseudo_pbr_hint">
 		<text>Эта опция включает реализацию псевдо PBR. Позволяет добиться красивых бликов на текстурах, но не всегда выглядит хорошо.\n \n %c[pda_yellow] • Нагрузка: Средняя</text>
 	</string>
+	<string id="ui_mm_r4_es_aces_tonemap">
+		<text>ACES Tone Mapping</text>
+	</string>
+	<string id="ui_mm_r4_es_aces_tonemap_hint">
+		<text>ACES Tonemap - метод обработки изображений, который используется для имитации того, как человеческий глаз воспринимает свет и цвета в реальном мире. Технология помогает создать более динамичный и широкий диапазон цветов, особенно в сценах с высоким контрастом, где присутствуют очень темные и очень светлые участки. Это позволяет играм выглядеть более реалистично и визуально привлекательно, улучшая общее впечатление от игры.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
 	<string id="ui_mm_fps_limit">
 		<text>Ограничитель FPS</text>
 	</string>
 	<string id="ui_mm_fps_limit_hint">
 		<text>Данная настройка позволяет ограничить максимальную частоту кадров в игре. Это позволяет более стабильно отображать игру и снижает нагрузку на оборудование и ресурсы системы, обеспечивая более плавный и комфортный игровой процесс.</text>
+	</string>
+	<string id="ui_mm_fog_clamper_max">
+		<text>Ограничитель дальности тумана</text>
+	</string>
+	<string id="ui_mm_fog_clamper_max_hint">
+		<text>Эта опция позволяет ограничить максимальную дальность тумана в погоде. Это положительно сказывается на производительности, а также позволяет скрыть края локаций, не предназначенных для такой дальности видимости.\n \n %c[pda_yellow] • Нагрузка: Средняя</text>
 	</string>
 	<string id="ui_inv_alcohol">
 		<text>Алк. опьянение</text>
@@ -767,5 +797,59 @@
 	</string>
 	<string id="st_saves_locked">
 		<text>Сохранения заблокированы</text>
+	</string>
+	<string id="ui_st_animated_backpack">
+		<text>Анимированный рюкзак</text>
+	</string>
+	<string id="ui_mm_localization">
+		<text>Язык игры|Game language</text>
+	</string>
+	<string id="cze">
+		<text>Чешский</text>
+	</string>
+	<string id="jpn">
+		<text>Японский</text>
+	</string>
+	<string id="eng">
+		<text>Английский</text>
+	</string>
+	<string id="fra">
+		<text>Французский</text>
+	</string>
+	<string id="ger">
+		<text>Немецкий</text>
+	</string>
+	<string id="ita">
+		<text>Итальянский</text>
+	</string>
+	<string id="pol">
+		<text>Польский</text>
+	</string>
+	<string id="rus">
+		<text>Русский</text>
+	</string>
+	<string id="spa">
+		<text>Испанский</text>
+	</string>
+	<string id="ukr">
+		<text>Украинский</text>
+	</string>
+	<string id="ui_inv_frostbite">
+		<text>Обморожение</text>
+	</string>
+	<string id="ui_st_currency">
+		<text>RU</text>
+	</string>
+	<string id="st_inv_box_full">
+		<text>Ящик полон</text>
+	</string>
+	<string id="st_car_trunk_full">
+		<text>Багажник полон</text>
+	</string>
+	<string id="st_degree">
+		<text>°</text>
+	</string>
+	<string id="st_materials_for_repair">
+		<text>Необходимо для ремонта:</text>
 	</string>
 </string_table>

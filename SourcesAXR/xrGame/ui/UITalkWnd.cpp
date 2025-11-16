@@ -22,13 +22,13 @@
 
 CUITalkWnd::CUITalkWnd()
 {
-	m_pActor				= NULL;
+	m_pActor				= nullptr;
 
-	m_pOurInvOwner			= NULL;
-	m_pOthersInvOwner		= NULL;
+	m_pOurInvOwner			= nullptr;
+	m_pOthersInvOwner		= nullptr;
 
-	m_pOurDialogManager		= NULL;
-	m_pOthersDialogManager	= NULL;
+	m_pOurDialogManager		= nullptr;
+	m_pOthersDialogManager	= nullptr;
 
 	ToTopicMode				();
 
@@ -63,14 +63,14 @@ void CUITalkWnd::InitTalkDialog()
 	m_pOurDialogManager = smart_cast<CPhraseDialogManager*>(m_pOurInvOwner);
 	m_pOthersDialogManager = smart_cast<CPhraseDialogManager*>(m_pOthersInvOwner);
 
-	//имена собеседников
+	//РёРјРµРЅР° СЃРѕР±РµСЃРµРґРЅРёРєРѕРІ
 	UITalkDialogWnd->UICharacterInfoLeft.InitCharacter		(m_pOurInvOwner);
 	UITalkDialogWnd->UICharacterInfoRight.InitCharacter		(m_pOthersInvOwner);
 
 //.	UITalkDialogWnd->UIDialogFrame.UITitleText.SetText		(m_pOthersInvOwner->Name());
 //.	UITalkDialogWnd->UIOurPhrasesFrame.UITitleText.SetText	(m_pOurInvOwner->Name());
 	
-	//очистить лог сообщений
+	//РѕС‡РёСЃС‚РёС‚СЊ Р»РѕРі СЃРѕРѕР±С‰РµРЅРёР№
 	UITalkDialogWnd->ClearAll();
 
 	InitOthersStartDialog					();
@@ -91,12 +91,12 @@ void CUITalkWnd::InitOthersStartDialog()
 		m_pCurrentDialog = m_pOthersDialogManager->AvailableDialogs().front();
 		m_pOthersDialogManager->InitDialog(m_pOurDialogManager, m_pCurrentDialog);
 		
-		//сказать фразу
+		//СЃРєР°Р·Р°С‚СЊ С„СЂР°Р·Сѓ
 		CStringTable stbl;
 		AddAnswer(m_pCurrentDialog->GetPhraseText("0"), m_pOthersInvOwner->Name());
 		m_pOthersDialogManager->SayPhrase(m_pCurrentDialog, "0");
 
-		//если диалог завершился, перейти в режим выбора темы
+		//РµСЃР»Рё РґРёР°Р»РѕРі Р·Р°РІРµСЂС€РёР»СЃСЏ, РїРµСЂРµР№С‚Рё РІ СЂРµР¶РёРј РІС‹Р±РѕСЂР° С‚РµРјС‹
 		if(!m_pCurrentDialog || m_pCurrentDialog->IsFinished()) ToTopicMode();
 	}
 }
@@ -110,39 +110,48 @@ void CUITalkWnd::UpdateQuestions()
 {
 	UITalkDialogWnd->ClearQuestions();
 
-	//если нет активного диалога, то
-	//режима выбора темы
+	//РµСЃР»Рё РЅРµС‚ Р°РєС‚РёРІРЅРѕРіРѕ РґРёР°Р»РѕРіР°, С‚Рѕ
+	//СЂРµР¶РёРјР° РІС‹Р±РѕСЂР° С‚РµРјС‹
 	if(!m_pCurrentDialog)
 	{
 		m_pOurDialogManager->UpdateAvailableDialogs(m_pOthersDialogManager);
 		for(u32 i=0; i< m_pOurDialogManager->AvailableDialogs().size(); ++i)
 		{
 			const DIALOG_SHARED_PTR& phrase_dialog	= m_pOurDialogManager->AvailableDialogs()[i];
-			bool bfinalizer = (phrase_dialog->GetPhrase("0"))->IsFinalizer();
 
-			AddQuestion(phrase_dialog->DialogCaption(), phrase_dialog->GetDialogID(), i, bfinalizer);
+			SPhraseInfo phInfo;
+			phInfo.bFinalizer = (phrase_dialog->GetPhrase("0"))->IsFinalizer();
+			phInfo.bUseIconLtx = (phrase_dialog->GetPhrase("0"))->GetIconUsingLTX();
+			phInfo.sIconName = (phrase_dialog->GetPhrase("0"))->GetIconName();
+
+			AddQuestion(phrase_dialog->DialogCaption(), phrase_dialog->GetDialogID(), i, phInfo);
 		}
-	}else
+	}
+	else
 	{
 		if(m_pCurrentDialog->IsWeSpeaking(m_pOurDialogManager))
 		{
-			//если в списке допустимых фраз только одна фраза пустышка, то просто
-			//сказать (игрок сам не производит никаких действий)
+			//РµСЃР»Рё РІ СЃРїРёСЃРєРµ РґРѕРїСѓСЃС‚РёРјС‹С… С„СЂР°Р· С‚РѕР»СЊРєРѕ РѕРґРЅР° С„СЂР°Р·Р° РїСѓСЃС‚С‹С€РєР°, С‚Рѕ РїСЂРѕСЃС‚Рѕ
+			//СЃРєР°Р·Р°С‚СЊ (РёРіСЂРѕРє СЃР°Рј РЅРµ РїСЂРѕРёР·РІРѕРґРёС‚ РЅРёРєР°РєРёС… РґРµР№СЃС‚РІРёР№)
 			if( !m_pCurrentDialog->PhraseList().empty() && m_pCurrentDialog->allIsDummy() ){
 				CPhrase* phrase = m_pCurrentDialog->PhraseList()[Random.randI(m_pCurrentDialog->PhraseList().size())];
 				SayPhrase(phrase->GetID());
 			};
 
-			//выбор доступных фраз из активного диалога
+			//РІС‹Р±РѕСЂ РґРѕСЃС‚СѓРїРЅС‹С… С„СЂР°Р· РёР· Р°РєС‚РёРІРЅРѕРіРѕ РґРёР°Р»РѕРіР°
 			if( m_pCurrentDialog && !m_pCurrentDialog->allIsDummy() )
 			{			
 				int number = 0;
 				for(PHRASE_VECTOR::const_iterator   it = m_pCurrentDialog->PhraseList().begin();
-					it != m_pCurrentDialog->PhraseList().end();
-					++it, ++number)
+					it != m_pCurrentDialog->PhraseList().end(); ++it, ++number)
 				{
 					CPhrase* phrase = *it;
-					AddQuestion(m_pCurrentDialog->GetPhraseText(phrase->GetID() ), phrase->GetID(), number, phrase->IsFinalizer());
+					SPhraseInfo phInfo;
+					phInfo.bFinalizer = phrase->IsFinalizer();
+					phInfo.bUseIconLtx = phrase->GetIconUsingLTX();
+					phInfo.sIconName = phrase->GetIconName();
+
+					AddQuestion(m_pCurrentDialog->GetPhraseText(phrase->GetID() ), phrase->GetID(), number, phInfo);
 				}
 			}
 			else
@@ -198,7 +207,7 @@ void UpdateCameraDirection(CGameObject* pTo)
 
 void CUITalkWnd::Update()
 {
-	//остановить разговор, если нужно
+	//РѕСЃС‚Р°РЅРѕРІРёС‚СЊ СЂР°Р·РіРѕРІРѕСЂ, РµСЃР»Рё РЅСѓР¶РЅРѕ
 	if (g_actor && m_pActor && !m_pActor->IsTalking() )
 	{
 		StopTalk();
@@ -206,7 +215,7 @@ void CUITalkWnd::Update()
 		CGameObject* pOurGO = smart_cast<CGameObject*>(m_pOurInvOwner);
 		CGameObject* pOtherGO = smart_cast<CGameObject*>(m_pOthersInvOwner);
 	
-		if(	NULL==pOurGO || NULL==pOtherGO )
+		if(	nullptr==pOurGO || nullptr==pOtherGO )
 			HideDialog();
 	}
 
@@ -251,19 +260,19 @@ void CUITalkWnd::Show(bool status)
 			if (m_pActor->IsTalking()) 
 				m_pActor->StopTalk();
 
-			m_pActor = NULL;
+			m_pActor = nullptr;
 		}
 	}
 }
 
 bool  CUITalkWnd::TopicMode			() 
 {
-	return NULL == m_pCurrentDialog.get();
+	return nullptr == m_pCurrentDialog.get();
 }
 
 void  CUITalkWnd::ToTopicMode		() 
 {
-	m_pCurrentDialog = DIALOG_SHARED_PTR((CPhraseDialog*)NULL);
+	m_pCurrentDialog = DIALOG_SHARED_PTR((CPhraseDialog*)nullptr);
 }
 
 void CUITalkWnd::AskQuestion()
@@ -271,7 +280,7 @@ void CUITalkWnd::AskQuestion()
 	if(m_bNeedToUpdateQuestions) return;//quick dblclick:(
 	shared_str					phrase_id;
 
-	//игрок выбрал тему разговора
+	//РёРіСЂРѕРє РІС‹Р±СЂР°Р» С‚РµРјСѓ СЂР°Р·РіРѕРІРѕСЂР°
 	if(TopicMode())
 	{
 		if ( (UITalkDialogWnd->m_ClickedQuestionID =="") ||
@@ -302,21 +311,21 @@ void CUITalkWnd::SayPhrase(const shared_str& phrase_id)
 
 	AddAnswer(m_pCurrentDialog->GetPhraseText(phrase_id), m_pOurInvOwner->Name());
 	m_pOurDialogManager->SayPhrase(m_pCurrentDialog, phrase_id);
-	//если диалог завершился, перейти в режим выбора темы
+	//РµСЃР»Рё РґРёР°Р»РѕРі Р·Р°РІРµСЂС€РёР»СЃСЏ, РїРµСЂРµР№С‚Рё РІ СЂРµР¶РёРј РІС‹Р±РѕСЂР° С‚РµРјС‹
 	if(m_pCurrentDialog->IsFinished()) ToTopicMode();
 }
 
-void CUITalkWnd::AddQuestion(const shared_str& text, const shared_str& value, int number, bool b_finalizer)
+void CUITalkWnd::AddQuestion(const shared_str& text, const shared_str& value, int number, SPhraseInfo phInfo)
 {
 	if(text.size() == 0)
 		return;
 
-	UITalkDialogWnd->AddQuestion(CStringTable().translate(text).c_str(), value.c_str(), number, b_finalizer);
+	UITalkDialogWnd->AddQuestion(CStringTable().translate(text).c_str(), value.c_str(), number, phInfo);
 }
 
 void CUITalkWnd::AddAnswer(const shared_str& text, LPCSTR SpeakerName)
 {
-	//для пустой фразы вообще ничего не выводим
+	//РґР»СЏ РїСѓСЃС‚РѕР№ С„СЂР°Р·С‹ РІРѕРѕР±С‰Рµ РЅРёС‡РµРіРѕ РЅРµ РІС‹РІРѕРґРёРј
 	if(text.size() == 0)
 	{
 		return;

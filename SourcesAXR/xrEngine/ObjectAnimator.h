@@ -41,7 +41,7 @@ public:
     IC const Fmatrix&	XFORM			(){return m_XFORM;}
 	float				GetLength		();
 	// Update
-	void				Update			(float dt);
+	void				Update			(float dt, float m_fFactorMod = 1.0f);
     void				DrawPath		();
 };
 

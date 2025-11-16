@@ -10,9 +10,12 @@
 #include "../xrEngine/FDemoRecord.h"
 #include "ui_base.h"
 #include "debug_renderer.h"
+#include "Weapon.h"
+#include "Actor.h"
+#include "Inventory.h"
 
 int hud_adj_mode		= 0;
-u32 hud_adj_item_idx	= 0;
+int hud_adj_item_idx	= 0;
 // "press SHIFT+NUM 0-return 1-hud_pos 2-hud_rot 3-itm_pos 4-itm_rot 5-fire_point 6-fire_2_point 7-shell_point";
 
 extern ENGINE_API float hud_adj_delta_pos, hud_adj_delta_rot;
@@ -424,12 +427,28 @@ void player_hud::SaveCfg(const int idx) const
 			hi->m_measures.m_hands_offset[0][1].y,
 			hi->m_measures.m_hands_offset[0][1].z)
 		.c_str());
+
 	pHudCfg.w_string(sect_name,
 		"aim_alt_hud_offset_rot_16x9",
 		make_string("%f,%f,%f",
 			hi->m_measures.m_hands_offset[1][1].x,
 			hi->m_measures.m_hands_offset[1][1].y,
 			hi->m_measures.m_hands_offset[1][1].z)
+		.c_str());
+
+	pHudCfg.w_string(sect_name,
+		"hud_collision_offset_pos_16x9",
+		make_string("%f,%f,%f",
+			hi->m_measures.m_collision_offset[0].x,
+			hi->m_measures.m_collision_offset[0].y,
+			hi->m_measures.m_collision_offset[0].z)
+		.c_str());
+	pHudCfg.w_string(sect_name,
+		"hud_collision_offset_rot_16x9",
+		make_string("%f,%f,%f",
+			hi->m_measures.m_collision_offset[1].x,
+			hi->m_measures.m_collision_offset[1].y,
+			hi->m_measures.m_collision_offset[1].z)
 		.c_str());
 
 	pHudCfg.w_string(sect_name,
@@ -468,7 +487,94 @@ void player_hud::SaveCfg(const int idx) const
 		make_string("%f,%f,%f", hi->m_measures.m_shell_point_offset.x, hi->m_measures.m_shell_point_offset.y, hi->m_measures.m_shell_point_offset.z)
 		.c_str());
 
+	auto Wpn = smart_cast<CWeapon*>(Actor()->inventory().ActiveItem());
+
+	if (Wpn)
+	{
+		const char* wpn_sect_name = Wpn->m_section_id.c_str();
+
+		string_path fname_main;
+		FS.update_path(fname_main, "$app_data_root$", make_string("HudEditor\\%s.ltx", wpn_sect_name).c_str());
+
+		CInifile pWpnCfg(fname_main, false, false, true);
+
+		if (Wpn->LaserAttachable())
+		{
+			pWpnCfg.w_string(wpn_sect_name,
+				"laserdot_attach_offset",
+				make_string("%f,%f,%f", Wpn->laserdot_attach_offset.x, Wpn->laserdot_attach_offset.y, Wpn->laserdot_attach_offset.z)
+				.c_str());
+
+			pWpnCfg.w_string(wpn_sect_name,
+				"laserdot_attach_rot",
+				make_string("%f,%f,%f", Wpn->laserdot_attach_rot.x, Wpn->laserdot_attach_rot.y, Wpn->laserdot_attach_rot.z)
+				.c_str());
+		}
+
+		if (Wpn->TacticalTorchAttachable())
+		{
+			pWpnCfg.w_string(wpn_sect_name,
+				"torch_attach_offset",
+				make_string("%f,%f,%f", Wpn->flashlight_attach_offset.x, Wpn->flashlight_attach_offset.y, Wpn->flashlight_attach_offset.z)
+				.c_str());
+
+			pWpnCfg.w_string(wpn_sect_name,
+				"torch_omni_attach_offset",
+				make_string("%f,%f,%f", Wpn->flashlight_omni_attach_offset.x, Wpn->flashlight_omni_attach_offset.y, Wpn->flashlight_omni_attach_offset.z)
+				.c_str());
+
+			pWpnCfg.w_string(wpn_sect_name,
+				"torch_attach_rot",
+				make_string("%f,%f,%f", Wpn->flashlight_attach_rot.x, Wpn->flashlight_attach_rot.y, Wpn->flashlight_attach_rot.z)
+				.c_str());
+		}
+
+		if (Wpn->m_weapon_attaches.size())
+			SaveAttachesCfg(Wpn->cNameSect().c_str(), Wpn);
+	}
+
 	//-----------------//
 	Msg("[%s] HUD data saved to %s", __FUNCTION__, fname);
 	Sleep(250);
+}
+
+void player_hud::SaveAttachesCfg(LPCSTR parent_section, CWeapon* parent_wpn) const
+{
+	string_path fname;
+
+	string256 parent_section_attaches_fname;
+	strconcat(sizeof(parent_section_attaches_fname), parent_section_attaches_fname, parent_section, "_attaches");
+
+	FS.update_path(fname, "$app_data_root$", make_string("HudEditor\\%s\\%s.ltx", parent_section, parent_section_attaches_fname).c_str());
+
+	CInifile pAttachesCfg(fname, false, true, true);
+
+	for (int i = 0; i < parent_wpn->m_weapon_attaches.size(); i++)
+	{
+		auto mesh = parent_wpn->m_weapon_attaches[i];
+
+		LPCSTR section_to_w = mesh->m_section.c_str();
+
+		pAttachesCfg.w_string(section_to_w,
+			"hud_attach_offset",
+			make_string("%f,%f,%f", mesh->hud_attach_pos[0].x, mesh->hud_attach_pos[0].y, mesh->hud_attach_pos[0].z)
+			.c_str());
+
+		pAttachesCfg.w_string(section_to_w,
+			"hud_attach_rotation",
+			make_string("%f,%f,%f", mesh->hud_attach_pos[1].x, mesh->hud_attach_pos[1].y, mesh->hud_attach_pos[1].z)
+			.c_str());
+
+		pAttachesCfg.w_string(section_to_w,
+			"world_attach_offset",
+			make_string("%f,%f,%f", mesh->hud_attach_pos[0].x, mesh->hud_attach_pos[0].y, mesh->hud_attach_pos[0].z)
+			.c_str());
+
+		pAttachesCfg.w_string(section_to_w,
+			"world_attach_rotation",
+			make_string("%f,%f,%f", mesh->hud_attach_pos[1].x, mesh->hud_attach_pos[1].y, mesh->hud_attach_pos[1].z)
+			.c_str());
+	}
+
+	Msg("[%s] Weapon attaches data saved to %s", __FUNCTION__, fname);
 }

@@ -56,7 +56,7 @@ void CBaseMonster::feel_sound_new(CObject* who, int eType, CSound_UserDataPtr us
 		return;
 	}
 	
-	if ((eType & SOUND_TYPE_WEAPON_SHOOTING) == SOUND_TYPE_WEAPON_SHOOTING) power = 1.f;
+	//if ((eType & SOUND_TYPE_WEAPON_SHOOTING) == SOUND_TYPE_WEAPON_SHOOTING) power = 1.f;
 
 	if (((eType & SOUND_TYPE_WEAPON_BULLET_HIT) == SOUND_TYPE_WEAPON_BULLET_HIT) && (dist < 2.f)) 
 		HitMemory.add_hit(who,eSideFront);
@@ -73,12 +73,17 @@ void CBaseMonster::feel_sound_new(CObject* who, int eType, CSound_UserDataPtr us
 
 void CBaseMonster::HitEntity(const CEntity *pEntity, float fDamage, float impulse, Fvector &dir, ALife::EHitType hit_type, bool draw_hit_marks)
 {
-	if (!g_Alive()) return;
-	if (!pEntity || pEntity->getDestroy()) return;
+	if (!g_Alive())
+		return;
 
-	if (!EnemyMan.get_enemy()) return;
+	if (!pEntity || pEntity->getDestroy())
+		return;
 
-	if (EnemyMan.get_enemy() == pEntity) {
+	if (!EnemyMan.get_enemy())
+		return;
+
+	if (EnemyMan.get_enemy() == pEntity)
+	{
 		Fvector position_in_bone_space;
 		position_in_bone_space.set(0.f,0.f,0.f);
 
@@ -104,21 +109,25 @@ void CBaseMonster::HitEntity(const CEntity *pEntity, float fDamage, float impuls
 		HS.Write_Packet(l_P);
 		u_EventSend	(l_P);
 		
-		if (pEntityNC == Actor() && draw_hit_marks) {
+		if (pEntityNC == Actor() && draw_hit_marks)
+		{
 			START_PROFILE("BaseMonster/Animation/HitEntity");
 
-			SDrawStaticStruct* s = CurrentGameUI()->AddCustomStatic("monster_claws", false);
-			
-			float h1,p1;
-			Device.vCameraDirection.getHP	(h1,p1);
-			Fvector hd				= hit_dir;
-			hd.mul					(-1);
-			float d = -h1 + hd.getH	();
-			s->wnd()->SetHeading	(d);
-			Fvector2 wnd_pos = s->wnd()->GetWndPos();
-			wnd_pos.y	+= 400.0f*_cos(d);
-			wnd_pos.x	+= 500.0f*_sin(d);
-			s->wnd()->SetWndPos(wnd_pos);
+			if (psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT))
+			{
+				SDrawStaticStruct* s = CurrentGameUI()->AddCustomStatic("monster_claws", false);
+
+				float h1, p1;
+				Device.vCameraDirection.getHP(h1, p1);
+				Fvector hd = hit_dir;
+				hd.mul(-1);
+				float d = -h1 + hd.getH();
+				s->wnd()->SetHeading(d);
+				Fvector2 wnd_pos = s->wnd()->GetWndPos();
+				wnd_pos.y += 400.0f * _cos(d);
+				wnd_pos.x += 500.0f * _sin(d);
+				s->wnd()->SetWndPos(wnd_pos);
+			}
 
 			STOP_PROFILE;
 
@@ -224,7 +233,7 @@ void CBaseMonster::HitSignal(float amount, Fvector& vLocalDir, CObject* who, s16
 	if (!g_Alive()) return;
 	
 	feel_sound_new(who,SOUND_TYPE_WEAPON_SHOOTING,0,who->Position(),1.f);
-	if (g_Alive()) sound().play(MonsterSound::eMonsterSoundTakeDamage);
+	if (g_Alive()) get_sound().play(MonsterSound::eMonsterSoundTakeDamage);
 
 	if (element < 0) return;
 

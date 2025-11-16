@@ -26,7 +26,7 @@ void CStalkerAnimationManager::global_play_callback			(CBlend *blend)
 	CAI_Stalker					*object = (CAI_Stalker*)blend->CallbackParam;
 	VERIFY						(object);
 
-	CStalkerAnimationManager	&manager = object->animation();
+	CStalkerAnimationManager	&manager = object->get_animation();
 	CStalkerAnimationPair		&pair = manager.global();
 	pair.on_animation_end		();
 
@@ -81,15 +81,15 @@ MotionID CStalkerAnimationManager::assign_global_animation	(bool &animation_move
 
 	animation_movement_controller	= false;
 
-	if (eMentalStatePanic != object().movement().mental_state())
+	if (eMentalStatePanic != object().get_movement().mental_state())
 		return					(global_critical_hit());
 
-	if (fis_zero(object().movement().speed(object().character_physics_support()->movement())))
+	if (fis_zero(object().get_movement().speed(object().character_physics_support()->get_movement())))
 		return					(MotionID());
 
 	//Alun: Fix stalker sprint
 	EBodyState b_state = body_state();
-	if (eMovementTypeRun == object().movement().movement_type() && b_state == eBodyStateStand)
+	if (eMovementTypeRun == object().get_movement().movement_type() && b_state == eBodyStateStand)
 		return (MotionID());
 
 	return global().select(m_data_storage->m_part_animations.A[b_state].m_global.A[1].A);

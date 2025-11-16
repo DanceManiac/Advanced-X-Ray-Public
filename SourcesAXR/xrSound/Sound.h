@@ -42,6 +42,8 @@ XRSOUND_API extern float			psSoundSpeed			;
 XRSOUND_API extern int				psSoundPrecacheAll		;
 XRSOUND_API extern bool				bAutoSndTargets			;
 XRSOUND_API extern float			psSpeedOfSound			;
+XRSOUND_API extern float			psSoundTimeFactor		;	//--#SM+#-- 
+XRSOUND_API extern float			psSoundLinearFadeFactor	;	//--#SM+#--
 
 // Flags
 enum {
@@ -142,6 +144,7 @@ public:
 	IC void					set_range				( float min, float max );
 	IC void					set_volume				( float vol );
 	IC void					set_priority			( float vol );
+	IC void					set_time				( float t ); //--#SM+#--
 
 	IC const CSound_params*	get_params				( );
     IC void					set_params				( CSound_params* p );
@@ -157,6 +160,7 @@ public:
 	virtual LPCSTR			file_name				( ) const			= 0;
 	virtual u16				channels_num			( ) const			= 0;
 	virtual u32				bytes_total				( ) const			= 0;
+	inline  u32				length_ms				( )	const			{ return static_cast<u32>(length_sec() * 1000); }
 };
 
 /// definition (Sound Source)
@@ -233,6 +237,7 @@ public:
 	virtual void					set_range				(float min, float max)										= 0;
 	virtual void					set_volume				(float vol)													= 0;
 	virtual void					set_priority			(float vol)													= 0;
+	virtual void					set_time				(float t) = 0; //--#SM+#--
 	virtual void					stop					(BOOL bDeffered)											= 0;
 	virtual	const CSound_params*	get_params				( )															= 0;
 	virtual u32						play_time				( )															= 0;
@@ -337,7 +342,7 @@ class  CSound_manager_interface;
 extern XRSOUND_API CSound_manager_interface*		Sound;
 
 /// ********* Sound ********* (utils, accessors, helpers)
-IC ref_sound_data::ref_sound_data				()																{	handle=0;feedback=0;g_type=0;g_object=0;s_type=st_Effect;			}
+IC ref_sound_data::ref_sound_data				()																{	handle=0;feedback=0;g_type=0;g_object=0;s_type=st_Effect;dwBytesTotal=0;fTimeTotal=0.0f;			}
 IC ref_sound_data::ref_sound_data				( LPCSTR fName, esound_type sound_type, int	game_type )	{	::Sound->_create_data			(*this,fName, sound_type, game_type);							}
 IC ref_sound_data::~ref_sound_data				()																{	::Sound->_destroy_data			(*this);																}
 
@@ -354,6 +359,12 @@ IC void	ref_sound::set_frequency				( float freq)											{	VERIFY(!::Sound->i
 IC void	ref_sound::set_range					( float min, float max )								{	VERIFY(!::Sound->i_locked()); 	if (_feedback())	_feedback()->set_range(min,max);							}
 IC void	ref_sound::set_volume					( float vol )											{	VERIFY(!::Sound->i_locked()); 	if (_feedback())	_feedback()->set_volume(vol);								}
 IC void	ref_sound::set_priority					( float p )												{	VERIFY(!::Sound->i_locked()); 	if (_feedback())	_feedback()->set_priority(p);								}
+IC void ref_sound::set_time						( float t )
+{
+	VERIFY(!::Sound->i_locked());
+	if (_feedback())
+		_feedback()->set_time(t);
+}
 IC void	ref_sound::stop							( )														{	VERIFY(!::Sound->i_locked()); 	if (_feedback())	_feedback()->stop(FALSE);									}
 IC void	ref_sound::stop_deffered				( )														{	VERIFY(!::Sound->i_locked()); 	if (_feedback())	_feedback()->stop(TRUE);									}
 IC const CSound_params*	ref_sound::get_params	( )														{	VERIFY(!::Sound->i_locked()); 	if (_feedback())	return _feedback()->get_params(); else return NULL;			}

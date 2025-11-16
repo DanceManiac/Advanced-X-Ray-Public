@@ -51,19 +51,6 @@ xr_string to_string(const luabind::object& o, xr_string offset)
     return s;
 }
 
-xr_string toUtf8(const char* s)
-{
-    static xr_vector<wchar_t> buf;
-    int n = MultiByteToWideChar(CP_ACP, 0, s, -1, nullptr, 0);
-    buf.resize(n);
-    MultiByteToWideChar(CP_ACP, 0, s, -1, &buf[0], buf.size());
-    xr_string result;
-    n = WideCharToMultiByte(CP_UTF8, 0, &buf[0], buf.size(), nullptr, 0, nullptr, nullptr);
-    result.resize(n);
-    n = WideCharToMultiByte(CP_UTF8, 0, &buf[0], buf.size(), &result[0], result.size(), nullptr, nullptr);
-    return result;
-} 
-
 bool ImGui_ListBox(const char* label, int* current_item, bool(*items_getter)(void*, int, const char**), void* data,
 	int items_count, const ImVec2& size_arg = ImVec2(0, 0))
 {
@@ -93,4 +80,41 @@ bool ImGui_ListBox(const char* label, int* current_item, bool(*items_getter)(voi
 		}
 	ImGui::ListBoxFooter();
 	return value_changed;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// from https://www.strchr.com/natural_sorting
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+int count_digits(const char* s)
+{
+    const char* p = s;
+    while (isdigit(*p))
+        p++;
+    return (int)(p - s);
+}
+
+int compare_naturally(const void* a_ptr, const void* b_ptr)
+{
+    const char* a = (const char*)a_ptr;
+    const char* b = (const char*)b_ptr;
+
+    for (;;) {
+        if (isdigit(*a) && isdigit(*b)) {
+            int a_count = count_digits(a);
+            int diff = a_count - count_digits(b);
+            if (diff)
+                return diff;
+            diff = memcmp(a, b, a_count);
+            if (diff)
+                return diff;
+            a += a_count;
+            b += a_count;
+        }
+        if (*a != *b)
+            return *a - *b;
+        if (*a == '\0')
+            return 0;
+        a++, b++;
+    }
 }

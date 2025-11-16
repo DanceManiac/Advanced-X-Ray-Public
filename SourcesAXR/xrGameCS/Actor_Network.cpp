@@ -115,7 +115,7 @@ void CActor::net_Export	(NET_Packet& P)					// export to server
 	u16 ms	= (u16)(mstate_real & 0x0000ffff);
 	P.w_u16				(u16(ms));
 	P.w_sdir			(NET_SavedAccel);
-	Fvector				v = character_physics_support()->movement()->GetVelocity();
+	Fvector				v = character_physics_support()->get_movement()->GetVelocity();
 	P.w_sdir			(v);//m_PhysicMovementControl.GetVelocity());
 //	P.w_float_q16		(fArmor,-500,1000);
 	P.w_float			(g_Radiation());
@@ -403,7 +403,7 @@ void	CActor::net_Import_Base_proceed		( )
 {
 	if (g_Alive())
 	{
-		setVisible				((BOOL)!HUDview	());
+		setVisible				(TRUE);
 		setEnabled				(TRUE);
 	};
 	//---------------------------------------------
@@ -566,12 +566,12 @@ BOOL CActor::net_Spawn		(CSE_Abstract* DC)
 	m_pPhysics_support->in_NetSpawn	(e);
 
 	//set_state_box( mstate_real );
-	//character_physics_support()->movement()->ActivateBox	(0);
+	//character_physics_support()->get_movement()->ActivateBox	(0);
 	if(E->m_holderID!=u16(-1))
 	{ 
-		character_physics_support()->movement()->DestroyCharacter();
+		character_physics_support()->get_movement()->DestroyCharacter();
 	}
-	if(m_bOutBorder)character_physics_support()->movement()->setOutBorder();
+	if(m_bOutBorder)character_physics_support()->get_movement()->setOutBorder();
 	r_torso_tgt_roll		= 0;
 
 	r_model_yaw				= E->o_torso.yaw;
@@ -679,8 +679,7 @@ BOOL CActor::net_Spawn		(CSE_Abstract* DC)
 	callback.bind	(this,&CActor::on_requested_spawn);
 	m_holder_id				= E->m_holderID;
 	if (E->m_holderID != ALife::_OBJECT_ID(-1))
-		if(!g_dedicated_server)
-			Level().client_spawn_manager().add(E->m_holderID,ID(),callback);
+		Level().client_spawn_manager().add(E->m_holderID,ID(),callback);
 	//F
 	//-------------------------------------------------------------
 	m_iLastHitterID = u16(-1);
@@ -719,18 +718,16 @@ void CActor::net_Destroy	()
 	inherited::net_Destroy	();
 
 	if (m_holder_id != ALife::_OBJECT_ID(-1))
-		if(!g_dedicated_server)
-			Level().client_spawn_manager().remove	(m_holder_id,ID());
+		Level().client_spawn_manager().remove	(m_holder_id,ID());
 
 	delete_data				(m_statistic_manager);
 	
-	if(!g_dedicated_server)
-		Level().MapManager		().OnObjectDestroyNotify(ID());
+	Level().MapManager		().OnObjectDestroyNotify(ID());
 
 #pragma todo("Dima to MadMax : do not comment inventory owner net_Destroy!!!")
 	CInventoryOwner::net_Destroy();
 	cam_UnsetLadder();	
-	character_physics_support()->movement()->DestroyCharacter();
+	character_physics_support()->get_movement()->DestroyCharacter();
 	if(m_pPhysicsShell)			{
 		m_pPhysicsShell->Deactivate();
 		xr_delete<CPhysicsShell>(m_pPhysicsShell);
@@ -792,8 +789,7 @@ void CActor::net_Relcase	(CObject* O)
 	}
 	inherited::net_Relcase	(O);
 
-	if (!g_dedicated_server)
-		memory().remove_links(O);
+	get_memory().remove_links(O);
 
 	m_pPhysics_support->in_NetRelcase(O);
 
@@ -937,7 +933,7 @@ void CActor::PH_B_CrPr		()	// actions & operations before physic correction-pred
 			///////////////////////////////////////////////
 			InterpData* pIStart = &IStart;			
 			pIStart->Pos				= Position();
-			pIStart->Vel				= character_physics_support()->movement()->GetVelocity();
+			pIStart->Vel				= character_physics_support()->get_movement()->GetVelocity();
 			pIStart->o_model			= angle_normalize(r_model_yaw);
 			pIStart->o_torso.yaw		= angle_normalize(unaffected_r_torso.yaw);
 			pIStart->o_torso.pitch		= angle_normalize(unaffected_r_torso.pitch);
@@ -1290,8 +1286,8 @@ void CActor::make_Interpolation	()
 					R_ASSERT2(0, "Unknown interpolation curve type!");
 				}
 			}
-			character_physics_support()->movement()->SetPosition	(ResPosition);
-			character_physics_support()->movement()->SetVelocity	(SpeedVector);
+			character_physics_support()->get_movement()->SetPosition	(ResPosition);
+			character_physics_support()->get_movement()->SetVelocity	(SpeedVector);
 			cam_Active()->Set		(-unaffected_r_torso.yaw,unaffected_r_torso.pitch, 0);//, unaffected_r_torso.roll);
 		};
 	}
@@ -1369,6 +1365,11 @@ void CActor::save(NET_Packet &output_packet)
 
 	output_packet.w_u8(cam_active);
 	output_packet.w_u8(u8(m_bOutBorder));
+
+	output_packet.w_stringZ(g_quick_use_slots[0]);
+	output_packet.w_stringZ(g_quick_use_slots[1]);
+	output_packet.w_stringZ(g_quick_use_slots[2]);
+	output_packet.w_stringZ(g_quick_use_slots[3]);
 }
 
 void CActor::load(IReader &input_packet)
@@ -1387,6 +1388,11 @@ void CActor::load(IReader &input_packet)
 	cam_Set(EActorCameras(input_packet.r_u8()));
 
 	m_bOutBorder=!!(input_packet.r_u8());
+
+	input_packet.r_stringZ(g_quick_use_slots[0], sizeof(g_quick_use_slots[0]));
+	input_packet.r_stringZ(g_quick_use_slots[1], sizeof(g_quick_use_slots[1]));
+	input_packet.r_stringZ(g_quick_use_slots[2], sizeof(g_quick_use_slots[2]));
+	input_packet.r_stringZ(g_quick_use_slots[3], sizeof(g_quick_use_slots[3]));
 }
 
 #ifdef DEBUG
@@ -1529,7 +1535,7 @@ void	CActor::OnRender_Network()
 
 		if (!(dbg_net_Draw_Flags.is_any(dbg_draw_actor_dead))) return;
 		
-		dbg_draw_piramid(Position(), character_physics_support()->movement()->GetVelocity(), size, -r_model_yaw, color_rgba(128, 255, 128, 255));
+		dbg_draw_piramid(Position(), character_physics_support()->get_movement()->GetVelocity(), size, -r_model_yaw, color_rgba(128, 255, 128, 255));
 		dbg_draw_piramid(IStart.Pos, IStart.Vel, size, -IStart.o_model, color_rgba(255, 0, 0, 255));
 //		Fvector tmp, tmp1; tmp1.set(0, .1f, 0);
 //		dbg_draw_piramid(tmp.add(IStartT.Pos, tmp1), IStartT.Vel, size, -IStartT.o_model, color_rgba(155, 0, 0, 155));

@@ -163,6 +163,8 @@ void msParse			(LPCSTR c)
 
 void	CEventAPI::OnFrame	()
 {
+	ZoneScoped;
+
 #ifdef DEBUG
 	msRead		();
 #endif

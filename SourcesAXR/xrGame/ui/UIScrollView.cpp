@@ -4,7 +4,10 @@
 #include "UIFixedScrollBar.h"
 #include "../ui_base.h"
 #include "../UICursor.h"
-#include "../../xrEngine/xr_input.h"	
+#include "../../xrEngine/xr_input.h"
+#include "../AdvancedXrayGameConstants.h"
+
+#include <imgui.h>
 
 CUIScrollView::CUIScrollView()
 {
@@ -17,7 +20,7 @@ CUIScrollView::CUIScrollView()
 	SetFixedScrollBar	(true);
 	m_pad				= NULL;
 	m_VScrollBar		= NULL;
-	m_visible_rgn.set	(-1,-1);
+	//m_visible_rgn.set	(-1,-1);
 }
 CUIScrollView::CUIScrollView(CUIFixedScrollBar* scroll_bar)
 {
@@ -29,7 +32,7 @@ CUIScrollView::CUIScrollView(CUIFixedScrollBar* scroll_bar)
 	m_flags.zero		();
 	SetFixedScrollBar	(true);
 	m_pad				= NULL;
-	m_visible_rgn.set	(-1,-1);
+	//m_visible_rgn.set	(-1,-1);
 
 	m_VScrollBar = scroll_bar;
 	m_VScrollBar->SetAutoDelete(true);
@@ -53,6 +56,15 @@ void CUIScrollView::SendMessage	(CUIWindow* pWnd, s16 msg, void* pData)
 void CUIScrollView::ForceUpdate()
 {
 	m_flags.set			(eNeedRecalc,TRUE);
+}
+
+void CUIScrollView::ForceScrollPosition()
+{
+	if (m_flags.test(eNeedRecalc))
+		RecalcSize();
+
+	const Fvector2 w_pos = { m_pad->GetWndPos().x, m_targetScrollPosition };
+	m_pad->SetWndPos(w_pos);
 }
 
 void CUIScrollView::InitScrollView()
@@ -126,6 +138,12 @@ void CUIScrollView::Update				()
 	if(m_flags.test	(eNeedRecalc) )
 		RecalcSize			();
 
+	if (GameConstants::GetSmoothScrollEnabled())
+	{
+		const Fvector2 w_pos = { m_pad->GetWndPos().x, m_targetScrollPosition * 0.25 + m_pad->GetWndPos().y * 0.75 };
+		m_pad->SetWndPos(w_pos);
+	}
+	
 	inherited::Update();
 }
 
@@ -150,6 +168,7 @@ void CUIScrollView::RecalcSize			()
 		for(WINDOW_LIST::reverse_iterator it = m_pad->GetChildWndList().rbegin(); m_pad->GetChildWndList().rend() != it; ++it)
 		{
 			(*it)->SetWndPos		(item_pos);
+			if (!(*it)->GetVisible()) continue;
 			item_pos.y				+= (*it)->GetWndSize().y;
 			item_pos.y				+= m_vertInterval; 
 			pad_size.y				+= (*it)->GetWndSize().y;
@@ -161,6 +180,7 @@ void CUIScrollView::RecalcSize			()
 		for(WINDOW_LIST_it it = m_pad->GetChildWndList().begin(); m_pad->GetChildWndList().end() != it; ++it)
 		{
 			(*it)->SetWndPos		(item_pos);
+			if (!(*it)->GetVisible()) continue;
 			item_pos.y				+= (*it)->GetWndSize().y;
 			item_pos.y				+= m_vertInterval; 
 			pad_size.y				+= (*it)->GetWndSize().y;
@@ -173,12 +193,16 @@ void CUIScrollView::RecalcSize			()
 
 
 	if(m_flags.test(eInverseDir) )
-		m_pad->SetWndPos		(Fvector2().set(m_pad->GetWndPos().x, GetHeight()-m_pad->GetHeight()));
-
-	UpdateScroll				();
+	{
+		if (GameConstants::GetSmoothScrollEnabled())
+			m_targetScrollPosition = GetHeight() - m_pad->GetHeight();
+		else
+			m_pad->SetWndPos(Fvector2().set(m_pad->GetWndPos().x, GetHeight() - m_pad->GetHeight()));
+	}
+	UpdateScroll();
 
 	m_flags.set					(eNeedRecalc,FALSE);
-	m_visible_rgn.set			(-1,-1);
+	//m_visible_rgn.set			(-1,-1);
 }
 
 void CUIScrollView::UpdateScroll		()
@@ -212,39 +236,28 @@ void CUIScrollView::Draw				()
 	visible_rect.top					+= m_upIndent;
 	visible_rect.bottom					-= m_downIndent;
 	UI().PushScissor					(visible_rect);
+	bool bDone = false;
 
 	WINDOW_LIST_it it					= m_pad->GetChildWndList().begin();
-//	WINDOW_LIST_it it_e					= m_pad->GetChildWndList().end();
-	
-	if(!Empty() && m_visible_rgn.x!=-1)
-	{
-		std::advance					(it,m_visible_rgn.x);
-		for(int idx=m_visible_rgn.x; idx<=m_visible_rgn.y; ++it,++idx)
-		{
-			CUIScrollView* sw			= smart_cast<CUIScrollView*>(*it);
-			VERIFY						(sw==NULL);
+	WINDOW_LIST_it it_e					= m_pad->GetChildWndList().end();
 
-			if ((*it)->GetVisible())
-                (*it)->Draw();
-		}
-	}else
-	for(int idx=0; it!=m_pad->GetChildWndList().end(); ++it,++idx)
+	for (it; it_e != it; ++it)
 	{
+		if (!(*it)->GetVisible())
+			continue;
+
 		Frect							item_rect;
 		(*it)->GetAbsoluteRect			(item_rect);
 		if(visible_rect.intersected(item_rect))
 		{
-			if(m_visible_rgn.x == -1) //first visible
-				m_visible_rgn.x			= idx;
-
-			m_visible_rgn.y				= idx;
-
-			if ((*it)->GetVisible())
-                (*it)->Draw();
-		}else
-			if(m_visible_rgn.x != -1)
-				break;
+			(*it)->Draw();
+			bDone = true;
+		}
+		else if (bDone)
+			break;
 	}
+
+
 	UI().PopScissor					();
 
 	if(NeedShowScrollBar())
@@ -258,9 +271,16 @@ bool CUIScrollView::NeedShowScrollBar(){
 void CUIScrollView::OnScrollV			(CUIWindow*, void*)
 {
 	int s_pos					= m_VScrollBar->GetScrollPos();
-	Fvector2 w_pos				= m_pad->GetWndPos();
-	m_pad->SetWndPos			(Fvector2().set(w_pos.x,float(-s_pos)));
-	m_visible_rgn.set			(-1,-1);
+	if (GameConstants::GetSmoothScrollEnabled())
+	{
+		m_targetScrollPosition		= -static_cast<float>(s_pos);
+	}
+	else
+	{
+		Fvector2 w_pos				= m_pad->GetWndPos();
+		m_pad->SetWndPos			(Fvector2().set(w_pos.x,float(-s_pos)));
+		//m_visible_rgn.set			(-1,-1);
+	}
 }
 
 bool CUIScrollView::OnMouseAction(float x, float y, EUIMessages mouse_action)
@@ -291,8 +311,8 @@ bool CUIScrollView::OnMouseAction(float x, float y, EUIMessages mouse_action)
 			}
 		break;
 	};
-	if(prev_pos	!= m_VScrollBar->GetScrollPos())
-		m_visible_rgn.set			(-1,-1);
+	//if(prev_pos	!= m_VScrollBar->GetScrollPos())
+	//	m_visible_rgn.set			(-1,-1);
 
 	return res;
 }
@@ -423,3 +443,46 @@ void CUIScrollView::UpdateChildrenLenght(){
 	}
 }
 
+void CUIScrollView::FillDebugInfo()
+{
+#ifndef MASTER_GOLD
+	CUIWindow::FillDebugInfo();
+
+	if (!ImGui::CollapsingHeader(CUIScrollView::GetDebugType()))
+		return;
+
+	ImGui::DragFloat("Up indent", &m_upIndent);
+	ImGui::DragFloat("Down indent", &m_downIndent);
+	ImGui::DragFloat("Left indent", &m_leftIndent);
+	ImGui::DragFloat("Right indent", &m_rightIndent);
+
+	ImGui::DragFloat("Vertical interval", &m_vertInterval);
+
+	ImGui::Separator();
+	ImGui::Text("Flags:");
+
+	if (ImGui::Button("Recalculate"))
+		m_flags.set(eNeedRecalc, true);
+
+	const auto addFlag = [this](pcstr text, u16 flag)
+		{
+			ImGui::SameLine();
+			bool value = m_flags.test(flag);
+			if (ImGui::Checkbox(text, &value))
+				m_flags.set(flag, value);
+		};
+
+	addFlag("Vertical flip", eVertFlip);
+	addFlag("Fixed scrollbar", eFixedScrollBar);
+	addFlag("Items selectable", eItemsSelectabe);
+	addFlag("Inverse direction", eInverseDir);
+
+	ImGui::Separator();
+	ImGui::LabelText("Scrollbar profile", "%s", m_scrollbar_profile.size() ? m_scrollbar_profile.c_str() : "");
+	ImGui::Separator();
+
+	ImGui::BeginDisabled();
+	ImGui::DragInt2("Visible region", (int*)&m_visible_rgn);
+	ImGui::EndDisabled();
+#endif
+}

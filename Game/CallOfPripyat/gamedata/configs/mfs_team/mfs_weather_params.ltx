@@ -1,5 +1,5 @@
 [environment] ;;Различные настройки для погоды
-dynamic_sun_dir = true				;; Движение солнца по погодным конфигам
+sun_dir_mode = 0					;; Режим движения солнца. 0 - движковый ход, 1 - с конфигов погоды, 2 - с общего конфига движка
 winter_mode = false					;; Зимний режим (влияет на циклы и эффекты)
 weather_dof = false					;; Использовать параметры DoF из погоды
 lowland_fog_from_weather = false	;; Использовать параметры низинного тумана из погоды
@@ -8,8 +8,6 @@ wind_volume_koef = 16.5				;; Коэффицент общей громкости звука ветра
 wind_influence_koef = 2.3			;; Коэффицент влияния ветра на колыхание травы и деревьев. Значение 0.0 отключает эффект.
 moon_phases_mode = off				;; Режим лунных фаз (off|8days|28days)
 fog_infl_volumetric_light = false	;; Влияние интенсивности тумана на интенсивность объёмного света
-weather_fog_clamping = false		;; Ограничитель дальности тумана
-weather_fog_clamping_max = 1000.0	;; Предельно возможная дальность тумана
 
 [precipitation_params] ;Общие параметры осадков
 max_desired_items = 2500
@@ -32,8 +30,8 @@ rain_drop_max_angle = 35.0
 [snow_params] ;Параметры для снегопада
 min_rain_drop_speed = 1.0
 max_rain_drop_speed = 1.5
-rain_drop_lenght = 0.1
-rain_drop_width = 0.25
+rain_drop_lenght = 5.0
+rain_drop_width = 0.30
 rain_drop_angle = 15.0
 rain_drop_max_wind_vel = 20.0
 rain_drop_max_angle = 35.0
@@ -62,16 +60,8 @@ jupiter_underground = 0.0
 pripyat = 0.0
 labx8 = 0.0
 
-;Чистое Небо
-marsh = -0.80
-escape = -37.5
-garbage = -5.0
-darkvalley = -8.0
-agroprom = 1.0
-agroprom_underground = 0.0
-yantar = -13.5
-red_forest = -6.0
-military = -23.5
-limansk = -6.0
-hospital = 24.0
-stancia_2 = -1.0
+[terrain_offset_params] ;Оффсеты для параллакса террейна из SSS для каждого уровня
+;Зов Припяти
+zaton = -0.07, -0.05, -0.13, -0.1
+jupiter = -0.05, -0.05, 0.05, -0.15
+pripyat = -0.13, -0.05, -0.05, -0.1

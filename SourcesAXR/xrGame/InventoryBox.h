@@ -14,9 +14,14 @@ protected:
 	bool	m_can_take;
 	bool	m_closed;
 
+	float	m_fInventoryFullness;
+	float	m_fInventoryCapacity;
+
 public:
 						CInventoryBox					();
 	virtual				~CInventoryBox					();
+
+	virtual void		Load							(LPCSTR section);
 
 	virtual		void	OnEvent							(NET_Packet& P, u16 type);
 	virtual		BOOL	net_Spawn						(CSE_Abstract* DC);
@@ -34,6 +39,9 @@ public:
 
 				void	set_closed						(bool status, LPCSTR reason);
 	IC			bool	closed							() const { return m_closed; }
+
+				float	GetInventoryFullness			() const { return m_fInventoryFullness; }
+				float	GetInventoryCapacity			() const { return m_fInventoryCapacity; }
 
 protected:
 				void	SE_update_status				();

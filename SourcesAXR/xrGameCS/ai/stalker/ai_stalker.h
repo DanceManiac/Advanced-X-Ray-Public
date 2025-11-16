@@ -123,11 +123,25 @@ private:
 private:
 	float							m_power_fx_factor;
 
+	Fvector							savedOrientation;
+	u32								dTimeFSeen;
+	u32								dTimeNfSeen;
+	float							targetPitch;
+	float							targetRoll;
+	Fvector							targetNormal;
+
 private:
 	float							m_fRankDisperison;
 	float							m_fRankVisibility;
 	float							m_fRankImmunity;
 	bool							m_bLastHittedInHead;
+	bool							m_bModelScaleRandom;
+	float							m_fModelScale;
+	float							m_fModelScaleRandomMin;
+	float							m_fModelScaleRandomMax;
+
+	xr_vector<shared_str>			m_sCanPickedItemsVec{};
+	u32								m_iAcceptableItemCost;
 
 	// best item/ammo selection members
 public:
@@ -180,6 +194,9 @@ public:
 	virtual	void						reinit								();
 	virtual void						reload								(LPCSTR	section );				
 	virtual void						LoadSounds							(LPCSTR section );
+
+	static	void						BoneCallback						(CBoneInstance* B);
+			void						LookAtActor							(CBoneInstance* headBone);
 	
 	virtual BOOL						net_Spawn							(CSE_Abstract* DC);
 	virtual void						net_Export							(NET_Packet& P);
@@ -270,7 +287,9 @@ public:
 			bool						ready_to_detour			();
 			void						update_best_item_info	();
 			void						ResetBoneProtections	(pcstr imm_sect, pcstr bone_sect);
+			void						ReloadDamageAndAnimations();
 	virtual float						GetWeaponAccuracy		() const;
+	virtual bool						unlimited_ammo			();
 	virtual	void						spawn_supplies			();
 	IC		CAgentManager				&agent_manager			() const;
 	
@@ -290,7 +309,7 @@ private:
 	collide::rq_results	rq_storage;
 
 private:
-			void						can_kill_entity			(const Fvector &position, const Fvector &direction, float distance, collide::rq_results& rq_storage);
+			void						can_kill_entity			(const Fvector &position, const Fvector &direction, float distance, collide::rq_results& rq_storage_);
 			void						can_kill_entity_from	(const Fvector &position, Fvector direction, float distance);
 			void						update_can_kill_info	();
 
@@ -342,6 +361,7 @@ public:
 	bool								can_select_weapon				() {return m_can_select_weapon;};
 	void								can_select_weapon				(bool can) {m_can_select_weapon = can;};
 			bool						can_take						(CInventoryItem const * item);
+			bool						CheckCanPickedItem				(CInventoryItem const* item);
 protected:
 			u32							fill_items						(CInventory &inventory, CGameObject *old_owner, ALife::_OBJECT_ID new_owner_id);
 			
@@ -368,9 +388,9 @@ protected:
 			void						on_after_take					(const CGameObject *object);
 	virtual bool						AllowItemToTrade 				(CInventoryItem const * item, EItemPlace place) const;
 public:
-	IC		CStalkerAnimationManager	&animation						() const;
-	IC		CStalkerPlanner				&brain							() const;
-	IC		CSightManager				&sight							() const;
+	IC		CStalkerAnimationManager	&get_animation						() const;
+	IC		CStalkerPlanner				&get_brain							() const;
+	IC		CSightManager				&get_sight							() const;
 
 private:
 	CStalkerSoundDataVisitor			*m_sound_user_data_visitor;
@@ -381,7 +401,7 @@ protected:
 	virtual CMovementManager			*create_movement_manager		();
 
 public:
-	IC		stalker_movement_manager_smart_cover		&movement						() const;
+	IC		stalker_movement_manager_smart_cover		& get_movement						() const;
 	virtual DLL_Pure					*_construct						();
 
 private:
@@ -658,6 +678,9 @@ public:
 
 private:
 	bool								m_take_items_enabled;
+
+	shared_str							m_sColdSteamParticleBone;
+	shared_str							m_sColdSteamParticleName;
 
 public:
 	DECLARE_SCRIPT_REGISTER_FUNCTION

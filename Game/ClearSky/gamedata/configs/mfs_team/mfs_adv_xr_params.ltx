@@ -21,9 +21,11 @@ actor_intoxication_enabled = false	;; Интоксикация ГГ
 actor_sleepeness_enabled = false	;; Потребность гг во сне
 actor_alcoholism_enabled = false	;; Алкогольная зависимость
 actor_narcotism_enabled = false		;; Наркомания
+actor_frostbite_enabled = false		;; Обморожение
 artefacts_degradation = false		;; Деградация артефактов
 artefacts_degradation_mode = from_belt	;; Режим деградации артефактов (from_belt|from_ruck)
 enable_artefacts_ranks = false		;; Ранги артефактов
+multi_item_pickup = true			;; Подбор сразу нескольких предметов
 show_wpn_info = true				;; Показывать характеристики оружия
 jump_and_speed_weight_calc = false	;; Снижение скорости передвижений и высоты прыжков от веса в рюкзаке
 hide_weapon_in_inventory = false	;; Убирать оружие, если открыт инвентарь
@@ -35,17 +37,21 @@ hide_hud_on_master = false			;; Скрывать худ и перекрестие на самой высокой слож
 actor_skills_enabled = false		;; Система навыков героя
 sleepeness_infl_on_psy_health = false ;; Влияние сонливости на пси-здоровье
 enable_limited_inventory = false	;; Лимитированный инвентарь
+enable_limited_inv_boxes = false	;; Лимитированные ящики
 items_auto_volume = false			;; Автоматический расчёт объёма вещей для лимитированного инвентаря (экспериментальная опция, могут быть баги)
 enable_food_irradiation = false		;; Облучение пищи
 enable_food_rotting = false			;; Порча еды со временем
 ogse_weapons_zoom_system = false 	;; OGSE система зума
 enable_quick_throw_grenades = true	;; Быстрый бросок гранат
+enable_global_achievements = false	;; Глобальные достижения
 
 [inventory]
 enable_knife_slot = false			;; Включен ли слот ножа
 enable_binocular_slot = false		;; Включен ли слот бинокля
 enable_torch_slot = false			;; Включен ли слот фонарика
 enable_backpack_slot = false		;; Включен ли слот рюкзака
+enable_helmet_slot = false			;; Включен ли слот шлема
+enable_second_helmet_slot = false	;; Включен ли слот второго шлема
 enable_dosimeter_slot = false		;; Включен ли слот дозиметра
 enable_pants_slot = false			;; Включен ли слот штанов
 enable_pda_slot = false				;; Включен ли слот КПК
@@ -61,6 +67,8 @@ enable_artefact_panel = false		;; Вкл.\выкл. панель артефактов на худе
 enable_hud_used_item_text = true	;; Вкл.\выкл. надпись об использованном предмете на HUD
 enable_pda_info_icons = false		;; Вкл.\выкл. HUD иконку оповещения о новой информации в КПК 
 enable_new_task_icon = false		;; Вкл.\выкл. HUD иконку оповещения при получении квеста
+show_saved_game_name = false		;; Вкл.\выкл. отображение имени сделанного сохранения на экране
+enable_smooth_scrolling = false		;; Вкл.\выкл. плавный скролл
 
 [hud_movement_layers]; Эффекты камеры при ходьбе из Anomaly
 ;types: 0 = aim_walk, 1 = aim_crouch, 2 = crouch, 3 = walk, 4 = run, 5 = sprint
@@ -98,6 +106,7 @@ clr_blue 			= 6
 ;FOV
 Camera_FOV = 67.5
 HUD_FOV = 0.55
+weather_fog_clamping = 750.0
 
 ;Enchanted Shaders color grading
 color_grading_es = 0.5, 0.5, 0.5

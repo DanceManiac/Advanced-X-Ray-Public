@@ -30,6 +30,7 @@
 #include "UIFrameLineWnd.h"
 #include "UI3tButton.h"
 #include "UIHelper.h"
+#include "UI3dStatic.h"
 #include "../ui_defs.h"
 #include "../Weapon.h"
 #include "../WeaponRPG7.h"
@@ -88,6 +89,11 @@ void CUIInventoryUpgradeWnd::Init()
 	m_item->SetAutoDelete( true );
 	AttachChild( m_item );
 	xml_init.InitStatic( uiXml, "item_static", 0, m_item );
+
+	m_item_3d = xr_new<CUI3dStatic>();
+	m_item_3d->SetAutoDelete(true);
+	AttachChild(m_item_3d);
+	xml_init.InitStatic(uiXml, "item_static", 0, m_item_3d);
 	
 	m_back = xr_new<CUIWindow>();
 	m_back->SetAutoDelete( true );
@@ -109,47 +115,83 @@ void CUIInventoryUpgradeWnd::InitInventory( CInventoryItem* item, bool can_upgra
 {
 	m_inv_item = item;
 	bool is_shader = false;
+	bool is_3d_static = m_inv_item && m_inv_item->GetUpgradeIcon3D();
+	bool b_r4 = !!psDeviceFlags.test(rsR4);
+
 	// Загружаем картинку
-	if(smart_cast<CWeapon*>(item))
+	if (!is_3d_static || !b_r4)
 	{
-		is_shader = true;
-		m_item->SetShader(InventoryUtilities::GetWeaponUpgradeIconsShader());
-		if(smart_cast<CWeaponRPG7*>(item))
+		if (m_item_3d)
+			m_item_3d->Show(false);
+
+		if (smart_cast<CWeapon*>(item))
+		{
+			is_shader = true;
+			m_item->SetShader(InventoryUtilities::GetWeaponUpgradeIconsShader());
+			if (smart_cast<CWeaponRPG7*>(item))
+				m_item->SetShader(InventoryUtilities::GetOutfitUpgradeIconsShader());
+		}
+		else if (smart_cast<CCustomOutfit*>(item) || smart_cast<CHelmet*>(item))
+		{
+			is_shader = true;
 			m_item->SetShader(InventoryUtilities::GetOutfitUpgradeIconsShader());
-	}
-	else if(smart_cast<CCustomOutfit*>(item) || smart_cast<CHelmet*>(item))
-	{
-		is_shader = true;
-		m_item->SetShader(InventoryUtilities::GetOutfitUpgradeIconsShader());
-	}
-	else if (smart_cast<CCustomDetector*>(item) || smart_cast<CTorch*>(item) || smart_cast<CCustomBackpack*>(item))
-	{
-		is_shader = true;
-		m_item->SetShader(InventoryUtilities::GetDeviceUpgradeIconsShader());
-	}
+		}
+		else if (smart_cast<CCustomDetector*>(item) || smart_cast<CTorch*>(item) || smart_cast<CCustomBackpack*>(item))
+		{
+			is_shader = true;
+			m_item->SetShader(InventoryUtilities::GetDeviceUpgradeIconsShader());
+		}
 
-	if(m_item && is_shader)
-	{
+		if (m_item && is_shader)
+		{
+			Irect item_upgrade_grid_rect = item->GetUpgrIconRect();
+			Frect texture_rect;
+			texture_rect.lt.set			(item_upgrade_grid_rect.x1,	item_upgrade_grid_rect.y1);
+			texture_rect.rb.set			(item_upgrade_grid_rect.x2,	item_upgrade_grid_rect.y2);
+			texture_rect.rb.add			(texture_rect.lt);
+			m_item->GetUIStaticItem().SetTextureRect(texture_rect);
+			m_item->TextureOn			();
+			m_item->SetStretchTexture	(true);
+			Fvector2 v_r				= Fvector2().set(item_upgrade_grid_rect.x2,	item_upgrade_grid_rect.y2);
+			if(UI().is_widescreen())
+				v_r.x					*= 0.8f;
 
-		Irect item_upgrade_grid_rect = item->GetUpgrIconRect();
-		Frect texture_rect;
-		texture_rect.lt.set			(item_upgrade_grid_rect.x1,	item_upgrade_grid_rect.y1);
-		texture_rect.rb.set			(item_upgrade_grid_rect.x2,	item_upgrade_grid_rect.y2);
-		texture_rect.rb.add			(texture_rect.lt);
-		m_item->GetUIStaticItem().SetTextureRect(texture_rect);
-		m_item->TextureOn			();
-		m_item->SetStretchTexture	(true);
-		Fvector2 v_r				= Fvector2().set(item_upgrade_grid_rect.x2,	item_upgrade_grid_rect.y2);
-		if(UI().is_widescreen())
-			v_r.x					*= 0.8f;
-
-		m_item->GetUIStaticItem().SetSize	(v_r);
-		m_item->SetWidth					(v_r.x);
-		m_item->SetHeight					(v_r.y);
-		m_item->Show						(true);
+			m_item->GetUIStaticItem().SetSize	(v_r);
+			m_item->SetWidth					(v_r.x);
+			m_item->SetHeight					(v_r.y);
+			m_item->Show						(true);
+		}
+		else
+		{
+			if (m_item)
+				m_item->Show					(false);
+		}
 	}
 	else
-		m_item->Show						(false);
+	{
+		if (m_item)
+			m_item->Show(false);
+
+		if (m_item_3d && m_inv_item)
+		{
+			const int iGridWidth = 6;
+			const int iGridHeight = 2;
+
+			Frect v_r = { 0.0f, 0.0f, float(iGridWidth * 50.f), float(iGridHeight * 50.f) };
+			if (UI().is_widescreen())
+				v_r.x2 /= 1.328f;
+
+			m_item_3d->SetWidth(_min(v_r.width(), 2500.f));
+			m_item_3d->SetHeight(_min(v_r.height(), 2500.f));
+			m_item_3d->SetGameObject(m_inv_item);
+			m_item_3d->Show(true);
+		}
+		else
+		{
+			if (m_item_3d)
+				m_item_3d->Show(false);
+		}
+	}
 
 	m_scheme_wnd->DetachAll();
 	m_scheme_wnd->Show( false );
@@ -283,9 +325,15 @@ bool CUIInventoryUpgradeWnd::install_item( CInventoryItem& inv_item, bool can_up
 		ui_item->set_texture( UIUpgrade::LAYER_COLOR,  m_cell_textures[UIUpgrade::STATE_ENABLED].c_str() ); //default
 	}
 	
-	m_scheme_wnd->Show	( true );
-	m_item->Show		( true );
-	m_back->Show		( true );
+	m_scheme_wnd->Show	(true);
+
+	if (inv_item.GetUpgradeIcon3D())
+		m_item_3d->Show	(true);
+	else
+		m_item->Show	(true);
+
+
+	m_back->Show		(true);
 
 	UpdateAllUpgrades();
 	return true;

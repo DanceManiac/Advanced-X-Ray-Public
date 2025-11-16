@@ -56,7 +56,14 @@ void	CBlender_Compile::_cpp_Compile	(ShaderElement* _SH)
 		base		=	BT->oT_Name;
 		if (id>=0)	
 		{
-			if (id>=int(lst.size()))	Debug.fatal(DEBUG_INFO,"Not enought textures for shader. Base texture: '%s'.",*lst[0]);
+			if (id>=int(lst.size()))
+			{
+				Msg("! xrRender_R1: WARNING! Not enought textures for shader, base tex: %s", *lst[0]);
+				//Debrovski: using VERY noticeable placeholder-texture
+				lst.emplace_back("$shadertest");
+				lst.emplace_back("$shadertest");
+			}
+
 			base	=	*lst [id];
 		}
 //.		if (!dxRenderDeviceRender::Instance().Resources->_GetDetailTexture(base,detail_texture,detail_scaler))	bDetail	= FALSE;
@@ -74,7 +81,14 @@ void	CBlender_Compile::_cpp_Compile	(ShaderElement* _SH)
 			base		=	BT->oT_Name;
 			if (id>=0)	
 			{
-				if (id>=int(lst.size()))	Debug.fatal(DEBUG_INFO,"Not enought textures for shader. Base texture: '%s'.",*lst[0]);
+				if (id>=int(lst.size()))
+				{
+					Msg("! xrRender_R1: WARNING! Not enought textures for shader, base tex: %s", *lst[0]);
+					//Debrovski: using VERY noticeable placeholder-texture
+					lst.emplace_back("$shadertest");
+					lst.emplace_back("$shadertest");
+				}
+
 				base	=	*lst [id];
 			}
 		}
@@ -310,8 +324,16 @@ void	CBlender_Compile::Stage_Texture	(LPCSTR name, u32 ,	u32	 fmin, u32 fmip, u3
 	sh_list& lst=	L_textures;
 	int id		=	ParseName(name);
 	LPCSTR N	=	name;
-	if (id>=0)	{
-		if (id>=int(lst.size()))	Debug.fatal(DEBUG_INFO,"Not enought textures for shader. Base texture: '%s'.",*lst[0]);
+	if (id>=0)
+	{
+		if (id>=int(lst.size()))
+		{
+			Msg("! xrRender_R1: WARNING! Not enought textures for shader, base tex: %s", *lst[0]);
+			//Debrovski: using VERY noticeable placeholder-texture
+			lst.emplace_back("$shadertest");
+			lst.emplace_back("$shadertest");
+		}
+
 		N = *lst [id];
 	}
 	passTextures.push_back	(std::make_pair( Stage(),ref_texture( DEV->_CreateTexture(N))));

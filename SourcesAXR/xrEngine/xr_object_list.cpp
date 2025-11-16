@@ -187,6 +187,8 @@ void CObjectList::clear_crow_vec(Objects& o)
 
 void CObjectList::Update		(bool bForce)
 {
+	ZoneScoped;
+
 	if ( !Device.Paused() || bForce )
 	{
 		// Clients
@@ -263,42 +265,60 @@ void CObjectList::Update		(bool bForce)
 void CObjectList::ProcessDestroyQueue()
 {
 	// Destroy
-	if (!destroy_queue.empty()) 
+	if (!destroy_queue.empty())
 	{
 		// Info
-		for (Objects::iterator oit=objects_active.begin(); oit!=objects_active.end(); oit++)
-			for (int it = destroy_queue.size()-1; it>=0; it--){	
-				(*oit)->net_Relcase		(destroy_queue[it]);
-			}
-		for (Objects::iterator oit=objects_sleeping.begin(); oit!=objects_sleeping.end(); oit++)
-			for (int it = destroy_queue.size()-1; it>=0; it--)	(*oit)->net_Relcase	(destroy_queue[it]);
+		{
+			ZoneScopedN("net_Relcase");
+			for (Objects::iterator oit = objects_active.begin(); oit != objects_active.end(); oit++)
+				for (int it = destroy_queue.size() - 1; it >= 0; it--) {
+					(*oit)->net_Relcase(destroy_queue[it]);
+				}
+			for (Objects::iterator oit = objects_sleeping.begin(); oit != objects_sleeping.end(); oit++)
+				for (int it = destroy_queue.size() - 1; it >= 0; it--)	(*oit)->net_Relcase(destroy_queue[it]);
+		}
 
-		for (int it = destroy_queue.size()-1; it>=0; it--)	Sound->object_relcase	(destroy_queue[it]);
-		
-		RELCASE_CALLBACK_VEC::iterator It	= m_relcase_callbacks.begin();
-		RELCASE_CALLBACK_VEC::iterator Ite	= m_relcase_callbacks.end();
-		for(;It!=Ite; ++It)	{
-			VERIFY			(*(*It).m_ID==(It-m_relcase_callbacks.begin()));
-			Objects::iterator dIt	= destroy_queue.begin();
-			Objects::iterator dIte	= destroy_queue.end();
-			for (;dIt!=dIte; ++dIt) {
-				(*It).m_Callback(*dIt);
-				g_hud->net_Relcase	(*dIt);
+		{
+			ZoneScopedN("net_Relcase/2");
+			for (int it = destroy_queue.size() - 1; it >= 0; it--)
+				Sound->object_relcase(destroy_queue[it]);
+		}
+
+		{
+			ZoneScopedN("m_relcase_callbacks");
+
+			RELCASE_CALLBACK_VEC::iterator It = m_relcase_callbacks.begin();
+			RELCASE_CALLBACK_VEC::iterator Ite = m_relcase_callbacks.end();
+
+			//ZoneScopedN("m_relcase_callbacks");
+			for (; It != Ite; ++It) {
+				VERIFY(*(*It).m_ID == (It - m_relcase_callbacks.begin()));
+				Objects::iterator dIt = destroy_queue.begin();
+				Objects::iterator dIte = destroy_queue.end();
+				for (; dIt != dIte; ++dIt) {
+					(*It).m_Callback(*dIt);
+					g_hud->net_Relcase(*dIt);
+				}
 			}
 		}
 
 		// Destroy
-		for (int it = destroy_queue.size()-1; it>=0; it--)
 		{
-			CObject*		O	= destroy_queue[it];
-//			Msg				("Object [%x]", O);
+			ZoneScopedN("net_Destroy/Destroy");
+
+			for (int it = destroy_queue.size() - 1; it >= 0; it--)
+			{
+				CObject* O = destroy_queue[it];
+				//			Msg				("Object [%x]", O);
 #ifdef DEBUG
-			if( debug_destroy )
-				Msg			("Destroying object[%x][%x] [%d][%s] frame[%d]",dynamic_cast<void*>(O), O, O->ID(),*O->cName(), Device.dwFrame);
+				if (debug_destroy)
+					Msg("Destroying object[%x][%x] [%d][%s] frame[%d]", dynamic_cast<void*>(O), O, O->ID(), *O->cName(), Device.dwFrame);
 #endif // DEBUG
-			O->net_Destroy	( );
-			Destroy			(O);
+				O->net_Destroy();
+				Destroy(O);
+			}
 		}
+
 		destroy_queue.clear	();
 	}
 }
@@ -411,6 +431,8 @@ void CObjectList::Load		()
 
 void CObjectList::Unload	( )
 {
+	ZoneScoped;
+
 	if (objects_sleeping.size() || objects_active.size())
 		Msg			("! objects-leaked: %d",objects_sleeping.size() + objects_active.size());
 
@@ -445,6 +467,9 @@ void CObjectList::Unload	( )
 
 CObject*	CObjectList::Create				( LPCSTR	name	)
 {
+	ZoneScoped;
+	TracyMessageL				(name);
+
 	CObject*	O				= g_pGamePersistent->ObjectPool.create(name);
 //	Msg("CObjectList::Create [%x]%s", O, name);
 	objects_sleeping.push_back	(O);

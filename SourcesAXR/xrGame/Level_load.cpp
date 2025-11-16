@@ -9,14 +9,16 @@
 #include "game_cl_base.h"
 #include "../xrEngine/x_ray.h"
 #include "../xrEngine/gamemtllib.h"
+#include "../xrEngine/Rain.h"
 #include "../xrphysics/PhysicsCommon.h"
 #include "level_sounds.h"
 #include "GamePersistent.h"
 
-ENGINE_API	bool g_dedicated_server;
 
 BOOL CLevel::Load_GameSpecific_Before()
 {
+	ZoneScoped;
+
 	// AI space
 	g_pGamePersistent->SetLoadStageTitle("st_loading_ai_objects");
 	g_pGamePersistent->LoadTitle		();
@@ -25,7 +27,7 @@ BOOL CLevel::Load_GameSpecific_Before()
 	if (GamePersistent().GameType() == eGameIDSingle && !ai().get_alife() && FS.exist(fn_game,"$level$","level.ai") && !net_Hosts.empty())
 		ai().load						(net_SessionName());
 
-	if (!g_dedicated_server && !ai().get_alife() && ai().get_game_graph() && FS.exist(fn_game, "$level$", "level.game")) {
+	if (!ai().get_alife() && ai().get_game_graph() && FS.exist(fn_game, "$level$", "level.game")) {
 		IReader							*stream = FS.r_open		(fn_game);
 		ai().patrol_path_storage_raw	(*stream);
 		FS.r_close						(stream);
@@ -36,17 +38,21 @@ BOOL CLevel::Load_GameSpecific_Before()
 
 BOOL CLevel::Load_GameSpecific_After()
 {
+	ZoneScoped;
+
 	R_ASSERT(m_StaticParticles.empty());
 	// loading static particles
 	string_path		fn_game;
 	if (FS.exist(fn_game, "$level$", "level.ps_static")) 
 	{
+		ZoneScopedN("Load static particles");
+
 		IReader *F = FS.r_open	(fn_game);
 		CParticlesObject* pStaticParticles;
 		u32				chunk = 0;
 		string256		ref_name;
 		Fmatrix			transform;
-		Fvector			zero_vel={0.f,0.f,0.f};
+		Fvector			zero_vel_={0.f,0.f,0.f};
 		u32 ver			= 0;
 		for (IReader *OBJ = F->open_chunk_iterator(chunk); OBJ; OBJ = F->open_chunk_iterator(chunk,OBJ)) 
 		{
@@ -73,7 +79,7 @@ BOOL CLevel::Load_GameSpecific_After()
 			if ((g_pGamePersistent->m_game_params.m_e_game_type & EGameIDs(gametype_usage)) || (ver == 0))
 			{
 				pStaticParticles				= CParticlesObject::Create(ref_name,FALSE,false);
-				pStaticParticles->UpdateParent	(transform,zero_vel);
+				pStaticParticles->UpdateParent	(transform,zero_vel_);
 				pStaticParticles->Play			(false);
 				m_StaticParticles.push_back		(pStaticParticles);
 			}
@@ -81,7 +87,6 @@ BOOL CLevel::Load_GameSpecific_After()
 		FS.r_close		(F);
 	}
 	
-	if	(!g_dedicated_server)
 	{
 		// loading static sounds
 		VERIFY								(m_level_sound_manager);
@@ -102,6 +107,8 @@ BOOL CLevel::Load_GameSpecific_After()
 
 		// loading random (around player) sounds
 		if (pSettings->section_exist("sounds_random")){ 
+			ZoneScopedN("Load random sounds");
+
 			CInifile::Sect& S		= pSettings->r_section("sounds_random");
 			Sounds_Random.reserve	(S.Data.size());
 			for (CInifile::SectCIt I=S.Data.begin(); S.Data.end()!=I; ++I) 
@@ -113,8 +120,18 @@ BOOL CLevel::Load_GameSpecific_After()
 			Sounds_Random_Enabled	= FALSE;
 		}
 
+		if (g_pGamePersistent->pEnvironment)
+		{
+			if (auto rain = g_pGamePersistent->pEnvironment->eff_Rain)
+			{
+				rain->InvalidateState();
+			}
+		}
+
 		if ( FS.exist(fn_game, "$level$", "level.fog_vol")) 
 		{
+			ZoneScopedN("Load fog volume");
+
 			IReader *F				= FS.r_open	(fn_game);
 			u16 version				= F->r_u16();
 			if(version == 2)
@@ -137,7 +154,7 @@ BOOL CLevel::Load_GameSpecific_After()
 		}
 	}	
 
-	if (!g_dedicated_server) {
+	{
 		// loading scripts
 		ai().script_engine().remove_script_process(ScriptEngine::eScriptProcessorLevel);
 
@@ -194,6 +211,8 @@ bool CLevel::Load_GameSpecific_CFORM_Deserialize(IReader& reader)
 
 void CLevel::Load_GameSpecific_CFORM	( CDB::TRI* tris, u32 count )
 {
+	ZoneScoped;
+
 	typedef xr_vector<translation_pair>	ID_INDEX_PAIRS;
 	ID_INDEX_PAIRS						translator;
 	translator.reserve					(GMLib.CountMaterial());

@@ -279,6 +279,8 @@ public:
 
 void	ISpatial_DB::q_ray	(xr_vector<ISpatial*>& R, u32 _o, u32 _mask_and, const Fvector&	_start,  const Fvector&	_dir, float _range)
 {
+	ZoneScoped;
+
 	cs.Enter						();
 	q_result						= &R;
 	q_result->clear_not_free		();

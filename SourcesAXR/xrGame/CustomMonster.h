@@ -217,7 +217,7 @@ public:
 			void				load_killer_clsids		(LPCSTR section);
 			bool				is_special_killer		(CObject *obj);
 
-	IC		CMemoryManager		&memory					() const;
+	IC		CMemoryManager		& get_memory					() const;
 	virtual float				feel_vision_mtl_transp	(CObject* O, u32 element);
 	virtual	void				feel_sound_new			(CObject* who, int type, CSound_UserDataPtr user_data, const Fvector &Position, float power);
 
@@ -244,8 +244,8 @@ protected:
 	virtual CMovementManager		*create_movement_manager();
 
 public:
-	IC		CMovementManager		&movement				() const;
-	IC		CSoundPlayer			&sound					() const;
+	IC		CMovementManager		&get_movement				() const;
+	IC		CSoundPlayer			&get_sound					() const;
 	IC		CSound_UserDataVisitor	*sound_user_data_visitor() const;
 
 protected:

@@ -20,18 +20,9 @@ public:
 			void	SetInfo					(CInventoryItem& pInvItem);
 
 protected:
-	UIArtefactParamItem*	m_immunity_item[ALife::infl_max_count];
+	UIArtefactParamItem*	m_immunity_item[ALife::eHitTypeMax];
+	UIArtefactParamItem*	m_restore_item[ALife::eRestoreTypeMax];
 	UIArtefactParamItem*	m_additional_weight;
-	UIArtefactParamItem*	m_fHealthRestoreSpeed;
-	UIArtefactParamItem*	m_fRadiationRestoreSpeed;
-	UIArtefactParamItem*	m_fSatietyRestoreSpeed;
-	UIArtefactParamItem*	m_fPowerRestoreSpeed;
-	UIArtefactParamItem*	m_fBleedingRestoreSpeed;
-	UIArtefactParamItem*	m_fThirstRestoreSpeed;
-	UIArtefactParamItem*	m_fIntoxicationRestoreSpeed;
-	UIArtefactParamItem*	m_fSleepenessRestoreSpeed;
-	UIArtefactParamItem*	m_fAlcoholismRestoreSpeed;
-	UIArtefactParamItem*	m_fPsyHealthRestoreSpeed;
 	UIArtefactParamItem*	m_fJumpSpeed;
 	UIArtefactParamItem*	m_fWalkAccel;
 	UIArtefactParamItem*	m_iArtefactRank;

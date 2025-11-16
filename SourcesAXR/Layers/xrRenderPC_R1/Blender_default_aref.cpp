@@ -71,8 +71,17 @@ void CBlender_default_aref::Compile(CBlender_Compile& C)
 			C.StageEnd			();
 		}
 		C.PassEnd			();
-	} else {
-		if (C.L_textures.size()<2)	Debug.fatal	(DEBUG_INFO,"Not enought textures for shader, base tex: %s",*C.L_textures[0]);
+	}
+	else
+	{
+		if (C.L_textures.size()<2)
+		{
+			Msg("! xrRender_R1: WARNING! Not enought textures for shader, base tex: %s", *C.L_textures[0]);
+			//Debrovski: using VERY noticeable placeholder-texture
+			C.L_textures.emplace_back("$shadertest");
+			C.L_textures.emplace_back("$shadertest");
+		}
+
 		switch (C.iElement)
 		{
 		case SE_R1_NORMAL_HQ:

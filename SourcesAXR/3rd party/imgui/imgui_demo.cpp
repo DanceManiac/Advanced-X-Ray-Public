@@ -138,7 +138,7 @@ Index of this file:
 
 // Helpers
 #if defined(_MSC_VER) && !defined(snprintf)
-#define snprintf    _snprintf
+#define snprintf    sprintf_s
 #endif
 #if defined(_MSC_VER) && !defined(vsnprintf)
 #define vsnprintf   _vsnprintf

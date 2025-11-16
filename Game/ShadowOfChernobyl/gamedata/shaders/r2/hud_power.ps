@@ -1,0 +1,15 @@
+#include "common.h"
+
+uniform	sampler2D s_hud_power;
+uniform float4 hud_power_params; // x=intensity
+
+float4 main(p_screen I) : COLOR
+{
+	float2	texcoord 				= I.tc0;
+	texcoord = (texcoord - 0.5) * hud_power_params.x + 0.5;
+	float4	power_texture 			= tex2D(s_hud_power, texcoord);
+	float3 	scene 					= tex2D(s_image, I.tc0).xyz;
+	scene = lerp(scene, power_texture.xyz, power_texture.w * hud_power_params.x);
+
+	return float4(scene, 1.0f);
+}

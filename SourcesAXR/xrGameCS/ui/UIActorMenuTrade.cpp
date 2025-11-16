@@ -2,6 +2,7 @@
 #include "UIActorMenu.h"
 #include "UI3tButton.h"
 #include "UIDragDropListEx.h"
+#include "UIDragDropReferenceList.h"
 #include "UICharacterInfo.h"
 #include "UIFrameLineWnd.h"
 #include "UICellItem.h"
@@ -32,6 +33,8 @@ void CUIActorMenu::InitTradeMode()
 	m_pInventoryBagList->Show		(false);
 	m_PartnerCharacterInfo->Show	(true);
 	m_PartnerMoney->Show			(true);
+	if (m_pQuickSlot)
+		m_pQuickSlot->Show			(true);
 
 	m_pTradeActorBagList->Show		(true);
 	m_pTradeActorList->Show			(true);
@@ -168,6 +171,8 @@ bool CUIActorMenu::ToActorTrade(CUICellItem* itm, bool b_use_cursor_pos)
 		CUIDragDropListEx*	old_owner		= itm->OwnerList();
 		CUIDragDropListEx*	new_owner		= NULL;
 		EDDListType			old_owner_type	= GetListType(old_owner);
+		if(old_owner_type==iQuickSlot)
+			return false;
 
 		if(b_use_cursor_pos)
 		{
@@ -196,7 +201,7 @@ bool CUIActorMenu::ToActorTrade(CUICellItem* itm, bool b_use_cursor_pos)
 bool CUIActorMenu::ToPartnerTrade(CUICellItem* itm, bool b_use_cursor_pos)
 {
 	PIItem	iitem						= (PIItem)itm->m_pData;
-	if ( !m_pPartnerInvOwner->AllowItemToTrade( iitem, EItemPlaceRuck ) )
+	if ( !m_pPartnerInvOwner->AllowItemToTrade( iitem, eItemPlaceRuck ) )
 	{
 		///R_ASSERT2( 0, make_string( "Partner can`t cell item (%s)", iitem->NameItem() ) );
 		Msg( "! Partner can`t cell item (%s)", iitem->NameItem() );
@@ -311,16 +316,9 @@ bool CUIActorMenu::CanMoveToPartner(PIItem pItem)
 
 void CUIActorMenu::UpdateActor()
 {
-	if ( IsGameTypeSingle() )
-	{
-		string64 buf;
-		xr_sprintf( buf, "%d RU", m_pActorInvOwner->get_money() );
-		m_ActorMoney->SetText( buf );
-	}
-	else
-	{
-		UpdateActorMP();
-	}
+	string64 buf;
+	xr_sprintf(buf, "%d %s", m_pActorInvOwner->get_money(), *CStringTable().translate("ui_st_currency"));
+	m_ActorMoney->SetText( buf );
 	
 	CActor* actor = smart_cast<CActor*>( m_pActorInvOwner );
 	if ( actor )
@@ -371,12 +369,13 @@ void CUIActorMenu::UpdatePartnerBag()
 	}
 	else if ( m_pPartnerInvOwner->InfinitiveMoney() ) 
 	{
-		m_PartnerMoney->SetText( "--- RU" );
+		xr_sprintf(buf, "--- %s", *CStringTable().translate("ui_st_currency"));
+		m_PartnerMoney->SetText(buf);
 	}
 	else
 	{
-		xr_sprintf( buf, "%d RU", m_pPartnerInvOwner->get_money() );
-		m_PartnerMoney->SetText( buf );
+		xr_sprintf(buf, "%d %s", m_pPartnerInvOwner->get_money(), *CStringTable().translate("ui_st_currency"));
+		m_PartnerMoney->SetText(buf);
 	}	
 
 	LPCSTR kg_str = CStringTable().translate( "st_kg" ).c_str();
@@ -402,8 +401,13 @@ void CUIActorMenu::UpdatePrices()
 	u32 partner_price = CalcItemsPrice( m_pTradePartnerList, m_partner_trade, false );
 
 	string64 buf;
-	xr_sprintf( buf, "%d RU", actor_price );		m_ActorTradePrice->SetText( buf );	m_ActorTradePrice->AdjustWidthToText();
-	xr_sprintf( buf, "%d RU", partner_price );	m_PartnerTradePrice->SetText( buf );	m_PartnerTradePrice->AdjustWidthToText();
+	xr_sprintf(buf, "%d %s", actor_price, *CStringTable().translate("ui_st_currency"));
+	m_ActorTradePrice->SetText(buf);
+	m_ActorTradePrice->AdjustWidthToText();
+
+	xr_sprintf(buf, "%d %s", partner_price, *CStringTable().translate("ui_st_currency"));
+	m_PartnerTradePrice->SetText(buf);
+	m_PartnerTradePrice->AdjustWidthToText();
 
 	float actor_weight   = CalcItemsWeight( m_pTradeActorList );
 	float partner_weight = CalcItemsWeight( m_pTradePartnerList );
@@ -477,7 +481,7 @@ void CUIActorMenu::TransferItems( CUIDragDropListEx* pSellList, CUIDragDropListE
 		
 		if ( bBuying )
 		{
-			if ( pTrade->pThis.inv_owner->CInventoryOwner::AllowItemToTrade( item, EItemPlaceRuck ) )
+			if ( pTrade->pThis.inv_owner->CInventoryOwner::AllowItemToTrade( item, eItemPlaceRuck ) )
 			{
 				pBuyList->SetItem( cell_item );
 			}

@@ -47,6 +47,11 @@ public:
 	CUIZoneMap*			UIZoneMap;
 	CUIArtefactPanel*	UIArtefactsPanel;
 
+	CUIStatic*			m_ind_temperature;
+	u32					m_min_temperature_clr, m_mid_temperature_clr, m_max_temperature_clr;
+
+	CUIStatic*			m_ind_weather_type;
+
 	CUIStatic*			m_ind_boost_psy;
 	CUIStatic*			m_ind_boost_radia;
 	CUIStatic*			m_ind_boost_chem;
@@ -64,6 +69,7 @@ public:
 	CUIStatic*			m_ind_boost_hangover;
 	CUIStatic*			m_ind_boost_narcotism;
 	CUIStatic*			m_ind_boost_withdrawal;
+	CUIStatic*			m_ind_boost_frostbite;
 
 	//иконка, показывающая количество активных PDA
 //	CUIStatic			UIPdaOnline;
@@ -84,24 +90,15 @@ public:
 	CGameFont*			m_HudInfoFont;
 
 	float				hud_info_item_x;
-	float				hud_info_item_y1;
-	float				hud_info_item_y2;
-	float				hud_info_item_y3;
+	Fvector3			hud_info_item_y_pos;
 
-	int					hud_info_r_n;
-	int					hud_info_g_n;
-	int					hud_info_b_n;
-	int					hud_info_a_n;
+	Ivector4			hud_info_n;
+	Ivector4			hud_info_e;
+	Ivector4			hud_info_f;
 
-	int					hud_info_r_e;
-	int					hud_info_g_e;
-	int					hud_info_b_e;
-	int					hud_info_a_e;
-
-	int					hud_info_r_f;
-	int					hud_info_g_f;
-	int					hud_info_b_f;
-	int					hud_info_a_f;
+	Ivector4			ch_info_n;
+	Ivector4			ch_info_e;
+	Ivector4			ch_info_f;
 
 protected:
 
@@ -119,6 +116,8 @@ protected:
 	CUIStatic			UIInvincibleIcon;
 //	CUIStatic			UISleepIcon;
 	CUIStatic			UIArtefactIcon;
+	CUIStatic			UIFrostbiteIcon;
+	CUIStatic			UIHeatingIcon;
 
 	CUIScrollView*		m_UIIcons;
 	CUIWindow*			m_pMPChatWnd;
@@ -133,9 +132,11 @@ public:
 		ewiWeaponJammed,
 //		ewiRadiation,
 //		ewiWound,
+		ewiFrostbite,
 		ewiStarvation,
 //		ewiPsyHealth,
 //		ewiSleep,
+		ewiHeating,
 		ewiInvincible,
 		ewiArtefact,
 	};
@@ -166,6 +167,7 @@ public:
 	HUD_SOUND_ITEM		m_contactSnd;
 
 	void				ReceiveNews						(GAME_NEWS_DATA* news);
+	void				UpdateMainIndicators			();
 	void				UpdateBoosterIndicators			(const xr_map<EBoostParams, SBooster> influences);
 	
 protected:

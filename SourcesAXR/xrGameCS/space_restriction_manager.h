@@ -20,9 +20,8 @@ template <typename _1, typename _2> class intrusive_ptr;
 class CSpaceRestriction;
 
 class CSpaceRestrictionManager : public CSpaceRestrictionHolder {
-#ifdef DEBUG
 	friend class CLevelGraph;
-#endif
+
 	struct CClientRestriction;
 
 protected:
@@ -73,9 +72,7 @@ public:
 
 			bool				restriction_presented			(shared_str restrictions, shared_str restriction) const;
 
-#ifdef DEBUG
 	IC		const SPACE_RESTRICTIONS &restrictions				() const;
-#endif
 };
 
 #include "space_restriction_manager_inline.h"

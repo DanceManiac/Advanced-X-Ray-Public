@@ -10,6 +10,8 @@
 
 CSE_Abstract* xrServer::Process_spawn(NET_Packet& P, ClientID sender, BOOL bSpawnWithClientsMainEntityAsParent, CSE_Abstract* tpExistedEntity)
 {
+	ZoneScoped;
+
 	// create server entity
 	xrClientData* CL	= ID_to_client	(sender);
 	CSE_Abstract*	E	= tpExistedEntity;

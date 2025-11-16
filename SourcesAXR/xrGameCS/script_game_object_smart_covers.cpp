@@ -44,7 +44,7 @@ void CScriptGameObject::set_smart_cover_target_selector	()
 		return;
 	}
 
-	stalker->movement().target_selector	(CScriptCallbackEx<void>());
+	stalker->get_movement().target_selector	(CScriptCallbackEx<void>());
 }
 
 void CScriptGameObject::set_smart_cover_target_selector	(luabind::functor<void> functor)
@@ -57,7 +57,7 @@ void CScriptGameObject::set_smart_cover_target_selector	(luabind::functor<void> 
 
 	CScriptCallbackEx<void>				callback;
 	callback.set						(functor);
-	stalker->movement().target_selector	(callback);
+	stalker->get_movement().target_selector	(callback);
 }
 
 void CScriptGameObject::set_smart_cover_target_selector	(luabind::functor<void> functor, luabind::object object)
@@ -70,7 +70,7 @@ void CScriptGameObject::set_smart_cover_target_selector	(luabind::functor<void> 
 
 	CScriptCallbackEx<void>				callback;
 	callback.set						(functor, object);
-	stalker->movement().target_selector	(callback);
+	stalker->get_movement().target_selector	(callback);
 }
 
 void CScriptGameObject::set_smart_cover_target_idle		()
@@ -86,7 +86,7 @@ void CScriptGameObject::set_smart_cover_target_idle		()
 		return;
 	}
 
-	stalker->movement().target_idle		();
+	stalker->get_movement().target_idle		();
 }
 
 void CScriptGameObject::set_smart_cover_target_lookout	()
@@ -102,7 +102,7 @@ void CScriptGameObject::set_smart_cover_target_lookout	()
 		return;
 	}
 
-	stalker->movement().target_lookout	();
+	stalker->get_movement().target_lookout	();
 }
 
 void CScriptGameObject::set_smart_cover_target_fire		()
@@ -118,7 +118,7 @@ void CScriptGameObject::set_smart_cover_target_fire		()
 		return;
 	}
 
-	stalker->movement().target_fire		();
+	stalker->get_movement().target_fire		();
 }
 
 void CScriptGameObject::set_smart_cover_target_fire_no_lookout()
@@ -134,7 +134,7 @@ void CScriptGameObject::set_smart_cover_target_fire_no_lookout()
 		return;
 	}
 
-	stalker->movement().target_fire_no_lookout	();
+	stalker->get_movement().target_fire_no_lookout	();
 }
 
 void CScriptGameObject::set_smart_cover_target_default		(bool value)
@@ -150,7 +150,7 @@ void CScriptGameObject::set_smart_cover_target_default		(bool value)
 		return;
 	}
 
-	stalker->movement().target_default	(value);
+	stalker->get_movement().target_default	(value);
 }
 
 bool CScriptGameObject::in_smart_cover						() const
@@ -161,7 +161,7 @@ bool CScriptGameObject::in_smart_cover						() const
 		return							("");
 	}
 
-	return								(stalker->movement().in_smart_cover());
+	return								(stalker->get_movement().in_smart_cover());
 }
 
 void CScriptGameObject::set_dest_smart_cover						(LPCSTR cover_id)
@@ -172,7 +172,7 @@ void CScriptGameObject::set_dest_smart_cover						(LPCSTR cover_id)
 		return;
 	}
 
-	stalker->movement().target_params().cover_id(cover_id);
+	stalker->get_movement().target_params().cover_id(cover_id);
 }
 
 void CScriptGameObject::set_dest_smart_cover						()
@@ -183,7 +183,7 @@ void CScriptGameObject::set_dest_smart_cover						()
 		return;
 	}
 
-	stalker->movement().target_params().cover_id("");
+	stalker->get_movement().target_params().cover_id("");
 }
 
 CCoverPoint const* CScriptGameObject::get_dest_smart_cover			()
@@ -194,7 +194,7 @@ CCoverPoint const* CScriptGameObject::get_dest_smart_cover			()
 		return							(0);
 	}
 
-	return								(stalker->movement().target_params().cover());
+	return								(stalker->get_movement().target_params().cover());
 }
 
 LPCSTR CScriptGameObject::get_dest_smart_cover_name		()
@@ -205,7 +205,7 @@ LPCSTR CScriptGameObject::get_dest_smart_cover_name		()
 		return							(0);
 	}
 
-	return								(stalker->movement().target_params().cover_id().c_str());
+	return								(stalker->get_movement().target_params().cover_id().c_str());
 }
 
 LPCSTR CScriptGameObject::get_smart_cover_description	() const {
@@ -225,7 +225,7 @@ void CScriptGameObject::set_dest_loophole							(LPCSTR loophole_id)
 		return;
 	}
 
-	stalker->movement().target_params().cover_loophole_id(loophole_id);
+	stalker->get_movement().target_params().cover_loophole_id(loophole_id);
 }
 
 void CScriptGameObject::set_dest_loophole							()
@@ -236,7 +236,7 @@ void CScriptGameObject::set_dest_loophole							()
 		return;
 	}
 
-	stalker->movement().target_params().cover_loophole_id("");
+	stalker->get_movement().target_params().cover_loophole_id("");
 }
 
 void CScriptGameObject::set_smart_cover_target						(Fvector value)
@@ -247,7 +247,7 @@ void CScriptGameObject::set_smart_cover_target						(Fvector value)
 		return;
 	}
 
-	stalker->movement().target_params().cover_fire_position		(&value);
+	stalker->get_movement().target_params().cover_fire_position		(&value);
 }
 
 void CScriptGameObject::set_smart_cover_target						()
@@ -258,7 +258,7 @@ void CScriptGameObject::set_smart_cover_target						()
 		return;
 	}
 
-	stalker->movement().target_params().cover_fire_position		(0);
+	stalker->get_movement().target_params().cover_fire_position		(0);
 }
 
 void CScriptGameObject::set_smart_cover_target						(CScriptGameObject *enemy_object)
@@ -269,7 +269,7 @@ void CScriptGameObject::set_smart_cover_target						(CScriptGameObject *enemy_ob
 		return;
 	}
 
-	stalker->movement().target_params().cover_fire_object		(&enemy_object->object());
+	stalker->get_movement().target_params().cover_fire_object		(&enemy_object->object());
 }
 
 bool CScriptGameObject::in_loophole_fov					(LPCSTR cover_id, LPCSTR loophole_id, Fvector object_position) const
@@ -280,7 +280,7 @@ bool CScriptGameObject::in_loophole_fov					(LPCSTR cover_id, LPCSTR loophole_id
 		return							(false);
 	}
 
-	return								(stalker->movement().in_fov(cover_id, loophole_id, object_position));
+	return								(stalker->get_movement().in_fov(cover_id, loophole_id, object_position));
 }
 
 bool CScriptGameObject::in_current_loophole_fov			(Fvector object_position) const
@@ -291,7 +291,7 @@ bool CScriptGameObject::in_current_loophole_fov			(Fvector object_position) cons
 		return							(false);
 	}
 
-	return								(stalker->movement().in_current_loophole_fov (object_position));
+	return								(stalker->get_movement().in_current_loophole_fov (object_position));
 }
 
 bool CScriptGameObject::in_loophole_range				(LPCSTR cover_id, LPCSTR loophole_id, Fvector object_position) const
@@ -302,7 +302,7 @@ bool CScriptGameObject::in_loophole_range				(LPCSTR cover_id, LPCSTR loophole_i
 		return							(false);
 	}
 
-	return								(stalker->movement().in_range (cover_id, loophole_id, object_position));
+	return								(stalker->get_movement().in_range (cover_id, loophole_id, object_position));
 }
 
 bool CScriptGameObject::in_current_loophole_range				(Fvector object_position) const
@@ -313,7 +313,7 @@ bool CScriptGameObject::in_current_loophole_range				(Fvector object_position) c
 		return							(false);
 	}
 
-	return								(stalker->movement().in_current_loophole_range (object_position));
+	return								(stalker->get_movement().in_current_loophole_range (object_position));
 }
 
 float const CScriptGameObject::idle_min_time					() const
@@ -324,7 +324,7 @@ float const CScriptGameObject::idle_min_time					() const
 		return							(flt_max);
 	}
 
-	return								(stalker->movement().idle_min_time());
+	return								(stalker->get_movement().idle_min_time());
 }
 
 void CScriptGameObject::idle_min_time							(float value)
@@ -335,7 +335,7 @@ void CScriptGameObject::idle_min_time							(float value)
 		return;
 	}
 
-	stalker->movement().idle_min_time	(value);
+	stalker->get_movement().idle_min_time	(value);
 }
 
 float const CScriptGameObject::idle_max_time					() const
@@ -346,7 +346,7 @@ float const CScriptGameObject::idle_max_time					() const
 		return							(flt_max);
 	}
 
-	return								(stalker->movement().idle_max_time());
+	return								(stalker->get_movement().idle_max_time());
 }
 
 void CScriptGameObject::idle_max_time							(float value)
@@ -357,7 +357,7 @@ void CScriptGameObject::idle_max_time							(float value)
 		return;
 	}
 
-	stalker->movement().idle_max_time	(value);
+	stalker->get_movement().idle_max_time	(value);
 }
 
 float const CScriptGameObject::lookout_min_time					() const
@@ -368,7 +368,7 @@ float const CScriptGameObject::lookout_min_time					() const
 		return							(flt_max);
 	}
 
-	return								(stalker->movement().lookout_min_time());
+	return								(stalker->get_movement().lookout_min_time());
 }
 
 void CScriptGameObject::lookout_min_time						(float value)
@@ -379,7 +379,7 @@ void CScriptGameObject::lookout_min_time						(float value)
 		return;
 	}
 
-	stalker->movement().lookout_min_time(value);
+	stalker->get_movement().lookout_min_time(value);
 }
 
 float const CScriptGameObject::lookout_max_time					() const
@@ -390,7 +390,7 @@ float const CScriptGameObject::lookout_max_time					() const
 		return							(flt_max);
 	}
 
-	return								(stalker->movement().lookout_max_time());
+	return								(stalker->get_movement().lookout_max_time());
 }
 
 void CScriptGameObject::lookout_max_time						(float value)
@@ -401,7 +401,7 @@ void CScriptGameObject::lookout_max_time						(float value)
 		return;
 	}
 
-	stalker->movement().lookout_max_time(value);
+	stalker->get_movement().lookout_max_time(value);
 }
 
 float CScriptGameObject::apply_loophole_direction_distance() const
@@ -412,7 +412,7 @@ float CScriptGameObject::apply_loophole_direction_distance() const
 		return							(flt_max);
 	}
 
-	return								(stalker->movement().apply_loophole_direction_distance());
+	return								(stalker->get_movement().apply_loophole_direction_distance());
 }
 
 void CScriptGameObject::apply_loophole_direction_distance		(float value)
@@ -423,7 +423,7 @@ void CScriptGameObject::apply_loophole_direction_distance		(float value)
 		return;
 	}
 
-	stalker->movement().apply_loophole_direction_distance	(value);
+	stalker->get_movement().apply_loophole_direction_distance	(value);
 }
 
 bool CScriptGameObject::movement_target_reached					()
@@ -434,5 +434,5 @@ bool CScriptGameObject::movement_target_reached					()
 		return							(false);
 	}
 
-	return								(stalker->movement().current_params().equal_to_target(stalker->movement().target_params()));
+	return								(stalker->get_movement().current_params().equal_to_target(stalker->get_movement().target_params()));
 }

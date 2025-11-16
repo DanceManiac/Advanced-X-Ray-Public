@@ -146,7 +146,7 @@ CBaseMonster::SDebugInfo CBaseMonster::show_debug_info()
 	xr_sprintf(text, "Actual = [%u] Enabled = [%u]",			 control().path_builder().actual(), control().path_builder().enabled());
 	DBG().text(this).add_item(text,										x, y+=delta_y, color);
 	
-	xr_sprintf(text, "Speed: Linear = [%.3f] Angular = [%.3f]", control().movement().velocity_current(), 0.f);
+	xr_sprintf(text, "Speed: Linear = [%.3f] Angular = [%.3f]", control().get_movement().velocity_current(), 0.f);
 	DBG().text(this).add_item(text,										x, y+=delta_y, color);
 	
 	DBG().text(this).add_item("------- Attack Distances -------------", x, y+=delta_y, delimiter_color);
@@ -293,8 +293,8 @@ void CBaseMonster::debug_fsm()
 	DBG().object_info(this,this).add_item	 (st, color_xrgb(255,0,0), 2);
 
 	CEntityAlive *entity = smart_cast<CEntityAlive *>(Level().CurrentEntity());
-	if (entity && entity->character_physics_support()->movement()) {
-		xr_sprintf(st,"VELOCITY [%f,%f,%f] Value[%f]",VPUSH(entity->character_physics_support()->movement()->GetVelocity()),entity->character_physics_support()->movement()->GetVelocityActual());
+	if (entity && entity->character_physics_support()->get_movement()) {
+		xr_sprintf(st,"VELOCITY [%f,%f,%f] Value[%f]",VPUSH(entity->character_physics_support()->get_movement()->GetVelocity()),entity->character_physics_support()->get_movement()->GetVelocityActual());
 		DBG().text(this).clear();
 		DBG().text(this).add_item(st,200,100,COLOR_GREEN,100);
 	}
@@ -423,16 +423,16 @@ void   add_enemy_debug_info (debug::text_tree& root_s, const CCustomMonster* pTh
 {
 	add_debug_info(root_s, pEnemy);
 
-	root_s.add_line("I_See_Enemy", pThis->memory().visual().visible_right_now(pEnemy));
+	root_s.add_line("I_See_Enemy", pThis->get_memory().visual().visible_right_now(pEnemy));
 
 	bool seen_now = false;
 	if ( Actor() == pEnemy ) 
 	{
-		seen_now = Actor()->memory().visual().visible_right_now(pThis); 
+		seen_now = Actor()->get_memory().visual().visible_right_now(pThis); 
 	} 
 	else if ( CCustomMonster* cm = const_cast<CEntityAlive*>(pEnemy)->cast_custom_monster() )
 	{
-		seen_now = cm->memory().visual().visible_right_now(pThis);
+		seen_now = cm->get_memory().visual().visible_right_now(pThis);
 	}
 
 	root_s.add_line("Enemy_See_Me", seen_now);
@@ -548,7 +548,7 @@ void   CBaseMonster::add_debug_info (debug::text_tree& root_s)
 
 	if ( actor )
 	{
-		visuals_s.add_line("Actor_Visible",  memory().visual().visible_now(actor));
+		visuals_s.add_line("Actor_Visible",  get_memory().visual().visible_now(actor));
 	}
 
 	//-----------------------------------------------
@@ -739,7 +739,7 @@ void   CBaseMonster::add_debug_info (debug::text_tree& root_s)
 	TextTree& current_animation_s = animation_s.add_line(*anim().cur_anim_info().name);
 
 	
-	CBlend* p_blend = control().animation().current_blend();
+	CBlend* p_blend = control().get_animation().current_blend();
 	if ( !p_blend )
 	{
 		p_blend = anim().cur_anim_info().blend;
@@ -763,9 +763,9 @@ void   CBaseMonster::add_debug_info (debug::text_tree& root_s)
 	movement_s.add_line("Enabled",  control().path_builder().enabled());
 
 	CEntityAlive *entity = smart_cast<CEntityAlive *>(Level().CurrentEntity());
-	if ( entity && entity->character_physics_support()->movement() ) 
+	if ( entity && entity->character_physics_support()->get_movement() ) 
 	{
-		movement_s.add_line("Velocity",  entity->character_physics_support()->movement()->GetVelocityActual());
+		movement_s.add_line("Velocity",  entity->character_physics_support()->get_movement()->GetVelocityActual());
 	}
 	movement_s.add_line("Position").add_line(Position());
 
@@ -773,13 +773,13 @@ void   CBaseMonster::add_debug_info (debug::text_tree& root_s)
 	movement_s.add_line("Game_Vertex_ID", ai_location().game_vertex_id());
 
 	detail::add_debug_info(movement_s.add_line("Orientation_Current"), 
-		                   movement().body_orientation().current);
+		                   get_movement().body_orientation().current);
 	detail::add_debug_info(movement_s.add_line("Orientation_Target"), 
-		                   movement().body_orientation().target);
-	movement_s.add_line("Rotation_Speed", movement().body_orientation().speed);
+		                   get_movement().body_orientation().target);
+	movement_s.add_line("Rotation_Speed", get_movement().body_orientation().speed);
 
 	const char* pc_path_type = "undefined";
-	switch ( movement().path_type() )
+	switch ( get_movement().path_type() )
 	{
 		case MovementManager::ePathTypePatrolPath: pc_path_type = "Patrol_Path"; break;
 		case MovementManager::ePathTypeGamePath:   pc_path_type = "Game_Path";   break;
@@ -787,16 +787,16 @@ void   CBaseMonster::add_debug_info (debug::text_tree& root_s)
 	}
 
 	movement_s.add_line("Path_Type", pc_path_type);
-	if ( movement().path_type() == MovementManager::ePathTypePatrolPath ) 
+	if ( get_movement().path_type() == MovementManager::ePathTypePatrolPath ) 
 	{
-		movement_s.add_line("Path_Name", *movement().patrol().path_name());
-		movement_s.add_line("Completed",  movement().patrol().completed());
+		movement_s.add_line("Path_Name", *get_movement().patrol().path_name());
+		movement_s.add_line("Completed",  get_movement().patrol().completed());
 
-		movement_s.add_line("Current_Point", movement().patrol().get_current_point_index());
-		if	( movement().patrol().get_path() && 
-			  movement().patrol().get_path()->vertex(movement().patrol().get_current_point_index()) )
+		movement_s.add_line("Current_Point", get_movement().patrol().get_current_point_index());
+		if	( get_movement().patrol().get_path() && 
+			  get_movement().patrol().get_path()->vertex(get_movement().patrol().get_current_point_index()) )
 		{
-			movement_s.add_line("Extrapolate", movement().patrol().extrapolate_path());
+			movement_s.add_line("Extrapolate", get_movement().patrol().extrapolate_path());
 		}
 		else
 		{
@@ -804,44 +804,44 @@ void   CBaseMonster::add_debug_info (debug::text_tree& root_s)
 		}
 	}
 
-	if ( movement().path_type() == MovementManager::ePathTypeGamePath ) 
+	if ( get_movement().path_type() == MovementManager::ePathTypeGamePath ) 
 	{
-		movement_s.add_line("Completed", movement().game_path().completed());
-		movement_s.add_line("Path_Size", movement().game_path().path().size());
-		movement_s.add_line("Current_Point", movement().game_path().intermediate_index());
+		movement_s.add_line("Completed", get_movement().game_path().completed());
+		movement_s.add_line("Path_Size", get_movement().game_path().path().size());
+		movement_s.add_line("Current_Point", get_movement().game_path().intermediate_index());
 	}
 
 	TextTree& level_s = movement_s.add_line("Level");
 
-	level_s.add_line("Path_Size", movement().level_path().path().size());
-	level_s.add_line("Start_Vertex", movement().level_path().path().empty() ? -1 : movement().level_path().path().front());
-	level_s.add_line("End_Vertex", movement().level_path().path().empty() ? -1 : movement().level_path().path().back());
+	level_s.add_line("Path_Size", get_movement().level_path().path().size());
+	level_s.add_line("Start_Vertex", get_movement().level_path().path().empty() ? -1 : get_movement().level_path().path().front());
+	level_s.add_line("End_Vertex", get_movement().level_path().path().empty() ? -1 : get_movement().level_path().path().back());
 
-	if ( !movement().detail().path().empty() ) 
+	if ( !get_movement().detail().path().empty() ) 
 	{
 		TextTree& detail_s = movement_s.add_line("Detail");
 
-		detail_s.add_line("Velocities", movement().detail().velocities().size());
-		detail_s.add_line("Extrapolate", movement().detail().extrapolate_length());
-		detail_s.add_line("Path_Size", movement().detail().path().size());
+		detail_s.add_line("Velocities", get_movement().detail().velocities().size());
+		detail_s.add_line("Extrapolate", get_movement().detail().extrapolate_length());
+		detail_s.add_line("Path_Size", get_movement().detail().path().size());
 
-		detail_s.add_line("Start_Point").add_line(movement().detail().path().front().position);
-		detail_s.add_line("Dest_Point").add_line(movement().detail().path().back().position);
+		detail_s.add_line("Start_Point").add_line(get_movement().detail().path().front().position);
+		detail_s.add_line("Dest_Point").add_line(get_movement().detail().path().back().position);
 		TextTree& current_point_s = detail_s.add_line("Current_Point");
-		current_point_s.add_line("Index", movement().detail().curr_travel_point_index());
-		current_point_s.add_line("Position").add_line(movement().detail().path()[movement().detail().curr_travel_point_index()].position);
+		current_point_s.add_line("Index", get_movement().detail().curr_travel_point_index());
+		current_point_s.add_line("Position").add_line(get_movement().detail().path()[get_movement().detail().curr_travel_point_index()].position);
 
 		CDetailPathManager::STravelParams current_velocity = 
-			movement().detail().velocity(movement().detail().path()[movement().detail().curr_travel_point_index()].velocity);
+			get_movement().detail().velocity(get_movement().detail().path()[get_movement().detail().curr_travel_point_index()].velocity);
 		detail_s.add_line("linear", current_velocity.linear_velocity);
 		detail_s.add_line("angular", rad2deg(current_velocity.real_angular_velocity));
-		detail_s.add_line("speed(calc)", movement().speed());
-		detail_s.add_line("speed(physics)", movement().speed(character_physics_support()->movement()));
+		detail_s.add_line("speed(calc)", get_movement().speed());
+		detail_s.add_line("speed(physics)", get_movement().speed(character_physics_support()->get_movement()));
 	}
 
-	if ( movement().detail().use_dest_orientation() )
+	if ( get_movement().detail().use_dest_orientation() )
 	{
-		movement_s.add_line("Orientation", movement().detail().dest_direction());
+		movement_s.add_line("Orientation", get_movement().detail().dest_direction());
 	}
 	else
 	{
@@ -856,18 +856,18 @@ void   CBaseMonster::add_debug_info (debug::text_tree& root_s)
 
 	TextTree& restrictions_s = movement_s.add_line("Restrictions");
 
-	if	( movement().restrictions().out_restrictions().size() ||
-		  movement().restrictions().in_restrictions().size() ||
-		  movement().restrictions().base_out_restrictions().size() ||
-		  movement().restrictions().base_in_restrictions().size() )
+	if	( get_movement().restrictions().out_restrictions().size() ||
+		  get_movement().restrictions().in_restrictions().size() ||
+		  get_movement().restrictions().base_out_restrictions().size() ||
+		  get_movement().restrictions().base_in_restrictions().size() )
 	{
-		detail::add_debug_info_restrictions(restrictions_s.add_line("out"), *movement().restrictions().out_restrictions());
-		detail::add_debug_info_restrictions(restrictions_s.add_line("in"), *movement().restrictions().in_restrictions());
-		detail::add_debug_info_restrictions(restrictions_s.add_line("base_out"), *movement().restrictions().base_out_restrictions());
-		detail::add_debug_info_restrictions(restrictions_s.add_line("base_in"), *movement().restrictions().base_in_restrictions());
+		detail::add_debug_info_restrictions(restrictions_s.add_line("out"), *get_movement().restrictions().out_restrictions());
+		detail::add_debug_info_restrictions(restrictions_s.add_line("in"), *get_movement().restrictions().in_restrictions());
+		detail::add_debug_info_restrictions(restrictions_s.add_line("base_out"), *get_movement().restrictions().base_out_restrictions());
+		detail::add_debug_info_restrictions(restrictions_s.add_line("base_in"), *get_movement().restrictions().base_in_restrictions());
 
 		restrictions_s.add_line("Actor_Accessible?", actor ?
-			movement().restrictions().accessible(actor->Position()) : false);
+			get_movement().restrictions().accessible(actor->Position()) : false);
 	}
 	else
 	{
@@ -878,12 +878,12 @@ void   CBaseMonster::add_debug_info (debug::text_tree& root_s)
 	// Sound Player
 	//-----------------------------------------------
 	TextTree& sound_player_s = controller_s.find_or_add("Sound_Player");
-	sound_player_s.add_line("Num_Sounds", sound().objects().size());
+	sound_player_s.add_line("Num_Sounds", get_sound().objects().size());
 
 	typedef CSoundPlayer::SOUND_COLLECTIONS::const_iterator SoundIterator;
 
 	u32 object_count = 0;
-	for ( SoundIterator i=sound().objects().begin(), e=sound().objects().end();
+	for ( SoundIterator i= get_sound().objects().begin(), e= get_sound().objects().end();
 		  i!=e; ++i )
 	{
 		object_count += (*i).second.second->m_sounds.size();
@@ -894,8 +894,8 @@ void   CBaseMonster::add_debug_info (debug::text_tree& root_s)
 	typedef xr_vector<CSoundPlayer::CSoundSingle>::const_iterator SoundSingleIterator;
 
 	index = 1;
-	for ( SoundSingleIterator i=sound().playing_sounds().begin(), 
-		                      e=sound().playing_sounds().end();
+	for ( SoundSingleIterator i=get_sound().playing_sounds().begin(), 
+		                      e=get_sound().playing_sounds().end();
 		  i!=e; ++i )
 	{
 		xr_string source = (*i).m_sound->_handle() ? (*i).m_sound->_handle()->file_name() : "no source";

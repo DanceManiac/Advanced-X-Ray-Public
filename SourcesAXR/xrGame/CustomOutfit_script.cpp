@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "CustomOutfit.h"
-#include "ActorHelmet.h"
 
 using namespace luabind;
 

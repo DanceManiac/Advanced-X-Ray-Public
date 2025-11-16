@@ -9,7 +9,8 @@
 #include "d3dx10tex.h"
 #endif	//	USE_DX11
 
-#define	GAMESAVE_SIZE	128
+//constexpr auto GAMESAVE_SIZE = 128;
+static const int save_screenshot_size = READ_IF_EXISTS(pAdvancedSettings, r_u32, "ui_settings", "gamesave_screenshot_size", 128);
 
 IC u32 convert				(float c)	{
 	u32 C=iFloor(c);
@@ -59,8 +60,8 @@ void CRender::ScreenshotImpl	(ScreenshotMode mode, LPCSTR name, CMemoryWriter* m
 	
 				D3D_TEXTURE2D_DESC desc;
 				ZeroMemory( &desc, sizeof(desc) );
-				desc.Width = GAMESAVE_SIZE;
-				desc.Height = GAMESAVE_SIZE;
+				desc.Width = save_screenshot_size;
+				desc.Height = save_screenshot_size;
 				desc.MipLevels = 1;
 				desc.ArraySize = 1;
 				desc.Format = DXGI_FORMAT_BC1_UNORM;
@@ -147,7 +148,7 @@ void CRender::ScreenshotImpl	(ScreenshotMode mode, LPCSTR name, CMemoryWriter* m
 			{
 				string64			t_stemp;
 				string_path			buf;
-
+				
 				if (strstr(Core.Params, "-ss_jpg"))
 				{
 					xr_sprintf(buf, sizeof(buf), "ss_%s_%s_(%s).jpg", Core.UserName, timestamp(t_stemp), (g_pGameLevel) ? g_pGameLevel->name().c_str() : "mainmenu");
@@ -160,38 +161,142 @@ void CRender::ScreenshotImpl	(ScreenshotMode mode, LPCSTR name, CMemoryWriter* m
 					FS.w_close(fs);
 					_RELEASE(saved);
 				}
-				else if (strstr(Core.Params,"-ss_tga"))	 // HQ
+				else if (strstr(Core.Params, "-ss_tga")) // HQ
 				{
-					xr_sprintf			(buf,sizeof(buf),"ssq_%s_%s_(%s).tga",Core.UserName,timestamp(t_stemp),(g_pGameLevel)?g_pGameLevel->name().c_str():"mainmenu");
-					ID3DBlob*		saved	= 0;
+					xr_sprintf(buf, sizeof(buf), "ssq_%s_%s_(%s).tga", Core.UserName, timestamp(t_stemp), (g_pGameLevel) ? g_pGameLevel->name().c_str() : "mainmenu");
 
-					CHK_DX				(D3DX11SaveTextureToMemory(HW.pContext, pSrcTexture, D3DX11_IFF_BMP, &saved, 0));
+					// Приведение pSrcTexture к ID3D11Texture2D
+					ID3D11Texture2D* pSrcTexture2D = nullptr;
+					HRESULT hr = pSrcTexture->QueryInterface(__uuidof(ID3D11Texture2D), (void**)&pSrcTexture2D);
+					if (FAILED(hr))
+					{
+						Msg("! [ERROR] Failed to cast ID3D11Resource to ID3D11Texture2D");
+						return;
+					}
 
-					IWriter*		fs	= FS.w_open	("$screenshots$",buf); R_ASSERT(fs);
-					fs->w				(saved->GetBufferPointer(),(u32)saved->GetBufferSize());
-					FS.w_close			(fs);
-					_RELEASE			(saved);
+					// Описание оригинальной текстуры
+					D3D11_TEXTURE2D_DESC desc;
+					pSrcTexture2D->GetDesc(&desc);
+
+					// Создаем текстуру в формате RGB без альфа-канала
+					D3D11_TEXTURE2D_DESC newDesc = desc;
+					newDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; // Формат с непрозрачным альфа-каналом
+					newDesc.Usage = D3D11_USAGE_STAGING;
+					newDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ | D3D11_CPU_ACCESS_WRITE;
+					newDesc.BindFlags = 0; // Не требуется привязка к GPU
+					ID3D11Texture2D* pNewTexture = nullptr;
+					CHK_DX(HW.pDevice->CreateTexture2D(&newDesc, nullptr, &pNewTexture));
+
+					// Копируем данные из оригинальной текстуры
+					HW.pContext->CopyResource(pNewTexture, pSrcTexture2D);
+
+					// Доступ к данным текстуры для изменения цветового порядка
+					D3D11_MAPPED_SUBRESOURCE mappedResource;
+					HRESULT mapResult = HW.pContext->Map(pNewTexture, 0, D3D11_MAP_READ_WRITE, 0, &mappedResource);
+					if (SUCCEEDED(mapResult))
+					{
+						uint8_t* pData = reinterpret_cast<uint8_t*>(mappedResource.pData);
+						for (UINT y = 0; y < newDesc.Height; ++y)
+						{
+							for (UINT x = 0; x < newDesc.Width; ++x)
+							{
+								size_t index = (y * mappedResource.RowPitch) + (x * 4);
+								// Меняем порядок каналов BGRA -> RGBA
+								std::swap(pData[index], pData[index + 2]); // Swap Blue and Red
+								pData[index + 3] = 255; // Устанавливаем альфа-канал в 255
+							}
+						}
+						HW.pContext->Unmap(pNewTexture, 0);
+					}
+
+					// Сохраняем текстуру в формате TGA через TGAdesc
+					u32* data = (u32*)xr_malloc(newDesc.Width * newDesc.Height * 4);
+					memcpy(data, mappedResource.pData, newDesc.Width * newDesc.Height * 4);
+
+					TGAdesc tgaDesc;
+					tgaDesc.format = IMG_24B;
+					tgaDesc.scanlenght = newDesc.Width * 4;
+					tgaDesc.width = newDesc.Width;
+					tgaDesc.height = newDesc.Height;
+					tgaDesc.data = data;
+
+					IWriter* fs = FS.w_open("$screenshots$", buf);
+					R_ASSERT(fs);
+					tgaDesc.maketga(*fs);
+					xr_free(data);
+					FS.w_close(fs);
+
+					// Очистка
+					_RELEASE(pSrcTexture2D);
+					_RELEASE(pNewTexture);
 				}
 				else // HQ PNG (Default)
 				{
-					sprintf_s(buf, sizeof(buf), "ssq_%s_%s_(%s).png", Core.UserName, timestamp(t_stemp), (g_pGameLevel) ? g_pGameLevel->name().c_str() : "mainmenu");
-					ID3DBlob* saved = 0;
-					//CHK_DX(D3DXSaveSurfaceToFileInMemory(&saved, D3DXIFF_PNG, pFB, 0, srcRect));
+					xr_sprintf(buf, sizeof(buf), "ssq_%s_%s_(%s).png", Core.UserName, timestamp(t_stemp), (g_pGameLevel) ? g_pGameLevel->name().c_str() : "mainmenu");
 
-					CHK_DX				(D3DX11SaveTextureToMemory(HW.pContext, pSrcTexture, D3DX11_IFF_PNG, &saved, 0));
+					// Приведение pSrcTexture к ID3D11Texture2D
+					ID3D11Texture2D* pSrcTexture2D = nullptr;
+					HRESULT hr = pSrcTexture->QueryInterface(__uuidof(ID3D11Texture2D), (void**)&pSrcTexture2D);
+					if (FAILED(hr))
+					{
+						Msg("! [ERROR] Failed to cast ID3D11Resource to ID3D11Texture2D");
+						return;
+					}
 
-					IWriter* fs = FS.w_open("$screenshots$", buf); R_ASSERT(fs);
-					fs->w(saved->GetBufferPointer(), saved->GetBufferSize());
+					// Описание оригинальной текстуры
+					D3D11_TEXTURE2D_DESC desc;
+					pSrcTexture2D->GetDesc(&desc);
+
+					// Создаем текстуру в формате RGB без альфа-канала
+					D3D11_TEXTURE2D_DESC newDesc = desc;
+					newDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; // Формат с непрозрачным альфа-каналом
+					newDesc.Usage = D3D11_USAGE_STAGING;
+					newDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ | D3D11_CPU_ACCESS_WRITE;
+					newDesc.BindFlags = 0; // Не требуется привязка к GPU
+					ID3D11Texture2D* pNewTexture = nullptr;
+					CHK_DX(HW.pDevice->CreateTexture2D(&newDesc, nullptr, &pNewTexture));
+
+					// Копируем данные из оригинальной текстуры
+					HW.pContext->CopyResource(pNewTexture, pSrcTexture2D);
+
+					// Доступ к данным текстуры для изменения альфа-канала
+					D3D11_MAPPED_SUBRESOURCE mappedResource;
+					HRESULT mapResult = HW.pContext->Map(pNewTexture, 0, D3D11_MAP_READ_WRITE, 0, &mappedResource);
+					if (SUCCEEDED(mapResult))
+					{
+						uint8_t* pData = reinterpret_cast<uint8_t*>(mappedResource.pData);
+						for (UINT y = 0; y < newDesc.Height; ++y)
+						{
+							for (UINT x = 0; x < newDesc.Width; ++x)
+							{
+								size_t index = (y * mappedResource.RowPitch) + (x * 4);
+								pData[index + 3] = 255; // Устанавливаем альфа-канал в 255
+							}
+						}
+						HW.pContext->Unmap(pNewTexture, 0);
+					}
+
+					// Сохраняем текстуру в формате PNG
+					ID3DBlob* saved = nullptr;
+					CHK_DX(D3DX11SaveTextureToMemory(HW.pContext, pNewTexture, D3DX11_IFF_PNG, &saved, 0));
+
+					// Запись в файл
+					IWriter* fs = FS.w_open("$screenshots$", buf);
+					R_ASSERT(fs);
+					fs->w(saved->GetBufferPointer(), (u32)saved->GetBufferSize());
 					FS.w_close(fs);
+
+					// Очистка
 					_RELEASE(saved);
+					_RELEASE(pSrcTexture2D);
+					_RELEASE(pNewTexture);
 				}
 			}
 			break;
 		case IRender_interface::SM_FOR_LEVELMAP:
 		case IRender_interface::SM_FOR_CUBEMAP:
-			{
+		{
 			string_path buf;
-			TGAdesc				p;
 			VERIFY(name);
 			strconcat(sizeof(buf), buf, name, ".tga");
 			IWriter* fs = FS.w_open("$screenshots$", buf);
@@ -225,6 +330,8 @@ void CRender::ScreenshotImpl	(ScreenshotMode mode, LPCSTR name, CMemoryWriter* m
 #else
 			pTex->Unmap(0);
 #endif
+			TGAdesc p{};
+			p.format = IMG_24B;
 			p.scanlenght = Device.dwHeight * 4;
 			p.width = Device.dwHeight;
 			p.height = Device.dwHeight;
@@ -232,8 +339,7 @@ void CRender::ScreenshotImpl	(ScreenshotMode mode, LPCSTR name, CMemoryWriter* m
 			p.maketga(*fs);
 			xr_free(data);
 			FS.w_close(fs);
-			}
-			break;
+		} break;
 	}
 
 	_RELEASE(pSrcTexture);
@@ -335,7 +441,7 @@ void CRender::ScreenshotImpl	(ScreenshotMode mode, LPCSTR name, CMemoryWriter* m
 			{
 				// texture
 				ID3DTexture2D*	texture	= NULL;
-				hr					= D3DXCreateTexture(HW.pDevice,GAMESAVE_SIZE,GAMESAVE_SIZE,1,0,D3DFMT_DXT1,D3DPOOL_SCRATCH,&texture);
+				hr					= D3DXCreateTexture(HW.pDevice,save_screenshot_size,save_screenshot_size,1,0,D3DFMT_DXT1,D3DPOOL_SCRATCH,&texture);
 				if(hr!=D3D_OK)		goto _end_;
 				if(NULL==texture)	goto _end_;
 
@@ -624,4 +730,14 @@ void CRender::ScreenshotAsyncEnd(CMemoryWriter &memory_writer)
 void DoAsyncScreenshot()
 {
 	RImplementation.Target->DoAsyncScreenshot();
+}
+
+#include "../../xrCore/Spheremap/Spheremap.h"
+
+void CRender::CreatePanorama()
+{
+	string_path file_name;
+	string64 t_stemp;
+	sprintf_s(file_name, sizeof(file_name), "spheremap_panorama_%s_%s_(%s).jpg", Core.UserName, timestamp(t_stemp), (g_pGameLevel) ? g_pGameLevel->name().c_str() : "mainmenu");
+	GenerateSpheremap(file_name, ps_r_panorama_scr_size);
 }

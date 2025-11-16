@@ -37,19 +37,19 @@ void CAI_Rat::activate_state_free_active()
 		}
 	}
 
-	if ((fis_zero(m_fSpeed) && (angle_difference(movement().m_body.target.yaw,movement().m_body.current.yaw) < PI_DIV_6)))
+	if ((fis_zero(m_fSpeed) && (angle_difference(get_movement().m_body.target.yaw,get_movement().m_body.current.yaw) < PI_DIV_6)))
 		vfChooseNewSpeed();
 
 	vfUpdateTime(m_fTimeUpdateDelta);
 
 	set_movement_type(false);
 
-	sound().play	(eRatSoundVoice, 45*1000,15*1000);
+	get_sound().play	(eRatSoundVoice, 45*1000,15*1000);
 }
 
 void CAI_Rat::activate_state_free_passive()
 {
-	if (memory().enemy().selected()) {
+	if (get_memory().get_enemy().selected()) {
 		m_fGoalChangeTime = 0;
 		add_active_member(true);
 		return;
@@ -70,7 +70,7 @@ void CAI_Rat::activate_state_free_passive()
 	vfAddStandingMember();
 	add_active_member();
 
-	sound().play	(eRatSoundVoice,45*1000,15*1000);
+	get_sound().play	(eRatSoundVoice,45*1000,15*1000);
 }
 
 void CAI_Rat::activate_turn()
@@ -130,7 +130,7 @@ void CAI_Rat::activate_state_free_recoil()
 
 	set_movement_type(true,true);
 
-	sound().play	(eRatSoundVoice,45*1000,15*1000);
+	get_sound().play	(eRatSoundVoice,45*1000,15*1000);
 }
 void CAI_Rat::activate_state_home()
 {
@@ -149,7 +149,7 @@ void CAI_Rat::activate_state_home()
 void CAI_Rat::activate_state_eat()
 {
 	Fvector								temp_position;
-	memory().item().selected()->Center						(temp_position);
+	get_memory().item().selected()->Center						(temp_position);
 
 	if ((Device.dwTimeGlobal - m_previous_query_time > TIME_TO_GO) || !m_previous_query_time)
 		m_tGoalDir.set					(temp_position);
@@ -161,11 +161,11 @@ void CAI_Rat::activate_state_eat()
 	direction.sub						(temp_position,Position());
 	float								y,p;
 	direction.getHP						(y,p);
-	if (a && angle_difference(y,-movement().m_body.current.yaw) < PI_DIV_6) {
+	if (a && angle_difference(y,-get_movement().m_body.current.yaw) < PI_DIV_6) {
 		m_fSpeed						= 0;
 		if (Device.dwTimeGlobal - m_previous_query_time > m_dwHitInterval) {
 			m_previous_query_time		= Device.dwTimeGlobal;
-			const CEntityAlive			*const_corpse = smart_cast<const CEntityAlive*>(memory().item().selected());
+			const CEntityAlive			*const_corpse = smart_cast<const CEntityAlive*>(get_memory().item().selected());
 			VERIFY						(const_corpse);
 			CEntityAlive				*corpse = const_cast<CEntityAlive*>(const_corpse);
 			VERIFY						(corpse);
@@ -173,10 +173,10 @@ void CAI_Rat::activate_state_eat()
 		}
 		m_bFiring = true;
 		set_movement_type			(false);
-		sound().play				(eRatSoundEat);
+		get_sound().play				(eRatSoundEat);
 	}
 	else {
-		sound().remove_active_sounds(u32(-1));
+		get_sound().remove_active_sounds(u32(-1));
 		if (!a)
 			m_fSpeed					= m_fMaxSpeed;
 		else

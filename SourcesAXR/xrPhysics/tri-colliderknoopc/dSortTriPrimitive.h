@@ -217,7 +217,7 @@ IC int dcTriListCollider::dSortTriPrimitiveCollide (
 				debug_output().DBG_DrawTri(T,V_array,color_xrgb(0,0,255));
 #endif
 			float last_pos_dist=dDOT(last_pos,tri.norm)- tri.pos ;
-			if((!(last_pos_dist<0.f))||b_pushing)
+			if((!(last_pos_dist<0.f)) || b_pushing || isnan(last_pos_dist))
 				if(__aabb_tri(Point(p),Point((float*)&AABB),vertices))
 				{
 #ifdef DEBUG

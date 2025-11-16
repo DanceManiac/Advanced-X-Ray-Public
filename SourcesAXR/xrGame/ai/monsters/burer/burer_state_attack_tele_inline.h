@@ -207,8 +207,9 @@ void CStateBurerAttackTele<Object>::FindFreeObjects(xr_vector<CObject*> &tpObjec
 			(obj->m_pPhysicsShell->getMass() < object->m_tele_object_min_mass) || 
 			(obj->m_pPhysicsShell->getMass() > object->m_tele_object_max_mass) || 
 			(obj == object) || 
-			object->CTelekinesis::is_active_object(obj) || (pSettings->line_exist(obj->cNameSect().c_str(), "quest_item") && 
-				pSettings->r_bool(obj->cNameSect().c_str(), "quest_item")) ||
+			object->CTelekinesis::is_active_object(obj) || 
+			( pSettings->line_exist( obj->cNameSect().c_str(), "ph_heavy" ) && pSettings->r_bool( obj->cNameSect().c_str(), "ph_heavy" ) ) ||
+			( pSettings->line_exist( obj->cNameSect().c_str(), "quest_item" ) && pSettings->r_bool( obj->cNameSect().c_str(), "quest_item" ) ) ||
 			!obj->m_pPhysicsShell->get_ApplyByGravity()) continue;
 
 		tele_objects.push_back(obj);
@@ -279,7 +280,7 @@ void CStateBurerAttackTele<Object>::FireAllToEnemy()
 		object->CTelekinesis::fire_t				(cur_object, enemy_pos, fire_time);
 	}
 
-	object->sound().play			(CBurer::eMonsterSoundTeleAttack);
+	object->get_sound().play			(CBurer::eMonsterSoundTeleAttack);
 }
 
 template <typename Object>
@@ -331,7 +332,7 @@ void CStateBurerAttackTele<Object>::ExecuteTeleFire()
 	object->CTelekinesis::fire_t	(selected_object,enemy_pos, fire_time);
 
 	object->StopTeleObjectParticle	(selected_object);
-	object->sound().play			(CBurer::eMonsterSoundTeleAttack);
+	object->get_sound().play			(CBurer::eMonsterSoundTeleAttack);
 }
 
 template <typename Object>

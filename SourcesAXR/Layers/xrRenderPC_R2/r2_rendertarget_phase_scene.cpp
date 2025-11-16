@@ -13,6 +13,11 @@ void	CRenderTarget::phase_scene_prepare	()
 	//	TODO: add multiplication by sun color here
 	//if (fValue<0.0001) FlagSunShafts = 0;
 
+	// Thx to K.D.
+	// We need to clean up G-buffer every frame to avoid "ghosting" on sky
+	u_setrt(rt_Position, rt_Normal, rt_Color, 0);
+	CHK_DX(HW.pDevice->Clear(0L, NULL, D3DCLEAR_TARGET, 0x0, 1.0f, 0L));
+
 	if ( RImplementation.o.advancedpp &&
 			(
 				ps_r2_ls_flags.test(R2FLAG_SOFT_PARTICLES|R2FLAG_DOF) ||

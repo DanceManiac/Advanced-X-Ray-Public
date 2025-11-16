@@ -104,7 +104,7 @@ void game_cl_ArtefactHunt::Init ()
 							transform.setXYZ(R.A);
 							transform.translate_over(R.P);
 							CParticlesObject* pStaticParticles			= CParticlesObject::Create(pSettings->r_string("artefacthunt_gamedata", ParticleStr),FALSE,false);
-							pStaticParticles->UpdateParent	(transform,zero_vel);
+							pStaticParticles->UpdateParent	(transform,m_zero_vel);
 							pStaticParticles->Play			();
 							Level().m_StaticParticles.push_back		(pStaticParticles);
 						};
@@ -293,9 +293,6 @@ void game_cl_ArtefactHunt::SetGameUI(CUIGameCustom* uigame)
 
 CUIGameCustom* game_cl_ArtefactHunt::createGameUI()
 {
-	if (g_dedicated_server)
-		return NULL;
-
 	CLASS_ID clsid			= CLSID_GAME_UI_ARTEFACTHUNT;
 	m_game_ui				= smart_cast<CUIGameAHunt*> ( NEW_INSTANCE ( clsid ) );
 	R_ASSERT				(m_game_ui);
@@ -354,9 +351,6 @@ void game_cl_ArtefactHunt::shedule_Update			(u32 dt)
 	string1024 msg;
 
 	inherited::shedule_Update		(dt);
-
-	if (g_dedicated_server)
-		return;
 
 	if (!m_game_ui)
 		return;

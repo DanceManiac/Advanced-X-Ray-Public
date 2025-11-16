@@ -63,11 +63,11 @@ extern ECORE_API	float		ps_r__ssaDISCARD	;
 extern ECORE_API	float		ps_r__ssaDONTSORT	;
 extern ECORE_API	float		ps_r__ssaHZBvsTEX	;
 extern ECORE_API	int			ps_r__tf_Anisotropic;
+extern ECORE_API	float		ps_r__tf_Mipbias	;
 
 // R1
 extern ECORE_API	float		ps_r1_ssaLOD_A;
 extern ECORE_API	float		ps_r1_ssaLOD_B;
-extern ECORE_API	float		ps_r1_tf_Mipbias;
 extern ECORE_API	float		ps_r1_lmodel_lerp;
 extern ECORE_API	float		ps_r1_dlights_clip;
 extern ECORE_API	float		ps_r1_pps_u;
@@ -85,10 +85,12 @@ enum
 	R1FLAG_DLIGHTS				= (1<<0),
 };
 
+extern ECORE_API Flags32 ps_r__common_flags;
+
+
 // R2
 extern ECORE_API	float		ps_r2_ssaLOD_A;
 extern ECORE_API	float		ps_r2_ssaLOD_B;
-extern ECORE_API	float		ps_r2_tf_Mipbias;
 
 // R2-specific
 extern ECORE_API Flags32		ps_r2_ls_flags;				// r2-only
@@ -161,8 +163,6 @@ extern ECORE_API float			ps_r2_rain_drops_speed;
 
 extern ECORE_API int			opt_static;
 extern ECORE_API int			opt_dynamic;
-//SFZ Lens Flares
-extern ECORE_API int			ps_r2_lfx;
 
 //Многопоточная загрузка текстур
 extern ECORE_API int			ps_mt_texture_load;
@@ -184,6 +184,15 @@ extern ECORE_API Fvector		ps_r2_img_cg;
 
 extern ECORE_API int			ps_r4_ss_grass_collision;
 extern ECORE_API int			ps_r4_pseudo_pbr;
+
+extern ECORE_API float			ps_r__opt_dist;
+
+extern ECORE_API u32			ps_r_panorama_scr_size;
+
+extern ECORE_API float			ps_r2_aref_strength;
+extern ECORE_API Fvector4		ps_r4_normal_strength; //x - world, y - hud, z - terrain, w - trees
+extern ECORE_API float			ps_r4_sss_water_waves_koef;
+
 enum
 {
 	R2FLAG_SUN					= (1<<0),
@@ -256,6 +265,12 @@ enum
 };
 //end ogse sunshafts
 
+extern ECORE_API Flags32 ps_r2_ls_flags_2;
+
+enum
+{
+};
+
 extern ECORE_API Flags32 ps_actor_shadow_flags;
 
 enum
@@ -305,6 +320,17 @@ enum
 	R4FLAG_SS_SHADOWS			= (1 << 8),
 	R4FLAG_SS_LUT				= (1 << 9),
 	R4FLAG_SS_WIND				= (1 << 10),
+	R4FLAG_SS_PUDDLES			= (1 << 11),
+	R4FLAG_SS_BLOOM				= (1 << 12),
+	R4FLAG_SS_BLOOM_MASK_DIRT	= (1 << 13),
+	R4FLAG_ES_ACES_TONEMAPPING  = (1 << 14),
+};
+
+extern ECORE_API Flags32		ps_r__common_flags;
+
+enum
+{
+	RFLAG_USE_SHADERS_CACHE		= (1 << 0),
 };
 
 //Rezy: cleanup flags
@@ -312,7 +338,6 @@ extern Flags32 psDeviceFlags2;
 
 extern void						xrRender_initconsole	();
 extern BOOL						xrRender_test_hw		();
-extern void						xrRender_apply_tf		();
 extern ECORE_API float			droplets_power_debug;
 
 // M.F.S. Team: Flares Render

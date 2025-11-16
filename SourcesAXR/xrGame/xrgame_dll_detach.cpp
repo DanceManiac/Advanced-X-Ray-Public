@@ -30,9 +30,9 @@ typedef xr_vector<std::pair<shared_str,int> >	STORY_PAIRS;
 extern STORY_PAIRS								story_ids;
 extern STORY_PAIRS								spawn_story_ids;
 
-extern void show_smart_cast_stats					();
-extern void clear_smart_cast_stats					();
-extern void release_smart_cast_stats				();
+//extern void show_smart_cast_stats					();
+//extern void clear_smart_cast_stats					();
+//extern void release_smart_cast_stats				();
 extern void dump_list_wnd							();
 extern void dump_list_lines							();
 extern void dump_list_sublines						();
@@ -45,15 +45,14 @@ extern void InitHudSoundSettings					();
 #include "../xrEngine/IGame_Persistent.h"
 void init_game_globals()
 {
+	ZoneScoped;
+
 	CreateUIGeom									();
 	InitHudSoundSettings							();
-	if(!g_dedicated_server)
-	{
-		CInfoPortion::InitInternal					();
-		CEncyclopediaArticle::InitInternal			();
-		CPhraseDialog::InitInternal					();
-		InventoryUtilities::CreateShaders			();
-	};
+	CInfoPortion::InitInternal					();
+	CEncyclopediaArticle::InitInternal			();
+	CPhraseDialog::InitInternal					();
+	InventoryUtilities::CreateShaders			();
 	CCharacterInfo::InitInternal					();
 	CSpecificCharacter::InitInternal				();
 	CHARACTER_COMMUNITY::InitInternal				();
@@ -69,6 +68,8 @@ extern void destroy_lua_wpn_params	();
 
 void clean_game_globals()
 {
+	ZoneScoped;
+
 	destroy_lua_wpn_params							();
 	// destroy ai space
 	xr_delete										(g_ai_space);
@@ -80,19 +81,17 @@ void clean_game_globals()
 	story_ids.clear									();
 	spawn_story_ids.clear							();
 
-	if(!g_dedicated_server)
-	{
-		CInfoPortion::DeleteSharedData					();
-		CInfoPortion::DeleteIdToIndexData				();
+	CInfoPortion::DeleteSharedData					();
+	CInfoPortion::DeleteIdToIndexData				();
 
-		CEncyclopediaArticle::DeleteSharedData			();
-		CEncyclopediaArticle::DeleteIdToIndexData		();
+	CEncyclopediaArticle::DeleteSharedData			();
+	CEncyclopediaArticle::DeleteIdToIndexData		();
 
-		CPhraseDialog::DeleteSharedData					();
-		CPhraseDialog::DeleteIdToIndexData				();
+	CPhraseDialog::DeleteSharedData					();
+	CPhraseDialog::DeleteIdToIndexData				();
 		
-		InventoryUtilities::DestroyShaders				();
-	}
+	InventoryUtilities::DestroyShaders				();
+
 	CCharacterInfo::DeleteSharedData				();
 	CCharacterInfo::DeleteIdToIndexData				();
 	
@@ -119,7 +118,7 @@ void clean_game_globals()
 	
 #ifdef DEBUG
 	xr_delete										(g_profiler);
-	release_smart_cast_stats						();
+	//release_smart_cast_stats						();
 #endif
 
 	RELATION_REGISTRY::clear_relation_registry		();

@@ -2551,6 +2551,9 @@
     <Filter Include="Core\Client\Objects\items &amp; weapons\Devices\SleepingBag">
       <UniqueIdentifier>{07269ab8-75de-41e4-9c7c-4e139a20481a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="AI\AScript\ScriptClasses\ScriptVarsStorage">
+      <UniqueIdentifier>{2aaf534a-bcd4-4186-a354-8d4544fd3916}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mt_config.h">
@@ -6222,15 +6225,6 @@
     <ClInclude Include="..\xrServerEntitiesCS\smart_cast.h">
       <Filter>Core\Common\SmartCast</Filter>
     </ClInclude>
-    <ClInclude Include="..\xrServerEntitiesCS\smart_cast_impl0.h">
-      <Filter>Core\Common\SmartCast</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrServerEntitiesCS\smart_cast_impl1.h">
-      <Filter>Core\Common\SmartCast</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrServerEntitiesCS\smart_cast_impl2.h">
-      <Filter>Core\Common\SmartCast</Filter>
-    </ClInclude>
     <ClInclude Include="string_table.h">
       <Filter>Core\Common\StringTable</Filter>
     </ClInclude>
@@ -6897,6 +6891,9 @@
     <ClInclude Include="ui\UIDragDropListEx.h">
       <Filter>UI\UIWindows\DragDrop</Filter>
     </ClInclude>
+    <ClInclude Include="ui\UIDragDropReferenceList.h">
+      <Filter>UI\UIWindows\DragDrop</Filter>
+    </ClInclude>
     <ClInclude Include="ui\UILabel.h">
       <Filter>UI\UIWindows\Label</Filter>
     </ClInclude>
@@ -7329,12 +7326,6 @@
     <ClInclude Include="embedded_editor\editor_render.h">
       <Filter>EmbeddedEditor</Filter>
     </ClInclude>
-    <ClInclude Include="embedded_editor\editor_render_ai_map.h">
-      <Filter>EmbeddedEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="embedded_editor\editor_render_spawn_element.h">
-      <Filter>EmbeddedEditor</Filter>
-    </ClInclude>
     <ClInclude Include="CustomTimer.h" />
     <ClInclude Include="CustomBackpack.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Devices\Backpack</Filter>
@@ -7342,7 +7333,6 @@
     <ClInclude Include="ui\UIArtefactPanel.h">
       <Filter>UI\Common\MainIngame</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xrPhysics\xrPhysics.h" />
     <ClInclude Include="physics_game.h" />
     <ClInclude Include="trajectories.h">
       <Filter>AI\AMonsters\common\trajectories</Filter>
@@ -7377,20 +7367,33 @@
     <ClInclude Include="WeaponAttaches.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons</Filter>
     </ClInclude>
-    <ClInclude Include="..\xrGame\doors.h">
-      <Filter>AI\AComponents\doors_manager</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrGame\doors_door.h">
-      <Filter>AI\AComponents\doors_manager\door</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrGame\doors_actor.h">
-      <Filter>AI\AComponents\doors_manager\actor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrGame\doors_manager.h">
-      <Filter>AI\AComponents\doors_manager\manager</Filter>
-    </ClInclude>
     <ClInclude Include="SleepingBag.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Devices\SleepingBag</Filter>
+    </ClInclude>
+    <ClInclude Include="embedded_editor\embedded_editor_spawner.h">
+      <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="script_vars_storage.h">
+      <Filter>AI\AScript\ScriptClasses\ScriptVarsStorage</Filter>
+    </ClInclude>
+    <ClInclude Include="embedded_editor\embedded_editor_person_attach.h">
+      <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\monsters\anti_aim_ability.h">
+      <Filter>AI\AMonsters\common\components</Filter>
+    </ClInclude>
+    <ClInclude Include="embedded_editor\embedded_editor_ui.h">
+      <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="GlobalAchievements.h" />
+    <ClInclude Include="ui\UI3dStatic.h">
+      <Filter>UI\UIWindows\Static</Filter>
+    </ClInclude>
+    <ClInclude Include="ActorHelmet.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
+    </ClInclude>
+    <ClInclude Include="embedded_editor\embedded_editor_postprocess.h">
+      <Filter>EmbeddedEditor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -9764,12 +9767,6 @@
     <ClCompile Include="random32.cpp">
       <Filter>Core\Common\Random\32bit</Filter>
     </ClCompile>
-    <ClCompile Include="..\xrServerEntitiesCS\smart_cast.cpp">
-      <Filter>Core\Common\SmartCast</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrServerEntitiesCS\smart_cast_stats.cpp">
-      <Filter>Core\Common\SmartCast</Filter>
-    </ClCompile>
     <ClCompile Include="string_table.cpp">
       <Filter>Core\Common\StringTable</Filter>
     </ClCompile>
@@ -10952,6 +10949,7 @@
     <ClCompile Include="embedded_editor\embedded_editor_pos_informer.cpp">
       <Filter>EmbeddedEditor</Filter>
     </ClCompile>
+    <ClCompile Include="ui\UIDragDropReferenceList.cpp" />
     <ClCompile Include="AntigasFilter.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Consumables</Filter>
     </ClCompile>
@@ -10974,12 +10972,6 @@
       <Filter>Core\Client\Objects\items &amp; weapons\Devices\ArtefactContainer</Filter>
     </ClCompile>
     <ClCompile Include="embedded_editor\editor_render.cpp">
-      <Filter>EmbeddedEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="embedded_editor\editor_render_ai_map.cpp">
-      <Filter>EmbeddedEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="embedded_editor\editor_render_spawn_element.cpp">
       <Filter>EmbeddedEditor</Filter>
     </ClCompile>
     <ClCompile Include="CustomTimer.cpp" />
@@ -11030,6 +11022,31 @@
     </ClCompile>
     <ClCompile Include="SleepingBag.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Devices\SleepingBag</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_spawner.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="script_vars_storage.cpp">
+      <Filter>AI\AScript\ScriptClasses\ScriptVarsStorage</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_person_attach.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="ai\monsters\anti_aim_ability.cpp">
+      <Filter>AI\AMonsters\common\components</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_ui.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GlobalAchievements.cpp" />
+    <ClCompile Include="ui\UI3dStatic.cpp">
+      <Filter>UI\UIWindows\Static</Filter>
+    </ClCompile>
+    <ClCompile Include="ActorHelmet.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_postprocess.cpp">
+      <Filter>EmbeddedEditor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

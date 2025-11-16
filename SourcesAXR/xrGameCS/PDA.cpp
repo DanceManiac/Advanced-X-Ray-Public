@@ -30,27 +30,27 @@ CPda::CPda(void)
 	m_idOriginalOwner = u16(-1);
 	m_SpecificChracterOwner = nullptr;
 	TurnOff();
+
 	m_bZoomed = false;
 	joystick = BI_NONE;
 	target_screen_switch = 0.f;
-	m_fLR_CameraFactor = 0.f;
-	m_fLR_MovingFactor = 0.f;
-	m_fLR_InertiaFactor = 0.f;
-	m_fUD_InertiaFactor = 0.f;
 	m_bNoticedEmptyBattery = false;
+	m_psy_factor = 0.0f;
 }
 
 CPda::~CPda()
 {
-	pda_light.destroy();
-	pda_glow.destroy();
+	if (pda_light)
+		pda_light.destroy();
+
+	if (pda_glow)
+		pda_glow.destroy();
 }
 
 BOOL CPda::net_Spawn(CSE_Abstract* DC)
 {
 	inherited::net_Spawn(DC);
-	CSE_Abstract* abstract = (CSE_Abstract*)(DC);
-	CSE_ALifeItemPDA* pda = smart_cast<CSE_ALifeItemPDA*>(abstract);
+	auto pda = smart_cast<CSE_ALifeItemPDA*>(DC);
 	R_ASSERT(pda);
 	m_idOriginalOwner = pda->m_original_owner;
 	m_SpecificChracterOwner = pda->m_specific_character;
@@ -60,7 +60,11 @@ BOOL CPda::net_Spawn(CSE_Abstract* DC)
 
 void CPda::net_Destroy()
 {
-	inherited::net_Destroy();
+	if (this_is_3d_pda)
+		inherited::net_Destroy();
+	else
+		CInventoryItemObject::net_Destroy();
+
 	TurnOff();
 	feel_touch.clear();
 	UpdateActiveContacts();
@@ -68,24 +72,33 @@ void CPda::net_Destroy()
 
 void CPda::Load(LPCSTR section)
 {
-	inherited::Load(section);
+	this_is_3d_pda = pSettings->line_exist(section, "hud");
+	if (this_is_3d_pda)
+		inherited::Load(section);
+	else
+		CInventoryItemObject::Load(section);
 
 	m_fRadius = pSettings->r_float(section, "radius");
 	m_functor_str = READ_IF_EXISTS(pSettings, r_string, section, "play_function", "");
-	m_fDisplayBrightnessPowerSaving = READ_IF_EXISTS(pSettings, r_float, section, "power_saving_brightness", .6f);
-	m_fPowerSavingCharge = READ_IF_EXISTS(pSettings, r_float, section, "power_saving_charge", .15f);
-	m_joystick_bone = READ_IF_EXISTS(pSettings, r_string, section, "joystick_bone", nullptr);
-	m_sounds.LoadSound(section, "snd_draw", "sndShow", true);
-	m_sounds.LoadSound(section, "snd_holster", "sndHide", true);
-	m_sounds.LoadSound(section, "snd_draw_empty", "sndShowEmpty", true);
-	m_sounds.LoadSound(section, "snd_holster_empty", "sndHideEmpty", true);
-	m_sounds.LoadSound(section, "snd_btn_press", "sndButtonPress");
-	m_sounds.LoadSound(section, "snd_btn_release", "sndButtonRelease"); 
-	m_sounds.LoadSound(section, "snd_empty", "sndEmptyBattery", true);
-	m_screen_on_delay = READ_IF_EXISTS(pSettings, r_float, section, "screen_on_delay", 0.f);
-	m_screen_off_delay = READ_IF_EXISTS(pSettings, r_float, section, "screen_off_delay", 0.f);
-	m_thumb_rot[0] = READ_IF_EXISTS(pSettings, r_float, section, "thumb_rot_x", 0.f);
-	m_thumb_rot[1] = READ_IF_EXISTS(pSettings, r_float, section, "thumb_rot_y", 0.f);
+
+	if (this_is_3d_pda)
+	{
+		m_fDisplayBrightnessPowerSaving = READ_IF_EXISTS(pSettings, r_float, section, "power_saving_brightness", .6f);
+		m_fPowerSavingCharge = READ_IF_EXISTS(pSettings, r_float, section, "power_saving_charge", .15f);
+
+		m_joystick_bone = READ_IF_EXISTS(pSettings, r_string, section, "joystick_bone", nullptr);
+		m_sounds.LoadSound(section, "snd_draw", "sndShow", true);
+		m_sounds.LoadSound(section, "snd_holster", "sndHide", true);
+		m_sounds.LoadSound(section, "snd_draw_empty", "sndShowEmpty", true);
+		m_sounds.LoadSound(section, "snd_holster_empty", "sndHideEmpty", true);
+		m_sounds.LoadSound(section, "snd_btn_press", "sndButtonPress");
+		m_sounds.LoadSound(section, "snd_btn_release", "sndButtonRelease");
+		m_sounds.LoadSound(section, "snd_empty", "sndEmptyBattery", true);
+		m_screen_on_delay = READ_IF_EXISTS(pSettings, r_float, section, "screen_on_delay", 0.f);
+		m_screen_off_delay = READ_IF_EXISTS(pSettings, r_float, section, "screen_off_delay", 0.f);
+		m_thumb_rot[0] = READ_IF_EXISTS(pSettings, r_float, section, "thumb_rot_x", 0.f);
+		m_thumb_rot[1] = READ_IF_EXISTS(pSettings, r_float, section, "thumb_rot_y", 0.f);
+	}
 
 	m_bLightsEnabled = READ_IF_EXISTS(pSettings, r_string, section, "light_enabled", false);
 
@@ -135,6 +148,9 @@ void CPda::Load(LPCSTR section)
 
 void CPda::OnStateSwitch(u32 S)
 {
+	if (!this_is_3d_pda)
+		return;
+
 	inherited::OnStateSwitch(S);
 
 	if (!ParentIsActor())
@@ -219,6 +235,9 @@ void CPda::OnStateSwitch(u32 S)
 
 void CPda::OnAnimationEnd(u32 state)
 {
+	if (!this_is_3d_pda)
+		return;
+
 	inherited::OnAnimationEnd(state);
 	switch (state)
 	{
@@ -312,8 +331,14 @@ void CPda::JoystickCallback(CBoneInstance* B)
 
 void CPda::UpdateCL()
 {
-	inherited::UpdateCL();
-
+	if (this_is_3d_pda)
+		inherited::UpdateCL();
+	else
+	{
+		CInventoryItemObject::UpdateCL();
+		return;
+	}
+		
 	if (!ParentIsActor())
 		return;
 
@@ -463,7 +488,7 @@ void CPda::shedule_Update(u32 dt)
 
 void CPda::UpdateLights()
 {
-	if (pda_light && psActorFlags.test(AF_3D_PDA))
+	if (pda_light && psActorFlags.test(AF_3D_PDA) && this_is_3d_pda)
 	{
 		const u32 state = GetState();
 
@@ -511,10 +536,10 @@ void CPda::OnMoveToRuck(EItemPlace prev)
 {
 	inherited::OnMoveToRuck(prev);
 
-	if (!ParentIsActor())
+	if (!this_is_3d_pda || !ParentIsActor())
 		return;
 
-	if (prev == EItemPlaceSlot)
+	if (prev == eItemPlaceSlot)
 	{
 		SwitchState(eHidden);
 		if (joystick != BI_NONE && HudItemData())
@@ -527,171 +552,6 @@ void CPda::OnMoveToRuck(EItemPlace prev)
 	SetPending(false);
 }
 
-void CPda::UpdateHudAdditional(Fmatrix& trans)
-{
-	CActor* pActor = smart_cast<CActor*>(H_Parent());
-	if (!pActor)
-		return;
-
-	attachable_hud_item* hi = HudItemData();
-	R_ASSERT(hi);
-
-	Fvector curr_offs, curr_rot;
-
-	//curr_offs = g_player_hud->m_adjust_mode ? g_player_hud->m_adjust_offset[0][1] : hi->m_measures.m_hands_offset[0][1];
-	//curr_rot = g_player_hud->m_adjust_mode ? g_player_hud->m_adjust_offset[1][1] : hi->m_measures.m_hands_offset[1][1];
-
-	curr_offs = hi->m_measures.m_hands_offset[0][1];//pos,aim
-	curr_rot = hi->m_measures.m_hands_offset[1][1];//rot,aim
-
-	curr_offs.mul(m_fZoomfactor);
-	curr_rot.mul(m_fZoomfactor);
-
-	Fmatrix hud_rotation;
-	hud_rotation.identity();
-	hud_rotation.rotateX(curr_rot.x);
-
-	Fmatrix hud_rotation_y;
-	hud_rotation_y.identity();
-	hud_rotation_y.rotateY(curr_rot.y);
-	hud_rotation.mulA_43(hud_rotation_y);
-
-	hud_rotation_y.identity();
-	hud_rotation_y.rotateZ(curr_rot.z);
-	hud_rotation.mulA_43(hud_rotation_y);
-
-	hud_rotation.translate_over(curr_offs);
-	trans.mulB_43(hud_rotation);
-
-	if (m_bZoomed)
-		m_fZoomfactor += Device.fTimeDelta / .25f;
-	else
-		m_fZoomfactor -= Device.fTimeDelta / .25f;
-
-	clamp(m_fZoomfactor, 0.f, 1.f);
-
-	if (!g_player_hud->inertion_allowed())
-		return;
-
-	static float fAvgTimeDelta = Device.fTimeDelta;
-	fAvgTimeDelta = inertion(fAvgTimeDelta, Device.fTimeDelta, 0.8f);
-
-	u8 idx = m_bZoomed ? 1 : 0;
-
-	float fYMag = pActor->fFPCamYawMagnitude;
-	float fPMag = pActor->fFPCamPitchMagnitude;
-
-	//============= Инерция оружия =============//
-	// Параметры инерции
-	float fInertiaSpeedMod = lerp(
-		hi->m_measures.m_inertion_params.m_tendto_speed,
-		hi->m_measures.m_inertion_params.m_tendto_speed_aim,
-		m_fZoomfactor);
-
-	float fInertiaReturnSpeedMod = lerp(
-		hi->m_measures.m_inertion_params.m_tendto_ret_speed,
-		hi->m_measures.m_inertion_params.m_tendto_ret_speed_aim,
-		m_fZoomfactor);
-
-	float fInertiaMinAngle = lerp(
-		hi->m_measures.m_inertion_params.m_min_angle,
-		hi->m_measures.m_inertion_params.m_min_angle_aim,
-		m_fZoomfactor);
-
-	Fvector4 vIOffsets; // x = L, y = R, z = U, w = D
-	vIOffsets.x = lerp(
-		hi->m_measures.m_inertion_params.m_offset_LRUD.x,
-		hi->m_measures.m_inertion_params.m_offset_LRUD_aim.x,
-		m_fZoomfactor);
-	vIOffsets.y = lerp(
-		hi->m_measures.m_inertion_params.m_offset_LRUD.y,
-		hi->m_measures.m_inertion_params.m_offset_LRUD_aim.y,
-		m_fZoomfactor);
-	vIOffsets.z = lerp(
-		hi->m_measures.m_inertion_params.m_offset_LRUD.z,
-		hi->m_measures.m_inertion_params.m_offset_LRUD_aim.z,
-		m_fZoomfactor);
-	vIOffsets.w = lerp(
-		hi->m_measures.m_inertion_params.m_offset_LRUD.w,
-		hi->m_measures.m_inertion_params.m_offset_LRUD_aim.w,
-		m_fZoomfactor);
-
-	// Высчитываем инерцию из поворотов камеры
-	bool bIsInertionPresent = m_fLR_InertiaFactor != 0.0f || m_fUD_InertiaFactor != 0.0f;
-	if (abs(fYMag) > fInertiaMinAngle || bIsInertionPresent)
-	{
-		float fSpeed = fInertiaSpeedMod;
-		if (fYMag > 0.0f && m_fLR_InertiaFactor > 0.0f ||
-			fYMag < 0.0f && m_fLR_InertiaFactor < 0.0f)
-		{
-			fSpeed *= 2.f; //--> Ускоряем инерцию при движении в противоположную сторону
-		}
-
-		m_fLR_InertiaFactor -= (fYMag * fAvgTimeDelta * fSpeed); // Горизонталь (м.б. > |1.0|)
-	}
-
-	if (abs(fPMag) > fInertiaMinAngle || bIsInertionPresent)
-	{
-		float fSpeed = fInertiaSpeedMod;
-		if (fPMag > 0.0f && m_fUD_InertiaFactor > 0.0f ||
-			fPMag < 0.0f && m_fUD_InertiaFactor < 0.0f)
-		{
-			fSpeed *= 2.f; //--> Ускоряем инерцию при движении в противоположную сторону
-		}
-
-		m_fUD_InertiaFactor -= (fPMag * fAvgTimeDelta * fSpeed); // Вертикаль (м.б. > |1.0|)
-	}
-
-	clamp(m_fLR_InertiaFactor, -1.0f, 1.0f);
-	clamp(m_fUD_InertiaFactor, -1.0f, 1.0f);
-
-	// Плавное затухание инерции (основное, но без линейной никогда не опустит инерцию до полного 0.0f)
-	m_fLR_InertiaFactor *= clampr(1.f - fAvgTimeDelta * fInertiaReturnSpeedMod, 0.0f, 1.0f);
-	m_fUD_InertiaFactor *= clampr(1.f - fAvgTimeDelta * fInertiaReturnSpeedMod, 0.0f, 1.0f);
-
-	// Минимальное линейное затухание инерции при покое (горизонталь)
-	if (fYMag == 0.0f)
-	{
-		float fRetSpeedMod = (fYMag == 0.0f ? 1.0f : 0.75f) * (fInertiaReturnSpeedMod * 0.075f);
-		if (m_fLR_InertiaFactor < 0.0f)
-		{
-			m_fLR_InertiaFactor += fAvgTimeDelta * fRetSpeedMod;
-			clamp(m_fLR_InertiaFactor, -1.0f, 0.0f);
-		}
-		else
-		{
-			m_fLR_InertiaFactor -= fAvgTimeDelta * fRetSpeedMod;
-			clamp(m_fLR_InertiaFactor, 0.0f, 1.0f);
-		}
-	}
-
-	// Минимальное линейное затухание инерции при покое (вертикаль)
-	if (fPMag == 0.0f)
-	{
-		float fRetSpeedMod = (fPMag == 0.0f ? 1.0f : 0.75f) * (fInertiaReturnSpeedMod * 0.075f);
-		if (m_fUD_InertiaFactor < 0.0f)
-		{
-			m_fUD_InertiaFactor += fAvgTimeDelta * fRetSpeedMod;
-			clamp(m_fUD_InertiaFactor, -1.0f, 0.0f);
-		}
-		else
-		{
-			m_fUD_InertiaFactor -= fAvgTimeDelta * fRetSpeedMod;
-			clamp(m_fUD_InertiaFactor, 0.0f, 1.0f);
-		}
-	}
-
-	// Применяем инерцию к худу
-	float fLR_lim = (m_fLR_InertiaFactor < 0.0f ? vIOffsets.x : vIOffsets.y);
-	float fUD_lim = (m_fUD_InertiaFactor < 0.0f ? vIOffsets.z : vIOffsets.w);
-
-	curr_offs = { fLR_lim * -1.f * m_fLR_InertiaFactor, fUD_lim * m_fUD_InertiaFactor, 0.0f };
-
-	hud_rotation.identity();
-	hud_rotation.translate_over(curr_offs);
-	trans.mulB_43(hud_rotation);
-}
-
 void CPda::UpdateXForm()
 {
 	CInventoryItem::UpdateXForm();
@@ -699,7 +559,7 @@ void CPda::UpdateXForm()
 
 void CPda::OnActiveItem()
 {
-	if (!ParentIsActor())
+	if (!this_is_3d_pda || !ParentIsActor())
 		return;
 
 	SwitchState(eShowing);
@@ -707,7 +567,7 @@ void CPda::OnActiveItem()
 
 void CPda::OnHiddenItem()
 {
-	if (!ParentIsActor())
+	if (!this_is_3d_pda || !ParentIsActor())
 		return;
 
 	SwitchState(eHiding);
@@ -786,15 +646,23 @@ void CPda::OnH_A_Chield()
 			m_sFullName += (smart_cast<CInventoryOwner*>(H_Parent()))->Name();
 		}
 	};
-	inherited::OnH_A_Chield();
+
+	if (this_is_3d_pda)
+		inherited::OnH_A_Chield();
+	else
+		CInventoryItemObject::OnH_A_Chield();
 }
 
 void CPda::OnH_B_Independent(bool just_before_destroy)
 {
-	inherited::OnH_B_Independent(just_before_destroy);
+	if (this_is_3d_pda)
+		inherited::OnH_B_Independent(just_before_destroy);
+	else
+		CInventoryItemObject::OnH_B_Independent(just_before_destroy);
+		
 	TurnOff();
 
-	if (!ParentIsActor())
+	if (!this_is_3d_pda || !ParentIsActor())
 		return;
 
 	m_sounds.PlaySound(hasEnoughBatteryPower() ? "sndHide" : "sndHideEmpty", Position(), H_Root(), !!GetHUDmode(), false);
@@ -870,4 +738,17 @@ void CPda::PlayScriptFunction()
 		R_ASSERT(ai().script_engine().functor(m_functor_str.c_str(), m_functor));
 		m_functor();
 	}
+}
+
+bool CPda::ParentIsActor()
+{
+	CObject* O = H_Parent();
+	if (!O)
+		return false;
+
+	CEntityAlive* EA = smart_cast<CEntityAlive*>(O);
+	if (!EA)
+		return false;
+
+	return EA->cast_actor() != nullptr;
 }

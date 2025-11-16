@@ -94,7 +94,11 @@
 		<texture>ui_inGame2_helmet_highlighter</texture>
 	</backpack_slot_highlight>
 	
-	<second_helmet_slot_highlight x="563" y="372" width="76" height="98" stretch="1">
+	<helmet_slot_highlight x="472" y="17" width="76" height="98" stretch="1">
+		<texture>ui_inGame2_helmet_highlighter</texture>
+	</helmet_slot_highlight>
+	
+	<second_helmet_slot_highlight x="472" y="17" width="76" height="98" stretch="1">
 		<texture>ui_inGame2_helmet_highlighter</texture>
 	</second_helmet_slot_highlight>
 	
@@ -126,6 +130,16 @@
     <partner_weight x="300" y="735" width="45" height="14">
         <text align="l" font="arial_14" color="ui_7"/>
     </partner_weight>
+	
+	<partner_capacity_caption x="40" y="745" width="85" height="14">
+		<text align="r" font="arial_14" color="ui_3">ui_inv_inventory_capacity</text>
+	</partner_capacity_caption>
+	<partner_inv_fullness x="260" y="745" width="45" height="14">
+		<text align="l" font="arial_14"/>
+	</partner_inv_fullness>
+	<partner_inv_capacity x="280" y="745" width="85" height="14">
+		<text align="l" font="arial_14" color="ui_3"/>
+	</partner_inv_capacity>
 	
 	<actor_inv_capacity_caption x="790" y="745" width="85" height="14">
 		<text align="l" font="arial_14" color="ui_3">ui_inventory_capacity</text>
@@ -184,6 +198,14 @@
 	<texture a="200">ui_closed_af_slot</texture>
   </belt_list_over>
 
+  <helmet_over x="467" y="11" width="89" height="115" stretch="1">
+		<texture >ui_inGame2_helmet_blocker</texture>
+  </helmet_over>
+  
+  <second_helmet_over x="558" y="366" width="111" height="115" stretch="1">
+		<texture >ui_inGame2_helmet_blocker</texture>
+  </second_helmet_over>
+  
 	<dragdrop_trash x="0" y="0" width="322" height="768"
 			cell_width="353" cell_height="768" rows_num="1" cols_num="1" a="0"/>
 
@@ -249,7 +271,15 @@
 	<dragdrop_backpack x="470" y="469" width="85" height="110"
 		cell_width="33" cell_height="41" rows_num="2" cols_num="2"
 		custom_placement="0" a="0"/>
-		
+	
+	<dragdrop_helmet x="469" y="14" width="85" height="110"
+			cell_width="33" cell_height="41" rows_num="2" cols_num="2"
+			custom_placement="0" a="0"/>
+			
+	<dragdrop_second_helmet x="469" y="14" width="85" height="110"
+			cell_width="33" cell_height="41" rows_num="2" cols_num="2"
+			custom_placement="0" a="0"/>
+	
 	<dragdrop_dosimeter x="150" y="702" width="85" height="55"
 		cell_width="33" cell_height="41" rows_num="1" cols_num="2"
 		custom_placement="0" a="0"/>

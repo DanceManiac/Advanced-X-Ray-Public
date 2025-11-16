@@ -10,6 +10,7 @@
 #include "hits_store.h"
 #include "kills_store.h"
 #include "accumulative_states.h"
+#include <loki/Typelist.h>
 
 class CWeapon;
 

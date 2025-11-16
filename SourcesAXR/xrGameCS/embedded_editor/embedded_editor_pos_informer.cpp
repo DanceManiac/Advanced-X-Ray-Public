@@ -1,4 +1,12 @@
-﻿#include "stdafx.h"
+﻿////////////////////////////////////////////////////////////////////////////
+//	Module 		: embedded_editor_pos_informer.cpp
+//	Created 	: 20.11.2022
+//  Modified 	: 23.11.2022
+//	Author		: Dance Maniac (M.F.S. Team)
+//	Description : ImGui Position Informer
+////////////////////////////////////////////////////////////////////////////
+
+#include "stdafx.h"
 #include "pch_script.h"
 #include "Actor.h"
 #include "ai_object_location.h"
@@ -7,6 +15,8 @@
 #include <imgui.h>
 #include "imgui_internal.h"
 #include <fstream>
+
+#include "string_table.h"
 
 string256 section_name = "section";
 
@@ -30,7 +40,7 @@ void SavePosition(string256 sect)
 
 void ShowPositionInformer(bool& show)
 {
-	ImguiWnd wnd("Position Informer", &show);
+	ImguiWnd wnd(toUtf8(CStringTable().translate("st_editor_imgui_pos_informer").c_str()).c_str(), &show);
 
 	if (wnd.Collapsed)
 		return;
@@ -46,7 +56,7 @@ void ShowPositionInformer(bool& show)
 	ImGui::InputInt("game_vertex_id", (int*)&actor_game_vertex);
 	ImGui::InputInt("level_vertex_id", (int*)&actor_level_vertex);
 
-	if (ImGui::Button("Save"))
+	if (ImGui::Button(toUtf8(CStringTable().translate("st_editor_imgui_save").c_str()).c_str()))
 	{
 		SavePosition(section_name);
 	}
@@ -54,7 +64,7 @@ void ShowPositionInformer(bool& show)
 
 bool PositionInformer_MouseWheel(float wheel)
 {
-	ImGui::Begin("Position Informer");
+	ImGui::Begin(toUtf8(CStringTable().translate("st_editor_imgui_pos_informer").c_str()).c_str());
 
 	if (!ImGui::IsWindowFocused())
 	{

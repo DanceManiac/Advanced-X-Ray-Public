@@ -12,7 +12,7 @@
 #include "doors.h"
 #include "doors_actor.h"
 
-using doors::door;
+using doors::CDoor;
 using doors::actor;
 using doors::door_state;
 
@@ -21,7 +21,7 @@ static bool valid				( door_state const state )
 	return						(state == doors::door_state_open) || (state == doors::door_state_closed);
 }
 
-door::door						( CPhysicObject* object ) :
+CDoor::CDoor					( CPhysicObject* object ) :
 	m_object					( *object ),
 	m_state						( door_state_open ),
 	m_previous_state			( door_state_open ),
@@ -47,7 +47,7 @@ door::door						( CPhysicObject* object ) :
 	m_object.spatial.type		|=	STYPE_VISIBLEFORAI;
 }
 
-door::~door						( )
+CDoor::~CDoor()
 {
 	m_object.spatial.type		&=	~STYPE_VISIBLEFORAI;
 
@@ -64,7 +64,7 @@ door::~door						( )
 #endif // #ifdef DEBUG
 }
 
-Fvector const& door::position	( ) const
+Fvector const& CDoor::position	( ) const
 {
 	VERIFY						( valid(m_state) );
 	VERIFY						( valid(m_target_state) );
@@ -73,7 +73,7 @@ Fvector const& door::position	( ) const
 	return						m_registered_position;
 }
 
-Fmatrix const& door::get_matrix	( ) const
+Fmatrix const& CDoor::get_matrix	( ) const
 {
 	VERIFY						( valid(m_state) );
 	VERIFY						( valid(m_target_state) );
@@ -82,7 +82,7 @@ Fmatrix const& door::get_matrix	( ) const
 	return						m_object.XFORM();
 }
 
-Fvector const& door::get_vector	( door_state const state ) const
+Fvector const& CDoor::get_vector	( door_state const state ) const
 {
 	VERIFY						( valid(m_state) );
 	VERIFY						( valid(m_target_state) );
@@ -94,7 +94,7 @@ Fvector const& door::get_vector	( door_state const state ) const
 		return					m_closed_vector;
 }
 
-bool door::is_locked			( door_state const state ) const
+bool CDoor::is_locked			( door_state const state ) const
 {
 	VERIFY						( valid(state) );
 	VERIFY						( valid(m_state) );
@@ -107,7 +107,7 @@ bool door::is_locked			( door_state const state ) const
 	return						false;
 }
 
-bool door::is_blocked			( door_state const state ) const
+bool CDoor::is_blocked			( door_state const state ) const
 {
 	VERIFY						( valid(m_state) );
 	VERIFY						( valid(m_target_state) );
@@ -123,7 +123,7 @@ bool door::is_blocked			( door_state const state ) const
 extern BOOL g_debug_doors;
 #endif // #ifdef DEBUG
 
-void door::lock					( )
+void CDoor::lock					( )
 {
 	VERIFY						( valid(m_state) );
 	VERIFY						( valid(m_target_state) );
@@ -137,7 +137,7 @@ void door::lock					( )
 #endif // #ifdef DEBUG
 }
 
-void door::unlock				( )
+void CDoor::unlock				( )
 {
 	VERIFY						( valid(m_state) );
 	VERIFY						( valid(m_target_state) );
@@ -151,7 +151,7 @@ void door::unlock				( )
 #endif // #ifdef DEBUG
 }
 
-void door::change_state			( )
+void CDoor::change_state			( )
 {
 	VERIFY						( valid(m_state) );
 	VERIFY						( valid(m_target_state) );
@@ -167,7 +167,7 @@ void door::change_state			( )
 #endif // #ifdef DEBUG
 }
 
-void door::change_state			( actor* const initiator, door_state const start_state, door_state const stop_state )
+void CDoor::change_state			( actor* const initiator, door_state const start_state, door_state const stop_state )
 {
 	VERIFY						( valid(start_state) );
 	VERIFY						( valid(stop_state) );
@@ -235,7 +235,7 @@ void door::change_state			( actor* const initiator, door_state const start_state
 		VERIFY					( m_previous_state == stop_state );
 }
 
-void door::change_state			( actor* const initiator, doors::door_state const state )
+void CDoor::change_state			( actor* const initiator, doors::door_state const state )
 {
 	VERIFY						( valid(state) );
 	VERIFY						( valid(m_state) );
@@ -245,7 +245,7 @@ void door::change_state			( actor* const initiator, doors::door_state const stat
 	change_state				( initiator, state, state == door_state_open ? door_state_closed : door_state_open );
 }
 
-void door::on_change_state		( door_state const state )
+void CDoor::on_change_state		( door_state const state )
 {
 	VERIFY						( valid(state) );
 	VERIFY						( valid(m_state) );
@@ -265,12 +265,12 @@ void door::on_change_state		( door_state const state )
 }
 
 #ifdef DEBUG
-LPCSTR door::get_name			( ) const
+LPCSTR CDoor::get_name			( ) const
 {
 	return						m_object.cName().c_str();
 }
 
-shared_str door::get_initiators_ids	( ) const
+shared_str CDoor::get_initiators_ids	( ) const
 {
 	u32 buffer_size				= 1;
 	actors_type::const_iterator	i = m_initiators.begin( );
@@ -297,7 +297,7 @@ shared_str door::get_initiators_ids	( ) const
 	return						result;
 }
 
-bool door::check_initiator		( actor const* const initiator ) const
+bool CDoor::check_initiator		( actor const* const initiator ) const
 {
 	return						std::find(m_initiators.begin(), m_initiators.end(), initiator ) != m_initiators.end();
 }

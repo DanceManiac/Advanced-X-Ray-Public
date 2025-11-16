@@ -137,9 +137,12 @@ public:
 	bool b_transmission_switching;
 
 	u32	 m_dwStartTime;
+
 	float m_fuel;
 	float m_fuel_tank;
 	float m_fuel_consumption;
+	float m_fWeightImpactFactor;
+
 	u16	  m_driver_anim_type;
 
 	float   m_break_start;
@@ -312,6 +315,11 @@ virtual void ApplyDamage(u16 level);
 		void SaveNetState(NET_Packet& P);
 		void RestoreNetState(const CSE_ALifeCar::SDoorState& a_state);
 		void SetDefaultNetState();
+
+		bool IsOpened() { return (state == opened); }
+		bool IsClosed() { return (state == closed); }
+		bool IsBroken() { return (state == broken); }
+
 		enum eState
 		{
 			opening,
@@ -334,10 +342,13 @@ virtual void ApplyDamage(u16 level);
 
 	struct SCarSound
 	{
-		ref_sound					snd_engine							;
-		ref_sound					snd_engine_start					;
-		ref_sound					snd_engine_stop						;
-		ref_sound					snd_transmission					;
+		ref_sound					snd_engine;
+		ref_sound					snd_engine_start;
+		ref_sound					snd_engine_stop;
+		ref_sound					snd_transmission;
+		ref_sound					snd_door_open_start, snd_door_close_start, snd_door_close_stop;
+		ref_sound					snd_trunk_open_start, snd_trunk_close_start, snd_trunk_close_stop;
+		ref_sound					snd_bonnet_open_start, snd_bonnet_close_start, snd_bonnet_close_stop;
 
 		enum ESoundState
 		{
@@ -363,6 +374,9 @@ virtual void ApplyDamage(u16 level);
 		void	Stall				()							;
 		void	Drive				()							;
 		void	TransmissionSwitch	()							;
+		void	DoorOpenStart		(u16 id);
+		void	DoorCloseStart		(u16 id);
+		void	DoorCloseStop		(u16 id);
 
 				SCarSound			(CCar* car)					;
 				~SCarSound			()							;
@@ -400,11 +414,21 @@ private:
 	xr_map	  <u16,SDoor>	m_doors;
 	xr_vector <SDoor*>		m_doors_update;
 	xr_vector <Fvector>		m_gear_ratious;
+	xr_vector <u16>			m_indoor_lights_doors;
 	Fmatrix					m_sits_transforms;// driver_place
 	float					m_current_gear_ratio;
 
 	/////////////////////////////////////////////////////////////
 	bool					b_auto_switch_transmission;
+
+	bool					m_bHasTrunk;
+	shared_str				m_sTrunkBone;
+	shared_str				m_sBonnetBone;
+
+	float					m_fInventoryFullness;
+	float					m_fInventoryCapacity;
+
+	float					m_fTrunkWeight;
 
 	/////////////////////////////////////////////////////////////
 	float					m_doors_torque_factor;
@@ -434,7 +458,7 @@ private:
 	float					m_ref_radius;
 	size_t					m_current_transmission_num;
 	///////////////////////////////////////////////////
-	CCarLights				m_lights;
+	CCarLights				m_lights, m_indoor_lights;
 	////////////////////////////////////////////////////
 	/////////////////////////////////////////////////
  public:
@@ -551,6 +575,9 @@ public:
 	bool					attach_Actor				(CGameObject* actor);
 	bool					is_Door						(u16 id,xr_map<u16,SDoor>::iterator& i);
 	bool					is_Door						(u16 id);
+	bool					is_IndoorLightsDoor			(u16 id,xr_vector<u16>::iterator& i);
+	bool					IsBackDoor					(u16 id);
+	bool					IsFrontDoor					(u16 id);
 	bool					DoorOpen					(u16 id);
 	bool					DoorClose					(u16 id);
 	bool					DoorUse						(u16 id);
@@ -617,7 +644,16 @@ public:
 	CInventory*						GetInventory						() {return NULL/*inventory*/;}
 		  void						VisualUpdate						(float fov=90.0f);
 		  void						AddAvailableItems					(TIItemContainer& items_container) const;
+		  bool						HasTrunk							() { return m_bHasTrunk; }
 		  void						ShowTrunk							();
+		  void						SetTrunkWeight						(float new_weight) { m_fTrunkWeight = new_weight; }
+		  float						GetTrunkWeight						() { return m_fTrunkWeight; }
+		  void						TrunkDoorClose						();
+		  void						TrunkDoorOpen						();
+
+		  float						GetInventoryFullness				() const { return m_fInventoryFullness; }
+		  float						GetInventoryCapacity				() const { return m_fInventoryCapacity; }
+
 protected:
 	virtual void					SpawnInitPhysics					(CSE_Abstract	*D)																;
 	virtual void					net_Save							(NET_Packet& P)																	;

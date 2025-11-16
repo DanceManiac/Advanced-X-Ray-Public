@@ -1,0 +1,22 @@
+#include "common.h"
+#include "night_vision.h"
+//Night Vision Shaders
+#include "nightvision_gen_1.h"
+#include "nightvision_gen_2.h"
+#include "nightvision_gen_3.h"
+
+//Night Vision Main Shader
+
+uniform float4 night_vision_type;
+	
+float4 main(p_screen I) : SV_Target
+{
+    if (night_vision_type.x == 1)
+        return process_night_vision_1(I);
+    else if (night_vision_type.x == 2)
+		return process_night_vision_2(I);
+	else if (night_vision_type.x == 3)
+		return process_night_vision_3(I);
+	else
+        return process_night_vision_1(I);
+}

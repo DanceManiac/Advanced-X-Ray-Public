@@ -3,7 +3,7 @@
 #include "uilistitem.h"
 #include "uiscrollbar.h"
 
-#include "../../XrServerEntitiesCS/script_export_space.h"
+#include "../../XrServerEntities/script_export_space.h"
 
 #define DEFAULT_ITEM_HEIGHT 30
 
@@ -104,6 +104,7 @@ public:
 
 	int				GetListPosition			() const						{ return m_iFirstShownIndex; }
 
+	pcstr			GetDebugType			() override						{ return "CUIListWnd"; }
 
 protected:
 	void			create_active_back		();

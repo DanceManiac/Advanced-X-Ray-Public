@@ -314,15 +314,8 @@ void CHW::CreateDevice( HWND m_hWnd, bool move_window )
 	//P.PresentationInterval	= D3DPRESENT_INTERVAL_IMMEDIATE;
 	//if( !bWindowed )		P.FullScreen_RefreshRateInHz	= selectRefresh	(P.BackBufferWidth, P.BackBufferHeight,fTarget);
 	//else					P.FullScreen_RefreshRateInHz	= D3DPRESENT_RATE_DEFAULT;
-	if (bWindowed)
-	{
-		sd.BufferDesc.RefreshRate.Numerator = 60;
-		sd.BufferDesc.RefreshRate.Denominator = 1;
-	}
-	else
-	{
-		sd.BufferDesc.RefreshRate = selectRefresh( sd.BufferDesc.Width, sd.BufferDesc.Height, sd.BufferDesc.Format);
-	}
+	
+	sd.BufferDesc.RefreshRate = selectRefresh(sd.BufferDesc.Width, sd.BufferDesc.Height, sd.BufferDesc.Format);
 
 	//	Additional set up
 	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
@@ -438,6 +431,7 @@ void CHW::DestroyDevice()
     // Cleanup
     ImGui_ImplDX11_Shutdown();
     ImGui_ImplWin32_Shutdown();
+	ImGui::GetIO().Fonts->ConfigData.clear();
     ImGui::DestroyContext();
 
 	//	Destroy state managers
@@ -498,13 +492,7 @@ void CHW::Reset (HWND hwnd)
 
 	selectResolution(desc.Width, desc.Height, bWindowed);
 
-	if (bWindowed)
-	{
-		desc.RefreshRate.Numerator = 60;
-		desc.RefreshRate.Denominator = 1;
-	}
-	else
-		desc.RefreshRate = selectRefresh( desc.Width, desc.Height, desc.Format);
+	desc.RefreshRate = selectRefresh(desc.Width, desc.Height, desc.Format);
 
 	CHK_DX(m_pSwapChain->ResizeTarget(&desc));
 
@@ -630,6 +618,15 @@ u32 CHW::selectGPU ()
 */
 DXGI_RATIONAL CHW::selectRefresh(u32 dwWidth, u32 dwHeight, DXGI_FORMAT fmt)
 {
+	// utak3r: when resizing target, let DXGI calculate the refresh rate for itself.
+	// This is very important for performance, this value is correct.
+	DXGI_RATIONAL refresh;
+	refresh.Numerator = 0;
+	refresh.Denominator = 1;
+	return refresh;
+
+	/*
+
 	DXGI_RATIONAL	res;
 
 	res.Numerator = 60;
@@ -682,6 +679,7 @@ DXGI_RATIONAL CHW::selectRefresh(u32 dwWidth, u32 dwHeight, DXGI_FORMAT fmt)
 
 		return res;
 	}
+	*/
 }
 
 void CHW::OnAppActivate()
@@ -722,11 +720,16 @@ void CHW::updateWindowProps(HWND m_hWnd)
 
 	u32		dwWindowStyle			= 0;
 	// Set window properties depending on what mode were in.
-	if (bWindowed)		{
-		if (m_move_window) {
-            dwWindowStyle = WS_BORDER | WS_VISIBLE;
-            if (!strstr(Core.Params, "-no_dialog_header"))
-                dwWindowStyle |= WS_DLGFRAME | WS_SYSMENU | WS_MINIMIZEBOX;
+	if (bWindowed)
+	{
+		if (m_move_window)
+		{
+			bool bBordersMode = strstr(Core.Params, "-draw_borders");
+			dwWindowStyle = WS_VISIBLE;
+
+			if (bBordersMode)
+				dwWindowStyle |= WS_BORDER | WS_DLGFRAME | WS_SYSMENU | WS_MINIMIZEBOX;
+
             SetWindowLong(m_hWnd, GWL_STYLE, dwWindowStyle);
 			// When moving from fullscreen to windowed mode, it is important to
 			// adjust the window size after recreating the device rather than
@@ -737,26 +740,37 @@ void CHW::updateWindowProps(HWND m_hWnd)
 			// changed to 1024x768, because windows cannot be larger than the
 			// desktop.
 
-			RECT			m_rcWindowBounds;
-			RECT				DesktopRect;
+			RECT m_rcWindowBounds;
+			float fYOffset = 0.f;
+			bool bCenter = false;
 
-			GetClientRect		(GetDesktopWindow(), &DesktopRect);
+			if (strstr(Core.Params, "-center_screen"))
+				bCenter = true;
 
-			SetRect(			&m_rcWindowBounds, 
-				(DesktopRect.right-m_ChainDesc.BufferDesc.Width)/2, 
-				(DesktopRect.bottom-m_ChainDesc.BufferDesc.Height)/2, 
-				(DesktopRect.right+m_ChainDesc.BufferDesc.Width)/2, 
-				(DesktopRect.bottom+m_ChainDesc.BufferDesc.Height)/2);
+			if (bCenter)
+			{
+				RECT DesktopRect;
+
+				GetClientRect(GetDesktopWindow(), &DesktopRect);
+
+				SetRect(&m_rcWindowBounds, (DesktopRect.right - m_ChainDesc.BufferDesc.Width) / 2,
+					(DesktopRect.bottom - m_ChainDesc.BufferDesc.Height) / 2,
+					(DesktopRect.right + m_ChainDesc.BufferDesc.Width) / 2,
+					(DesktopRect.bottom + m_ChainDesc.BufferDesc.Height) / 2);
+			}
+			else
+			{
+				if (bBordersMode)
+					fYOffset = GetSystemMetrics(SM_CYCAPTION); // size of the window title bar
+				SetRect(&m_rcWindowBounds, 0, 0, m_ChainDesc.BufferDesc.Width, m_ChainDesc.BufferDesc.Height);
+			};
 
 			AdjustWindowRect		(	&m_rcWindowBounds, dwWindowStyle, FALSE );
 
-			SetWindowPos			(	m_hWnd, 
-				HWND_NOTOPMOST,	
-				m_rcWindowBounds.left, 
-				m_rcWindowBounds.top,
-				( m_rcWindowBounds.right - m_rcWindowBounds.left ),
-				( m_rcWindowBounds.bottom - m_rcWindowBounds.top ),
-				SWP_SHOWWINDOW|SWP_NOCOPYBITS|SWP_DRAWFRAME );
+			SetWindowPos(m_hWnd, HWND_NOTOPMOST, m_rcWindowBounds.left, m_rcWindowBounds.top + fYOffset,
+						( m_rcWindowBounds.right - m_rcWindowBounds.left ),
+						( m_rcWindowBounds.bottom - m_rcWindowBounds.top ),
+						SWP_SHOWWINDOW|SWP_NOCOPYBITS|SWP_DRAWFRAME );
 		}
 	}
 	else

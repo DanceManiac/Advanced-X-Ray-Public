@@ -18,10 +18,12 @@ public:
 	virtual void SetItem(CUICellItem* itm, Ivector2 cell_pos);
 	virtual CUICellItem* RemoveItem(CUICellItem* itm, bool force_root);
 
-	void Initialize();
+	void Initialize(bool is_horizontal = true);
 	CUICellContainer* GetContainer() {return m_container;};
 	void LoadItemTexture(LPCSTR section, Ivector2 cell_pos);
 	void ReloadReferences(CInventoryOwner* pActor);
+
+	bool horizontal = true;
 
 	virtual void __stdcall	OnItemDBClick		(CUIWindow* w, void* pData);
 	virtual void __stdcall	OnItemDrop			(CUIWindow* w, void* pData);

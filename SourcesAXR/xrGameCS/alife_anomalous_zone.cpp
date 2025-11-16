@@ -110,11 +110,11 @@ void CSE_ALifeAnomalousZone::spawn_artefacts				()
 			ai().alife().spawns().assign_artefact_position(this,i);
 
 			Fvector				t = i->o_Position	;
-			u32					p = i->m_tNodeID	;
+			u32					p_ = i->m_tNodeID	;
 			float				q = i->m_fDistance	;
 			alife().graph().change(i,m_tGraphID,i->m_tGraphID);
 			i->o_Position		= t;
-			i->m_tNodeID		= p;
+			i->m_tNodeID		= p_;
 			i->m_fDistance		= q;
 
 			CSE_ALifeItemArtefact *l_tpALifeItemArtefact = smart_cast<CSE_ALifeItemArtefact*>(i);

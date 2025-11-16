@@ -19,7 +19,7 @@ void xrServer::Perform_destroy	(CSE_Abstract* object, u32 mode)
 
 	while (!object->children.empty()) {
 		CSE_Abstract		*child = game->get_entity_from_eid(object->children.back());
-		R_ASSERT2			(child, make_string("child registered but not found [%d]",object->children.back()));
+		R_ASSERT2			(child, make_string("child registered but not found [%d] for parent id=%d",object->children.back(), object->ID));
 //		Msg					("SLS-CLEAR : REJECT  [%s][%s] FROM [%s][%s]",child->name(),child->name_replace(),object->name(),object->name_replace());
 		Perform_reject		(child,object,2*NET_Latency);
 #ifdef DEBUG
@@ -77,15 +77,16 @@ void xrServer::SLS_Clear		()
 			for (; I != E; ++I)
 			{
 				if (I->second)
-					Msg("! can't destroy object [%d][%s] with parent [%d]",
+					Msg("! ERROR: can't destroy object [%d][%s] with parent [%d]",
 						I->second->ID, I->second->s_name.size() ? I->second->s_name.c_str() : "unknown",
 						I->second->ID_Parent
 					);
 				else
-					Msg("! can't destroy entity [%d][?] with parent[?]", I->first);
+					Msg("! ERROR: can't destroy entity [%d][?] with parent[?]", I->first);
 
 			}
-			FATAL("can't delete all entities");
+			Msg("! ERROR: FATAL: can't delete all entities !");
+			entities.clear();
 		}
 		
 	}

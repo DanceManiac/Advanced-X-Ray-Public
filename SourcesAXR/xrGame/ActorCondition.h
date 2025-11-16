@@ -21,7 +21,7 @@ private:
 			eCriticalSatietyReached			=(1<<3),
 			eCriticalRadiationReached		=(1<<4),
 			eWeaponJammedReached			=(1<<5),
-			ePhyHealthMinReached			=(1<<6),
+			ePsyHealthMinReached			=(1<<6),
 			eCantWalkWeight					=(1<<7),
 			eCantWalkWeightReached			=(1<<8),
 			eCriticalThirstReached			=(1<<9),
@@ -31,6 +31,7 @@ private:
 			eCriticalHangoverReached		=(1<<13),
 			eCriticalNarcotismReached		=(1<<14),
 			eCriticalWithdrawalReached		=(1<<15),
+			eCriticalFrostbiteReached		=(1<<16),
 			};
 	Flags16											m_condition_flags;
 private:
@@ -44,6 +45,7 @@ private:
 			void 		UpdateAlcoholism			();
 			void 		UpdateNarcotism				();
 			void 		UpdatePsyHealth				();
+			void 		UpdateFrostbite				();
 	virtual void		UpdateRadiation				();
 public:
 						CActorCondition				(CActor *object);
@@ -60,7 +62,7 @@ public:
 
 	virtual void 		ChangeAlcohol				(const float value);
 	virtual void 		ChangeSatiety				(const float value);
-	virtual void 		ChangeThirst				(const float value);
+	virtual void		ChangeThirst				(const float value);
 	virtual void 		ChangeIntoxication			(const float value);
 	virtual void 		ChangeSleepeness			(const float value);
 	virtual void 		ChangeAlcoholism			(const float value);
@@ -69,6 +71,7 @@ public:
 	virtual void 		ChangeWithdrawal			(const float value);
 	virtual void 		ChangeDrugs					(const float value);
 	virtual void 		ChangePsyHealth				(const float value);
+	virtual void 		ChangeFrostbite				(const float value);
 
 	void 				BoostParameters				(const SBooster& B, bool need_change_tf = true);
 	void 				DisableBoostParameters		(const SBooster& B);
@@ -105,6 +108,7 @@ public:
 	void				BoostDrugsRestore			(const float value);
 	void				BoostNarcotismRestore		(const float value);
 	void				BoostWithdrawalRestore		(const float value);
+	void				BoostFrostbiteRestore		(const float value);
 	BOOSTER_MAP			GetCurBoosterInfluences		() {return m_booster_influences;};
 
 	// хромание при потере сил и здоровья
@@ -112,7 +116,7 @@ public:
 	virtual bool		IsCantWalk					() const;
 	virtual bool		IsCantWalkWeight			();
 	virtual bool		IsCantSprint				() const;
-
+	
 			void		PowerHit					(float power, bool apply_outfit);
 			float		GetPower					() const { return m_fPower; }
 
@@ -125,13 +129,14 @@ public:
 			float	xr_stdcall	GetPsy				()	{return 1.0f-GetPsyHealth();}
 	IC		float				GetSatietyPower		() const {return m_fV_SatietyPower*m_fSatiety;};
 	IC		float				GetThirstPower		() const { return m_fV_ThirstPower * m_fThirst; };
-			float	xr_stdcall	GetIntoxication		() { return m_fIntoxication; }
-			float	xr_stdcall	GetSleepeness		() { return m_fSleepeness; }
-			float	xr_stdcall	GetAlcoholism		() { return m_fAlcoholism; }
-			float	xr_stdcall	GetHangover			() { return m_fHangover; }
-			float	xr_stdcall	GetNarcotism		() { return m_fNarcotism; }
-			float	xr_stdcall	GetWithdrawal		() { return m_fWithdrawal; }
-			float	xr_stdcall	GetDrugs			() { return m_fDrugs; }
+			float	xr_stdcall	GetIntoxication		()	{return m_fIntoxication;}
+			float	xr_stdcall	GetSleepeness		()	{return m_fSleepeness;}
+			float	xr_stdcall	GetAlcoholism		()	{return m_fAlcoholism;}
+			float	xr_stdcall	GetHangover			()	{return m_fHangover;}
+			float	xr_stdcall	GetNarcotism		()	{return m_fNarcotism;}
+			float	xr_stdcall	GetWithdrawal		()	{return m_fWithdrawal;}
+			float	xr_stdcall	GetDrugs			()	{return m_fDrugs;}
+			float	xr_stdcall	GetFrostbite		()	{return m_fFrostbite;}
 
 			void		AffectDamage_InjuriousMaterialAndMonstersInfluence();
 			float		GetInjuriousMaterialDamage	();
@@ -151,9 +156,9 @@ public:
 	IC		float const&	V_SatietyPower			()	{ return m_fV_SatietyPower; }
 	IC		float const&	V_SatietyHealth			()	{ return m_fV_SatietyHealth; }
 	IC		float const&	SatietyCritical			()	{ return m_fSatietyCritical; }
-	IC		float const&	V_Thirst				() { return m_fV_Thirst; }
-	IC		float const&	V_ThirstPower			() { return m_fV_ThirstPower; }
-	IC		float const&	V_ThirstHealth			() { return m_fV_ThirstHealth; }
+	IC		float const&	V_Thirst				()  { return m_fV_Thirst; }
+	IC		float const&	V_ThirstPower			()  { return m_fV_ThirstPower; }
+	IC		float const&	V_ThirstHealth			()  { return m_fV_ThirstHealth; }
 	IC		float const&	ThirstCritical			() { return m_fThirstCritical; }
 	IC		float const&	V_Intoxication			() { return m_fV_Intoxication; }
 	IC		float const&	V_IntoxicationHealth	() { return m_fV_IntoxicationHealth; }
@@ -167,6 +172,9 @@ public:
 	IC		float const&	V_Hangover				() { return m_fV_Hangover; }
 	IC		float const&	V_Narcotism				() { return m_fV_Narcotism; }
 	IC		float const&	V_Withdrawal			() { return m_fV_Withdrawal; }
+	IC		float const&	V_Frostbite				() { return m_fV_Frostbite; }
+	IC		float const&	V_FrostbiteHealth		() { return m_fV_FrostbiteHealth; }
+	IC		float const&	FrostbiteCritical		() { return m_fFrostbiteCritical; }
 	
 	float	GetZoneMaxPower							(ALife::EInfluenceType type) const;
 	float	GetZoneMaxPower							(ALife::EHitType hit_type) const;
@@ -174,14 +182,16 @@ public:
 	bool	DisableSprint							(SHit* pHDS);
 	bool	PlayHitSound							(SHit* pHDS);
 	float	HitSlowmo								(SHit* pHDS);
-	virtual bool			ApplyInfluence			(const SMedicineInfluenceValues& V, const shared_str& sect, CEatableItem* cur_eatable);
-	virtual bool			ApplyBooster			(const SBooster& B, const shared_str& sect);
+
+	virtual bool ApplyInfluence						(const SMedicineInfluenceValues& V, const shared_str& sect, CEatableItem* cur_eatable);
+	virtual bool ApplyBooster						(const SBooster& B, const shared_str& sect);
 	float	GetMaxPowerRestoreSpeed					() {return m_max_power_restore_speed;};
 	float	GetMaxWoundProtection					() {return m_max_wound_protection;};
 	float	GetMaxFireWoundProtection				() {return m_max_fire_wound_protection;};
 
 public:
 	SMedicineInfluenceValues						m_curr_medicine_influence;
+
 	float m_fAlcohol;
 	float m_fV_Alcohol;
 //--
@@ -196,6 +206,7 @@ public:
 	float m_fV_ThirstPower;
 	float m_fV_ThirstHealth;
 	float m_fThirstCritical;
+	float m_fThirstAccelTemp;
 
 	float m_fV_Intoxication;
 	float m_fV_IntoxicationHealth;
@@ -223,6 +234,13 @@ public:
 	float m_fV_PsyHealth_Health;
 	bool m_bPsyHealthKillActor;
 
+	float m_fV_Frostbite;
+	float m_fV_FrostbiteAdd;
+	float m_fFrostbiteIncTemp;
+	float m_fFrostbiteDecTemp;
+	float m_fV_FrostbiteHealth;
+	float m_fFrostbiteCritical;
+
 	//Skills System
 	float m_fV_SatietySkill;
 	float m_fV_HealthSkill;
@@ -232,9 +250,12 @@ public:
 	float m_fV_ThirstSkill;
 	float m_fV_IntoxicationSkill;
 	float m_fV_SleepenessSkill;
+	float m_fV_FrostbiteSkill;
+	float m_fV_FrostbiteAddSkill;
 	float m_fMaxWeightSkill;
 	float m_fJumpSpeedSkill;
 	float m_fWalkAccelSkill;
+	float m_fPackingSkill;
 //--M.F.S. Team
 
 	float m_fPowerLeakSpeed;

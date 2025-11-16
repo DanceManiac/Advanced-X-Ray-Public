@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding="UTF-8"?>
+<w>
+
+	<static_name x="23" y="188" width="139" height="30" stretch="1">
+		<text font="letterica18" r="238" g="155" b="23" complex_mode="1" align="l" vert_align="c"/>		
+	</static_name>
+
+	<static_weight x="23" y="222" width="67" height="20" stretch="1">
+		<text align="l" font="letterica16" r="135" g="128" b="122"/>
+	</static_weight>
+
+	<static_cost x="215" y="188" width="83" height="30" stretch="1">
+		<text font="letterica18" r="238" g="155" b="23" align="c" vert_align="c"/>
+	</static_cost>
+
+	<static_condition x="113" y="222" width="72" height="20" stretch="1">
+		<text align="r" font="letterica16" r="135" g="128" b="122">st_condition</text>
+	</static_condition>
+
+	<static_charge x="113" y="222" width="72" height="20" stretch="1">
+		<text align="r" font="letterica16" r="135" g="128" b="122">st_charge</text>
+	</static_charge>
+
+	<descr_list x="20" y="245" width="300" height="193" always_show_scroll="0" left_ident="16">
+		<font font="letterica16" r="240" g="217" b="182"/>
+	</descr_list>
+
+	<image_static x="170" y="100" width="226" height="180" alignment="c" stretch="1"/>		
+	
+    <condition_progress x="210" y="227" width="107" height="8" horz="1" min="0" max="100" pos="100">
+		<min_color r="255" g="0" b="0"/>
+		<max_color r="0" g="255" b="0"/>
+		<progress>
+			<texture>ui_mg_progress_efficiency_full</texture>
+		</progress>
+		<background>
+			<texture>ui_mg_progress_efficiency_empty</texture>
+		</background>
+    </condition_progress>
+	
+#include "ui\af_params_16.xml"
+#include "ui\wpn_params_16.xml"
+#include "ui\outfit_info_16.xml"
+#include "ui\booster_params_16.xml"
+#include "ui\inventory_items_params_16.xml"
+
+	
+</w>

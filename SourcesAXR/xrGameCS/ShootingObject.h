@@ -14,7 +14,7 @@ class CCartridge;
 class CParticlesObject;
 class IRender_Sector;
 
-extern const Fvector zero_vel;
+extern const Fvector m_zero_vel;
 
 #define WEAPON_MATERIAL_NAME "objects\\bullet"
 
@@ -60,13 +60,15 @@ protected:
 public:
 	IC BOOL					IsWorking			()	const	{return bWorking;}
 	virtual BOOL			ParentMayHaveAimBullet()		{return FALSE;}
-	virtual BOOL			ParentIsActor()					{return FALSE;}
+	virtual bool			ParentIsActor()					{return false;}
 
 protected:
 	// Weapon fires now
 	bool					bWorking;
 
 	float					fOneShotTime;
+	float					fModeShotTime;
+	bool					bCycleDown;
 	Fvector4				fvHitPower;
 	Fvector4				fvHitPowerCritical;
 	float					fHitImpulse;
@@ -149,9 +151,9 @@ protected:
 	
 	////////////////////////////////////////////////
 	//общие функции для работы с партиклами оружия
-			void			StartParticles		(CParticlesObject*& pParticles, LPCSTR particles_name, const Fvector& pos, const Fvector& vel = zero_vel, bool auto_remove_flag = false);
+			void			StartParticles		(CParticlesObject*& pParticles, LPCSTR particles_name, const Fvector& pos, const Fvector& vel = m_zero_vel, bool auto_remove_flag = false);
 			void			StopParticles		(CParticlesObject*& pParticles);
-			void			UpdateParticles		(CParticlesObject*& pParticles, const Fvector& pos, const  Fvector& vel = zero_vel);
+			void			UpdateParticles		(CParticlesObject*& pParticles, const Fvector& pos, const  Fvector& vel = m_zero_vel);
 
 			void			LoadShellParticles	(LPCSTR section, LPCSTR prefix);
 			void			LoadFlameParticles	(LPCSTR section, LPCSTR prefix);
@@ -166,6 +168,14 @@ protected:
 	//партиклы дыма
 			void			StartSmokeParticles	(const Fvector& play_pos, const Fvector& parent_vel);
 
+			void			StartOverheatingParticles(const Fvector& play_pos, const Fvector& parent_vel);
+			void			StopOverheatingParticles();
+			void			UpdateOverheatingParticles();
+
+			void			StartOverheatingAfterShootParticles();
+			void			StopOverheatingAfterShootParticles();
+			void			UpdateOverheatingAfterShootParticles();
+
 	//партиклы полосы от пули
 			void			StartShotParticles	();
 
@@ -176,6 +186,7 @@ protected:
 	shared_str				m_sShellParticles;
 public:
 	Fvector					vLoadedShellPoint;
+	Fvector					vLoadedOverheatingSmokePoint;
 	float					m_fPredBulletTime;
 	float					m_fTimeToAim;
 	BOOL					m_bUseAimBullet;
@@ -184,8 +195,16 @@ protected:
 	shared_str				m_sFlameParticlesCurrent;
 	//для выстрела 1м и 2м видом стрельбы
 	shared_str				m_sFlameParticles;
-	//объект партиклов огня
+	// Имена партиклов перегрева
+	shared_str				m_sOverheatingFlameParticles;
+	shared_str				m_sOverheatingSmokeParticles;
+	shared_str				m_sOverheatingSmokeParticles_2;
+	
+	//объекты партиклов огня и перегрева
 	CParticlesObject*		m_pFlameParticles;
+	CParticlesObject*		m_pOverheatingFlameParticles;
+	CParticlesObject*		m_pOverheatingSmokeParticles;
+	CParticlesObject*		m_pOverheatingSmokeParticles_2;
 
 	//имя пратиклов для дыма
 	shared_str				m_sSmokeParticlesCurrent;
@@ -193,6 +212,8 @@ protected:
 	
 	//имя партиклов следа от пули
 	shared_str				m_sShotParticles;
+
+	float					m_fWeaponOverheating, m_fWeaponOverheatingInc, m_fWeaponOverheatingDec;
 public:
 	virtual void				DumpActiveParams		(shared_str const & section_name, CInifile & dst_ini) const;
 };

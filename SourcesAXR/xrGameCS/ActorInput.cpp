@@ -22,6 +22,8 @@
 #include "actor_input_handler.h"
 #include "string_table.h"
 #include "UI/UIStatic.h"
+#include "UI/UIActorMenu.h"
+#include "UI/UIDragDropReferenceList.h"
 #include "CharacterPhysicsSupport.h"
 #include "InventoryBox.h"
 #include "player_hud.h"
@@ -33,12 +35,16 @@
 #include "Weapon.h"
 #include "WeaponMagazined.h"
 #include "Grenade.h"
+#include "ActorHelmet.h"
+#include "CustomOutfit.h"
 #include "script_engine.h"
+#include "PDA.h"
+#include "ui/UIPdaWnd.h"
 
 #include "AdvancedXrayGameConstants.h"
 
 extern int hud_adj_mode;
-extern u32 hud_adj_item_idx;
+extern int hud_adj_item_idx;
 bool g_block_actor_movement = false;
 
 void CActor::IR_OnKeyboardPress(int cmd)
@@ -90,7 +96,111 @@ void CActor::IR_OnKeyboardPress(int cmd)
 	}
 
 	if (!g_Alive() || g_block_actor_movement) return;
+	switch (cmd)
+	{
+		case kQUICK_USE_1:
+		case kQUICK_USE_2:
+		case kQUICK_USE_3:
+		case kQUICK_USE_4:
+		{
+			const shared_str& item_name		= g_quick_use_slots[cmd-kQUICK_USE_1];
+			if(item_name.size())
+			{
+				CEatableItem* itm = nullptr;
 
+				for (auto& it : inventory().m_ruck)
+				{
+					CEatableItem* pEatable = smart_cast<CEatableItem*>(it);
+					if (!pEatable)
+						continue;
+					if (pEatable->m_section_id == item_name && !itm && pEatable->GetPortionsNum() == 1)
+					{
+						itm = pEatable;
+						break;
+					}
+					if (pEatable->m_section_id == item_name && !itm || pEatable->m_section_id == item_name && itm && (pEatable->GetPortionsNum() < itm->GetPortionsNum()))
+						itm = pEatable;
+				}
+
+				if(itm)
+				{
+					if (IsGameTypeSingle())
+					{
+						inventory().ChooseItmAnimOrNot(itm);
+					}
+					else
+					{
+						inventory().ClientEat(itm);
+					}
+
+					static const bool enabled = READ_IF_EXISTS(pSettings, r_bool, "null_features", "show_item_used_hud_text", true);
+					if (enabled && !inventory().ItmHasAnim(itm))
+					{
+						SDrawStaticStruct* _s		= HUD().GetUI()->UIGame()->AddCustomStatic("item_used", true);
+						_s->m_endTime				= Device.fTimeGlobal+3.0f;
+						string1024					str;
+						strconcat					(sizeof(str),str,*CStringTable().translate("st_item_used"),": ", itm->NameItem());
+						_s->wnd()->SetText			(str);
+					}
+					
+					if (HUD().GetUI()->UIGame()->ActorMenu().m_pQuickSlot)
+						HUD().GetUI()->UIGame()->ActorMenu().m_pQuickSlot->ReloadReferences(this);
+				}
+			}
+		}break;
+
+		case kUSE_BANDAGE:
+		case kUSE_MEDKIT:
+		{
+			PIItem item = inventory().item((cmd == kUSE_BANDAGE) ? CLSID_IITEM_BANDAGE : CLSID_IITEM_MEDKIT);
+
+			if (!item)
+				break;
+
+			const shared_str& item_name = item->m_section_id;
+
+			if (item_name.size())
+			{
+				CEatableItem* itm = nullptr;
+
+				for (auto& it : inventory().m_ruck)
+				{
+					CEatableItem* pEatable = smart_cast<CEatableItem*>(it);
+					if (!pEatable)
+						continue;
+					if (pEatable->GetPortionsNum() == 1)
+					{
+						itm = pEatable;
+						break;
+					}
+					if (pEatable->m_section_id == item_name && !itm || itm && (pEatable->GetPortionsNum() < itm->GetPortionsNum()))
+						itm = pEatable;
+				}
+				if (itm)
+				{
+					if (IsGameTypeSingle())
+					{
+						inventory().ChooseItmAnimOrNot(itm);
+					}
+					else
+					{
+						inventory().ClientEat(itm);
+					}
+
+					if (GameConstants::GetHUD_UsedItemTextEnabled() && !inventory().ItmHasAnim(itm))
+					{
+						SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("item_used", true);
+						_s->m_endTime = Device.fTimeGlobal + 3.0f;
+						string1024 str;
+						strconcat(sizeof(str), str, *CStringTable().translate("st_item_used"), ": ", itm->NameItem());
+						_s->wnd()->SetText(str);
+					}
+				}
+			}
+		}break;
+	};
+	
+	
 	if(m_holder && kUSE != cmd)
 	{
 		m_holder->OnKeyboardPress			(cmd);
@@ -112,7 +222,11 @@ void CActor::IR_OnKeyboardPress(int cmd)
 	case kJUMP:		
 		{
 			mstate_wishful |= mcJump;
-		}break;
+
+			if (mstate_wishful & mcSprint)
+				mstate_wishful &= ~mcSprint;
+
+		} break;
 	case kSPRINT_TOGGLE:	
 		{
 			CWeapon* W = smart_cast<CWeapon*>(inventory().ActiveItem());
@@ -141,7 +255,22 @@ void CActor::IR_OnKeyboardPress(int cmd)
 		{
 			if (psActorFlags.test(AF_CROUCH_TOGGLE))
 				mstate_wishful ^= mcCrouch;
-		}break;
+
+			StartActionSndAnm("OnCrouchInSnd", "on_actor_crouch_in");
+		} break;
+	case kACCEL:
+		{
+			if (mstate_real & mcCrouch)
+				StartActionSndAnm("OnCrouchSlowInSnd", "on_actor_crouch_slow_in");
+		} break;
+	case kR_LOOKOUT:
+		{
+			StartActionSndAnm("OnLookoutSnd", "on_actor_lookout_right");
+		} break;
+	case kL_LOOKOUT:
+		{
+			StartActionSndAnm("OnLookoutSnd", "on_actor_lookout_left");
+		} break;
 	case kCAM_1:	cam_Set			(eacFirstEye);				break;
 	case kCAM_2:	cam_Set			(eacLookAt);				break;
 	case kCAM_3:	cam_Set			(eacFreeLook);				break;
@@ -150,36 +279,74 @@ void CActor::IR_OnKeyboardPress(int cmd)
 			if (hud_adj_mode)
 				return;
 
-			SwitchNightVision();
-			break;
-		}
+			if (auto Wpn = smart_cast<CHudItem*>(inventory().ActiveItem()); Wpn && (Wpn->isHUDAnimationExist("anm_nv_on", true) || Wpn->isHUDAnimationExist("anm_nv_off", true)))
+			{
+				if (Wpn->IsPending())
+					break;
+
+				auto helmet = smart_cast<CHelmet*>(inventory().ItemFromSlot(HELMET_SLOT));
+				auto helmet2 = smart_cast<CHelmet*>(inventory().ItemFromSlot(SECOND_HELMET_SLOT));
+				auto outfit = smart_cast<CCustomOutfit*>(inventory().ItemFromSlot(OUTFIT_SLOT));
+
+				if (helmet && helmet->m_NightVisionSect.size() || helmet2 && helmet2->m_NightVisionSect.size() || outfit && outfit->m_NightVisionSect.size())
+				{
+					Wpn->NightVisionSwitch = true;
+					Wpn->SwitchState(CHUDState::EHudStates::eDeviceSwitch);
+				}
+			}
+			else
+				SwitchNightVision();
+		} break;
 	case kTORCH:
 		{
 			if (hud_adj_mode)
 				return;
 
-			SwitchTorch();
-			break;
-		}
+			if (auto Wpn = smart_cast<CHudItem*>(inventory().ActiveItem()); Wpn && (Wpn->isHUDAnimationExist("anm_headlamp_on", true) || Wpn->isHUDAnimationExist("anm_headlamp_off", true)))
+			{
+				if (smart_cast<CTorch*>(inventory().ItemFromSlot(TORCH_SLOT)) && !Wpn->IsPending())
+				{
+					Wpn->HeadLampSwitch = true;
+					Wpn->SwitchState(CHUDState::EHudStates::eDeviceSwitch);
+				}
+			}
+			else
+				SwitchTorch();
+		} break;
 	case kCLEAN_MASK:
 		{
 			if (hud_adj_mode)
 				return;
 
-			CleanMaskAnimCheckDetector();
-			break;
-		}
+			if (auto Wpn = smart_cast<CHudItem*>(inventory().ActiveItem()); Wpn && Wpn->isHUDAnimationExist("anm_clean_mask", true))
+			{
+				if (Wpn->IsPending())
+					break;
+
+				auto helmet = smart_cast<CHelmet*>(inventory().ItemFromSlot(HELMET_SLOT));
+				auto helmet2 = smart_cast<CHelmet*>(inventory().ItemFromSlot(SECOND_HELMET_SLOT));
+				auto outfit = smart_cast<CCustomOutfit*>(inventory().ItemFromSlot(OUTFIT_SLOT));
+
+				if (helmet && helmet->m_b_HasGlass || helmet2 && helmet2->m_b_HasGlass || outfit && outfit->m_b_HasGlass)
+				{
+					Wpn->CleanMaskAction = true;
+					Wpn->SwitchState(CHUDState::EHudStates::eDeviceSwitch);
+				}
+			}
+			else
+				CleanMaskAnimCheckDetector();
+
+		} break;
 	case kQUICK_KICK:
 		{
-			if (hud_adj_mode)
+			if (hud_adj_mode || m_bQuickWeaponBlocked)
 				return;
 
 			QuickKick();
-			break;
-		}
+		} break;
 	case kQUICK_GRENADE:
 		{
-			if (!GameConstants::GetQuickThrowGrenadesEnabled() || hud_adj_mode)
+			if (!GameConstants::GetQuickThrowGrenadesEnabled() || hud_adj_mode || m_bQuickWeaponBlocked)
 				return;
 
 			CGrenade* grenade = smart_cast<CGrenade*>(inventory().ItemFromSlot(GRENADE_SLOT));
@@ -197,8 +364,7 @@ void CActor::IR_OnKeyboardPress(int cmd)
 				if (grenade->isHUDAnimationExist("anm_throw_quick"))
 					grenade->SwitchState(CGrenade::eThrowQuick);
 			}
-			break;
-		}
+		} break;
 	case kDETECTOR:
 		{
 			PIItem det_active					= inventory().ItemFromSlot(DETECTOR_SLOT);
@@ -208,7 +374,7 @@ void CActor::IR_OnKeyboardPress(int cmd)
 				det->ToggleDetector				(g_player_hud->attached_item(0)!=NULL);
 				return;
 			}
-		}break;
+		} break;
 /*
 	case kFLARE:{
 			PIItem fl_active = inventory().ItemFromSlot(FLARE_SLOT);
@@ -244,27 +410,6 @@ void CActor::IR_OnKeyboardPress(int cmd)
 			OnPrevWeaponSlot();
 		}break;
 
-	case kUSE_BANDAGE:
-	case kUSE_MEDKIT:
-		{
-			if(IsGameTypeSingle())
-			{
-				PIItem itm = inventory().item((cmd==kUSE_BANDAGE)?  CLSID_IITEM_BANDAGE:CLSID_IITEM_MEDKIT );	
-				if(itm)
-				{
-					inventory().ChooseItmAnimOrNot(itm);
-
-					if (GameConstants::GetHUD_UsedItemTextEnabled())
-					{
-						SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("item_used", true);
-						_s->m_endTime = Device.fTimeGlobal + 3.0f;
-						string1024					str;
-						strconcat(sizeof(str), str, *CStringTable().translate("st_item_used"), ": ", itm->NameItem());
-						_s->wnd()->SetText(str);
-					}
-				}
-			}
-		}break;
 	case kLASER_ON:
 		{
 		auto wpn = smart_cast<CWeapon*>(inventory().ActiveItem());
@@ -281,7 +426,7 @@ void CActor::IR_OnKeyboardPress(int cmd)
 		{
 			auto wpn = smart_cast<CWeapon*>(inventory().ActiveItem());
 
-			if (wpn && wpn->IsScopeAttached())
+			if (wpn)
 			{
 				if (!wpn->IsAltAimEnabled())
 					return;
@@ -291,8 +436,8 @@ void CActor::IR_OnKeyboardPress(int cmd)
 				string256 alt_aim_status;
 				strconcat(sizeof(alt_aim_status), alt_aim_status, "st_alt_aim_switched_", wpn->GetAltZoomStatus() ? "on" : "off");
 
-				SDrawStaticStruct* custom_static = HUD().GetUI()->UIGame()->AddCustomStatic("alt_aim_switched", true);
-				custom_static->wnd()->SetText(CStringTable().translate(alt_aim_status).c_str());
+				if (SDrawStaticStruct* custom_static = HUD().GetUI()->UIGame()->AddCustomStatic("alt_aim_switched", true))
+					custom_static->wnd()->SetText(CStringTable().translate(alt_aim_status).c_str());
 			}
 		}break;
 	}
@@ -317,34 +462,64 @@ void CActor::IR_OnMouseWheel(int direction)
 
 void CActor::IR_OnKeyboardRelease(int cmd)
 {
-	if (m_blocked_actions.find((EGameActions)cmd) != m_blocked_actions.end()) return; // Real Wolf. 14.10.2014
+	if (m_blocked_actions.find((EGameActions)cmd) != m_blocked_actions.end())
+		return; // Real Wolf. 14.10.2014
 
-	if(hud_adj_mode && pInput->iGetAsyncKeyState(DIK_LSHIFT))	return;
+	if(hud_adj_mode && pInput->iGetAsyncKeyState(DIK_LSHIFT))
+		return;
 
-	if (Remote())	return;
+	if (Remote())
+		return;
 
-	if (m_input_external_handler && !m_input_external_handler->authorized(cmd))	return;
+	if (m_input_external_handler && !m_input_external_handler->authorized(cmd))
+		return;
 
 	if (g_Alive())	
 	{
-		if (cmd == kUSE) 
+		if (cmd == kUSE && !GameConstants::GetMultiItemPickup())
 			PickupModeOff();
 
 		if(m_holder)
 		{
 			m_holder->OnKeyboardRelease(cmd);
 			
-			if(m_holder->allowWeapon() && inventory().Action(cmd, CMD_STOP))		return;
+			if(m_holder->allowWeapon() && inventory().Action(cmd, CMD_STOP))
+				return;
+
 			return;
-		}else
-			if(inventory().Action(cmd, CMD_STOP))		return;
-
-
+		}
+		else
+		{
+			if (inventory().Action(cmd, CMD_STOP))
+				return;
+		}
 
 		switch(cmd)
 		{
-		case kJUMP:		mstate_wishful &=~mcJump;		break;
-		case kDROP:		if(GAME_PHASE_INPROGRESS == Game().Phase()) g_PerformDrop();				break;
+		case kJUMP:
+			mstate_wishful &=~mcJump;
+			break;
+		case kDROP:
+			if(GAME_PHASE_INPROGRESS == Game().Phase())
+				g_PerformDrop();
+			break;
+		case kCROUCH:
+			{
+				StartActionSndAnm("OnCrouchOutSnd", "on_actor_crouch_out");
+			} break;
+		case kACCEL:
+			{
+				if (mstate_real & mcCrouch)
+					StartActionSndAnm("OnCrouchSlowOutSnd", "on_actor_crouch_slow_out");
+			} break;
+		case kR_LOOKOUT:
+			{
+				StartActionSndAnm("OnLookoutSnd", "on_actor_lookout_right");
+			} break;
+		case kL_LOOKOUT:
+			{
+				StartActionSndAnm("OnLookoutSnd", "on_actor_lookout_left");
+			} break;
 		}
 	}
 }
@@ -519,8 +694,14 @@ bool CActor::use_Holder				(CHolderCustom* holder)
 void CActor::ActorUse()
 {
 	//mstate_real = 0;
-	PickupModeOn();
+	auto PdaUI = &HUD().GetUI()->UIGame()->PdaMenu();
+	auto Pda = GetPDA();
 
+	if (Pda && Pda->Is3DPDA() && psActorFlags.test(AF_3D_PDA) && PdaUI && PdaUI->IsShown())
+		return;
+
+	if (!GameConstants::GetMultiItemPickup())
+		PickupModeOn();
 		
 	if (m_holder)
 	{
@@ -532,8 +713,8 @@ void CActor::ActorUse()
 		return;
 	}
 				
-	if(character_physics_support()->movement()->PHCapture())
-		character_physics_support()->movement()->PHReleaseObject();
+	if(character_physics_support()->get_movement()->PHCapture())
+		character_physics_support()->get_movement()->PHReleaseObject();
 
 	
 
@@ -583,9 +764,9 @@ void CActor::ActorUse()
 		if(object && Level().IR_GetKeyState(DIK_LSHIFT))
 		{
 			bool b_allow = !!pSettings->line_exist("ph_capture_visuals",object->cNameVisual());
-			if(b_allow && !character_physics_support()->movement()->PHCapture())
+			if(b_allow && !character_physics_support()->get_movement()->PHCapture())
 			{
-				character_physics_support()->movement()->PHCaptureObject( object, element );
+				character_physics_support()->get_movement()->PHCaptureObject( object, element );
 
 			}
 
@@ -691,7 +872,12 @@ void	CActor::OnPrevWeaponSlot()
 				IR_OnKeyboardPress(kARTEFACT);
 			}
 			else
-				IR_OnKeyboardPress(kWPN_1+(i-KNIFE_SLOT));
+			{
+				if (!IsDetectorActive())
+					IR_OnKeyboardPress(kWPN_1 + (i - KNIFE_SLOT));
+				else
+					IR_OnKeyboardPress(kWPN_2);
+			}
 			return;
 		}
 	}
@@ -809,6 +995,6 @@ void CActor::NoClipFly(int cmd)
 	mOrient.rotateY(-(cam_Active()->GetWorldYaw()));
 	mOrient.transform_dir(cur_pos);
 	Position().add(cur_pos);
-	character_physics_support()->movement()->SetPosition(Position());
+	character_physics_support()->get_movement()->SetPosition(Position());
 }
 #endif //DEBUG

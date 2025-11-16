@@ -2,6 +2,7 @@
 #pragma hdrstop
 
 #include "fs_internal.h"
+#include "../Layers/xrAPI/xrGameManager.h"
 
 XRCORE_API CInifile *pSettings				= nullptr;
 XRCORE_API CInifile *pAdvancedSettings		= nullptr;
@@ -27,8 +28,36 @@ bool item_pred(const CInifile::Item& x, LPCSTR val)
 //------------------------------------------------------------------------------
 //Тело функций Inifile
 //------------------------------------------------------------------------------
+XRCORE_API BOOL _parseSOC(LPSTR dest, LPCSTR src)
+{
+	BOOL bInsideSTR = false;
+	while (*src)
+	{
+		if (isspace((u8)*src))
+		{
+			if (bInsideSTR)
+			{
+				*dest++ = *src++;
+				continue;
+			}
+			while (*src && isspace(*src))
+				src++;
+			continue;
+		}
+		else if (*src == '"')
+		{
+			bInsideSTR = !bInsideSTR;
+		}
+		*dest++ = *src++;
+	}
+	*dest = 0;
+	return 0;
+}
+
 XRCORE_API BOOL _parse(LPSTR dest, LPCSTR src)
 {
+	if (xrGameManager::GetGame() == EGame::SHOC)
+		return _parseSOC(dest, src);
 	BOOL bInsideSTR = false;
 	if (src) 
 	{
@@ -152,6 +181,8 @@ CInifile::CInifile(LPCSTR szFileName,
 
 CInifile::~CInifile( )
 {
+	ZoneScoped;
+
 	if (!m_flags.test(eReadOnly) && m_flags.test(eSaveAtEnd)) 
 	{
 		if (!save_as())
@@ -166,15 +197,22 @@ CInifile::~CInifile( )
 
 static void	insert_item(CInifile::Sect *tgt, const CInifile::Item& I)
 {
-	CInifile::SectIt_	sect_it		= std::lower_bound(tgt->Data.begin(),tgt->Data.end(),*I.first,item_pred);
+	auto sect_it		= std::lower_bound(tgt->Data.begin(),tgt->Data.end(),*I.first,item_pred);
+	
 	if (sect_it!=tgt->Data.end() && sect_it->first.equal(I.first))
 	{ 
 		sect_it->second	= I.second;
-//#ifdef DEBUG
-//		sect_it->comment= I.comment;
-//#endif
-	}else{
-		tgt->Data.insert	(sect_it,I);
+	
+		auto found = std::find_if(tgt->Ordered_Data.begin(), tgt->Ordered_Data.end(), [&]( const auto& it )
+			{return xr_strcmp( *it.first, *I.first ) == 0;});
+		
+		if ( found != tgt->Ordered_Data.end() )
+			found->second  = I.second;
+	}
+	else
+	{
+		tgt->Data.insert( sect_it, I );
+		tgt->Ordered_Data.push_back( I );
 	}
 }
 
@@ -194,8 +232,10 @@ void	CInifile::Load(IReader* F, LPCSTR path
                                 #endif
                                     )
 {
+	ZoneScoped;
+
 	R_ASSERT(F);
-	Sect		*Current = 0;
+	Sect		*Current = nullptr;
 	string4096	str;
 	string4096	str2;
 	
@@ -296,7 +336,7 @@ void	CInifile::Load(IReader* F, LPCSTR path
 
 				Current->Data.reserve( Current->Data.size() + total_count );
 
-				for (k=0; k<cnt; ++k)
+				for (int k=0; k<cnt; ++k)
 				{
 					string512	tmp;
 					_GetItem	(inherited_names,k,tmp);
@@ -307,27 +347,32 @@ void	CInifile::Load(IReader* F, LPCSTR path
 			}
 			*strchr(str,']') 	= 0;
 			Current->Name 		= strlwr(str+1);
-		} 
-		else // name = value
+		}
+		else   // name = value
 		{
 			if (Current)
 			{
-				string4096			value_raw;
-				char*		name	= str;
+				string4096 value_raw;
+				char* name = str;
 				char*		t		= strchr(name,'=');
-				if (t)		
+				if (t)
 				{
-					*t				= 0;
+					*t = 0;
 					_Trim			(name);
-					++t;
-					xr_strcpy		(value_raw, sizeof(value_raw), t);
-					bInsideSTR		= _parse(str2, value_raw);
-					if(bInsideSTR)//multiline str value
+
+					if (xrGameManager::GetGame() == EGame::SHOC)
+						_parse(str2, ++t);
+					else
 					{
-						while(bInsideSTR)
+						++t;
+					xr_strcpy		(value_raw, sizeof(value_raw), t);
+						bInsideSTR = _parse(str2, value_raw);
+						if (bInsideSTR) // multiline str value
 						{
+							while (bInsideSTR)
+							{
 							xr_strcat		(value_raw, sizeof(value_raw),"\r\n");
-							string4096		str_add_raw;
+								string4096 str_add_raw;
 							F->r_string		(str_add_raw, sizeof(str_add_raw));
 							R_ASSERT2		(
 								xr_strlen(value_raw) + xr_strlen(str_add_raw) < sizeof(value_raw),
@@ -338,35 +383,37 @@ void	CInifile::Load(IReader* F, LPCSTR path
 								)
 							);
 							xr_strcat		(value_raw, sizeof(value_raw),str_add_raw);
-							bInsideSTR		= _parse(str2, value_raw);
+								bInsideSTR = _parse(str2, value_raw);
                             if(bInsideSTR)
-                            {
+								{
                             	if( is_empty_line_now(F) )
 									xr_strcat		(value_raw, sizeof(value_raw),"\r\n");
-                            }
+								}
+							}
 						}
 					}
-				} else 
+				}
+				else
 				{
-					_Trim	(name);
-					str2[0]	= 0;
+					_Trim(name);
+					str2[0] = 0;
 				}
 
-				Item		I;
-				I.first		= (name[0]?name:NULL);
-				I.second	= (str2[0]?str2:NULL);
+				Item I;
+				I.first		= (name[0] ? name : NULL);
+				I.second	= (str2[0] ? str2 : NULL);
 //#ifdef DEBUG
 //				I.comment	= m_flags.test(eReadOnly)?0:comment;
 //#endif
 
-				if (m_flags.test(eReadOnly)) 
+				if (m_flags.test(eReadOnly))
 				{
-					if (*I.first)							insert_item	(Current,I);
-				} else 
+					if (*I.first)
+						insert_item(Current, I);
+				}
+				else
 				{
-					if	(
-							*I.first
-							|| *I.second 
+					if (*I.first || *I.second
 //#ifdef DEBUG
 //							|| *I.comment
 //#endif
@@ -445,6 +492,12 @@ bool CInifile::save_as	(LPCSTR new_fname)
 
 BOOL	CInifile::section_exist( LPCSTR S )const
 {
+	if (!S)
+	{
+		Msg("! [CInifile::section_exist]: Empty section value! Return FALSE!");
+		return FALSE;
+	}
+
 	RootCIt I = std::lower_bound(DATA.begin(), DATA.end(), S, sect_pred);
 	return (I!=DATA.end() && xr_strcmp(*(*I)->Name,S)==0);
 }
@@ -483,6 +536,9 @@ BOOL			CInifile::section_exist	( const shared_str& S	)const					{ return	section
 //--------------------------------------------------------------------------------------
 CInifile::Sect& CInifile::r_section( LPCSTR S )const
 {
+	if (!S)
+		LogStackTrace("CInifile::r_section | section is nil!");
+
 	char	section[256]; xr_strcpy(section,sizeof(section),S); strlwr(section);
 	RootCIt I = std::lower_bound(DATA.begin(),DATA.end(),section,sect_pred);
 	if (!(I!=DATA.end() && xr_strcmp(*(*I)->Name,section)==0))
@@ -507,6 +563,9 @@ CInifile::Sect& CInifile::r_section( LPCSTR S )const
 
 LPCSTR	CInifile::r_string(LPCSTR S, LPCSTR L)const
 {
+	if (!S || !L || !strlen(S) || !strlen(L)) //--#SM+#-- [fix for one of "xrDebug - Invalid handler" error log]
+		Msg("!![ERROR] CInifile::r_string: S = [%s], L = [%s]", S, L);
+
 	Sect const&	I = r_section(S);
 	SectCIt	A = std::lower_bound(I.Data.begin(),I.Data.end(),L,item_pred);
 	if (A!=I.Data.end() && xr_strcmp(*A->first,L)==0)	return *A->second;
@@ -712,7 +771,7 @@ void CInifile::w_string( LPCSTR S, LPCSTR L, LPCSTR V, LPCSTR comment)
 	R_ASSERT			(!m_flags.test(eReadOnly));
 
 	// section
-	string256			sect;
+	char				sect[ 256 ];
 	_parse				(sect,S);
 	_strlwr				(sect);
 	
@@ -726,37 +785,18 @@ void CInifile::w_string( LPCSTR S, LPCSTR L, LPCSTR V, LPCSTR comment)
 	}
 
 	// parse line/value
-	string4096			line;
+	char				line[256];
 	_parse				(line,L);
-	string4096			value;	
+	char				value[256];
 	_parse				(value,V);
 
 	// duplicate & insert
-	Item	I;
-	Sect&	data	= r_section	(sect);
-	I.first			= (line[0]?line:0);
-	I.second		= (value[0]?value:0);
+	Item I;
+	I.first				= line[ 0 ] ? line : 0;
+	I.second			= value[ 0 ] ? value : 0;
 
-//#ifdef DEBUG
-//	I.comment		= (comment?comment:0);
-//#endif
-	SectIt_	it		= std::lower_bound(data.Data.begin(),data.Data.end(),*I.first,item_pred);
-
-    if (it != data.Data.end()) 
-	{
-	    // Check for "first" matching
-    	if (0==xr_strcmp(*it->first, *I.first)) 
-		{
-			BOOL b = m_flags.test(eOverrideNames);
-			R_ASSERT2(b,make_string("name[%s] already exist in section[%s]",line,sect).c_str());
-            *it  = I;
-		} else 
-		{
-			data.Data.insert(it,I);
-        }
-    } else {
-		data.Data.insert(it,I);
-    }
+	Sect* data			= &r_section( sect );
+	insert_item			( data, I );
 }
 void	CInifile::w_u8			( LPCSTR S, LPCSTR L, u8				V, LPCSTR comment )
 {
@@ -865,7 +905,7 @@ void	CInifile::w_fvector4	( LPCSTR S, LPCSTR L, const Fvector4&	V, LPCSTR commen
 
 void	CInifile::w_bool		( LPCSTR S, LPCSTR L, BOOL				V, LPCSTR comment )
 {
-	w_string	(S,L,V?"on":"off",comment);
+	w_string	(S,L,V?"true":"false",comment);
 }
 
 void	CInifile::remove_line	( LPCSTR S, LPCSTR L )
@@ -877,10 +917,46 @@ void	CInifile::remove_line	( LPCSTR S, LPCSTR L )
 		SectIt_ A = std::lower_bound(data.Data.begin(),data.Data.end(),L,item_pred);
     	R_ASSERT(A!=data.Data.end() && xr_strcmp(*A->first,L)==0);
         data.Data.erase(A);
+		auto found = std::find_if(data.Ordered_Data.begin(), data.Ordered_Data.end(), [&]( const auto& it )
+			{return xr_strcmp( *it.first, L ) == 0;});
+		R_ASSERT( found != data.Ordered_Data.end() && xr_strcmp( *found->first, L ) == 0 );
+		data.Ordered_Data.erase( found );
     }
 }
 
 void CInifile::set_readonly(bool b)
 {
 	m_flags.set(eReadOnly, b);
+}
+
+#include <sstream>
+
+std::string CInifile::get_as_string()
+{
+	std::stringstream str;
+
+	bool first_sect = true;
+	for ( const auto& r_it : DATA ) 
+	{
+	    if ( !first_sect ) str << "\r\n";
+	    first_sect = false;
+		str << "[" << r_it->Name.c_str() << "]\r\n";
+		for (const auto& I : r_it->Ordered_Data)
+		{
+			if ( I.first.c_str() ) {
+				if ( I.second.c_str() ) {
+					string512 val;
+					_decorate( val, I.second.c_str() );
+					_TrimRight(val);
+					// only name and value
+					str << I.first.c_str() << " = " << val << "\r\n";
+				} else {
+					// only name
+					str << I.first.c_str() << " =\r\n";
+				}
+			}
+		}
+	}
+
+	return str.str();
 }

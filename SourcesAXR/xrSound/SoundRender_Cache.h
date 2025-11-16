@@ -42,8 +42,8 @@ class	CSoundRender_Cache
 	u32						_line;		// line size (bytes)
 	u32						_count;		// number of lines
 public:
-	u32						_stat_hit;
-	u32						_stat_miss;
+	u32						_stat_hit{};
+	u32						_stat_miss{};
 private:
 	void					move2top	(cache_line* line);					// move one line to TOP-priority
 	void					disconnect	();									// disconnect from CATs
@@ -68,6 +68,6 @@ public:
 	}
 
 	CSoundRender_Cache		();
-	~CSoundRender_Cache		();
+	~CSoundRender_Cache		() = default;
 };
 #endif

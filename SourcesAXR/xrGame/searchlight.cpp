@@ -79,6 +79,8 @@ BOOL CProjector::net_Spawn(CSE_Abstract* DC)
 	light_render->set_cone	(deg2rad(pUserData->r_float			("projector_definition","spot_angle")));
 	light_render->set_texture(pUserData->r_string				("projector_definition","spot_texture"));
 
+	light_render->set_flare	(true);
+
 	glow_render->set_texture(pUserData->r_string				("projector_definition","glow_texture"));
 	glow_render->set_color	(clr);
 	glow_render->set_radius	(pUserData->r_float					("projector_definition","glow_radius"));

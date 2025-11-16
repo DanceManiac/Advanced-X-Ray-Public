@@ -181,6 +181,24 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	ctl = xml:InitCheck("video_adv:check_sss_wind", _st)
 	table.insert(handler.m_preconditions, {func=get_screen_space_shaders_status, control=_st})
 	
+--SSS Puddles
+	_st = xml:InitStatic("video_adv:templ_item", nil)
+	xml:InitStatic("video_adv:cap_sss_puddles", _st)
+	ctl = xml:InitCheck("video_adv:check_sss_puddles", _st)
+	table.insert(handler.m_preconditions, {func=get_screen_space_shaders_status, control=_st})
+	
+--SSS Bloom
+	_st = xml:InitStatic("video_adv:templ_item", nil)
+	xml:InitStatic("video_adv:cap_sss_bloom", _st)
+	ctl = xml:InitCheck("video_adv:check_sss_bloom", _st)
+	table.insert(handler.m_preconditions, {func=get_screen_space_shaders_status, control=_st})
+	
+--SSS Bloom Mask Dirt
+	_st = xml:InitStatic("video_adv:templ_item", nil)
+	xml:InitStatic("video_adv:cap_sss_bloom_mask_dirt", _st)
+	ctl = xml:InitCheck("video_adv:check_sss_bloom_mask_dirt", _st)
+	table.insert(handler.m_preconditions, {func=get_screen_space_shaders_status, control=_st})
+	
 --Enchanted Shaders
 	_st = xml:InitStatic("video_adv:templ_item", nil)
 	xml:InitStatic("video_adv:cap_enchanted_shaders", _st)
@@ -191,6 +209,12 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	_st = xml:InitStatic("video_adv:templ_item", nil)
 	xml:InitStatic("video_adv:cap_es_pseudo_pbr", _st)
 	ctl = xml:InitCheck("video_adv:check_es_pseudo_pbr", _st)
+	table.insert(handler.m_preconditions, {func=get_enchanted_shaders_status, control=_st})
+	
+--ACES Tonemapping	
+	_st = xml:InitStatic("video_adv:templ_item", nil)
+	xml:InitStatic("video_adv:cap_es_aces_tonemap", _st)
+	ctl = xml:InitCheck("video_adv:check_aces_tonemap", _st)
 	table.insert(handler.m_preconditions, {func=get_enchanted_shaders_status, control=_st})
 
 --// Опции SSS и ES: Конец
@@ -226,10 +250,10 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	table.insert(handler.m_preconditions, {func=all_modes, control=_st})
 
 --Тень от травы
-	_st = xml:InitStatic("video_adv:templ_item", nil)
+	--[[_st = xml:InitStatic("video_adv:templ_item", nil)
 	xml:InitStatic("video_adv:cap_sun_details", _st)
 	ctl = xml:InitCheck("video_adv:check_sun_details", _st)
-	table.insert(handler.m_preconditions, {func=mode_ge_2, control=_st})
+	table.insert(handler.m_preconditions, {func=mode_ge_2, control=_st})]]--
 
 --Дальность тени травы
 	_st = xml:InitStatic("video_adv:templ_item", nil)
@@ -360,6 +384,12 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	_st = xml:InitStatic("video_adv:templ_item", nil)
 	xml:InitStatic("video_adv:cap_60hz", _st)
 	xml:InitCheck("video_adv:check_60hz", _st)
+	table.insert(handler.m_preconditions, {func=all_modes, control=_st})
+	
+--Ограничитель дальности тумана
+	_st = xml:InitStatic("video_adv:templ_item", nil)
+	xml:InitStatic("video_adv:cap_fog_clamper_max", _st)
+	xml:InitTrackBar("video_adv:track_fog_clamper_max", _st)
 	table.insert(handler.m_preconditions, {func=all_modes, control=_st})
 	
 --Тип низинного тумана	

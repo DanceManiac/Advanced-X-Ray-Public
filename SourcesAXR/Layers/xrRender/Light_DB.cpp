@@ -37,6 +37,8 @@ struct R_Light
 
 CLight_DB::CLight_DB()
 {
+	sun_original = nullptr;
+	sun_adapted = nullptr;
 }
 
 CLight_DB::~CLight_DB()
@@ -48,8 +50,8 @@ void CLight_DB::Load			(IReader *fs)
 	IReader* F	= 0;
 
 	// Lights itself
-	sun_original		= NULL;
-	sun_adapted			= NULL;
+	sun_original		= nullptr;
+	sun_adapted			= nullptr;
 	{
 		F				= fs->open_chunk		(fsL_LIGHT_DYNAMIC);
 
@@ -256,15 +258,25 @@ void			CLight_DB::Update			()
 		Fvector						OD,OP,AD,AP;
 		OD.set						(E.sun_dir).normalize			();
 		OP.mad						(Device.vCameraPosition,OD,-500.f);
-		AD.set(0,-.75f,0).add		(E.sun_dir);
 
-		// for some reason E.sun_dir can point-up
-		int		counter = 0;
-		while	(AD.magnitude()<0.001 && counter<10)	{
-			AD.add(E.sun_dir); counter++;
+		if (!::Render->is_sun_static() && !ShadowOfChernobylMode)
+		{
+			// true sunlight direction
+			AD.set(E.sun_dir).normalize();
 		}
-		AD.normalize				();
-		AP.mad						(Device.vCameraPosition,AD,-500.f);
+		else
+		{
+			// for some reason E.sun_dir can point-up
+			AD.set(0.0f, -0.75f, 0.0f).add(E.sun_dir);
+			u32 counter = 0;
+			while (AD.magnitude() < 0.001f && counter < 10)
+			{
+				AD.add(E.sun_dir);
+				++counter;
+			}
+			AD.normalize();
+		}
+
 		sun_original->set_rotation	(OD,_sun_original->right	);
 		sun_original->set_position	(OP);
 		sun_original->set_color		(E.sun_color.x,E.sun_color.y,E.sun_color.z);

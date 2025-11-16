@@ -14,7 +14,7 @@ CEffectorFall::CEffectorFall(float power,float life_time) : CEffectorCam(eCEFall
 }
 
 
-BOOL CEffectorFall::ProcessCam(SCamEffectorInfo& info)
+BOOL CEffectorFall::ProcessCam(SCamEffectorInfo& info, float m_fFactorMod)
 {
 	fPhase+=FALL_SPEED*Device.fTimeDelta;
 	if (fPhase<1)	
@@ -31,7 +31,7 @@ CEffectorDOF::CEffectorDOF(const Fvector4& dof)
 	m_fPhase						= Device.fTimeGlobal + dof.w;
 }
 
-BOOL CEffectorDOF::ProcessCam(SCamEffectorInfo& info)
+BOOL CEffectorDOF::ProcessCam(SCamEffectorInfo& info, float m_fFactorMod)
 {
 	if (m_fPhase<Device.fTimeGlobal)
 	{

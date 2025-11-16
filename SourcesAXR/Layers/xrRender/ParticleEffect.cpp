@@ -45,9 +45,12 @@ static void ApplyTexgen( const Fmatrix &mVP )
 
 void PS::OnEffectParticleBirth(void* owner, u32 , PAPI::Particle& m, u32 )
 {
-	CParticleEffect* PE = static_cast<CParticleEffect*>(owner); VERIFY(PE);
+	CParticleEffect* PE = static_cast<CParticleEffect*>(owner);
+	VERIFY(PE);
     CPEDef* PED			= PE->GetDefinition(); 
-    if (PED){
+
+	if (PED)
+	{
         if (PED->m_Flags.is(CPEDef::dfRandomFrame))
             m.frame	= (u16)iFloor(Random.randI(PED->m_Frame.m_iFrameCount)*255.f);
         if (PED->m_Flags.is(CPEDef::dfAnimated)&&PED->m_Flags.is(CPEDef::dfRandomPlayback)&&Random.randI(2))
@@ -63,8 +66,10 @@ void PS::OnEffectParticleDead(void* , u32 , PAPI::Particle& , u32 )
 //------------------------------------------------------------------------------
 CParticleEffect::CParticleEffect()
 {
-	m_HandleEffect 			= ParticleManager()->CreateEffect(1);		VERIFY(m_HandleEffect>=0);
-	m_HandleActionList		= ParticleManager()->CreateActionList();	VERIFY(m_HandleActionList>=0);
+	m_HandleEffect = ParticleManager()->CreateEffect(1);
+	VERIFY(m_HandleEffect>=0);
+	m_HandleActionList = ParticleManager()->CreateActionList();
+	VERIFY(m_HandleActionList>=0);
 	m_RT_Flags.zero			();
 	m_Def					= 0;
 	m_fElapsedLimit			= 0.f;
@@ -91,9 +96,12 @@ void CParticleEffect::Play()
 void CParticleEffect::Stop(BOOL bDefferedStop)
 {
     ParticleManager()->StopEffect(m_HandleEffect,m_HandleActionList,bDefferedStop);
-	if (bDefferedStop){
+	if (bDefferedStop)
+	{
 		m_RT_Flags.set	(flRT_DefferedStop,TRUE);
-	}else{
+	}
+	else
+	{
 		m_RT_Flags.set	(flRT_Playing,FALSE);
 	}
 }
@@ -106,8 +114,11 @@ void CParticleEffect::RefreshShader()
 void CParticleEffect::UpdateParent(const Fmatrix& m, const Fvector& velocity, BOOL bXFORM)
 {
 	m_RT_Flags.set			(flRT_XFORM, bXFORM);
-	if (bXFORM)				m_XFORM.set	(m);
-	else{
+	
+	if (bXFORM)
+		m_XFORM.set	(m);
+	else
+	{
 		m_InitialPosition	= m.c;
         ParticleManager()->Transform(m_HandleActionList,m,velocity);
 	}
@@ -115,11 +126,15 @@ void CParticleEffect::UpdateParent(const Fmatrix& m, const Fvector& velocity, BO
 
 void CParticleEffect::OnFrame(u32 frame_dt)
 {
-	if (m_Def && m_RT_Flags.is(flRT_Playing)){
+	ZoneScoped;
+
+	if (m_Def && m_RT_Flags.is(flRT_Playing))
+	{
 		m_MemDT			+= frame_dt;
 
 		int	StepCount	= 0;
-		if (m_MemDT>=uDT_STEP)	{
+		if (m_MemDT >= uDT_STEP)
+		{
 			// allow maximum of three steps (99ms) to avoid slowdown after loading
 			// it will really skip updates at less than 10fps, which is unplayable
 			StepCount	= m_MemDT/uDT_STEP;
@@ -127,11 +142,15 @@ void CParticleEffect::OnFrame(u32 frame_dt)
 			clamp		(StepCount,0,3);
 		}
 
-		for (;StepCount; StepCount--)	{
-			if (m_Def->m_Flags.is(CPEDef::dfTimeLimit)){ 
-				if (!m_RT_Flags.is(flRT_DefferedStop)){
+		for (;StepCount; StepCount--)
+		{
+			if (m_Def->m_Flags.is(CPEDef::dfTimeLimit))
+			{
+				if (!m_RT_Flags.is(flRT_DefferedStop))
+				{
 					m_fElapsedLimit -= fDT_STEP;
-					if (m_fElapsedLimit<0.f){
+					if (m_fElapsedLimit < 0.f)
+					{
 						m_fElapsedLimit = m_Def->m_fTimeLimit;
 						Stop		(true);
                         break;
@@ -145,30 +164,41 @@ void CParticleEffect::OnFrame(u32 frame_dt)
             ParticleManager()->GetParticles(m_HandleEffect,particles,p_cnt);
             
 			// our actions
-			if (m_Def->m_Flags.is(CPEDef::dfFramed|CPEDef::dfAnimated))	m_Def->ExecuteAnimate	(particles,p_cnt,fDT_STEP);
-			if (m_Def->m_Flags.is(CPEDef::dfCollision)) 				m_Def->ExecuteCollision	(particles,p_cnt,fDT_STEP,this,m_CollisionCallback);
+			if (m_Def->m_Flags.is(CPEDef::dfFramed|CPEDef::dfAnimated))
+				m_Def->ExecuteAnimate	(particles,p_cnt,fDT_STEP);
+
+			if (m_Def->m_Flags.is(CPEDef::dfCollision))
+				m_Def->ExecuteCollision	(particles,p_cnt,fDT_STEP,this,m_CollisionCallback);
 
 			//-move action
 			if (p_cnt)	
 			{
 				vis.box.invalidate	();
 				float p_size = 0.f;
-				for(u32 i = 0; i < p_cnt; i++){
+				for (u32 i = 0; i < p_cnt; i++)
+				{
 					Particle &m 	= particles[i]; 
 					vis.box.modify((Fvector&)m.pos);
-					if (m.size.x>p_size) p_size = m.size.x;
-					if (m.size.y>p_size) p_size = m.size.y;
-					if (m.size.z>p_size) p_size = m.size.z;
+					
+					if (m.size.x>p_size)
+						p_size = m.size.x;
+					if (m.size.y>p_size)
+						p_size = m.size.y;
+					if (m.size.z>p_size)
+						p_size = m.size.z;
 				}
 				vis.box.grow		(p_size);
 				vis.box.getsphere	(vis.sphere.P,vis.sphere.R);
 			}
-			if (m_RT_Flags.is(flRT_DefferedStop)&&(0==p_cnt)){
+			if (m_RT_Flags.is(flRT_DefferedStop) && (0 == p_cnt))
+			{
 				m_RT_Flags.set		(flRT_Playing|flRT_DefferedStop,FALSE);
 				break;
 			}
 		}
-	} else {
+	}
+	else
+	{
 		vis.box.set			(m_InitialPosition,m_InitialPosition);
 		vis.box.grow		(EPS_L);
 		vis.box.getsphere	(vis.sphere.P,vis.sphere.R);
@@ -178,7 +208,8 @@ void CParticleEffect::OnFrame(u32 frame_dt)
 BOOL CParticleEffect::Compile(CPEDef* def)
 {
 	m_Def 						= def;
-	if (m_Def){
+	if (m_Def)
+	{
 		// refresh shader
 		RefreshShader			();
 
@@ -191,7 +222,9 @@ BOOL CParticleEffect::Compile(CPEDef* def)
 		if (m_Def->m_Flags.is(CPEDef::dfTimeLimit))
 			m_fElapsedLimit 	= m_Def->m_fTimeLimit;
 	}
-	if (def)	shader			= def->m_CachedShader;
+	if (def)
+		shader = def->m_CachedShader;
+
 	return TRUE;
 }
 
@@ -215,18 +248,24 @@ void CParticleEffect::Copy(dxRender_Visual* )
 
 void CParticleEffect::OnDeviceCreate()
 {
-	if (m_Def){
-		if (m_Def->m_Flags.is(CPEDef::dfSprite)){
+	if (m_Def)
+	{
+		if (m_Def->m_Flags.is(CPEDef::dfSprite))
+		{
 			geom.create			(FVF::F_LIT, RCache.Vertex.Buffer(), RCache.QuadIB);
-			if (m_Def) shader	= m_Def->m_CachedShader;
+			
+			if (m_Def)
+				shader = m_Def->m_CachedShader;
 		}
 	}
 }
 
 void CParticleEffect::OnDeviceDestroy()
 {
-	if (m_Def){
-		if (m_Def->m_Flags.is(CPEDef::dfSprite)){
+	if (m_Def)
+	{
+		if (m_Def->m_Flags.is(CPEDef::dfSprite))
+		{
 			geom.destroy		();
 			shader.destroy		();
 		}    
@@ -237,6 +276,8 @@ void CParticleEffect::OnDeviceDestroy()
 //----------------------------------------------------
 IC void FillSprite_fpu	(FVF::LIT*& pv, const Fvector& T, const Fvector& R, const Fvector& pos, const Fvector2& lt, const Fvector2& rb, float r1, float r2, u32 clr, float angle)
 {
+	ZoneScoped;
+
 	float sa	= _sin(angle);  
 	float ca	= _cos(angle);  
 	
@@ -258,23 +299,19 @@ IC void FillSprite_fpu	(FVF::LIT*& pv, const Fvector& T, const Fvector& R, const
 	c.invert	(a);
 	d.invert	(b);
 
-	pv->set		(d.x+pos.x,d.y+pos.y,d.z+pos.z, clr, lt.x,rb.y);	pv++;
-	pv->set		(a.x+pos.x,a.y+pos.y,a.z+pos.z, clr, lt.x,lt.y);	pv++;
-	pv->set		(c.x+pos.x,c.y+pos.y,c.z+pos.z, clr, rb.x,rb.y);	pv++;
-	pv->set		(b.x+pos.x,b.y+pos.y,b.z+pos.z,	clr, rb.x,lt.y);	pv++;
-}
-
-__forceinline void fsincos(const float angle, float& sine, float& cosine)
-{
-	sine = std::sinf(angle);
-	cosine = std::cosf(angle);
+	pv->set(d.x + pos.x, d.y + pos.y, d.z + pos.z, clr, lt.x, rb.y);
+	pv++;
+	pv->set(a.x + pos.x, a.y + pos.y, a.z + pos.z, clr, lt.x, lt.y);
+	pv++;
+	pv->set(c.x + pos.x, c.y + pos.y, c.z + pos.z, clr, rb.x, rb.y);
+	pv++;
+	pv->set(b.x + pos.x, b.y + pos.y, b.z + pos.z, clr, rb.x, lt.y);
+	pv++;
 }
 
 IC void FillSprite	(FVF::LIT*& pv, const Fvector& T, const Fvector& R, const Fvector& pos, const Fvector2& lt, const Fvector2& rb, float r1, float r2, u32 clr, float sina , float cosa )
 {
-	#ifdef _GPA_ENABLED	
-		TAL_SCOPED_TASK_NAMED( "FillSprite()" );
-	#endif // _GPA_ENABLED
+	ZoneScoped;
 
 	__m128 Vr, Vt, _T , _R , _pos , _zz , _sa , _ca , a , b , c , d;
 
@@ -332,10 +369,6 @@ IC void FillSprite	(FVF::LIT*& pv, const Fvector& T, const Fvector& R, const Fve
 
 IC void FillSprite	(FVF::LIT*& pv, const Fvector& pos, const Fvector& dir, const Fvector2& lt, const Fvector2& rb, float r1, float r2, u32 clr, float sina , float cosa )
 {
-	#ifdef _GPA_ENABLED	
-		TAL_SCOPED_TASK_NAMED( "FillSpriteTransform()" );
-	#endif // _GPA_ENABLED
-
 	const Fvector& T 	= dir;
 	Fvector R; 	
 
@@ -372,7 +405,8 @@ IC void FillSprite	(FVF::LIT*& pv, const Fvector& pos, const Fvector& dir, const
 
 	_r1 = _mm_set_ss( std::numeric_limits<float>::min() );
 
-	if ( _mm_comigt_ss( _t2 , _r1 ) ) {
+	if (_mm_comigt_ss(_t2, _r1))
+	{
 		_t2 = _mm_rsqrt_ss( _t2 );
 		_t2 = _mm_shuffle_ps( _t2 , _t2 , _MM_SHUFFLE( 0 , 0 , 0 , 0 ) );
 		_t1 = _mm_mul_ps( _t1 , _t2 );
@@ -386,7 +420,8 @@ IC void FillSprite	(FVF::LIT*& pv, const Fvector& pos, const Fvector& dir, const
 
 extern ENGINE_API float		psHUD_FOV;
 
-struct PRS_PARAMS {
+struct PRS_PARAMS
+{
 	FVF::LIT* pv;
 	u32 p_from;
 	u32 p_to;
@@ -409,123 +444,151 @@ __forceinline void magnitude_sse( Fvector &vec , float &res )
 	_mm_store_ss( (float*) &res , tv );
 }
 
-void ParticleRenderStream( LPVOID lpvParams )
+void ParticleRenderStream(LPVOID lpvParams)
 {
-	#ifdef _GPA_ENABLED	
-		TAL_SCOPED_TASK_NAMED( "ParticleRenderStream()" );
+	float sina = 0.0f, cosa = 0.0f;
+	float angle = 0xFFFFFFFF;
 
-		TAL_ID rtID = TAL_MakeID( 1 , Core.dwFrame , 0);	
-		TAL_AddRelationThis(TAL_RELATION_IS_CHILD_OF, rtID);
-	#endif // _GPA_ENABLED
+	PRS_PARAMS* pParams = (PRS_PARAMS*)lpvParams;
 
-			float sina = 0.0f , cosa = 0.0f;
-			float angle = 0xFFFFFFFF;
+	FVF::LIT* pv = pParams->pv;
+	u32 p_from = pParams->p_from;
+	u32 p_to = pParams->p_to;
+	PAPI::Particle* particles = pParams->particles;
+	CParticleEffect& pPE = *pParams->pPE;
 
-			PRS_PARAMS* pParams = (PRS_PARAMS *) lpvParams;
+	for (u32 i = p_from; i < p_to; i++)
+	{
+		PAPI::Particle& m = particles[i];
+		Fvector2 lt, rb;
+		lt.set(0.f, 0.f);
+		rb.set(1.f, 1.f);
 
-			FVF::LIT* pv = pParams->pv;
-			u32 p_from = pParams->p_from;
-			u32 p_to = pParams->p_to;
-			PAPI::Particle* particles = pParams->particles;
-			CParticleEffect &pPE = *pParams->pPE;
+		_mm_prefetch((char*)&particles[i + 1], _MM_HINT_NTA);
 
-			for(u32 i = p_from; i < p_to; i++){
-				PAPI::Particle &m = particles[i];
-				Fvector2 lt,rb;
-				lt.set			(0.f,0.f);
-				rb.set			(1.f,1.f);
+		if (angle != m.rot.x)
+		{
+			angle = m.rot.x;
+			sina = std::sinf(*(float*)&angle);
+			cosa = std::cosf(*(float*)&angle);
+		}
 
-				 _mm_prefetch( (char*) &particles[i + 1] , _MM_HINT_NTA );
+		_mm_prefetch(64 + (char*)&particles[i + 1], _MM_HINT_NTA);
 
-				 if (angle != m.rot.x) {
-					 angle = m.rot.x;
-					 fsincos(angle, sina, cosa);
-				 }
+		if (pPE.m_Def->m_Flags.is(CPEDef::dfFramed))
+			pPE.m_Def->m_Frame.CalculateTC(iFloor(float(m.frame) / 255.f), lt, rb);
 
-				 _mm_prefetch( 64 + (char*) &particles[i + 1] , _MM_HINT_NTA );
+		float r_x = m.size.x * 0.5f;
+		float r_y = m.size.y * 0.5f;
+		float speed = 0.f;
+		bool speed_calculated = false;
 
-				if (pPE.m_Def->m_Flags.is(CPEDef::dfFramed))
-					pPE.m_Def->m_Frame.CalculateTC(iFloor(float(m.frame)/255.f),lt,rb);
+		if (pPE.m_Def->m_Flags.is(CPEDef::dfVelocityScale))
+		{
+			magnitude_sse(m.vel, speed);
+			speed_calculated = true;
+			r_x += speed * pPE.m_Def->m_VelocityScale.x;
+			r_y += speed * pPE.m_Def->m_VelocityScale.y;
+		}
 
-				float r_x		= m.size.x*0.5f;
-				float r_y		= m.size.y*0.5f;
-				float speed;
-				BOOL speed_calculated = FALSE;
+		if (pPE.m_Def->m_Flags.is(CPEDef::dfAlignToPath))
+		{
+			if (!speed_calculated)
+				magnitude_sse(m.vel, speed);
 
-				if (pPE.m_Def->m_Flags.is(CPEDef::dfVelocityScale)){
-					magnitude_sse( m.vel , speed );
-					speed_calculated = TRUE;
-					r_x			+= speed*pPE.m_Def->m_VelocityScale.x;
-					r_y			+= speed*pPE.m_Def->m_VelocityScale.y;
+			if ((speed < EPS_S) && pPE.m_Def->m_Flags.is(CPEDef::dfWorldAlign))
+			{
+				Fmatrix	M;
+				M.setXYZ(pPE.m_Def->m_APDefaultRotation);
+				if (pPE.m_RT_Flags.is(CParticleEffect::flRT_XFORM))
+				{
+					Fvector p;
+					pPE.m_XFORM.transform_tiny(p, m.pos);
+					M.mulA_43(pPE.m_XFORM);
+					FillSprite(pv, M.k, M.i, p, lt, rb, r_x, r_y, m.color, sina, cosa);
 				}
-
-				if (pPE.m_Def->m_Flags.is(CPEDef::dfAlignToPath)){
-					if ( ! speed_calculated )
-						magnitude_sse( m.vel , speed );
-                    if ((speed<EPS_S)&&pPE.m_Def->m_Flags.is(CPEDef::dfWorldAlign)){
-                    	Fmatrix	M;  	
-                        M.setXYZ			(pPE.m_Def->m_APDefaultRotation);
-						if (pPE.m_RT_Flags.is(CParticleEffect::flRT_XFORM)){
-                            Fvector p;
-                            pPE.m_XFORM.transform_tiny(p,m.pos);
-	                        M.mulA_43		(pPE.m_XFORM);
-                            FillSprite		(pv,M.k,M.i,p,lt,rb,r_x,r_y,m.color,sina,cosa);
-                        }else{
-                            FillSprite		(pv,M.k,M.i,m.pos,lt,rb,r_x,r_y,m.color,sina,cosa);
-                        }
-                    }else if ((speed>=EPS_S)&&pPE.m_Def->m_Flags.is(CPEDef::dfFaceAlign)){
-                    	Fmatrix	M;  		M.identity();
-                        M.k.div				(m.vel,speed);            
-                        M.j.set 			(0,1,0);	if (_abs(M.j.dotproduct(M.k))>.99f)  M.j.set(0,0,1);
-                        M.i.crossproduct	(M.j,M.k);	M.i.normalize	();
-                        M.j.crossproduct   	(M.k,M.i);	M.j.normalize  ();
-						if (pPE.m_RT_Flags.is(CParticleEffect::flRT_XFORM)){
-                            Fvector p;
-                            pPE.m_XFORM.transform_tiny(p,m.pos);
-	                        M.mulA_43		(pPE.m_XFORM);
-                            FillSprite		(pv,M.j,M.i,p,lt,rb,r_x,r_y,m.color,sina,cosa);
-                        }else{
-                            FillSprite		(pv,M.j,M.i,m.pos,lt,rb,r_x,r_y,m.color,sina,cosa);
-                        }
-                    }else{
-						Fvector 			dir;
-                        if (speed>=EPS_S)	dir.div	(m.vel,speed);
-                        else				dir.setHP(-pPE.m_Def->m_APDefaultRotation.y,-pPE.m_Def->m_APDefaultRotation.x);
-						if (pPE.m_RT_Flags.is(CParticleEffect::flRT_XFORM)){
-                            Fvector p,d;
-                            pPE.m_XFORM.transform_tiny	(p,m.pos);
-                            pPE.m_XFORM.transform_dir	(d,dir);
-                            FillSprite	(pv,p,d,lt,rb,r_x,r_y,m.color,sina,cosa);
-                        }else{
-                            FillSprite	(pv,m.pos,dir,lt,rb,r_x,r_y,m.color,sina,cosa);
-                        }
-                    }
-				}else{
-					if (pPE.m_RT_Flags.is(CParticleEffect::flRT_XFORM)){
-						Fvector p;
-						pPE.m_XFORM.transform_tiny	(p,m.pos);
-						FillSprite	(pv,RDEVICE.vCameraTop,RDEVICE.vCameraRight,p,lt,rb,r_x,r_y,m.color,sina,cosa);
-					}else{
-						FillSprite	(pv,RDEVICE.vCameraTop,RDEVICE.vCameraRight,m.pos,lt,rb,r_x,r_y,m.color,sina,cosa);
-					}
+				else
+				{
+					FillSprite(pv, M.k, M.i, m.pos, lt, rb, r_x, r_y, m.color, sina, cosa);
 				}
 			}
+			else if ((speed >= EPS_S) && pPE.m_Def->m_Flags.is(CPEDef::dfFaceAlign))
+			{
+				Fmatrix	M;
+				M.identity();
+				M.k.div(m.vel, speed);
+				M.j.set(0, 1, 0);
+
+				if (_abs(M.j.dotproduct(M.k)) > .99f)
+					M.j.set(0, 0, 1);
+
+				M.i.crossproduct(M.j, M.k);
+				M.i.normalize();
+				M.j.crossproduct(M.k, M.i);
+				M.j.normalize();
+
+				if (pPE.m_RT_Flags.is(CParticleEffect::flRT_XFORM))
+				{
+					Fvector p;
+					pPE.m_XFORM.transform_tiny(p, m.pos);
+					M.mulA_43(pPE.m_XFORM);
+					FillSprite(pv, M.j, M.i, p, lt, rb, r_x, r_y, m.color, sina, cosa);
+				}
+				else
+				{
+					FillSprite(pv, M.j, M.i, m.pos, lt, rb, r_x, r_y, m.color, sina, cosa);
+				}
+			}
+			else
+			{
+				Fvector 			dir;
+
+				if (speed >= EPS_S)
+					dir.div(m.vel, speed);
+				else
+					dir.setHP(-pPE.m_Def->m_APDefaultRotation.y, -pPE.m_Def->m_APDefaultRotation.x);
+
+				if (pPE.m_RT_Flags.is(CParticleEffect::flRT_XFORM))
+				{
+					Fvector p, d;
+					pPE.m_XFORM.transform_tiny(p, m.pos);
+					pPE.m_XFORM.transform_dir(d, dir);
+					FillSprite(pv, p, d, lt, rb, r_x, r_y, m.color, sina, cosa);
+				}
+				else
+				{
+					FillSprite(pv, m.pos, dir, lt, rb, r_x, r_y, m.color, sina, cosa);
+				}
+			}
+		}
+		else
+		{
+			if (pPE.m_RT_Flags.is(CParticleEffect::flRT_XFORM))
+			{
+				Fvector p;
+				pPE.m_XFORM.transform_tiny(p, m.pos);
+				FillSprite(pv, RDEVICE.vCameraTop, RDEVICE.vCameraRight, p, lt, rb, r_x, r_y, m.color, sina, cosa);
+			}
+			else
+			{
+				FillSprite(pv, RDEVICE.vCameraTop, RDEVICE.vCameraRight, m.pos, lt, rb, r_x, r_y, m.color, sina, cosa);
+			}
+		}
+	}
 }
 
 void CParticleEffect::Render(float )
 {
-	#ifdef _GPA_ENABLED	
-		TAL_SCOPED_TASK_NAMED( "CParticleEffect::Render()" );
-	#endif // _GPA_ENABLED
-
 	u32			dwOffset,dwCount;
 	// Get a pointer to the particles in gp memory
     PAPI::Particle* particles;
     u32 			p_cnt;
     ParticleManager()->GetParticles(m_HandleEffect,particles,p_cnt);
 
-	if(p_cnt>0){
-		if (m_Def&&m_Def->m_Flags.is(CPEDef::dfSprite)){
+	if(p_cnt>0)
+	{
+		if (m_Def&&m_Def->m_Flags.is(CPEDef::dfSprite))
+		{
 			FVF::LIT* pv_start	= (FVF::LIT*)RCache.Vertex.Lock(p_cnt*4*4,geom->vb_stride,dwOffset);
 			FVF::LIT* pv		= pv_start;
 
@@ -540,11 +603,13 @@ void CParticleEffect::Render(float )
 			dwCount = p_cnt<<2;
 
 			RCache.Vertex.Unlock(dwCount,geom->vb_stride);
+
 			if (dwCount)    
 			{
 #ifndef _EDITOR
 				Fmatrix Pold						= Device.mProject;
 				Fmatrix FTold						= Device.mFullTransform;
+
 				if(GetHudMode())
 				{
 					RDEVICE.mProject.build_projection(psHUD_FOV, Device.fASPECT, HUD_VIEWPORT_NEAR, g_pGamePersistent->Environment().CurrentEnv->far_plane);
@@ -638,82 +703,126 @@ void CParticleEffect::Render(float )
     u32 			p_cnt;
     ParticleManager()->GetParticles(m_HandleEffect,particles,p_cnt);
 
-	if(p_cnt>0){
-		if (m_Def&&m_Def->m_Flags.is(CPEDef::dfSprite)){
+	if(p_cnt>0)
+	{
+		if (m_Def&&m_Def->m_Flags.is(CPEDef::dfSprite))
+		{
 			FVF::LIT* pv_start	= (FVF::LIT*)RCache.Vertex.Lock(p_cnt*4*4,geom->vb_stride,dwOffset);
 			FVF::LIT* pv		= pv_start;
 
-			for(u32 i = 0; i < p_cnt; i++){
+			for(u32 i = 0; i < p_cnt; i++)
+			{
 				PAPI::Particle &m = particles[i];
 
 				Fvector2 lt,rb;
 				lt.set			(0.f,0.f);
 				rb.set			(1.f,1.f);
-				if (m_Def->m_Flags.is(CPEDef::dfFramed)) m_Def->m_Frame.CalculateTC(iFloor(float(m.frame)/255.f),lt,rb);
+
+				if (m_Def->m_Flags.is(CPEDef::dfFramed))
+					m_Def->m_Frame.CalculateTC(iFloor(float(m.frame)/255.f),lt,rb);
+
 				float r_x		= m.size.x*0.5f;
 				float r_y		= m.size.y*0.5f;
-				if (m_Def->m_Flags.is(CPEDef::dfVelocityScale)){
+
+				if (m_Def->m_Flags.is(CPEDef::dfVelocityScale))
+				{
 					float speed	= m.vel.magnitude();
 					r_x			+= speed*m_Def->m_VelocityScale.x;
 					r_y			+= speed*m_Def->m_VelocityScale.y;
 				}
-				if (m_Def->m_Flags.is(CPEDef::dfAlignToPath)){
+
+				if (m_Def->m_Flags.is(CPEDef::dfAlignToPath))
+				{
 					float speed	= m.vel.magnitude();
-                    if ((speed<EPS_S)&&m_Def->m_Flags.is(CPEDef::dfWorldAlign)){
+                    if ((speed<EPS_S)&&m_Def->m_Flags.is(CPEDef::dfWorldAlign))
+					{
                     	Fmatrix	M;  	
                         M.setXYZ			(m_Def->m_APDefaultRotation);
-                        if (m_RT_Flags.is(flRT_XFORM)){
+
+                        if (m_RT_Flags.is(flRT_XFORM))
+						{
                             Fvector p;
                             m_XFORM.transform_tiny(p,m.pos);
 	                        M.mulA_43		(m_XFORM);
                             FillSprite		(pv,M.k,M.i,p,lt,rb,r_x,r_y,m.color,m.rot.x);
-                        }else{
+                        }
+						else
+						{
                             FillSprite		(pv,M.k,M.i,m.pos,lt,rb,r_x,r_y,m.color,m.rot.x);
                         }
-                    }else if ((speed>=EPS_S)&&m_Def->m_Flags.is(CPEDef::dfFaceAlign)){
+                    }
+					else if ((speed>=EPS_S)&&m_Def->m_Flags.is(CPEDef::dfFaceAlign))
+					{
                     	Fmatrix	M;  		M.identity();
                         M.k.div				(m.vel,speed);            
-                        M.j.set 			(0,1,0);	if (_abs(M.j.dotproduct(M.k))>.99f)  M.j.set(0,0,1);
-                        M.i.crossproduct	(M.j,M.k);	M.i.normalize	();
-                        M.j.crossproduct   	(M.k,M.i);	M.j.normalize  ();
-                        if (m_RT_Flags.is(flRT_XFORM)){
+                        M.j.set 			(0,1,0);
+						
+						if (_abs(M.j.dotproduct(M.k))>.99f) 
+							M.j.set(0,0,1);
+
+                        M.i.crossproduct	(M.j,M.k);
+						M.i.normalize	();
+                        M.j.crossproduct   	(M.k,M.i);
+						M.j.normalize  ();
+
+                        if (m_RT_Flags.is(flRT_XFORM))
+						{
                             Fvector p;
                             m_XFORM.transform_tiny(p,m.pos);
 	                        M.mulA_43		(m_XFORM);
                             FillSprite		(pv,M.j,M.i,p,lt,rb,r_x,r_y,m.color,m.rot.x);
-                        }else{
+                        }
+						else
+						{
                             FillSprite		(pv,M.j,M.i,m.pos,lt,rb,r_x,r_y,m.color,m.rot.x);
                         }
-                    }else{
+                    }
+					else
+					{
 						Fvector 			dir;
-                        if (speed>=EPS_S)	dir.div	(m.vel,speed);
-                        else				dir.setHP(-m_Def->m_APDefaultRotation.y,-m_Def->m_APDefaultRotation.x);
-                        if (m_RT_Flags.is(flRT_XFORM)){
+                        if (speed>=EPS_S)
+							dir.div	(m.vel,speed);
+
+                        else
+							dir.setHP(-m_Def->m_APDefaultRotation.y,-m_Def->m_APDefaultRotation.x);
+
+                        if (m_RT_Flags.is(flRT_XFORM))
+						{
                             Fvector p,d;
                             m_XFORM.transform_tiny	(p,m.pos);
                             m_XFORM.transform_dir	(d,dir);
                             FillSprite	(pv,p,d,lt,rb,r_x,r_y,m.color,m.rot.x);
-                        }else{
+                        }
+						else
+						{
                             FillSprite	(pv,m.pos,dir,lt,rb,r_x,r_y,m.color,m.rot.x);
                         }
                     }
-				}else{
-					if (m_RT_Flags.is(flRT_XFORM)){
+				}
+				else
+				{
+					if (m_RT_Flags.is(flRT_XFORM))
+					{
 						Fvector p;
 						m_XFORM.transform_tiny	(p,m.pos);
 						FillSprite	(pv,RDEVICE.vCameraTop,RDEVICE.vCameraRight,p,lt,rb,r_x,r_y,m.color,m.rot.x);
-					}else{
+					}
+					else
+					{
 						FillSprite	(pv,RDEVICE.vCameraTop,RDEVICE.vCameraRight,m.pos,lt,rb,r_x,r_y,m.color,m.rot.x);
 					}
 				}
 			}
+
 			dwCount 			= u32(pv-pv_start);
 			RCache.Vertex.Unlock(dwCount,geom->vb_stride);
+
 			if (dwCount)    
 			{
 #ifndef _EDITOR
 				Fmatrix Pold						= Device.mProject;
 				Fmatrix FTold						= Device.mFullTransform;
+
 				if(GetHudMode())
 				{
 					RDEVICE.mProject.build_projection(psHUD_FOV, Device.fASPECT, VIEWPORT_NEAR, g_pGamePersistent->Environment().CurrentEnv->far_plane);

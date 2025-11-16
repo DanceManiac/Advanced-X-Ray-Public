@@ -1,0 +1,117 @@
+[global]
+engine_mode = shoc 				;; Режим работы движка cop|cs (Зов Припяти|Чистое Небо)
+discord_app_id = 745606008499601438	;; ID приложения для Discord Rich Presense
+discord_show_task = true		;; Выводить в статус Дискорда текущий квест
+ls_tips_enabled = true			;; Включены ли 100 советов по выживанию в Зоне
+developer_mode = false			;; Режим разработчика (больше команд, телепортация в демо рекорде, редактор погоды)
+block_console = false			;; Заблокировать использование консоли
+auto_snd_targets = true			;; Автоматическое определение кол-ва источников звука
+
+[gameplay]
+death_camera_mode = 1 				;; 1 - freelook| 2 - fixedlook| 3 - firsteye
+poltergeist_visible_corpse = true 	;; Старая смерть полтергейстов true\false (вкл.\выкл.)
+autoreload_enabled = true			;; Включена ли автоматическая перезарядка оружия
+distant_snd_distance = 150.0		;; Дистанция после которой звуки становятся приглушенными
+torch_use_battery = false			;; Ограниченный заряд фонаря
+detector_use_battery = false 		;; Ограниченный заряд детектора
+anomaly_detector_use_battery  = false ;; Ограниченный заряд детектора аномалий
+limited_bolts = false				;; Лимитированные болты
+actor_thirst_enabled = false		;; Жажда ГГ
+actor_intoxication_enabled = false	;; Интоксикация ГГ
+actor_sleepeness_enabled = false	;; Потребность ГГ во сне
+actor_alcoholism_enabled = false	;; Алкоголизм
+actor_narcotism_enabled = false		;; Наркомания
+artefacts_degradation = false		;; Деградация артефактов
+artefacts_degradation_mode = from_belt	;; Режим деградации артефактов (from_belt|from_ruck)
+enable_artefacts_ranks = false		;; Ранги артефактов
+multi_item_pickup = true			;; Подбор сразу нескольких предметов
+show_wpn_info = true				;; Показывать характеристики оружия
+jump_and_speed_weight_calc = false	;; Снижение скорости передвижений и высоты прыжков от веса в рюкзаке
+hide_weapon_in_inventory = false	;; Убирать оружие, если открыт инвентарь
+stop_actor_sprint_if_shoot = false	;; Останавливать спринт во время стрельбы
+enable_reload_if_sprint = true		;; Разрешить перезарядку во время спринта
+enable_antigas_filters = false		;; Включить использование фильтров для противогазов
+artefacts_infl_mode = from_belt		;; Режим воздействия артефактов (from_belt|from_ruck|from_ruck_only_rad)
+hide_hud_on_master = false			;; Скрывать худ и перекрестие на самой высокой сложности
+actor_skills_enabled = false		;; Система навыков героя
+sleepeness_infl_on_psy_health = false ;; Влияние сонливости на пси-здоровье
+enable_limited_inventory = false	;; Лимитированный инвентарь
+enable_limited_inv_boxes = false	;; Лимитированные ящики
+items_auto_volume = false			;; Автоматический расчёт объёма вещей для лимитированного инвентаря (экспериментальная опция, могут быть баги)
+enable_food_irradiation = false		;; Облучение пищи
+enable_food_rotting = false			;; Порча еды со временем
+ogse_weapons_zoom_system = false 	;; OGSE система зума
+enable_quick_throw_grenades = true	;; Быстрый бросок гранат
+disable_stopping_empty = true		;; Отключение стоппинга, если руки пусты
+disable_stopping_bolt = true		;; Отключение стоппинга, если в руке болт
+disable_stopping_grenade = true		;; Отключение стоппинга, если в руке граната
+enable_global_achievements = false	;; Глобальные достижения
+
+[inventory]
+enable_knife_slot = false			;; Включен ли слот ножа
+enable_binocular_slot = false		;; Включен ли слот бинокля
+enable_torch_slot = false			;; Включен ли слот фонарика
+enable_backpack_slot = false		;; Включен ли слот рюкзака
+enable_helmet_slot = false			;; Включен ли слот шлема
+enable_second_helmet_slot = false	;; Включен ли слот второго шлема
+enable_dosimeter_slot = false		;; Включен ли слот дозиметра
+enable_pants_slot = false			;; Включен ли слот штанов
+enable_pda_slot = false				;; Включен ли слот КПК
+enable_pistol_slot = false			;; Включен ли слот пистолета
+
+[ui_settings]
+colorize_values = true				;; Подкрашивание значения у артефактов, бустеров
+colorize_values_red = 255,0,0,255	;; Цвет негативного значения у артефактов, бустеров(RGBA)
+colorize_values_green = 0,255,0,255	;; Цвет положительного значения у артефактов, бустеров(RBGA)
+colorize_values_neutral = 170,170,170,255 ;; Цвет нейтрального значения у артефактов, бустеров(RBGA)
+hq_icons = false					;; 100x100 иконки инвентаря (требуются правки в ui_incon_equipment.xml)
+enable_artefact_panel = true		;; Вкл.\выкл. панель артефактов на худе
+enable_hud_used_item_text = true	;; Вкл.\выкл. надпись об использованном предмете на HUD
+enable_pda_info_icons = true		;; Вкл.\выкл. HUD иконку оповещения о новой информации в КПК 
+enable_new_task_icon = false		;; Вкл.\выкл. HUD иконку оповещения при получении квеста 
+show_saved_game_name = false		;; Вкл.\выкл. отображение имени сделанного сохранения на экране
+merge_ammo_line_with_firemode = true ;; Вкл.\выкл. объединение строки названия патронов с режимом стрельбы
+use_auto_ammo_info = false			;; Вкл.\выкл. автоматическое добавление информации о патронах, требует правок оригинальных описаний оружий
+use_auto_ammo_info_desc = false		;; Вкл.\выкл. (работает при включенном use_auto_ammo_info) использование `inv_name_ammo_descr` из секции патронов для вывода своего имени каждого вида патрона, при отсутствии параметра или выводе гранат подствольника будет использоваться `inv_name_short`
+enable_smooth_scrolling = false		;; Вкл.\выкл. плавный скролл
+
+[hud_movement_layers]; Эффекты камеры при ходьбе из Anomaly
+;types: 0 = aim_walk, 1 = aim_crouch, 2 = crouch, 3 = walk, 4 = run, 5 = sprint
+;type		   path  				 		 speed   power
+movement_layer_0 = mfs_team\camera_effects\movement\aim_walk.anm,	 1,	 0.85
+movement_layer_1 = mfs_team\camera_effects\movement\aim_walk.anm,	 0.75,	 0.5
+movement_layer_2 = mfs_team\camera_effects\movement\newwalk.anm, 	 1, 	 0.1
+movement_layer_3 = mfs_team\camera_effects\movement\newwalk.anm, 	 1, 	 0.1
+movement_layer_4 = mfs_team\camera_effects\movement\newwalk.anm, 	 1.25,	 0.125
+movement_layer_5 = mfs_team\camera_effects\movement\newrunreload.anm,    1, 	 0.15
+
+[vis_shaders_replace]; Замена шейдеров в визуалах
+; шейдер тесселяции: models\model -> models\model_pn
+dynamics\weapons\wpn_hand = models\model,models\model_pn, models\weapons,models\model_pn
+
+[ssfx_dof]; Удаление отдельных строк или всей секции отключит эффект.
+default_dof = 0.1, 0.25, 0.0, 0.0 ;;Постоянное значение DoF
+focus_dof = 0.1, 0.25, 1.0, 0.0 ;;Значение DoF при условиях
+bore_dof_enabled = true ;; Применять DoF при bore анимациях оружия
+
+[custom_commands]
+integer_cmd_count = 1	;; Количество целочисленных кастомных команд консоли
+bool_cmd_count = 1		;; Количество логических кастомных команд консоли
+
+[color_drag_presets]; Кастомные пресеты цветокоррекции
+clr_default 		= 0
+clr_sepia 			= 1
+clr_gray_moss 		= 2
+clr_graphite_gray 	= 3
+clr_zone 			= 4
+clr_warm_tone 		= 5
+clr_blue 			= 6
+
+[start_settings];Стартовые значения необходимых настроек
+;FOV
+Camera_FOV = 67.5
+HUD_FOV = 0.45
+weather_fog_clamping = 750.0
+
+;Enchanted Shaders color grading
+color_grading_es = 0.5, 0.5, 0.5

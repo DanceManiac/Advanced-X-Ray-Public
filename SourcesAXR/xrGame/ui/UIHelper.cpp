@@ -9,18 +9,30 @@
 #include "UIHelper.h"
 #include "UIXmlInit.h"
 
+#include "UIStatic.h"
 #include "UIProgressBar.h"
+#include "UIProgressShape.h"
 #include "UIFrameLineWnd.h"
 #include "UIFrameWindow.h"
 #include "UI3tButton.h"
 #include "UICheckButton.h"
 #include "UIHint.h"
+#include "UIDragDropListEx.h"
 #include "UIDragDropReferenceList.h"
+#include "UIScrollView.h"
+#include "UIListWnd.h"
+#include "UIAnimatedStatic.h"
 #include "UIEditBox.h"
 
-CUIStatic* UIHelper::CreateStatic( CUIXml& xml, LPCSTR ui_path, CUIWindow* parent )
+#include "UIWndCallback.h"
+
+CUIStatic* UIHelper::CreateStatic( CUIXml& xml, LPCSTR ui_path, CUIWindow* parent, bool critical )
 {
-	CUIStatic* ui			= xr_new<CUIStatic>();
+    // If it's not critical element, then don't crash if it doesn't exist
+    if (!critical && !xml.NavigateToNode(ui_path, 0))
+        return nullptr;
+
+	auto ui			= xr_new<CUIStatic>();
 	if(parent)
 	{
 		parent->AttachChild	( ui );
@@ -30,9 +42,13 @@ CUIStatic* UIHelper::CreateStatic( CUIXml& xml, LPCSTR ui_path, CUIWindow* paren
 	return ui;
 }
 
-CUITextWnd* UIHelper::CreateTextWnd( CUIXml& xml, LPCSTR ui_path, CUIWindow* parent )
+CUITextWnd* UIHelper::CreateTextWnd( CUIXml& xml, LPCSTR ui_path, CUIWindow* parent, bool critical  )
 {
-	CUITextWnd* ui			= xr_new<CUITextWnd>();
+	// If it's not critical element, then don't crash if it doesn't exist
+	if (!critical && !xml.NavigateToNode(ui_path, 0))
+		return nullptr;
+
+	auto ui			= xr_new<CUITextWnd>();
 	if(parent)
 	{
 		parent->AttachChild	( ui );
@@ -42,9 +58,13 @@ CUITextWnd* UIHelper::CreateTextWnd( CUIXml& xml, LPCSTR ui_path, CUIWindow* par
 	return ui;
 }
 
-CUIEditBox* UIHelper::CreateEditBox( CUIXml& xml, LPCSTR ui_path, CUIWindow* parent )
+CUIEditBox* UIHelper::CreateEditBox( CUIXml& xml, LPCSTR ui_path, CUIWindow* parent, bool critical  )
 {
-	CUIEditBox* ui			= xr_new<CUIEditBox>();
+	// If it's not critical element, then don't crash if it doesn't exist
+	if (!critical && !xml.NavigateToNode(ui_path, 0))
+		return nullptr;
+
+	auto ui			= xr_new<CUIEditBox>();
 	if(parent)
 	{
 		parent->AttachChild	( ui );
@@ -54,18 +74,39 @@ CUIEditBox* UIHelper::CreateEditBox( CUIXml& xml, LPCSTR ui_path, CUIWindow* par
 	return ui;
 }
 
-CUIProgressBar* UIHelper::CreateProgressBar( CUIXml& xml, LPCSTR ui_path, CUIWindow* parent )
+CUIProgressBar* UIHelper::CreateProgressBar( CUIXml& xml, LPCSTR ui_path, CUIWindow* parent, bool critical )
 {
-	CUIProgressBar* ui			= xr_new<CUIProgressBar>();
+	// If it's not critical element, then don't crash if it doesn't exist
+	if (!critical && !xml.NavigateToNode(ui_path, 0))
+		return nullptr;
+
+	auto ui						= xr_new<CUIProgressBar>();
 	parent->AttachChild			( ui );
 	ui->SetAutoDelete			( true );
 	CUIXmlInit::InitProgressBar ( xml, ui_path, 0, ui );
 	return ui;
 }
 
-CUIFrameLineWnd* UIHelper::CreateFrameLine( CUIXml& xml, LPCSTR ui_path, CUIWindow* parent )
+CUIProgressShape* UIHelper::CreateProgressShape( CUIXml& xml, LPCSTR ui_path, CUIWindow* parent, bool critical )
 {
-	CUIFrameLineWnd* ui			= xr_new<CUIFrameLineWnd>();
+	// If it's not critical element, then don't crash if it doesn't exist
+	if (!critical && !xml.NavigateToNode(ui_path, 0))
+		return nullptr;
+
+	auto ui = xr_new<CUIProgressShape>();
+	parent->AttachChild			( ui );
+	ui->SetAutoDelete			( true );
+	CUIXmlInit::InitProgressShape ( xml, ui_path, 0, ui );
+	return ui;
+}
+
+CUIFrameLineWnd* UIHelper::CreateFrameLine( CUIXml& xml, LPCSTR ui_path, CUIWindow* parent, bool critical )
+{
+	// If it's not critical element, then don't crash if it doesn't exist
+	if (!critical && !xml.NavigateToNode(ui_path, 0))
+		return nullptr;
+
+	auto ui						= xr_new<CUIFrameLineWnd>();
 	if(parent)
 	{
 		parent->AttachChild		( ui );
@@ -75,9 +116,13 @@ CUIFrameLineWnd* UIHelper::CreateFrameLine( CUIXml& xml, LPCSTR ui_path, CUIWind
 	return ui;
 }
 
-CUIFrameWindow* UIHelper::CreateFrameWindow( CUIXml& xml, LPCSTR ui_path, CUIWindow* parent )
+CUIFrameWindow* UIHelper::CreateFrameWindow( CUIXml& xml, LPCSTR ui_path, CUIWindow* parent, bool critical )
 {
-	CUIFrameWindow* ui			= xr_new<CUIFrameWindow>();
+	// If it's not critical element, then don't crash if it doesn't exist
+	if (!critical && !xml.NavigateToNode(ui_path, 0))
+		return nullptr;
+
+	auto ui						= xr_new<CUIFrameWindow>();
 	if(parent)
 	{
 		parent->AttachChild		( ui );
@@ -87,18 +132,26 @@ CUIFrameWindow* UIHelper::CreateFrameWindow( CUIXml& xml, LPCSTR ui_path, CUIWin
 	return ui;
 }
 
-CUI3tButton* UIHelper::Create3tButton( CUIXml& xml, LPCSTR ui_path, CUIWindow* parent )
+CUI3tButton* UIHelper::Create3tButton( CUIXml& xml, LPCSTR ui_path, CUIWindow* parent, bool critical )
 {
-	CUI3tButton* ui				= xr_new<CUI3tButton>();
+	// If it's not critical element, then don't crash if it doesn't exist
+	if (!critical && !xml.NavigateToNode(ui_path, 0))
+		return nullptr;
+
+	auto ui						= xr_new<CUI3tButton>();
 	parent->AttachChild			( ui );
 	ui->SetAutoDelete			( true );
 	CUIXmlInit::Init3tButton	( xml, ui_path, 0, ui );
 	return ui;
 }
 
-CUICheckButton* UIHelper::CreateCheck( CUIXml& xml, LPCSTR ui_path, CUIWindow* parent )
+CUICheckButton* UIHelper::CreateCheck( CUIXml& xml, LPCSTR ui_path, CUIWindow* parent, bool critical )
 {
-	CUICheckButton* ui			= xr_new<CUICheckButton>();
+	// If it's not critical element, then don't crash if it doesn't exist
+	if (!critical && !xml.NavigateToNode(ui_path, 0))
+		return nullptr;
+
+	auto ui						= xr_new<CUICheckButton>();
 	parent->AttachChild			( ui );
 	ui->SetAutoDelete			( true );
 	CUIXmlInit::InitCheck		( xml, ui_path, 0, ui );
@@ -113,20 +166,67 @@ UIHint* UIHelper::CreateHint( CUIXml& xml, LPCSTR ui_path)
 	return ui;
 }
 
-CUIDragDropListEx* UIHelper::CreateDragDropListEx( CUIXml& xml, LPCSTR ui_path, CUIWindow* parent )
+CUIDragDropListEx* UIHelper::CreateDragDropListEx( CUIXml& xml, LPCSTR ui_path, CUIWindow* parent, bool critical )
 {
-	CUIDragDropListEx* ui			= xr_new<CUIDragDropListEx>();
+	// If it's not critical element, then don't crash if it doesn't exist
+	if (!critical && !xml.NavigateToNode(ui_path, 0))
+		return nullptr;
+
+	auto ui							= xr_new<CUIDragDropListEx>();
 	parent->AttachChild				( ui );
 	ui->SetAutoDelete				( true );
 	CUIXmlInit::InitDragDropListEx	( xml, ui_path, 0, ui );
 	return ui;
 }
 
-CUIDragDropReferenceList* UIHelper::CreateDragDropReferenceList( CUIXml& xml, LPCSTR ui_path, CUIWindow* parent )
+CUIDragDropReferenceList* UIHelper::CreateDragDropReferenceList( CUIXml& xml, LPCSTR ui_path, CUIWindow* parent, bool critical )
 {
-	CUIDragDropReferenceList* ui	= xr_new<CUIDragDropReferenceList>();
+	// If it's not critical element, then don't crash if it doesn't exist
+	if (!critical && !xml.NavigateToNode(ui_path, 0))
+		return nullptr;
+
+	auto ui							= xr_new<CUIDragDropReferenceList>();
 	parent->AttachChild				( ui );
 	ui->SetAutoDelete				( true );
 	CUIXmlInit::InitDragDropListEx	( xml, ui_path, 0, ui );
+	return ui;
+}
+
+CUIScrollView* UIHelper::CreateScrollView( CUIXml& xml, LPCSTR ui_path, CUIWindow* parent, bool critical )
+{
+	// If it's not critical element, then don't crash if it doesn't exist
+	if (!critical && !xml.NavigateToNode(ui_path, 0))
+		return nullptr;
+
+	auto ui							= xr_new<CUIScrollView>();
+	parent->AttachChild				(ui);
+	ui->SetAutoDelete				(true);
+	CUIXmlInit::InitScrollView		(xml, ui_path, 0, ui);
+	return ui;
+}
+
+CUIListWnd* UIHelper::CreateListWnd(CUIXml& xml, LPCSTR ui_path, CUIWindow* parent, bool critical)
+{
+	// If it's not critical element, then don't crash if it doesn't exist
+	if (!critical && !xml.NavigateToNode(ui_path, 0))
+		return nullptr;
+
+	auto ui							= xr_new<CUIListWnd>();
+	parent->AttachChild				(ui);
+	ui->SetAutoDelete				(true);
+	CUIXmlInit::InitListWnd			(xml, ui_path, 0, ui);
+	return ui;
+}
+
+CUIAnimatedStatic* UIHelper::CreateAnimatedStatic(CUIXml& xml, LPCSTR ui_path, CUIWindow* parent, bool critical)
+{
+	// If it's not critical element, then don't crash if it doesn't exist
+	if (!critical && !xml.NavigateToNode(ui_path, 0))
+		return nullptr;
+
+	auto ui							= xr_new<CUIAnimatedStatic>();
+	parent->AttachChild				(ui);
+	ui->SetAutoDelete				(true);
+	CUIXmlInit::InitAnimatedStatic	(xml, ui_path, 0, ui);
 	return ui;
 }

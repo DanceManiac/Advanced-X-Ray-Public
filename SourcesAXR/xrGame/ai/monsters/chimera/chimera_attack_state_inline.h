@@ -121,7 +121,7 @@ bool   ChimeraAttackState<Object>::jump (Fvector const& target, bool attack_jump
 	float dir_yaw							=	(target - object->Position()).getH();
 	dir_yaw									=	angle_normalize(-dir_yaw);
 	float yaw_current, yaw_target;
-	object->control().direction().get_heading	(yaw_current, yaw_target);
+	object->control().get_direction().get_heading	(yaw_current, yaw_target);
 	if ( angle_difference(yaw_current, dir_yaw) > 1.f )
 		return									false;
 
@@ -304,7 +304,7 @@ bool   ChimeraAttackState<Object>::select_target_for_jump (enum_action const	act
 template <class Object>
 void   ChimeraAttackState<Object>::set_turn_animation ()
 {
-	bool const rotate_right					=	object->control().direction().is_from_right(m_target);
+	bool const rotate_right					=	object->control().get_direction().is_from_right(m_target);
 	object->anim().set_override_animation		(rotate_right ? 
 												 eAnimFastStandTurnRight : eAnimFastStandTurnLeft, 0);
 }

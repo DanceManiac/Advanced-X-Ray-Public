@@ -14,16 +14,12 @@
 #include "../InfoPortion.h"
 #include "game_base_space.h"
 #include "../actor.h"
+#include "../relation_registry.h"
 
 #include "../ai_space.h"
 #include "../../xrServerEntities/script_engine.h"
 
 #include "../Include/xrRender/UIShader.h"
-
-#define BUY_MENU_TEXTURE "ui\\ui_mp_buy_menu"
-#define CHAR_ICONS		 "ui\\ui_icons_npc"
-#define MAP_ICONS		 "ui\\ui_icons_map"
-#define MP_CHAR_ICONS	 "ui\\ui_models_multiplayer"
 
 const LPCSTR relationsLtxSection	= "game_relations";
 const LPCSTR ratingField			= "rating_names";
@@ -115,7 +111,7 @@ bool InventoryUtilities::GreaterRoomInRuck(PIItem item1, PIItem item2)
 
 		return				false;
 	}
-   	return					false;
+	return					false;
 }
 
 bool InventoryUtilities::FreeRoom_inBelt	(TIItemContainer& item_list, PIItem _item, int width, int height)
@@ -140,9 +136,9 @@ bool InventoryUtilities::FreeRoom_inBelt	(TIItemContainer& item_list, PIItem _it
 	for(xr_vector<PIItem>::iterator it = item_list.begin(); (item_list.end() != it) && found_place; ++it) 
 	{
 		PIItem pItem = *it;
-		Ivector2 iWH = pItem->GetInvGridRect().rb; 
-		//ÔÓ‚ÂËÚ¸ ÏÓÊÌÓ ÎË ‡ÁÏÂÒÚËÚ¸ ˝ÎÂÏÂÌÚ,
-		//ÔÓ‚ÂˇÂÏ ÔÓÒÎÂ‰Ó‚‡ÚÂÎ¸ÌÓ Í‡Ê‰Û˛ ÍÎÂÚÓ˜ÍÛ
+		Ivector2 iWH = pItem->GetInvGridRect().rb;
+		//–ø—Ä–æ–≤–µ—Ä–∏—Ç—å –º–æ–∂–Ω–æ –ª–∏ —Ä–∞–∑–º–µ—Å—Ç–∏—Ç—å —ç–ª–µ–º–µ–Ω—Ç,
+		//–ø—Ä–æ–≤–µ—Ä—è–µ–º –ø–æ—Å–ª–µ–¥–æ–≤–∞—Ç–µ–ª—å–Ω–æ –∫–∞–∂–¥—É—é –∫–ª–µ—Ç–æ—á–∫—É
 		found_place = false;
 	
 		for(i=0; (i<height - iWH.y +1) && !found_place; ++i)
@@ -170,7 +166,7 @@ bool InventoryUtilities::FreeRoom_inBelt	(TIItemContainer& item_list, PIItem _it
 			}
 		}
 
-		//‡ÁÏÂÒÚËÚ¸ ˝ÎÂÏÂÌÚ Ì‡ Ì‡È‰ÂÌÌÓÏ ÏÂÒÚÂ
+		//—Ä–∞–∑–º–µ—Å—Ç–∏—Ç—å —ç–ª–µ–º–µ–Ω—Ç –Ω–∞ –Ω–∞–π–¥–µ–Ω–Ω–æ–º –º–µ—Å—Ç–µ
 		if(found_place)
 		{
 			for(k=0; k<iWH.y; ++k)
@@ -186,7 +182,7 @@ bool InventoryUtilities::FreeRoom_inBelt	(TIItemContainer& item_list, PIItem _it
 	// remove
 	item_list.erase	(std::remove(item_list.begin(),item_list.end(),_item),item_list.end());
 
-	//‰Îˇ Í‡ÍÓ„Ó-ÚÓ ˝ÎÂÏÂÌÚ‡ ÏÂÒÚ‡ ÌÂ Ì‡¯ÎÓÒ¸
+	//–¥–ª—è –∫–∞–∫–æ–≥–æ-—Ç–æ —ç–ª–µ–º–µ–Ω—Ç–∞ –º–µ—Å—Ç–∞ –Ω–µ –Ω–∞—à–ª–æ—Å—å
 	if(!found_place) return false;
 
 	return true;
@@ -208,7 +204,7 @@ const ui_shader& InventoryUtilities::GetEquipmentIconsShader()
 	if(!g_EquipmentIconsShader)
 	{
 		g_EquipmentIconsShader = xr_new<ui_shader>();
-		(*g_EquipmentIconsShader)->create("hud\\default", "ui\\ui_icon_equipment");
+		(*g_EquipmentIconsShader)->create("hud\\default", EQUIPMENT_ICONS);
 	}
 
 	return *g_EquipmentIconsShader;
@@ -418,7 +414,7 @@ void InventoryUtilities::UpdateWeightStr(CUITextWnd &wnd, CUITextWnd &wnd_max, C
 
 void InventoryUtilities::UpdateCapacityStr(CUITextWnd& wnd, CUITextWnd& wnd_max, CInventoryOwner* pInvOwner)
 {
- 	R_ASSERT		(pInvOwner);
+	R_ASSERT		(pInvOwner);
 	string128		buf;
 
 	CActor* Actor = smart_cast<CActor*>(pInvOwner);
@@ -548,8 +544,8 @@ LPCSTR InventoryUtilities::GetGoodwillAsText(CHARACTER_GOODWILL goodwill)
 
 
 //////////////////////////////////////////////////////////////////////////
-// ÒÔÂˆË‡Î¸Ì‡ˇ ÙÛÌÍˆËˇ ‰Îˇ ÔÂÂ‰‡˜Ë info_portions ÔË Ì‡Ê‡ÚËË ÍÌÓÔÓÍ UI 
-// (‰Îˇ tutorial)
+// —Å–ø–µ—Ü–∏–∞–ª—å–Ω–∞—è —Ñ—É–Ω–∫—Ü–∏—è –¥–ª—è –ø–µ—Ä–µ–¥–∞—á–∏ info_portions –ø—Ä–∏ –Ω–∞–∂–∞—Ç–∏–∏ –∫–Ω–æ–ø–æ–∫ UI 
+// (–¥–ª—è tutorial)
 void InventoryUtilities::SendInfoToActor(LPCSTR info_id)
 {
 	if (GameID() != eGameIDSingle) return;
@@ -583,13 +579,16 @@ void InventoryUtilities::SendInfoToLuaScripts(shared_str info)
 u32 InventoryUtilities::GetGoodwillColor(CHARACTER_GOODWILL gw)
 {
 	u32 res = 0xffc0c0c0;
-	if(gw==NEUTRAL_GOODWILL){
+	if (gw == RELATION_REGISTRY().m_sgoodwill_neutral)
+	{
 		res = 0xffc0c0c0;
-	}else
-	if(gw>1000){
+	}
+	else if (gw >= RELATION_REGISTRY().m_sgoodwill_friend)
+	{
 		res = 0xff00ff00;
-	}else
-	if(gw<-1000){
+	}
+	else if (gw <= RELATION_REGISTRY().m_sgoodwill_enemy)
+	{
 		res = 0xffff0000;
 	}
 	return res;

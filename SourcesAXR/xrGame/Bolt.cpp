@@ -21,7 +21,6 @@ void CBolt::Load(LPCSTR section)
 {
 	inherited::Load(section);
 	m_sounds.LoadSound(section, "snd_throw_start", "sndThrowStart", false, ESoundTypes(SOUND_TYPE_WEAPON_RECHARGING));
-	m_sounds.LoadSound(section, "snd_throw", "sndThrow", false, ESoundTypes(SOUND_TYPE_WEAPON_RECHARGING));
 }
 
 void CBolt::OnH_A_Chield() 
@@ -40,10 +39,6 @@ void CBolt::State(u32 state)
 	{
 		case eThrowStart:
 		{
-			if (!m_sounds.FindSoundItem("sndThrowStart", false) && !actor)
-				return;
-
-			PlaySound("sndThrowStart", actor->Position());
 		} break;
 		case eThrowEnd:
 		{
@@ -73,12 +68,6 @@ void CBolt::Throw()
 	l_pBolt->set_destroy_time	(u32(m_dwDestroyTimeMax/phTimefactor));
 	inherited::Throw			();
 	spawn_fake_missile			();
-
-	auto actor = smart_cast<CActor*>(this->H_Parent());
-	if (!m_sounds.FindSoundItem("sndThrow", false) && !actor)
-		return;
-
-	PlaySound("sndThrow", actor->Position());
 }
 
 bool CBolt::Useful() const
@@ -173,7 +162,17 @@ void CBolt::SetInitiator			(u16 id)
 {
 	m_thrower_id=id;
 }
+
 u16	CBolt::Initiator				()
 {
 	return m_thrower_id;
+}
+
+bool CBolt::GetBriefInfo(II_BriefInfo& info)
+{
+	info.clear();
+	info.name = NameShort();
+	info.icon = *cNameSect();
+
+	return true;
 }

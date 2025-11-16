@@ -97,8 +97,8 @@ const typename ITEM_DATA* CSXML_IdToIndex::GetById (const shared_str& str_id, bo
 {
 	T_INIT::InitXmlIdToIndex();
 	T_VECTOR::iterator it = m_pItemDataVector->begin();
-	for(;
-		m_pItemDataVector->end() != it; it++)
+	
+	for(;m_pItemDataVector->end() != it; it++)
 	{
 		if( (*it).id == str_id)
 			break;

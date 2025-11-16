@@ -22,7 +22,9 @@
 #include "UIGameCTA.h"
 #include "string_table.h"
 #include "../xrEngine/xr_ioconsole.h"
+#include <functional>
 
+using namespace std::placeholders;
 //-------------------------------------------------------------
 u32			g_sv_cta_dwInvincibleTime		=		5;	//5 seconds
 //u32			g_sv_cta_dwAnomalySetLengthTime	=		3;	//3 seconds
@@ -278,10 +280,10 @@ bool game_sv_CaptureTheArtefact::CheckForRoundStart()
 	return false;
 }
 
-void game_sv_CaptureTheArtefact::CheckForWarmap(u32 currentTime)
+void game_sv_CaptureTheArtefact::CheckForWarmap(u32 currentTime_)
 {
 	if (m_dwWarmUp_CurTime == 0 && !m_bInWarmUp) return;
-	if (m_dwWarmUp_CurTime < currentTime)
+	if (m_dwWarmUp_CurTime < currentTime_)
 	{
 		m_dwWarmUp_CurTime	= 0;
 		m_bInWarmUp = false;
@@ -399,7 +401,7 @@ void game_sv_CaptureTheArtefact::OnPlayerConnect(ClientID id_who)
 	
 	ps_who->resetFlag(GAME_PLAYER_FLAG_SKIP);
 
-	if ((g_dedicated_server || m_bSpectatorMode) && (xrCData == m_server->GetServerClient()) )
+	if (m_bSpectatorMode && (xrCData == m_server->GetServerClient()) )
 	{
 		ps_who->setFlag(GAME_PLAYER_FLAG_SKIP);
 		return;
@@ -1142,9 +1144,9 @@ void game_sv_CaptureTheArtefact::SendAnomalyStates()
 	u_EventSend(event_pack);
 }
 
-void game_sv_CaptureTheArtefact::CheckAnomalyUpdate(u32 currentTime)
+void game_sv_CaptureTheArtefact::CheckAnomalyUpdate(u32 currentTime_)
 {
-	if ((m_dwLastAnomalyStartTime + Get_AnomalySetLengthTime_msec()) <= currentTime)
+	if ((m_dwLastAnomalyStartTime + Get_AnomalySetLengthTime_msec()) <= currentTime_)
 		ReStartRandomAnomaly();
 }
 
@@ -2230,7 +2232,7 @@ void game_sv_CaptureTheArtefact::PrepareClientForNewRound(IClient* client)
 	assign_RP(static_cast<CSE_ALifeCreatureActor*>(clientData->owner), ps);
 }
 
-void game_sv_CaptureTheArtefact::CheckForArtefactReturning(u32 currentTime)
+void game_sv_CaptureTheArtefact::CheckForArtefactReturning(u32 currentTime_)
 {
 	TeamsMap::iterator		te = teams.end();
 	TeamsMap::iterator		team_iter;
@@ -2248,7 +2250,7 @@ void game_sv_CaptureTheArtefact::CheckForArtefactReturning(u32 currentTime)
 
 		if (ti->second.IsArtefactActivated())
 		{
-			/*if ((currentTime - ti->second.activationArtefactTimeStart) >=
+			/*if ((currentTime_ - ti->second.activationArtefactTimeStart) >=
 				Get_ActivatedArtefactRetTime_msec())
 			{*/
 				MoveArtefactToPoint(artefact, ti->second.artefactRPoint);
@@ -2279,11 +2281,11 @@ void game_sv_CaptureTheArtefact::CheckForArtefactReturning(u32 currentTime)
 			continue;
 		}
 		if (!ti->second.freeArtefactTimeStart ||
-			((currentTime - ti->second.freeArtefactTimeStart) >= 
+			((currentTime_ - ti->second.freeArtefactTimeStart) >= 
 			Get_ArtefactReturningTime_msec()))
 		{
 			MoveArtefactToPoint(artefact, ti->second.artefactRPoint);
-			ti->second.freeArtefactTimeStart = currentTime;
+			ti->second.freeArtefactTimeStart = currentTime_;
 		}
 	}
 }
@@ -2370,7 +2372,7 @@ bool game_sv_CaptureTheArtefact::ResetInvincibility(ClientID const clientId)
 	return true;
 }
 
-void game_sv_CaptureTheArtefact::ResetTimeoutInvincibility(u32 currentTime)
+void game_sv_CaptureTheArtefact::ResetTimeoutInvincibility(u32 currentTime_)
 {
 	InvincibilityTimeouts::iterator	ii	= m_invTimeouts.begin();
 	InvincibilityTimeouts::iterator	iie = m_invTimeouts.end();
@@ -2378,7 +2380,7 @@ void game_sv_CaptureTheArtefact::ResetTimeoutInvincibility(u32 currentTime)
 
 	for (; ii != iie; ++ii)
 	{
-		if ((currentTime >= ii->second) && (ii->second != 0))
+		if ((currentTime_ >= ii->second) && (ii->second != 0))
 		{
 			resetted = ResetInvincibility(ii->first);
 			ii->second	= 0;
@@ -2498,7 +2500,7 @@ void game_sv_CaptureTheArtefact::ReadOptions(shared_str &options)
 	g_sv_cta_activatedArtefactRet = get_option_i(*options,"actret",	g_sv_cta_activatedArtefactRet);	// in (sec)
 
 	m_bSpectatorMode = false;
-	if (!g_dedicated_server && (get_option_i(*options,"spectr",-1) != -1))
+	if ((get_option_i(*options,"spectr",-1) != -1))
 	{
 		m_bSpectatorMode = true;
 		m_dwSM_SwitchDelta =  get_option_i(*options,"spectr",0)*1000;

@@ -315,6 +315,8 @@ GetFrame
 */
 BOOL CAviPlayerCustom::GetFrame( BYTE **pDest )
 {
+	ZoneScoped;
+
 	R_ASSERT( pDest );
 
 	DWORD	dwCurrFrame;

@@ -102,8 +102,8 @@ void CSightManager::Exec_Look		(float time_delta)
 {
 	START_PROFILE("Sight Manager")
 	
-	SBoneRotation&		body = object().movement().m_body;
-	SBoneRotation&		head = object().movement().m_head;
+	SBoneRotation&		body = object().get_movement().m_body;
+	SBoneRotation&		head = object().get_movement().m_head;
 
 	if (object().animation_movement_controlled())
 		body.target		= body.current;
@@ -130,8 +130,8 @@ void CSightManager::Exec_Look		(float time_delta)
 
 #ifdef SIGHT_DEBUG
 	if ( object().cName() == "level_prefix_stalker" ) {
-		Msg				("[%6d][%s] BEFORE BODY [%f] -> [%f]",Device.dwTimeGlobal, object().cName().c_str(), object().movement().m_body.current.yaw,object().movement().m_body.target.yaw);
-		Msg				("[%6d][%s] BEFORE HEAD [%f] -> [%f]",Device.dwTimeGlobal, object().cName().c_str(), object().movement().m_head.current.yaw,object().movement().m_head.target.yaw);
+		Msg				("[%6d][%s] BEFORE BODY [%f] -> [%f]",Device.dwTimeGlobal, object().cName().c_str(), object().get_movement().m_body.current.yaw,object().get_movement().m_body.target.yaw);
+		Msg				("[%6d][%s] BEFORE HEAD [%f] -> [%f]",Device.dwTimeGlobal, object().cName().c_str(), object().get_movement().m_head.current.yaw,object().get_movement().m_head.target.yaw);
 	}
 #endif // #ifdef SIGHT_DEBUG
 
@@ -179,8 +179,8 @@ void CSightManager::Exec_Look		(float time_delta)
 	head.current.pitch	= angle_normalize_signed	(head.current.pitch);
 
 	if ( object().cName() == "level_prefix_stalker" ) {
-		Msg				("[%6d][%s] AFTER  BODY [%f] -> [%f]",			Device.dwTimeGlobal, object().cName().c_str(),object().movement().m_body.current.yaw,object().movement().m_body.target.yaw);
-		Msg				("[%6d][%s] AFTER  HEAD [%f][%f] -> [%f][%f]",	Device.dwTimeGlobal, object().cName().c_str(), object().movement().m_head.current.yaw,object().movement().m_head.current.pitch,object().movement().m_head.target.yaw,object().movement().m_head.target.pitch);
+		Msg				("[%6d][%s] AFTER  BODY [%f] -> [%f]",			Device.dwTimeGlobal, object().cName().c_str(),object().get_movement().m_body.current.yaw,object().get_movement().m_body.target.yaw);
+		Msg				("[%6d][%s] AFTER  HEAD [%f][%f] -> [%f][%f]",	Device.dwTimeGlobal, object().cName().c_str(), object().get_movement().m_head.current.yaw,object().get_movement().m_head.current.pitch,object().get_movement().m_head.target.yaw,object().get_movement().m_head.target.pitch);
 	}
 #endif // #ifdef SIGHT_DEBUG
 
@@ -226,33 +226,33 @@ void CSightManager::update			()
 	if (!enabled())
 		return;
 
-	if (!fis_zero(object().movement().speed())) {
+	if (!fis_zero(object().get_movement().speed())) {
 		m_turning_in_place	= false;
 		inherited::update	();
 		return;
 	}
 
 	if (!m_turning_in_place) {
-		if (angle_difference(object().movement().m_body.current.yaw,object().movement().m_head.current.yaw) > (left_angle(-object().movement().m_head.current.yaw,-object().movement().m_body.current.yaw) ? m_max_left_angle : m_max_right_angle)) {
+		if (angle_difference(object().get_movement().m_body.current.yaw,object().get_movement().m_head.current.yaw) > (left_angle(-object().get_movement().m_head.current.yaw,-object().get_movement().m_body.current.yaw) ? m_max_left_angle : m_max_right_angle)) {
 			m_turning_in_place	= true;
 //			Msg				("%6d started turning in place",Device.dwTimeGlobal);
-			object().movement().m_body.target.yaw	= object().movement().m_head.current.yaw;
+			object().get_movement().m_body.target.yaw	= object().get_movement().m_head.current.yaw;
 		}
 		else
-			object().movement().m_body.target.yaw	= object().movement().m_body.current.yaw;
+			object().get_movement().m_body.target.yaw	= object().get_movement().m_body.current.yaw;
 
 		inherited::update	();
 		return;
 	}
 
-	if (angle_difference(object().movement().m_body.current.yaw,object().movement().m_head.target.yaw) > EPS_L) {
-//		object().movement().m_body.target.yaw	= object().movement().m_head.current.yaw;
-		object().movement().m_body.target.yaw	= object().movement().m_head.target.yaw;
+	if (angle_difference(object().get_movement().m_body.current.yaw,object().get_movement().m_head.target.yaw) > EPS_L) {
+//		object().get_movement().m_body.target.yaw	= object().get_movement().m_head.current.yaw;
+		object().get_movement().m_body.target.yaw	= object().get_movement().m_head.target.yaw;
 	}
 	else {
 		m_turning_in_place	= false;
 //		Msg					("%6d stopped turning in place",Device.dwTimeGlobal);
-		object().movement().m_body.target.yaw	= object().movement().m_body.current.yaw;
+		object().get_movement().m_body.target.yaw	= object().get_movement().m_body.current.yaw;
 	}
 
 	inherited::update		();
@@ -314,21 +314,21 @@ Fvector	CSightManager::aiming_position				() const
 	switch (current_action().sight_type()) {
 		case eSightTypeCurrentDirection : {
 			VERIFY2			( _valid(object().Position()), make_string("[%f][%f][%f]", VPUSH(object().Position())) );
-			VERIFY2			( _valid(-object().movement().m_head.current.yaw), make_string("%f", -object().movement().m_head.current.yaw) );
-			VERIFY2			( _valid(-object().movement().m_head.current.yaw), make_string("%f", -object().movement().m_head.current.pitch) );
+			VERIFY2			( _valid(-object().get_movement().m_head.current.yaw), make_string("%f", -object().get_movement().m_head.current.yaw) );
+			VERIFY2			( _valid(-object().get_movement().m_head.current.yaw), make_string("%f", -object().get_movement().m_head.current.pitch) );
 			VERIFY			(
 				_valid(
 					Fvector().setHP(
-						-object().movement().m_head.current.yaw,
-						-object().movement().m_head.current.pitch
+						-object().get_movement().m_head.current.yaw,
+						-object().get_movement().m_head.current.pitch
 					)
 				)
 			);
 			result.mad			(
 				object().Position(),
 				Fvector().setHP(
-					-object().movement().m_head.current.yaw,
-					-object().movement().m_head.current.pitch
+					-object().get_movement().m_head.current.yaw,
+					-object().get_movement().m_head.current.pitch
 				),
 				fake_distance
 			);
@@ -338,8 +338,8 @@ Fvector	CSightManager::aiming_position				() const
 				make_string(
 					"[%f][%f][%f] [%f][%f] [%f]",
 					VPUSH(object().Position()),
-					-object().movement().m_head.current.yaw,
-					-object().movement().m_head.current.pitch,
+					-object().get_movement().m_head.current.yaw,
+					-object().get_movement().m_head.current.pitch,
 					fake_distance
 				)
 			);
@@ -350,8 +350,8 @@ Fvector	CSightManager::aiming_position				() const
 			result.mad			(
 				object().Position(),
 				Fvector().setHP(
-					-object().movement().m_head.target.yaw,
-					-object().movement().m_head.target.pitch
+					-object().get_movement().m_head.target.yaw,
+					-object().get_movement().m_head.target.pitch
 				),
 				fake_distance
 			);
@@ -360,8 +360,8 @@ Fvector	CSightManager::aiming_position				() const
 				make_string(
 					"[%f][%f][%f] [%f][%f] [%f]",
 					VPUSH(object().Position()),
-					-object().movement().m_head.target.yaw,
-					-object().movement().m_head.target.pitch,
+					-object().get_movement().m_head.target.yaw,
+					-object().get_movement().m_head.target.pitch,
 					fake_distance
 				)
 			);
@@ -446,8 +446,8 @@ Fvector	CSightManager::aiming_position				() const
 			result.mad			(
 				object().Position(),
 				Fvector().setHP(
-					-object().movement().m_head.current.yaw,
-					-object().movement().m_head.current.pitch
+					-object().get_movement().m_head.current.yaw,
+					-object().get_movement().m_head.current.pitch
 				),
 				fake_distance
 			);
@@ -456,8 +456,8 @@ Fvector	CSightManager::aiming_position				() const
 				make_string(
 					"[%f][%f][%f] [%f][%f] [%f]",
 					VPUSH(object().Position()),
-					-object().movement().m_head.current.yaw,
-					-object().movement().m_head.current.pitch,
+					-object().get_movement().m_head.current.yaw,
+					-object().get_movement().m_head.current.pitch,
 					fake_distance
 				)
 			);
@@ -468,8 +468,8 @@ Fvector	CSightManager::aiming_position				() const
 			result.mad			(
 				object().Position(),
 				Fvector().setHP(
-					-object().movement().m_head.current.yaw,
-					-object().movement().m_head.current.pitch
+					-object().get_movement().m_head.current.yaw,
+					-object().get_movement().m_head.current.pitch
 				),
 				fake_distance
 			);
@@ -478,8 +478,8 @@ Fvector	CSightManager::aiming_position				() const
 				make_string(
 					"[%f][%f][%f] [%f][%f] [%f]",
 					VPUSH(object().Position()),
-					-object().movement().m_head.current.yaw,
-					-object().movement().m_head.current.pitch,
+					-object().get_movement().m_head.current.yaw,
+					-object().get_movement().m_head.current.pitch,
 					fake_distance
 				)
 			);
@@ -490,8 +490,8 @@ Fvector	CSightManager::aiming_position				() const
 			result.mad			(
 				object().Position(),
 				Fvector().setHP(
-					-object().movement().m_head.current.yaw,
-					-object().movement().m_head.current.pitch
+					-object().get_movement().m_head.current.yaw,
+					-object().get_movement().m_head.current.pitch
 				),
 				fake_distance
 			);
@@ -500,8 +500,8 @@ Fvector	CSightManager::aiming_position				() const
 				make_string(
 					"[%f][%f][%f] [%f][%f] [%f]",
 					VPUSH(object().Position()),
-					-object().movement().m_head.current.yaw,
-					-object().movement().m_head.current.pitch,
+					-object().get_movement().m_head.current.yaw,
+					-object().get_movement().m_head.current.pitch,
 					fake_distance
 				)
 			);
@@ -512,8 +512,8 @@ Fvector	CSightManager::aiming_position				() const
 			result.mad			(
 				object().Position(),
 				Fvector().setHP(
-					-object().movement().m_head.current.yaw,
-					-object().movement().m_head.current.pitch
+					-object().get_movement().m_head.current.yaw,
+					-object().get_movement().m_head.current.pitch
 				),
 				fake_distance
 			);
@@ -522,8 +522,8 @@ Fvector	CSightManager::aiming_position				() const
 				make_string(
 					"[%f][%f][%f] [%f][%f] [%f]",
 					VPUSH(object().Position()),
-					-object().movement().m_head.current.yaw,
-					-object().movement().m_head.current.pitch,
+					-object().get_movement().m_head.current.yaw,
+					-object().get_movement().m_head.current.pitch,
 					fake_distance
 				)
 			);
@@ -534,8 +534,8 @@ Fvector	CSightManager::aiming_position				() const
 			result.mad			(
 				object().Position(),
 				Fvector().setHP(
-					-object().movement().m_body.current.yaw,
-					-object().movement().m_body.current.pitch
+					-object().get_movement().m_body.current.yaw,
+					-object().get_movement().m_body.current.pitch
 				),
 				fake_distance
 			);
@@ -544,8 +544,8 @@ Fvector	CSightManager::aiming_position				() const
 				make_string(
 					"[%f][%f][%f] [%f][%f] [%f]",
 					VPUSH(object().Position()),
-					-object().movement().m_head.current.yaw,
-					-object().movement().m_head.current.pitch,
+					-object().get_movement().m_head.current.yaw,
+					-object().get_movement().m_head.current.pitch,
 					fake_distance
 				)
 			);
@@ -597,8 +597,8 @@ void CSightManager::process_action					( float const time_delta )
 //		return;
 //	}
 
-	SBoneRotation const& head		= object().movement().m_head;
-	SBoneRotation const& body		= object().movement().m_body;
+	SBoneRotation const& head		= object().get_movement().m_head;
+	SBoneRotation const& body		= object().get_movement().m_body;
 
 	Fvector const&					factors = current_action().use_torso_look() ? s_danger_factors : s_free_factors;
 	VERIFY							(_valid(factors));
@@ -660,9 +660,9 @@ void CSightManager::compute_aiming					(float const time_delta, float const angu
 			VERIFY				(m_animation_id.size());
 			VERIFY				(m_animation_frame != animation_frame_none);
 
-			bool forward_blend_callbacks	= object().animation().forward_blend_callbacks();
-			bool backward_blend_callbacks	= object().animation().backward_blend_callbacks();
-			object().animation().remove_bone_callbacks();
+			bool forward_blend_callbacks	= object().get_animation().forward_blend_callbacks();
+			bool backward_blend_callbacks	= object().get_animation().backward_blend_callbacks();
+			object().get_animation().remove_bone_callbacks();
 			VERIFY				(object().best_weapon());
 			VERIFY				(smart_cast<CWeapon const*>(object().best_weapon()));
 			VERIFY			( _valid(aiming_position()) );
@@ -678,12 +678,12 @@ void CSightManager::compute_aiming					(float const time_delta, float const angu
 				*smart_cast<CWeapon const*>(object().best_weapon())
 			);
 			if (forward_blend_callbacks)
-				object().animation().assign_bone_blend_callbacks(true);
+				object().get_animation().assign_bone_blend_callbacks(true);
 			else {
 				if (backward_blend_callbacks)
-					object().animation().assign_bone_blend_callbacks(false);
+					object().get_animation().assign_bone_blend_callbacks(false);
 				else
-					object().animation().assign_bone_callbacks();
+					object().get_animation().assign_bone_callbacks();
 			}
 
 			m_target.m_spine.m_rotation		= aimer.get_bone(0);
@@ -723,9 +723,9 @@ void CSightManager::compute_aiming					(float const time_delta, float const angu
 				pSettings->r_string(object().cNameSect().c_str(),"bone_head"),
 			};
 
-			bool forward_blend_callbacks	= object().animation().forward_blend_callbacks();
-			bool backward_blend_callbacks	= object().animation().backward_blend_callbacks();
-			object().animation().remove_bone_callbacks();
+			bool forward_blend_callbacks	= object().get_animation().forward_blend_callbacks();
+			bool backward_blend_callbacks	= object().get_animation().backward_blend_callbacks();
+			object().get_animation().remove_bone_callbacks();
 			VERIFY			( _valid(aiming_position()) );
 			aimers::bone<3>		aimer(
 				&object(),
@@ -735,12 +735,12 @@ void CSightManager::compute_aiming					(float const time_delta, float const angu
 				bones
 			);
 			if (forward_blend_callbacks)
-				object().animation().assign_bone_blend_callbacks(true);
+				object().get_animation().assign_bone_blend_callbacks(true);
 			else {
 				if (backward_blend_callbacks)
-					object().animation().assign_bone_blend_callbacks(false);
+					object().get_animation().assign_bone_blend_callbacks(false);
 				else
-					object().animation().assign_bone_callbacks();
+					object().get_animation().assign_bone_callbacks();
 			}
 
 			m_target.m_spine.m_rotation		= aimer.get_bone(0);
@@ -836,14 +836,14 @@ void CSightManager::adjust_orientation				()
 	m_target.m_shoulder.m_rotation	= Fidentity;
 	m_target.m_head.m_rotation		= Fidentity;
 
-	SBoneRotation& body			= object().movement().m_body;
+	SBoneRotation& body			= object().get_movement().m_body;
 	object().XFORM().getXYZ		(body.current.pitch, body.current.yaw, body.current.roll);
 	body.current.pitch			*= -1.f;
 	body.current.yaw			*= -1.f;
 	body.current.roll			= 0.f;
 	body.target					= body.current;
 
-	SBoneRotation& head			= object().movement().m_head;
+	SBoneRotation& head			= object().get_movement().m_head;
 	head.current				= body.current;
 	head.target					= head.current;
 }

@@ -21,8 +21,20 @@
 #include "UIHudStatesWnd.h"
 #include "UIGameCustom.h"
 #include "InventoryBox.h"
+#include "UIBtnHint.h"
 
 using namespace luabind;
+
+void CUIActorMenu::OnBtnSleepClicked(CUIWindow* w, void* d)
+{
+	luabind::functor<void> funct;
+
+	if (ai().script_engine().functor("mfs_functions.on_sleep_button", funct))
+		funct();
+	
+	g_btnHint->Discard();
+	HideDialog();
+}
 
 void CUIActorMenu::TryRepairItem(CUIWindow* w, void* d)
 {
@@ -157,6 +169,7 @@ void CUIActorMenu::script_register(lua_State* L)
 				.def_readonly("m_ind_narcotism",	&CUIMainIngameWnd::m_ind_narcotism)
 				.def_readonly("m_ind_psy_health",	&CUIMainIngameWnd::m_ind_psy_health)
 				.def_readonly("m_ind_filter_dirty", &CUIMainIngameWnd::m_ind_filter_dirty)
+				.def_readonly("m_ind_frostbite",	&CUIMainIngameWnd::m_ind_frostbite)
 				.def_readonly("m_ind_weapon_broken", &CUIMainIngameWnd::m_ind_weapon_broken)
 				.def_readonly("m_ind_helmet_broken", &CUIMainIngameWnd::m_ind_helmet_broken)
 				.def_readonly("m_ind_outfit_broken", &CUIMainIngameWnd::m_ind_outfit_broken)
@@ -177,7 +190,8 @@ void CUIActorMenu::script_register(lua_State* L)
 				.def_readonly("m_ind_boost_alcoholism", &CUIMainIngameWnd::m_ind_boost_alcoholism)
 				.def_readonly("m_ind_boost_hangover",	&CUIMainIngameWnd::m_ind_boost_hangover)
 				.def_readonly("m_ind_boost_narcotism",	&CUIMainIngameWnd::m_ind_boost_narcotism)
-				.def_readonly("m_ind_boost_withdrawal", &CUIMainIngameWnd::m_ind_boost_withdrawal),
+				.def_readonly("m_ind_boost_withdrawal", &CUIMainIngameWnd::m_ind_boost_withdrawal)
+				.def_readonly("m_ind_boost_frostbite",	&CUIMainIngameWnd::m_ind_boost_frostbite),
  			class_< CUIZoneMap >("CUIZoneMap")
 				.def(constructor<>())
 				.def_readonly("visible",			&CUIZoneMap::visible)

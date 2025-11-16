@@ -28,7 +28,7 @@ public:
 
 			void InitTalkDialogWnd		();
 	
-	virtual void SendMessage			(CUIWindow* pWnd, s16 msg, void* pData = NULL);
+	virtual void SendMessage			(CUIWindow* pWnd, s16 msg, void* pData = nullptr);
 
 	virtual void Show(bool status);
 	virtual void Show();
@@ -62,7 +62,7 @@ public:
 	CInventoryOwner*	m_pOurInvOwner;
 	CInventoryOwner*	m_pOthersInvOwner;
 
-	void                AddQuestion			(LPCSTR str, LPCSTR value, int number, bool b_finalizer);
+	void				AddQuestion			(LPCSTR str, LPCSTR value, int number, SPhraseInfo phInfo);
 	void				AddAnswer			(LPCSTR SpeakerName, const char* str, bool bActor);
 	void				AddIconedAnswer		(LPCSTR caption, LPCSTR text, LPCSTR texture_name, LPCSTR templ_name);
 	void				ClearAll			();
@@ -95,13 +95,15 @@ class CUIQuestionItem :public CUIWindow, public CUIWndCallback
 	float			m_min_height;
 public:
 	CUIStatic*		m_num_text;
-	CUI3tButtonEx*	m_text;
+	CUI3tButtonEx*	m_text_btn;
+	Fvector2		m_icon_size;
+	float			m_fOffsetAfterIcon;
 	shared_str		m_s_value;
 	float			m_fOffset;
 					CUIQuestionItem			(CUIXml* xml_doc, LPCSTR path);
 	void			Init					(LPCSTR val, LPCSTR text);
 
-	virtual void	SendMessage				(CUIWindow* pWnd, s16 msg, void* pData = NULL);
+	virtual void	SendMessage				(CUIWindow* pWnd, s16 msg, void* pData = nullptr);
 	void __stdcall	OnTextClicked			(CUIWindow* w, void*);
 };
 

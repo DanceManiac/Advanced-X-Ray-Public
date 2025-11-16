@@ -257,7 +257,7 @@ void CSnork::HitEntityInJump(const CEntity *pEntity)
 	if (Actor() && this->m_bDropItemAfterSuperAttack && drop_item_chance <= this->m_iSuperAttackDropItemPer)
 	{
 		CInventoryItem* active_item = Actor()->inventory().ActiveItem();
-		active_item->SetDropManual(true);
+		active_item->SetDropManual(TRUE);
 	}
 }
 
@@ -265,7 +265,7 @@ void CSnork::HitEntityInJump(const CEntity *pEntity)
 void CSnork::jump(const Fvector &position, float factor)
 {
 	com_man().script_jump	(position, factor);
-	sound().play			(MonsterSound::eMonsterSoundAggressive);
+	get_sound().play			(MonsterSound::eMonsterSoundAggressive);
 }
 
 bool CSnork::check_start_conditions(ControlCom::EControlType type)
@@ -288,7 +288,7 @@ void CSnork::on_activate_control(ControlCom::EControlType type)
 {
 	if (type == ControlCom::eControlThreaten) 
 	{
-		sound().play(MonsterSound::eMonsterSoundThreaten);
+		get_sound().play(MonsterSound::eMonsterSoundThreaten);
 		//m_sound_start_threaten.play_at_pos(this, get_head_position(this));
 	}
 }

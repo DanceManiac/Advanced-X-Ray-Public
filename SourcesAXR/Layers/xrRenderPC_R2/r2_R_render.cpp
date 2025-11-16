@@ -400,7 +400,7 @@ void CRender::Render		()
 		//RCache.set_Stencil						(TRUE,D3DCMP_ALWAYS,0x00,0xff,0xff,D3DSTENCILOP_KEEP,D3DSTENCILOP_REPLACE,D3DSTENCILOP_KEEP);
 		RCache.set_CullMode							(CULL_CCW);
 		RCache.set_ColorWriteEnable					();
-		RImplementation.r_dsgraph_render_emissive	();
+		RImplementation.r_dsgraph_render_emissive	(true);
 
 		// Stencil	- draw only where stencil >= 0x1
 		RCache.set_Stencil					(TRUE,D3DCMP_LESSEQUAL,0x01,0xff,0x00);
@@ -426,6 +426,8 @@ void CRender::Render		()
 
 void CRender::render_forward				()
 {
+	ZoneScoped;
+
 	VERIFY	(0==mapDistort.size());
 	RImplementation.o.distortion				= RImplementation.o.distortion_enabled;	// enable distorion
 

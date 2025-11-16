@@ -84,10 +84,10 @@ public:
 			xr_sprintf			(temp, "%s_class_%d", prefix, i);
 			if(pSettings->line_exist(sect,temp))
 			{
-				shared_str item_sect	= pSettings->r_string(sect,temp);
+				shared_str item_sect_	= pSettings->r_string(sect,temp);
 
-				m_TypesMap.insert		(std::make_pair(item_sect, ITEM_TYPE()));
-				ITEM_TYPE& item_type	= m_TypesMap[item_sect];
+				m_TypesMap.insert		(std::make_pair(item_sect_, ITEM_TYPE()));
+				ITEM_TYPE& item_type	= m_TypesMap[item_sect_];
 
 				xr_sprintf				(temp, "%s_freq_%d", prefix, i);
 				item_type.freq			= pSettings->r_fvector2(sect,temp);
@@ -147,6 +147,7 @@ public:
 	virtual void	OnStateSwitch		(u32 S);
 	virtual void	OnAnimationEnd		(u32 state);
 	virtual	void	UpdateXForm			();
+	virtual bool	ParentIsActor		();
 
 	void			ToggleDetector		(bool bFastMode);
 	void			HideDetector		(bool bFastMode);
@@ -154,6 +155,11 @@ public:
 	virtual bool	CheckCompatibility	(CHudItem* itm);
 
 	virtual u32		ef_detector_type	() const	{return 1;};
+
+	virtual void	DetectorAction		(u32 state);
+    virtual void	PlayDetectorAnimation(bool switch_state = false, u32 state = eDetAction, const char* anm_name = "");
+
+	virtual void	PlayAnimIdle		();
 
 			void	UpdateChargeLevel	(void);
 	virtual void	save				(NET_Packet &output_packet);
@@ -164,7 +170,7 @@ public:
 			float	GetAfVisRadius		() { return m_fAfVisRadius;};
 			float	GetUnchargeSpeed	(void) const;
 			void	Recharge			(float val);
-			bool	IsNecessaryItem		(const shared_str& item_sect, xr_vector<shared_str> item);
+			bool	IsNecessaryItem		(const shared_str& item_sect_, xr_vector<shared_str> item);
 
 			//Light
 			bool		m_bLightsEnabled;
@@ -189,6 +195,7 @@ public:
 			ref_glow	detector_glow;
 			CLAItem*	light_lanim;
 
+			bool		m_bDetActionsEnabled;
 
 			virtual void processing_deactivate() override
 			{
@@ -199,12 +206,14 @@ public:
 			void	UpdateLights();
 			void	Flash(bool bOn, float fRelPower);
 
+			virtual CCustomDetector* cast_detector() { return this; }
+
 protected:
 			bool	CheckCompatibilityInt		(CHudItem* itm, u16* slot_to_activate);
 			void 	TurnDetectorInternal		(bool b);
 	void 			UpdateNightVisionMode		(bool b_off);
 	void			UpdateVisibility			();
-	virtual void	UpfateWork					();
+	virtual void	UpdateWork					();
 	virtual void 	UpdateAf					()				{};
 	virtual void 	CreateUI					()				{};
 

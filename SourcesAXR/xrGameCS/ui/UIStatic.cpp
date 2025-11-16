@@ -15,6 +15,8 @@
 #include "UICursor.h"
 #include "MainMenu.h"
 
+#include <imgui.h>
+
 const char * const	clDefault	= "default";
 #define CREATE_LINES if (!m_pLines) {m_pLines = xr_new<CUILines>(); m_pLines->SetTextAlignment(CGameFont::alLeft);}
 #define LA_CYCLIC			(1<<0)
@@ -27,7 +29,7 @@ bool is_in2(const Frect & b1, const Frect & b2);
 //(1<<4) registered !!!
 void lanim_cont::set_defaults()
 {
-	m_lanim					= NULL;	
+	m_lanim					= nullptr;	
 	m_lanim_start_time		= -1.0f;
 	m_lanim_delay_time		= 0.0f;
 	m_lanimFlags.zero		();
@@ -45,6 +47,7 @@ CUIStatic:: CUIStatic()
 	m_bStretchTexture		= false;
 
 	m_TextureOffset.set		(0.0f,0.0f);
+	m_BaseTextureOffset.set	(0.0f,0.0f);
 	m_TextOffset.set		(0.0f,0.0f);
 
 	m_ClipRect.set			(-1,-1,-1,-1);
@@ -56,7 +59,7 @@ CUIStatic:: CUIStatic()
 	m_lanim_clr.set_defaults	();
 	m_lanim_xform.set_defaults	();
 
-	m_pLines				= NULL;
+	m_pLines				= nullptr;
 	m_bEnableTextHighlighting = false;
 }
 
@@ -70,7 +73,7 @@ void CUIStatic::SetXformLightAnim(LPCSTR lanim, bool bCyclic)
 	if(lanim && lanim[0]!=0)
 		m_lanim_xform.m_lanim			= LALib.FindItem(lanim);
 	else
-		m_lanim_xform.m_lanim			= NULL;
+		m_lanim_xform.m_lanim			= nullptr;
 	
 	m_lanim_xform.m_lanimFlags.zero		();
 
@@ -83,7 +86,7 @@ void CUIStatic::SetClrLightAnim(LPCSTR lanim, bool bCyclic, bool bOnlyAlpha, boo
 	if(lanim && lanim[0]!=0)
 		m_lanim_clr.m_lanim	= LALib.FindItem(lanim);
 	else
-		m_lanim_clr.m_lanim	= NULL;
+		m_lanim_clr.m_lanim	= nullptr;
 	
 	m_lanim_clr.m_lanimFlags.zero		();
 
@@ -99,13 +102,13 @@ void CUIStatic::SetClrLightAnim(LPCSTR lanim, u8 const& flags, float delay)
 		m_lanim_clr.m_lanim = LALib.FindItem(lanim);
 	else
 	{
-		m_lanim_clr.m_lanim = NULL;
+		m_lanim_clr.m_lanim = nullptr;
 		return;
 	}
 
 	m_lanim_clr.m_lanim_delay_time = delay;
 	m_lanim_clr.m_lanimFlags.assign(flags);
-	R_ASSERT((m_lanim_clr.m_lanim == NULL) || m_lanim_clr.m_lanimFlags.test(LA_TEXTCOLOR | LA_TEXTURECOLOR));
+	R_ASSERT((m_lanim_clr.m_lanim == nullptr) || m_lanim_clr.m_lanimFlags.test(LA_TEXTCOLOR | LA_TEXTURECOLOR));
 }
 
 void CUIStatic::InitTexture(LPCSTR texture){
@@ -126,6 +129,12 @@ u32 CUIStatic::GetTextureColor() const{
 
 void CUIStatic::InitTextureEx(LPCSTR tex_name, LPCSTR sh_name)
 {
+	if (!tex_name || !xr_strlen(tex_name))
+	{
+		m_bTextureEnable = false;
+
+		return;
+	}
 
 	/*
 	string_path buff;
@@ -364,6 +373,12 @@ void CUIStatic::SetTextComplexMode(bool md){
 	m_pLines->SetTextComplexMode(md);
 }
 
+bool CUIStatic::GetTextComplexMode()
+{
+	CREATE_LINES;
+	return m_pLines->GetTextComplexMode();
+}
+
 CGameFont* CUIStatic::GetFont(){
 	CREATE_LINES;
 	return m_pLines->GetFont();
@@ -379,7 +394,7 @@ void CUIStatic::TextureClipper(float offset_x, float offset_y, Frect* pClipRect,
 {
 	Frect parent_rect;
 	
-	if(pClipRect == NULL)
+	if(pClipRect == nullptr)
 		if(GetParent())
 			GetParent()->GetAbsoluteRect(parent_rect);
 		else
@@ -490,7 +505,7 @@ u32 CUIStatic::GetTextColor(){
 	return m_pLines->GetTextColor();
 }
 
-u32& CUIStatic::GetTextColorRef(){
+u32& CUIStatic::GetTextColorRef() const{
 	return m_pLines->GetTextColorRef();
 }
 
@@ -543,10 +558,16 @@ CGameFont::EAligment CUIStatic::GetTextAlignment(){
 //	m_pLines->SetTextAlignment(align);
 //}
 
-void CUIStatic::SetTextAlignment(CGameFont::EAligment align){
+void CUIStatic::SetTextAlignment(CGameFont::EAligment align)
+{
 	CREATE_LINES;
 	m_pLines->SetTextAlignment(align);
 	m_pLines->GetFont()->SetAligment((CGameFont::EAligment)align);
+}
+
+EVTextAlignment CUIStatic::GetVTextAlignment() const 
+{ 
+	return m_pLines->GetVTextAlignment(); 
 }
 
 void CUIStatic::SetVTextAlignment(EVTextAlignment al){
@@ -556,8 +577,9 @@ void CUIStatic::SetVTextAlignment(EVTextAlignment al){
 
 void CUIStatic::SetTextAlign_script(u32 align)
 {
-	m_pLines->SetTextAlignment((CGameFont::EAligment)align);
-	m_pLines->GetFont()->SetAligment((CGameFont::EAligment)align);
+	//m_pLines->SetTextAlignment((CGameFont::EAligment)align);
+	//m_pLines->GetFont()->SetAligment((CGameFont::EAligment)align);
+	SetTextAlignment((CGameFont::EAligment)align);
 }
 
 u32 CUIStatic::GetTextAlign_script()
@@ -586,7 +608,26 @@ void CUIStatic::OnFocusReceive()
 {
 	inherited::OnFocusReceive();
 	if (GetMessageTarget())
-        GetMessageTarget()->SendMessage(this, STATIC_FOCUS_RECEIVED, NULL);
+        GetMessageTarget()->SendMessage(this, STATIC_FOCUS_RECEIVED, nullptr);
+}
+
+void CUIStatic::FillDebugInfo()
+{
+#ifndef MASTER_GOLD
+	CUIWindow::FillDebugInfo();
+	if (ImGui::CollapsingHeader(CUIStatic::GetDebugType()))
+	{
+		ImGui::Checkbox("Enable texture", &m_bTextureEnable);
+		ImGui::Checkbox("Stretch texture", &m_bStretchTexture);
+		ImGui::DragFloat2("Texture offset", (float*)&m_TextureOffset);
+		//m_UIStaticItem->FillDebugInfo(); // XXX: to do
+		ImGui::Checkbox("Enable heading", &m_bHeading);
+		ImGui::Checkbox("Const heading", &m_bConstHeading);
+		ImGui::DragFloat("Heading", &m_fHeading);
+		//m_pTextControl->FillDebugInfo(); // XXX: to do
+		ImGui::LabelText("Stat hint text", "%s", m_stat_hint_text.size() ? m_stat_hint_text.c_str() : "");
+	}
+#endif
 }
 
 void CUIStatic::OnFocusLost()
@@ -594,7 +635,7 @@ void CUIStatic::OnFocusLost()
 
 	inherited::OnFocusLost();
 	if (GetMessageTarget())
-		GetMessageTarget()->SendMessage(this, STATIC_FOCUS_LOST, NULL);
+		GetMessageTarget()->SendMessage(this, STATIC_FOCUS_LOST, nullptr);
 
 	if (g_statHint->Owner() == this)
 		g_statHint->Discard();
@@ -610,7 +651,7 @@ void CUIStatic::AdjustWidthToText()
 {
 	float _len		= m_pLines->GetFont()->SizeOf_(m_pLines->GetText());
 	UI().ClientToScreenScaledWidth(_len);
-	SetWidth		(_len);
+	SetWidth		(iCeil(_len));
 }
 
 

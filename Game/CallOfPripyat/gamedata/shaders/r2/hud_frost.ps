@@ -1,0 +1,29 @@
+#include "common.h"
+#include "hud_mask_common.h"
+
+uniform	sampler2D s_hud_frost;
+uniform float4 hud_frost_params; // x=intensity
+
+float4 main(p_screen I) : COLOR
+{
+	//Sample frost texture
+	float4 frost_tex = tex2D(s_hud_frost, I.tc0);
+	
+	// Calculate the interpolated intensity
+    float intensity = smoothstep(0.5, 1.0, hud_frost_params.x);
+
+	//Prepare refracted texcoord
+    float4 refraction = float4(1, 1, 1,1) + frost_tex.xyxy * intensity;	
+    float4 refr_tc = float4(I.tc0.xy, 1,1);
+    refr_tc *= refraction;
+    refr_tc.xy /= refr_tc.w;
+	
+	//Sample scene with refracted texcoord
+	float3 image = tex2D(s_image, refr_tc.xy).xyz;
+
+	//Mix
+	image = lerp(image, frost_tex.w, frost_tex.w * intensity);
+	
+	//Output
+	return float4(image, 1.0);
+} 

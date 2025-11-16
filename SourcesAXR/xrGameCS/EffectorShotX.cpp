@@ -18,7 +18,7 @@ CCameraShotEffectorX::~CCameraShotEffectorX	()
 {
 }
 
-BOOL CCameraShotEffectorX::ProcessCam(SCamEffectorInfo& info)
+BOOL CCameraShotEffectorX::ProcessCam(SCamEffectorInfo& info, float m_fFactorMod)
 {
 	return TRUE;
 };

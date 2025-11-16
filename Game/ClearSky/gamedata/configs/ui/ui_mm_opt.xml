@@ -386,7 +386,7 @@
 		<cap_geometry_lod x="120" y="0" width="143" height="21" hint = "ui_mm_geometry_lod_hint">
 			<text font="letterica16" color="ui_6">ui_mm_geometry_lod</text>
 		</cap_geometry_lod>
-		<track_geometry_lod x="264" y="0" width="245" height="21" min="0.1" max="3.0" step="0.1">
+		<track_geometry_lod x="264" y="0" width="245" height="21" min="0.1" max="10.0" step="0.1">
 			<options_item entry="r__geometry_lod" group="mm_opt_video_adv"/>
 				<output_wnd x="250" y="0" width="20" height="20" format="%.1f">
 					<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
@@ -804,6 +804,27 @@
       <options_item entry="r4_ss_wind" group="mm_opt_video" depend="restart"/>
     </check_sss_wind>
 	
+	<cap_sss_puddles x="120" y="0" width="143" height="21" hint = "ui_mm_sss_puddles_hint">
+      <text font="letterica16" color="ui_6">ui_mm_sss_puddles</text>
+    </cap_sss_puddles>
+    <check_sss_puddles x="264" y="0" width="30" height="21">
+      <options_item entry="r4_ss_puddles" group="mm_opt_video" depend="restart"/>
+    </check_sss_puddles>
+	
+	<cap_sss_bloom x="120" y="0" width="143" height="21" hint = "ui_mm_sss_bloom_hint">
+      <text font="letterica16" color="ui_6">ui_mm_sss_bloom</text>
+    </cap_sss_bloom>
+    <check_sss_bloom x="264" y="0" width="30" height="21">
+      <options_item entry="r4_ss_bloom" group="mm_opt_video" depend="restart"/>
+    </check_sss_bloom>
+	
+	<cap_sss_bloom_mask_dirt x="120" y="0" width="143" height="21" hint = "ui_mm_sss_bloom_mask_dirt_hint">
+      <text font="letterica16" color="ui_6">ui_mm_sss_bloom_mask_dirt</text>
+    </cap_sss_bloom_mask_dirt>
+    <check_sss_bloom_mask_dirt x="264" y="0" width="30" height="21">
+      <options_item entry="r4_ss_bloom_mask_dirt" group="mm_opt_video" depend="restart"/>
+    </check_sss_bloom_mask_dirt>
+	
 	<cap_enchanted_shaders x="120" y="0" width="143" height="21" hint = "ui_mm_enchanted_shaders_hint">
       <text font="letterica16" color="ui_6">ui_mm_enchanted_shaders</text>
     </cap_enchanted_shaders>
@@ -817,6 +838,13 @@
 	<check_es_pseudo_pbr x="264" y="0" width="30" height="21">
 		<options_item entry="r4_es_pseudo_pbr" group="mm_opt_video" depend="restart"/>
 	</check_es_pseudo_pbr>
+	
+	<cap_es_aces_tonemap x="120" y="0" width="143" height="21" hint = "ui_mm_r4_es_aces_tonemap_hint">
+		<text font="letterica16" color="ui_6">ui_mm_r4_es_aces_tonemap</text>
+	</cap_es_aces_tonemap>
+	<check_aces_tonemap x="264" y="0" width="30" height="21">
+		<options_item entry="r4_es_aces_tonemap" group="mm_opt_video" depend="restart"/>
+	</check_aces_tonemap>
 
     <cap_r1_no_detail_textures x="120" y="0" width="143" height="21" hint = "ui_mm_r1_detail_textures_hint">
       <text font="letterica16" color="ui_6">ui_mm_r1_no_detail_textures</text>
@@ -1003,6 +1031,16 @@
       <options_item entry="r3_use_dx10_1" group="mm_opt_video_adv" depend="vid"/>
     </check_r3_msaa_opt>
 
+    <cap_fog_clamper_max x="120" y="0" width="143" height="21" hint = "ui_mm_fog_clamper_max_hint">
+		<text font="letterica16" color="ui_6">ui_mm_fog_clamper_max</text>
+	</cap_fog_clamper_max>
+	<track_fog_clamper_max x="264" y="0" width="245" height="21" min="0.0" max="10000.0">
+		<options_item entry="weather_fog_clamping" group="mm_opt_video_adv"/>
+		<output_wnd x="250" y="0" width="20" height="20" format="%.f">
+			<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
+		</output_wnd>
+	</track_fog_clamper_max>
+
     <cap_r3_lowland_fog_type x="120" y="0" width="143" height="21" hint = "ui_mm_r3_lowland_fog_type_hint">
       <text font="letterica16" color="ui_6">ui_mm_lowland_fog_type</text>
     </cap_r3_lowland_fog_type>
@@ -1130,6 +1168,19 @@
 			<list_font	 r="216" g="186" b="140" font="letterica16"/>
 		</list_difficulty>
 		
+		<cap_localization x="7" y="5" width="143" height="21">
+			<text font="letterica16" color="ui_6">ui_mm_localization</text>			
+		</cap_localization>
+		
+		<list_localization x="220" y="0" width="196" height="21" >	
+			<options_item entry="g_language" group="mm_opt_gameplay"/>
+			<text_color>
+				<e r="216" g="186" b="140"/>
+			</text_color>
+			<list_font_s r="240" g="217" b="182"/>
+			<list_font	 r="216" g="186" b="140" font="letterica16"/>
+		</list_localization>
+		
 		<cap_crosshair_type x="7" y="5" width="143" height="21" hint = "ui_mm_crosshair_type_hint">
 			<text font="letterica16" color="ui_6">ui_mm_crosshair_type</text>			
 		</cap_crosshair_type>
@@ -1159,8 +1210,8 @@
 		<cap_quick_saves_count x="7" y="5" width="143" height="21" hint = "ui_mm_quick_saves_count_hint">
 			<text font="letterica16" color="ui_6">ui_mm_quick_saves_count</text>			
 		</cap_quick_saves_count>
-		<track_quick_saves_count x="220" y="0" width="196" height="21" is_integer="1" min="0" max="25" step="1">
-			<options_item entry="quick_save_counter" group="mm_opt_gameplay"/>
+		<track_quick_saves_count x="220" y="0" width="196" height="21" is_integer="1" min="1" max="25" step="1">
+			<options_item entry="quick_save_counter_max" group="mm_opt_gameplay"/>
 				<output_wnd x="195" y="0" width="20" height="20" format="%d">
 					<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 				</output_wnd>
@@ -1225,6 +1276,11 @@
 			<options_item entry="rs_loadingstages" group="mm_opt_gameplay"/>
 			<text font="letterica16" color="ui_6">ui_st_loading_stages</text>
 		</check_loading_stages>	
+		
+		<check_animated_backpack x="7" y="5" width="30" height="21">
+			<options_item entry="g_animated_backpack" group="mm_opt_gameplay"/>
+			<text font="letterica16" color="ui_6">ui_st_animated_backpack</text>
+		</check_animated_backpack>	
 		
 		<check_keypress_on_start x="7" y="5" width="30" height="21">
 			<options_item entry="keypress_on_start" group="mm_opt_gameplay"/>

@@ -6,7 +6,9 @@
 
 #include "../xrRenderDX10/dx10BufferUtils.h"
 
-const int			quant	= 16384;
+extern ENGINE_API int ps_ssfx_terrain_grass_align;
+
+const int			quant	= 16384.f;
 const int			c_hdr	= 10;
 const int			c_size	= 4;
 
@@ -48,6 +50,8 @@ void CDetailManager::hw_Load_Shaders()
 
 void CDetailManager::hw_Render()
 {
+	ZoneScoped;
+
 	// Render-prepare
 	//	Update timer
 	//	Can't use Device.fTimeDelta since it is smoothed! Don't know why, but smoothed value looks more choppy!
@@ -100,8 +104,24 @@ void CDetailManager::hw_Render()
 	hw_Render_dump(consts, wave.div(PI_MUL_2), dir2, 0, 1);
 }
 
+float GoToValue(float& current, float go_to)
+{
+	float diff = abs(current - go_to);
+	float r_value = Device.fTimeDelta;
+
+	if (diff - r_value <= 0)
+	{
+		current = go_to;
+		return 0;
+	}
+
+	return current < go_to ? r_value : -r_value;
+}
+
 void CDetailManager::hw_Render_dump(const Fvector4 &consts, const Fvector4 &wave, const Fvector4 &wind, u32 var_id, u32 lod_id)
 {
+	ZoneScoped;
+
 	static shared_str strConsts("consts");
 	static shared_str strWave("wave");
 	static shared_str strDir2D("dir2D");
@@ -109,6 +129,8 @@ void CDetailManager::hw_Render_dump(const Fvector4 &consts, const Fvector4 &wave
 	static shared_str strXForm("xform");
 	static shared_str strPos("benders_pos");
 	static shared_str strGrassSetup("benders_setup");
+	static shared_str strExData("exdata");
+	static shared_str strGrassAlign("grass_align");
 
 	// Grass benders data
 	IGame_Persistent::grass_data& GData = g_pGamePersistent->grass_shader_data;
@@ -153,6 +175,7 @@ void CDetailManager::hw_Render_dump(const Fvector4 &consts, const Fvector4 &wave
 				RCache.set_c(strWave, wave);
 				RCache.set_c(strDir2D, wind);
 				RCache.set_c(strXForm, Device.mFullTransform);
+				RCache.set_c(strGrassAlign, ps_ssfx_terrain_grass_align);
 
 				if (ps_ssfx_grass_interactive.y > 0)
 				{
@@ -176,6 +199,13 @@ void CDetailManager::hw_Render_dump(const Fvector4 &consts, const Fvector4 &wave
 							c_grass[Bend + 16].set(GData.dir[Bend].x, GData.dir[Bend].y, GData.dir[Bend].z, GData.str[Bend]);
 						}
 					}
+				}
+
+				Fvector4* c_ExData{};
+				{
+					void* pExtraData;
+					RCache.get_ConstantDirect(strExData, hw_BatchSize * sizeof(Fvector4), &pExtraData, 0, 0);
+					c_ExData = (Fvector4*)pExtraData;
 				}
 
 				//ref_constant constArray = RCache.get_c(strArray);
@@ -203,11 +233,16 @@ void CDetailManager::hw_Render_dump(const Fvector4 &consts, const Fvector4 &wave
 					SlotItemVecIt _iI			= items->begin();
 					SlotItemVecIt _iE			= items->end();
 					for (; _iI!=_iE; _iI++){
+						if (*_iI == nullptr)
+							continue;
+
 						SlotItem&	Instance	= **_iI;
 						u32			base		= dwBatch*4;
 
+						Instance.alpha += GoToValue(Instance.alpha, Instance.alpha_target);
+
 						// Build matrix ( 3x4 matrix, last row - color )
-						float		scale		= Instance.scale_calculated;
+						float scale = Instance.scale_calculated;
 
 						// Sort of fade using the scale
 						// fade_distance == -1 use light_position to define "fade", anything else uses fade_distance
@@ -216,14 +251,18 @@ void CDetailManager::hw_Render_dump(const Fvector4 &consts, const Fvector4 &wave
 						else if (Instance.distance > fade_distance)
 							scale *= 1.0f - abs(Instance.distance - fade_distance) * 0.005f;
 
-						if (scale <= 0)
+						if (scale <= 0.f || Instance.alpha <= 0)
 							break;
 
-						Fmatrix& M = Instance.mRotY;
+						const Fmatrix& M = Instance.mRotY;
 
 						c_storage[base+0].set	(M._11*scale,	M._21*scale,	M._31*scale,	M._41	);
 						c_storage[base+1].set	(M._12*scale,	M._22*scale,	M._32*scale,	M._42	);
 						c_storage[base+2].set	(M._13*scale,	M._23*scale,	M._33*scale,	M._43	);
+						
+						if (c_ExData)
+							c_ExData[dwBatch].set(Instance.normal.x, Instance.normal.y, Instance.normal.z, Instance.alpha);
+
 						//RCache.set_ca(&*constArray, base+0, M._11*scale,	M._21*scale,	M._31*scale,	M._41	);
 						//RCache.set_ca(&*constArray, base+1, M._12*scale,	M._22*scale,	M._32*scale,	M._42	);
 						//RCache.set_ca(&*constArray, base+2, M._13*scale,	M._23*scale,	M._33*scale,	M._43	);
@@ -235,7 +274,8 @@ void CDetailManager::hw_Render_dump(const Fvector4 &consts, const Fvector4 &wave
 						c_storage[base+3].set	(s,				s,				s,				h		);
 						//RCache.set_ca(&*constArray, base+3, s,				s,				s,				h		);
 						dwBatch	++;
-						if (dwBatch == hw_BatchSize)	{
+						if (dwBatch == hw_BatchSize)
+						{
 							// flush
 							Device.Statistic->RenderDUMP_DT_Count					+=	dwBatch;
 							u32 dwCNT_verts			= dwBatch * Object.number_vertices;

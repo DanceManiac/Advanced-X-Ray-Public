@@ -5,6 +5,8 @@
 #include "xrServer_Objects_Alife_Items.h"
 #include <functional>
 
+using namespace std::placeholders;
+
 item_respawn_manager::spawn_item::spawn_item()
 {
 	item_object = NULL;
@@ -277,7 +279,7 @@ void item_respawn_manager::add_new_rpoint(shared_str profile_sect, RPoint const 
 		} else
 		{
 #ifndef MASTER_GOLD
-			Msg("! ERROR: failed to create entity [%s] with addons [%d]", iter_rsect->section_name, iter_rsect->addons);
+			Msg("! ERROR: failed to create entity [%s] with addons [%d]", iter_rsect->section_name.c_str(), iter_rsect->addons);
 #endif // #ifndef MASTER_GOLD
 		}
 	}
@@ -286,7 +288,7 @@ void item_respawn_manager::add_new_rpoint(shared_str profile_sect, RPoint const 
 void item_respawn_manager::check_to_delete(u16 item_id)
 {
 	respawn_iter temp_iter = std::find_if(m_respawns.begin(), m_respawns.end(),
-		std::bind(search_by_id_predicate(), std::placeholders::_1, item_id));
+		std::bind(search_by_id_predicate(), _1, item_id));
 
 	if (temp_iter != m_respawns.end())
 	{

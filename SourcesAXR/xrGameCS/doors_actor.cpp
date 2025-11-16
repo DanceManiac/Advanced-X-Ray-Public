@@ -12,7 +12,7 @@
 #include "debug_renderer.h"
 
 using doors::actor;
-using doors::door;
+using doors::CDoor;
 using doors::doors_type;
 using doors::door_state;
 
@@ -30,14 +30,14 @@ actor::~actor						( )
 	revert_states					( m_closed_doors, door_state_open );
 }
 
-static void on_door_destroy			( doors_type& doors, door& door )
+static void on_door_destroy			( doors_type& doors, CDoor& door )
 {
 	doors_type::iterator const found = std::find( doors.begin(), doors.end(), &door );
 	if ( found != doors.end() )
 		doors.erase					( found );
 }
 
-void actor::on_door_destroy			( door& door )
+void actor::on_door_destroy			(CDoor& door )
 {
 	::on_door_destroy				( m_open_doors, door );
 	::on_door_destroy				( m_closed_doors, door );
@@ -87,7 +87,7 @@ public:
 	{
 	}
 
-	inline	bool	operator()				( door* const door ) const
+	inline	bool	operator()				(CDoor* const door ) const
 	{
 		if ( door->is_locked(m_state) )
 			return				false;
@@ -131,7 +131,7 @@ void actor::process_doors			(
 		door_state const stop_state
 	)
 {
-	stalker_movement_manager_smart_cover const& movement = m_object.movement();
+	stalker_movement_manager_smart_cover const& movement = m_object.get_movement();
 
 	float const danger_distance	= average_speed*g_door_open_time;
 	processed_doors.erase		(
@@ -159,7 +159,7 @@ BOOL g_debug_doors = 1;
 
 bool actor::add_new_door			(
 		float const average_speed,
-		door* const door,
+		CDoor* const door,
 		doors_type const& processed_doors,
 		doors_type& locked_doors,
 		temp_doors_type& new_doors,
@@ -205,7 +205,7 @@ bool actor::add_new_door			(
 	Fvector const diagonal		= Fvector(open).sub(closed);
 
 	Fmatrix matrix				= door->get_matrix();
-	stalker_movement_manager_smart_cover const& movement = m_object.movement();
+	stalker_movement_manager_smart_cover const& movement = m_object.get_movement();
 
 	float distance_to_open_state = movement.is_going_through(matrix, open, danger_distance);
 	distance_to_open_state		= distance_to_open_state == -1.f ? flt_max : distance_to_open_state;
@@ -237,7 +237,7 @@ bool actor::update_doors			( doors_type const& detected_doors, float const avera
 	m_detected_doors			= detected_doors;
 #endif // #ifdef DEBUG
 
-	stalker_movement_manager_smart_cover const& movement = m_object.movement();
+	stalker_movement_manager_smart_cover const& movement = m_object.get_movement();
 
 	u32 const detected_doors_count	= detected_doors.size();
 	temp_doors_type				new_doors_to_open( _alloca(detected_doors_count*sizeof(doors_type::value_type)), detected_doors_count );

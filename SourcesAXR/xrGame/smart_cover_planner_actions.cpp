@@ -69,9 +69,9 @@ bool action_base::is_animated_action()
 
 void action_base::setup_orientation	()
 {
-//	VERIFY										(!object().sight().enabled());
-	object().sight().enable						(true);
-	object().animation().assign_bone_callbacks	();
+//	VERIFY										(!object().get_sight().enabled());
+	object().get_sight().enable						(true);
+	object().get_animation().assign_bone_callbacks	();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -86,7 +86,7 @@ change_loophole::change_loophole	(CAI_Stalker *object, LPCSTR action_name) :
 void change_loophole::initialize		()
 {
 	inherited::initialize			();
-	object().sight().enable			(false);
+	object().get_sight().enable			(false);
 }
 
 void change_loophole::execute		()
@@ -97,20 +97,20 @@ void change_loophole::execute		()
 void change_loophole::finalize		()
 {
 	inherited::finalize				();
-	object().sight().enable			(true);
+	object().get_sight().enable			(true);
 }
 
 void change_loophole::select_animation	(shared_str &result)
 {
-	if (!object().movement().exit_transition()) {
-		result						= object().movement().current_transition().animation().animation_id();
+	if (!object().get_movement().exit_transition()) {
+		result						= object().get_movement().current_transition().get_animation().animation_id();
 		return;
 	}
 
-	smart_cover::transitions::animation_action const& animation = object().movement().current_transition().animation(object().movement().target_body_state());
-	VERIFY							(object().movement().current_params().cover());
-	smart_cover::cover const&		cover = *object().movement().current_params().cover();
-	shared_str const&				cover_loophole_id = object().movement().current_params().cover_loophole_id();
+	smart_cover::transitions::animation_action const& animation = object().get_movement().current_transition().get_animation(object().get_movement().target_body_state());
+	VERIFY							(object().get_movement().current_params().cover());
+	smart_cover::cover const&		cover = *object().get_movement().current_params().cover();
+	shared_str const&				cover_loophole_id = object().get_movement().current_params().cover_loophole_id();
 
 	VERIFY2							(
 		cover.description()->transitions().edge(cover_loophole_id, smart_cover::transform_vertex("", false)),
@@ -135,7 +135,7 @@ void change_loophole::select_animation	(shared_str &result)
 
 void change_loophole::on_animation_end	()
 {
-	stalker_movement_manager_smart_cover			&movement = object().movement();
+	stalker_movement_manager_smart_cover			&movement = object().get_movement();
 	movement.go_next_loophole		();
 }
 
@@ -153,12 +153,12 @@ void non_animated_change_loophole::initialize			()
 {
 	inherited::initialize		();
 
-	object().sight().enable		(false); // to force adjust_orientation
+	object().get_sight().enable		(false); // to force adjust_orientation
 	setup_orientation			();
 
-	object().movement().set_movement_type	(eMovementTypeRun);
+	object().get_movement().set_movement_type	(eMovementTypeRun);
 
-	object().movement().start_non_animated_loophole_change	();
+	object().get_movement().start_non_animated_loophole_change	();
 }
 
 void non_animated_change_loophole::execute				()
@@ -168,7 +168,7 @@ void non_animated_change_loophole::execute				()
 
 void non_animated_change_loophole::finalize			()
 {
-	object().movement().stop_non_animated_loophole_change	();
+	object().get_movement().stop_non_animated_loophole_change	();
 	inherited::finalize			();
 }
 
@@ -201,45 +201,45 @@ void exit::initialize			()
 {
 	inherited::initialize		();
 
-	if (!object().movement().current_transition().animation().has_animation())
+	if (!object().get_movement().current_transition().get_animation().has_animation())
 		return;
 
-	object().sight().enable		(false);
+	object().get_sight().enable		(false);
 }
 
 void exit::execute				()
 {
 	inherited::execute			();
 
-	if (object().movement().current_transition().animation().has_animation())
+	if (object().get_movement().current_transition().get_animation().has_animation())
 		return;
 
 	setup_orientation										();
-	object().movement().go_next_loophole					();
-	object().movement().set_movement_type					(eMovementTypeRun);
-//	object().movement().start_non_animated_loophole_change	();
+	object().get_movement().go_next_loophole					();
+	object().get_movement().set_movement_type					(eMovementTypeRun);
+//	object().get_movement().start_non_animated_loophole_change	();
 }
 
 void exit::finalize				()
 {
-//	object().movement().stop_non_animated_loophole_change	();
+//	object().get_movement().stop_non_animated_loophole_change	();
 	inherited::finalize			();
 }
 
 bool exit::is_animated_action	()
 {
-	return						(object().movement().current_transition().animation().has_animation());
+	return						(object().get_movement().current_transition().get_animation().has_animation());
 }
 
 void exit::select_animation		(shared_str& result)
 {
-	VERIFY						(object().movement().current_transition().animation().has_animation());
-	result						= object().movement().current_transition().animation().animation_id();
+	VERIFY						(object().get_movement().current_transition().get_animation().has_animation());
+	result						= object().get_movement().current_transition().get_animation().animation_id();
 }
 
 void exit::on_animation_end	()
 {
 	setup_orientation						();
-	object().movement().go_next_loophole	();
-	object().movement().set_movement_type	(eMovementTypeRun);
+	object().get_movement().go_next_loophole	();
+	object().get_movement().set_movement_type	(eMovementTypeRun);
 }

@@ -76,7 +76,7 @@ void CAI_Rat::select_speed	()
 		if (fAngle >= 2*PI_DIV_3) {
 			m_fSpeed = 0;
 			m_fASpeed = m_fNullASpeed;
-			movement().m_body.target.yaw = -y;
+			get_movement().m_body.target.yaw = -y;
 		}
 		else 
 		{
@@ -89,7 +89,7 @@ void CAI_Rat::select_speed	()
 			if (fAngle >= 2*PI_DIV_3) {
 				m_fSpeed = 0;
 				m_fASpeed = m_fNullASpeed;
-				movement().m_body.target.yaw = -y;
+				get_movement().m_body.target.yaw = -y;
 			}
 			else
 				if (fAngle >= PI_DIV_2) {
@@ -106,7 +106,7 @@ void CAI_Rat::select_speed	()
 //				if (fAngle >= 2*PI_DIV_3) {
 //					m_fSpeed = 0;
 //					m_fASpeed = m_fNullASpeed;
-//					movement().m_body.target.yaw = -y;
+//					get_movement().m_body.target.yaw = -y;
 //				}
 //				else
 					if (fAngle >= PI_DIV_2) {
@@ -124,7 +124,7 @@ void CAI_Rat::select_speed	()
 						}
 			}
 			else {
-				movement().m_body.target.yaw = -y;
+				get_movement().m_body.target.yaw = -y;
 				m_fSpeed = 0;
 				m_fASpeed = m_fNullASpeed;
 			}
@@ -158,19 +158,19 @@ void CAI_Rat::select_speed	()
 void CAI_Rat::make_turn()
 {
 	m_fSpeed			= m_fCurSpeed = 0.f;
-	if (m_bFiring && (angle_difference(movement().m_body.target.yaw,movement().m_body.current.yaw) < PI_DIV_6)) {
-//		movement().m_body.speed	= 0.f;
+	if (m_bFiring && (angle_difference(get_movement().m_body.target.yaw,get_movement().m_body.current.yaw) < PI_DIV_6)) {
+//		get_movement().m_body.speed	= 0.f;
 		return;
 	}
 
-//	Msg					("%6d : Rat %s, %f -> %f [%f]",Device.dwTimeGlobal,*cName(),movement().m_body.current.pitch,movement().m_body.target.pitch,get_custom_pitch_speed(0.f));
+//	Msg					("%6d : Rat %s, %f -> %f [%f]",Device.dwTimeGlobal,*cName(),get_movement().m_body.current.pitch,get_movement().m_body.target.pitch,get_custom_pitch_speed(0.f));
 
 	m_turning			= true;
-	movement().m_body.speed		= PI_MUL_2;
+	get_movement().m_body.speed		= PI_MUL_2;
 
 	Fvector				tSavedPosition = Position();
-	m_tHPB.x			= -movement().m_body.current.yaw;
-	m_tHPB.y			= -movement().m_body.current.pitch;
+	m_tHPB.x			= -get_movement().m_body.current.yaw;
+	m_tHPB.y			= -get_movement().m_body.current.pitch;
 
 	XFORM().setHPB		(m_tHPB.x,m_tHPB.y,0.f);//m_tHPB.z);
 	Position()			= tSavedPosition;
@@ -197,7 +197,7 @@ bool CAI_Rat::calc_node(Fvector const &next_position)
 	}
 	if (ai().level_graph().valid_vertex_id(dwNewNode) && ai().level_graph().inside(*tpNewNode,QueryPos)) {
 		m_tNewPosition.y =  ai().level_graph().vertex_plane_y(*tpNewNode,next_position.x,next_position.z);
-		if (movement().restrictions().accessible(m_tNewPosition)||!movement().restrictions().accessible(Position()))
+		if (get_movement().restrictions().accessible(m_tNewPosition)||!get_movement().restrictions().accessible(Position()))
 			return true;
 	}
 	return false;
@@ -206,7 +206,7 @@ bool CAI_Rat::calc_node(Fvector const &next_position)
 Fvector CAI_Rat::calc_position()
 {
 	Fvector				tSavedPosition = Position();
-	SRotation			tSavedTorsoTarget = movement().m_body.target;
+	SRotation			tSavedTorsoTarget = get_movement().m_body.target;
 
 	// Update position and orientation of the planes
 	float fAT = m_fASpeed * m_fTimeUpdateDelta;
@@ -293,11 +293,11 @@ Fvector CAI_Rat::calc_position()
 	float yaw,pitch;
 	target_dir.getHP(yaw,pitch);
 
-	//movement().m_body.target.pitch = -pitch;
+	//get_movement().m_body.target.pitch = -pitch;
 	m_newPitch = -pitch;
 
 	m_tHPB.x			= angle_normalize_signed(m_tHPB.x);
-	m_tHPB.y			= -movement().m_body.current.pitch;
+	m_tHPB.y			= -get_movement().m_body.current.pitch;
 	return tSavedPosition.mad	(tDirection,m_fSpeed*m_fTimeUpdateDelta);
 }
 
@@ -309,8 +309,8 @@ void CAI_Rat::set_position(Fvector m_position)
 
 void CAI_Rat::set_pitch(float pitch, float yaw)
 {
-	movement().m_body.target.pitch	= pitch;
-	movement().m_body.target.yaw	= yaw;
+	get_movement().m_body.target.pitch	= pitch;
+	get_movement().m_body.target.yaw	= yaw;
 }
 
 
@@ -322,13 +322,13 @@ void CAI_Rat::move	(bool bCanAdjustSpeed, bool bStraightForward)
 
 	Fvector				tSafeHPB = m_tHPB;
 	Fvector				tSavedPosition = Position();
-	SRotation			tSavedTorsoTarget = movement().m_body.target;
+	SRotation			tSavedTorsoTarget = get_movement().m_body.target;
 	float fSavedDHeading = m_fDHeading;
 
 	if (bCanAdjustSpeed)
 		select_speed	();
 
-	if ((angle_difference(movement().m_body.target.yaw, movement().m_body.current.yaw) > PI_DIV_6)){
+	if ((angle_difference(get_movement().m_body.target.yaw, get_movement().m_body.current.yaw) > PI_DIV_6)){
 		make_turn	();
 		return;
 	}
@@ -356,15 +356,15 @@ void CAI_Rat::move	(bool bCanAdjustSpeed, bool bStraightForward)
 		m_bNoWay		= true;
 		m_tHPB			= tSafeHPB;
 		set_position(tSavedPosition);
-		movement().m_body.target	= tSavedTorsoTarget;
+		get_movement().m_body.target	= tSavedTorsoTarget;
 		m_fDHeading		= fSavedDHeading;
 	}
-	if (m_bNoWay && (!m_turning || (angle_difference(movement().m_body.target.yaw, movement().m_body.current.yaw) < EPS_L))) {
+	if (m_bNoWay && (!m_turning || (angle_difference(get_movement().m_body.target.yaw, get_movement().m_body.current.yaw) < EPS_L))) {
 		if ((Device.dwTimeGlobal - m_previous_query_time > TIME_TO_RETURN) || (!m_previous_query_time)) {
-			movement().m_body.target.yaw = movement().m_body.current.yaw + PI;
-			movement().m_body.target.yaw = angle_normalize(movement().m_body.target.yaw);
+			get_movement().m_body.target.yaw = get_movement().m_body.current.yaw + PI;
+			get_movement().m_body.target.yaw = angle_normalize(get_movement().m_body.target.yaw);
 			Fvector tTemp;
-			tTemp.setHP(-movement().m_body.target.yaw ,-movement().m_body.target.pitch);
+			tTemp.setHP(-get_movement().m_body.target.yaw ,-get_movement().m_body.target.pitch);
 			if (m_bStraightForward)
 			{
 				tTemp.mul(100.f);
@@ -384,17 +384,17 @@ void CAI_Rat::select_next_home_position	()
 	GameGraph::_GRAPH_ID	tGraphID		= m_next_graph_point;
 	CGameGraph::const_iterator	i,e;
 	ai().game_graph().begin		(tGraphID,i,e);
-	int					iPointCount		= (int)movement().locations().vertex_types().size();
+	int					iPointCount		= (int)get_movement().locations().vertex_types().size();
 	int					iBranches		= 0;
 	for ( ; i != e; ++i)
 		for (int j=0; j<iPointCount; ++j)
-			if (ai().game_graph().mask(movement().locations().vertex_types()[j].tMask,ai().game_graph().vertex((*i).vertex_id())->vertex_type()) && ((*i).vertex_id() != m_current_graph_point))
+			if (ai().game_graph().mask(get_movement().locations().vertex_types()[j].tMask,ai().game_graph().vertex((*i).vertex_id())->vertex_type()) && ((*i).vertex_id() != m_current_graph_point))
 				++iBranches;
 	ai().game_graph().begin		(tGraphID,i,e);
 	if (!iBranches) {
 		for ( ; i != e; ++i) {
 			for (int j=0; j<iPointCount; ++j)
-				if (ai().game_graph().mask(movement().locations().vertex_types()[j].tMask,ai().game_graph().vertex((*i).vertex_id())->vertex_type())) {
+				if (ai().game_graph().mask(get_movement().locations().vertex_types()[j].tMask,ai().game_graph().vertex((*i).vertex_id())->vertex_type())) {
 					m_current_graph_point	= m_next_graph_point;
 					m_next_graph_point	= (*i).vertex_id();
 					m_time_to_change_graph_point	= Device.dwTimeGlobal + ::Random32.random(60000) + 60000;
@@ -407,7 +407,7 @@ void CAI_Rat::select_next_home_position	()
 		iBranches = 0;
 		for ( ; i != e; ++i) {
 			for (int j=0; j<iPointCount; ++j)
-				if (ai().game_graph().mask(movement().locations().vertex_types()[j].tMask,ai().game_graph().vertex((*i).vertex_id())->vertex_type()) && ((*i).vertex_id() != m_current_graph_point)) {
+				if (ai().game_graph().mask(get_movement().locations().vertex_types()[j].tMask,ai().game_graph().vertex((*i).vertex_id())->vertex_type()) && ((*i).vertex_id() != m_current_graph_point)) {
 					if (iBranches == iChosenBranch) {
 						m_current_graph_point	= m_next_graph_point;
 						m_next_graph_point	= (*i).vertex_id();

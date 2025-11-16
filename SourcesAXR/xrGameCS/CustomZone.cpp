@@ -311,9 +311,9 @@ void CCustomZone::Load(LPCSTR section)
 		LPCSTR light_anim		= pSettings->r_string(section,"idle_light_anim");
 		m_pIdleLAnim			= LALib.FindItem(light_anim);
 		m_fIdleLightHeight		= pSettings->r_float(section,"idle_light_height");
-		m_zone_flags.set(eIdleLightVolumetric,pSettings->r_bool (section, "idle_light_volumetric") );
-		m_zone_flags.set(eIdleLightShadow,pSettings->r_bool (section, "idle_light_shadow") );
-		m_zone_flags.set(eIdleLightR1,pSettings->r_bool (section, "idle_light_r1") );
+		m_zone_flags.set		(eIdleLightVolumetric, READ_IF_EXISTS(pSettings, r_bool, section, "idle_light_volumetric", false));
+		m_zone_flags.set		(eIdleLightShadow, READ_IF_EXISTS(pSettings, r_bool, section, "idle_light_shadow", true));
+		m_zone_flags.set		(eIdleLightR1, READ_IF_EXISTS(pSettings, r_bool, section, "idle_light_r1", true));
 	}
 
 	m_ef_anomaly_type			= pSettings->r_u32(section,"ef_anomaly_type");
@@ -355,6 +355,7 @@ BOOL CCustomZone::net_Spawn(CSE_Abstract* DC)
 	{
 		m_pIdleLight = ::Render->light_create();
 		m_pIdleLight->set_shadow(!!m_zone_flags.test(eIdleLightShadow));
+		m_pIdleLight->set_flare(true);
 
 		if(m_zone_flags.test(eIdleLightVolumetric))
 		{
@@ -372,6 +373,7 @@ BOOL CCustomZone::net_Spawn(CSE_Abstract* DC)
 	{
 		m_pLight = ::Render->light_create();
 		m_pLight->set_shadow(true);
+		m_pLight->set_flare(true);
 		m_pLight->set_volumetric(m_bVolumetricBlowout);
 		m_pLight->set_volumetric_quality(m_fVolumetricQuality);
 		m_pLight->set_volumetric_distance(m_fVolumetricDistance);
@@ -729,9 +731,9 @@ void CCustomZone::PlayIdleParticles(bool bIdleLight)
 		if (!m_pIdleParticles)
 		{
 			m_pIdleParticles = CParticlesObject::Create(m_sIdleParticles.c_str(),FALSE);
-			m_pIdleParticles->UpdateParent(XFORM(),zero_vel);
+			m_pIdleParticles->UpdateParent(XFORM(), m_zero_vel);
 		
-			m_pIdleParticles->UpdateParent(XFORM(),zero_vel);
+			m_pIdleParticles->UpdateParent(XFORM(), m_zero_vel);
 			m_pIdleParticles->Play(false);
 		}
 	}
@@ -800,7 +802,7 @@ void CCustomZone::PlayBlowoutParticles()
 
 	CParticlesObject* pParticles;
 	pParticles	= CParticlesObject::Create(*m_sBlowoutParticles,TRUE);
-	pParticles->UpdateParent(XFORM(),zero_vel);
+	pParticles->UpdateParent(XFORM(), m_zero_vel);
 	pParticles->Play(false);
 
 	m_fBlowoutTimeLeft = (float)Device.dwTimeGlobal + m_BendGrass_Blowout_time;
@@ -963,7 +965,7 @@ void CCustomZone::PlayBulletParticles(Fvector& pos)
 	M = XFORM();
 	M.c.set(pos);
 
-	pParticles->UpdateParent(M,zero_vel);
+	pParticles->UpdateParent(M, m_zero_vel);
 	pParticles->Play(false);
 }
 
@@ -1145,7 +1147,7 @@ void  CCustomZone::OnMove()
 		Fvector				vel;
 			
 		if(fis_zero(time_delta))
-			vel = zero_vel;
+			vel = m_zero_vel;
 		else
 		{
 			vel.sub(Position(), m_vPrevPos);
@@ -1379,7 +1381,7 @@ void CCustomZone::PlayAccumParticles()
 	{
 		CParticlesObject* pParticles;
 		pParticles	= CParticlesObject::Create(*m_sAccumParticles,TRUE);
-		pParticles->UpdateParent(XFORM(),zero_vel);
+		pParticles->UpdateParent(XFORM(), m_zero_vel);
 		pParticles->Play(false);
 	}
 
@@ -1393,7 +1395,7 @@ void CCustomZone::PlayAwakingParticles()
 	{
 		CParticlesObject* pParticles;
 		pParticles	= CParticlesObject::Create(*m_sAwakingParticles,TRUE);
-		pParticles->UpdateParent(XFORM(),zero_vel);
+		pParticles->UpdateParent(XFORM(), m_zero_vel);
 		pParticles->Play(false);
 	}
 

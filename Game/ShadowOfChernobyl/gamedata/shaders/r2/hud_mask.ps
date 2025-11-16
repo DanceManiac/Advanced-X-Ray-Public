@@ -1,0 +1,87 @@
+/*
+				/////////////////
+			Gasmask overlay shader			
+				/////////////////
+				Author: LVutner
+				/////////////////	
+				Credits: ZHC (visor reflection)
+				/////////////////
+
+
+				/////////////////
+				Anomaly Team 2020
+				/////////////////
+	////////////////////////////////////////////////
+	Do not copy or redistribute without permission.
+	////////////////////////////////////////////////
+*/
+
+#include "common.h"
+#include "hud_mask_common.h"
+
+float visor_ratio(float s)
+{
+    float ratio = screen_res.y / screen_res.x; // 0.75 for 4:3 (normalscreen) and 0.625 for 16:10 (widescreen) resolution
+    return (s - 0.5f) * ratio + 0.5f;
+}
+
+float3 visor_reflection(float3 image, float2 tc)
+{
+    float4 final = 0;
+    float2 center = float2(0.5, 0.5);
+
+    float x = length(float2(tc.x, visor_ratio(tc.y)) - center);
+
+    if (x < GM_VIS_RADIUS)
+	{
+        return image;
+	}
+    else
+    {
+        float p = saturate((x / GM_VIS_RADIUS - 1.0f) * 2.0f);
+
+        for (int i = 0; i < GM_VIS_NUM; i++)
+        {
+            float N = 1.h - p / 0.6f + 0.4f * (i / (GM_VIS_NUM - 1.0f)) * p;
+            float2 m = (center - tc) * -N + center;
+            final += tex2Dlod(s_image,float4(m,0,0));
+        }
+        final /= GM_VIS_NUM;
+
+		float3 reflected = (image + GM_VIS_INTENSITY * final) / (1.f + GM_VIS_INTENSITY);	
+		return reflected;
+	}
+}
+
+float4 main(p_screen I) : COLOR
+{
+	//Sample gasmask texture
+	float4 gasmask_tex = tex2D(s_hud_mask, I.tc0);
+
+	//Prepare refracted texcoord
+    float4 refraction = float4(1, 1, 1,1) + gasmask_tex.xyxy * GM_DIST_INT;	
+    float4 refr_tc = float4(I.tc0.xy, 1,1);
+    refr_tc *= refraction;
+    refr_tc.xy /= refr_tc.w;
+	
+	//Sample scene with refracted texcoord
+	float3 image = tex2D(s_image, refr_tc.xy).xyz;
+
+	//Mix gasmask cracks with image
+	image = lerp(image, float3(1.0,1.0,1.0), gasmask_tex.w * GM_DIFF_INT);
+		
+	//Add glass reflection on top
+		//Prepare aspect-ratio correct TC for attenuation
+		float2 vig_tc = I.tc0.xy;
+	    vig_tc -= 0.5;
+		vig_tc.x *= screen_res.x / screen_res.y;
+		vig_tc += 0.5;	
+		
+		//Get refl attenuation
+		float refl_att = smoothstep(0.8, 1.0, distance(vig_tc, float2(0.5, 0.5)));
+		
+		image = lerp(image, visor_reflection(image, refr_tc.xy), refl_att);
+	
+	//Output
+	return float4(image, 1.0);
+} 

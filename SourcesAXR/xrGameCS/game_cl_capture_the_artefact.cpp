@@ -108,9 +108,6 @@ void game_cl_CaptureTheArtefact::Init()
 void game_cl_CaptureTheArtefact::shedule_Update(u32 dt)
 {
 	inherited::shedule_Update(dt);
-	
-	if (g_dedicated_server)
-		return;
 
 	if ((Level().IsDemoPlayStarted() || Level().IsDemoPlayFinished())  && m_game_ui)
 	{
@@ -716,8 +713,6 @@ void game_cl_CaptureTheArtefact::OnGameMenuRespond_ChangeTeam(NET_Packet& P)
 
 void game_cl_CaptureTheArtefact::UpdateMapLocations()
 {
-	if (g_dedicated_server)
-		return;
 	//updating firends indicator
 	if (!local_player)
 		return;
@@ -805,27 +800,11 @@ void game_cl_CaptureTheArtefact::UpdateMapLocations()
 void game_cl_CaptureTheArtefact::OnSpawn(CObject* pObj)
 {
 	inherited::OnSpawn(pObj);
-	
-	if (g_dedicated_server)
-		return;
 
 	CArtefact *pArtefact = smart_cast<CArtefact*>(pObj);
 	if (pArtefact)
 	{
 		Level().MapManager().AddMapLocation(ARTEFACT_NEUTRAL, pObj->ID())->EnablePointer();
-		/*if (OnServer()) // huck :( - server logic must be ONLY ON SERVER !!!
-		{
-			if (GetGreenArtefactID() == pArtefact->ID())
-			{
-				pArtefact->MoveTo(GetGreenArtefactRPoint());
-			} else if (GetBlueArtefactID() == pArtefact->ID())
-			{
-				pArtefact->MoveTo(GetBlueArtefactRPoint());
-			} else
-			{
-				VERIFY2(false, "unknown artefact in game");
-			}
-		}*/
 		return;
 	}
 	CActor *pActor = smart_cast<CActor*>(pObj);
@@ -1598,11 +1577,10 @@ bool game_cl_CaptureTheArtefact::PlayerCanSprint(CActor* pActor)
 	if (m_bBearerCantSprint)
 		return true;
 
-	u16 greenArtefactOwner = GetGreenArtefactOwnerID();
-	u16 blueArtefactOwner = GetBlueArtefactOwnerID();
+	u16 greenArtefactOwner_ = GetGreenArtefactOwnerID();
+	u16 blueArtefactOwner_ = GetBlueArtefactOwnerID();
 	u16 myID = pActor->ID();
-	if ((myID == greenArtefactOwner) ||
-		(myID == blueArtefactOwner))
+	if ((myID == greenArtefactOwner_) || (myID == blueArtefactOwner_))
 	{
 		return false;
 	}

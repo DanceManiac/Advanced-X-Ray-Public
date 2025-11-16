@@ -2,6 +2,8 @@
 #include "uidialogwnd.h"
 #include "UIBtnHint.h"
 
+#include <imgui.h>
+
 CUIDialogWnd:: CUIDialogWnd()
 {
 	m_pParentHolder		= NULL;
@@ -43,6 +45,19 @@ bool CUIDialogWnd::IR_process()
 	if(Device.Paused()&&!WorkInPause())	return false;
 	
 	return true;
+}
+
+void CUIDialogWnd::FillDebugInfo()
+{
+#ifndef MASTER_GOLD
+	CUIWindow::FillDebugInfo();
+
+	if (ImGui::CollapsingHeader(CUIDialogWnd::GetDebugType()))
+	{
+		ImGui::LabelText("Current holder", "%s", m_pParentHolder ? m_pParentHolder->GetDebugType() : "none");
+		ImGui::LabelText("Work in pause", m_bWorkInPause ? "true" : "false");
+	}
+#endif
 }
 
 CDialogHolder* CurrentDialogHolder();

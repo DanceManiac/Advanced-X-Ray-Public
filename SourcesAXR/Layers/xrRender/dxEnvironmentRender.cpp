@@ -160,6 +160,24 @@ void dxEnvDescriptorMixerRender::lerp(IEnvDescriptorRender *inA, IEnvDescriptorR
 
 void dxEnvDescriptorRender::OnDeviceCreate(CEnvDescriptor &owner)
 {
+	sky_texture.create("$null");
+	sky_texture_env.create("$null");
+	clouds_texture.create("$null");
+}
+
+void dxEnvDescriptorRender::OnDeviceDestroy()
+{
+	sky_texture.destroy();
+	sky_texture_env.destroy();
+	clouds_texture.destroy();
+}
+
+void dxEnvDescriptorRender::OnPrepare(CEnvDescriptor& owner)
+{
+	Msg("dxEnvDescriptorRender::OnPrepare call");
+	if (b_textures_loaded)
+		return;
+
 	if (owner.sky_texture_name.size())
 		sky_texture.create(owner.sky_texture_name.c_str());
 
@@ -168,13 +186,24 @@ void dxEnvDescriptorRender::OnDeviceCreate(CEnvDescriptor &owner)
 
 	if (owner.clouds_texture_name.size())
 		clouds_texture.create(owner.clouds_texture_name.c_str());
+
+	b_textures_loaded = true;
 }
 
-void dxEnvDescriptorRender::OnDeviceDestroy()
+void dxEnvDescriptorRender::OnUnload(CEnvDescriptor& owner)
 {
+	if (!b_textures_loaded)
+		return;
+
 	sky_texture.destroy();
 	sky_texture_env.destroy();
 	clouds_texture.destroy();
+
+	sky_texture.create("$null");
+	sky_texture_env.create("$null");
+	clouds_texture.create("$null");
+
+	b_textures_loaded = false;
 }
 
 dxEnvironmentRender::dxEnvironmentRender()

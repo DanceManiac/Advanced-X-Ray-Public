@@ -1,0 +1,411 @@
+#include "pch_script.h"
+#include "uigamesp.h"
+#include "actor.h"
+#include "level.h"
+#include "../xrEngine/xr_input.h"
+
+#ifdef DEBUG
+#include "attachable_item.h"
+#endif
+
+#include "game_cl_Single.h"
+#include "ui/UIPdaAux.h"
+#include "xr_level_controller.h"
+#include "actorcondition.h"
+#include "../xrEngine/xr_ioconsole.h"
+#include "object_broker.h"
+#include "GameTaskManager.h"
+#include "GameTask.h"
+
+#include "ui/UIInventoryWnd.h"
+#include "ui/UITradeWnd.h"
+#include "ui/UIPdaWnd.h"
+#include "ui/UITalkWnd.h"
+#include "ui/UITalkDialogWnd.h"
+#include "ui/UICarBodyWnd.h"
+#include "ui/UIMessageBox.h"
+
+#include "alife_registry_wrappers.h"
+#include "../xrServerEntitiesSoC/script_engine.h"
+#include "HUDManager.h"
+#include "PDA.h"
+#include "CustomBackpack.h"
+#include "Inventory.h"
+#include "AdvancedXrayGameConstants.h"
+
+#include <imgui.h>
+
+CUIGameSP::CUIGameSP()
+{
+	m_game			= NULL;
+	
+	InventoryMenu	= xr_new<CUIInventoryWnd>	();
+	PdaMenu			= xr_new<CUIPdaWnd>			();
+	TalkMenu		= xr_new<CUITalkWnd>		();
+	TradeMenu		= xr_new<CUITradeWnd>		();
+	UICarBodyMenu	= xr_new<CUICarBodyWnd>		();
+	UIChangeLevelWnd= xr_new<CChangeLevelWnd>	();
+}
+
+CUIGameSP::~CUIGameSP() 
+{
+	delete_data(InventoryMenu);
+	delete_data(PdaMenu);
+	delete_data(TradeMenu);
+	delete_data(TalkMenu);
+	delete_data(UICarBodyMenu);
+	delete_data(UIChangeLevelWnd);
+}
+
+void  CUIGameSP::StartTrade(CInventoryOwner* pActorInv, CInventoryOwner* pMech)
+{
+	TradeMenu->InitTrade		(pActorInv, pMech);
+	TradeMenu->StartTrade		();
+	TradeMenu->BringAllToTop	();
+	m_game->StartStopMenu		(TradeMenu, true);
+}
+
+void CUIGameSP::HideTradeMenu()
+{
+	if (TradeMenu->IsShown())
+	{
+		m_game->StartStopMenu(TradeMenu, true);
+		if (!TalkMenu->TalkDialogWnd()->IsShown())
+		{
+			TalkMenu->Enable(true);
+			TalkMenu->TalkDialogWnd()->Show(true);
+		}
+	}
+}
+
+void CUIGameSP::HideShownDialogs()
+{
+	CUIDialogWnd* mir				= MainInputReceiver();
+	if( mir			&&
+			(	mir==InventoryMenu	||
+				mir==PdaMenu		||
+				mir==TalkMenu		||
+				mir==UICarBodyMenu
+			)
+		)
+	mir->GetHolder()->StartStopMenu			(mir,true);
+
+}
+
+void CUIGameSP::SetClGame (game_cl_GameState* g)
+{
+	inherited::SetClGame				(g);
+	m_game = smart_cast<game_cl_Single*>(g);
+	R_ASSERT							(m_game);
+}
+
+void attach_adjust_mode_keyb(int dik);
+void attach_draw_adjust_mode();
+void hud_adjust_mode_keyb(int dik);
+void hud_draw_adjust_mode();
+
+
+bool CUIGameSP::IR_OnKeyboardPress(int dik) 
+{
+	if(inherited::IR_OnKeyboardPress(dik)) return true;
+
+	if( Device.Paused()		) return false;
+
+	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
+	if( !pActor ) 
+		return false;
+
+	if(pActor && !pActor->g_Alive())
+		return false;
+
+	if (Actor()->active_cam() == eacFirstEye)
+	{
+		hud_adjust_mode_keyb(dik);
+	}
+	if (Actor()->active_cam() == eacFreeLook)
+	{
+		attach_adjust_mode_keyb(dik);
+	}
+
+	auto Pda = pActor->GetPDA();
+
+	switch ( get_binded_action(dik) )
+	{
+	case kINVENTORY:
+		{
+			if (Pda && Pda->Is3DPDA() && psActorFlags.test(AF_3D_PDA) && PdaMenu->IsShown())
+				pActor->inventory().Activate(NO_ACTIVE_SLOT);
+
+
+			if (!MainInputReceiver() || MainInputReceiver() == InventoryMenu)
+			{
+				CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(pActor->inventory().ItemFromSlot(BACKPACK_SLOT));
+
+				if (!GameConstants::GetBackpackAnimsEnabled() || !backpack)
+					m_game->StartStopMenu(InventoryMenu, true);
+
+				return true;
+			}
+
+		} break;
+	case kACTIVE_JOBS:
+		if( !MainInputReceiver() || MainInputReceiver()==PdaMenu)
+		{
+			if (!psActorFlags.test(AF_3D_PDA) || (psActorFlags.test(AF_3D_PDA) && Pda && !Pda->Is3DPDA()))
+			{
+				luabind::functor<bool> funct;
+				if (ai().script_engine().functor("pda.pda_use", funct))
+				{
+					if (funct())
+					{
+						PdaMenu->SetActiveSubdialog(eptQuests);
+						m_game->StartStopMenu(PdaMenu, true);
+					}
+					else
+					{
+						// cari0us -- для совместимости с оригинальной игрой
+						PdaMenu->SetActiveSubdialog(eptQuests);
+						m_game->StartStopMenu(PdaMenu, true);
+					}
+				}
+			}
+
+			return true;
+		}break;
+
+	case kMAP:
+		if( !MainInputReceiver() || MainInputReceiver()==PdaMenu){
+			PdaMenu->SetActiveSubdialog(eptMap);
+			m_game->StartStopMenu(PdaMenu,true);
+			return true;
+		}break;
+
+	case kCONTACTS:
+		if( !MainInputReceiver() || MainInputReceiver()==PdaMenu){
+			PdaMenu->SetActiveSubdialog(eptContacts);
+			m_game->StartStopMenu(PdaMenu,true);
+			return true;
+		}break;
+
+	case kSCORES:
+		{
+			SDrawStaticStruct* ss	= AddCustomStatic("main_task", true);
+			SGameTaskObjective* o	= pActor->GameTaskManager().ActiveObjective();
+			if(!o)
+				ss->m_static->SetTextST	("st_no_active_task");
+			else
+				ss->m_static->SetTextST	(*(o->description));
+
+		}break;
+	}
+	return false;
+}
+
+void CUIGameSP::Render()
+{
+	inherited::Render();
+	hud_draw_adjust_mode();
+	attach_draw_adjust_mode();
+}
+
+bool CUIGameSP::IR_OnKeyboardRelease(int dik) 
+{
+	if(inherited::IR_OnKeyboardRelease(dik)) return true;
+
+	if( is_binded(kSCORES, dik))
+			RemoveCustomStatic		("main_task");
+
+	return false;
+}
+
+void CUIGameSP::StartTalk()
+{
+	m_game->StartStopMenu(TalkMenu,true);
+}
+
+void CUIGameSP::StartCarBody(CInventoryOwner* pOurInv, CInventoryOwner* pOthers)
+{
+	if( MainInputReceiver() )		return;
+	UICarBodyMenu->InitCarBody		(pOurInv,  pOthers);
+	m_game->StartStopMenu			(UICarBodyMenu,true);
+}
+void CUIGameSP::StartCarBody(CInventoryOwner* pOurInv, CInventoryBox* pBox)
+{
+	if( MainInputReceiver() )		return;
+	UICarBodyMenu->InitCarBody		(pOurInv,  pBox);
+	m_game->StartStopMenu			(UICarBodyMenu,true);
+}
+
+void CUIGameSP::StartCarBody(CInventoryOwner* pActorInv, CCar* pCar) //Car trunk search
+{
+	if( MainInputReceiver() )		return;
+	UICarBodyMenu->InitCarBody		(pActorInv, pCar);
+	m_game->StartStopMenu			(UICarBodyMenu,true);
+}
+
+void CUIGameSP::ReInitShownUI() 
+{ 
+	if (InventoryMenu->IsShown()) 
+		InventoryMenu->InitInventory_delayed(); 
+	else if(UICarBodyMenu->IsShown())
+		UICarBodyMenu->UpdateLists_delayed();
+	
+};
+
+
+extern ENGINE_API BOOL bShowPauseString;
+void CUIGameSP::ChangeLevel				(GameGraph::_GRAPH_ID game_vert_id, u32 level_vert_id, Fvector pos, Fvector ang, Fvector pos2, Fvector ang2, bool b)
+{
+	if( !MainInputReceiver() || MainInputReceiver()!=UIChangeLevelWnd)
+	{
+		UIChangeLevelWnd->m_game_vertex_id		= game_vert_id;
+		UIChangeLevelWnd->m_level_vertex_id		= level_vert_id;
+		UIChangeLevelWnd->m_position			= pos;
+		UIChangeLevelWnd->m_angles				= ang;
+		UIChangeLevelWnd->m_position_cancel		= pos2;
+		UIChangeLevelWnd->m_angles_cancel		= ang2;
+		UIChangeLevelWnd->m_b_position_cancel	= b;
+		m_game->StartStopMenu					(UIChangeLevelWnd,true);
+	}
+}
+
+void CUIGameSP::reset_ui()
+{
+	inherited::reset_ui				();
+	InventoryMenu->Reset			();
+	PdaMenu->Reset					();
+	TradeMenu->Reset				();
+	TalkMenu->Reset					();
+	UICarBodyMenu->Reset			();
+	UIChangeLevelWnd->Reset			();
+}
+
+bool CUIGameSP::FillDebugTree(const CUIDebugState& debugState)
+{
+	if (!CUIGameCustom::FillDebugTree(debugState))
+		return false;
+
+	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow;
+
+	if (debugState.selected == this)
+		flags |= ImGuiTreeNodeFlags_Selected;
+
+	const bool open = ImGui::TreeNodeEx(this, flags, "Game UI (%s)", CUIGameSP::GetDebugType());
+
+	if (ImGui::IsItemClicked())
+		debugState.select(this);
+
+	if (open)
+	{
+		InventoryMenu->FillDebugTree(debugState);
+		TradeMenu->FillDebugTree(debugState);
+		PdaMenu->FillDebugTree(debugState);
+		TalkMenu->FillDebugTree(debugState);
+		UICarBodyMenu->FillDebugTree(debugState);
+		UIChangeLevelWnd->FillDebugTree(debugState);
+
+		//if (m_game_objective)
+		//	m_game_objective->wnd()->FillDebugTree(debugState);
+
+		ImGui::TreePop();
+	}
+
+	return open;
+}
+
+void CUIGameSP::FillDebugInfo()
+{
+#ifndef MASTER_GOLD
+	CUIGameCustom::FillDebugInfo();
+	if (ImGui::CollapsingHeader(CUIGameSP::GetDebugType()))
+	{
+	}
+#endif
+}
+
+CChangeLevelWnd::CChangeLevelWnd		()
+{
+	m_messageBox			= xr_new<CUIMessageBox>();	m_messageBox->SetAutoDelete(true);
+	AttachChild				(m_messageBox);
+	m_messageBox->Init		("message_box_change_level");
+	SetWndPos				(m_messageBox->GetWndPos());
+	m_messageBox->SetWndPos	(0.0f,0.0f);
+	SetWndSize				(m_messageBox->GetWndSize());
+}
+void CChangeLevelWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
+{
+	if(pWnd==m_messageBox){
+		if(msg==MESSAGE_BOX_YES_CLICKED){
+			OnOk									();
+		}else
+		if(msg==MESSAGE_BOX_NO_CLICKED){
+			OnCancel								();
+		}
+	}else
+		inherited::SendMessage(pWnd, msg, pData);
+}
+
+void CChangeLevelWnd::OnOk()
+{
+	Game().StartStopMenu					(this, true);
+	NET_Packet								p;
+	p.w_begin								(M_CHANGE_LEVEL);
+	p.w										(&m_game_vertex_id,sizeof(m_game_vertex_id));
+	p.w										(&m_level_vertex_id,sizeof(m_level_vertex_id));
+	p.w_vec3								(m_position);
+	p.w_vec3								(m_angles);
+
+	Level().Send							(p,net_flags(TRUE));
+}
+
+void CChangeLevelWnd::OnCancel()
+{
+	Game().StartStopMenu					(this, true);
+	if(m_b_position_cancel){
+		Actor()->MoveActor(m_position_cancel, m_angles_cancel);
+	}
+}
+
+bool CChangeLevelWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
+{
+	if(keyboard_action==WINDOW_KEY_PRESSED)
+	{
+		if(is_binded(kQUIT, dik) )
+			OnCancel		();
+		return true;
+	}
+	return inherited::OnKeyboardAction(dik, keyboard_action);
+}
+
+bool g_block_pause	= false;
+void CChangeLevelWnd::Show()
+{
+	g_block_pause							= true;
+	GAME_PAUSE								(TRUE, TRUE, TRUE, "CChangeLevelWnd_show");
+	bShowPauseString						= FALSE;
+}
+
+void CChangeLevelWnd::Hide()
+{
+	g_block_pause							= false;
+	GAME_PAUSE								(FALSE, TRUE, TRUE, "CChangeLevelWnd_hide");
+}
+
+void CChangeLevelWnd::FillDebugInfo()
+{
+#ifndef MASTER_GOLD
+	CUIDialogWnd::FillDebugInfo();
+
+	if (ImGui::CollapsingHeader(CChangeLevelWnd::GetDebugType()))
+	{
+		ImGui::DragScalar("Game vertex ID", ImGuiDataType_U16, &m_game_vertex_id);
+		ImGui::DragScalar("Level vertex ID", ImGuiDataType_U32, &m_level_vertex_id);
+		ImGui::DragFloat3("Position", (float*)&m_position);
+		ImGui::DragFloat3("Angles", (float*)&m_angles);
+		ImGui::Separator();
+		ImGui::Checkbox("Teleport Actor on cancel", &m_b_position_cancel);
+		ImGui::DragFloat3("Position on cancel", (float*)&m_position_cancel);
+		ImGui::DragFloat3("Angles on cancel", (float*)&m_angles_cancel);
+	}
+#endif
+}

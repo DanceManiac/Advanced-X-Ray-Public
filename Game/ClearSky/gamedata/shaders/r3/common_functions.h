@@ -116,21 +116,33 @@ float3	unpack_D3DCOLOR( float3 c ) { return c.bgr; }
 
 float3   p_hemi( float2 tc )
 {
-//	float3	t_lmh = tex2D (s_hemi, tc);
-//	float3	t_lmh = s_hemi.Sample( smp_rtlinear, tc);
-//	return	dot(t_lmh,1.h/4.h);
 	float4	t_lmh = s_hemi.Sample( smp_rtlinear, tc);
-	return	t_lmh.a;
+	
+#ifdef USE_SHOC_MODE
+	float r_lmh = (1.0/3.0);
+	return dot(t_lmh.rgb, float3(r_lmh, r_lmh, r_lmh));
+#else // USE_SHOC_MODE
+	return t_lmh.a;
+#endif // USE_SHOC_MODE
 }
 
 float   get_hemi( float4 lmh)
 {
+#ifdef USE_SHOC_MODE
+	float r_lmh = (1.0/3.0);
+	return dot(lmh.rgb, float3(r_lmh, r_lmh, r_lmh));
+#else // USE_SHOC_MODE
 	return lmh.a;
+#endif // USE_SHOC_MODE
 }
 
 float   get_sun( float4 lmh)
 {
+#ifdef USE_SHOC_MODE
+	return lmh.a;
+#else // USE_SHOC_MODE
 	return lmh.g;
+#endif // USE_SHOC_MODE
 }
 
 float3	v_hemi(float3 n)

@@ -9,6 +9,7 @@
 #include "UIMMShniaga.h"
 #include "UITextureMaster.h"
 #include "UIScrollView.h"
+#include "../UIDialogHolder.h"
 
 CFontManager& mngr(){
 	return UI().Font();
@@ -23,6 +24,10 @@ CGameFont* GetFontMedium()
 CGameFont* GetFontDI()
 {return mngr().pFontDI;}
 //шрифты для интерфейса
+CGameFont* GetFontArial14()
+{return mngr().pFontArial14;}
+CGameFont* GetFontArial21()
+{return mngr().pFontArial21;}
 CGameFont* GetFontGraffiti19Russian()
 {return mngr().pFontGraffiti19Russian;}
 CGameFont* GetFontGraffiti22Russian()
@@ -33,6 +38,8 @@ CGameFont* GetFontLetterica18Russian()
 {return mngr().pFontLetterica18Russian;}
 CGameFont* GetFontGraffiti32Russian()
 {return mngr().pFontGraffiti32Russian;}
+CGameFont* GetFontGraffiti40Russian()
+{return mngr().pFontGraffiti40Russian;}
 CGameFont* GetFontGraffiti50Russian()
 {return mngr().pFontGraffiti50Russian;}
 CGameFont* GetFontLetterica25()
@@ -93,10 +100,12 @@ void CUIWindow::script_register(lua_State *L)
 		.def(							constructor<>())
 		.def("AttachChild",				&CUIWindow::AttachChild, adopt<2>())
 		.def("DetachChild",				&CUIWindow::DetachChild)
+		.def("DetachAll",				&CUIWindow::DetachAll)
 		.def("SetAutoDelete",			&CUIWindow::SetAutoDelete)
 		.def("IsAutoDelete",			&CUIWindow::IsAutoDelete)
 
 		.def("SetWndRect",				(void (CUIWindow::*)(Frect))	&CUIWindow::SetWndRect_script)
+		.def("SetWndRect",				(void(CUIWindow::*)(float, float, float, float)) & CUIWindow::SetWndRect_script)
 		.def("SetWndPos",				(void (CUIWindow::*)(Fvector2)) &CUIWindow::SetWndPos_script)
 		.def("SetWndSize",				(void (CUIWindow::*)(Fvector2)) &CUIWindow::SetWndSize_script)
 		.def("GetWndPos",				&get_wnd_pos)
@@ -199,6 +208,9 @@ void CUIWindow::script_register(lua_State *L)
 	// CUICheckButton
 				value("CHECK_BUTTON_SET",				int(CHECK_BUTTON_SET)),
 				value("CHECK_BUTTON_RESET",				int(CHECK_BUTTON_RESET)),
+
+	// CUITrackBar
+				value("TRACKBAR_CHANGED",				int(TRACKBAR_CHANGED)),
 				
 	// CUIRadioButton
 				value("RADIOBUTTON_SET",				int(RADIOBUTTON_SET)),

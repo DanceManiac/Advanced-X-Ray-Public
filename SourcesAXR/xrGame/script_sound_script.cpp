@@ -51,5 +51,6 @@ void CScriptSound::script_register(lua_State *L)
 			.def("playing",						&CScriptSound::IsPlaying)
 			.def("length",						&CScriptSound::Length)
 			.def("attach_tail",					&CScriptSound::AttachTail)
+			.def("set_start_time",				&CScriptSound::SetTime)
 	];
 }

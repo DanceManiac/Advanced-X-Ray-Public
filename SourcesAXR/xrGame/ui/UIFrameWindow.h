@@ -23,6 +23,8 @@ public:
 	virtual bool	GetStretchTexture			()				{return false;};	
 
 	virtual void	Draw						();
+
+			pcstr	GetDebugType				() override { return "CUIFrameWindow"; }
 	
 protected:
 	bool			m_bTextureVisible;

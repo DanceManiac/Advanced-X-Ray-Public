@@ -1,5 +1,12 @@
 #pragma once
 
+enum EUIMirroring {
+	tmNone,
+	tmMirrorHorisontal,
+	tmMirrorVertical,
+	tmMirrorBoth
+};
+
 class CUICustomItem
 {
 protected:
@@ -8,6 +15,7 @@ protected:
 		flValidOriginalRect		=(1<<1),
 		flValidHeadingPivot		=(1<<2),
 		flFixedLTWhileHeading	=(1<<3),
+		flNoShaderCache			=(1<<4),
 	};
 	//прямоугольник(в пикселях) 
 	//геом. регион  на который натягикается текстура с текстурными координатами iOriginalRect
@@ -22,6 +30,7 @@ protected:
 
 	Flags32			uFlags;
 	u32				uAlign;
+	EUIMirroring	eMirrorMode;
 
 public:
 					CUICustomItem			();
@@ -47,5 +56,8 @@ public:
 
 	IC void			SetAlign				(u32 align)					{uAlign=align;};
 	IC u32			GetAlign				()							{return uAlign;}
+
+	IC void			SetMirrorMode			(EUIMirroring m)			{ eMirrorMode = m; }
+	IC EUIMirroring GetMirrorMode			()							{ return eMirrorMode; }
 
 };

@@ -14,6 +14,7 @@
 #include "UIDoubleProgressBar.h"
 
 #include "..\CustomOutfit.h"
+#include "..\ActorHelmet.h"
 #include "..\string_table.h"
 #include "..\actor.h"
 #include "..\ActorCondition.h"
@@ -24,26 +25,26 @@ LPCSTR immunity_names[] =
 {
 	"burn_protection",
 	"shock_protection",
-	"strike_protection",
-	"wound_protection",
+	"chemical_burn_protection",
 	"radiation_protection",
 	"telepatic_protection",
-	"chemical_burn_protection",
-	"explosion_protection",
+	"wound_protection",
 	"fire_wound_protection",
+	"strike_protection",
+	"explosion_protection",
 };
 
 LPCSTR immunity_st_names[] =
 {
 	"ui_inv_outfit_burn_protection",
 	"ui_inv_outfit_shock_protection",
-	"ui_inv_outfit_strike_protection",
-	"ui_inv_outfit_wound_protection",
+	"ui_inv_outfit_chemical_burn_protection",
 	"ui_inv_outfit_radiation_protection",
 	"ui_inv_outfit_telepatic_protection",
-	"ui_inv_outfit_chemical_burn_protection",
-	"ui_inv_outfit_explosion_protection",
+	"ui_inv_outfit_wound_protection",
 	"ui_inv_outfit_fire_wound_protection",
+	"ui_inv_outfit_strike_protection",
+	"ui_inv_outfit_explosion_protection",
 };
 
 CUIOutfitItem::CUIOutfitItem()
@@ -165,9 +166,9 @@ void CUIOutfitItemInfo::Init(CUIXml& xml, LPCSTR section)
 		m_texture._set(texture);
 	}
 
-	Fvector4 red = GameConstants::GetRedColor();
-	Fvector4 green = GameConstants::GetGreenColor();
-	Fvector4 neutral = GameConstants::GetNeutralColor();
+	Ivector4 red = GameConstants::GetRedColor();
+	Ivector4 green = GameConstants::GetGreenColor();
+	Ivector4 neutral = GameConstants::GetNeutralColor();
 
 	if (xml.NavigateToNode("caption:min_color", 0))
 		m_negative_color = CUIXmlInit::GetColor(xml, "caption:min_color", 0, color_rgba(red.x, red.y, red.z, red.w));
@@ -210,9 +211,9 @@ void CUIOutfitItemInfo::Init(CUIXml& xml, LPCSTR section, int mode)
 		m_texture._set(texture);
 	}
 
-	Fvector4 red = GameConstants::GetRedColor();
-	Fvector4 green = GameConstants::GetGreenColor();
-	Fvector4 neutral = GameConstants::GetNeutralColor();
+	Ivector4 red = GameConstants::GetRedColor();
+	Ivector4 green = GameConstants::GetGreenColor();
+	Ivector4 neutral = GameConstants::GetNeutralColor();
 
 	if (xml.NavigateToNode("caption:min_color", 0))
 		m_negative_color = CUIXmlInit::GetColor(xml, "caption:min_color", 0, color_rgba(red.x, red.y, red.z, red.w));
@@ -355,9 +356,9 @@ void CUIOutfitItemInfo::SetProgressValue( float cur, float comp )
 	m_progress.SetTwoPos( cur, comp );
 	string32 buf;
 
-	Fvector4 red = GameConstants::GetRedColor();
-	Fvector4 green = GameConstants::GetGreenColor();
-	Fvector4 neutral = GameConstants::GetNeutralColor();
+	Ivector4 red = GameConstants::GetRedColor();
+	Ivector4 green = GameConstants::GetGreenColor();
+	Ivector4 neutral = GameConstants::GetNeutralColor();
 	u32 negative_color = color_rgba(red.x, red.y, red.z, red.w);
 	u32 positive_color = color_rgba(green.x, green.y, green.z, green.w);
 	u32 neutral_color = color_rgba(neutral.x, neutral.y, neutral.z, neutral.w);
@@ -398,7 +399,7 @@ void CUIOutfitItem::SetInfo(CCustomOutfit* cur_outfit, CCustomOutfit* slot_outfi
 
 		float cur = cur_outfit->GetDefHitTypeProtection(hit_type);
 		cur /= max_power; // = 0..1
-		float slot = cur;
+		slot = cur;
 
 		if (slot_outfit)
 		{
@@ -421,7 +422,7 @@ void CUIOutfitItem::SetInfo(CCustomOutfit* cur_outfit, CCustomOutfit* slot_outfi
 
 		float cur = cur_outfit->GetBoneArmor(spine_bone) * cur_outfit->GetCondition();
 		slot = slot_outfit ? slot_outfit->GetBoneArmor(spine_bone) * slot_outfit->GetCondition() : cur;
-		float max_power = actor->conditions().GetMaxFireWoundProtection() != 0 ? actor->conditions().GetMaxFireWoundProtection() : 1.f;
+		max_power = actor->conditions().GetMaxFireWoundProtection() != 0 ? actor->conditions().GetMaxFireWoundProtection() : 1.f;
 		cur /= max_power;
 		slot /= max_power;
 		m_items[ALife::eHitTypeFireWound]->SetProgressValue(cur, slot);
@@ -489,6 +490,87 @@ void CUIOutfitItem::SetInfo(CCustomOutfit* cur_outfit, CCustomOutfit* slot_outfi
 
 		h += m_artefacts_count->GetWndSize().y;
 		AttachChild(m_artefacts_count);
+	}
+
+	SetHeight(h);
+}
+
+void CUIOutfitItem::SetInfo(CHelmet* cur_helmet, CHelmet* slot_helmet)
+{
+	DetachAll();
+
+	CActor* actor = smart_cast<CActor*>(Level().CurrentViewEntity());
+	if (!actor)
+	{
+		return;
+	}
+
+	float h = 0.0f, cur = 0.0f, slot = 0.0f, max_power = 1.0f;
+	Fvector2 pos;
+	pos.set(GetWndPos());
+
+	for (u32 i = 0; i < max_count; ++i)
+	{
+		if (i == ALife::eHitTypeFireWound)
+		{
+			continue;
+		}
+
+		ALife::EHitType hit_type = (ALife::EHitType)i;
+		max_power = actor->conditions().GetZoneMaxPower(hit_type);
+
+		cur = cur_helmet->GetDefHitTypeProtection(hit_type);
+		cur /= max_power; // = 0..1
+		slot = cur;
+
+		if (slot_helmet)
+		{
+			slot = slot_helmet->GetDefHitTypeProtection(hit_type);
+			slot /= max_power; //  = 0..1
+		}
+		m_items[i]->SetProgressValue(cur, slot);
+		pos.set(m_items[i]->GetWndPos());
+		pos.y = h;
+		m_items[i]->SetWndPos(pos);
+		h += m_items[i]->GetWndSize().y;
+		AttachChild(m_items[i]);
+	}
+
+	if (m_items[ALife::eHitTypeFireWound])
+	{
+		IKinematics* ikv = smart_cast<IKinematics*>(actor->Visual());
+		VERIFY(ikv);
+		u16 spine_bone = ikv->LL_BoneID("bip01_head");
+
+		cur = cur_helmet->GetBoneArmor(spine_bone) * cur_helmet->GetCondition();
+		slot = (slot_helmet) ? slot_helmet->GetBoneArmor(spine_bone) * slot_helmet->GetCondition() : cur;
+
+		m_items[ALife::eHitTypeFireWound]->SetProgressValue(cur, slot);
+		pos.set(m_items[ALife::eHitTypeFireWound]->GetWndPos());
+		pos.y = h;
+		m_items[ALife::eHitTypeFireWound]->SetWndPos(pos);
+		h += m_items[ALife::eHitTypeFireWound]->GetWndSize().y;
+		AttachChild(m_items[ALife::eHitTypeFireWound]);
+	}
+
+	float cur_filter = cur_helmet->GetFilterCondition() > 0.f ? (cur_helmet->GetFilterCondition() * 100.0f + 1.0f - EPS) : 0.f;
+	float slot_filter = cur_filter;
+
+	if (slot_helmet && (slot_helmet != cur_helmet))
+	{
+		slot_filter = slot_helmet->GetFilterCondition() > 0.f ? (slot_helmet->GetFilterCondition() * 100.0f + 1.0f - EPS) : 0.f;
+	}
+
+	if (GameConstants::GetOutfitUseFilters() && (cur_helmet->m_bUseFilter || slot_helmet && (slot_helmet != cur_helmet) && slot_helmet->m_bUseFilter))
+	{
+		m_outfit_filter_condition->SetProgressValue(cur_filter, slot_filter);
+
+		pos.set(m_outfit_filter_condition->GetWndPos());
+		pos.y = h;
+		m_outfit_filter_condition->SetWndPos(pos);
+
+		h += m_outfit_filter_condition->GetWndSize().y;
+		AttachChild(m_outfit_filter_condition);
 	}
 
 	SetHeight(h);

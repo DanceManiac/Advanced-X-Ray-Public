@@ -6,9 +6,6 @@
 //	Description : Object factory
 ////////////////////////////////////////////////////////////////////////////
 
-#ifndef object_factoryH
-#define object_factoryH
-
 #pragma once
 
 #include "script_export_space.h"
@@ -88,19 +85,14 @@ public:
 			void						register_script_class			(LPCSTR client_class, LPCSTR server_class, LPCSTR clsid, LPCSTR script_clsid);
 			void						register_script_class			(LPCSTR unknown_class, LPCSTR clsid, LPCSTR script_clsid);
 			void						register_script_classes			();
-#ifndef DEDICATED_SERVER_ONLY
 		DECLARE_SCRIPT_REGISTER_FUNCTION
 	};
 	add_to_type_list(CObjectFactory)
 #	undef script_type_list
 #	define script_type_list save_type_list(CObjectFactory)
-#else // #ifndef DEDICATED_SERVER_ONLY
-	};
-#endif // #ifndef DEDICATED_SERVER_ONLY
 
 extern CObjectFactory *g_object_factory;
 
 IC	const CObjectFactory &object_factory();
 
 #include "object_factory_inline.h"
-#endif

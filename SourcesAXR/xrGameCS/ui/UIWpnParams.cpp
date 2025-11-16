@@ -123,7 +123,7 @@ void CUIWpnParams::SetInfo( CInventoryItem const* slot_wpn, CInventoryItem const
 	m_progressHandling.SetTwoPos( cur_hand,   slot_hand );
 	m_progressRPM.SetTwoPos(      cur_rpm,    slot_rpm );
 
-	const bool showAmmo READ_IF_EXISTS(pSettings, r_bool, cur_section, "show_ammo", true);
+	const bool showAmmo = READ_IF_EXISTS(pSettings, r_bool, cur_section, "show_ammo", true);
 	
 	m_progressRPM.Show(showAmmo);
 	m_progressAccuracy.Show(showAmmo);

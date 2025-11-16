@@ -125,5 +125,6 @@
 		<texture id="ui_inGame2_shield_Withdrawal" 		x="192" y="0" width="29" height="36" />
 		<texture id="ui_inGame2_shield_Psy_Health" 		x="224" y="0" width="31" height="41" />
 		<texture id="ui_inGame2_shield_Satiety" 		x="0" y="39" width="31" height="41" />
+		<texture id="ui_inGame2_shield_Frostbite" 		x="32" y="39" width="31" height="41" />
 	</file>
 </w>

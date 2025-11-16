@@ -37,6 +37,7 @@ eat_narcotism		= 0
 eat_withdrawal		= 0
 eat_drugs		= 0
 eat_psy_health		= 0
+eat_frostbite		= 0
 
 boost_time				= 0.0
 boost_max_weight		= 0.0
@@ -70,6 +71,7 @@ boost_hangover_restore		= 0.0
 boost_drugs_restore		= 0.0
 boost_narcotism_restore		= 0.0
 boost_withdrawal_restore	= 0.0
+boost_frostbite_restore		= 0.0
 boost_time_factor 		= 0.0
 
 irradiation_coef		= 0.0005
@@ -77,31 +79,6 @@ irradiation_zone_power		= 0.0
 rotting_factor			= 0.0
 
 ;use_sound			= characters_voice\multiplayer\team_1\voice_roger_3
-
-[base_quest_item]:booster
-GroupControlSection                                = spawn_group 
-discovery_dependency                               = 
-$spawn                                             = "devices\pda"
-$prefetch                                          = 16
-cform                                              = skeleton 
-visual                                   	   	   = dynamics\devices\dev_pda\dev_pda.ogf 
-default_to_ruck                                    = false
-sprint_allowed                                     = true
-description                                        = st_pda_descr
-inv_name                                           = st_pda_name
-inv_name_short                                     = st_pda_name
-inv_weight                               	   	   = 0.1
-inv_grid_width                                     = 1
-inv_grid_height                                    = 1
-inv_grid_x										   = 11
-inv_grid_y										   = 22
-cost                                     	   	   = 0
-attach_angle_offset                                = 0.000000, -1.204452, -1.262921 
-attach_position_offset                             = 0.081856, -0.035081, 0.011694 
-attach_bone_name                                   = bip01_l_hand 
-auto_attach                                        = false 
-can_trade                               	   = false
-can_use 					   = false
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;	FOOD
@@ -648,6 +625,37 @@ use_sound			= interface\inv_pills
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;	DEVICES
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+[device_pda_quest]:identity_immunities
+GroupControlSection                                = spawn_group
+discovery_dependency                               =
+$spawn                                             = "devices\pda"
+$prefetch                                          = 16
+class                                              = S_PDA	                                       ;Change to S_PDA if you want to use se_item.se_explosive script binding!
+cform                                              = skeleton
+visual                                             = dynamics\devices\dev_pda\dev_pda.ogf
+description                                        = st_pda_descr
+radius                                             = 68	                                       ; 50
+slot                                               = 7
+default_to_ruck                                    = false
+sprint_allowed                                     = true
+control_inertion_factor                            = 1
+script_binding                                     = bind_physic_object.init
+
+inv_name                                           = st_pda_name
+inv_name_short                                     = st_pda_name
+inv_weight                                         = 0.1	                                       ;0.2
+
+inv_grid_width                                     = 1
+inv_grid_height                                    = 1
+inv_grid_x                                         = 6
+inv_grid_y                                         = 13
+cost                                               = 0
+attach_angle_offset                                = -1.303,0.107,-1.702 ;устанавливается в радианах Angle*PI/180
+attach_position_offset                             = 0.14,0.001,0.02
+attach_bone_name                                   = bip01_l_hand
+auto_attach                                        = false
+can_pick_through_geom								= true
+
 [device_pda]:identity_immunities
 GroupControlSection                                = spawn_group
 discovery_dependency                               =
@@ -766,6 +774,7 @@ inv_name_short		= st_pda_name
 description			= st_pda_descr
 cost				= 50
 can_trade			= false
+can_pick_through_geom = true
 
 [dev_flash_2]:identity_immunities
 GroupControlSection	= spawn_group
@@ -791,6 +800,7 @@ inv_name_short		= st_pda_name
 description			= st_pda_descr
 cost				= 50
 can_trade			= false
+can_pick_through_geom = true
 
 [device_torch]:identity_immunities
 GroupControlSection	= spawn_group
@@ -871,7 +881,7 @@ anim_eat			= vodka_3
 ;;;;;;;;;;;;;;;;;;;;;;;
 
 [torch_battery]:booster
-$spawn 				= "food and drugs\kolbasa"
+$spawn 				= "devices\torch_battery"
 class				= II_BATTE
 visual				= dynamics\equipments\battery.ogf
 description			= st_battery_descr
@@ -892,7 +902,7 @@ charge_level			= 1.0
 use_sound			= mfs_team\item_use\inv_battery
 
 [antigas_filter]:booster
-$spawn 				= "food and drugs\kolbasa"
+$spawn 				= "devices\antigas_filter"
 class				= D_FILTER
 visual				= mfs_team\items\itm_devices\antigas_filter.ogf
 description			= st_filter_descr
@@ -913,7 +923,7 @@ filter_condition		= 1.0
 use_sound			= interface\inv_attach_addon
 
 [repair_kit]:booster
-$spawn 				= "food and drugs\kolbasa"
+$spawn 				= "devices\repair_kit"
 class				= D_REPKIT
 visual				= dynamics\box\box_metall_01.ogf
 description			= st_repair_kit_descr

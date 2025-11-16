@@ -7,8 +7,7 @@ using dx10StateUtils::operator==;
 
 dx10SamplerStateCache	SSManager;
 
-dx10SamplerStateCache::dx10SamplerStateCache():
-	m_uiMaxAnisotropy(1)
+dx10SamplerStateCache::dx10SamplerStateCache() : m_uiMaxAnisotropy(1), m_uiMipLODBias(0.0f)
 {
 	static const int iMaxRSStates = 10;
 	m_StateArray.reserve(iMaxRSStates);
@@ -27,6 +26,9 @@ dx10SamplerStateCache::SHandle dx10SamplerStateCache::GetState( D3D_SAMPLER_DESC
 	//	MaxAnisitropy is reset by ValidateState if not aplicable
 	//	to the filter mode used.
 	desc.MaxAnisotropy = m_uiMaxAnisotropy;
+
+	// RZ
+	desc.MipLODBias = m_uiMipLODBias;
 
 	dx10StateUtils::ValidateState(desc);
 
@@ -54,7 +56,9 @@ void dx10SamplerStateCache::CreateState( StateDecs desc, IDeviceState** ppIState
 dx10SamplerStateCache::SHandle dx10SamplerStateCache::FindState( const StateDecs& desc, u32 StateCRC )
 {
     u32 res = 0xffffffff;
-	for (u32 i=0; i<m_StateArray.size(); ++i)
+    u32 i = 0;
+
+    for (; i < m_StateArray.size(); ++i)
 	{
 		if (m_StateArray[i].m_crc==StateCRC)
 		{
@@ -167,7 +171,7 @@ void dx10SamplerStateCache::CSApplySamplers(HArray &samplers)
 }
 
 
-void dx10SamplerStateCache::SetMaxAnisotropy( UINT uiMaxAniso)
+void dx10SamplerStateCache::SetMaxAnisotropy(u32 uiMaxAniso)
 {
 	clamp( uiMaxAniso, (u32)1, (u32)16);
 
@@ -179,7 +183,7 @@ void dx10SamplerStateCache::SetMaxAnisotropy( UINT uiMaxAniso)
 	for ( u32 i=0; i<m_StateArray.size(); ++i)
 	{
 		StateRecord	&rec = m_StateArray[i];
-		StateDecs	desc;
+		StateDecs	desc{};
 
 		rec.m_pState->GetDesc(&desc);
 
@@ -206,5 +210,28 @@ void dx10SamplerStateCache::ResetDeviceState()
 		m_aHSSamplers[i] = (SHandle)hInvalidHandle;
 		m_aDSSamplers[i] = (SHandle)hInvalidHandle;
 		m_aCSSamplers[i] = (SHandle)hInvalidHandle;
+	}
+}
+
+void dx10SamplerStateCache::SetMipLODBias(float uiMipLODBias)
+{
+	if (m_uiMipLODBias == uiMipLODBias)
+		return;
+
+	m_uiMipLODBias = uiMipLODBias;
+
+	for (u32 i = 0; i < m_StateArray.size(); ++i)
+	{
+		StateRecord& rec = m_StateArray[i];
+		StateDecs desc;
+
+		rec.m_pState->GetDesc(&desc);
+
+		desc.MipLODBias = m_uiMipLODBias;
+		dx10StateUtils::ValidateState(desc);
+
+		// This can cause fragmentation if called too often
+		rec.m_pState->Release();
+		CreateState(desc, &rec.m_pState);
 	}
 }

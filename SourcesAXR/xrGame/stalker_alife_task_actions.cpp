@@ -64,36 +64,36 @@ void CStalkerActionSolveZonePuzzle::initialize	()
 	if (object().inventory().ActiveItem() && object().best_weapon() && (object().inventory().ActiveItem()->object().ID() == object().best_weapon()->object().ID()))
 		m_stop_weapon_handling_time				+= ::Random32.random(30000) + 30000;
 
-//	object().movement().set_desired_position	(0);
-	object().movement().set_desired_direction	(0);
-	object().movement().set_path_type			(MovementManager::ePathTypeGamePath);
-	object().movement().set_detail_path_type	(DetailPathManager::eDetailPathTypeSmooth);
-	object().movement().set_body_state			(eBodyStateStand);
-	object().movement().set_movement_type		(eMovementTypeWalk);
-	object().movement().set_mental_state		(eMentalStateFree);
-	object().sight().setup						(CSightAction(SightManager::eSightTypeCover,false,true));
+//	object().get_movement().set_desired_position	(0);
+	object().get_movement().set_desired_direction	(0);
+	object().get_movement().set_path_type			(MovementManager::ePathTypeGamePath);
+	object().get_movement().set_detail_path_type	(DetailPathManager::eDetailPathTypeSmooth);
+	object().get_movement().set_body_state			(eBodyStateStand);
+	object().get_movement().set_movement_type		(eMovementTypeWalk);
+	object().get_movement().set_mental_state		(eMentalStateFree);
+	object().get_sight().setup						(CSightAction(SightManager::eSightTypeCover,false,true));
 #else
 #	if 1
-//		object().movement().set_desired_position	(0);
-		object().movement().set_desired_direction	(0);
-		object().movement().set_path_type			(MovementManager::ePathTypeLevelPath);
-		object().movement().set_detail_path_type	(DetailPathManager::eDetailPathTypeSmooth);
-		object().movement().set_body_state			(eBodyStateStand);
-		object().movement().set_movement_type		(eMovementTypeStand);
-		object().movement().set_mental_state		(eMentalStateDanger);
-		object().sight().setup						(CSightAction(g_actor,true));
-//		object().sight().setup						(CSightAction(SightManager::eSightTypeCurrentDirection));
+//		object().get_movement().set_desired_position	(0);
+		object().get_movement().set_desired_direction	(0);
+		object().get_movement().set_path_type			(MovementManager::ePathTypeLevelPath);
+		object().get_movement().set_detail_path_type	(DetailPathManager::eDetailPathTypeSmooth);
+		object().get_movement().set_body_state			(eBodyStateStand);
+		object().get_movement().set_movement_type		(eMovementTypeStand);
+		object().get_movement().set_mental_state		(eMentalStateDanger);
+		object().get_sight().setup						(CSightAction(g_actor,true));
+//		object().get_sight().setup						(CSightAction(SightManager::eSightTypeCurrentDirection));
 #	else
-//		object().movement().set_mental_state		(eMentalStateDanger);
-		object().movement().set_mental_state		(eMentalStateFree);
-		object().movement().set_movement_type		(eMovementTypeWalk);
-		object().movement().set_body_state			(eBodyStateStand);
-		object().movement().set_desired_direction	(0);
-		object().movement().set_path_type			(MovementManager::ePathTypePatrolPath);
-		object().movement().set_detail_path_type	(DetailPathManager::eDetailPathTypeSmooth);
-		object().movement().patrol().set_path		("test_sight",PatrolPathManager::ePatrolStartTypeNearest,PatrolPathManager::ePatrolRouteTypeContinue);
-//		object().movement().set_nearest_accessible_position();
-		object().sight().setup						(CSightAction(SightManager::eSightTypePathDirection));
+//		object().get_movement().set_mental_state		(eMentalStateDanger);
+		object().get_movement().set_mental_state		(eMentalStateFree);
+		object().get_movement().set_movement_type		(eMovementTypeWalk);
+		object().get_movement().set_body_state			(eBodyStateStand);
+		object().get_movement().set_desired_direction	(0);
+		object().get_movement().set_path_type			(MovementManager::ePathTypePatrolPath);
+		object().get_movement().set_detail_path_type	(DetailPathManager::eDetailPathTypeSmooth);
+		object().get_movement().patrol().set_path		("test_sight",PatrolPathManager::ePatrolStartTypeNearest,PatrolPathManager::ePatrolRouteTypeContinue);
+//		object().get_movement().set_nearest_accessible_position();
+		object().get_sight().setup						(CSightAction(SightManager::eSightTypePathDirection));
 		//		object().CObjectHandler::set_goal			(eObjectActionFire1,object().inventory().ItemFromSlot(GRENADE_SLOT),0,1,2500,3000);
 #	endif
 #endif
@@ -103,12 +103,12 @@ void CStalkerActionSolveZonePuzzle::finalize	()
 {
 	inherited::finalize				();
 
-//	object().movement().set_desired_position	(0);
+//	object().get_movement().set_desired_position	(0);
 
 	if (!object().g_Alive())
 		return;
 
-	object().sound().remove_active_sounds		(u32(eStalkerSoundMaskNoHumming));
+	object().get_sound().remove_active_sounds		(u32(eStalkerSoundMaskNoHumming));
 }
 
 void CStalkerActionSolveZonePuzzle::execute		()
@@ -187,14 +187,14 @@ CStalkerActionSmartTerrain::CStalkerActionSmartTerrain	(CAI_Stalker *object, LPC
 void CStalkerActionSmartTerrain::initialize				()
 {
 	inherited::initialize							();
-//	object().movement().set_desired_position		(0);
-	object().movement().set_desired_direction		(0);
-	object().movement().game_selector().set_selection_type		(eSelectionTypeMask);
-	object().movement().set_detail_path_type		(DetailPathManager::eDetailPathTypeSmooth);
-	object().movement().set_body_state				(eBodyStateStand);
-	object().movement().set_movement_type			(eMovementTypeWalk);
-	object().movement().set_mental_state			(eMentalStateFree);
-	object().sight().setup							(CSightAction(SightManager::eSightTypePathDirection));
+//	object().get_movement().set_desired_position		(0);
+	object().get_movement().set_desired_direction		(0);
+	object().get_movement().game_selector().set_selection_type		(eSelectionTypeMask);
+	object().get_movement().set_detail_path_type		(DetailPathManager::eDetailPathTypeSmooth);
+	object().get_movement().set_body_state				(eBodyStateStand);
+	object().get_movement().set_movement_type			(eMovementTypeWalk);
+	object().get_movement().set_mental_state			(eMentalStateFree);
+	object().get_sight().setup							(CSightAction(SightManager::eSightTypePathDirection));
 
 	if (!object().best_weapon()) {
 		object().CObjectHandler::set_goal		(eObjectActionIdle);
@@ -213,8 +213,8 @@ void CStalkerActionSmartTerrain::initialize				()
 void CStalkerActionSmartTerrain::finalize				()
 {
 	inherited::finalize					();
-//	object().movement().set_desired_position	(0);
-	object().movement().game_selector().set_selection_type		(eSelectionTypeRandomBranching);
+//	object().get_movement().set_desired_position	(0);
+	object().get_movement().game_selector().set_selection_type		(eSelectionTypeRandomBranching);
 }
 
 void CStalkerActionSmartTerrain::execute				()
@@ -225,37 +225,37 @@ void CStalkerActionSmartTerrain::execute				()
 	if (completed())
 		object().CObjectHandler::set_goal		(eObjectActionStrapped,object().best_weapon());
 
-	object().sound().play						(eStalkerSoundHumming,60000,10000);
+	object().get_sound().play						(eStalkerSoundHumming,60000,10000);
 
 	CSE_ALifeHumanAbstract						*stalker = smart_cast<CSE_ALifeHumanAbstract*>(ai().alife().objects().object(m_object->ID()));
 	VERIFY										(stalker);
 	VERIFY										(stalker->m_smart_terrain_id != 0xffff);
 
-	CALifeSmartTerrainTask						*task = stalker->brain().smart_terrain().task(stalker);
+	CALifeSmartTerrainTask						*task = stalker->get_brain().smart_terrain().task(stalker);
 	THROW2										(task,"Smart terrain is assigned but returns no task");
 	if (object().ai_location().game_vertex_id() != task->game_vertex_id()) {
-		object().movement().set_path_type		(MovementManager::ePathTypeGamePath);
-		object().movement().set_game_dest_vertex(task->game_vertex_id());
+		object().get_movement().set_path_type		(MovementManager::ePathTypeGamePath);
+		object().get_movement().set_game_dest_vertex(task->game_vertex_id());
 		return;
 	}
 
-	object().movement().set_path_type			(MovementManager::ePathTypeLevelPath);
-	if (object().movement().accessible(task->level_vertex_id())) {
-		object().movement().set_level_dest_vertex	(task->level_vertex_id());
+	object().get_movement().set_path_type			(MovementManager::ePathTypeLevelPath);
+	if (object().get_movement().accessible(task->level_vertex_id())) {
+		object().get_movement().set_level_dest_vertex	(task->level_vertex_id());
 		Fvector										temp = task->position();
-		object().movement().set_desired_position	(&temp);
+		object().get_movement().set_desired_position	(&temp);
 		return;
 	}
 
-	object().movement().set_nearest_accessible_position	(task->position(),task->level_vertex_id());
+	object().get_movement().set_nearest_accessible_position	(task->position(),task->level_vertex_id());
 #else
-	object().movement().set_desired_direction	(0);
-	object().movement().set_path_type			(MovementManager::ePathTypeLevelPath);
-	object().movement().set_detail_path_type	(DetailPathManager::eDetailPathTypeSmooth);
-	object().movement().set_body_state			(eBodyStateStand);
-	object().movement().set_movement_type		(eMovementTypeStand);
-	object().movement().set_mental_state		(eMentalStateDanger);
-	object().sight().setup						(CSightAction(g_actor,true));
+	object().get_movement().set_desired_direction	(0);
+	object().get_movement().set_path_type			(MovementManager::ePathTypeLevelPath);
+	object().get_movement().set_detail_path_type	(DetailPathManager::eDetailPathTypeSmooth);
+	object().get_movement().set_body_state			(eBodyStateStand);
+	object().get_movement().set_movement_type		(eMovementTypeStand);
+	object().get_movement().set_mental_state		(eMentalStateDanger);
+	object().get_sight().setup						(CSightAction(g_actor,true));
 	object().throw_target						(g_actor->Position(), g_actor);
 	if (object().throw_enabled()) {
 		object().CObjectHandler::set_goal		(eObjectActionFire1,object().inventory().ItemFromSlot(GRENADE_SLOT));

@@ -19,6 +19,16 @@ void CSoundRender_Emitter::set_position(const Fvector &pos)
 	bMoved				= TRUE;					
 }
 
+// Перемотка звука на заданную секунду [rewind snd to target time] --#SM+#--
+void CSoundRender_Emitter::set_time(float t)
+{
+	if (t < 0.0f)
+		t = 0.0f;
+	R_ASSERT2(get_length_sec() >= t, "set_time: time is bigger than length of sound");
+	fTimeToRewind = t;
+}
+
+
 CSoundRender_Emitter::CSoundRender_Emitter() : target(nullptr), owner_data(nullptr), smooth_volume(1.f), occluder_volume(1.f),
 fade_volume(1.f), m_current_state(stStopped), bMoved(true), b2D(false), bStopping(false), bRewind(false), marker(0xabababab)
 {
@@ -33,6 +43,7 @@ fade_volume(1.f), m_current_state(stStopped), bMoved(true), b2D(false), bStoppin
 	fTimeStarted				= 0.0f;
 	fTimeToStop				= 0.0f;
 	fTimeToPropagade			= 0.0f;
+	fTimeToRewind				= 0.0f; //--#SM+#--
 	starting_delay				= 0.f;
 	priority_scale				= 1.f;
 	m_cur_handle_cursor			= 0;

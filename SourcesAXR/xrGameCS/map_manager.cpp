@@ -226,6 +226,8 @@ CMapLocation* CMapManager::GetMapLocation(const shared_str& spot_type, u16 id)
 
 void CMapManager::Update()
 {
+	ZoneScoped;
+
 	Locations_it it = Locations().begin();
 	Locations_it it_e = Locations().end();
 

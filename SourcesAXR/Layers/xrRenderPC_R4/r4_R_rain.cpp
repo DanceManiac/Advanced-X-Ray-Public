@@ -29,6 +29,8 @@ static int			facetable[6][4]		= {
 //////////////////////////////////////////////////////////////////////////
 void CRender::render_rain()
 {
+	ZoneScoped;
+
 	//return;
 	float fRainFactor = 0;
 	if (ps_ssfx_gloss_method == 0)

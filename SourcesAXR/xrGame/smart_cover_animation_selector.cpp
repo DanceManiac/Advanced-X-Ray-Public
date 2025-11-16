@@ -48,7 +48,7 @@ void animation_selector::initialize					()
 	// we need this, since we could change bone callbacks
 	// which needs animation blends
 	// but blends are not accessible since
-	// we didn't called animation().update()
+	// we didn't called get_animation().update()
 	// which is called on UpdateCL
 	// and in case of RayQuery
 	// our bone callback could be called
@@ -56,7 +56,7 @@ void animation_selector::initialize					()
 	// and we will have 
 	// VERIFY	(*parameter->m_blend);
 	m_callback_called			= true;
-	m_object->animation().update();
+	m_object->get_animation().update();
 
 	m_first_time				= true;
 }
@@ -86,7 +86,7 @@ MotionID animation_selector::select_animation		(bool &animation_movement_control
 			m_previous_time		= 0.f;
 			if (!m_planner->initialized()) {
 //				Msg				("%6d no planner update, planner is not initialized, exiting", Device.dwTimeGlobal);
-				return			(m_object->animation().assign_global_animation(animation_movement_controller));
+				return			(m_object->get_animation().assign_global_animation(animation_movement_controller));
 			}
 		}
 
@@ -95,17 +95,17 @@ MotionID animation_selector::select_animation		(bool &animation_movement_control
 
 		if (!m_planner->initialized()) {
 //			Msg				("%6d planner is not initialized after update, exiting", Device.dwTimeGlobal);
-			return			(m_object->animation().assign_global_animation(animation_movement_controller));
+			return			(m_object->get_animation().assign_global_animation(animation_movement_controller));
 		}
 
 		current_operator()->on_no_mark	();
 		if (!current_operator()->is_animated_action())
-			return			(m_object->animation().assign_global_animation(animation_movement_controller));
+			return			(m_object->get_animation().assign_global_animation(animation_movement_controller));
 
 		current_operator()->select_animation(m_animation);
 
-		VERIFY				( m_object->movement().current_params().cover() );
-		if ( !m_object->movement().current_params().cover()->can_fire() )
+		VERIFY				( m_object->get_movement().current_params().cover() );
+		if ( !m_object->get_movement().current_params().cover()->can_fire() )
 			return			(m_skeleton_animated->ID_Cycle( m_animation.c_str()));
 
 #if 0//ndef MASTER_GOLD
@@ -136,7 +136,7 @@ MotionID animation_selector::select_animation		(bool &animation_movement_control
 	}
 
 	VERIFY				(m_animation._get());
-//	VERIFY				(m_first_time || m_object->animation().global().blend());
+//	VERIFY				(m_first_time || m_object->get_animation().global().blend());
 	MotionID			result = m_skeleton_animated->ID_Cycle( m_animation.c_str());
 	if (m_first_time) {
 		m_first_time	= false;
@@ -145,7 +145,7 @@ MotionID animation_selector::select_animation		(bool &animation_movement_control
 		return			(result);
 	}
 
-	CBlend const* const	blend = m_object->animation().global().blend();
+	CBlend const* const	blend = m_object->get_animation().global().blend();
 	if (!blend) {
 		m_previous_time	= 0.f;
 		current_operator()->on_no_mark	();

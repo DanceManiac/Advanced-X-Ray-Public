@@ -89,7 +89,7 @@ class CAlienEffector : public CEffectorCam {
 
 public:
 					CAlienEffector	(ECamEffectorType type, CAI_Bloodsucker *obj);
-	virtual BOOL	ProcessCam		(SCamEffectorInfo& info);
+	virtual BOOL	ProcessCam		(SCamEffectorInfo& info, float m_fFactorMod = 1.0f);
 };
 
 
@@ -119,7 +119,7 @@ CAlienEffector::CAlienEffector(ECamEffectorType type, CAI_Bloodsucker *obj) :
 	m_current_fov			= MIN_FOV;
 }
 
-BOOL CAlienEffector::ProcessCam(SCamEffectorInfo& info)
+BOOL CAlienEffector::ProcessCam(SCamEffectorInfo& info, float m_fFactorMod)
 {
 	// Инициализация
 	Fmatrix	Mdef;
@@ -221,7 +221,7 @@ void CBloodsuckerAlien::activate()
 	if (!m_object->EnemyMan.get_enemy())	m_object->EnemyMan.add_enemy(Actor());
 
 //.	Actor()->inventory().setSlotsBlocked			(true);
-	Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, true);
+	Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, true, false);
 
 	// hide crosshair
 	m_crosshair_show			= !!psHUD_Flags.is(HUD_CROSSHAIR_RT);
@@ -247,7 +247,7 @@ void CBloodsuckerAlien::deactivate()
 
 	m_object->CControlledActor::release			();
 
-	Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, false);
+	Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, false, false);
 	if (m_crosshair_show)							psHUD_Flags.set(HUD_CROSSHAIR_RT,TRUE);
 
 	// Stop camera effector

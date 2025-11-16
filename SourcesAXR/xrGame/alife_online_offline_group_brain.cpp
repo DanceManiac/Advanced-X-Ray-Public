@@ -79,19 +79,19 @@ void CALifeOnlineOfflineGroupBrain::update				()
 {	
 	CALifeSmartTerrainTask* const task = object().get_current_task();
 	THROW2							(task,"CALifeOnlineOfflineGroupBrain returned nil task, while npc is registered in it");
-	movement().path_type			(MovementManager::ePathTypeGamePath);
-	movement().detail().target		(*task);
-	movement().update				();
+	get_movement().path_type			(MovementManager::ePathTypeGamePath);
+	get_movement().detail().target		(*task);
+	get_movement().update				();
 }
 
 void CALifeOnlineOfflineGroupBrain::on_switch_online	()
 {
-	movement().on_switch_online		();
+	get_movement().on_switch_online		();
 }
 
 void CALifeOnlineOfflineGroupBrain::on_switch_offline	()
 {
-	movement().on_switch_offline	();
+	get_movement().on_switch_offline	();
 }
 
 #endif // XRGAME_EXPORTS

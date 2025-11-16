@@ -53,6 +53,8 @@ void CLevel::cl_Process_Spawn(NET_Packet& P)
 
 void CLevel::g_cl_Spawn		(LPCSTR name, u8 rp, u16 flags, Fvector pos)
 {
+	ZoneScoped;
+
 	// Create
 	CSE_Abstract*		E	= F_entity_Create(name);
 	VERIFY				(E);
@@ -86,6 +88,8 @@ void CLevel::g_cl_Spawn		(LPCSTR name, u8 rp, u16 flags, Fvector pos)
 
 void CLevel::g_sv_Spawn		(CSE_Abstract* E)
 {
+	ZoneScoped;
+
 #ifdef DEBUG_MEMORY_MANAGER
 	u32							E_mem = 0;
 	if (g_bMEMO)	{
@@ -128,9 +132,10 @@ void CLevel::g_sv_Spawn		(CSE_Abstract* E)
 #endif // DEBUG_MEMORY_MANAGER
 	if (0==O || (!O->net_Spawn	(E))) 
 	{
+		ZoneScopedN("net_Spawn");
+
 		O->net_Destroy			( );
-		if(!g_dedicated_server)
-			client_spawn_manager().clear(O->ID());
+		client_spawn_manager().clear(O->ID());
 		Objects.Destroy			(O);
 		Msg						("! Failed to spawn entity '%s'",*E->s_name);
 #ifdef DEBUG_MEMORY_MANAGER
@@ -140,30 +145,35 @@ void CLevel::g_sv_Spawn		(CSE_Abstract* E)
 #ifdef DEBUG_MEMORY_MANAGER
 		mem_alloc_gather_stats	(!!psAI_Flags.test(aiDebugOnFrameAllocs));
 #endif // DEBUG_MEMORY_MANAGER
-		if(!g_dedicated_server)
-			client_spawn_manager().callback(O);
-		//Msg			("--spawn--SPAWN: %f ms",1000.f*T.GetAsync());
-		
-		if ((E->s_flags.is(M_SPAWN_OBJECT_LOCAL)) && 
-			(E->s_flags.is(M_SPAWN_OBJECT_ASPLAYER)) )	
+
 		{
-			if (IsDemoPlayStarted())
+			ZoneScopedN("client_spawn_manager");
+
+			client_spawn_manager().callback(O);
+			//Msg			("--spawn--SPAWN: %f ms",1000.f*T.GetAsync());
+
+			if ((E->s_flags.is(M_SPAWN_OBJECT_LOCAL)) &&
+				(E->s_flags.is(M_SPAWN_OBJECT_ASPLAYER)))
 			{
-				if (E->s_flags.is(M_SPAWN_OBJECT_PHANTOM))
+				if (IsDemoPlayStarted())
 				{
-					SetControlEntity	(O);
-					SetEntity			(O);	//do not switch !!!
-					SetDemoSpectator	(O);
+					if (E->s_flags.is(M_SPAWN_OBJECT_PHANTOM))
+					{
+						SetControlEntity(O);
+						SetEntity(O);	//do not switch !!!
+						SetDemoSpectator(O);
+					}
 				}
-			} else
-			{
-				if (CurrentEntity() != NULL) 
+				else
 				{
-					CGameObject* pGO = smart_cast<CGameObject*>(CurrentEntity());
-					if (pGO) pGO->On_B_NotCurrentEntity();
+					if (CurrentEntity() != NULL)
+					{
+						CGameObject* pGO = smart_cast<CGameObject*>(CurrentEntity());
+						if (pGO) pGO->On_B_NotCurrentEntity();
+					}
+					SetControlEntity(O);
+					SetEntity(O);	//do not switch !!!
 				}
-				SetControlEntity	(O);
-				SetEntity			(O);	//do not switch !!!
 			}
 		}
 
@@ -179,6 +189,8 @@ void CLevel::g_sv_Spawn		(CSE_Abstract* E)
 			GEN.w_u16			(u16(O->ID()));
 			game_events->insert	(GEN);
 			/*/
+
+			ZoneScopedN("GE_OWNERSHIP_TAKE");
 			NET_Packet	GEN;
 			GEN.write_start();
 			GEN.read_start();
@@ -202,6 +214,7 @@ void CLevel::g_sv_Spawn		(CSE_Abstract* E)
 	//---------------------------------------------------------
 	Game().OnSpawn				(O);
 	//---------------------------------------------------------
+
 #ifdef DEBUG_MEMORY_MANAGER
 	if (g_bMEMO) {
 		lua_gc					(ai().script_engine().lua(),LUA_GCCOLLECT,0);
@@ -213,6 +226,8 @@ void CLevel::g_sv_Spawn		(CSE_Abstract* E)
 
 CSE_Abstract *CLevel::spawn_item		(LPCSTR section, const Fvector &position, u32 level_vertex_id, u16 parent_id, bool return_item)
 {
+	ZoneScoped;
+
 	CSE_Abstract			*abstract = F_entity_Create(section);
 	R_ASSERT3				(abstract,"Cannot find item with section",section);
 	CSE_ALifeDynamicObject	*dynamic_object = smart_cast<CSE_ALifeDynamicObject*>(abstract);
@@ -252,6 +267,8 @@ CSE_Abstract *CLevel::spawn_item		(LPCSTR section, const Fvector &position, u32 
 
 void	CLevel::ProcessGameSpawns	()
 {
+	ZoneScoped;
+
 	while (!game_spawn_queue.empty())
 	{
 		CSE_Abstract*	E			= game_spawn_queue.front();

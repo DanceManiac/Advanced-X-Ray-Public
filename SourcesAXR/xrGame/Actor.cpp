@@ -93,7 +93,7 @@ static float IReceived = 0;
 static float ICoincidenced = 0;
 extern float cammera_into_collision_shift ;
 
-u32	death_camera_mode = READ_IF_EXISTS(pAdvancedSettings, r_u32, "gameplay", "death_camera_mode", 1);;
+u32	death_camera_mode = READ_IF_EXISTS(pAdvancedSettings, r_u32, "gameplay", "death_camera_mode", 1);
 
 string32		ACTOR_DEFS::g_quick_use_slots[4]={NULL, NULL, NULL, NULL};
 //skeleton
@@ -114,6 +114,8 @@ Flags32			psActorFlags=
 };
 
 int				psActorSleepTime = 1;
+int				psActorQuickSaveNumberCurrent = 0;
+int				psActorQuickSaveNumberMax = 5;
 
 ENGINE_API extern int ps_r__ShaderNVG;
 extern ENGINE_API Fvector4 ps_ssfx_hud_drops_1;
@@ -227,7 +229,7 @@ CActor::CActor() : CEntityAlive(),current_ik_cam_shift(0)
 	m_iLastHittingWeaponID	= u16(-1);
 	m_statistic_manager		= NULL;
 	//-----------------------------------------------------------------------------------
-	m_memory				= g_dedicated_server ? 0 : xr_new<CActorMemory>(this);
+	m_memory				= xr_new<CActorMemory>(this);
 	m_bOutBorder			= false;
 	m_hit_probability		= 1.f;
 	m_feel_touch_characters = 0;
@@ -251,7 +253,6 @@ CActor::CActor() : CEntityAlive(),current_ik_cam_shift(0)
 
 	m_bMaskAnimActivated	= false;
 	m_bNVGActivated			= false;
-	m_bEatAnimActive		= false;
 	m_bActionAnimInProcess	= false;
 	m_bNVGSwitched			= false;
 	m_bMaskClear			= false;
@@ -261,6 +262,10 @@ CActor::CActor() : CEntityAlive(),current_ik_cam_shift(0)
 	m_iActionTiming			= 0;
 	m_iMaskAnimLength		= 0;
 	m_iQuickKickAnimLength	= 0;
+
+	m_bTakeItemActivated	= false;
+	m_bItemTaked			= false;
+	m_iTakeAnimLength		= 0;
 
 	ActorSkills				= nullptr;
 	TimerManager			= nullptr;
@@ -273,6 +278,17 @@ CActor::CActor() : CEntityAlive(),current_ik_cam_shift(0)
 	m_fInventoryFullness	= 0.0f;
 	m_fInventoryFullnessCtrl = 0.0f;
 	m_last_active_slot		= 0;
+
+	m_bHeating				= false;
+	m_fHeatingPower			= 0.0f;
+
+	m_sColdSteamParticleBone = nullptr;
+	m_sColdSteamParticleName = nullptr;
+
+	m_fJumpWeightFactor		= 4.0f;
+	m_fSpeedWeightFactor	= 8.0f;
+
+	m_bQuickWeaponBlocked	= false;
 }
 
 
@@ -306,8 +322,8 @@ CActor::~CActor()
 
 void CActor::reinit	()
 {
-	character_physics_support()->movement()->CreateCharacter		();
-	character_physics_support()->movement()->SetPhysicsRefObject	(this);
+	character_physics_support()->get_movement()->CreateCharacter		();
+	character_physics_support()->get_movement()->SetPhysicsRefObject	(this);
 	CEntityAlive::reinit						();
 	CInventoryOwner::reinit						();
 
@@ -315,8 +331,7 @@ void CActor::reinit	()
 	material().reinit							();
 
 	m_pUsableObject								= NULL;
-	if (!g_dedicated_server)
-		memory().reinit							();
+	get_memory().reinit							();
 	
 	set_input_external_handler					(0);
 	m_time_lock_accel							= 0;
@@ -328,8 +343,7 @@ void CActor::reload	(LPCSTR section)
 	CInventoryOwner::reload		(section);
 	material().reload			(section);
 	CStepManager::reload		(section);
-	if (!g_dedicated_server)
-		memory().reload			(section);
+	get_memory().reload			(section);
 	m_location_manager->reload	(section);
 }
 void set_box(LPCSTR section, CPHMovementControl &mc, u32 box_num )
@@ -373,19 +387,19 @@ void CActor::Load	(LPCSTR section )
 	vBOX_center= pSettings->r_fvector3	(section,"ph_box2_center"	);
 	vBOX_size	= pSettings->r_fvector3	(section,"ph_box2_size"		);
 	bb.set	(vBOX_center,vBOX_center); bb.grow(vBOX_size);
-	character_physics_support()->movement()->SetBox		(2,bb);
+	character_physics_support()->get_movement()->SetBox		(2,bb);
 
 	// m_PhysicMovementControl: BOX
 	vBOX_center= pSettings->r_fvector3	(section,"ph_box1_center"	);
 	vBOX_size	= pSettings->r_fvector3	(section,"ph_box1_size"		);
 	bb.set	(vBOX_center,vBOX_center); bb.grow(vBOX_size);
-	character_physics_support()->movement()->SetBox		(1,bb);
+	character_physics_support()->get_movement()->SetBox		(1,bb);
 
 	// m_PhysicMovementControl: BOX
 	vBOX_center= pSettings->r_fvector3	(section,"ph_box0_center"	);
 	vBOX_size	= pSettings->r_fvector3	(section,"ph_box0_size"		);
 	bb.set	(vBOX_center,vBOX_center); bb.grow(vBOX_size);
-	character_physics_support()->movement()->SetBox		(0,bb);
+	character_physics_support()->get_movement()->SetBox		(0,bb);
 	*/
 	
 
@@ -404,19 +418,19 @@ void CActor::Load	(LPCSTR section )
 	float	cs_min		= pSettings->r_float	(section,"ph_crash_speed_min"	);
 	float	cs_max		= pSettings->r_float	(section,"ph_crash_speed_max"	);
 	float	mass		= pSettings->r_float	(section,"ph_mass"				);
-	character_physics_support()->movement()->SetCrashSpeeds	(cs_min,cs_max);
-	character_physics_support()->movement()->SetMass		(mass);
+	character_physics_support()->get_movement()->SetCrashSpeeds	(cs_min,cs_max);
+	character_physics_support()->get_movement()->SetMass		(mass);
 	if(pSettings->line_exist(section,"stalker_restrictor_radius"))
-		character_physics_support()->movement()->SetActorRestrictorRadius(rtStalker,pSettings->r_float(section,"stalker_restrictor_radius"));
+		character_physics_support()->get_movement()->SetActorRestrictorRadius(rtStalker,pSettings->r_float(section,"stalker_restrictor_radius"));
 	if(pSettings->line_exist(section,"stalker_small_restrictor_radius"))
-		character_physics_support()->movement()->SetActorRestrictorRadius(rtStalkerSmall,pSettings->r_float(section,"stalker_small_restrictor_radius"));
+		character_physics_support()->get_movement()->SetActorRestrictorRadius(rtStalkerSmall,pSettings->r_float(section,"stalker_small_restrictor_radius"));
 	if(pSettings->line_exist(section,"medium_monster_restrictor_radius"))
-		character_physics_support()->movement()->SetActorRestrictorRadius(rtMonsterMedium,pSettings->r_float(section,"medium_monster_restrictor_radius"));
-	character_physics_support()->movement()->Load(section);
+		character_physics_support()->get_movement()->SetActorRestrictorRadius(rtMonsterMedium,pSettings->r_float(section,"medium_monster_restrictor_radius"));
+	character_physics_support()->get_movement()->Load(section);
 
-	set_box( section, *character_physics_support()->movement(), 2 );
-	set_box( section, *character_physics_support()->movement(), 1 );
-	set_box( section, *character_physics_support()->movement(), 0 );
+	set_box( section, *character_physics_support()->get_movement(), 2 );
+	set_box( section, *character_physics_support()->get_movement(), 1 );
+	set_box( section, *character_physics_support()->get_movement(), 0 );
 
 	m_fWalkAccel				= pSettings->r_float(section,"walk_accel");	
 	m_fJumpSpeed				= pSettings->r_float(section,"jump_speed");
@@ -432,9 +446,9 @@ void CActor::Load	(LPCSTR section )
 
 
 	m_fCamHeightFactor			= pSettings->r_float(section,"camera_height_factor");
-	character_physics_support()->movement()->SetJumpUpVelocity(m_fJumpSpeed);
+	character_physics_support()->get_movement()->SetJumpUpVelocity(m_fJumpSpeed);
 	float AirControlParam		= pSettings->r_float(section,"air_control_param"	);
-	character_physics_support()->movement()->SetAirControlParam(AirControlParam);
+	character_physics_support()->get_movement()->SetAirControlParam(AirControlParam);
 
 	m_fPickupInfoRadius			= READ_IF_EXISTS(pSettings, r_float, section, "pickup_info_radius", 0.0f);
 
@@ -445,7 +459,6 @@ void CActor::Load	(LPCSTR section )
 	character_physics_support()->in_Load		(section);
 	
 
-if(!g_dedicated_server)
 {
 	LPCSTR hit_snd_sect = pSettings->r_string(section,"hit_sounds");
 	for(int hit_type=0; hit_type<(int)ALife::eHitTypeMax; ++hit_type)
@@ -470,6 +483,19 @@ if(!g_dedicated_server)
 		m_HeavyBreathSnd.create	(pSettings->r_string(section,"heavy_breath_snd"), st_Effect,SOUND_TYPE_MONSTER_INJURING);
 		m_BloodSnd.create		(pSettings->r_string(section,"heavy_blood_snd"), st_Effect,SOUND_TYPE_MONSTER_INJURING);
 		m_DangerSnd.create		(pSettings->r_string(section,"heavy_danger_snd"), st_Effect,SOUND_TYPE_MONSTER_INJURING);
+	}
+
+	shared_str action_sounds_sect = READ_IF_EXISTS(pSettings, r_string, section, "action_sounds_section", "action_sounds");
+
+	if (pSettings->section_exist(action_sounds_sect))
+	{
+		m_layered_sounds.LoadSound(pSettings, action_sounds_sect.c_str(), "on_jump_snd",			"OnJumpSnd",			false, SOUND_TYPE_MONSTER_DYING);
+		m_layered_sounds.LoadSound(pSettings, action_sounds_sect.c_str(), "on_land_snd",			"OnLandSnd",			false, SOUND_TYPE_MONSTER_DYING);
+		m_layered_sounds.LoadSound(pSettings, action_sounds_sect.c_str(), "on_crouch_in_snd",		"OnCrouchInSnd",		false, SOUND_TYPE_MONSTER_DYING);
+		m_layered_sounds.LoadSound(pSettings, action_sounds_sect.c_str(), "on_crouch_out_snd",		"OnCrouchOutSnd",		false, SOUND_TYPE_MONSTER_DYING);
+		m_layered_sounds.LoadSound(pSettings, action_sounds_sect.c_str(), "on_crouch_slow_in_snd",	"OnCrouchSlowInSnd",	false, SOUND_TYPE_MONSTER_DYING);
+		m_layered_sounds.LoadSound(pSettings, action_sounds_sect.c_str(), "on_crouch_slow_out_snd",	"OnCrouchSlowOutSnd",	false, SOUND_TYPE_MONSTER_DYING);
+		m_layered_sounds.LoadSound(pSettings, action_sounds_sect.c_str(), "on_lookout_snd",			"OnLookoutSnd",			false, SOUND_TYPE_MONSTER_DYING);
 	}
 
 	if (this == Level().CurrentEntity()) //--#SM+#--      [reset some render flags]
@@ -528,6 +554,12 @@ if(!g_dedicated_server)
 
 	m_iBaseArtefactCount = READ_IF_EXISTS(pSettings, r_u32, section, "base_artefacts_count", 0);
 	m_fInventoryCapacity = READ_IF_EXISTS(pSettings, r_float, section, "inventory_capacity", 50.0f);
+
+	m_sColdSteamParticleBone = READ_IF_EXISTS(pSettings, r_string, section, "cold_steam_particle_bone", "jaw_1");
+	m_sColdSteamParticleName = READ_IF_EXISTS(pSettings, r_string, section, "cold_steam_particle_name", "weapons\\effects\\generic_sigarets");
+
+	m_fJumpWeightFactor		= READ_IF_EXISTS(pSettings, r_float, section, "jump_weight_factor", 4.0f);
+	m_fSpeedWeightFactor	= READ_IF_EXISTS(pSettings, r_float, section, "speed_weight_factor", 8.0f);
 }
 
 void CActor::PHHit(SHit &H)
@@ -569,7 +601,7 @@ void	CActor::Hit(SHit* pHDS)
 	bool bPlaySound = true;
 	if (!g_Alive()) bPlaySound = false;
 
-	if (!IsGameTypeSingle() && !g_dedicated_server)
+	if (!IsGameTypeSingle() )
 	{
 		game_PlayerState* ps = Game().GetPlayerByGameID(ID());
 		if (ps && ps->testFlag(GAME_PLAYER_FLAG_INVINCIBLE))
@@ -584,15 +616,15 @@ void	CActor::Hit(SHit* pHDS)
 				CParticlesPlayer::MakeXFORM(this,HDS.bone(),HDS.dir,HDS.p_in_bone_space,pos);
 
 				// установить particles
-				CParticlesObject* ps = NULL;
+				CParticlesObject* psO = NULL;
 
 				if (eacFirstEye == cam_active && this == Level().CurrentEntity())
-					ps = CParticlesObject::Create(invincibility_fire_shield_1st,TRUE);
+					psO = CParticlesObject::Create(invincibility_fire_shield_1st,TRUE);
 				else
-					ps = CParticlesObject::Create(invincibility_fire_shield_3rd,TRUE);
+					psO = CParticlesObject::Create(invincibility_fire_shield_3rd,TRUE);
 
-				ps->UpdateParent(pos,Fvector().set(0.f,0.f,0.f));
-				GamePersistent().ps_needtoplay.push_back(ps);
+				psO->UpdateParent(pos,Fvector().set(0.f,0.f,0.f));
+				GamePersistent().ps_needtoplay.push_back(psO);
 			};
 		};
 		 
@@ -600,8 +632,7 @@ void	CActor::Hit(SHit* pHDS)
 		last_hit_frame = Device.dwFrame;
 	};
 
-	if(	!g_dedicated_server				&& 
-		!sndHit[HDS.hit_type].empty()	&&
+	if(	!sndHit[HDS.hit_type].empty()	&&
 		conditions().PlayHitSound(pHDS)	)
 	{
 		ref_sound& S			= sndHit[HDS.hit_type][Random.randI(sndHit[HDS.hit_type].size())];
@@ -633,9 +664,7 @@ void	CActor::Hit(SHit* pHDS)
 	m_hit_slowmo = conditions().HitSlowmo(pHDS);
 
 	//---------------------------------------------------------------
-	if(		(Level().CurrentViewEntity()==this) && 
-			!g_dedicated_server && 
-			(HDS.hit_type == ALife::eHitTypeFireWound) )
+	if(Level().CurrentViewEntity() == this && (HDS.hit_type == ALife::eHitTypeFireWound) )
 	{
 		CObject* pLastHitter			= Level().Objects.net_Find(m_iLastHitterID);
 		CObject* pLastHittingWeapon		= Level().Objects.net_Find(m_iLastHittingWeaponID);
@@ -651,7 +680,7 @@ void	CActor::Hit(SHit* pHDS)
 			mstate_wishful	&=~mcSprint;
 		}
 	}
-	if(!g_dedicated_server && !m_disabled_hitmarks)
+	if(!m_disabled_hitmarks)
 	{
 		bool b_fireWound = (pHDS->hit_type==ALife::eHitTypeFireWound || pHDS->hit_type==ALife::eHitTypeWound_2);
 		b_initiated		 = b_initiated && (pHDS->hit_type==ALife::eHitTypeStrike);
@@ -674,6 +703,33 @@ void	CActor::Hit(SHit* pHDS)
 			HDS.power				= hit_power;
 			HDS.add_wound			= true;
 			inherited::Hit			(&HDS);
+
+			if (GameConstants::GetActorFrostbite())
+			{
+				if (pHDS->hit_type == ALife::eHitTypeBurn || pHDS->hit_type == ALife::eHitTypeLightBurn)
+					Actor()->SetHeatingStatus(true, hit_power);
+				else
+					Actor()->SetHeatingStatus(false);
+			}
+
+			if (GameConstants::GetFoodIrradiation())
+			{
+				CCustomZone* zone_hitter = smart_cast<CCustomZone*>(pHDS->who);
+
+				if (zone_hitter)
+				{
+					TIItemContainer::iterator it = inventory().m_ruck.begin();
+					TIItemContainer::iterator ite = inventory().m_ruck.end();
+
+					for (; it != ite; ++it)
+					{
+						CEatableItem* current_eatable = smart_cast<CEatableItem*>(*it);
+
+						if (current_eatable)
+							current_eatable->HitFromActorHit(pHDS);
+					}
+				}
+			}
 		}
 	}else
 	{
@@ -887,7 +943,6 @@ void CActor::Die	(CObject* who)
 		};
 	};
 
-	if(!g_dedicated_server)
 	{
 		::Sound->play_at_pos	(sndDie[Random.randI(SND_DIE_COUNT)],this,Position());
 
@@ -946,31 +1001,46 @@ void CActor::g_Physics			(Fvector& _accel, float jump, float dt)
 	{
 		if(mstate_real&mcClimb&&!cameras[eacFirstEye]->bClampYaw)
 				accel.set(0.f,0.f,0.f);
-		character_physics_support()->movement()->Calculate			(accel,cameras[cam_active]->vDirection,0,jump,dt,false);
-		bool new_border_state=character_physics_support()->movement()->isOutBorder();
+		//character_physics_support()->get_movement()->Calculate			(accel,cameras[cam_active]->vDirection,0,jump,dt,false);
+
+		//--#SM+# Begin--
+		bool bNoInterpolate = false;
+		if (Level().CurrentControlEntity() == this)
+		{
+			CWeapon* pWeapon = smart_cast<CWeapon*>(inventory().ActiveItem());
+			if (pWeapon != nullptr)
+			{
+				//--> Фикс дрожания худа в покое во время прицеливания
+				bNoInterpolate = pWeapon->IsZoomed();
+			}
+		}
+		character_physics_support()->get_movement()->Calculate				(accel, cameras[cam_active]->vDirection, 0, jump, dt, false, bNoInterpolate);
+		//--#SM+# End--
+
+		bool new_border_state=character_physics_support()->get_movement()->isOutBorder();
 		if(m_bOutBorder!=new_border_state && Level().CurrentControlEntity() == this)
 		{
 			SwitchOutBorder(new_border_state);
 		}
 #ifdef DEBUG
 		if(!psActorFlags.test(AF_NO_CLIP))
-			character_physics_support()->movement()->GetPosition		(Position());
+			character_physics_support()->get_movement()->GetPosition		(Position());
 #else //DEBUG
-		character_physics_support()->movement()->GetPosition		(Position());
+		character_physics_support()->get_movement()->GetPosition		(Position());
 #endif //DEBUG
-		character_physics_support()->movement()->bSleep				=false;
+		character_physics_support()->get_movement()->bSleep				=false;
 	}
 
 	if (Local() && g_Alive()) 
 	{
-		if(character_physics_support()->movement()->gcontact_Was)
-			Cameras().AddCamEffector		(xr_new<CEffectorFall> (character_physics_support()->movement()->gcontact_Power));
+		if(character_physics_support()->get_movement()->gcontact_Was)
+			Cameras().AddCamEffector		(xr_new<CEffectorFall> (character_physics_support()->get_movement()->gcontact_Power));
 
-		if (!fis_zero(character_physics_support()->movement()->gcontact_HealthLost))	
+		if (!fis_zero(character_physics_support()->get_movement()->gcontact_HealthLost))	
 		{
 			VERIFY( character_physics_support() );
-			VERIFY( character_physics_support()->movement() );
-			ICollisionDamageInfo* di=character_physics_support()->movement()->CollisionDamageInfo();
+			VERIFY( character_physics_support()->get_movement() );
+			ICollisionDamageInfo* di=character_physics_support()->get_movement()->CollisionDamageInfo();
 			VERIFY( di );
 			bool b_hit_initiated =  di->GetAndResetInitiated();
 			Fvector hdir;di->HitDir(hdir);
@@ -979,11 +1049,11 @@ void CActor::g_Physics			(Fvector& _accel, float jump, float dt)
 			if (Level().CurrentControlEntity() == this)
 			{
 				
-				SHit HDS = SHit(character_physics_support()->movement()->gcontact_HealthLost,
+				SHit HDS = SHit(character_physics_support()->get_movement()->gcontact_HealthLost,
 //.								0.0f,
 								hdir,
 								di->DamageInitiator(),
-								character_physics_support()->movement()->ContactBone(),
+								character_physics_support()->get_movement()->ContactBone(),
 								di->HitPos(),
 								0.f,
 								di->HitType(),
@@ -1049,6 +1119,10 @@ void CActor::UpdateCL	()
 
 	UpdateInventoryOwner			(Device.dwTimeDelta);
 
+	// Dance Maniac: Hack for non-limited bolts.
+	if (!GameConstants::GetLimitedBolts() && &inventory() && !inventory().ItemFromSlot(BOLT_SLOT))
+		Level().spawn_item("bolt", Position(), ai_location().level_vertex_id(), ID());
+
 	if (load_screen_renderer.IsActive() && inventory().GetActiveSlot() == PDA_SLOT)
 		inventory().Activate(NO_ACTIVE_SLOT);
 
@@ -1059,7 +1133,7 @@ void CActor::UpdateCL	()
 			CPhysicsShellHolder	*sh = smart_cast<CPhysicsShellHolder*>(*it);
 			if(sh&&sh->character_physics_support())
 			{
-				sh->character_physics_support()->movement()->UpdateObjectBox(character_physics_support()->movement()->PHCharacter());
+				sh->character_physics_support()->get_movement()->UpdateObjectBox(character_physics_support()->get_movement()->PHCharacter());
 			}
 		}
 	}
@@ -1219,12 +1293,12 @@ void CActor::set_state_box(u32	mstate)
 		if ( mstate & mcCrouch)
 	{
 		if (isActorAccelerated(mstate_real, IsZoomAimingMode()))
-			character_physics_support()->movement()->ActivateBox(1, true);
+			character_physics_support()->get_movement()->ActivateBox(1, true);
 		else
-			character_physics_support()->movement()->ActivateBox(2, true);
+			character_physics_support()->get_movement()->ActivateBox(2, true);
 	}
 	else 
-		character_physics_support()->movement()->ActivateBox(0, true);
+		character_physics_support()->get_movement()->ActivateBox(0, true);
 }
 void CActor::shedule_Update	(u32 DT)
 {
@@ -1248,7 +1322,7 @@ void CActor::shedule_Update	(u32 DT)
 					}
 					else
 					{
-						bool attach = !m_bQuickKickActivated;
+						bool attach = !m_bQuickKickActivated && !m_bTakeItemActivated;
 
 						if (attach)
 							g_player_hud->attach_item	(pHudItem);
@@ -1379,7 +1453,7 @@ void CActor::shedule_Update	(u32 DT)
 	pCamBobbing->SetState						(mstate_real, conditions().IsLimping(), IsZoomAimingMode());
 
 	//звук тяжелого дыхания при уталости и хромании
-	if(this==Level().CurrentControlEntity() && !g_dedicated_server )
+	if(this==Level().CurrentControlEntity() )
 	{
 		if(conditions().IsLimping() && g_Alive() && !psActorFlags.test(AF_GODMODE_RT)){
 			if(!m_HeavyBreathSnd._feedback()){
@@ -1440,7 +1514,7 @@ void CActor::shedule_Update	(u32 DT)
 
 	//если в режиме HUD, то сама модель актера не рисуется
 	if(!character_physics_support()->IsRemoved())
-		setVisible(!HUDview());
+		setVisible(TRUE);
 
 	//что актер видит перед собой
 	collide::rq_result& RQ				= HUD().GetCurrentRayQuery();
@@ -1531,7 +1605,7 @@ void CActor::shedule_Update	(u32 DT)
 //	UpdateSleep									();
 
 	//для свойст артефактов, находящихся на поясе
-	UpdateArtefactsOnBeltAndOutfit				();
+	UpdateRestores								();
 	m_pPhysics_support->in_shedule_Update		(DT);
 	Check_for_AutoPickUp						();
 
@@ -1565,9 +1639,33 @@ void CActor::shedule_Update	(u32 DT)
 
 		if (m_bQuickKickActivated)
 			UpdateQuickKickAnim();
+		
+		if (m_bTakeItemActivated)
+			UpdateUseAnim();
 	}
 
-	inventory().UpdateUseAnim(this);
+	if (g_pGamePersistent->Environment().CurrentEnv->m_fAirTemperature < -10.0f && g_Alive())
+	{
+		CParticlesPlayer* PP = smart_cast<CParticlesPlayer*>(this);
+		
+		if (!PP)
+			return;
+
+		IKinematics* K = smart_cast<IKinematics*>(Visual());
+		R_ASSERT(K);
+
+		static u32 timing = 0;
+
+		u16 play_bone = K->LL_BoneID(m_sColdSteamParticleBone);
+		R_ASSERT(play_bone != BI_NONE);
+		if (K->LL_GetBoneVisible(play_bone) && timing <= Device.dwTimeGlobal)
+		{
+			PP->StartParticles(m_sColdSteamParticleName, play_bone, Direction(), ID(), -1, false, cam_active == eacFirstEye);
+			
+			float stamina = (1.0f - conditions().GetPower()) * 1500.f;
+			timing = Device.dwTimeGlobal + ::Random.randI(2500 - stamina, 5000 - stamina);
+		}
+	}
 
 	if (TimerManager)
 	{
@@ -1578,24 +1676,56 @@ void CActor::shedule_Update	(u32 DT)
 		});*/
 	}
 };
+
+bool CActor::AllowActorShadow()
+{
+	if (!::Render->isActorShadowEnabled())
+		return false;
+
+	if (::Render->get_generation() != ::Render->GENERATION_R2)
+		return false;
+
+	CCustomDetector* pDet = smart_cast<CCustomDetector*>(inventory().ItemFromSlot(DETECTOR_SLOT));
+	
+	if (pDet && pDet->m_iLightType == 2)
+		return false;
+
+	CTorch* pTorch = smart_cast<CTorch*>(inventory().ItemFromSlot(TORCH_SLOT));
+
+	if (pTorch && pTorch->torch_active())
+		return false;
+
+	return true;
+}
+
 #include "debug_renderer.h"
-void CActor::renderable_Render	()
+
+void CActor::renderable_Render()
 {
 	VERIFY(_valid(XFORM()));
-	inherited::renderable_Render();
-	//if(1/*!HUDview()*/)
-	if ((cam_active == eacFirstEye && // first eye cam
-		::Render->get_generation() == ::Render->GENERATION_R2 && // R2
-		::Render->active_phase() == 1) // shadow map rendering on R2	
-		||
-		!(IsFocused() &&
-		(cam_active == eacFirstEye) &&
-			((!m_holder) || (m_holder && m_holder->allowWeapon() && m_holder->HUDView())))
-		)
-		//{
+
+	if (cam_active == eacFirstEye)
+	{
+		if (::Render->active_phase() == 0) // can render first person body here
+		{
+			//if (fpBody) 
+			//	inherited::renderable_Render();
+		}
+		else if (AllowActorShadow()) // render actor shadow
+		{
+			inherited::renderable_Render();
+			if ((IsFocused() || (!(IsFocused() && ((!m_holder) ||
+				(m_holder && m_holder->allowWeapon() && m_holder->HUDView()))))))
+				CInventoryOwner::renderable_Render();
+		}
+	}
+
+	// Third Person Body and Weapon/Item
+	else
+	{
+		inherited::renderable_Render();
 		CInventoryOwner::renderable_Render();
-	//}
-	//VERIFY(_valid(XFORM()));
+	}
 }
 
 BOOL CActor::renderable_ShadowGenerate	() 
@@ -1783,7 +1913,7 @@ void CActor::RenderText				(LPCSTR Text, Fvector dpos, float* pdup, u32 color)
 void CActor::SetPhPosition(const Fmatrix &transform)
 {
 	if(!m_pPhysicsShell){ 
-		character_physics_support()->movement()->SetPosition(transform.c);
+		character_physics_support()->get_movement()->SetPosition(transform.c);
 	}
 	//else m_phSkeleton->S
 }
@@ -1794,15 +1924,15 @@ void CActor::ForceTransform(const Fmatrix& m)
 	//			return;
 	//VERIFY(_valid(m));
 	//XFORM().set( m );
-	//if( character_physics_support()->movement()->CharacterExist() )
-	//		character_physics_support()->movement()->EnableCharacter();
+	//if( character_physics_support()->get_movement()->CharacterExist() )
+	//		character_physics_support()->get_movement()->EnableCharacter();
 	//character_physics_support()->set_movement_position( m.c );
-	//character_physics_support()->movement()->SetVelocity( 0, 0, 0 );
+	//character_physics_support()->get_movement()->SetVelocity( 0, 0, 0 );
 
 	character_physics_support()->ForceTransform( m );
 	const float block_damage_time_seconds = 2.f;
 	if(!IsGameTypeSingle())
-		character_physics_support()->movement()->BlockDamageSet( u64( block_damage_time_seconds/fixed_step ) );
+		character_physics_support()->get_movement()->BlockDamageSet( u64( block_damage_time_seconds/fixed_step ) );
 }
 
 ENGINE_API extern float		psHUD_FOV;
@@ -1945,7 +2075,7 @@ void CActor::MoveArtefactBelt(const CArtefact* artefact, bool on_belt)
 
 #define ARTEFACTS_UPDATE_TIME 0.100f
 
-void CActor::UpdateArtefactsOnBeltAndOutfit()
+void CActor::UpdateRestores()
 {
 	static float update_time = 0;
 
@@ -1981,6 +2111,7 @@ void CActor::UpdateArtefactsOnBeltAndOutfit()
 		conditions().ChangeAlcoholism	(outfit->m_fAlcoholismRestoreSpeed * f_update_time);
 		conditions().ChangeNarcotism	(outfit->m_fNarcotismRestoreSpeed * f_update_time);
 		conditions().ChangePsyHealth	(outfit->m_fPsyHealthRestoreSpeed * f_update_time);
+		conditions().ChangeFrostbite	(outfit->m_fFrostbiteRestoreSpeed * f_update_time);
 	}
 	else
 	{
@@ -1992,6 +2123,40 @@ void CActor::UpdateArtefactsOnBeltAndOutfit()
 			{
 			}*/
 		}
+	}
+
+	CHelmet* helmet = GetHelmet();
+	if (helmet)
+	{
+		conditions().ChangeBleeding(helmet->m_fBleedingRestoreSpeed * f_update_time);
+		conditions().ChangeHealth(helmet->m_fHealthRestoreSpeed * f_update_time);
+		conditions().ChangePower(helmet->m_fPowerRestoreSpeed * f_update_time);
+		conditions().ChangeSatiety(helmet->m_fSatietyRestoreSpeed * f_update_time);
+		conditions().ChangeThirst(helmet->m_fThirstRestoreSpeed * f_update_time);
+		conditions().ChangeRadiation(helmet->m_fRadiationRestoreSpeed * f_update_time);
+		conditions().ChangeIntoxication(helmet->m_fIntoxicationRestoreSpeed * f_update_time);
+		conditions().ChangeSleepeness(helmet->m_fSleepenessRestoreSpeed * f_update_time);
+		conditions().ChangeAlcoholism(helmet->m_fAlcoholismRestoreSpeed * f_update_time);
+		conditions().ChangeNarcotism(helmet->m_fNarcotismRestoreSpeed * f_update_time);
+		conditions().ChangePsyHealth(helmet->m_fPsyHealthRestoreSpeed * f_update_time);
+		conditions().ChangeFrostbite(helmet->m_fFrostbiteRestoreSpeed * f_update_time);
+	}
+
+	CHelmet* second_helmet = GetSecondHelmet();
+	if (second_helmet)
+	{
+		conditions().ChangeBleeding(second_helmet->m_fBleedingRestoreSpeed * f_update_time);
+		conditions().ChangeHealth(second_helmet->m_fHealthRestoreSpeed * f_update_time);
+		conditions().ChangePower(second_helmet->m_fPowerRestoreSpeed * f_update_time);
+		conditions().ChangeSatiety(second_helmet->m_fSatietyRestoreSpeed * f_update_time);
+		conditions().ChangeThirst(second_helmet->m_fThirstRestoreSpeed * f_update_time);
+		conditions().ChangeRadiation(second_helmet->m_fRadiationRestoreSpeed * f_update_time);
+		conditions().ChangeIntoxication(second_helmet->m_fIntoxicationRestoreSpeed * f_update_time);
+		conditions().ChangeSleepeness(second_helmet->m_fSleepenessRestoreSpeed * f_update_time);
+		conditions().ChangeAlcoholism(second_helmet->m_fAlcoholismRestoreSpeed * f_update_time);
+		conditions().ChangeNarcotism(second_helmet->m_fNarcotismRestoreSpeed * f_update_time);
+		conditions().ChangePsyHealth(second_helmet->m_fPsyHealthRestoreSpeed * f_update_time);
+		conditions().ChangeFrostbite(second_helmet->m_fFrostbiteRestoreSpeed * f_update_time);
 	}
 
 	CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
@@ -2008,6 +2173,7 @@ void CActor::UpdateArtefactsOnBeltAndOutfit()
 		conditions().ChangeAlcoholism	(backpack->m_fAlcoholismRestoreSpeed	* f_update_time);
 		conditions().ChangeNarcotism	(backpack->m_fNarcotismRestoreSpeed		* f_update_time);
 		conditions().ChangePsyHealth	(backpack->m_fPsyHealthRestoreSpeed		* f_update_time);
+		conditions().ChangeFrostbite	(backpack->m_fFrostbiteRestoreSpeed	* f_update_time);
 	}
 }
 
@@ -2081,6 +2247,7 @@ void CActor::UpdateArtefactsOnBelt()
 			conditions().ChangeAlcoholism(artefact->m_fAlcoholismRestoreSpeed * f_update_time);
 			conditions().ChangeNarcotism(artefact->m_fNarcotismRestoreSpeed * f_update_time);
 			conditions().ChangePsyHealth(artefact->m_fPsyHealthRestoreSpeed * f_update_time);
+			conditions().ChangeFrostbite(artefact->m_fFrostbiteRestoreSpeed * f_update_time);
 
 			if (GameConstants::GetArtefactsDegradation())
 				artefact->UpdateDegradation();
@@ -2132,6 +2299,7 @@ void CActor::UpdateArtefactsInRuck()
 			conditions().ChangeAlcoholism(artefact->m_fAlcoholismRestoreSpeed * f_update_time);
 			conditions().ChangeNarcotism(artefact->m_fNarcotismRestoreSpeed * f_update_time);
 			conditions().ChangePsyHealth(artefact->m_fPsyHealthRestoreSpeed * f_update_time);
+			conditions().ChangeFrostbite(artefact->m_fFrostbiteRestoreSpeed * f_update_time);
 
 			if (GameConstants::GetArtefactsDegradation())
 				artefact->UpdateDegradation();
@@ -2201,6 +2369,7 @@ void CActor::UpdateSkills()
 		float IntoxicationRestoreSkill = conditions().m_fV_IntoxicationSkill * ActorSkills->survivalSkillLevel;
 		float SleepenessRestoreSkill = conditions().m_fV_SleepenessSkill * ActorSkills->survivalSkillLevel;
 		float RadiationRestoreSkill = conditions().m_fV_RadiationSkill * ActorSkills->survivalSkillLevel;
+		float FrostbiteRestoreSkill = conditions().m_fV_FrostbiteSkill * ActorSkills->survivalSkillLevel;
 
 		conditions().ChangeBleeding(BleedingRestoreSkill * f_update_time);
 		conditions().ChangeHealth(HealthRestoreSkill * f_update_time);
@@ -2210,6 +2379,7 @@ void CActor::UpdateSkills()
 		conditions().ChangeIntoxication(IntoxicationRestoreSkill * f_update_time);
 		conditions().ChangeSleepeness(SleepenessRestoreSkill * f_update_time);
 		conditions().ChangeRadiation(RadiationRestoreSkill * f_update_time);
+		conditions().ChangeFrostbite(FrostbiteRestoreSkill * f_update_time);
 	}
 }
 
@@ -2402,17 +2572,17 @@ void CActor::OnDifficultyChanged	()
 
 CVisualMemoryManager	*CActor::visual_memory	() const
 {
-	return							(&memory().visual());
+	return							(&get_memory().visual());
 }
 
 float		CActor::GetMass				()
 {
-	return g_Alive()?character_physics_support()->movement()->GetMass():m_pPhysicsShell?m_pPhysicsShell->getMass():0; 
+	return g_Alive()?character_physics_support()->get_movement()->GetMass():m_pPhysicsShell?m_pPhysicsShell->getMass():0; 
 }
 
 bool CActor::is_on_ground()
 {
-	return (character_physics_support()->movement()->Environment() != CPHMovementControl::peInAir);
+	return (character_physics_support()->get_movement()->Environment() != CPHMovementControl::peInAir);
 }
 
 
@@ -2447,6 +2617,18 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 			res += outfit->m_fHealthRestoreSpeed;
 		}
 
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
+		{
+			res += helmet->m_fHealthRestoreSpeed;
+		}
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
+		{
+			res += second_helmet->m_fHealthRestoreSpeed;
+		}
+
 		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
 		if (backpack)
 		{
@@ -2470,6 +2652,18 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 		if ( outfit )
 		{
 			res += outfit->m_fRadiationRestoreSpeed;
+		}
+
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
+		{
+			res += helmet->m_fRadiationRestoreSpeed;
+		}
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
+		{
+			res += second_helmet->m_fRadiationRestoreSpeed;
 		}
 
 		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
@@ -2497,6 +2691,18 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 		if ( outfit )
 		{
 			res += outfit->m_fSatietyRestoreSpeed;
+		}
+
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
+		{
+			res += helmet->m_fSatietyRestoreSpeed;
+		}
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
+		{
+			res += second_helmet->m_fSatietyRestoreSpeed;
 		}
 
 		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
@@ -2530,6 +2736,22 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 		else
 			res /= 0.5f;
 
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
+		{
+			res += helmet->m_fPowerRestoreSpeed;
+			VERIFY(helmet->m_fPowerLoss != 0.0f);
+			res /= helmet->m_fPowerLoss;
+		}
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
+		{
+			res += second_helmet->m_fPowerRestoreSpeed;
+			VERIFY(second_helmet->m_fPowerLoss != 0.0f);
+			res /= second_helmet->m_fPowerLoss;
+		}
+
 		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
 		if (backpack)
 		{
@@ -2560,6 +2782,18 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 			res += outfit->m_fBleedingRestoreSpeed;
 		}
 
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
+		{
+			res += helmet->m_fBleedingRestoreSpeed;
+		}
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
+		{
+			res += second_helmet->m_fBleedingRestoreSpeed;
+		}
+
 		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
 		if (backpack)
 		{
@@ -2587,6 +2821,18 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 			res += outfit->m_fThirstRestoreSpeed;
 		}
 
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
+		{
+			res += helmet->m_fThirstRestoreSpeed;
+		}
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
+		{
+			res += second_helmet->m_fThirstRestoreSpeed;
+		}
+
 		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
 		if (backpack)
 		{
@@ -2610,6 +2856,18 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 		if (outfit)
 		{
 			res += outfit->m_fIntoxicationRestoreSpeed;
+		}
+
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
+		{
+			res += helmet->m_fIntoxicationRestoreSpeed;
+		}
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
+		{
+			res += second_helmet->m_fIntoxicationRestoreSpeed;
 		}
 
 		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
@@ -2637,6 +2895,18 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 			res += outfit->m_fSleepenessRestoreSpeed;
 		}
 
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
+		{
+			res += helmet->m_fSleepenessRestoreSpeed;
+		}
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
+		{
+			res += second_helmet->m_fSleepenessRestoreSpeed;
+		}
+
 		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
 		if (backpack)
 		{
@@ -2660,6 +2930,18 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 		if (outfit)
 		{
 			res += outfit->m_fAlcoholismRestoreSpeed;
+		}
+
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
+		{
+			res += helmet->m_fAlcoholismRestoreSpeed;
+		}
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
+		{
+			res += second_helmet->m_fAlcoholismRestoreSpeed;
 		}
 
 		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
@@ -2687,6 +2969,18 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 			res += outfit->m_fNarcotismRestoreSpeed;
 		}
 
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
+		{
+			res += helmet->m_fNarcotismRestoreSpeed;
+		}
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
+		{
+			res += second_helmet->m_fNarcotismRestoreSpeed;
+		}
+
 		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
 		if (backpack)
 		{
@@ -2712,10 +3006,59 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 			res += outfit->m_fPsyHealthRestoreSpeed;
 		}
 
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
+		{
+			res += helmet->m_fPsyHealthRestoreSpeed;
+		}
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
+		{
+			res += second_helmet->m_fPsyHealthRestoreSpeed;
+		}
+
 		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
 		if (backpack)
 		{
 			res += backpack->m_fPsyHealthRestoreSpeed;
+		}
+		break;
+	}
+	case ALife::eFrostbiteRestoreSpeed:
+	{
+		TIItemContainer::iterator itb = inventory().m_belt.begin();
+		TIItemContainer::iterator ite = inventory().m_belt.end();
+		for (; itb != ite; ++itb)
+		{
+			CArtefact* artefact = smart_cast<CArtefact*>(*itb);
+			if (artefact)
+			{
+				res += artefact->m_fFrostbiteRestoreSpeed;
+			}
+		}
+		CCustomOutfit* outfit = GetOutfit();
+		if (outfit)
+		{
+			res += outfit->m_fFrostbiteRestoreSpeed;
+		}
+
+		CHelmet* helmet = GetHelmet();
+		if (helmet)
+		{
+			res += helmet->m_fFrostbiteRestoreSpeed;
+		}
+
+		CHelmet* second_helmet = GetSecondHelmet();
+		if (second_helmet)
+		{
+			res += second_helmet->m_fFrostbiteRestoreSpeed;
+		}
+
+		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+		if (backpack)
+		{
+			res += backpack->m_fFrostbiteRestoreSpeed;
 		}
 		break;
 	}
@@ -2747,7 +3090,7 @@ void CActor::NVGAnimCheckDetector()
 	CCustomDetector* pDet = smart_cast<CCustomDetector*>(inventory().ItemFromSlot(DETECTOR_SLOT));
 	bool AnimEnabled = pAdvancedSettings->line_exist("actions_animations", "switch_nightvision_section");
 
-	if (!pDet || pDet->IsHidden() || !AnimEnabled);
+	if (!pDet || pDet->IsHidden() || !AnimEnabled)
 	{
 		StartNVGAnimation();
 		return;
@@ -2771,9 +3114,13 @@ void CActor::StartNVGAnimation()
 {
 	CWeapon* Wpn = smart_cast<CWeapon*>(inventory().ActiveItem());
 	CHelmet* pHelmet = smart_cast<CHelmet*>(inventory().ItemFromSlot(HELMET_SLOT));
+	CHelmet* pHelmet2 = smart_cast<CHelmet*>(inventory().ItemFromSlot(SECOND_HELMET_SLOT));
 	CCustomOutfit* pOutfit = smart_cast<CCustomOutfit*>(inventory().ItemFromSlot(OUTFIT_SLOT));
 
 	if (Wpn && Wpn->IsZoomed())
+		return;
+
+	if (!(pHelmet && pHelmet->m_NightVisionSect.size()) && !(pHelmet2 && pHelmet2->m_NightVisionSect.size()) && !(pOutfit && pOutfit->m_NightVisionSect.size()))
 		return;
 
 	LPCSTR anim_sect = READ_IF_EXISTS(pAdvancedSettings, r_string, "actions_animations", "switch_nightvision_section", nullptr);
@@ -2783,9 +3130,6 @@ void CActor::StartNVGAnimation()
 		SwitchNightVision(!m_bNightVisionOn);
 		return;
 	}
-
-	if (!(pHelmet && pHelmet->m_NightVisionSect.size()) && !(pOutfit && pOutfit->m_NightVisionSect.size()))
-		return;
 
 	if (Wpn && !(Wpn->GetState() == CWeapon::eIdle))
 		return;
@@ -2806,7 +3150,12 @@ void CActor::StartNVGAnimation()
 		g_player_hud->script_anim_play(!inventory().GetActiveSlot() ? 2 : 1, anim_sect, !Wpn ? "anm_use" : "anm_use_weapon", true, anim_speed);
 
 		if (use_cam_effector)
-			g_player_hud->PlayBlendAnm(use_cam_effector, 0, anim_speed, effector_intensity, false);
+		{
+			if (Wpn)
+				g_player_hud->PlayBlendAnm(use_cam_effector, 0, anim_speed, effector_intensity, false);
+			else
+				AddEffector(use_cam_effector, effUseItem, effector_intensity);
+		}
 
 		m_iNVGAnimLength = Device.dwTimeGlobal + g_player_hud->motion_length_script(anim_sect, !Wpn ? "anm_use" : "anm_use_weapon", anim_speed);
 	}
@@ -2890,12 +3239,13 @@ void CActor::CleanMask()
 
 	CWeapon* Wpn = smart_cast<CWeapon*>(inventory().ActiveItem());
 	CHelmet* pHelmet = smart_cast<CHelmet*>(inventory().ItemFromSlot(HELMET_SLOT));
+	CHelmet* pHelmet2 = smart_cast<CHelmet*>(inventory().ItemFromSlot(SECOND_HELMET_SLOT));
 	CCustomOutfit* pOutfit = smart_cast<CCustomOutfit*>(inventory().ItemFromSlot(OUTFIT_SLOT));
 
-	if (!(pHelmet && pHelmet->m_b_HasGlass) && !(pOutfit && pOutfit->m_b_HasGlass))
+	if (!(pHelmet && pHelmet->m_b_HasGlass) && !(pHelmet2 && pHelmet2->m_b_HasGlass) && !(pOutfit && pOutfit->m_b_HasGlass))
 		return;
 
-	if (Wpn && !(Wpn->GetState() == CWeapon::eIdle))
+	if (Wpn && (!(Wpn->GetState() == CWeapon::eIdle) || Wpn->IsZoomed()))
 		return;
 
 	m_bMaskAnimActivated = true;
@@ -2914,7 +3264,12 @@ void CActor::CleanMask()
 		g_player_hud->script_anim_play(!inventory().GetActiveSlot() ? 2 : 1, anim_sect, !Wpn ? "anm_use" : "anm_use_weapon", true, anim_speed);
 
 		if (use_cam_effector)
-			g_player_hud->PlayBlendAnm(use_cam_effector, 0, anim_speed, effector_intensity, false);
+		{
+			if (Wpn)
+				g_player_hud->PlayBlendAnm(use_cam_effector, 0, anim_speed, effector_intensity, false);
+			else
+				AddEffector(use_cam_effector, effUseItem, effector_intensity);
+		}
 
 		m_iMaskAnimLength = Device.dwTimeGlobal + g_player_hud->motion_length_script(anim_sect, !Wpn ? "anm_use" : "anm_use_weapon", anim_speed);
 	}
@@ -2940,7 +3295,11 @@ void CActor::UpdateMaskUseAnim()
 	if ((m_iActionTiming <= Device.dwTimeGlobal && !m_bMaskClear) && g_Alive())
 	{
 		m_iActionTiming = Device.dwTimeGlobal;
-		m_bMaskClear = true;
+
+		CWeapon* Wpn = smart_cast<CWeapon*>(inventory().ActiveItem());
+
+		if (!Wpn || (Wpn && !Wpn->CleanMaskAction))
+			m_bMaskClear = true;
 	}
 
 	if (m_bMaskAnimActivated)
@@ -2989,19 +3348,17 @@ void CActor::QuickKick()
 	if (pSettings->line_exist(anim_sect, "anm_use"))
 	{
 		if (active_item)
-		{
 			g_player_hud->detach_item(active_item);
-			SetWeaponHideState(INV_STATE_BLOCK_ALL, true);
-		}
+			
+		SetWeaponHideState(INV_STATE_BLOCK_ALL, true, false);
 
 		string128 attach_visual{};
 		strconcat(sizeof(attach_visual), attach_visual, cur_knife->cNameVisual().c_str(), "_hud");
 
 		g_player_hud->script_anim_play(2, anim_sect, !active_item ? "anm_use" : "anm_use_weapon", true, anim_speed, attach_visual);
-		CEffectorCam* effector = Cameras().GetCamEffector((ECamEffectorType)effUseItem);
 
-		if (!effector && use_cam_effector != nullptr)
-			AddEffector(this, effUseItem, use_cam_effector, effector_intensity);
+		if (use_cam_effector)
+			AddEffector(use_cam_effector, effUseItem, effector_intensity);
 
 		m_iQuickKickAnimLength = Device.dwTimeGlobal + g_player_hud->motion_length_script(anim_sect, !active_item ? "anm_use" : "anm_use_weapon", anim_speed);
 	}
@@ -3044,7 +3401,7 @@ void CActor::UpdateQuickKickAnim()
 			if (effector)
 				RemoveEffector(this, effUseItem);
 
-			SetWeaponHideState(INV_STATE_BLOCK_ALL, false);
+			SetWeaponHideState(INV_STATE_BLOCK_ALL, false, false);
 			m_iQuickKickAnimLength = Device.dwTimeGlobal;
 			m_iActionTiming = Device.dwTimeGlobal;
 			m_action_anim_sound.stop();
@@ -3067,6 +3424,8 @@ void CActor::SwitchNightVision(bool vision_on, bool use_sounds, bool send_event)
 	bool bIsActiveNow = m_night_vision->IsActive();
 
 	CHelmet* pHelmet = smart_cast<CHelmet*>(inventory().ItemFromSlot(HELMET_SLOT));
+	CHelmet* pHelmet2 = smart_cast<CHelmet*>(inventory().ItemFromSlot(SECOND_HELMET_SLOT));
+
 	if (pHelmet && pHelmet->m_NightVisionSect.size())
 	{
 		if (m_bNightVisionAllow)
@@ -3077,6 +3436,25 @@ void CActor::SwitchNightVision(bool vision_on, bool use_sounds, bool send_event)
 
 				if (ps_r__ShaderNVG)
 					g_pGamePersistent->devices_shader_data.nightvision_lum_factor = pHelmet->m_fNightVisionLumFactor;
+			}
+		}
+		else
+		{
+			m_night_vision->OnDisabled(this, use_sounds);
+			m_bNightVisionOn = false;
+			g_pGamePersistent->devices_shader_data.nightvision_lum_factor = 0.0f;
+		}
+	}
+	else if (pHelmet2 && pHelmet2->m_NightVisionSect.size())
+	{
+		if (m_bNightVisionAllow)
+		{
+			if (m_bNightVisionOn && !bIsActiveNow)
+			{
+				m_night_vision->Start(pHelmet2->m_NightVisionSect, this, use_sounds);
+
+				if (ps_r__ShaderNVG)
+					g_pGamePersistent->devices_shader_data.nightvision_lum_factor = pHelmet2->m_fNightVisionLumFactor;
 			}
 		}
 		else
@@ -3166,7 +3544,7 @@ bool CActor::use_HolderEx(CHolderCustom* object, bool bForce)
 				if (pholder)
 				{
 					pholder->PPhysicsShell()->SplitterHolderDeactivate();
-					if (!character_physics_support()->movement()->ActivateBoxDynamic(0))
+					if (!character_physics_support()->get_movement()->ActivateBoxDynamic(0))
 					{
 						pholder->PPhysicsShell()->SplitterHolderActivate();
 						return true;
@@ -3181,9 +3559,9 @@ bool CActor::use_HolderEx(CHolderCustom* object, bool bForce)
 
 				m_holder->detach_Actor();
 
-				character_physics_support()->movement()->CreateCharacter();
-				character_physics_support()->movement()->SetPosition(m_holder->ExitPosition());
-				character_physics_support()->movement()->SetVelocity(m_holder->ExitVelocity());
+				character_physics_support()->get_movement()->CreateCharacter();
+				character_physics_support()->get_movement()->SetPosition(m_holder->ExitPosition());
+				character_physics_support()->get_movement()->SetVelocity(m_holder->ExitVelocity());
 
 				r_model_yaw = -m_holder->Camera()->yaw;
 				r_torso.yaw = r_model_yaw;
@@ -3226,7 +3604,7 @@ bool CActor::use_HolderEx(CHolderCustom* object, bool bForce)
 				SetWeaponHideState(INV_STATE_BLOCK_ALL, true);
 
 				// destroy actor character
-				character_physics_support()->movement()->DestroyCharacter();
+				character_physics_support()->get_movement()->DestroyCharacter();
 
 				m_holder = object;
 				CGameObject* oHolder = smart_cast<CGameObject*>(object);
@@ -3374,4 +3752,90 @@ float CActor::MaxCarryInvCapacity() const
 		res += pants->GetInventoryCapacity();
 
 	return res;
+}
+
+bool CActor::is_actor_normal() { return mstate_real & (mcAnyAction | mcLookout | mcCrouch | mcClimb | mcSprint) ? false : true; }
+
+bool CActor::is_actor_crouch() { return mstate_real & (mcAnyAction | mcAccel | mcClimb | mcSprint) ? false : mstate_real & mcCrouch ? true : false; }
+
+bool CActor::is_actor_creep() { return mstate_real & (mcAnyAction | mcClimb | mcSprint) ? false : (mstate_real & mcCrouch && mstate_real & mcAccel) ? true : false; }
+
+bool CActor::is_actor_climb() { return mstate_real & (mcAnyAction | mcCrouch | mcSprint) ? false : mstate_real & mcClimb ? true : false; }
+
+bool CActor::is_actor_walking()
+{
+	bool run = false;
+
+	if (mstate_real & mcAccel)
+		run = true;
+	else
+		run = false;
+
+	return ((mstate_real & (mcJump | mcFall | mcLanding | mcLanding2 | mcCrouch | mcClimb | mcSprint)) || run) ? false : mstate_real & mcAnyMove ? true : false;
+}
+
+bool CActor::is_actor_running()
+{
+	bool run = false;
+
+	if (mstate_real & mcAccel)
+		run = true;
+	else
+		run = false;
+
+	return mstate_real & (mcJump | mcFall | mcLanding | mcLanding2 | mcLookout | mcCrouch | mcClimb | mcSprint) ? false : (mstate_real & mcAnyMove && run) ? true : false;
+}
+
+bool CActor::is_actor_sprinting()
+{
+	return mstate_real & (mcJump | mcFall | mcLanding | mcLanding2 | mcLookout | mcCrouch | mcAccel | mcClimb) ? false :
+		(mstate_real & (mcFwd | mcLStrafe | mcRStrafe) && mstate_real & mcSprint) ? true :
+		false;
+}
+
+bool CActor::is_actor_crouching()
+{
+	return mstate_real & (mcJump | mcFall | mcLanding | mcLanding2 | mcAccel | mcClimb) ? false : (mstate_real & mcAnyMove && mstate_real & mcCrouch) ? true : false;
+}
+
+bool CActor::is_actor_creeping()
+{
+	return mstate_real & (mcJump | mcFall | mcLanding | mcLanding2 | mcClimb) ? false : (mstate_real & mcAnyMove && mstate_real & mcCrouch && mstate_real & mcAccel) ? true : false;
+}
+
+bool CActor::is_actor_climbing() { return mstate_real & (mcJump | mcFall | mcLanding | mcLanding2) ? false : (mstate_real & mcAnyMove && mstate_real & mcClimb) ? true : false; }
+
+bool CActor::is_actor_moving() { return mstate_real & mcAnyAction ? true : false; }
+
+bool CActor::IsDetectorActive() const
+{
+	if (auto det = smart_cast<CCustomDetector*>(inventory().ItemFromSlot(DETECTOR_SLOT)))
+		return det->IsWorking();
+
+	return false;
+}
+
+void CActor::DetectorToogle(bool fastmode) const
+{
+	if (auto det = smart_cast<CCustomDetector*>(inventory().ItemFromSlot(DETECTOR_SLOT)))
+		det->ToggleDetector(fastmode);
+}
+
+void CActor::StartActionSndAnm(shared_str snd_name, shared_str eff_name)
+{
+	m_layered_sounds.PlaySound(snd_name.c_str(), Position(), smart_cast<CObject*>(this), false, false, (u8)-1);
+
+	string_path ce_path;
+	string_path anm_name;
+	strconcat(sizeof(anm_name), anm_name, "camera_effects" "\\" "actor_move" "\\", eff_name.c_str(), ".anm");
+
+	if (FS.exist(ce_path, "$game_anims$", anm_name))
+	{
+		CAnimatorCamEffector* e = xr_new<CAnimatorCamEffector>();
+		e->SetType(eCEActorMoving);
+		e->SetHudAffect(true);
+		e->SetCyclic(false);
+		e->Start(anm_name);
+		Cameras().AddCamEffector(e);
+	}
 }

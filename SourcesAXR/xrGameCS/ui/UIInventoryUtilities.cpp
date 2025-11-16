@@ -15,16 +15,12 @@
 #include "../InfoPortion.h"
 #include "game_base_space.h"
 #include "../actor.h"
+#include "../relation_registry.h"
 
 #include "../ai_space.h"
 #include "../../XrServerEntitiesCS/script_engine.h"
 
 #include "../Include/xrRender/UIShader.h"
-
-#define BUY_MENU_TEXTURE "ui\\ui_mp_buy_menu"
-#define CHAR_ICONS		 "ui\\ui_icons_npc"
-#define MAP_ICONS		 "ui\\ui_icons_map"
-#define MP_CHAR_ICONS	 "ui\\ui_models_multiplayer"
 
 const LPCSTR relationsLtxSection	= "game_relations";
 const LPCSTR ratingField			= "rating_names";
@@ -104,7 +100,7 @@ bool InventoryUtilities::GreaterRoomInRuck(PIItem item1, PIItem item2)
 
 		return				false;
 	}
-   	return					false;
+	return					false;
 }
 
 bool InventoryUtilities::FreeRoom_inBelt	(TIItemContainer& item_list, PIItem _item, int width, int height)
@@ -175,7 +171,7 @@ bool InventoryUtilities::FreeRoom_inBelt	(TIItemContainer& item_list, PIItem _it
 	// remove
 	item_list.erase	(std::remove(item_list.begin(),item_list.end(),_item),item_list.end());
 
-	//��� ������-�� �������� ����� �� �������
+	//для какого-то элемента места не нашлось
 	if(!found_place) return false;
 
 	return true;
@@ -197,7 +193,7 @@ const ui_shader& InventoryUtilities::GetEquipmentIconsShader()
 	if(!g_EquipmentIconsShader)
 	{
 		g_EquipmentIconsShader = xr_new<ui_shader>();
-		(*g_EquipmentIconsShader)->create("hud\\default", "ui\\ui_icon_equipment");
+		(*g_EquipmentIconsShader)->create("hud\\default", EQUIPMENT_ICONS);
 	}
 
 	return *g_EquipmentIconsShader;
@@ -259,33 +255,33 @@ const shared_str InventoryUtilities::GetTimeAsString(ALife::_TIME_ID time, ETime
 	switch (timePrec)
 	{
 	case etpTimeToHours:
-		sprintf_s(bufTime, "%02i", hours);
+		xr_sprintf(bufTime, "%02i", hours);
 		break;
 	case etpTimeToMinutes:
 		if ( full_mode || hours > 0 ) {
-			sprintf_s(bufTime, "%02i%c%02i", hours, timeSeparator, mins);
+			xr_sprintf(bufTime, "%02i%c%02i", hours, timeSeparator, mins);
 			break;
 		}
-		sprintf_s(bufTime, "0%c%02i", timeSeparator, mins);
+		xr_sprintf(bufTime, "0%c%02i", timeSeparator, mins);
 		break;
 	case etpTimeToSeconds:
 		if ( full_mode || hours > 0 ) {
-			sprintf_s(bufTime, "%02i%c%02i%c%02i", hours, timeSeparator, mins, timeSeparator, secs);
+			xr_sprintf(bufTime, "%02i%c%02i%c%02i", hours, timeSeparator, mins, timeSeparator, secs);
 			break;
 		}
 		if ( mins > 0 ) {
-			sprintf_s(bufTime, "%02i%c%02i", mins, timeSeparator, secs);
+			xr_sprintf(bufTime, "%02i%c%02i", mins, timeSeparator, secs);
 			break;
 		}
-		sprintf_s(bufTime, "0%c%02i", timeSeparator, secs);
+		xr_sprintf(bufTime, "0%c%02i", timeSeparator, secs);
 		break;
 	case etpTimeToMilisecs:
-		sprintf_s(bufTime, "%02i%c%02i%c%02i%c%02i", hours, timeSeparator, mins, timeSeparator, secs, timeSeparator, milisecs);
+		xr_sprintf(bufTime, "%02i%c%02i%c%02i%c%02i", hours, timeSeparator, mins, timeSeparator, secs, timeSeparator, milisecs);
 		break;
 	case etpTimeToSecondsAndDay:
 		{
 			int total_day = (int)( time/(1000*60*60*24) );
-			sprintf_s(bufTime, sizeof(bufTime), "%dd %02i%c%02i%c%02i", total_day, hours, timeSeparator, mins, timeSeparator, secs);
+			xr_sprintf(bufTime, sizeof(bufTime), "%dd %02i%c%02i%c%02i", total_day, hours, timeSeparator, mins, timeSeparator, secs);
 			break;
 		}
 	default:
@@ -311,13 +307,13 @@ const shared_str InventoryUtilities::GetDateAsString(ALife::_TIME_ID date, EDate
 	switch (datePrec)
 	{
 	case edpDateToYear:
-		sprintf_s(bufDate, "%04i", year);
+		xr_sprintf(bufDate, "%04i", year);
 		break;
 	case edpDateToMonth:
-		sprintf_s(bufDate, "%s%c% 04i", month_str, dateSeparator, year);
+		xr_sprintf(bufDate, "%s%c% 04i", month_str, dateSeparator, year);
 		break;
 	case edpDateToDay:
-		sprintf_s(bufDate, "%s %d%c %04i", month_str, day, dateSeparator, year);
+		xr_sprintf(bufDate, "%s %d%c %04i", month_str, day, dateSeparator, year);
 		break;
 	default:
 		R_ASSERT(!"Unknown type of date precision");
@@ -338,19 +334,19 @@ LPCSTR InventoryUtilities::GetTimePeriodAsString(LPSTR _buff, u32 buff_sz, ALife
 	_buff[0]	= 0;
 
 	if(month1!=month2)
-		cnt = sprintf_s(_buff+cnt,buff_sz-cnt,"%d %s ",month2-month1, *CStringTable().translate("ui_st_months"));
+		cnt = xr_sprintf(_buff+cnt,buff_sz-cnt,"%d %s ",month2-month1, *CStringTable().translate("ui_st_months"));
 
 	if(!cnt && day1!=day2)
-		cnt = sprintf_s(_buff+cnt,buff_sz-cnt,"%d %s",day2-day1, *CStringTable().translate("ui_st_days"));
+		cnt = xr_sprintf(_buff+cnt,buff_sz-cnt,"%d %s",day2-day1, *CStringTable().translate("ui_st_days"));
 
 	if(!cnt && hours1!=hours2)
-		cnt = sprintf_s(_buff+cnt,buff_sz-cnt,"%d %s",hours2-hours1, *CStringTable().translate("ui_st_hours"));
+		cnt = xr_sprintf(_buff+cnt,buff_sz-cnt,"%d %s",hours2-hours1, *CStringTable().translate("ui_st_hours"));
 
 	if(!cnt && mins1!=mins2)
-		cnt = sprintf_s(_buff+cnt,buff_sz-cnt,"%d %s",mins2-mins1, *CStringTable().translate("ui_st_mins"));
+		cnt = xr_sprintf(_buff+cnt,buff_sz-cnt,"%d %s",mins2-mins1, *CStringTable().translate("ui_st_mins"));
 
 	if(!cnt && secs1!=secs2)
-		cnt = sprintf_s(_buff+cnt,buff_sz-cnt,"%d %s",secs2-secs1, *CStringTable().translate("ui_st_secs"));
+		cnt = xr_sprintf(_buff+cnt,buff_sz-cnt,"%d %s",secs2-secs1, *CStringTable().translate("ui_st_secs"));
 
 	return _buff;
 }
@@ -375,7 +371,7 @@ void InventoryUtilities::UpdateWeightStr(CUIStatic &wnd, CUIStatic &wnd_max, CIn
 
 void InventoryUtilities::UpdateCapacityStr(CUIStatic& wnd, CUIStatic& wnd_max, CInventoryOwner* pInvOwner)
 {
- 	R_ASSERT		(pInvOwner);
+	R_ASSERT		(pInvOwner);
 	string128		buf;
 
 	CActor* Actor = smart_cast<CActor*>(pInvOwner);
@@ -540,13 +536,16 @@ void InventoryUtilities::SendInfoToLuaScripts(shared_str info)
 u32 InventoryUtilities::GetGoodwillColor(CHARACTER_GOODWILL gw)
 {
 	u32 res = 0xffc0c0c0;
-	if(gw==NEUTRAL_GOODWILL){
+	if (gw == RELATION_REGISTRY().m_sgoodwill_neutral)
+	{
 		res = 0xffc0c0c0;
-	}else
-	if(gw>1000){
+	}
+	else if (gw >= RELATION_REGISTRY().m_sgoodwill_friend)
+	{
 		res = 0xff00ff00;
-	}else
-	if(gw<-1000){
+	}
+	else if (gw <= RELATION_REGISTRY().m_sgoodwill_enemy)
+	{
 		res = 0xffff0000;
 	}
 	return res;

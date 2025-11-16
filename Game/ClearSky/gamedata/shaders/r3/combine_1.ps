@@ -7,10 +7,6 @@
 // Check Addons
 #include "check_screenspace.h"
 
-#ifdef SSFX_SSR
-	#include "screenspace_reflections.h"
-#endif
-
 #if LOWLAND_FOG_TYPE == 1
 	#include "screenspace_fog.h"
 #endif
@@ -56,6 +52,13 @@ Texture2D<float> s_occ;
 #endif	//	USE_SSDO
 #endif // USE_HDAO
 
+#ifdef SSFX_INDIRECT_LIGHT
+	#include "settings_screenspace_IL.h"
+
+	Texture2D ssfx_il;
+	uniform float4 ssfx_il_setup;
+	uniform float4 ssfx_il_setup2;
+#endif
 
 struct	_input
 {
@@ -161,6 +164,21 @@ _out main ( _input I, uint iSample : SV_SAMPLEINDEX )
 	// hemisphere
 	float3 hdiffuse, hspecular;
 	hmodel	(hdiffuse, hspecular, mtl, N.w, D, P.xyz, N.xyz);
+	
+	// IL Implementation
+#ifdef SSFX_INDIRECT_LIGHT
+
+	float3 IL_sample = ssfx_il.Sample(smp_linear, I.tc0 / ssfx_il_setup.x).rgb;
+
+	// Lower highs ~ Higher lows.
+	IL_sample *= 1.0f / (1.0 + IL_sample);
+
+	// Vibrance
+	IL_sample = vibrance( IL_sample, ssfx_il_setup.z );
+
+	hdiffuse *= lerp(1.0f, IL_sample * (30.0f * ssfx_il_setup.y), IL_sample);
+		
+#endif
 
 	hdiffuse *= occ;	
 
@@ -168,11 +186,6 @@ _out main ( _input I, uint iSample : SV_SAMPLEINDEX )
 
 		float3       color     = L.rgb + hdiffuse.rgb;
 					 color = LinearTosRGB(color); 			//gamma correct
-
-	// SSR Implementation
-#ifdef SSFX_SSR
-	SSFX_ScreenSpaceReflections(I.tc0, P, N, rain_params.y / 5.0f, color, ISAMPLE);	
-#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 

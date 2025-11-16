@@ -23,8 +23,20 @@
 #include "UIGameCustom.h"
 #include "InventoryBox.h"
 #include "HUDManager.h"
+#include "UIBtnHint.h"
 
 using namespace luabind;
+
+void CUIActorMenu::OnBtnSleepClicked(CUIWindow* w, void* d)
+{
+	luabind::functor<void> funct;
+
+	if (ai().script_engine().functor("mfs_functions.on_sleep_button", funct))
+		funct();
+
+	g_btnHint->Discard();
+	HideDialog1();
+}
 
 void CUIActorMenu::TryRepairItem(CUIWindow* w, void* d)
 {
@@ -127,6 +139,7 @@ void CUIActorMenu::script_register(lua_State* L)
 					value("iInvalid",				int(EDDListType::iInvalid)),
 					value("iPartnerTrade",			int(EDDListType::iPartnerTrade)),
 					value("iPartnerTradeBag",		int(EDDListType::iPartnerTradeBag)),
+					value("iQuickSlot",				int(EDDListType::iQuickSlot)),
 					value("iTrashSlot",				int(EDDListType::iTrashSlot))
 				],
 
@@ -161,7 +174,8 @@ void CUIActorMenu::script_register(lua_State* L)
 				.def_readonly("m_ind_boost_alcoholism", &CUIMainIngameWnd::m_ind_boost_alcoholism)
 				.def_readonly("m_ind_boost_hangover",	&CUIMainIngameWnd::m_ind_boost_hangover)
 				.def_readonly("m_ind_boost_narcotism",	&CUIMainIngameWnd::m_ind_boost_narcotism)
-				.def_readonly("m_ind_boost_withdrawal", &CUIMainIngameWnd::m_ind_boost_withdrawal),
+				.def_readonly("m_ind_boost_withdrawal", &CUIMainIngameWnd::m_ind_boost_withdrawal)
+				.def_readonly("m_ind_boost_frostbite",	&CUIMainIngameWnd::m_ind_boost_frostbite),
  			class_< CUIZoneMap >("CUIZoneMap")
 				.def(constructor<>())
 				.def_readonly("visible",			&CUIZoneMap::visible)

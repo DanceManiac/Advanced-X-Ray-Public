@@ -19,8 +19,11 @@
 //#define DELAYED_ROUND_TIME	7000
 #include "ui\UIBuyWndShared.h"
 #include "../xrEngine/xr_ioconsole.h"
+#include <functional>
 
 #define UNBUYABLESLOT		20
+
+using namespace std::placeholders;
 
 //-----------------------------------------------------------------
 u32		g_sv_dm_dwForceRespawn			= 0;
@@ -1776,7 +1779,7 @@ void game_sv_Deathmatch::OnPlayerConnect(ClientID id_who)
 	ps_who->resetFlag(GAME_PLAYER_FLAG_SKIP);
 	
 
-	if ( (g_dedicated_server||m_bSpectatorMode) && (xrCData == m_server->GetServerClient()) )
+	if (m_bSpectatorMode && (xrCData == m_server->GetServerClient()) )
 	{
 		ps_who->setFlag(GAME_PLAYER_FLAG_SKIP);
 		return;
@@ -2105,7 +2108,7 @@ void	game_sv_Deathmatch::ReadOptions				(shared_str &options)
 	g_sv_dm_dwAnomalySetLengthTime = get_option_i(*options, "anslen", g_sv_dm_dwAnomalySetLengthTime); //in (min)
 	//-----------------------------------------------------------------------
 	m_bSpectatorMode = false;
-	if (!g_dedicated_server && (get_option_i(*options,"spectr",-1) != -1))
+	if ((get_option_i(*options,"spectr",-1) != -1))
 	{
 		m_bSpectatorMode = true;
 		m_dwSM_SwitchDelta =  get_option_i(*options,"spectr",0)*1000;

@@ -33,7 +33,23 @@ BOOL CAI_Stalker::feel_vision_isRelevant(CObject* O)
 
 void CAI_Stalker::renderable_Render	()
 {
-	inherited::renderable_Render		();
+	MakeMeCrow();
+
+	Fmatrix m_model_transform = XFORM();
+	if (m_fModelScale != 1.0f || m_bModelScaleRandom)
+	{
+		Fmatrix scale, t;
+		t = m_model_transform;
+		float cur_scale = m_fModelScale;
+		if (m_bModelScaleRandom)
+			cur_scale = ::Random.randF(m_fModelScaleRandomMin, m_fModelScaleRandomMax);
+		scale.scale(cur_scale, cur_scale, cur_scale);
+		m_model_transform.mul(t, scale);
+	}
+
+	::Render->set_Transform(&m_model_transform);
+	::Render->add_Visual(Visual());
+	Visual()->getVisData().hom_frame = Device.dwFrame;
 
 	if (!already_dead())
 		CInventoryOwner::renderable_Render	();
@@ -41,19 +57,19 @@ void CAI_Stalker::renderable_Render	()
 #ifdef DEBUG
 	if (g_Alive()) {
 		if (psAI_Flags.test(aiAnimationStats))
-			animation().add_animation_stats	();
+			get_animation().add_animation_stats	();
 	}
 #endif // DEBUG
 }
 
 void CAI_Stalker::Exec_Look			(float dt)
 {
-	sight().Exec_Look				(dt);
+	get_sight().Exec_Look				(dt);
 }
 
 bool CAI_Stalker::bfCheckForNodeVisibility(u32 dwNodeID, bool bIfRayPick)
 {
-	return							(memory().visual().visible(dwNodeID,movement().m_head.current.yaw,ffGetFov()));
+	return							(get_memory().visual().visible(dwNodeID, get_movement().m_head.current.yaw,ffGetFov()));
 }
 
 BOOL CAI_Stalker::feel_touch_contact	(CObject *O)

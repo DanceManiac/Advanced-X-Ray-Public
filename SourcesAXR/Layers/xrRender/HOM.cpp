@@ -66,6 +66,8 @@ IC float	Area		(Fvector& v0, Fvector& v1, Fvector& v2)
 
 void CHOM::Load			()
 {
+	ZoneScoped;
+
 	// Find and open file
 	string_path		fName;
 	FS.update_path	(fName,"$level$","level.hom");
@@ -148,6 +150,8 @@ void CHOM::Load			()
 
 void CHOM::Unload		()
 {
+	ZoneScoped;
+
 	xr_delete			(m_pModel);
 	xr_free				(m_pTris);
 	bEnabled			= FALSE;
@@ -173,6 +177,8 @@ public:
 
 void CHOM::Render_DB			(CFrustum& base)
 {
+	ZoneScoped;
+
 	//Update projection matrices on every frame to ensure valid HOM culling
 	float			view_dim	= occ_dim_0;
 	Fmatrix			m_viewport		= {
@@ -254,6 +260,8 @@ void CHOM::Render		(CFrustum& base)
 {
 	if (!bEnabled)		return;
 	
+	ZoneScoped;
+
 	Device.Statistic->RenderCALC_HOM.Begin	();
 	Raster.clear		();
 	Render_DB			(base);
@@ -394,6 +402,12 @@ void CHOM::OnRender	()
 			// draw solid
 			Device.SetNearer(TRUE);
 			RCache.set_Shader	(dxRenderDeviceRender::Instance().m_SelectionShader);
+
+#if defined(USE_DX11)
+			RCache.set_c("tfactor", float(color_get_R(0x80FFFFFF)) / 255.f, float(color_get_G(0x80FFFFFF)) / 255.f, \
+				float(color_get_B(0x80FFFFFF)) / 255.f, float(color_get_A(0x80FFFFFF)) / 255.f);
+#endif // USE_DX11
+
 			RCache.dbg_Draw		(D3DPT_TRIANGLELIST,&*poly.begin(),poly.size()/3);
 			Device.SetNearer(FALSE);
 			// draw wire
@@ -403,6 +417,11 @@ void CHOM::OnRender	()
 				Device.SetNearer(TRUE);
 			}
 			RCache.set_Shader	(dxRenderDeviceRender::Instance().m_SelectionShader);
+
+#if defined(USE_DX11)
+			RCache.set_c("tfactor", 1.f, 1.f, 1.f, 1.f);
+#endif // USE_DX11
+
 			RCache.dbg_Draw		(D3DPT_LINELIST,&*line.begin(),line.size()/2);
 			if (bDebug){
 				RImplementation.rmNormal();

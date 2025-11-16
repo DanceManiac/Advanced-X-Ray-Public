@@ -40,6 +40,7 @@ public:
 
 	virtual const Frect& GetOriginalRect() const										{return iOriginalRect;}
 
+	void			SetNoShaderCache(const bool v)										{uFlags.set(flNoShaderCache, v);}
 
 	void			Init			(LPCSTR tex, LPCSTR sh, float left, float top, u32 align);
 	

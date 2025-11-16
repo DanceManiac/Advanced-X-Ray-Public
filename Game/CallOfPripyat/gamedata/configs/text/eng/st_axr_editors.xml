@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="st_editor_imgui_name">
+		<text>Advanced X-Ray Editor</text>
+	</string>
+	<string id="st_editor_imgui_test_wnd">
+		<text>Test window</text>
+	</string>
+	<string id="st_editor_imgui_weather">
+		<text>Weather edtior</text>
+	</string>
+	<string id="st_editor_imgui_pos_informer">
+		<text>Position informer</text>
+	</string>
+	<string id="st_editor_imgui_hud">
+		<text>HUD edtior</text>
+	</string>
+	<string id="st_editor_imgui_spawn">
+		<text>Spawn menu</text>
+	</string>
+	<string id="st_editor_imgui_level">
+		<text>Level</text>
+	</string>
+	<string id="st_editor_imgui_draw_ai_map">
+		<text>Show AI-Map</text>
+	</string>
+	<string id="st_editor_imgui_draw_spawn_element">
+		<text>Показать спавн-элементы</text>
+	</string>
+	<string id="st_editor_imgui_active">
+		<text>Active mode</text>
+	</string>
+	<string id="st_hud_editor_item_1">
+		<text>Right hand</text>
+	</string>
+	<string id="st_hud_editor_item_2">
+		<text>Left hand</text>
+	</string>
+	<string id="st_editor_imgui_save">
+		<text>Save</text>
+	</string>
+	<string id="st_editor_imgui_choose_texture">
+		<text>Choose texture</text>
+	</string>
+	<string id="st_weather_editor_btn_ok">
+		<text>OK</text>
+	</string>
+	<string id="st_weather_editor_btn_cancel">
+		<text>Cancel</text>
+	</string>
+	<string id="st_weather_editor_time_factor">
+		<text>Time factor</text>
+	</string>
+	<string id="st_weather_editor_main_options">
+		<text>Main settings</text>
+	</string>
+	<string id="st_weather_editor_wth_cycle">
+		<text>Cycle</text>
+	</string>
+	<string id="st_weather_editor_cur_sect">
+		<text>Current section</text>
+	</string>
+	<string id="st_weather_editor_script_wth">
+		<text>Script weather</text>
+	</string>
+	<string id="st_weather_editor_amb_light_options">
+		<text>Ambient light settings</text>
+	</string>
+	<string id="st_weather_editor_clouds_options">
+		<text>Cloud settings</text>
+	</string>
+	<string id="st_weather_editor_fog_options">
+		<text>Fog settings</text>
+	</string>
+	<string id="st_weather_editor_hemi_options">
+		<text>Hemi settings</text>
+	</string>
+	<string id="st_weather_editor_rain_options">
+		<text>Precipitation settings</text>
+	</string>
+	<string id="st_weather_editor_sky_options">
+		<text>Sky settings</text>
+	</string>
+	<string id="st_weather_editor_sun_options">
+		<text>Sun settings</text>
+	</string>
+	<string id="st_weather_editor_thunder_bolt_options">
+		<text>Thunderbolt settings</text>
+	</string>
+	<string id="st_weather_editor_water_options">
+		<text>Water settings</text>
+	</string>
+	<string id="st_weather_editor_wind_options">
+		<text>Wind settings</text>
+	</string>
+	<string id="st_weather_editor_trees_options">
+		<text>Trees settings</text>
+	</string>
+	<string id="st_weather_editor_grass_swing_options">
+		<text>Grass swing settings</text>
+	</string>
+	<string id="st_weather_editor_clr_grad_options">
+		<text>Color correction settings</text>
+	</string>
+	<string id="st_weather_editor_bloom_options">
+		<text>Bloom settings</text>
+	</string>
+	<string id="st_weather_editor_dof_options">
+		<text>Depth of View settings</text>
+	</string>
+	<string id="st_weather_editor_other_options">
+		<text>Other settings</text>
+	</string>
+	<string id="st_spawner_search">
+		<text>Search</text>
+	</string>
+	<string id="st_spawner_items_list">
+		<text>List of items</text>
+	</string>
+	<string id="st_spawner_name">
+		<text>Spawn menu</text>
+	</string>
+	<string id="st_spawner_objects_to_spawn">
+		<text>Objects to spawn</text>
+	</string>
+	<string id="st_spawner_spawn_options">
+		<text>Spawn options</text>
+	</string>
+	<string id="st_spawner_spawn_count">
+		<text>Amount</text>
+	</string>
+	<string id="st_spawner_spawn_button">
+		<text>Spawn</text>
+	</string>
+	<string id="st_spawner_spawn_to_inv_button">
+		<text>Spawn to inventory</text>
+	</string>
+	<string id="st_spawner_objects_type">
+		<text>Objects type</text>
+	</string>
+	<string id="st_spawner_cars">
+		<text>Vehicle</text>
+	</string>
+	<string id="st_spawner_weapons">
+		<text>Arsenal</text>
+	</string>
+	<string id="st_spawner_food">
+		<text>Food and drugs</text>
+	</string>
+	<string id="st_spawner_entities">
+		<text>Entities</text>
+	</string>
+	<string id="st_spawner_anomalies">
+		<text>Anomalies</text>
+	</string>
+	<string id="st_spawner_artefacts">
+		<text>Artefacts</text>
+	</string>
+	<string id="st_spawner_ammo">
+		<text>Ammo</text>
+	</string>
+	<string id="st_spawner_outfit">
+		<text>Outfits</text>
+	</string>
+	<string id="st_spawner_quest_items">
+		<text>Quest items</text>
+	</string>
+	<string id="st_spawner_devices">
+		<text>Devices</text>
+	</string>
+	<string id="st_spawner_other_items">
+		<text>Other</text>
+	</string>
+	<string id="st_editor_imgui_drag_intensity">
+		<text>Step</text>
+	</string>
+	<string id="st_editor_imgui_person_attach">
+		<text>Attachable items editor</text>
+	</string>
+	<string id="st_npc_attaches_editor_hands_position_params">
+		<text>Hand position params</text>
+	</string>
+	<string id="st_npc_attaches_editor_strap_params">
+		<text>Strap position params</text>
+	</string>
+	<string id="st_editor_imgui_ui_debugger">
+		<text>UI debugger</text>
+	</string>
+	<string id="st_editor_imgui_ui_draw_rects">
+		<text>Draw rects</text>
+	</string>
+	<string id="st_editor_imgui_ui_colored_rects">
+		<text>Colored rects</text>
+	</string>
+	<string id="st_editor_imgui_ui_tree_and_props">
+		<text>Interface tree and properties</text>
+	</string>
+	<string id="st_editor_imgui_ui_tree">
+		<text>Tree</text>
+	</string>
+	<string id="st_editor_imgui_ui_selected_props">
+		<text>Selected item properties</text>
+	</string>
+	<string id="st_editor_imgui_show_game_indicators">
+		<text>Show game indicators</text>
+	</string>
+	<string id="st_editor_imgui_ui_debugger_mm_warning">
+		<text>Please, open main menu to show the structure.</text>
+	</string>
+	<string id="st_editor_imgui_ppe">
+		<text>Postprocess Editor</text>
+	</string>
+	<string id="st_pp_editor_create">
+		<text>Create</text>
+	</string>
+	<string id="st_pp_editor_editing_effector">
+		<text>Editing:</text>
+	</string>
+	<string id="st_pp_editor_custom_pp_params">
+		<text>Custom Effector Settings</text>
+	</string>
+	<string id="st_pp_editor_is_custom_effect">
+		<text>Custom PP-Effect</text>
+	</string>
+	<string id="st_pp_editor_custom_camera_params">
+		<text>Custom Camera Settings</text>
+	</string>
+	<string id="st_pp_editor_custom_effector_params">
+		<text>Base Custom Effector Settings</text>
+	</string>
+	<string id="st_pp_editor_main_params">
+		<text>Base Settings</text>
+	</string>
+	<string id="st_pp_editor_shoot_eff_params">
+		<text>Shoot Effector Settings</text>
+	</string>
+	<string id="st_pp_editor_pp_effects">
+		<text>PP-Effects</text>
+	</string>
+	<string id="st_pp_editor_play">
+		<text>Start</text>
+	</string>
+	<string id="st_pp_editor_stop">
+		<text>Stop</text>
+	</string>
+	<string id="st_pp_editor_add_pp_effect">
+		<text>Add PP-Effect</text>
+	</string>
+	<string id="st_pp_editor_camera_effects">
+		<text>Camera Effects</text>
+	</string>
+	<string id="st_pp_editor_add_cam_effect">
+		<text>Add Camera</text>
+	</string>
+	<string id="st_pp_editor_play_effector">
+		<text>Start Effector</text>
+	</string>
+	<string id="st_pp_editor_stop_effector">
+		<text>Stop Effector</text>
+	</string>
+	<string id="st_editor_imgui_choose_pp_effect">
+		<text>Choose Effect</text>
+	</string>
+</string_table>

@@ -7,7 +7,8 @@
 #include "actoreffector.h"
 #include "Missile.h"
 #include "inventory.h"
-#include "weapon.h"
+#include "Weapon.h"
+#include "WeaponKnife.h"
 #include "map_manager.h"
 #include "level.h"
 #include "CharacterPhysicsSupport.h"
@@ -21,6 +22,8 @@ constexpr float VEL_MAX = 10.f;
 constexpr float VEL_A_MAX = 10.f;
 
 #define GetWeaponParam(pWeapon, func_name, def_value)	((pWeapon) ? (pWeapon->func_name) : def_value)
+
+extern int g_advanced_crosshair;
 
 //возвращает текуший разброс стрельбы (в радианах)с учетом движения
 float CActor::GetWeaponAccuracy() const
@@ -76,7 +79,7 @@ void CActor::g_fireParams(CHudItem* pHudItem, Fvector &fire_pos, Fvector &fire_d
 	}
 	else if (auto weapon = smart_cast<CWeapon*>(pHudItem))
 	{
-		if (cam_active == eacFirstEye && !(weapon->IsZoomed() && !weapon->IsRotatingToZoom()))
+		if (g_advanced_crosshair && cam_active == eacFirstEye && !smart_cast<CWeaponKnife*>(pHudItem) && !(weapon->IsZoomed() && !weapon->IsRotatingToZoom()))
 		{
 			//fire_dir = weapon->get_LastFD();
 			fire_pos = weapon->get_LastFP();
@@ -97,7 +100,7 @@ BOOL CActor::g_State (SEntityState& state) const
 	state.bCrouch		= !!(mstate_real&mcCrouch);
 	state.bFall			= !!(mstate_real&mcFall);
 	state.bSprint		= !!(mstate_real&mcSprint);
-	state.fVelocity		= character_physics_support()->movement()->GetVelocityActual();
+	state.fVelocity		= character_physics_support()->get_movement()->GetVelocityActual();
 	state.fAVelocity	= fCurAVelocity;
 	return TRUE;
 }
@@ -112,15 +115,18 @@ void CActor::SetCantRunState(bool bDisable)
 		u_EventSend	(P);
 	};
 }
-void CActor::SetWeaponHideState (u16 State, bool bSet)
+void CActor::SetWeaponHideState (u32 State, bool bSet, bool bBlockQuickWpn)
 {
 	if (g_Alive() && this == Level().CurrentControlEntity())
 	{
 		NET_Packet	P;
 		u_EventGen	(P, GEG_PLAYER_WEAPON_HIDE_STATE, ID());
-		P.w_u16		(State);
+		P.w_u32		(State);
 		P.w_u8		(u8(bSet));
 		u_EventSend	(P);
+
+		if (bBlockQuickWpn)
+			m_bQuickWeaponBlocked = bSet;
 	};
 }
 static	u16 BestWeaponSlots [] = {

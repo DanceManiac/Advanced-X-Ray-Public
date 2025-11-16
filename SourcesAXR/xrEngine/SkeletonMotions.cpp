@@ -109,7 +109,7 @@ BOOL motions_value::load		(LPCSTR N, IReader *data, vecBones* bones)
 				if (*b_it==BI_NONE )
                 {
 					bRes		= false;
-					Msg			("!Can't find bone: '%s'", buf);
+					Msg			("!Can't find bone '%s' requested from animations library: '%s'!", buf, N);
 				}
 
 				if (rm_bones.size() <= m_idx)
@@ -118,7 +118,7 @@ BOOL motions_value::load		(LPCSTR N, IReader *data, vecBones* bones)
 					Msg			("!Can't load: '%s' invalid bones count", N);
 				}
 #else
-				VERIFY3			(*b_it!=BI_NONE,"Can't find bone:", buf);
+				R_ASSERT2		(*b_it != BI_NONE, make_string("Can't find bone '%s' requested from animations library: '%s'!", buf, N).c_str());
 #endif
 				if (bRes)		rm_bones[m_idx] = u16(*b_it);
 			}

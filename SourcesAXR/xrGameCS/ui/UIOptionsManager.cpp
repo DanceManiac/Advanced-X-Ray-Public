@@ -55,14 +55,14 @@ void CUIOptionsManager::SendMessage2Group(const shared_str& group, const char* m
 		(*it).second[i]->OnMessage(message);
 }
 
-void CUIOptionsManager::SeveBackupValues(const shared_str& group)
+void CUIOptionsManager::SaveBackUpValues(const shared_str& group)
 {
 	groups_it it = m_groups.find(group);
 
 	R_ASSERT3(m_groups.end() != it, "invalid group name",group.c_str());
 
 	for (u32 i = 0; i < (*it).second.size(); i++){
-		(*it).second[i]->SeveBackUpValue();
+		(*it).second[i]->SaveBackUpValue();
 	}
 }
 
@@ -85,7 +85,7 @@ void CUIOptionsManager::SaveValues(const shared_str& group)
 	for (u32 i = 0; i < (*it).second.size(); i++)
 	{
 		if ((*it).second[i]->IsChanged())
-            (*it).second[i]->SaveValue();
+			(*it).second[i]->SaveValue();
 	}
 }
 
@@ -111,7 +111,7 @@ void CUIOptionsManager::UndoGroup(const shared_str& group)
 	for (u32 i = 0; i < (*it).second.size(); i++)
 	{
 		if ((*it).second[i]->IsChanged())
-            (*it).second[i]->Undo();
+			(*it).second[i]->Undo();
 	}
 }
 
@@ -135,12 +135,12 @@ void CUIOptionsManager::DoVidRestart()
 
 void CUIOptionsManager::DoSndRestart()
 {
-    m_b_snd_restart = true;
+	m_b_snd_restart = true;
 }
 
 void CUIOptionsManager::DoSystemRestart()
 {
-    m_b_system_restart = true;
+	m_b_system_restart = true;
 }
 
 

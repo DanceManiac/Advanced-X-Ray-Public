@@ -99,20 +99,22 @@ void SBinocVisibleObj::Update()
 	mn.y		= (1.f - mn.y)/2.f * UI_BASE_HEIGHT;
 	mx.y		= (1.f - mx.y)/2.f * UI_BASE_HEIGHT;
 
-	int hud_info_r_e	= CurrentGameUI()->UIMainIngameWnd->hud_info_r_e;
-	int hud_info_g_e	= CurrentGameUI()->UIMainIngameWnd->hud_info_g_e;
-	int hud_info_b_e	= CurrentGameUI()->UIMainIngameWnd->hud_info_b_e;
-	int hud_info_a_e	= CurrentGameUI()->UIMainIngameWnd->hud_info_a_e;
+	CUIMainIngameWnd* pMaingame = CurrentGameUI()->UIMainIngameWnd;
 
-	int hud_info_r_n	= CurrentGameUI()->UIMainIngameWnd->hud_info_r_n;
-	int hud_info_g_n	= CurrentGameUI()->UIMainIngameWnd->hud_info_g_n;
-	int hud_info_b_n	= CurrentGameUI()->UIMainIngameWnd->hud_info_b_n;
-	int hud_info_a_n	= CurrentGameUI()->UIMainIngameWnd->hud_info_a_n;
+	int hud_info_r_e	= pMaingame->hud_info_e.x;
+	int hud_info_g_e	= pMaingame->hud_info_e.y;
+	int hud_info_b_e	= pMaingame->hud_info_e.z;
+	int hud_info_a_e	= pMaingame->hud_info_e.w;
 
-	int hud_info_r_f	= CurrentGameUI()->UIMainIngameWnd->hud_info_r_f;
-	int hud_info_g_f	= CurrentGameUI()->UIMainIngameWnd->hud_info_g_f;
-	int hud_info_b_f	= CurrentGameUI()->UIMainIngameWnd->hud_info_b_f;
-	int hud_info_a_f	= CurrentGameUI()->UIMainIngameWnd->hud_info_a_f;
+	int hud_info_r_n	= pMaingame->hud_info_n.x;
+	int hud_info_g_n	= pMaingame->hud_info_n.y;
+	int hud_info_b_n	= pMaingame->hud_info_n.z;
+	int hud_info_a_n	= pMaingame->hud_info_n.w;
+
+	int hud_info_r_f	= pMaingame->hud_info_f.x;
+	int hud_info_g_f	= pMaingame->hud_info_f.y;
+	int hud_info_b_f	= pMaingame->hud_info_f.z;
+	int hud_info_a_f	= pMaingame->hud_info_f.w;
 
 	u32 C_ON_ENEMY		= color_rgba(hud_info_r_e, hud_info_g_e, hud_info_b_e, hud_info_a_e);
 	u32 C_ON_NEUTRAL	= color_rgba(hud_info_r_n, hud_info_g_n, hud_info_b_n, hud_info_a_n);
@@ -211,8 +213,6 @@ CBinocularsVision::~CBinocularsVision()
 
 void CBinocularsVision::Update()
 {
-	if (g_dedicated_server)
-		return;
 	//-----------------------------------------------------
 	const CActor* pActor = NULL;
 	if (IsGameTypeSingle()) pActor = Actor();
@@ -225,7 +225,7 @@ void CBinocularsVision::Update()
 	}
 	if (!pActor) return;
 	//-----------------------------------------------------
-	const CVisualMemoryManager::VISIBLES& vVisibles = pActor->memory().visual().objects();
+	const CVisualMemoryManager::VISIBLES& vVisibles = pActor->get_memory().visual().objects();
 
 	VIS_OBJECTS_IT	it = m_active_objects.begin();
 	for(;it!=m_active_objects.end();++it)
@@ -236,7 +236,7 @@ void CBinocularsVision::Update()
 	for (; v_it!=vVisibles.end(); ++v_it)
 	{
 		const CObject*	_object_			= (*v_it).m_object;
-		if (!pActor->memory().visual().visible_right_now(smart_cast<const CGameObject*>(_object_)))
+		if (!pActor->get_memory().visual().visible_right_now(smart_cast<const CGameObject*>(_object_)))
 			continue;
 
 		CObject* object_ = const_cast<CObject*>(_object_);

@@ -27,6 +27,7 @@
 #include "../xrPhysics/ElevatorState.h"
 #include "CustomDetector.h"
 #include "CustomOutfit.h"
+#include "CustomBackpack.h"
 #include "../xrEngine/x_ray.h"
 #include "AdvancedXrayGameConstants.h"
 
@@ -39,6 +40,7 @@ CEatableItem::CEatableItem()
 	m_iPortionsNum			= 1;
 	use_cam_effector		= nullptr;
 	anim_sect				= nullptr;
+	anim_sect_exo			= nullptr;
 	m_bHasAnimation			= false;
 	m_bUnlimited			= false;
 	m_physic_item			= 0;
@@ -54,18 +56,6 @@ CEatableItem::CEatableItem()
 	m_fIrradiationZonePower = 0.0f;
 	m_fSpoliage				= 0.0f;
 	m_fFoodRottingCoef		= 0.0f;
-	m_fHealthInfluence			= 0;
-	m_fPowerInfluence			= 0;
-	m_fSatietyInfluence			= 0;
-	m_fRadiationInfluence		= 0;
-	m_fThirstInfluence			= 0;
-	m_fIntoxicationInfluence	= 0;
-	m_fSleepenessInfluence		= 0;
-	m_fAlcoholismInfluence		= 0;
-	m_fHangoverInfluence		= 0;
-	m_fNarcotismInfluence		= 0;
-	m_fWithdrawalInfluence		= 0;
-	m_fPsyHealthInfluence		= 0;
 }
 
 CEatableItem::~CEatableItem()
@@ -82,37 +72,24 @@ void CEatableItem::Load(LPCSTR section)
 {
 	inherited::Load(section);
 
-	m_iPortionsNum = m_iConstPortions = READ_IF_EXISTS(pSettings, r_u32, section, "eat_portions_num", 1);
+	m_iConstPortions			= READ_IF_EXISTS(pSettings, r_u32, section, "eat_portions_num", 1);
+	m_iPortionsNum				= m_iConstPortions;
 
-	m_fHealthInfluence			= pSettings->r_float(section, "eat_health");
-	m_fPowerInfluence			= pSettings->r_float(section, "eat_power");
-	m_fSatietyInfluence			= pSettings->r_float(section, "eat_satiety");
-	m_fRadiationInfluence		= pSettings->r_float(section, "eat_radiation");
-	m_fThirstInfluence			= pSettings->r_float(section, "eat_thirst");
-	m_fIntoxicationInfluence	= pSettings->r_float(section, "eat_intoxication");
-	m_fSleepenessInfluence		= pSettings->r_float(section, "eat_sleepeness");
-	m_fAlcoholismInfluence		= pSettings->r_float(section, "eat_alcoholism");
-	m_fHangoverInfluence		= pSettings->r_float(section, "eat_hangover");
-	m_fNarcotismInfluence		= pSettings->r_float(section, "eat_narcotism");
-	m_fWithdrawalInfluence		= pSettings->r_float(section, "eat_withdrawal");
-	m_fPsyHealthInfluence		= pSettings->r_float(section, "eat_psy_health");
-	m_fWoundsHealPerc			= pSettings->r_float(section, "wounds_heal_perc");
-	clamp						(m_fWoundsHealPerc, 0.f, 1.f);
+	//m_fMaxPowerUpInfluence		= READ_IF_EXISTS	(pSettings,r_float,section,"eat_max_power",0.0f);
+	//VERIFY						(m_iPortionsNum<10000);
 
-	m_fMaxPowerUpInfluence		= READ_IF_EXISTS	(pSettings,r_float,section,"eat_max_power",0.0f);
-	VERIFY						(m_iPortionsNum<10000);
+	m_bHasAnimation				= READ_IF_EXISTS(pSettings, r_bool, section, "has_anim", false);
+	m_bUnlimited				= READ_IF_EXISTS(pSettings, r_bool, section, "unlimited_usage", false);
+	anim_sect					= READ_IF_EXISTS(pSettings, r_string, section, "hud_section", nullptr);
+	anim_sect_exo				= READ_IF_EXISTS(pSettings, r_string, section, "hud_section_exo", nullptr);
+	m_fEffectorIntensity		= READ_IF_EXISTS(pSettings, r_float, section, "cam_effector_intensity", 1.0f);
+	use_cam_effector			= READ_IF_EXISTS(pSettings, r_string, section, "use_cam_effector", nullptr);
 
-	m_bHasAnimation = READ_IF_EXISTS(pSettings, r_bool, section, "has_anim", false);
-	m_bUnlimited = READ_IF_EXISTS(pSettings, r_bool, section, "unlimited_usage", false);
-	anim_sect = READ_IF_EXISTS(pSettings, r_string, section, "hud_section", nullptr);
-	m_fEffectorIntensity = READ_IF_EXISTS(pSettings, r_float, section, "cam_effector_intensity", 1.0f);
-	use_cam_effector = READ_IF_EXISTS(pSettings, r_string, section, "use_cam_effector", nullptr);
+	m_bNeedDestroyNotUseful		= READ_IF_EXISTS(pSettings, r_bool, section, "need_destroy_if_not_useful", true);
 
-	m_bNeedDestroyNotUseful = READ_IF_EXISTS(pSettings, r_bool, section, "need_destroy_if_not_useful", true);
-
-	m_fIrradiationCoef = READ_IF_EXISTS(pSettings, r_float, section, "irradiation_coef", 0.0005f);
-	m_fIrradiationZonePower = READ_IF_EXISTS(pSettings, r_float, section, "irradiation_zone_power", 0.0f);
-	m_fFoodRottingCoef = READ_IF_EXISTS(pSettings, r_float, section, "rotting_factor", 0.0f);
+	m_fIrradiationCoef			= READ_IF_EXISTS(pSettings, r_float, section, "irradiation_coef", 0.0005f);
+	m_fIrradiationZonePower		= READ_IF_EXISTS(pSettings, r_float, section, "irradiation_zone_power", 0.0f);
+	m_fFoodRottingCoef			= READ_IF_EXISTS(pSettings, r_float, section, "rotting_factor", 0.0f);
 }
 
 BOOL CEatableItem::net_Spawn				(CSE_Abstract* DC)
@@ -134,7 +111,6 @@ bool CEatableItem::Useful() const
 
 void CEatableItem::OnH_A_Independent() 
 {
-
 	if (!m_bNeedDestroyNotUseful) return;
 
 	inherited::OnH_A_Independent();
@@ -184,17 +160,6 @@ void CEatableItem::UpdateInRuck(CActor* actor)
 {
 	UpdateUseAnim(actor);
 
-	if (GameConstants::GetFoodIrradiation())
-	{
-		float m_radia_hit = HUD().GetUI()->UIGame()->get_zone_cur_power(ALife::eHitTypeRadiation);
-		float irradiation_coef = ((m_fIrradiationCoef + m_radia_hit) / 64) * Device.fTimeDelta;
-
-		if (m_radia_hit > m_fIrradiationZonePower)
-			m_fRadioactivity += irradiation_coef;
-
-		clamp(m_fRadioactivity, 0.0f, 1.0f);
-	}
-
 	if (GameConstants::GetFoodRotting() && GameConstants::GetActorIntoxication())
 	{
 		float rotten_coef = (m_fFoodRottingCoef / 128) * Device.fTimeDelta;
@@ -212,10 +177,15 @@ void CEatableItem::UpdateInRuck(CActor* actor)
 
 void CEatableItem::HideWeapon()
 {
+	if (Actor()->m_bActionAnimInProcess || m_bActivated || m_bItmStartAnim)
+		return;
+
 	CEffectorCam* effector = Actor()->Cameras().GetCamEffector((ECamEffectorType)effUseItem);
 	CCustomDetector* pDet = smart_cast<CCustomDetector*>(Actor()->inventory().ItemFromSlot(DETECTOR_SLOT));
-	CInventoryOwner* pInvOwner = smart_cast<CInventoryOwner*>(Level().CurrentEntity());
-	CActor* pActor = smart_cast<CActor*>(pInvOwner);
+	CWeapon* pWpn = smart_cast<CWeapon*>(Actor()->inventory().ActiveItem());
+	
+	if (pWpn && !(pWpn->GetState() == CWeapon::eIdle))
+		return;
 
 	Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, true);
 
@@ -223,9 +193,6 @@ void CEatableItem::HideWeapon()
 		pDet->HideDetector(true);
 
 	m_bItmStartAnim = true;
-
-	if (pActor)
-		HUD().GetUI()->UIGame()->HideActorMenu();
 }
 
 void CEatableItem::StartAnimation()
@@ -233,39 +200,49 @@ void CEatableItem::StartAnimation()
 	m_bActivated = true;
 
 	CEffectorCam* effector = Actor()->Cameras().GetCamEffector((ECamEffectorType)effUseItem);
+	CCustomOutfit* cur_outfit = Actor()->GetOutfit();
 
-	if (pSettings->line_exist(anim_sect, "single_handed_anim"))
-		m_iAnimHandsCnt = pSettings->r_u32(anim_sect, "single_handed_anim");
+	bool has_lss = (cur_outfit && cur_outfit->m_bHasLSS);
+	LPCSTR cur_section = (anim_sect_exo && pSettings->section_exist(anim_sect_exo) && has_lss) ? anim_sect_exo : anim_sect;
+
+	bool m_bSingleHanded = READ_IF_EXISTS(pSettings, r_bool, cur_section, "single_handed_anim", false);
+	int m_iAnimHandsCnt = m_bSingleHanded ? 1 : 2;
 
 	m_bItmStartAnim = false;
 	g_block_all_except_movement = true;
 	g_actor_allow_ladder = false;
 	Actor()->m_bActionAnimInProcess = true;
 
-	CCustomOutfit* cur_outfit = Actor()->GetOutfit();
-
-	if (pSettings->line_exist(anim_sect, "anm_use"))
+	if (pSettings->line_exist(cur_section, "anm_use"))
 	{
 		string128 anim_name{};
-		strconcat(sizeof(anim_name), anim_name, "anm_use", (cur_outfit && cur_outfit->m_bHasLSS) ? "_exo" : (m_iPortionsNum == 1) ? "_last" : "");
+		strconcat(sizeof(anim_name), anim_name, "anm_use", (m_iPortionsNum == 1) ? "_last" : "");
 
-		LPCSTR attach_visual = READ_IF_EXISTS(pSettings, r_string, anim_sect, (cur_outfit && cur_outfit->m_bHasLSS) ? "item_visual_exo" : "item_visual", nullptr);
+		LPCSTR attach_visual = READ_IF_EXISTS(pSettings, r_string, cur_section, "item_visual", nullptr);
+		
+		// - cari0us - ВАЖНО !!! Названия аргументов и прочих штук в данном случае не должны начинаться с "anim_", 
+		// иначе движок может воспринимать их как анимацию по какой-то причине; Потому переименовал в "use_anm_speed_k"
+		float anim_speed = 1.0f;
+		if (pSettings->line_exist(cur_section, "anim_speed"))
+			anim_speed = pSettings->r_float(cur_section, "anim_speed");	// желательно избавиться в будущем
+		else
+			anim_speed = READ_IF_EXISTS(pSettings, r_float, cur_section, "use_anm_speed_k", 1.0f);
 
-		if (pSettings->line_exist(anim_sect, anim_name))
+		if (pSettings->line_exist(cur_section, anim_name))
 		{
-			g_player_hud->script_anim_play(m_iAnimHandsCnt, anim_sect, anim_name, false, 1.0f, attach_visual);
-			m_iAnimLength = Device.dwTimeGlobal + g_player_hud->motion_length_script(anim_sect, anim_name, 1.0f);
+			g_player_hud->script_anim_play(m_iAnimHandsCnt, cur_section, anim_name, false, anim_speed, attach_visual);
+			m_iAnimLength = Device.dwTimeGlobal + g_player_hud->motion_length_script(cur_section, anim_name, anim_speed);
 		}
 		else
 		{
-			g_player_hud->script_anim_play(m_iAnimHandsCnt, anim_sect, "anm_use", false, 1.0f, attach_visual);
-			m_iAnimLength = Device.dwTimeGlobal + g_player_hud->motion_length_script(anim_sect, "anm_use", 1.0f);
+			g_player_hud->script_anim_play(m_iAnimHandsCnt, cur_section, "anm_use", false, anim_speed, attach_visual);
+			m_iAnimLength = Device.dwTimeGlobal + g_player_hud->motion_length_script(cur_section, "anm_use", anim_speed);
 		}
 
-		if (pSettings->line_exist(anim_sect, "hud_fov"))
+		if (pSettings->line_exist(cur_section, "hud_fov"))
 		{
 			last_hud_fov = psHUD_FOV_def;
-			psHUD_FOV_def = pSettings->r_float(anim_sect, "hud_fov");
+			psHUD_FOV_def = pSettings->r_float(cur_section, "hud_fov");
 		}
 
 		ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_FocusDoF();
@@ -283,7 +260,7 @@ void CEatableItem::StartAnimation()
 		string128 snd_var_name{};
 		shared_str snd_name{};
 
-		strconcat(sizeof(snd_var_name), snd_var_name, "snd_using", (cur_outfit && cur_outfit->m_bHasLSS) ? "_exo" : (m_iPortionsNum == 1) ? "_last" : "");
+		strconcat(sizeof(snd_var_name), snd_var_name, "snd_using", (m_iPortionsNum == 1) ? "_last" : "");
 
 		if (pSettings->line_exist(anim_sect, snd_var_name))
 			snd_name = pSettings->r_string(anim_sect, snd_var_name);
@@ -301,16 +278,24 @@ void CEatableItem::UpdateUseAnim(CActor* actor)
 
 	CCustomDetector* pDet = smart_cast<CCustomDetector*>(actor->inventory().ItemFromSlot(DETECTOR_SLOT));
 	CEffectorCam* effector = actor->Cameras().GetCamEffector((ECamEffectorType)effUseItem);
+	CCustomOutfit* cur_outfit = Actor()->GetOutfit();
+
+	bool has_lss = (cur_outfit && cur_outfit->m_bHasLSS);
+	LPCSTR cur_section = (anim_sect_exo && pSettings->section_exist(anim_sect_exo) && has_lss) ? anim_sect_exo : anim_sect;
+
 	bool IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
 
-	if (m_bItmStartAnim && actor->inventory().GetActiveSlot() == NO_ACTIVE_SLOT && (!pDet || pDet->IsHidden()))
+	if (!actor->inventory_disabled() && m_bItmStartAnim)
+		HUD().GetUI()->UIGame()->HideActorMenu();
+
+	if (m_bItmStartAnim && actor->inventory().GetActiveSlot() == NO_ACTIVE_SLOT && (!pDet || pDet->IsHidden()) && !m_bActivated)
 		StartAnimation();
 
 	if (!IsActorAlive)
 	{
 		m_using_sound.stop();
 
-		if (pSettings->line_exist(anim_sect, "hud_fov") && last_hud_fov > 0.0f)
+		if (pSettings->line_exist(cur_section, "hud_fov") && last_hud_fov > 0.0f)
 			psHUD_FOV_def = last_hud_fov;
 	}
 
@@ -318,6 +303,9 @@ void CEatableItem::UpdateUseAnim(CActor* actor)
 	{
 		if (m_iAnimLength <= Device.dwTimeGlobal || !IsActorAlive)
 		{
+			if (actor->inventory().GetPrevActiveSlot() == BACKPACK_SLOT)
+				actor->inventory().SetPrevActiveSlot(NO_ACTIVE_SLOT);
+
 			actor->SetWeaponHideState(INV_STATE_BLOCK_ALL, false);
 
 			m_iAnimLength = Device.dwTimeGlobal;
@@ -326,7 +314,7 @@ void CEatableItem::UpdateUseAnim(CActor* actor)
 			g_actor_allow_ladder = true;
 			actor->m_bActionAnimInProcess = false;
 
-			if (pSettings->line_exist(anim_sect, "hud_fov") && last_hud_fov > 0.0f)
+			if (pSettings->line_exist(cur_section, "hud_fov") && last_hud_fov > 0.0f)
 				psHUD_FOV_def = last_hud_fov;
 
 			if (effector)
@@ -341,7 +329,21 @@ void CEatableItem::UpdateUseAnim(CActor* actor)
 	}
 }
 
-void CEatableItem::UseBy (CEntityAlive* entity_alive)
+void CEatableItem::HitFromActorHit(SHit* pHDS)
+{
+	float hit_power = pHDS->damage();
+
+	if (pHDS->hit_type == ALife::eHitTypeRadiation && hit_power > m_fIrradiationZonePower)
+	{
+		if (CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(Actor()->inventory().ItemFromSlot(BACKPACK_SLOT)))
+			hit_power = std::max(hit_power - backpack->GetRadiationProtection(), 0.0f);
+
+		m_fRadioactivity += (hit_power / 10) * m_fIrradiationCoef;
+		clamp(m_fRadioactivity, 0.0f, 1.0f);
+	}
+}
+
+bool CEatableItem::UseBy (CEntityAlive* entity_alive)
 {
 	SMedicineInfluenceValues	V;
 	V.Load(m_physic_item->cNameSect());
@@ -350,6 +352,16 @@ void CEatableItem::UseBy (CEntityAlive* entity_alive)
 	R_ASSERT				(IO);
 	R_ASSERT				(m_pInventory==IO->m_inventory);
 	R_ASSERT				(object().H_Parent()->ID()==entity_alive->ID());
+
+	if (pSettings->line_exist(m_physic_item->cNameSect().c_str(), "use_sound"))
+	{
+		if (m_using_sound._feedback())
+			m_using_sound.stop();
+
+		shared_str snd_name = pSettings->r_string(m_physic_item->cNameSect().c_str(), "use_sound");
+		m_using_sound.create(snd_name.c_str(), st_Effect, sg_SourceType);
+		m_using_sound.play(NULL, sm_2D);
+	}
 
 	entity_alive->conditions().ApplyInfluence(V, m_physic_item->cNameSect(), this);
 
@@ -363,7 +375,7 @@ void CEatableItem::UseBy (CEntityAlive* entity_alive)
 		}
 	}
 
-	entity_alive->conditions().SetMaxPower( entity_alive->conditions().GetMaxPower()+m_fMaxPowerUpInfluence );
+	//entity_alive->conditions().SetMaxPower( entity_alive->conditions().GetMaxPower()+m_fMaxPowerUpInfluence );
 	
 	//уменьшить количество порций
 	if (m_iPortionsNum != -1 && !m_bUnlimited)
@@ -376,6 +388,8 @@ void CEatableItem::UseBy (CEntityAlive* entity_alive)
 
 	if (m_iPortionsNum > 1 && HUD().GetUI()->UIGame()->ActorMenu().IsShown() && HUD().GetUI()->UIGame()->ActorMenu().GetMenuMode() != mmDeadBodySearch)
 		HUD().GetUI()->UIGame()->ActorMenu().RefreshConsumableCells();
+
+	return true;
 }
 
 u32 CEatableItem::Cost() const

@@ -47,9 +47,9 @@ public:
 		return			(call_member<DLL_Pure*>(this,"_construct"));
 	}
 
-	static	DLL_Pure*	_construct_static	(base *self)
+	static	DLL_Pure*	_construct_static	(base *self_)
 	{
-		return			(self->base::_construct());
+		return			(self_->base::_construct());
 	}
 };
 
@@ -66,9 +66,9 @@ public:
 		call_member<void>(this,"spatial_register");
 	}
 
-	static	void			spatial_register_static		(base *self)
+	static	void			spatial_register_static		(base *self_)
 	{
-		self->base::spatial_register();
+		self_->base::spatial_register();
 	}
 
 	virtual	void			spatial_unregister			()
@@ -76,9 +76,9 @@ public:
 		call_member<void>(this,"spatial_unregister");
 	}
 	
-	static	void			spatial_unregister_static	(base *self)
+	static	void			spatial_unregister_static	(base *self_)
 	{
-		self->base::spatial_unregister();
+		self_->base::spatial_unregister();
 	}
 
 	virtual	void			spatial_move				()
@@ -86,9 +86,9 @@ public:
 		call_member<void>(this,"spatial_move");
 	}
 
-	static	void			spatial_move_static			(base *self)
+	static	void			spatial_move_static			(base *self_)
 	{
-		self->base::spatial_move();
+		self_->base::spatial_move();
 	}
 
 	virtual	Fvector			spatial_sector_point		()
@@ -96,9 +96,9 @@ public:
 		return	(call_member<Fvector>(this,"spatial_sector_point"));
 	}
 
-	static	Fvector			spatial_sector_point_static	(base *self)
+	static	Fvector			spatial_sector_point_static	(base *self_)
 	{
-		return	(self->base::spatial_sector_point());
+		return	(self_->base::spatial_sector_point());
 	}
 	
 	virtual	CObject*		dcast_CObject				()
@@ -106,9 +106,9 @@ public:
 		return	(call_member<CObject*>(this,"dcast_CObject"));
 	}
 
-	static	CObject*		dcast_CObject_static		(base *self)
+	static	CObject*		dcast_CObject_static		(base *self_)
 	{
-		return	(self->base::dcast_CObject());
+		return	(self_->base::dcast_CObject());
 	}
 
 	virtual	Feel::Sound*	dcast_FeelSound				()
@@ -116,9 +116,9 @@ public:
 		return	(call_member<Feel::Sound*>(this,"dcast_FeelSound"));
 	}
 
-	static	Feel::Sound*	dcast_FeelSound_static		(base *self)
+	static	Feel::Sound*	dcast_FeelSound_static		(base *self_)
 	{
-		return	(self->base::dcast_FeelSound());
+		return	(self_->base::dcast_FeelSound());
 	}
 
 	virtual	IRenderable*	dcast_Renderable			()
@@ -126,9 +126,9 @@ public:
 		return	(call_member<IRenderable*>(this,"dcast_Renderable"));
 	}
 
-	static	IRenderable*	dcast_Renderable_static		(base *self)
+	static	IRenderable*	dcast_Renderable_static		(base *self_)
 	{
-		return	(self->base::dcast_Renderable());
+		return	(self_->base::dcast_Renderable());
 	}
 };
 
@@ -147,7 +147,7 @@ public:
 //		return	(call_member<float>(this,"shedule_Scale"));
 	}
 
-/*	static float			shedule_Scale_static	(base *self)
+/*	static float			shedule_Scale_static	(base *self_)
 	{
 		ai().script_engine().script_log(eLuaMessageTypeError,"You are trying to call a pure virtual function ISheduled::shedule_Scale!\nReturning default value 1000.0");
 		return	(1000.f);
@@ -159,9 +159,9 @@ public:
 //		call_member<void>(this,"shedule_Update");
 	}
 
-/*	static  void			shedule_Update_static	(base *self, u32 dt)
+/*	static  void			shedule_Update_static	(base *self_, u32 dt)
 	{
-		self->base::shedule_Update(dt);
+		self_->base::shedule_Update(dt);
 	}
 */
 };
@@ -180,7 +180,7 @@ public:
 		call_member<void>(this,"renderable_Render");
 	}
 
-	static	void	renderable_Render_static		(IRenderable *self)
+	static	void	renderable_Render_static		(IRenderable *self_)
 	{
 		ai().script_engine().script_log(eLuaMessageTypeError,"You are trying to call a pure virtual function IRenderable::renderable_Render!");
 	}
@@ -190,9 +190,9 @@ public:
 		return		((BOOL)call_member<bool>(this,"renderable_ShadowGenerate"));
 	}
 
-	static	bool	renderable_ShadowGenerate_static(IRenderable *self)
+	static	bool	renderable_ShadowGenerate_static(IRenderable *self_)
 	{
-		return		(!!	self->IRenderable::renderable_ShadowGenerate());
+		return		(!!	self_->IRenderable::renderable_ShadowGenerate());
 	}
 	
 	virtual	BOOL	renderable_ShadowReceive		()
@@ -200,9 +200,9 @@ public:
 		return		((BOOL)call_member<bool>(this,"renderable_ShadowReceive"));
 	}
 
-	static	bool	renderable_ShadowReceive_static	(IRenderable *self)
+	static	bool	renderable_ShadowReceive_static	(IRenderable *self_)
 	{
-		return		(!!	self->IRenderable::renderable_ShadowReceive());
+		return		(!!	self_->IRenderable::renderable_ShadowReceive());
 	}
 */
 };
@@ -260,9 +260,9 @@ public:
 		return call<bool>("use",who_use);
 	}
 
-	static bool			use_static			(CGameObject *self, CGameObject* who_use)
+	static bool			use_static			(CGameObject *self_, CGameObject* who_use)
 	{
-		return self->CGameObject::use(who_use);
+		return self_->CGameObject::use(who_use);
 	}
 
 
@@ -271,9 +271,9 @@ public:
 		call<void>("net_Import",&packet);
 	}
 
-	static	void			net_Import_static	(CGameObject *self, NET_Packet *packet)
+	static	void			net_Import_static	(CGameObject *self_, NET_Packet *packet)
 	{
-		self->CGameObject::net_Import(*packet);
+		self_->CGameObject::net_Import(*packet);
 	}
 
 	virtual void			net_Export			(NET_Packet &packet)
@@ -281,9 +281,9 @@ public:
 		call<void>("net_Export",&packet);
 	}
 
-	static	void			net_Export_static	(CGameObject *self, NET_Packet *packet)
+	static	void			net_Export_static	(CGameObject *self_, NET_Packet *packet)
 	{
-		self->CGameObject::net_Export(*packet);
+		self_->CGameObject::net_Export(*packet);
 	}
 
 	virtual BOOL			net_Spawn			(CSE_Abstract* data)
@@ -291,9 +291,9 @@ public:
 		return			(luabind::call_member<bool>(this,"net_Spawn",data));
 	}
 
-	static	bool			net_Spawn_static	(CGameObject *self, CSE_Abstract *abstract)
+	static	bool			net_Spawn_static	(CGameObject *self_, CSE_Abstract *abstract)
 	{
-		return			(!!self->CGameObject::net_Spawn(abstract));
+		return			(!!self_->CGameObject::net_Spawn(abstract));
 	}
 };
 
@@ -307,7 +307,7 @@ public:
 		luabind::call_member<void>(this,"HitSignal",P,local_dir,who,element);
 	}
 
-	static	void			HitSignal_static	(CEntity *self, float P, Fvector &local_dir,	CObject* who, s16 element)
+	static	void			HitSignal_static	(CEntity *self_, float P, Fvector &local_dir,	CObject* who, s16 element)
 	{
 		ai().script_engine().script_log(eLuaMessageTypeError,"You are trying to call a pure virtual function CEntity::HitSignal!");
 	}

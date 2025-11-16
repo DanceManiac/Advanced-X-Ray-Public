@@ -63,6 +63,9 @@
     <indicator_booster_rad x="314" y="710" width="31" height="41">
 		<texture>ui_inGame2_shield_radiation_cleanup</texture>
 	</indicator_booster_rad>
+	<indicator_booster_frostbite x="356" y="710" width="31" height="41">
+		<texture>ui_inGame2_shield_Frostbite</texture>
+	</indicator_booster_frostbite>
 	
 	<indicator_booster_satiety x="20" y="660" width="24" height="41">
 		<texture>ui_inGame2_shield_Satiety</texture>
@@ -105,6 +108,14 @@
 	<wound_static x="0" y="0" width="64" height="64">
 		<texture>ui_hud_icon_drop</texture>
 	</wound_static>
+	
+	<frostbite_static x="0" y="0" width="64" height="64">
+		<texture>ui_hud_icon_frostbite</texture>
+	</frostbite_static>
+	
+	<heating_static x="0" y="0" width="64" height="64">
+		<texture>ui_hud_icon_heating</texture>
+	</heating_static>
 
 	<starvation_static x="0" y="0" width="64" height="64">
 		<texture>ui_hud_icon_eat</texture>

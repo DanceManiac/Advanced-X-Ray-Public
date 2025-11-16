@@ -116,7 +116,7 @@ public:
 
 SControlJumpData	&setup_data				() {return m_data;}
 
-	void			remove_links			(CObject* object);
+	void			remove_links			(CObject* object_);
 
 private:	
 			void	calculate_jump_time (Fvector const & target, bool check_force_factor);

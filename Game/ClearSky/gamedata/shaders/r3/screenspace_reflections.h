@@ -1,27 +1,35 @@
 /**
  * @ Version: SCREEN SPACE SHADERS - UPDATE 18
  * @ Description: SSR implementation
- * @ Modified time: 2023-09-29 06:42
+ * @ Modified time: 2024-02-09 06:27
  * @ Author: https://www.moddb.com/members/ascii1457
  * @ Mod: https://www.moddb.com/mods/stalker-anomaly/addons/screen-space-shaders
  */
 
+#ifndef SSFX_SSR_QUALITY
+	#define SSFX_SSR_QUALITY 0
+#endif
+
 #include "screenspace_common.h"
 #include "settings_screenspace_SSR.h"
 
+uniform float4 ssr_setup; // x: SSR Resolution | y: Blur Intensity | z: Temporal Intensity
+uniform float4 ssfx_ssr_2; // x: Intensity | y: Sky Intensity | z: Weapon Intensity | w: Max Weapon Intensity
 uniform float4 ssfx_is_underground;
+
+Texture2D blue_noise;
 
 static const int2 q_ssr_steps[6] =
 {
-	int2(8,200),
-	int2(16,35),
+	int2(8,72),
+	int2(16,36),
 	int2(24,18),
 	int2(32,5),
 	int2(48,1),
 	int2(64,1),
 };
 
-static const float q_ssr_noise[6] =
+/*static const float q_ssr_noise[6] =
 {
 	float(0.04f),
 	float(0.04f),
@@ -29,7 +37,7 @@ static const float q_ssr_noise[6] =
 	float(0.06f),
 	float(0.08f),
 	float(0.08f),
-};
+};*/
 
 float4 SSFX_ssr_fast_ray(float3 ray_start_vs, float3 ray_dir_vs, float2 tc, uint iSample : SV_SAMPLEINDEX)
 {
@@ -37,7 +45,9 @@ float4 SSFX_ssr_fast_ray(float3 ray_start_vs, float3 ray_dir_vs, float2 tc, uint
 	float2 behind_hit = 0;
 
 	// Noise to "improve" consistency between steps
-	float3 noise = SSFX_noise(tc * float2(70,35) * 20) * q_ssr_noise[G_SSR_QUALITY];
+	float2 uv_noise = tc + timers.x * (ssr_setup.w > 0);
+	uv_noise.x *= screen_res.x / screen_res.y;
+	float noise = blue_noise.Sample(smp_linear, uv_noise).x * ssr_setup.w * 0.1f;
 
 	// Initialize Ray
 	RayTrace ssr_ray = SSFX_ray_init(ray_start_vs, ray_dir_vs, 150, q_ssr_steps[G_SSR_QUALITY].x, 1.0f);
@@ -47,6 +57,8 @@ float4 SSFX_ssr_fast_ray(float3 ray_start_vs, float3 ray_dir_vs, float2 tc, uint
 
 	// Depth from the start of the ray
 	float ray_depthstart = SSFX_get_depth(ssr_ray.r_start, iSample);
+	
+	float2 ray_check = 0;
 	
 	// Ray-march
 	[unroll (q_ssr_steps[G_SSR_QUALITY].x)]
@@ -65,7 +77,7 @@ float4 SSFX_ssr_fast_ray(float3 ray_start_vs, float3 ray_dir_vs, float2 tc, uint
 		}
 
 		// Ray intersect check
-		float2 ray_check = SSFX_ray_intersect(ssr_ray, iSample);
+		ray_check = SSFX_ray_intersect(ssr_ray, iSample);
 
 		// Sampled depth is not weapon or sky ( SKY_EPS float(0.001) )
 		bool NoWpnSky = ray_check.y > 1.3f;
@@ -77,7 +89,7 @@ float4 SSFX_ssr_fast_ray(float3 ray_start_vs, float3 ray_dir_vs, float2 tc, uint
 		if (ray_check.x > 0)
 		{
 			if (ray_check.x <= q_ssr_steps[G_SSR_QUALITY].y)
-				return float4(ssr_ray.r_pos, 0, 0);
+				return float4(ssr_ray.r_pos, ray_check.y, 0);
 
 #if G_SSR_QUALITY > 2 // 1 Binary Search step in higher quality settigns ( Quality 4 & 5 )
 			
@@ -97,7 +109,7 @@ float4 SSFX_ssr_fast_ray(float3 ray_start_vs, float3 ray_dir_vs, float2 tc, uint
 
 			// Depth test... Conditions to use as reflections...
 			if (abs(ray_check.x) <= 1.25f)
-				return float4(ssr_ray.r_pos, 0, 0);
+				return float4(ssr_ray.r_pos, ray_check.y, 0);
 
 			// Restore previous ray position & step
 			ssr_ray.r_pos = prev_step.xy;
@@ -120,18 +132,26 @@ float4 SSFX_ssr_fast_ray(float3 ray_start_vs, float3 ray_dir_vs, float2 tc, uint
 
 		// Step the ray
 		ssr_ray.r_pos += ssr_ray.r_step * (1.0f + noise.x * (1.0f - smoothstep(0, q_ssr_steps[G_SSR_QUALITY].x * 0.33f, i)));
+		//ssr_ray.r_pos += ssr_ray.r_step * (1.0f + (1.0f - smoothstep(0, q_ssr_steps[SSFX_SSR_QUALITY].x * 0.33f, i)));
 	}
 
-	return float4(behind_hit, sky_tc);
+	return float4(behind_hit, ray_check.y, sky_tc.y);
 }
 
 
-void SSFX_ScreenSpaceReflections(float2 tc, float4 P, float3 N, float gloss, inout float3 color, uint iSample : SV_SAMPLEINDEX)
+void SSFX_ScreenSpaceReflections(float2 tc, float4 P, float3 N, float gloss, inout float4 color, uint iSample : SV_SAMPLEINDEX)
 {
 	// Note: Distance falloff on "rain_patch_normal.ps"
 	
 	if (P.z > reflections_distance.x)
-		return;
+    {
+        // Calculate distance falloff
+        float distance_to_camera = P.z - reflections_distance.x;
+        float falloff_factor = exp(-distance_to_camera * G_SSR_FALLOFF_RATE);
+        
+        // Apply falloff to gloss
+        gloss *= falloff_factor;
+    }
 		
 	// Material conditions ( MAT_FLORA and Terrain for now... )
 	bool m_terrain = abs(P.w - 0.95f) <= 0.02f;
@@ -166,22 +186,25 @@ void SSFX_ScreenSpaceReflections(float2 tc, float4 P, float3 N, float gloss, ino
 
 	// Sky is the reflection base...
 #ifdef G_SSR_CHEAP_SKYBOX
-	reflection = SSFX_calc_env(v2reflect) * G_SSR_SKY_INTENSITY * !ssfx_is_underground.x;;
+	reflection = SSFX_calc_env(v2reflect) * ssfx_ssr_2.y * !ssfx_is_underground.x;
 #else
-	reflection = SSFX_calc_sky(v2reflect) * G_SSR_SKY_INTENSITY * !ssfx_is_underground.x;
+	reflection = SSFX_calc_sky(v2reflect) * ssfx_ssr_2.y * !ssfx_is_underground.x;
 #endif
 
 	// Valid UV coor? SSFX_trace_ssr_ray return 0.0f if uv is out of bounds or sky.
 	if (all(hit_uv.xy))
 	{
 		// Get scene reflection
-		refl_ray = SSFX_get_scene(hit_uv.xy, iSample);
+		refl_ray = SSFX_get_image(hit_uv.xy, iSample);//SSFX_get_scene(hit_uv.xy, iSample);
 
 		// Set reflection UV
 		uvcoor = hit_uv.xy;
+		
+		// Reflection fog fadeout
+		float refl_fog = 1.0 - saturate(( length(float3(inVec.x,inVec.y,hit_uv.z)) * fog_params.w + fog_params.x));
 
 		// Let's fade the reflection based on ray XY coor to avoid abrupt changes and glitches
-		float HitFade = saturate(hit_uv.y * G_SSR_VERTICAL_SCREENFADE);
+		float HitFade = saturate(hit_uv.y * refl_fog * refl_fog * G_SSR_VERTICAL_SCREENFADE);
 
 		// Mix base reflection ( skybox ) with ray reflection
 		reflection = lerp(reflection, refl_ray, HitFade);
@@ -192,7 +215,7 @@ void SSFX_ScreenSpaceReflections(float2 tc, float4 P, float3 N, float gloss, ino
 		refl_power = gloss * fresnel_amount;
 
 		// Set reflection UV
-		uvcoor = hit_uv.zw;
+		uvcoor = float2(0, hit_uv.w);//hit_uv.zw;
 	}
 
 	// Fade sky if !m_terrain ( Terrain MAT )
@@ -208,13 +231,13 @@ void SSFX_ScreenSpaceReflections(float2 tc, float4 P, float3 N, float gloss, ino
 	WeaponFactor = saturate(WeaponFactor + 1.0f * m_terrain);
 	
 	// Global intensity and limit max value.
-	float main_clamp = clamp(refl_power * G_SSR_INTENSITY, 0, G_SSR_MAX_INTENSITY);
+	float main_clamp = clamp(refl_power * ssfx_ssr_2.x, 0, G_SSR_MAX_INTENSITY);
 	
 	// Raise reflection intensity and max limit when raining. ( NOTE: Reverted to rain intensity, but improvements are on the way... )
-	float rain_extra = G_SSR_WEAPON_RAIN_FACTOR * rain_params.x;
+	float rain_extra = G_SSR_WEAPON_RAIN_FACTOR * rain_params.y;
 
 	// Weapon intensity and limit max value.
-	float wpn_clamp = clamp((refl_power + rain_extra) * G_SSR_WEAPON_INTENSITY, 0, G_SSR_WEAPON_MAX_INTENSITY + rain_extra);
+	float wpn_clamp = clamp((refl_power + rain_extra) * ssfx_ssr_2.z, 0, ssfx_ssr_2.w + rain_extra);
 
 	#ifdef G_SSR_WEAPON_REFLECT_ONLY_WITH_RAIN
 		wpn_clamp *= rain_params.x;
@@ -225,7 +248,10 @@ void SSFX_ScreenSpaceReflections(float2 tc, float4 P, float3 N, float gloss, ino
 
 	// Apply SSR fade to reflection.
 	refl_power *= ray_fade;
+	
+	// Fog Fix ( Render order problem... )
+	float fog = 1.0 - saturate(( length(P.xyz) * fog_params.w + fog_params.x));
 
 	// Add the reflection to the scene.
-	color = lerp(color, reflection, refl_power);
+	color = float4(reflection, refl_power * fog * fog);//lerp(color, reflection, refl_power);
 }

@@ -182,7 +182,7 @@ void SArtefactActivation::SpawnAnomaly()
 		m_af->Center(pos);
 		CSE_Abstract		*object = Level().spawn_item(	zone_sect,
 															pos,
-															(g_dedicated_server)?u32(-1):m_af->ai_location().level_vertex_id(),
+															m_af->ai_location().level_vertex_id(),
 															0xffff,
 															true
 		);

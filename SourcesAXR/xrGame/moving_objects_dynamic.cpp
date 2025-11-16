@@ -543,21 +543,21 @@ void moving_objects::query_action_dynamic		(moving_object *object)
 
 	m_collision_emitters.push_back		(object);
 	while (!m_collision_emitters.empty()) {
-		moving_object					*object = m_collision_emitters.back();
+		moving_object					*object_ = m_collision_emitters.back();
 		m_collision_emitters.pop_back	();
 
 		m_visited_emitters.insert		(
 			std::lower_bound(
 				m_visited_emitters.begin(),
 				m_visited_emitters.end(),
-				object
+				object_
 			),
-			object
+			object_
 		);
 
-		fill_nearest_moving		(object);
+		fill_nearest_moving		(object_);
 		generate_emitters		();
-		generate_collisions		(object);
+		generate_collisions		(object_);
 	}
 
 	{

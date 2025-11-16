@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "pch_script.h"
 #include "car.h"
 //#if 0
 
@@ -33,6 +34,9 @@
 #include "CharacterPhysicsSupport.h"
 #include "hudmanager.h"
 #include "UIGameSP.h"
+#include "ai_space.h"
+#include "../xrServerEntitiesCS/script_engine.h"
+#include "AdvancedXrayGameConstants.h"
 
 BONE_P_MAP CCar::bone_map=BONE_P_MAP();
 
@@ -91,6 +95,16 @@ CCar::CCar()
 	m_steer_angle=0.f;
 	m_current_rpm = 0.f;
 	m_current_engine_power = 0.f;
+
+	m_bHasTrunk = false;
+	m_sTrunkBone = nullptr;
+	m_sBonnetBone = nullptr;
+
+	m_fInventoryFullness = 0.0f;
+	m_fInventoryCapacity = 500.0f;
+	m_fWeightImpactFactor = 0.0f;
+	m_fTrunkWeight = 0.0f;
+
 #ifdef DEBUG
 	InitDebug();
 #endif
@@ -164,7 +178,11 @@ void	CCar::Load					( LPCSTR section )
 	inherited::Load					(section);
 	//CPHSkeleton::Load(section);
 	ISpatial*		self				=	smart_cast<ISpatial*> (this);
-	if (self)		self->spatial.type	|=	STYPE_VISIBLEFORAI;	
+	
+	if (self)
+		self->spatial.type				|=	STYPE_VISIBLEFORAI;	
+
+	m_fInventoryCapacity				= READ_IF_EXISTS(pSettings, r_float, section, "inventory_capacity", 500.0f);
 }
 
 BOOL	CCar::net_Spawn				(CSE_Abstract* DC)
@@ -172,26 +190,39 @@ BOOL	CCar::net_Spawn				(CSE_Abstract* DC)
 #ifdef DEBUG
 	InitDebug();
 #endif
-	CSE_Abstract					*e = (CSE_Abstract*)(DC);
-	CSE_ALifeCar					*co=smart_cast<CSE_ALifeCar*>(e);
-	BOOL							R = inherited::net_Spawn(DC);
+	if (!inherited::net_Spawn(DC))
+		return (FALSE);
 
-	PKinematics(Visual())->CalculateBones_Invalidate();
-	PKinematics(Visual())->CalculateBones(TRUE);
+	CSE_Abstract* e = (CSE_Abstract*)(DC);
+	CSE_ALifeCar* car = smart_cast<CSE_ALifeCar*>(e);
 
 	CPHSkeleton::Spawn(e);
-	setEnabled						(TRUE);
-	setVisible						(TRUE);
-	PKinematics(Visual())->CalculateBones_Invalidate();
-	PKinematics(Visual())->CalculateBones(TRUE);
-	m_fSaveMaxRPM					= m_max_rpm;
-	SetfHealth						(co->health);
 
-	if(!g_Alive())					b_exploded=true;
-	else							b_exploded=false;
+	IKinematics* K = smart_cast<IKinematics*>(Visual());
+	IKinematicsAnimated* A = smart_cast<IKinematicsAnimated*>(Visual());
+
+	if (A)
+	{
+		if (car->startup_animation.size())
+			A->PlayCycle(*car->startup_animation);
+		K->CalculateBones(TRUE);
+	}
+
+	setEnabled(TRUE);
+	setVisible(TRUE);
+
+	m_fSaveMaxRPM = m_max_rpm;
+	SetfHealth(car->health);
+
+	if (!g_Alive())
+		b_exploded = true;
+	else
+	{
+		b_exploded = false;
+		processing_activate();
+	}
 									
 	CDamagableItem::RestoreEffect();
-	
 	
 	CInifile* pUserData		= PKinematics(Visual())->LL_UserData(); 
 	if(pUserData->section_exist("destroyed"))
@@ -205,8 +236,7 @@ BOOL	CCar::net_Spawn				(CSE_Abstract* DC)
 		m_memory->reload	(pUserData->r_string("visual_memory_definition", "section"));
 	}
 
-	return							(CScriptEntity::net_Spawn(DC) && R);
-	
+	return							(CScriptEntity::net_Spawn(DC));
 }
 
 void CCar::ActorObstacleCallback					(bool& do_colide,bool bo1,dContact& c,SGameMtl* material_1,SGameMtl* material_2)	
@@ -231,6 +261,8 @@ void CCar::SpawnInitPhysics	(CSE_Abstract	*D)
 	//PPhysicsShell()->add_ObjectContactCallback(ActorObstacleCallback);
 	SetDefaultNetState				(so);
 	CPHUpdateObject::Activate       ();
+
+	m_pPhysicsShell->applyImpulse	(Fvector().set(0.f, -1.f, 0.f), 0.1f);
 }
 
 void	CCar::net_Destroy()
@@ -248,12 +280,6 @@ void	CCar::net_Destroy()
 	CScriptEntity::net_Destroy();
 	inherited::net_Destroy();
 	CExplosive::net_Destroy();
-	if(m_pPhysicsShell)
-	{
-		m_pPhysicsShell->Deactivate();
-		m_pPhysicsShell->ZeroCallbacks();
-		xr_delete(m_pPhysicsShell);
-	}
 	CHolderCustom::detach_Actor();
 	ClearExhausts();
 	m_wheels_map.clear();
@@ -262,6 +288,7 @@ void	CCar::net_Destroy()
 	m_exhausts.clear();
 	m_breaking_wheels.clear();
 	m_doors.clear();
+	m_indoor_lights_doors.clear();
 	m_gear_ratious.clear();
 	m_car_sound->Destroy();
 	CPHUpdateObject::Deactivate();
@@ -269,6 +296,14 @@ void	CCar::net_Destroy()
 	m_damage_particles.Clear();
 	CPHDestroyable::RespawnInit();
 	CPHCollisionDamageReceiver::Clear();
+
+	if (m_pPhysicsShell)
+	{
+		m_pPhysicsShell->Deactivate();
+		m_pPhysicsShell->ZeroCallbacks();
+		xr_delete(m_pPhysicsShell);
+	}
+
 	b_breaks=false;
 }
 
@@ -501,6 +536,7 @@ void CCar::UpdateCL()
 
 	UpdateExhausts	();
 	m_lights.Update	();
+	m_indoor_lights.Update();
 }
 
 void	CCar::renderable_Render				( )
@@ -722,6 +758,20 @@ bool CCar::is_Door(u16 id)
 	return true;
 }
 
+bool CCar::is_IndoorLightsDoor(u16 id, xr_vector<u16>::iterator& i)
+{
+	i = std::find(m_indoor_lights_doors.begin(), m_indoor_lights_doors.end(), id);
+
+	if (i == m_indoor_lights_doors.end())
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+}
+
 bool CCar::Enter(const Fvector& pos,const Fvector& dir,const Fvector& foot_pos)
 {
 	xr_map<u16,SDoor>::iterator i,e;
@@ -766,9 +816,9 @@ void CCar::ParseDefinitions()
 	R_ASSERT2(ini,"Car has no description !!! See ActorEditor Object - UserData");
 	CExplosive::Load(ini,"explosion");
 
-	m_camera_position_firsteye	= ini->r_fvector3("car_definition", "camera_pos_firsteye");
-	m_camera_position_lookat	= ini->r_fvector3("car_definition", "camera_pos_lookat");
-	m_camera_position_free		= ini->r_fvector3("car_definition", "camera_pos_free");
+	m_camera_position_firsteye	= READ_IF_EXISTS(ini, r_fvector3, "car_definition", "camera_pos_firsteye", Fvector3().set(0.f, 0.f, 0.f));
+	m_camera_position_lookat	= READ_IF_EXISTS(ini, r_fvector3, "car_definition", "camera_pos_lookat", Fvector3().set(0.f, 0.f, 0.f));
+	m_camera_position_free		= READ_IF_EXISTS(ini, r_fvector3, "car_definition", "camera_pos_free", Fvector3().set(0.f, 0.f, 0.f));
 
 	///////////////////////////car definition///////////////////////////////////////////////////
 	fill_wheel_vector			(ini->r_string	("car_definition","driving_wheels"),m_driving_wheels);
@@ -843,13 +893,16 @@ void CCar::ParseDefinitions()
 	m_fuel=m_fuel_tank;
 	m_fuel_consumption=ini->r_float("car_definition","fuel_consumption");
 	m_fuel_consumption/=100000.f;
+	m_fWeightImpactFactor = READ_IF_EXISTS(ini, r_float, "car_definition", "fuel_weight_impack_factor", 0.0f);
+
 	if(ini->line_exist("car_definition","exhaust_particles"))
 		m_exhaust_particles = ini->r_string("car_definition","exhaust_particles");
 	///////////////////////////////lights///////////////////////////////////////////////////
 	m_lights.Init(this);
 	m_lights.ParseDefinitions();
 
-
+	m_indoor_lights.Init(this);
+	m_indoor_lights.ParseDefinitions();
 	
 	if(ini->section_exist("animations"))
 	{
@@ -862,7 +915,25 @@ void CCar::ParseDefinitions()
 		m_doors_torque_factor=ini->r_u16("doors","open_torque_factor");
 	}
 
+	m_bHasTrunk = READ_IF_EXISTS(ini, r_bool, "car_definition", "has_trunk", false);
+	m_sTrunkBone = READ_IF_EXISTS(ini, r_string, "car_definition", "trunk_bone", nullptr);
+	m_sBonnetBone = READ_IF_EXISTS(ini, r_string, "car_definition", "bonnet_bone", nullptr);
+
 	m_damage_particles.Init(this);
+
+	if (ini->section_exist("lights") && ini->line_exist("lights", "indoorlightdoors"))
+	{
+		LPCSTR S = ini->r_string("lights", "indoorlightdoors");
+		int count = _GetItemCount(S);
+		IKinematics* K = smart_cast<IKinematics*>(Visual());
+		string64 S1;
+
+		for (int i = 0; i < count; ++i)
+		{
+			_GetItem(S, i, S1);
+			m_indoor_lights_doors.push_back(K->LL_BoneID(S1));
+		}
+	}
 }
 
 void CCar::CreateSkeleton(CSE_Abstract	*po)
@@ -1069,17 +1140,34 @@ void CCar::Drive()
 void CCar::StartEngine()
 {
 	
-	if(m_fuel<EPS||b_engine_on) return;
+	if(m_fuel<EPS||b_engine_on)
+		return;
+
 	PlayExhausts();
 	m_car_sound->Start();
 	b_engine_on=true;
 	m_current_rpm=0.f;
 	m_current_engine_power = 0.f;
 	b_starting=true;
+
+	auto it = m_items.begin();
+	auto it_e = m_items.end();
+	float trunk_weight{};
+
+	for (; it != it_e; ++it)
+	{
+		PIItem itm = smart_cast<PIItem>(Level().Objects.net_Find(*it));
+		VERIFY(itm);
+		trunk_weight += itm->Weight();
+	}
+
+	m_fTrunkWeight = trunk_weight;
 }
 void CCar::StopEngine()
 {
-	if(!b_engine_on) return;
+	if(!b_engine_on)
+		return;
+
 	//m_car_sound->Stop();
 	//StopExhausts();
 	AscCall(ascSndStall);
@@ -1120,7 +1208,7 @@ void CCar::SwitchHorn()
 {
 	IKinematics* pKinematics = smart_cast<IKinematics*>(Visual());
 	CInifile* ini = pKinematics->LL_UserData();
-	snd_horn.create(ini->r_string("car_sound", "snd_horn_name"), st_Effect, sg_SourceType);
+	snd_horn.create(ini->r_string("car_sound", "horn_sound"), st_Effect, sg_SourceType);
 	snd_horn.play_at_pos(Actor(), Actor()->Position());
 }
 ///**Horn**///
@@ -1524,11 +1612,30 @@ bool CCar::Use(const Fvector& pos,const Fvector& dir,const Fvector& foot_pos)
 	VERIFY(!fis_zero(Q.dir.square_magnitude()));
 	if (g_pGameLevel->ObjectSpace.RayQuery(RQR,collidable.model,Q))
 	{
+		IKinematics* K = smart_cast<IKinematics*>(Visual());
+		u16 trunkBoneID = K->LL_BoneID(m_sTrunkBone);
+
 		collide::rq_results& R = RQR;
 		int y=R.r_count();
 		for (int k=0; k<y; ++k)
 		{
 			collide::rq_result* I = R.r_begin()+k;
+
+			if (m_bHasTrunk && trunkBoneID != BI_NONE && (trunkBoneID == (u16)I->element))
+			{
+				if (!HUD().GetUI()->UIGame()->MainInputReceiver())
+				{
+					ShowTrunk();
+					TrunkDoorOpen();
+
+					luabind::functor<void> funct;
+					if (ai().script_engine().functor("mfs_functions.on_use_car_trunk", funct))
+						funct();
+				}
+
+				return false;
+			}
+
 			if(is_Door((u16)I->element,i)) 
 			{
 				bool front=i->second.IsFront(pos,dir);
@@ -1576,11 +1683,15 @@ bool CCar::DoorSwitch(u16 id)
 }
 bool CCar::DoorClose(u16 id)
 {
-
+	xr_vector<u16>::iterator l_doors;
 	xr_map<u16,SDoor>::iterator i;
 	if(is_Door(id,i)) 
 	{
 		i->second.Close();
+
+		if (is_IndoorLightsDoor(id, l_doors))
+			m_indoor_lights.TurnOffIndoorLights();
+
 		return true;
 	}
 	else
@@ -1591,11 +1702,15 @@ bool CCar::DoorClose(u16 id)
 
 bool CCar::DoorOpen(u16 id)
 {
-
+	xr_vector<u16>::iterator l_doors;
 	xr_map<u16,SDoor>::iterator i;
 	if(is_Door(id,i)) 
 	{
 		i->second.Open();
+
+		if (is_IndoorLightsDoor(id, l_doors))
+			m_indoor_lights.TurnOnIndoorLights();
+
 		return true;
 	}
 	else
@@ -1701,12 +1816,20 @@ float CCar::EngineDriveSpeed()
 
 void CCar::UpdateFuel(float time_delta)
 {
-	if(!b_engine_on) return;
-	if(m_current_rpm>m_min_rpm)
-		m_fuel-=time_delta*(m_current_rpm-m_min_rpm)*m_fuel_consumption;
+	if (!b_engine_on)
+		return;
+
+	float base_fuel_consumption = m_fuel_consumption;
+	float weight_factor = 1.0f + (m_fTrunkWeight * m_fWeightImpactFactor);
+	float total_fuel_consumption = base_fuel_consumption * weight_factor;
+
+	if (m_current_rpm > m_min_rpm)
+		m_fuel -= time_delta * (m_current_rpm - m_min_rpm) * total_fuel_consumption;
 	else
-		m_fuel-=time_delta*m_min_rpm*m_fuel_consumption;
-	if(m_fuel<EPS) StopEngine();
+		m_fuel -= time_delta * m_min_rpm * m_fuel_consumption;
+
+	if (m_fuel < EPS)
+		StopEngine();
 }
 
 float CCar::AddFuel(float ammount)
@@ -1741,7 +1864,6 @@ void CCar::OnEvent(NET_Packet& P, u16 type)
 	CExplosive::OnEvent		(P,type);
 
 	//обработка сообщений, нужных для работы с багажником машины
-	u16 id;
 	switch (type)
 	{
 	case GE_OWNERSHIP_TAKE:
@@ -1749,10 +1871,16 @@ void CCar::OnEvent(NET_Packet& P, u16 type)
 			u16 id;
 			P.r_u16		(id);
 			CObject* itm = Level().Objects.net_Find(id);  VERIFY(itm);
+			CInventoryItem* pIItem = smart_cast<CInventoryItem*>(itm);
+
 			m_items.push_back(id);
 			itm->H_SetParent(this);
 			itm->setVisible(FALSE);
 			itm->setEnabled(FALSE);
+
+			if (GameConstants::GetLimitedInvBoxes())
+				m_fInventoryFullness += pIItem->GetOccupiedInvSpace();
+
 			if (auto obj = smart_cast<CGameObject*>(itm))
 			{
 				//callback(GameObject::eInvBoxItemTake)(obj->lua_game_object());
@@ -1772,6 +1900,12 @@ void CCar::OnEvent(NET_Packet& P, u16 type)
 
 			if (CGameObject* obj = smart_cast<CGameObject*>(itm))
 			{
+				if (GameConstants::GetLimitedInvBoxes())
+				{
+					CInventoryItem* inv_item = smart_cast<CInventoryItem*>(obj);
+					m_fInventoryFullness -= inv_item->GetOccupiedInvSpace();
+				}
+
 				//callback(GameObject::eInvBoxItemTake)(obj->lua_game_object());
 			}
 		}break;
@@ -1847,6 +1981,8 @@ void CCar::CarExplode()
 	if(b_exploded) return;
 	CPHSkeleton::SetNotNeedSave();
 	if(m_car_weapon)m_car_weapon->Action(CCarWeapon::eWpnActivate,0);
+	m_lights.TurnOffHeadLights();
+	m_indoor_lights.TurnOffIndoorLights();
 	m_damage_particles.Stop1(this);
 	m_damage_particles.Stop2(this);
 	b_exploded=true;
@@ -1858,7 +1994,7 @@ void CCar::CarExplode()
 		if(!m_doors.empty())m_doors.begin()->second.GetExitPosition(m_exit_position);
 		else m_exit_position.set(Position());
 		A->detach_Vehicle();
-		if(A->g_Alive()<=0.f)A->character_physics_support()->movement()->DestroyCharacter();
+		if(A->g_Alive()<=0.f)A->character_physics_support()->get_movement()->DestroyCharacter();
 	}
 
 	if(CPHDestroyable::CanDestroy())
@@ -2183,4 +2319,22 @@ void CCar::ShowTrunk()
 {
 	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
 	if (pGameSP) pGameSP->StartCarBody(Actor(), this);
+}
+
+void CCar::TrunkDoorClose()
+{
+	IKinematics* K = smart_cast<IKinematics*>(Visual());
+	u16 trunkBoneID = K->LL_BoneID(m_sTrunkBone);
+
+	if (trunkBoneID != BI_NONE && is_Door(trunkBoneID))
+		DoorClose(trunkBoneID);
+}
+
+void CCar::TrunkDoorOpen()
+{
+	IKinematics* K = smart_cast<IKinematics*>(Visual());
+	u16 trunkBoneID = K->LL_BoneID(m_sTrunkBone);
+
+	if (trunkBoneID != BI_NONE && is_Door(trunkBoneID))
+		DoorOpen(trunkBoneID);
 }

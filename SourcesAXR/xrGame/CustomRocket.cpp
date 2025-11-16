@@ -23,8 +23,6 @@
 #include "game_base_space.h"
 #endif
 
-extern ENGINE_API	bool g_dedicated_server;
-
 #define CHOOSE_MAX(x,inst_x,y,inst_y,z,inst_z)\
 	if(x>y)\
 	if(x>z){inst_x;}\
@@ -347,8 +345,8 @@ void CCustomRocket::PlayContact()
 	//дективировать физическую оболочку,чтоб ракета не летела дальше
 	if(m_pPhysicsShell)
 	{
-		m_pPhysicsShell->set_LinearVel(zero_vel);
-		m_pPhysicsShell->set_AngularVel(zero_vel);
+		m_pPhysicsShell->set_LinearVel(m_zero_vel);
+		m_pPhysicsShell->set_AngularVel(m_zero_vel);
 		m_pPhysicsShell->set_ObjectContactCallback(NULL);
 		m_pPhysicsShell->Disable();
 	}
@@ -521,6 +519,7 @@ void CCustomRocket::StartLights()
 	m_pTrailLight->set_range(m_fTrailLightRange);
 	m_pTrailLight->set_position(Position()); 
 	m_pTrailLight->set_active(true);
+	m_pTrailLight->set_flare(true);
 }
 
 void CCustomRocket::StopLights()

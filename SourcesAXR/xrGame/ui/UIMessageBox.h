@@ -47,6 +47,9 @@ public:
 	virtual void SendMessage		(CUIWindow *pWnd, s16 msg, void *pData);
 
 	void		OnYesOk				();
+
+	pcstr		GetDebugType		() override { return "CUIMessageBox"; }
+
 protected:
 	xr_string	m_ret_val;
 	CUI3tButton* m_UIButtonYesOk;

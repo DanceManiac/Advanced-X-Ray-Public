@@ -142,7 +142,7 @@ void   ATTACK_ON_RUN_STATE::calculate_predicted_enemy_pos ()
 		return;
 	}
 
-	float const		self_velocity			=	object->movement().speed();
+	float const		self_velocity			=	object->get_movement().speed();
 	float const		self2enemy_time			=	self_velocity > epsilon ? 
 												self2enemy_mag / self_velocity : 0;
 
@@ -487,7 +487,7 @@ void   ATTACK_ON_RUN_STATE::update_attack ()
 			debug::text_tree& text_tree		=	DBG().get_text_tree().find_or_add("ActorView");
 #endif // #ifdef DEBUG_STATE
 
-			float		velocity			=	object->movement().speed();
+			float		velocity			=	object->get_movement().speed();
 			Fvector self_to_enemy_xz		=	enemy_pos - object->Position();
 			self_to_enemy_xz.y				=	0;
 			float const current_atack_dist	=	magnitude(self_to_enemy_xz);
@@ -636,7 +636,7 @@ bool ATTACK_ON_RUN_STATE::check_start_conditions()
 	}
 	
 	// check angle
-	if ( !object->control().direction().is_face_target(object->EnemyMan.get_enemy(), deg(30)) )
+	if ( !object->control().get_direction().is_face_target(object->EnemyMan.get_enemy(), deg(30)) )
 	{
 		return									false;
 	}

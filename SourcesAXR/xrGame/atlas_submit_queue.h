@@ -4,6 +4,7 @@
 #include <boost/noncopyable.hpp>
 #include "../xrCore/fastdelegate.h"
 #include "profile_data_types.h"
+#include "profile_data_types_script.h"
 
 namespace gamespy_profile
 {

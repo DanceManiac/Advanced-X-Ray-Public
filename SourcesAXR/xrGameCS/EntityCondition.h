@@ -27,6 +27,7 @@ enum EBoostParams
 	eBoostDrugsRestore,
 	eBoostNarcotismRestore,
 	eBoostWithdrawalRestore,
+	eBoostFrostbiteRestore,
 	eBoostMaxWeight,
 	eBoostRadiationProtection,
 	eBoostTelepaticProtection,
@@ -61,6 +62,7 @@ static const LPCSTR ef_boosters_section_names[] =
 	"boost_drugs_restore",
 	"boost_narcotism_restore",
 	"boost_withdrawal_restore",
+	"boost_frostbite_restore",
 	"boost_max_weight",
 	"boost_radiation_protection",
 	"boost_telepat_protection",
@@ -98,6 +100,7 @@ struct SMedicineInfluenceValues
 	float fHangover;
 	float fNarcotism;
 	float fWithdrawal;
+	float fFrostbite;
 	float fRadiation;
 	float fPsyHealth;
 	float fWoundsHeal;
@@ -157,6 +160,7 @@ public:
 	IC float				GetHangover				() const			{return m_fHangover;}
 	IC float				GetNarcotism			() const			{return m_fNarcotism;}
 	IC float				GetWithdrawal			() const			{return m_fWithdrawal;}
+	IC float				GetFrostbite			() const			{return m_fFrostbite;}
 
 	IC float 				GetEntityMorale			() const			{return m_fEntityMorale;}
 
@@ -164,29 +168,30 @@ public:
 
 	virtual bool 			IsLimping				() const;
 
-	virtual void			ChangeSatiety			(float value)		{};
-	virtual void 			ChangeThirst			(float value)		{};
-	virtual void			ChangeIntoxication		(const float value)	{};
-	virtual void			ChangeSleepeness		(const float value)	{};
-	virtual void			ChangeAlcoholism		(const float value)	{};
-	virtual void			ChangeHangover			(const float value)	{};
-	virtual void			ChangeNarcotism			(const float value)	{};
-	virtual void			ChangeWithdrawal		(const float value)	{};
-	virtual void 			ChangeDrugs				(float value)		{};
-	void 					ChangeHealth			(float value);
-	void 					ChangePower				(float value);
-	void 					ChangeRadiation			(float value);
-	void 					ChangePsyHealth			(float value);
-	virtual void 			ChangeAlcohol			(float value){};
+	virtual void			ChangeSatiety			(const float value)		{};
+	virtual void			ChangeThirst			(const float value)		{};
+	virtual void			ChangeIntoxication		(const float value)		{};
+	virtual void			ChangeSleepeness		(const float value)		{};
+	virtual void			ChangeAlcoholism		(const float value)		{};
+	virtual void			ChangeHangover			(const float value)		{};
+	virtual void			ChangeNarcotism			(const float value)		{};
+	virtual void			ChangeWithdrawal		(const float value)		{};
+	virtual void 			ChangeDrugs				(const float value)		{};
+	virtual void			ChangeFrostbite			(const float value)		{};
+	void 					ChangeHealth			(const float value);
+	void 					ChangePower				(const float value);
+	void 					ChangeRadiation			(const float value);
+	void 					ChangePsyHealth			(const float value);
+	virtual void 			ChangeAlcohol			(const float value){};
 
 	IC void					MaxPower				()					{m_fPower = m_fPowerMax;};
-	IC void					SetMaxPower				(float val)			{m_fPowerMax = val; clamp(m_fPowerMax,0.1f,1.0f);};
+	IC void					SetMaxPower				(const float val)	{m_fPowerMax = val; clamp(m_fPowerMax,0.1f,1.0f);};
 	IC float				GetMaxPower				() const			{return m_fPowerMax;};
 
-	void 					ChangeBleeding			(float percent);
+	void 					ChangeBleeding			(const float percent);
 
-	void 					ChangeCircumspection	(float value);
-	void 					ChangeEntityMorale		(float value);
+	void 					ChangeCircumspection	(const float value);
+	void 					ChangeEntityMorale		(const float value);
 
 	virtual CWound*			ConditionHit			(SHit* pHDS);
 	//обновления состояния с течением времени
@@ -200,7 +205,7 @@ public:
 	float					BleedingSpeed			();
 
 	CObject*				GetWhoHitLastTime		() {return m_pWho;}
-	u16						GetWhoHitLastTimeID		() {return m_iWhoID;}
+	u16						GetWhoHitLastTimeID		() const {return m_iWhoID;}
 
 	CWound*					AddWound				(float hit_power, ALife::EHitType hit_type, u16 element);
 
@@ -233,8 +238,10 @@ protected:
 	//для подсчета состояния открытых ран,
 	//запоминается кость куда был нанесен хит
 	//и скорость потери крови из раны
+public:
 	DEFINE_VECTOR(CWound*, WOUND_VECTOR, WOUND_VECTOR_IT);
 	WOUND_VECTOR			m_WoundVector;
+protected:
 	//очистка массива ран
 	
 
@@ -252,6 +259,7 @@ protected:
 	float m_fHangover;				//Похмелье
 	float m_fNarcotism;				//Наркомания
 	float m_fWithdrawal;			//Ломка
+	float m_fFrostbite;				//Обморожение
 
 	//максимальные величины
 	//	float m_fSatietyMax;

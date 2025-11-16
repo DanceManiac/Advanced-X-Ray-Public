@@ -30,10 +30,13 @@ class CWeapon;
 class CPhysicsShellHolder;
 class NET_Packet;
 class CEatableItem;
-class CAntigasFilter;
-class CBattery;
-class CRepairKit;
 class CArtefact;
+class CBattery;
+class CAntigasFilter;
+class CRepairKit;
+class CTorch;
+class CCustomDetector;
+class CCustomOutfit;
 
 struct SPHNetState;
 struct net_update_IItem;
@@ -82,17 +85,21 @@ protected:
 								FInInterpolate		=(1<<10),
 								FIsQuestItem		=(1<<11),
 								FIsHelperItem		=(1<<12),
+								FIsDropInProcess	=(1<<13),
 	};
 
 	Flags16						m_flags;
 	BOOL						m_can_trade;
 	bool						m_bCanUse;
+	bool						m_bCanPickTroughGeom;
 public:
 								CInventoryItem		();
 	virtual						~CInventoryItem		();
 
 public:
 	virtual void				Load				(LPCSTR section);
+
+			void				ReloadNames			();
 
 			LPCSTR				NameItem			();// remove <virtual> by sea
 			LPCSTR				NameShort			();
@@ -136,12 +143,18 @@ public:
 			BOOL				GetDropManual		() const	{ return m_flags.test(FdropManual);}
 			void				SetDropManual		(BOOL val);
 
+			BOOL				IsItemDropNowFlag	() const	{ return m_flags.test(FIsDropInProcess);}
+			void				SetItemDropNowFlag	(BOOL value) { m_flags.set(FIsDropInProcess, value); }
+
 			BOOL				IsInvalid			() const;
 
-			BOOL				IsQuestItem			()	const	{return m_flags.test(FIsQuestItem);}			
+			BOOL				IsQuestItem			()	const	{return m_flags.test(FIsQuestItem);}
+			bool				CanPickThroughGeom	()	const	{ return m_bCanPickTroughGeom; }
 	virtual	u32					Cost				() const	{ return m_cost; }
-	virtual float				Weight				() const	{ return m_weight;}	
+	virtual float				Weight				() const	{ return m_weight;}
 			void				SetWeight			(float w)	{ m_weight = w; }
+
+			shared_str			GetPropertyBoxUseText()	const { return m_sPropertyBoxUseText; }
 
 public:
 	CInventory*					m_pInventory;
@@ -154,14 +167,20 @@ public:
 	u32							m_custom_text_clr_inv;
 	u32							m_custom_text_clr_hud;
 
+	shared_str					m_use_functor_str;
+	shared_str					m_use_precondition_func;
+	shared_str					m_take_precondition_func;
+
 	EItemPlace					m_eItemCurrPlace;
 
 
-	virtual void				OnMoveToSlot		() {};
+	virtual void				OnMoveToSlot		(EItemPlace prev) {};
 	virtual void				OnMoveToBelt		() {};
 	virtual void				OnMoveToRuck		(EItemPlace prev) {};
+	virtual void				OnDrop				() {};
+	virtual void				OnBeforeDrop		() {};
 					
-			Irect			GetInvGridRect		() const;
+			Irect				GetInvGridRect		() const;
 			const shared_str&	GetIconName			() const		{return m_icon_name;};
 			Frect			GetKillMsgRect		() const;
 	//---------------------------------------------------------------------
@@ -175,7 +194,7 @@ public:
 	IC		float				GetUnChargeLevel	() const					{return m_fUnchargeSpeed;}
 	virtual	float				GetChargeToShow		() const					{return GetChargeLevel();}
 	IC		void				SetChargeLevel		(float charge_level)		{ m_fCurrentChargeLevel = charge_level;}
-			void				ChangeChargeLevel	(float val);
+	virtual	void				ChangeChargeLevel	(float val);
 
 			u32					GetSlot				()  const					{return m_slot;}
 
@@ -194,6 +213,11 @@ public:
 
 	virtual bool 				IsNecessaryItem	    (CInventoryItem* item);
 	virtual bool				IsNecessaryItem	    (const shared_str& item_sect){return false;};
+
+	shared_str					GetTakePreconditionFunc()						{ return m_take_precondition_func; }
+
+	bool						GetUpgradeIcon3D	()							{ return m_bUpgradesIcon3D; }
+
 protected:	
 	u32							m_slot;
 	u32							m_cost;
@@ -203,8 +227,12 @@ protected:
 	float						m_fMaxChargeLevel;
 	float						m_fUnchargeSpeed;
 	shared_str					m_Description;
+	shared_str					m_sPropertyBoxUseText;
 
 	float						m_fOccupiedInvSpace;
+
+	bool						m_bUpgradesIcon3D;
+
 protected:
 
 	ALife::_TIME_ID				m_dwItemRemoveTime;
@@ -265,7 +293,7 @@ public:
 	u16							object_id					() const;
 	u16							parent_id					() const;
 	virtual void				on_activate_physic_shell	() { R_ASSERT2(0, "failed call of virtual function!"); }
-
+	virtual bool				ParentIsActor				();
 protected:
 	float						m_holder_range_modifier;
 	float						m_holder_fov_modifier;
@@ -285,8 +313,11 @@ public:
 	virtual CEatableItem		*cast_eatable_item			()	{return 0;}
 	virtual CAntigasFilter		*cast_filter				()	{return 0;}
 	virtual CArtefact			*cast_artefact				()	{return 0;}
+	virtual CTorch				*cast_torch					()	{return 0;}
 	virtual CRepairKit			*cast_repair_kit			()	{return 0;}
 	virtual CBattery			*cast_battery				()	{return 0;}
+	virtual CCustomDetector		*cast_detector				()	{return 0;}
+	virtual CCustomOutfit		*cast_outfit				()	{return 0;}
 	virtual CWeapon				*cast_weapon				()	{return 0;}
 	virtual CFoodItem			*cast_food_item				()	{return 0;}
 	virtual CMissile			*cast_missile				()	{return 0;}

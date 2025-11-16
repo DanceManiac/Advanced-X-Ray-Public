@@ -790,9 +790,9 @@ void CSE_SmartCover::load_draw_data () {
 	fill_visuals				();
 }
 
-void CSE_SmartCover::on_render	(CDUInterface* du, ISE_AbstractLEOwner* owner, bool bSelected, const Fmatrix& parent,int priority, bool strictB2F)
+void CSE_SmartCover::on_render	(CDUInterface* du, ISE_AbstractLEOwner* owner_, bool bSelected, const Fmatrix& parent,int priority, bool strictB2F)
 {
-	inherited1::on_render	(du, owner, bSelected, parent, priority, strictB2F);
+	inherited1::on_render	(du, owner_, bSelected, parent, priority, strictB2F);
 	if ( !((1==priority)&&(false==strictB2F)) )	
 		return;
 
@@ -1980,16 +1980,16 @@ void CSE_ALifeObjectHangingLamp::FillProps	(LPCSTR pref, PropItemVec& values)
 }
 
 #define VIS_RADIUS 		0.25f
-void CSE_ALifeObjectHangingLamp::on_render(CDUInterface* du, ISE_AbstractLEOwner* owner, bool bSelected, const Fmatrix& parent,int priority, bool strictB2F)
+void CSE_ALifeObjectHangingLamp::on_render(CDUInterface* du, ISE_AbstractLEOwner* owner_, bool bSelected, const Fmatrix& parent,int priority, bool strictB2F)
 {
-	inherited1::on_render		(du,owner,bSelected,parent,priority,strictB2F);
+	inherited1::on_render		(du,owner_,bSelected,parent,priority,strictB2F);
 	if ((1==priority)&&(false==strictB2F)){
 		u32 clr					= bSelected?0x00FFFFFF:0x00FFFF00;
 		Fmatrix main_xform, ambient_xform;
-		owner->get_bone_xform		(*light_main_bone,main_xform);
+		owner_->get_bone_xform		(*light_main_bone,main_xform);
 		main_xform.mulA_43			(parent);
 		if(flags.is(flPointAmbient) ){
-			owner->get_bone_xform	(*light_ambient_bone,ambient_xform);
+			owner_->get_bone_xform	(*light_ambient_bone,ambient_xform);
 			ambient_xform.mulA_43	(parent);
 		}
 		if (bSelected){

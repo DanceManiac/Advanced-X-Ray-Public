@@ -142,17 +142,17 @@ float get_str_width(CGameFont*pFont, char ch)
 void CUILines::ParseText(){
 	if ( !fsimilar(m_oldWidth, m_wndSize.x) )
 	{
-		uFlags.set(flNeedReparse, TRUE);
 		m_oldWidth = m_wndSize.x;
+		uFlags.set(flNeedReparse, TRUE);
 	}
 	if (!uFlags.test(flComplexMode) || !uFlags.test(flNeedReparse))
 		return;
 
-	if(NULL == m_pFont)
+	if(!m_pFont)
 		return;
 
 	Reset();
-	if (!m_text.empty() && NULL == m_pFont)
+	if (!m_text.empty() && !m_pFont)
 		R_ASSERT2(false, "can't parse text without font");
 		
 
@@ -161,10 +161,11 @@ void CUILines::ParseText(){
 		line = ParseTextToColoredLine(m_text.c_str());
 	else
 	{
-		line = xr_new<CUILine>();
 		CUISubLine subline;
 		subline.m_text = m_text;
 		subline.m_color = GetTextColor();
+
+		line = xr_new<CUILine>();
 		line->AddSubLine(&subline);
 	}
 
@@ -246,12 +247,12 @@ void CUILines::ParseText(){
 	} else
 	{
 		float max_width							= m_wndSize.x;
-		u32 sbl_cnt								= line->m_subLines.size();
 		CUILine									tmp_line;
 		string4096								buff;
 		float curr_width						= 0.0f;
-		bool bnew_line							= false;
-		float __eps								= get_str_width(m_pFont,'o');//hack -(
+		//bool bnew_line							= false;
+		float __eps								= 0.1f;
+		u32 sbl_cnt								= line->m_subLines.size();
 		for(u32 sbl_idx=0; sbl_idx<sbl_cnt; ++sbl_idx)
 		{
 			bool b_last_subl					= (sbl_idx==sbl_cnt-1);
@@ -265,11 +266,11 @@ void CUILines::ParseText(){
 			{
 				bool b_last_ch	= (idx==sub_len-1);
 				
-				if(isspace(sbl.m_text[idx]))
+				if(iswspace(sbl.m_text[idx]))
 					last_space_idx = idx;
 
-				float w1		= get_str_width(m_pFont, sbl.m_text[idx]);
-				bool bOver		= (curr_width+w1+__eps > max_width);
+				float char_width		= get_str_width(m_pFont, sbl.m_text[idx]);
+				bool bOver		= (curr_width+char_width+__eps > max_width);
 
 				if(bOver || b_last_ch)
 				{
@@ -284,14 +285,14 @@ void CUILines::ParseText(){
 					tmp_line.AddSubLine	(buff , sbl.m_color);
 					curr_w_pos			= idx+1;
 				}else
-					curr_width			+= w1;
+					curr_width			+= char_width;
 
 				if(bOver || (b_last_ch&&sbl.m_last_in_line) )
 				{
 					m_lines.push_back	(tmp_line);
 					tmp_line.Clear		();
 					curr_width			= 0.0f;
-					bnew_line			= false;
+					//bnew_line			= false;
 				}
 			}
 			if(b_last_subl && !tmp_line.IsEmpty())
@@ -299,7 +300,7 @@ void CUILines::ParseText(){
 				m_lines.push_back	(tmp_line);
 				tmp_line.Clear		();
 				curr_width			= 0.0f;
-				bnew_line			= false;
+				//bnew_line			= false;
 			}
 		}
 	}
@@ -374,10 +375,15 @@ LPCSTR GetElipsisText(CGameFont* pFont, float width, LPCSTR source_text, LPSTR b
 void CUILines::Draw(float x, float y){
 	static string256 passText;
 
-	if (m_text.empty())
-		return;
+	//if (m_text.empty())
+		//return;
 
-	R_ASSERT(m_pFont);
+#pragma todo("DANCE MANIAC: Font scaling crash hack.");
+	if (!m_pFont)
+		m_pFont = UI().Font().pFontLetterica16Russian;
+
+	//R_ASSERT(m_pFont);
+
 	m_pFont->SetColor(m_dwTextColor);
 
 	if (!uFlags.is(flComplexMode))
@@ -478,16 +484,25 @@ float CUILines::GetIndentByAlign()const
 
 float CUILines::GetVIndentByAlign()
 {
+	float r = 0;
+
 	switch(m_eVTextAlign) {
-	case valTop: 
-		return 0;
+	case valTop: {
+		float delta_h = m_pFont->ScaleHeightDelta();
+		UI().ClientToScreenScaledHeight(delta_h);
+		return delta_h * -1;
+	}
 	case valCenter:
-		return (m_wndSize.y - GetVisibleHeight())/2;
+		r = (m_wndSize.y - GetVisibleHeight())/2;
+		break;
 	case valBotton:
-		return m_wndSize.y - GetVisibleHeight();
+		r = m_wndSize.y - GetVisibleHeight();
+		break;
 	default:
 		NODEFAULT;
 	}
+	return r;
+
 #ifdef DEBUG
 	return 0;
 #endif
@@ -501,9 +516,8 @@ u32 CUILines::GetColorFromText(const xr_string& str)const{
 
 	begin = str.find(BEGIN);
 	end = str.find(END, begin);
-	R_ASSERT2(npos != begin, "CUISubLine::GetColorFromText -- can't find beginning tag %c[");
-	R_ASSERT2(npos != end, "CUISubLine::GetColorFromText -- can't find ending tag ]");
-	
+    if (begin == npos || end == npos)
+        return m_dwTextColor;
 	// try default color
 	if (npos != str.find("%c[default]", begin, end - begin))
 		return m_dwTextColor;
@@ -521,11 +535,8 @@ u32 CUILines::GetColorFromText(const xr_string& str)const{
 	comma1_pos = str.find(",", begin);
 	comma2_pos = str.find(",", comma1_pos + 1);
 	comma3_pos = str.find(",", comma2_pos + 1);
-
-    R_ASSERT2(npos != comma1_pos, "CUISubLine::GetColorFromText -- can't find first comma");        
-	R_ASSERT2(npos != comma2_pos, "CUISubLine::GetColorFromText -- can't find second comma");
-	R_ASSERT2(npos != comma3_pos, "CUISubLine::GetColorFromText -- can't find third comma");
-	
+    if (comma1_pos == npos || comma2_pos == npos || comma3_pos == npos)
+        return m_dwTextColor;
 
 	u32 a, r, g, b;
 	xr_string single_color;

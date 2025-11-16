@@ -1,5 +1,6 @@
 #include "stdafx.h"
-#include "actor.h"
+#include "Actor.h"
+#include "ActorEffector.h"
 #include "weapon.h"
 #include "mercuryball.h"
 #include "inventory.h"
@@ -20,10 +21,19 @@
 #include "ui\UIPdaWnd.h"
 #include "ui\UIStatic.h"
 #include "string_table.h"
+#include "player_hud.h"
+#include "../xrPhysics/ElevatorState.h"
+#include "CustomDetector.h"
+#include "ui\UIActorMenu.h"
 
 #include "AdvancedXrayGameConstants.h"
 
 #define PICKUP_INFO_COLOR 0xFFDDDDDD
+
+extern bool g_block_all_except_movement;
+
+std::atomic<bool> isHidingInProgressInv(false);
+std::atomic<bool> TakeItemAnimNeeded(false);
 
 void CActor::feel_touch_new				(CObject* O)
 {
@@ -71,53 +81,67 @@ BOOL CActor::feel_touch_on_contact	(CObject *O)
 	return		(FALSE);
 }
 
-ICF static BOOL info_trace_callback(collide::rq_result& result, LPVOID params)
-{
-	BOOL& bOverlaped	= *(BOOL*)params;
-	if(result.O)
-	{
-		if (Level().CurrentEntity()==result.O)
-		{ //ignore self-actor
-			return			TRUE;
-		}else
-		{ //check obstacle flag
-			if(result.O->spatial.type&STYPE_OBSTACLE)
-				bOverlaped			= TRUE;
-
-			return			TRUE;
-		}
-	}else
-	{
-		//получить треугольник и узнать его материал
-		CDB::TRI* T		= Level().ObjectSpace.GetStaticTris()+result.element;
-		if (GMLib.GetMaterialByIdx(T->material)->Flags.is(SGameMtl::flPassable)) 
-			return TRUE;
-	}	
-	bOverlaped			= TRUE;
-	return				FALSE;
-}
-
 BOOL CActor::CanPickItem(const CFrustum& frustum, const Fvector& from, CObject* item)
 {
-	if(!item->getVisible())
+	if (!item->getVisible())
 		return FALSE;
 
-	BOOL	bOverlaped		= FALSE;
-	Fvector dir,to; 
-	item->Center			(to);
-	float range				= dir.sub(to,from).magnitude();
-	if (range>0.25f)
+	struct callback_data
 	{
-		if (frustum.testSphere_dirty(to,item->Radius()))
+		BOOL bOverlaped;
+		CObject* item;
+	} data;
+
+	data.bOverlaped = FALSE;
+	data.item = item;
+
+	Fvector dir, to;
+	item->Center(to);
+	float range = dir.sub(to, from).magnitude();
+
+	if (range > 0.25f)
+	{
+		if (frustum.testSphere_dirty(to, item->Radius()))
 		{
-			dir.div						(range);
-			collide::ray_defs			RD(from, dir, range, CDB::OPT_CULL, collide::rqtBoth);
-			VERIFY						(!fis_zero(RD.dir.square_magnitude()));
-			RQR.r_clear					();
-			Level().ObjectSpace.RayQuery(RQR, RD, info_trace_callback, &bOverlaped, NULL, item);
+			dir.div(range);
+			collide::ray_defs RD(from, dir, range, CDB::OPT_CULL, collide::rqtBoth);
+			VERIFY(!fis_zero(RD.dir.square_magnitude()));
+			RQR.r_clear();
+			Level().ObjectSpace.RayQuery(RQR, RD,
+				[](collide::rq_result& result, LPVOID params) -> BOOL
+				{
+					callback_data* data = (callback_data*)params;
+
+					if (result.O)
+					{
+						if (Level().CurrentEntity() == result.O)
+							return TRUE;
+						else
+						{
+							if (result.O->spatial.type & STYPE_OBSTACLE)
+								data->bOverlaped = TRUE;
+
+							CInventoryItem* inventory_item = smart_cast<CInventoryItem*>(data->item);
+							
+							if (inventory_item && inventory_item->CanPickThroughGeom())
+								return TRUE;
+						}
+					}
+					else
+					{
+						CDB::TRI* T = Level().ObjectSpace.GetStaticTris() + result.element;
+						
+						if (GMLib.GetMaterialByIdx(T->material)->Flags.is(SGameMtl::flPassable))
+							return TRUE;
+					}
+
+					data->bOverlaped = TRUE;
+					return FALSE;
+				},
+				&data, NULL, item);
 		}
 	}
-	return !bOverlaped;
+	return !data.bOverlaped;
 }
 
 #include "ai\monsters\ai_monster_utils.h"
@@ -148,8 +172,40 @@ void CActor::PickupModeUpdate()
 			return;
 		}
 
+		shared_str take_precond = inv_item->GetTakePreconditionFunc();
+		if (xr_strcmp(take_precond, ""))
+		{
+			luabind::functor<bool> m_functor;
+			if (ai().script_engine().functor(take_precond.c_str(), m_functor))
+			{
+				if (!m_functor())
+					return;
+
+#ifdef DEBUG
+				Msg("[ActorFeel::PickupModeUpdate]: Lua function [%s] called from item [%s] by use_precondition.", take_precond.c_str(), inv_item->m_section_id.c_str());
+#endif
+			}
+#ifdef DEBUG
+			else
+			{
+				Msg("[ActorFeel::PickupModeUpdate]: ERROR: Lua function [%s] called from item [%s] by use_precondition not found!", take_precond.c_str(), inv_item->m_section_id.c_str());
+			}
+#endif
+		}
+
 		m_pUsableObject->use(this);
-		Game().SendPickUpEvent(ID(), m_pObjectWeLookingAt->ID());
+
+		auto CurMenuMode = CurrentGameUI()->ActorMenu().GetMenuMode();
+		const bool use_pickup_anim = (Position().distance_to(m_pObjectWeLookingAt->Position()) > 0.2f)
+			&& CurMenuMode != mmDeadBodySearch
+			&& CurMenuMode != mmCarTrunk
+			&& !Actor()->m_bActionAnimInProcess
+			&& pAdvancedSettings->line_exist("actions_animations", "take_item_section");
+
+		m_pObjectToTake = m_pObjectWeLookingAt;
+
+		TakeItemAnimCheck(use_pickup_anim);
+
 	}
 
 	if (eacFirstEye != cam_active)
@@ -172,7 +228,8 @@ void CActor::PickupModeUpdate()
 BOOL	g_b_COD_PickUpMode = TRUE;
 void	CActor::PickupModeUpdate_COD	()
 {
-	if (Level().CurrentViewEntity() != this || !g_b_COD_PickUpMode) return;
+	if (Level().CurrentViewEntity() != this || !g_b_COD_PickUpMode)
+		return;
 		
 	if (!g_Alive() || eacFirstEye != cam_active) 
 	{
@@ -191,18 +248,18 @@ void	CActor::PickupModeUpdate_COD	()
 
 	for (u32 o_it=0; o_it<ISpatialResult.size(); o_it++)
 	{
-		ISpatial*		spatial	= ISpatialResult[o_it];
-		CInventoryItem*	pIItem	= smart_cast<CInventoryItem*> (spatial->dcast_CObject        ());
+		ISpatial*		spatial_	= ISpatialResult[o_it];
+		CInventoryItem*	pIItem	= smart_cast<CInventoryItem*> (spatial_->dcast_CObject        ());
 
 		if (0 == pIItem)											continue;
 		if (pIItem->object().H_Parent() != NULL)					continue;
 		if (!pIItem->CanTake())										continue;
 		if ( smart_cast<CExplosiveRocket*>( &pIItem->object() ) )	continue;
 
-		CGrenade*	pGrenade	= smart_cast<CGrenade*> (spatial->dcast_CObject        ());
+		CGrenade*	pGrenade	= smart_cast<CGrenade*> (spatial_->dcast_CObject        ());
 		if (pGrenade && !pGrenade->Useful())						continue;
 
-		CMissile*	pMissile	= smart_cast<CMissile*> (spatial->dcast_CObject        ());
+		CMissile*	pMissile	= smart_cast<CMissile*> (spatial_->dcast_CObject        ());
 		if (pMissile && !pMissile->Useful())						continue;
 		
 		Fvector A, B, tmp; 
@@ -223,9 +280,9 @@ void	CActor::PickupModeUpdate_COD	()
 
 	if(pNearestItem)
 	{
-		CFrustum					frustum;
-		frustum.CreateFromMatrix	(Device.mFullTransform,FRUSTUM_P_LRTB|FRUSTUM_P_FAR);
-		if (!CanPickItem(frustum, Device.vCameraPosition, &pNearestItem->object()))
+		CFrustum					frustum_;
+		frustum_.CreateFromMatrix	(Device.mFullTransform,FRUSTUM_P_LRTB|FRUSTUM_P_FAR);
+		if (!CanPickItem(frustum_, Device.vCameraPosition, &pNearestItem->object()))
 			pNearestItem = NULL;
 	}
 	if (pNearestItem && pNearestItem->cast_game_object())
@@ -251,12 +308,42 @@ void	CActor::PickupModeUpdate_COD	()
 			return;
 		}
 
+		shared_str take_precond = pNearestItem->GetTakePreconditionFunc();
+		if (xr_strcmp(take_precond, ""))
+		{
+			luabind::functor<bool> m_functor;
+			if (ai().script_engine().functor(take_precond.c_str(), m_functor))
+			{
+				if (!m_functor())
+					return;
+
+#ifdef DEBUG
+				Msg("[ActorFeel::PickupModeUpdate_COD]: Lua function [%s] called from item [%s] by use_precondition.", take_precond.c_str(), pNearestItem->m_section_id.c_str());
+#endif
+			}
+#ifdef DEBUG
+			else
+			{
+				Msg("[ActorFeel::PickupModeUpdate_COD]: ERROR: Lua function [%s] called from item [%s] by use_precondition not found!", take_precond.c_str(), pNearestItem->m_section_id.c_str());
+			}
+#endif
+		}
+
 		CUsableScriptObject*	pUsableObject = smart_cast<CUsableScriptObject*>(pNearestItem);
 		if(pUsableObject && (!m_pUsableObject))
 			pUsableObject->use(this);
 
 		//подбирание объекта
-		Game().SendPickUpEvent(ID(), pNearestItem->object().ID());
+		auto CurMenuMode = CurrentGameUI()->ActorMenu().GetMenuMode();
+		const bool use_pickup_anim = (Position().distance_to(pNearestItem->cast_game_object()->Position()) > 0.2f)
+			&& CurMenuMode != mmDeadBodySearch
+			&& CurMenuMode != mmCarTrunk
+			&& !Actor()->m_bActionAnimInProcess
+			&& pAdvancedSettings->line_exist("actions_animations", "take_item_section");
+
+		m_pObjectToTake = pNearestItem->cast_game_object();
+
+		TakeItemAnimCheck(use_pickup_anim);
 
 		if (!GameConstants::GetMultiItemPickup())
 			m_bPickupMode = false;
@@ -276,18 +363,18 @@ void	CActor::Check_for_AutoPickUp()
 	Fbox APU_Box;
 	APU_Box.set			(Fvector().sub(bc, m_AutoPickUp_AABB), Fvector().add(bc, m_AutoPickUp_AABB));
 
-	xr_vector<ISpatial*>	ISpatialResult;
-	g_SpatialSpace->q_box   (ISpatialResult, 0, STYPE_COLLIDEABLE, bc, m_AutoPickUp_AABB);
+	xr_vector<ISpatial*>	ISpatialResult_;
+	g_SpatialSpace->q_box   (ISpatialResult_, 0, STYPE_COLLIDEABLE, bc, m_AutoPickUp_AABB);
 
 	// Determine visibility for dynamic part of scene
-	for (u32 o_it=0; o_it<ISpatialResult.size(); o_it++)
+	for (u32 o_it=0; o_it<ISpatialResult_.size(); o_it++)
 	{
-		ISpatial*		spatial	= ISpatialResult[o_it];
-		CInventoryItem*	pIItem	= smart_cast<CInventoryItem*> (spatial->dcast_CObject());
+		ISpatial*		spatial_	= ISpatialResult_[o_it];
+		CInventoryItem*	pIItem	= smart_cast<CInventoryItem*> (spatial_->dcast_CObject());
 
 		if (0 == pIItem)														continue;
 		if (!pIItem->CanTake())													continue;
-		if (Level().m_feel_deny.is_object_denied(spatial->dcast_CObject()) )	continue;
+		if (Level().m_feel_deny.is_object_denied(spatial_->dcast_CObject()) )	continue;
 
 
 		CGrenade*	pGrenade	= smart_cast<CGrenade*> (pIItem);
@@ -383,3 +470,153 @@ void CActor::Feel_Grenade_Update( float rad )
 	HUD().Update_GrenadeView( pos_actor );
 }
 
+void CActor::TakeItemAnimCheck(bool use_pickup_anim)
+{
+	if (m_bActionAnimInProcess)
+	{
+		if (m_bTakeItemActivated && GameConstants::GetMultiItemPickup() && m_pObjectToTake)
+			Game().SendPickUpEvent(ID(), m_pObjectToTake->ID());
+
+		return;
+	}
+
+	m_bUsePickupAnim = use_pickup_anim;
+
+	if (isHidingInProgressInv.load())
+		return;
+
+	CCustomDetector* pDet = smart_cast<CCustomDetector*>(inventory().ItemFromSlot(DETECTOR_SLOT));
+
+	if (!pDet || pDet->IsHidden())
+	{
+		TakeItemAnim(use_pickup_anim);
+		return;
+	}
+	else
+	{
+		if (!use_pickup_anim)
+		{
+			TakeItemAnim(use_pickup_anim);
+			return;
+		}
+	}
+
+	isHidingInProgressInv.store(true);
+
+	std::thread hidingThread([&, pDet]
+		{
+			while (pDet && !pDet->IsHidden())
+				pDet->HideDetector(true);
+
+			isHidingInProgressInv.store(false);
+			TakeItemAnimNeeded.store(true);
+		});
+
+	hidingThread.detach();
+}
+
+void CActor::TakeItemAnim(bool use_pickup_anim)
+{
+	if (use_pickup_anim && !m_pObjectToTake)
+		return;
+
+	LPCSTR anim_sect = READ_IF_EXISTS(pAdvancedSettings, r_string, "actions_animations", "take_item_section", nullptr);
+
+	if (!anim_sect || !use_pickup_anim)
+	{
+		Game().SendPickUpEvent(ID(), m_pObjectToTake->ID());
+		return;
+	}
+
+	CWeapon* Wpn = smart_cast<CWeapon*>(inventory().ActiveItem());
+
+	if (Wpn && !(Wpn->GetState() == CWeapon::eIdle))
+		return;
+
+	m_bTakeItemActivated = true;
+
+	int anim_timer = READ_IF_EXISTS(pSettings, r_u32, anim_sect, "anim_timing", 0);
+
+	g_block_all_except_movement = true;
+	g_actor_allow_ladder = false;
+
+	LPCSTR use_cam_effector = READ_IF_EXISTS(pSettings, r_string, anim_sect, !Wpn ? "anim_camera_effector" : "anim_camera_effector_weapon", nullptr);
+	float effector_intensity = READ_IF_EXISTS(pSettings, r_float, anim_sect, "cam_effector_intensity", 1.0f);
+	float anim_speed = READ_IF_EXISTS(pSettings, r_float, anim_sect, "anim_speed", 1.0f);
+
+	if (pSettings->line_exist(anim_sect, "anm_use"))
+	{
+		bool auto_attach_enabled = READ_IF_EXISTS(pSettings, r_bool, anim_sect, "auto_attach_enabled", false);
+
+		g_player_hud->script_anim_play(!inventory().GetActiveSlot() ? 2 : 1, anim_sect, !Wpn ? "anm_use" : "anm_use_weapon", true, anim_speed, auto_attach_enabled ? m_pObjectToTake->cNameVisual().c_str() : nullptr);
+
+		if (use_cam_effector)
+		{
+			if (Wpn)
+				g_player_hud->PlayBlendAnm(use_cam_effector, 0, anim_speed, effector_intensity, false);
+			else
+				AddEffector(use_cam_effector, effUseItem, effector_intensity);
+		}
+
+		m_iTakeAnimLength = Device.dwTimeGlobal + g_player_hud->motion_length_script(anim_sect, !Wpn ? "anm_use" : "anm_use_weapon", anim_speed);
+	}
+
+	if (pSettings->line_exist(anim_sect, "snd_using"))
+	{
+		if (m_action_anim_sound._feedback())
+			m_action_anim_sound.stop();
+
+		shared_str snd_name = pSettings->r_string(anim_sect, "snd_using");
+		m_action_anim_sound.create(snd_name.c_str(), st_Effect, sg_SourceType);
+		m_action_anim_sound.play(NULL, sm_2D);
+	}
+
+	m_iActionTiming = Device.dwTimeGlobal + anim_timer;
+
+	m_bItemTaked = false;
+	m_bActionAnimInProcess = true;
+}
+
+void CActor::UpdateUseAnim()
+{
+	if (TakeItemAnimNeeded.load())
+	{
+		TakeItemAnim(m_bUsePickupAnim);
+		TakeItemAnimNeeded.store(false);
+	}
+
+	if (!m_bTakeItemActivated)
+		return;
+
+	if (!m_bActionAnimInProcess)
+		return;
+
+	bool IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
+
+	if ((m_iActionTiming <= Device.dwTimeGlobal && !m_bItemTaked) && IsActorAlive)
+	{
+		m_iActionTiming = Device.dwTimeGlobal;
+
+		bool vis_status = READ_IF_EXISTS(pSettings, r_bool, m_pObjectToTake->cNameSect(), "visible_with_take_anim", true);
+
+		g_player_hud->SetScriptItemVisible(vis_status);
+		Game().SendPickUpEvent(ID(), m_pObjectToTake->ID());
+
+		m_bItemTaked = true;
+		m_pObjectToTake = nullptr;
+	}
+
+	if (m_bTakeItemActivated)
+	{
+		if ((m_iTakeAnimLength <= Device.dwTimeGlobal) || !IsActorAlive)
+		{
+			m_iTakeAnimLength = Device.dwTimeGlobal;
+			m_iActionTiming = Device.dwTimeGlobal;
+			m_action_anim_sound.stop();
+			g_block_all_except_movement = false;
+			g_actor_allow_ladder = true;
+			m_bActionAnimInProcess = false;
+			m_bTakeItemActivated = false;
+		}
+	}
+}

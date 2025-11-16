@@ -563,7 +563,7 @@ void CUIListWnd::Update()
 {
 	if(m_bUpdateMouseMove)
 	{
-		OnMouseAction(cursor_pos.x, cursor_pos.y, WINDOW_MOUSE_MOVE);
+		OnMouseAction(m_cursor_pos.x, m_cursor_pos.y, WINDOW_MOUSE_MOVE);
 		m_bUpdateMouseMove = false;
 	}
 
@@ -627,7 +627,7 @@ void CUIListWnd::create_active_back()
 	if(m_ActiveBackgroundFrame)	return;
 
 	m_ActiveBackgroundFrame = xr_new<CUIFrameLineWnd>();
-	m_ActiveBackgroundFrame->InitFrameLineWnd("ui_listline",Fvector2().set(0.0f,0.0f), Fvector2().set(GetWidth(),18.0f) );
+	m_ActiveBackgroundFrame->InitFrameLineWnd("ui_listline",Fvector2().set(0.0f,0.0f), Fvector2().set(GetWidth(),m_iItemHeight) );
 }
 
 void CUIListWnd::destroy_active_back()

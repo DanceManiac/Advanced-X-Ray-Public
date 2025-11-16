@@ -142,7 +142,8 @@ void ConvertVertexDeclaration( const xr_vector<D3DVERTEXELEMENT9> &declIn, xr_ve
 		descOut.InstanceDataStepRate = 0;
 	}
 
-	ZeroMemory( &declOut[iDeclSize], sizeof(declOut[iDeclSize]) );
+	if (iDeclSize >= 0)
+		ZeroMemory( &declOut[iDeclSize], sizeof(declOut[iDeclSize]) );
 }
 
 };

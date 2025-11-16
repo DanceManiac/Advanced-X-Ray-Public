@@ -29,6 +29,8 @@ void CLevel::net_StartPlayDemo()
 
 BOOL CLevel::net_Start	( LPCSTR op_server, LPCSTR op_client )
 {
+	ZoneScoped;
+
 	net_start_result_total				= TRUE;
 
 	pApp->LoadBegin				();
@@ -104,6 +106,8 @@ shared_str level_version(const shared_str &server_options);
 shared_str level_name(const shared_str &server_options);
 bool CLevel::net_start1				()
 {
+	ZoneScoped;
+
 	// Start client and server if need it
 	if (m_caServerOptions.size())
 	{
@@ -127,9 +131,8 @@ bool CLevel::net_start1				()
 			shared_str l_ver			= game_sv_GameState::parse_level_version(m_caServerOptions);
 			
 			map_data.m_name				= game_sv_GameState::parse_level_name(m_caServerOptions);
-			
-			if (!g_dedicated_server)
-				g_pGamePersistent->LoadTitle(true, map_data.m_name);
+
+			g_pGamePersistent->LoadTitle(true, map_data.m_name);
 
 			int							id = pApp->Level_ID(map_data.m_name.c_str(), l_ver.c_str(), true);
 
@@ -148,6 +151,8 @@ bool CLevel::net_start1				()
 
 bool CLevel::net_start2				()
 {
+	ZoneScoped;
+
 	if (net_start_result_total && m_caServerOptions.size())
 	{
 		GameDescriptionData game_descr;
@@ -159,8 +164,7 @@ bool CLevel::net_start2				()
 		}
 		Server->SLS_Default		();
 		map_data.m_name			= Server->level_name(m_caServerOptions);
-		if (!g_dedicated_server)
-			g_pGamePersistent->LoadTitle(true, map_data.m_name);
+		g_pGamePersistent->LoadTitle(true, map_data.m_name);
 	}
 	return true;
 }
@@ -168,6 +172,9 @@ bool CLevel::net_start2				()
 bool CLevel::net_start3				()
 {
 	if(!net_start_result_total) return true;
+
+	ZoneScoped;
+
 	//add server port if don't have one in options
 	if (!strstr(m_caClientOptions.c_str(), "port=") && Server)
 	{
@@ -213,6 +220,8 @@ bool CLevel::net_start4				()
 {
 	if(!net_start_result_total) return true;
 
+	ZoneScoped;
+
 	g_loading_events.pop_front();
 
 	g_loading_events.push_front	(LOADING_EVENT(this,&CLevel::net_start_client6));
@@ -229,6 +238,8 @@ bool CLevel::net_start5				()
 {
 	if (net_start_result_total)
 	{
+		ZoneScoped;
+
 		NET_Packet		NP;
 		NP.w_begin		(M_CLIENTREADY);
 		Game().local_player->net_Export(NP, TRUE);
@@ -243,6 +254,8 @@ bool CLevel::net_start5				()
 }
 bool CLevel::net_start6				()
 {
+	ZoneScoped;
+
 	//init bullet manager
 	BulletManager().Clear		();
 	BulletManager().Load		();
@@ -259,7 +272,7 @@ bool CLevel::net_start6				()
 	}else{
 		Msg				("! Failed to start client. Check the connection or level existance.");
 		
-		if (m_connect_server_err==xrServer::ErrConnect&&!psNET_direct_connect && !g_dedicated_server) 
+		if (m_connect_server_err==xrServer::ErrConnect&&!psNET_direct_connect) 
 		{
 			DEL_INSTANCE	(g_pGameLevel);
 			Console->Execute("main_menu on");
@@ -282,7 +295,6 @@ bool CLevel::net_start6				()
 			DEL_INSTANCE	(g_pGameLevel);
 			Console->Execute("main_menu on");
 
-			if	(!g_dedicated_server)
 			{
 				MainMenu()->SwitchToMultiplayerMenu();
 				MainMenu()->Show_DownloadMPMap(dialog_string, download_url);
@@ -304,7 +316,6 @@ bool CLevel::net_start6				()
 			g_pGameLevel->net_Stop();
 			DEL_INSTANCE	(g_pGameLevel);
 			Console->Execute("main_menu on");
-			if	(!g_dedicated_server)
 			{
 				MainMenu()->SwitchToMultiplayerMenu();
 				MainMenu()->Show_DownloadMPMap(dialog_string, download_url);
@@ -319,17 +330,16 @@ bool CLevel::net_start6				()
 		return true;
 	}
 
-	if	(!g_dedicated_server)
-	{
-		if (CurrentGameUI())
-			CurrentGameUI()->OnConnected();
-	}
+	if (CurrentGameUI())
+		CurrentGameUI()->OnConnected();
 
 	return true;
 }
 
 void CLevel::InitializeClientGame	(NET_Packet& P)
 {
+	ZoneScoped;
+
 	string256 game_type_name;
 	P.r_stringZ(game_type_name);
 	if(game && !xr_strcmp(game_type_name, game->type_name()) )

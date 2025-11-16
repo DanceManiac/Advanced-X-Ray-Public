@@ -1,0 +1,88 @@
+[environment] ;;Различные настройки для погоды
+sun_dir_mode = 0					;; Режим движения солнца. 0 - движковый ход, 1 - с конфигов погоды, 2 - с общего конфига движка
+winter_mode = false					;; Зимний режим (влияет на циклы и эффекты)
+weather_dof = false					;; Использовать параметры DoF из погоды
+lowland_fog_from_weather = false	;; Использовать параметры низинного тумана из погоды
+weather_color_grading = false		;; Влияние погоды на цветокоррекцию
+wind_volume_koef = 16.5				;; Коэффицент общей громкости звука ветра
+wind_influence_koef = 2.3			;; Коэффицент влияния ветра на колыхание травы и деревьев. Значение 0.0 отключает эффект.
+moon_phases_mode = off				;; Режим лунных фаз (off|8days|28days)
+fog_infl_volumetric_light = false	;; Влияние интенсивности тумана на интенсивность объёмного света
+
+[precipitation_params] ;Общие параметры осадков
+max_desired_items = 2500
+source_radius = 15.0
+source_offset = 20.0
+max_distance_koef = 1.5
+particles_time = 0.3
+max_particles = 1000
+particles_cache = 400
+
+[rain_params] ;Параметры для дождя
+min_rain_drop_speed = 40.0
+max_rain_drop_speed = 80.0
+rain_drop_lenght = 5.0
+rain_drop_width = 0.30
+rain_drop_angle = 15.0
+rain_drop_max_wind_vel = 20.0
+rain_drop_max_angle = 35.0
+
+[snow_params] ;Параметры для снегопада
+min_rain_drop_speed = 1.0
+max_rain_drop_speed = 1.5
+rain_drop_lenght = 5.0
+rain_drop_width = 0.30
+rain_drop_angle = 15.0
+rain_drop_max_wind_vel = 20.0
+rain_drop_max_angle = 35.0
+
+[details_params] ;Стандартные параметры колыхания травы
+swing_normal_amp1 = 0.011000
+swing_normal_amp2 = 0.006000
+swing_normal_rot1 = 300.000000
+swing_normal_rot2 = 15.000000
+swing_normal_speed = 2.000000
+swing_fast_amp1	= 0.400000
+swing_fast_amp2	= 0.300000
+swing_fast_rot1	= 5.500000
+swing_fast_rot2	= 0.600000
+swing_fast_speed = 0.600000
+
+[moon_phases_clr_settings] ;Настройки освещения для лунных фаз
+;секция_светила_sun_color = <Fvector3>
+;секция_светила_sun_shafts_intensity = <float>
+
+[lowland_fog_params] ;Базовые высоты тумана в низинах для каждого уровня
+;Тень Чернобыля
+l01_escape = -10.85
+l02_garbage = -2.29
+l03_agroprom = -1.79
+l03u_agr_underground = 0.0
+l04_darkvalley = -5.11
+l04u_labx18 = 0.0
+l05_bar = -0.014
+l06_rostok = -2.50
+l07_military = -22.65
+l08_yantar = -13.24
+l10_radar = -63.98
+l11_pripyat = -0.76
+l12_stancia = -2.92
+l12_stancia_2 = 0.0
+l12u_control_monolith = 0.0
+l12u_sarcofag = 0.0
+l08u_brainlab = 0.0
+
+[terrain_offset_params] ;Оффсеты для параллакса террейна из SSS для каждого уровня
+;Тень Чернобыля
+l01_escape = -0.1, -0.05, -0.1, 0.0
+l02_garbage = -0.13, -0.05, -0.13, -0.1
+l03_agroprom = -0.07, -0.05, -0.13, -0.1
+l04_darkvalley = -0.07, -0.05, -0.07, -0.1
+l05_bar = -0.07, -0.05, -0.13, 0.0
+l06_rostok = -0.7, -0.05, -0.7, 0.0
+l07_military = -0.07, -0.05, 0.0, -0.05
+l08_yantar = -0.13, -0.05, -0.13, 0.0
+l10_radar = -0.07, -0.05, -0.07, 0.0
+l11_pripyat = -0.1, -0.05, 0.0, -0.05
+l12_stancia = -0.1, -0.05, 0.0, -0.1
+l12_stancia_2 = -0.1, -0.05, 0.0, 0.0

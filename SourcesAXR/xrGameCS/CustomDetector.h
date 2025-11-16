@@ -139,7 +139,7 @@ public:
 
 			bool 	IsWorking			();
 
-	virtual void 	OnMoveToSlot		();
+	virtual void 	OnMoveToSlot		(EItemPlace prev);
 	virtual void 	OnMoveToRuck		(EItemPlace prev);
 
 	virtual void	OnActiveItem		();
@@ -147,6 +147,7 @@ public:
 	virtual void	OnStateSwitch		(u32 S);
 	virtual void	OnAnimationEnd		(u32 state);
 	virtual	void	UpdateXForm			();
+	virtual bool	ParentIsActor		();
 
 	void			ToggleDetector		(bool bFastMode);
 	void			HideDetector		(bool bFastMode);
@@ -154,6 +155,11 @@ public:
 	virtual bool	CheckCompatibility	(CHudItem* itm);
 
 	virtual u32		ef_detector_type	() const	{return 1;};
+
+	virtual void	DetectorAction		(u32 state);
+    virtual void	PlayDetectorAnimation(bool switch_state = false, u32 state = eDetAction, const char* anm_name = "");
+
+	virtual void	PlayAnimIdle		();
 
 			void	UpdateChargeLevel	(void);
 	virtual void	save				(NET_Packet &output_packet);
@@ -189,6 +195,7 @@ public:
 			ref_glow	detector_glow;
 			CLAItem*	light_lanim;
 
+			bool		m_bDetActionsEnabled;
 
 			virtual void processing_deactivate() override
 			{
@@ -199,12 +206,14 @@ public:
 			void	UpdateLights();
 			void	Flash(bool bOn, float fRelPower);
 
+			virtual CCustomDetector* cast_detector() { return this; }
+
 protected:
 			bool	CheckCompatibilityInt		(CHudItem* itm, u16* slot_to_activate);
 			void 	TurnDetectorInternal		(bool b);
 	void 			UpdateNightVisionMode		(bool b_off);
 	void			UpdateVisibility			();
-	virtual void	UpfateWork					();
+	virtual void	UpdateWork					();
 	virtual void 	UpdateAf					()				{};
 	virtual void 	CreateUI					()				{};
 

@@ -15,6 +15,8 @@ public:
 	// CUIMultiTextureOwner
 	virtual void	InitTexture		(LPCSTR texture);
 	virtual void	InitTextureEx	(LPCSTR texture,LPCSTR shader);
+
+			pcstr	GetDebugType	() override { return "CUIEditBoxEx"; }
 protected:
 	CUIFrameWindow*	m_pFrameWindow;
 };

@@ -88,6 +88,21 @@
     <Filter Include="Threading">
       <UniqueIdentifier>{f77aa1f5-5e2e-432e-80e9-83f208dabae9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Crypto">
+      <UniqueIdentifier>{5a0b5a90-4e2c-4221-876e-5d218996ac19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SphereMap">
+      <UniqueIdentifier>{168b6e8c-c6ab-48a1-bc60-800b09bd3e62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{c4866ff7-f5fd-4722-9e1a-73ef37fde25e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils\imdexlib">
+      <UniqueIdentifier>{58baf96e-ab86-4e39-8fab-60b26515b38c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Profiler">
+      <UniqueIdentifier>{27fa4368-a38e-45fc-8924-0b8798ce6539}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FTimer.cpp">
@@ -290,6 +305,18 @@
     </ClCompile>
     <ClCompile Include="Threading\Event.cpp">
       <Filter>Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="Crypto\trivial_encryptor.cpp">
+      <Filter>Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="Spheremap\stb_image.cpp">
+      <Filter>SphereMap</Filter>
+    </ClCompile>
+    <ClCompile Include="Spheremap\stb_image_write.cpp">
+      <Filter>SphereMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd party\tracy\public\TracyClient.cpp">
+      <Filter>Profiler</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -602,6 +629,42 @@
     </ClInclude>
     <ClInclude Include="Threading\Event.hpp">
       <Filter>Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Random32.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Crypto\trivial_encryptor.h">
+      <Filter>Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="Spheremap\Spheremap.h">
+      <Filter>SphereMap</Filter>
+    </ClInclude>
+    <ClInclude Include="Spheremap\stb_image.hpp">
+      <Filter>SphereMap</Filter>
+    </ClInclude>
+    <ClInclude Include="Spheremap\stb_image_write.hpp">
+      <Filter>SphereMap</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\imdexlib\fast_dynamic_cast.hpp">
+      <Filter>Utils\imdexlib</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\imdexlib\identity.hpp">
+      <Filter>Utils\imdexlib</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\imdexlib\is_reference_wrapper.hpp">
+      <Filter>Utils\imdexlib</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\imdexlib\mpl.hpp">
+      <Filter>Utils\imdexlib</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\imdexlib\traits.hpp">
+      <Filter>Utils\imdexlib</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\imdexlib\typelist.hpp">
+      <Filter>Utils\imdexlib</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\imdexlib\utility.hpp">
+      <Filter>Utils\imdexlib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

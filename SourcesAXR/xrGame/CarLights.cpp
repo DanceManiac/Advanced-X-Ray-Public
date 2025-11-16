@@ -37,37 +37,38 @@ void SCarLight::Init(CCarLights* holder)
 
 void SCarLight::ParseDefinitions(LPCSTR section)
 {
+	// set bone id
+	IKinematics* pKinematics=smart_cast<IKinematics*>(m_holder->PCar()->Visual());
+	CInifile* ini			= pKinematics->LL_UserData();
+
 	light_omni				= ::Render->light_create();
 	light_omni->set_type	(IRender_Light::POINT);
 	light_omni->set_shadow(true);
+	light_omni->set_moveable(true);
 	light_render			= ::Render->light_create();
-	light_render->set_type	(IRender_Light::SPOT);
+	light_render->set_type	((IRender_Light::LT)READ_IF_EXISTS(ini, r_u32, section, "type", 1));
 	light_render->set_shadow(true);
 	glow_render				= ::Render->glow_create();
 	//	lanim					= 0;
 	//	time2hide				= 0;
-
-	// set bone id
-	IKinematics*			pKinematics=smart_cast<IKinematics*>(m_holder->PCar()->Visual());
-	CInifile* ini		=	pKinematics->LL_UserData();
 	
 	Fcolor					clr;
-	clr.set					(ini->r_fcolor(section,"color"));
+	clr.set					(READ_IF_EXISTS(ini, r_fcolor, section, "color", Fcolor({ 0.f, 0.f, 0.f })));
 	//clr.mul_rgb				(torch->spot_brightness);
 	//fBrightness				= torch->spot_brightness;
-	light_render->set_range	(ini->r_float(section,"range"));
+	light_render->set_range	(READ_IF_EXISTS(ini, r_float, section, "range", 25.0f));
 	light_render->set_color	(clr);
-	light_render->set_cone	(deg2rad(ini->r_float(section,"cone_angle")));
-	light_render->set_texture(ini->r_string(section,"spot_texture"));
+	light_render->set_cone	(deg2rad(READ_IF_EXISTS(ini, r_float, section, "cone_angle", 80.0f)));
+	light_render->set_texture(READ_IF_EXISTS(ini, r_string, section, "spot_texture", nullptr));
 
-	glow_render->set_texture(ini->r_string(section,"glow_texture"));
+	glow_render->set_texture(READ_IF_EXISTS(ini, r_string, section, "glow_texture", nullptr));
 	glow_render->set_color	(clr);
-	glow_render->set_radius	(ini->r_float(section,"glow_radius"));
+	glow_render->set_radius	(READ_IF_EXISTS(ini, r_float, section, "glow_radius", 0.5f));
 
-	light_omni->set_range(ini->r_float(section, "range_omni"));
+	light_omni->set_range	(READ_IF_EXISTS(ini, r_float , section, "range_omni", 0.0f));
 	Fcolor					clr_o;
-	clr_o.set(ini->r_fcolor(section, "color_omni"));
-	light_omni->set_color(clr_o);
+	clr_o.set				(READ_IF_EXISTS(ini, r_fcolor, section, "color_omni", Fcolor({ 0.f, 0.f, 0.f })));
+	light_omni->set_color	(clr_o);
 	
 	bone_id	= pKinematics->LL_BoneID(ini->r_string(section,"bone"));
 	light_omni->set_active(false);
@@ -82,8 +83,11 @@ void SCarLight::ParseDefinitions(LPCSTR section)
 void SCarLight::Switch()
 {
 	VERIFY(!physics_world()->Processing());
-	if(isOn())TurnOff();
-	else	  TurnOn();
+	
+	if(isOn())
+		TurnOff();
+	else
+		TurnOn();
 }
 void SCarLight::TurnOn()
 {
@@ -135,64 +139,126 @@ void SCarLight::Update()
 
 CCarLights::CCarLights()
 {
-	m_pcar=NULL;
+	m_pcar = nullptr;
 }
 
 void CCarLights::Init(CCar* pcar)
 {
-	m_pcar=pcar;
+	m_pcar = pcar;
 	m_lights.clear();
+	m_indoor_lights.clear();
 }
 
 void CCarLights::ParseDefinitions()
 {
 	CInifile* ini= smart_cast<IKinematics*>(m_pcar->Visual())->LL_UserData();
-	if(!ini->section_exist("lights")) return;
-	LPCSTR S=  ini->r_string("lights","headlights");
-	string64					S1;
-	int count =					_GetItemCount(S);
+	
+	if(!ini->section_exist("lights"))
+		return;
+
+	LPCSTR S = ini->r_string("lights","headlights");
+	string64 S1;
+
+	int count = _GetItemCount(S);
+
 	for (int i=0 ;i<count; ++i) 
 	{
-		_GetItem					(S,i,S1);
+		_GetItem(S,i,S1);
 		m_lights.push_back(xr_new<SCarLight>());
 		m_lights.back()->Init(this);
 		m_lights.back()->ParseDefinitions(S1);
 	}
-	
+
+	if (ini->line_exist("lights", "indoorlights"))
+	{
+		S = ini->r_string("lights", "indoorlights");
+		count = _GetItemCount(S);
+
+		for (int i = 0; i < count; ++i)
+		{
+			_GetItem(S, i, S1);
+			m_indoor_lights.push_back(xr_new<SCarLight>());
+			m_indoor_lights.back()->Init(this);
+			m_indoor_lights.back()->ParseDefinitions(S1);
+		}
+	}
 }
 
 void CCarLights::Update()
 {
 	VERIFY(!physics_world()->Processing());
-	LIGHTS_I i =m_lights.begin(),e=m_lights.end();
-	for(;i!=e;++i) (*i)->Update();
+	LIGHTS_I i = m_lights.begin(), e = m_lights.end();
+	
+	for (; i != e; ++i)
+		(*i)->Update();
+
+	i = m_indoor_lights.begin();
+	e = m_indoor_lights.end();
+
+	for (; i != e; ++i)
+		(*i)->Update();
 }
 
 void CCarLights::SwitchHeadLights()
 {
 	
 	VERIFY(!physics_world()->Processing());
-	LIGHTS_I i =m_lights.begin(),e=m_lights.end();
-	for(;i!=e;++i) (*i)->Switch();
+	LIGHTS_I i = m_lights.begin(), e = m_lights.end();
+	
+	for (; i != e; ++i)
+		(*i)->Switch();
 }
 
 void CCarLights::TurnOnHeadLights()
 {
 
 	VERIFY(!physics_world()->Processing());
-	LIGHTS_I i =m_lights.begin(),e=m_lights.end();
-	for(;i!=e;++i) (*i)->TurnOn();
+	LIGHTS_I i = m_lights.begin(), e = m_lights.end();
+	
+	for (; i != e; ++i)
+		(*i)->TurnOn();
 }
 void CCarLights::TurnOffHeadLights()
 {
 	VERIFY(!physics_world()->Processing());
-	LIGHTS_I i =m_lights.begin(),e=m_lights.end();
-	for(;i!=e;++i) (*i)->TurnOff();
+	LIGHTS_I i = m_lights.begin(), e = m_lights.end();
+	
+	for (; i != e; ++i)
+		(*i)->TurnOff();
+}
+
+void CCarLights::SwitchIndoorLights()
+{
+
+	VERIFY(!physics_world()->Processing());
+	LIGHTS_I i = m_indoor_lights.begin(), e = m_indoor_lights.end();
+
+	for (; i != e; ++i)
+		(*i)->Switch();
+}
+
+void CCarLights::TurnOnIndoorLights()
+{
+
+	VERIFY(!physics_world()->Processing());
+	LIGHTS_I i = m_indoor_lights.begin(), e = m_indoor_lights.end();
+	
+	for (; i != e; ++i)
+		(*i)->TurnOn();
+}
+
+void CCarLights::TurnOffIndoorLights()
+{
+	VERIFY(!physics_world()->Processing());
+	LIGHTS_I i = m_indoor_lights.begin(), e = m_indoor_lights.end();
+
+	for (; i != e; ++i)
+		(*i)->TurnOff();
 }
 
 bool CCarLights::IsLight(u16 bone_id)
 {
-	SCarLight* light=NULL;
+	SCarLight* light = nullptr;
 	return findLight(bone_id,light);
 }
 bool CCarLights::findLight(u16 bone_id,SCarLight* &light)
@@ -206,7 +272,16 @@ bool CCarLights::findLight(u16 bone_id,SCarLight* &light)
 }
 CCarLights::~CCarLights()
 {
-	LIGHTS_I i =m_lights.begin(),e=m_lights.end();
-	for(;i!=e;++i) xr_delete(*i);
+	LIGHTS_I i = m_lights.begin(), e = m_lights.end();
+
+	for (; i != e; ++i)
+		xr_delete(*i);
+
 	m_lights.clear();
+
+	i = m_indoor_lights.begin(), e = m_indoor_lights.end();
+	for (; i != e; ++i)
+		xr_delete(*i);
+
+	m_indoor_lights.clear();
 }

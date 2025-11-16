@@ -25,13 +25,11 @@ void  CRocketLauncher::Load	(LPCSTR section)
 
 void CRocketLauncher::SpawnRocket(const shared_str& rocket_section, CGameObject* parent_rocket_launcher)
 {
-	if (OnClient())		return;
-
 	CSE_Abstract*		D	= F_entity_Create(rocket_section.c_str());
 	R_ASSERT			(D);
 	CSE_Temporary		*l_tpTemporary = smart_cast<CSE_Temporary*>(D);
 	R_ASSERT			(l_tpTemporary);
-	l_tpTemporary->m_tNodeID= (g_dedicated_server)?u32(-1) : parent_rocket_launcher->ai_location().level_vertex_id();
+	l_tpTemporary->m_tNodeID= parent_rocket_launcher->ai_location().level_vertex_id();
 	D->s_name			= rocket_section;
 	D->set_name_replace	("");
 	
@@ -52,6 +50,10 @@ void CRocketLauncher::SpawnRocket(const shared_str& rocket_section, CGameObject*
 void CRocketLauncher::AttachRocket(u16 rocket_id, CGameObject* parent_rocket_launcher)
 {
 	CCustomRocket * pRocket = smart_cast<CCustomRocket*>(Level().Objects.net_Find(rocket_id));
+
+	if (!pRocket)
+		return;
+
 	pRocket->m_pOwner = smart_cast<CGameObject*>(parent_rocket_launcher->H_Root());
 	VERIFY(pRocket->m_pOwner);
 	pRocket->H_SetParent(parent_rocket_launcher);
@@ -61,17 +63,15 @@ void CRocketLauncher::AttachRocket(u16 rocket_id, CGameObject* parent_rocket_lau
 void CRocketLauncher::DetachRocket(u16 rocket_id, bool bLaunch)
 {
 	CCustomRocket *pRocket = smart_cast<CCustomRocket*>(Level().Objects.net_Find(rocket_id));
-	if (!pRocket && OnClient()) return;
+	
+	if (!pRocket)
+		return;
 
 	VERIFY(pRocket);
 	ROCKETIT It = std::find(m_rockets.begin(), m_rockets.end(),pRocket);
 	ROCKETIT It_l = std::find(m_launched_rockets.begin(), m_launched_rockets.end(),pRocket);
 
-	if (OnServer())
-	{
-		VERIFY( (It != m_rockets.end())||
-			(It_l != m_launched_rockets.end()) );
-	};
+	VERIFY( (It != m_rockets.end())||(It_l != m_launched_rockets.end()) );
 
 	if( It != m_rockets.end() )
 	{

@@ -164,6 +164,9 @@ public:
 
 	void				UpdateZones				();
 
+	pcstr				GetDebugType			() override {return "CUIGameCustom";}
+	bool				FillDebugTree			(const CUIDebugState& debugState) override;
+    void				FillDebugInfo			() override;
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 }; // class CUIGameCustom

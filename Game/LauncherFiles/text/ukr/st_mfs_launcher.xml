@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="ui_launcher_version_text">
+		<text>Лаунчер: v</text>
+	</string>
+	<string id="ui_launcher_engine_version_text">
+		<text>Рушій: v</text>
+	</string>
+	<string id="ui_launcher_engine_version_actual_text">
+		<text>(актуально)</text>
+	</string>
+	<string id="ui_launcher_start_game">
+		<text>ПОЧАТИ ГРУ</text>
+	</string>
+	<string id="ui_launcher_load_game">
+		<text>ЗАВАНТАЖИТИ ГРУ</text>
+	</string>
+	<string id="ui_launcher_graphic_opt">
+		<text>НАЛАШТУВАННЯ ГРАФІКИ</text>
+	</string>
+	<string id="ui_launcher_mods_manager">
+		<text>МЕНЕДЖЕР МОДІВ</text>
+	</string>
+	<string id="ui_launcher_delete_shaders_cache">
+		<text>ОЧИСТИТИ КЕШ ШЕЙДЕРІВ</text>
+	</string>
+	<string id="ui_launcher_lua_dbg">
+		<text>Відладка Lua</text>
+	</string>
+	<string id="ui_launcher_jpg_screenshots">
+		<text>JPG скріншоти</text>
+	</string>
+	<string id="ui_launcher_no_prefetch">
+		<text>Відключити префетч</text>
+	</string>
+	<string id="ui_launcher_open_error_log">
+		<text>Лог при помилці</text>
+	</string>
+	<string id="ui_launcher_enter_keys">
+		<text>Ввести ключі</text>
+	</string>
+	<string id="ui_launcher_user_key">
+		<text>Користувацький ключ</text>
+	</string>
+	<string id="ui_launcher_app_language">
+		<text>Мова (українська)</text>
+	</string>
+	<string id="ui_launcher_quit">
+		<text>ВИЙТИ</text>
+	</string>
+	<string id="ui_launcher_right_panel_empty_text">
+		<text>Виберіть дії ліворуч</text>
+	</string>
+	<string id="ui_launcher_save_name">
+		<text>Назва збереження:</text>
+	</string>
+	<string id="ui_launcher_load_save">
+		<text>Завантажити</text>
+	</string>
+	<string id="ui_launcher_mods_conflict">
+		<text>Конфлікт модів</text>
+	</string>
+	<string id="ui_launcher_mods_conflict_name">
+		<text>Виявлено конфлікти при увімкненні моду:</text>
+	</string>
+	<string id="ui_launcher_mods_conflict_with">
+		<text>Конфліктує з модом:</text>
+	</string>
+	<string id="ui_launcher_mods_conflict_warning_desc">
+		<text>Ввімкнення перезапише конфліктуючі файли!</text>
+	</string>
+	<string id="ui_launcher_mods_manager_force">
+		<text>Ввімкнути</text>
+	</string>
+	<string id="ui_launcher_mods_manager_cancel">
+		<text>Відмінити</text>
+	</string>
+	<string id="ui_launcher_download_mods">
+		<text>Завантаж. аддонів</text>
+	</string>
+	<string id="ui_launcher_installed_mods">
+		<text>Встановлені аддони</text>
+	</string>
+	<string id="ui_launcher_back">
+		<text>Назад</text>
+	</string>
+	<string id="ui_launcher_available_mods">
+		<text>Доступні аддони</text>
+	</string>
+	<string id="ui_launcher_mod_authors">
+		<text>Автори:</text>
+	</string>
+	<string id="ui_launcher_already_download">
+		<text>Встановлений</text>
+	</string>
+	<string id="ui_launcher_downloading">
+		<text>Завантаження:</text>
+	</string>
+	<string id="ui_launcher_installing">
+		<text>Встановлення:</text>
+	</string>
+	<string id="ui_launcher_pb_files">
+		<text>файлів)</text>
+	</string>
+	<string id="ui_launcher_download">
+		<text>Завантажити</text>
+	</string>
+	<string id="ui_launcher_mod_descr">
+		<text>Опис:</text>
+	</string>
+	<string id="ui_launcher_options">
+		<text>Опції</text>
+	</string>
+	<string id="ui_launcher_main_opt">
+		<text>Основні</text>
+	</string>
+	<string id="ui_launcher_render_mode">
+		<text>Рендер</text>
+	</string>
+	<string id="renderer_r1">
+		<text>Статичне освітлення</text>
+	</string>
+	<string id="renderer_r2">
+		<text>Динамічне освітлення</text>
+	</string>
+	<string id="renderer_r2.5">
+		<text>Повне динамічне освітлення</text>
+	</string>
+	<string id="renderer_r3">
+		<text>Покр. повне динамічне освітлення (DX10)</text>
+	</string>
+	<string id="renderer_r4">
+		<text>Покр. повне динамічне освітлення (DX11)</text>
+	</string>
+	<string id="ui_launcher_resolution">
+		<text>Роздільна здатність</text>
+	</string>
+	<string id="ui_launcher_fullscreen">
+		<text>Повноекранний режим</text>
+	</string>
+	<string id="ui_launcher_vision_opt">
+		<text>Огляд</text>
+	</string>
+	<string id="ui_launcher_vis_dist">
+		<text>Дальність видимості</text>
+	</string>
+	<string id="ui_launcher_fov">
+		<text>FOV камери</text>
+	</string>
+	<string id="ui_launcher_hud_fov">
+		<text>FOV худу</text>
+	</string>
+	<string id="ui_launcher_sun_and_light">
+		<text>Сонце і освітлення</text>
+	</string>
+	<string id="ui_launcher_light_dist">
+		<text>Дальність освітлення</text>
+	</string>
+	<string id="ui_launcher_sun_shafts">
+		<text>Сонячні промені</text>
+	</string>
+	<string id="ui_launcher_sunshafts_mode">
+		<text>Режим сонячних променів</text>
+	</string>
+	<string id="ui_launcher_flares">
+		<text>Режим фларів</text>
+	</string>
+	<string id="ui_launcher_sun_quality">
+		<text>Якість сонця</text>
+	</string>
+	<string id="ui_launcher_volumetric_lights">
+		<text>Об'ємне світло</text>
+	</string>
+	<string id="ui_launcher_npc_use_torch">
+		<text>НПС використовують ліхтарики</text>
+	</string>
+	<string id="ui_launcher_actor_shadow">
+		<text>Тінь від героя</text>
+	</string>
+	<string id="ui_launcher_grass_shadow">
+		<text>Тінь від трави</text>
+	</string>
+	<string id="ui_launcher_r2_sun">
+		<text>Освітлення від сонця</text>
+	</string>
+	<string id="ui_launcher_static_sun">
+		<text>Статичне сонце</text>
+	</string>
+	<string id="ui_launcher_grass_opt">
+		<text>Флора</text>
+	</string>
+	<string id="ui_launcher_grass_height">
+		<text>Висота трави</text>
+	</string>
+	<string id="ui_launcher_grass_density">
+		<text>Щільність трави</text>
+	</string>
+	<string id="ui_launcher_grass_dist">
+		<text>Дальність промальовування трави</text>
+	</string>
+	<string id="ui_launcher_grass_collision">
+		<text>Колізія трави</text>
+	</string>
+	<string id="ui_launcher_grass_collision_dist">
+		<text>Дальність колізії трави</text>
+	</string>
+	<string id="ui_launcher_optimization_opt">
+		<text>Оптимізація</text>
+	</string>
+	<string id="ui_launcher_shadow_map_size">
+		<text>Розмір карти тіней</text>
+	</string>
+	<string id="ui_launcher_textures_quality">
+		<text>Якість текстур</text>
+	</string>
+	<string id="ui_launcher_aniso">
+		<text>Фільтрація текстур</text>
+	</string>
+	<string id="ui_launcher_supersample">
+		<text>Суперсемплінг</text>
+	</string>
+	<string id="ui_launcher_optimize_static_geom">
+		<text>Опт. стат. геометрії</text>
+	</string>
+	<string id="ui_launcher_optimize_dynamic_geom">
+		<text>Опт. динам. геометрії</text>
+	</string>
+	<string id="ui_launcher_optimize_shadow_geom">
+		<text>Оптимизация теней</text>
+	</string>
+	<string id="ui_launcher_reflections_dist">
+		<text>Дальність відображеннь</text>
+	</string>
+	<string id="ui_launcher_water_opt">
+		<text>Вода</text>
+	</string>
+	<string id="ui_launcher_reflections_quality">
+		<text>Якість відображеннь</text>
+	</string>
+	<string id="ui_launcher_soft_water">
+		<text>М'яка вода</text>
+	</string>
+	<string id="ui_launcher_aa_and_ao_opt">
+		<text>Згладжування та затінення</text>
+	</string>
+	<string id="ui_launcher_aa_mode">
+		<text>Тип згладжування</text>
+	</string>
+	<string id="ui_launcher_msaa">
+		<text>MSAA</text>
+	</string>
+	<string id="ui_launcher_ao_mode">
+		<text>Режим затінення</text>
+	</string>
+	<string id="ui_launcher_ao_quality">
+		<text>Якість затінення</text>
+	</string>
+	<string id="ui_launcher_sss_opt">
+		<text>Screen Space Shaders</text>
+	</string>
+	<string id="ui_launcher_ss_sky_debanding">
+		<text>SSS: Згладжування неба</text>
+	</string>
+	<string id="ui_launcher_ss_flora_fix">
+		<text>SSS: Покр. освітлення флори</text>
+	</string>
+	<string id="ui_launcher_ss_fog">
+		<text>SSS: Screen Space Туман</text>
+	</string>
+	<string id="ui_launcher_ss_il">
+		<text>SSS: Непряме освітлення</text>
+	</string>
+	<string id="ui_launcher_ss_new_gloss">
+		<text>SSS: Покращ. блиск</text>
+	</string>
+	<string id="ui_launcher_ss_screen_space_shadows">
+		<text>SSS: Screen Space Тіні</text>
+	</string>
+	<string id="ui_launcher_ss_shadows">
+		<text>SSS: Покращення тіней</text>
+	</string>
+	<string id="ui_launcher_ss_wind">
+		<text>SSS: Вітер</text>
+	</string>
+	<string id="ui_launcher_ss_puddles">
+		<text>SSS: Калюжі</text>
+	</string>
+	<string id="ui_launcher_ss_bloom">
+		<text>SSS: Блум (Bloom)</text>
+	</string>
+	<string id="ui_launcher_ss_bloom_mask_dirt">
+		<text>SSS: Маска бруду блуму</text>
+	</string>
+	<string id="ui_launcher_es_aces_tonemap">
+		<text>ES: ACES Tonemap</text>
+	</string>
+	<string id="ui_launcher_es_opt">
+		<text>Enhanced Shaders</text>
+	</string>
+	<string id="ui_launcher_es_pseudo_pbr">
+		<text>ES: Псевдо-ПБР</text>
+	</string>
+	<string id="ui_launcher_effects_opt">
+		<text>Ефекти</text>
+	</string>
+	<string id="ui_launcher_mblur_enable">
+		<text>Розмиття рухів</text>
+	</string>
+	<string id="ui_launcher_mblur">
+		<text>Сила розмиття рухів</text>
+	</string>
+	<string id="ui_launcher_3d_scopes">
+		<text>3D приціли</text>
+	</string>
+	<string id="ui_launcher_3d_pda">
+		<text>3D КПК</text>
+	</string>
+	<string id="ui_launcher_skeleton_wallmarks">
+		<text>Текстури крові на трупах</text>
+	</string>
+	<string id="ui_launcher_hud_mask">
+		<text>HUD маска</text>
+	</string>
+	<string id="ui_launcher_hud_dyn_effects">
+		<text>Динамічні ефекти худу</text>
+	</string>
+	<string id="ui_launcher_shader_nvg">
+		<text>Шейдерний ПНБ</text>
+	</string>
+	<string id="ui_launcher_raindrops">
+		<text>Каплі на екрані</text>
+	</string>
+	<string id="ui_launcher_vignette">
+		<text>Віньєтка</text>
+	</string>
+	<string id="ui_launcher_parallax">
+		<text>Steep Parallax</text>
+	</string>
+	<string id="ui_launcher_dynamic_wet_surfaces">
+		<text>Ефект намокання</text>
+	</string>
+	<string id="ui_launcher_dynamic_wet_surfaces_far">
+		<text>Радіус ефекту намокання</text>
+	</string>
+	<string id="ui_launcher_dof_enable">
+		<text>Глубина різкості</text>
+	</string>
+	<string id="ui_launcher_volumetric_smoke">
+		<text>Об'ємний дим</text>
+	</string>
+	<string id="ui_launcher_chromatic_aberration">
+		<text>Хроматична аберація</text>
+	</string>
+	<string id="ui_launcher_film_grain">
+		<text>Зернистість</text>
+	</string>
+	<string id="ui_launcher_other_opt">
+		<text>Інше</text>
+	</string>
+	<string id="ui_launcher_detail_textures">
+		<text>Детальні текстури</text>
+	</string>
+	<string id="ui_launcher_use_bumps">
+		<text>Використовувати бампи</text>
+	</string>
+	<string id="ui_launcher_detail_bump">
+		<text>Детальний рельєф</text>
+	</string>
+	<string id="ui_launcher_vsync">
+		<text>Вертикальна синхронізація</text>
+	</string>
+	<string id="ui_launcher_refresh_60hz">
+		<text>Частота 60Hz</text>
+	</string>
+	<string id="ui_launcher_soft_particles">
+		<text>М'які частки</text>
+	</string>
+	<string id="ui_launcher_tessellation">
+		<text>Тесселяція</text>
+	</string>
+	<string id="ui_launcher_fog_clamper_max">
+		<text>Обмеження дальності туману</text>
+	</string>
+	<string id="Default">
+		<text>Середні</text>
+	</string>
+	<string id="Minimum">
+		<text>Мінімальні</text>
+	</string>
+	<string id="Low">
+		<text>Низькі</text>
+	</string>
+	<string id="High">
+		<text>Високі</text>
+	</string>
+	<string id="Extreme">
+		<text>Максимальні</text>
+	</string>	
+	<string id="dtssr_off">
+		<text>Відкл.</text>
+	</string>
+	<string id="dtssr_lowest">
+		<text>Мінімальне</text>
+	</string>
+	<string id="dtssr_low">
+		<text>Низьке</text>
+	</string>
+	<string id="dtssr_medium">
+		<text>Середнє</text>
+	</string>
+	<string id="dtssr_high">
+		<text>Високе</text>
+	</string>
+	<string id="volumetric">
+		<text>Волюметричні</text>
+	</string>
+	<string id="screen_space">
+		<text>Screen Space</text>
+	</string>
+	<string id="combine_sunshafts">
+		<text>Комбіновані</text>
+	</string>
+	<string id="opt_noaa">
+		<text>Відкл.</text>
+	</string>
+	<string id="opt_fxaa">
+		<text>FXAA</text>
+	</string>
+	<string id="opt_dlaa">
+		<text>DLAA</text>
+	</string>
+	<string id="opt_smaa">
+		<text>SMAA</text>
+	</string>
+	<string id="st_opt_off">
+		<text>Відкл.</text>
+	</string>
+	<string id="st_opt_always">
+		<text>Завжди</text>
+	</string>
+	<string id="st_opt_on_helmet">
+		<text>З шоломом</text>
+	</string>
+	<string id="st_opt_low">
+		<text>Низько</text>
+	</string>
+	<string id="st_opt_medium">
+		<text>Середньо</text>
+	</string>
+	<string id="st_opt_high">
+		<text>Високо</text>
+	</string>
+	<string id="st_opt_ultra">
+		<text>Дуже високо</text>
+	</string>
+	<string id="st_opt_extreme">
+		<text>Максимально</text>
+	</string>
+	<string id="disabled">
+		<text>Відкл.</text>
+	</string>
+	<string id="default">
+		<text>SSAO</text>
+	</string>
+	<string id="hdao">
+		<text>HDAO</text>
+	</string>
+	<string id="hbao">
+		<text>HBAO</text>
+	</string>
+	<string id="ssdo">
+		<text>SSDO</text>
+	</string>
+	
+	<string id="rus">
+		<text>Російська</text>
+	</string>
+	<string id="eng">
+		<text>Англійська</text>
+	</string>
+	<string id="ukr">
+		<text>Українська</text>
+	</string>
+</string_table>

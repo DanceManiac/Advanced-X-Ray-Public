@@ -68,6 +68,9 @@ cbuffer	static_globals
 	// Глобальные параметры шейдеров --#SM+#--
 	uniform	float4		m_hud_params;	// zoom_rotate_factor, secondVP_zoom_factor, NULL, NULL
 	uniform	float4		m_blender_mode;	
+	
+	uniform float4		aref_params; // x - aref strength, yzw - null
+	uniform float4		normal_strength_params; //x - world, y - hud, z - terrain, w - trees
 }
 
 /*

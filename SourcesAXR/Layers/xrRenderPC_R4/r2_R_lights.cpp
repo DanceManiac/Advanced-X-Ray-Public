@@ -27,20 +27,42 @@ bool check_grass_shadow(light* L, CFrustum VB)
 
 void	CRender::render_lights	(light_Package& LP)
 {
+	ZoneScoped;
+
+	// ѕроверка на рассто€ние и нахождение света за спиной камеры
+	auto isLightVisible = [&](light* L) -> bool {
+		Fvector toLight;
+		toLight.sub(L->position, Device.vCameraPosition);
+		float distance = toLight.magnitude();
+		toLight.normalize();
+
+		if (distance > ps_r__opt_dist)
+			return false;
+
+		Fvector cameraDirection = Device.vCameraDirection;
+		float dotProduct = cameraDirection.dotproduct(toLight);
+		if (dotProduct < 0 && distance > L->range)
+			return false;
+
+		return true;
+	};
+
 	//////////////////////////////////////////////////////////////////////////
 	// Refactor order based on ability to pack shadow-maps
 	// 1. calculate area + sort in descending order
 	// const	u16		smap_unassigned		= u16(-1);
 	{
-		xr_vector<light*>&	source			= LP.v_shadowed;
-		for (u32 it=0; it<source.size(); it++)
+		// ќбработка источников света
+		xr_vector<light*>& source = LP.v_shadowed;
+		for (u32 it = 0; it < source.size(); it++)
 		{
-			light*	L		= source[it];
-			if	(!L->vis.visible)	{
-				source.erase		(source.begin()+it);
+			light* L = source[it];
+			if (!L->vis.visible || !isLightVisible(L)) {
+				source.erase(source.begin() + it);
 				it--;
-			} else {
-				LR.compute_xf_spot	(L);
+			}
+			else {
+				LR.compute_xf_spot(L);
 			}
 		}
 	}
@@ -59,7 +81,7 @@ void	CRender::render_lights	(light_Package& LP)
 			for	(u32 test=0; test<source.size(); test++)
 			{
 				light*	L	= source[test];
-				SMAP_Rect	R;
+				SMAP_Rect	R{};
 				if		(LP_smap_pool.push(R,L->X.S.size))	{
 					// OK
 					L->X.S.posX			= R.min.x;
@@ -67,14 +89,14 @@ void	CRender::render_lights	(light_Package& LP)
 					L->vis.smap_ID		= smap_ID;
 					refactored.push_back(L);
 					source.erase		(source.begin()+test);
-					test				--;
+					--test;
 				}
 			}
 		}
 
 		// save (lights are popped from back)
 		std::reverse	(refactored.begin(),refactored.end());
-		LP.v_shadowed	= refactored;
+		LP.v_shadowed	= std::move(refactored);
 	}
 
    PIX_EVENT(SHADOWED_LIGHTS);
@@ -200,8 +222,22 @@ void	CRender::render_lights	(light_Package& LP)
 
          PIX_EVENT(ACCUM_VOLUMETRIC);
 			if (RImplementation.o.advancedpp && ps_r2_ls_flags.is(R2FLAG_VOLUMETRIC_LIGHTS))
-			for (u32 it=0; it<L_spot_s.size(); it++)
-				Target->accum_volumetric(L_spot_s[it]);
+			{
+				// Current Resolution
+				float w = float(Device.dwWidth);
+				float h = float(Device.dwHeight);
+
+				// Adjust resolution
+				if (RImplementation.o.ssfx_volumetric && ps_ssfx_volumetric.w > 1)
+					Target->set_viewport_size(HW.pContext, w / ps_ssfx_volumetric.w, h / ps_ssfx_volumetric.w);
+
+				for (u32 it = 0; it < L_spot_s.size(); it++)
+					Target->accum_volumetric(L_spot_s[it]);
+
+				// Restore resolution
+				if (RImplementation.o.ssfx_volumetric && ps_ssfx_volumetric.w > 1)
+					Target->set_viewport_size(HW.pContext, w, h);
+			}
 
 			L_spot_s.clear	();
 		}
@@ -237,34 +273,6 @@ void	CRender::render_lights	(light_Package& LP)
 
 void	CRender::render_indirect			(light* L)
 {
-	if (!!ps_r2_lfx)
-	{
-		Fvector4 pos;
-		Device.mFullTransform.transform(pos, L->position);
-
-		Fvector ldir = Fvector().set(L->position).sub(Device.vCameraPosition);
-		float dist = ldir.magnitude(); ldir.normalize();
-		float cosLo = ldir.dotproduct(Device.vCameraDirection);
-
-		if (dist <= 20.f && dist >= 2.0f && cosLo > 0.0f)
-		{
-			float x = (1.f + pos.x) / 2.f;
-			float y = (1.f - pos.y) / 2.f;
-			collide::rq_result l_rq;
-
-			if (g_pGameLevel)
-			{
-				g_pGameLevel->ObjectSpace.RayPick(Device.vCameraPosition, ldir, dist, collide::rqtBoth, l_rq, g_pGameLevel->CurrentViewEntity());
-				float fade = (dist - l_rq.range) / 0.4f; clamp(fade, 0.0f, 1.0f); fade = 1.0f - fade; fade *= cosLo * 0.2f;
-				Fvector3 color = Fvector3().set(L->color.r, L->color.g, L->color.b); color.normalize();
-				{
-					Target->m_miltaka_lfx_coords.push_back(Fvector4().set(x, y, dist, dist));
-					Target->m_miltaka_lfx_color.push_back(Fvector4().set(fade*color.x, fade*color.y, fade*color.z, dist));
-				}
-			}
-		}
-	}
-
 	if (!ps_r2_ls_flags.test(R2FLAG_GI))	return;
 
 	light									LIGEN;

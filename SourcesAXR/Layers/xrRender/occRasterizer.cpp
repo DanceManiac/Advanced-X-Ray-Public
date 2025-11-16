@@ -88,6 +88,8 @@ IC BOOL shared(occTri* T1, occTri* T2)
 
 void occRasterizer::propagade	()
 {
+	ZoneScoped;
+
 	// Clip-and-propagade zero level
 	occTri**	pFrame	= get_frame	();
 	float*		pDepth	= get_depth	();

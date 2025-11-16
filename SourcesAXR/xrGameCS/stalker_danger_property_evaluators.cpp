@@ -39,7 +39,7 @@ CStalkerPropertyEvaluatorDangers::CStalkerPropertyEvaluatorDangers	(CAI_Stalker 
 
 _value_type CStalkerPropertyEvaluatorDangers::evaluate	()
 {
-	if (!m_object->memory().danger().selected())
+	if (!m_object->get_memory().danger().selected())
 		return			(false);
 	return				(true);
 }
@@ -55,10 +55,10 @@ CStalkerPropertyEvaluatorDangerUnknown::CStalkerPropertyEvaluatorDangerUnknown	(
 
 _value_type CStalkerPropertyEvaluatorDangerUnknown::evaluate	()
 {
-	if (!m_object->memory().danger().selected())
+	if (!m_object->get_memory().danger().selected())
 		return			(false);
 
-	switch (m_object->memory().danger().selected()->type()) {
+	switch (m_object->get_memory().danger().selected()->type()) {
 		case CDangerObject::eDangerTypeBulletRicochet :
 		case CDangerObject::eDangerTypeEntityDeath :
 		case CDangerObject::eDangerTypeFreshEntityCorpse :
@@ -79,10 +79,10 @@ CStalkerPropertyEvaluatorDangerInDirection::CStalkerPropertyEvaluatorDangerInDir
 
 _value_type CStalkerPropertyEvaluatorDangerInDirection::evaluate	()
 {
-	if (!m_object->memory().danger().selected())
+	if (!m_object->get_memory().danger().selected())
 		return			(false);
 
-	switch (m_object->memory().danger().selected()->type()) {
+	switch (m_object->get_memory().danger().selected()->type()) {
 		case CDangerObject::eDangerTypeAttackSound :
 		case CDangerObject::eDangerTypeEntityAttacked :
 		case CDangerObject::eDangerTypeAttacked :
@@ -108,10 +108,10 @@ CStalkerPropertyEvaluatorDangerWithGrenade::CStalkerPropertyEvaluatorDangerWithG
 
 _value_type CStalkerPropertyEvaluatorDangerWithGrenade::evaluate	()
 {
-	if (!m_object->memory().danger().selected())
+	if (!m_object->get_memory().danger().selected())
 		return			(false);
 
-	return				(CDangerObject::eDangerTypeGrenade == m_object->memory().danger().selected()->type());
+	return				(CDangerObject::eDangerTypeGrenade == m_object->get_memory().danger().selected()->type());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -125,11 +125,11 @@ CStalkerPropertyEvaluatorDangerBySound::CStalkerPropertyEvaluatorDangerBySound	(
 
 _value_type CStalkerPropertyEvaluatorDangerBySound::evaluate	()
 {
-	if (!m_object->memory().danger().selected())
+	if (!m_object->get_memory().danger().selected())
 		return			(false);
 
 	return				(false);
-//	return				(CDangerObject::eDangerTypeEnemySound == m_object->memory().danger().selected()->type());
+//	return				(CDangerObject::eDangerTypeEnemySound == m_object->get_memory().danger().selected()->type());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -143,21 +143,21 @@ CStalkerPropertyEvaluatorDangerUnknownCoverActual::CStalkerPropertyEvaluatorDang
 
 _value_type CStalkerPropertyEvaluatorDangerUnknownCoverActual::evaluate	()
 {
-	if (!object().memory().danger().selected())
+	if (!object().get_memory().danger().selected())
 		return							(false);
 
-	if (!object().agent_manager().member().member(&object()).cover())
+	if (!object().agent_manager().get_member().member(&object()).cover())
 		m_cover_selection_position		= object().Position();
 
-	if (!property(StalkerDecisionSpace::eWorldPropertyCoverReached) && object().movement().path_completed())
+	if (!property(StalkerDecisionSpace::eWorldPropertyCoverReached) && object().get_movement().path_completed())
 		m_cover_selection_position		= object().Position();
 
-	if (object().m_ce_best->selected() && !object().agent_manager().member().member(&object()).cover())
+	if (object().m_ce_best->selected() && !object().agent_manager().get_member().member(&object()).cover())
 		object().m_ce_best->invalidate	();
 
 	bool								result = false, first_time = true;
-	const CCoverPoint					*point, *last_cover = object().agent_manager().member().member(m_object).cover();
-	Fvector								position = object().memory().danger().selected()->position();
+	const CCoverPoint					*point, *last_cover = object().agent_manager().get_member().member(m_object).cover();
+	Fvector								position = object().get_memory().danger().selected()->position();
 	for (;;) {
 		object().m_ce_best->setup		(position,10.f,170.f,10.f);
 		point							= ai().cover_manager().best_cover(m_cover_selection_position,10.f,*object().m_ce_best,CStalkerMovementRestrictor(m_object,true,false));
@@ -188,7 +188,7 @@ _value_type CStalkerPropertyEvaluatorDangerUnknownCoverActual::evaluate	()
 		first_time						= false;
 	}
 
-	object().agent_manager().location().make_suitable(m_object,point);
+	object().agent_manager().get_location().make_suitable(m_object,point);
 
 	if (!result)
 		m_storage->set_property			(eWorldPropertyCoverReached,false);
@@ -207,13 +207,13 @@ CStalkerPropertyEvaluatorDangerGrenadeExploded::CStalkerPropertyEvaluatorDangerG
 
 _value_type CStalkerPropertyEvaluatorDangerGrenadeExploded::evaluate	()
 {
-	if (!m_object->memory().danger().selected())
+	if (!m_object->get_memory().danger().selected())
 		return			(false);
 
-	if (CDangerObject::eDangerTypeGrenade != m_object->memory().danger().selected()->type())
+	if (CDangerObject::eDangerTypeGrenade != m_object->get_memory().danger().selected()->type())
 		return			(false);
 
-	return				(!m_object->memory().danger().selected()->dependent_object());
+	return				(!m_object->get_memory().danger().selected()->dependent_object());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -227,16 +227,16 @@ CStalkerPropertyEvaluatorGrenadeToExplode::CStalkerPropertyEvaluatorGrenadeToExp
 
 _value_type CStalkerPropertyEvaluatorGrenadeToExplode::evaluate	()
 {
-	if (object().animation().global_selector())
+	if (object().get_animation().global_selector())
 		return			(false);
 
-	if (!m_object->memory().danger().selected())
+	if (!m_object->get_memory().danger().selected())
 		return			(false);
 
-	if (CDangerObject::eDangerTypeGrenade != m_object->memory().danger().selected()->type())
+	if (CDangerObject::eDangerTypeGrenade != m_object->get_memory().danger().selected()->type())
 		return			(false);
 
-	return				(!!m_object->memory().danger().selected()->dependent_object());
+	return				(!!m_object->get_memory().danger().selected()->dependent_object());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -250,7 +250,7 @@ CStalkerPropertyEvaluatorEnemyWounded::CStalkerPropertyEvaluatorEnemyWounded	(CA
 
 _value_type CStalkerPropertyEvaluatorEnemyWounded::evaluate	()
 {
-	const CEntityAlive			*enemy = object().memory().enemy().selected();
+	const CEntityAlive			*enemy = object().get_memory().get_enemy().selected();
 	if (!enemy)
 		return					(false);
 
@@ -258,5 +258,5 @@ _value_type CStalkerPropertyEvaluatorEnemyWounded::evaluate	()
 	if (!stalker)
 		return					(false);
 
-	return						(stalker->wounded(&object().movement().restrictions()));
+	return						(stalker->wounded(&object().get_movement().restrictions()));
 }

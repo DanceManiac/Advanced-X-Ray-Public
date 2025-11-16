@@ -2,8 +2,6 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#ifndef ResourceManagerH
-#define ResourceManagerH
 #pragma once
 
 #include	"shader.h"
@@ -15,7 +13,7 @@ struct		lua_State;
 class dx10ConstantBuffer;
 
 // defs
-class ECORE_API CResourceManager
+class ECORE_API CResourceManager : public IResourceManager
 {
 private:
 	struct str_pred
@@ -219,6 +217,7 @@ public:
 	void			DestroyNecessaryTextures();
 	void			Dump					(bool bBrief);
 	void			RMPrefetchUITextures	();
+	xr_vector<ITexture*> FindTexture(const char* Name) const override;
 
 private:
 #ifdef USE_DX11
@@ -238,4 +237,3 @@ private:
 #endif	//	USE_DX11
 };
 
-#endif //ResourceManagerH

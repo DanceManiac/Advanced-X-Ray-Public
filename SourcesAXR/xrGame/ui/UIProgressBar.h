@@ -16,6 +16,8 @@ protected:
 		om_vert = 1,
 		om_back = 2,
 		om_down = 3,
+		om_fromcenter = 4,
+		om_vfromcenter = 5,
 		om_count
 	}	m_orient_mode;
 
@@ -53,6 +55,7 @@ public:
 	float				GetRange_max				() 							{ return  m_MaxPos; }
 
 	void				SetProgressPos				(float _Pos);
+	void				ForceSetProgressPos			(float pos);
 	float				GetProgressPos				()							{ return m_ProgressPos.y; }
 
 	void				ShowBackground				(bool status)				{ m_bBackgroundPresent = status; }
@@ -60,6 +63,8 @@ public:
 
 	virtual void		Draw						();
 	virtual void		Update						();
+
+			pcstr		GetDebugType				() override					{ return "CUIProgressBar"; }
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };

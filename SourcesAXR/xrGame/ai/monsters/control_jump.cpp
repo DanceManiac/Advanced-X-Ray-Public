@@ -60,9 +60,9 @@ bool CControlJump::check_start_conditions()
 	return true;
 }
 
-void CControlJump::remove_links	(CObject* object)
+void CControlJump::remove_links	(CObject* object_)
 {
-	if ( m_data.target_object == object )
+	if ( m_data.target_object == object_ )
 		m_data.target_object	=	NULL;
 }
 
@@ -105,7 +105,7 @@ void CControlJump::on_release()
 
 	if ( m_data.target_object && m_data.flags.test(SControlJumpData::eUseAutoAim) )
 	{
-		m_object->character_physics_support()->movement()->PHCharacter()->SetAirControlFactor(0.f);
+		m_object->character_physics_support()->get_movement()->PHCharacter()->SetAirControlFactor(0.f);
 	}
 
 	m_data.flags.set					(SControlJumpData::eUseAutoAim, 0);
@@ -150,7 +150,7 @@ void CControlJump::start_jump(const Fvector &point)
 		if (is_flag(SControlJumpData::ePrepareInMove)) {
 
 			// get animation time
-			float time			= m_man->animation().motion_time(m_data.state_prepare_in_move.motion, m_object->Visual());
+			float time			= m_man->get_animation().motion_time(m_data.state_prepare_in_move.motion, m_object->Visual());
 			// set acceleration and velocity
 			SVelocityParam &vel	= m_object->move().get_velocity(m_data.state_prepare_in_move.velocity_mask);
 			float dist = time * vel.velocity.linear;
@@ -252,7 +252,7 @@ void CControlJump::select_next_anim_state()
 	}
 
 	if ( in_auto_aim() )
-		m_object->character_physics_support()->movement()->PHCharacter()->SetAirControlFactor(100.f * m_auto_aim_factor);
+		m_object->character_physics_support()->get_movement()->PHCharacter()->SetAirControlFactor(100.f * m_auto_aim_factor);
 }
 
 float CControlJump::relative_time ()
@@ -299,14 +299,14 @@ void CControlJump::update_frame()
 		SControlDirectionData * ctrl_data_dir = (SControlDirectionData*)m_man->data(this, ControlCom::eControlDir); 
 		VERIFY					(ctrl_data_dir);
 
-		ctrl_data_dir->heading.target_angle	= m_man->direction().angle_to_target(m_data.target_object->Position());
+		ctrl_data_dir->heading.target_angle	= m_man->get_direction().angle_to_target(m_data.target_object->Position());
 
 		float cur_yaw, target_yaw;
-		m_man->direction().get_heading			(cur_yaw, target_yaw);
+		m_man->get_direction().get_heading			(cur_yaw, target_yaw);
 		ctrl_data_dir->heading.target_speed		= angle_difference(cur_yaw,target_yaw) / m_jump_time;
 		ctrl_data_dir->linear_dependency		= false;
 
-// 		ctrl_data->set_speed	(m_man->animation().current_blend()->timeTotal / m_man->animation().current_blend()->speed / m_jump_time);
+// 		ctrl_data->set_speed	(m_man->get_animation().current_blend()->timeTotal / m_man->get_animation().current_blend()->speed / m_jump_time);
 	}
 
 	// trace enemy for hit
@@ -410,7 +410,7 @@ Fvector CControlJump::get_target(CObject *obj)
 
 void CControlJump::calculate_jump_time (Fvector const & target, bool const check_force_factor)
 {			
-	float ph_time = m_object->character_physics_support()->movement()->JumpMinVelTime(target);
+	float ph_time = m_object->character_physics_support()->get_movement()->JumpMinVelTime(target);
 	// выполнить прыжок в соответствии с делителем времени
 	float cur_factor	= (check_force_factor && m_data.force_factor > 0) ? 
 						   m_data.force_factor : m_jump_factor;
@@ -452,7 +452,7 @@ void CControlJump::on_event(ControlCom::EEventType type, ControlCom::IEventData 
 			// получить время физ.прыжка
 			calculate_jump_time	(m_target_position, true);
 
-			m_object->character_physics_support()->movement()->Jump(m_target_position,m_jump_time);
+			m_object->character_physics_support()->get_movement()->Jump(m_target_position,m_jump_time);
 			m_time_started		= time();
 			m_time_next_allowed	= m_time_started + m_delay_after_jump;
 			//---------------------------------------------------------------------------------
@@ -463,16 +463,16 @@ void CControlJump::on_event(ControlCom::EEventType type, ControlCom::IEventData 
 
 			if ( !m_data.flags.test(SControlJumpData::eUseAutoAim) || !m_data.target_object )
 			{
-				ctrl_data_dir->heading.target_angle	= m_man->direction().angle_to_target(m_target_position);
+				ctrl_data_dir->heading.target_angle	= m_man->get_direction().angle_to_target(m_target_position);
 			}
 
 			float cur_yaw,target_yaw;
-			m_man->direction().get_heading			(cur_yaw, target_yaw);
+			m_man->get_direction().get_heading			(cur_yaw, target_yaw);
 			ctrl_data_dir->heading.target_speed		= angle_difference(cur_yaw,target_yaw)/ m_jump_time;
 			ctrl_data_dir->linear_dependency		= false;
 			//---------------------------------------------------------------------------------
 
-			ctrl_data->set_speed	(m_man->animation().current_blend()->timeTotal/ m_man->animation().current_blend()->speed / m_jump_time);
+			ctrl_data->set_speed	(m_man->get_animation().current_blend()->timeTotal/ m_man->get_animation().current_blend()->speed / m_jump_time);
 
 		} else 
 			ctrl_data->set_speed	(-1.f);
@@ -606,7 +606,7 @@ bool CControlJump::can_jump(Fvector const& target, bool const aggressive_jump)
 		}
 	}
 
-	if (!m_object->movement().restrictions().accessible(target))
+	if (!m_object->get_movement().restrictions().accessible(target))
 		return						false;
 
 	Fvector source_position		=	m_object->Position	();
@@ -626,7 +626,7 @@ bool CControlJump::can_jump(Fvector const& target, bool const aggressive_jump)
 
 	// проверка на angle
 	float yaw_current, yaw_target;
-	m_object->control().direction().get_heading(yaw_current, yaw_target);
+	m_object->control().get_direction().get_heading(yaw_current, yaw_target);
 
 	if (angle_difference(yaw_current, dir_yaw) > m_max_angle) 
 		return						false;
@@ -647,10 +647,10 @@ bool CControlJump::can_jump(Fvector const& target, bool const aggressive_jump)
 			bool good_trace_res = false;
 
 			// get animation time
-			float time			= m_man->animation().motion_time(m_data.state_prepare_in_move.motion, m_object->Visual());
+			float time			= m_man->get_animation().motion_time(m_data.state_prepare_in_move.motion, m_object->Visual());
 			// set acceleration and velocity
 			SVelocityParam &vel	= m_object->move().get_velocity(m_data.state_prepare_in_move.velocity_mask);
-			float dist = time * vel.velocity.linear;
+			dist = time * vel.velocity.linear;
 
 			// check nodes in direction
 			Fvector target_point;

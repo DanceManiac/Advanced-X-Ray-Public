@@ -73,12 +73,12 @@ public:
 		m_enemy_item	= 0;
 	}
 
-	IC	T1*&	member		()
+	IC	T1*& get_member		()
 	{
 		return			(m_member);
 	}
 
-	IC	T1*&	enemy		()
+	IC	T1*& get_enemy		()
 	{
 		return			(m_enemy);
 	}
@@ -109,7 +109,7 @@ struct CEnemyFunction : public T {
 	IC		float	get_value		(P &params)
 	{
 		P						save = params;
-		params.member()			= params.enemy();
+		params.get_member()			= params.get_enemy();
 		params.member_item()	= params.enemy_item();
 		float					value = T::ffGetValue();
 		params					= save;
@@ -118,7 +118,7 @@ struct CEnemyFunction : public T {
 
 	virtual float	ffGetValue		()
 	{
-		if (ef_storage().non_alife().member())
+		if (ef_storage().non_alife().get_member())
 			return	(get_value(ef_storage().non_alife()));
 		return		(get_value(ef_storage().alife()));
 	}

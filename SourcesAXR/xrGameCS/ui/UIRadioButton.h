@@ -3,11 +3,12 @@
 #pragma once
 #include "UITabButton.h"
 
-class CUIRadioButton : public CUITabButton
+class CUIRadioButton final : public CUITabButton
 {
 	typedef CUITabButton inherited;
 public:
 	virtual void InitButton(Fvector2 pos, Fvector2 size);
 	virtual void InitTexture(LPCSTR tex_name);
 	virtual void SetTextX(float x)	{/*do nothing*/}
+			pcstr GetDebugType() override { return "CUIRadioButton"; }
 };

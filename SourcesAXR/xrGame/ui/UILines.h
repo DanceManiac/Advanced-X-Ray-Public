@@ -3,7 +3,7 @@
 #include "UILine.h"
 #include "uiabstract.h"
 
-class CUILines : public CDeviceResetNotifier 
+class CUILines 
 {
 	 friend class CUICustomEdit;
 	 friend class CUICDkey;
@@ -25,6 +25,7 @@ public:
 			EVTextAlignment GetVTextAlignment()							{return m_eVTextAlign;}
 
 			void			SetTextComplexMode							(bool mode = true);
+			bool			GetTextComplexMode							() {return !!uFlags.test(flComplexMode);};
 			void			SetPasswordMode								(bool mode = true);
 			bool			IsPasswordMode								() {return !!uFlags.test(flPasswordMode);};
 

@@ -9,6 +9,7 @@
 
 #include "ParticlesObject.h"
 #include "WeaponAmmo.h"
+#include "Weapon.h"
 
 #include "actor.h"
 #include "spectator.h"
@@ -37,12 +38,20 @@ CShootingObject::CShootingObject(void)
 	m_bUseAimBullet					= false;
 	m_fTimeToAim					= 0.0f;
 
+	m_fWeaponOverheating			= 0.0f;
+	m_fWeaponOverheatingInc			= 0.0f;
+	m_fWeaponOverheatingDec			= 0.0f;
+
 	//particles
-	m_sFlameParticlesCurrent		= m_sFlameParticles = NULL;
-	m_sSmokeParticlesCurrent		= m_sSmokeParticles = NULL;
-	m_sShellParticles				= NULL;
+	m_sFlameParticlesCurrent		= m_sFlameParticles = nullptr;
+	m_sOverheatingFlameParticles	= m_sFlameParticlesCurrent = nullptr;
+	m_sSmokeParticlesCurrent		= m_sSmokeParticles = nullptr;
+	m_sOverheatingSmokeParticles	= nullptr;
+	m_sOverheatingSmokeParticles_2	= nullptr;
+	m_sShellParticles				= nullptr;
 	
 	bWorking						= false;
+	bCycleDown						= false;
 
 	light_render					= 0;
 
@@ -55,7 +64,10 @@ CShootingObject::~CShootingObject(void)
 
 void CShootingObject::reinit()
 {
-	m_pFlameParticles	= NULL;
+	m_pFlameParticles				= nullptr;
+	m_pOverheatingFlameParticles	= nullptr;
+	m_pOverheatingSmokeParticles	= nullptr;
+	m_pOverheatingSmokeParticles_2	= nullptr;
 }
 
 void CShootingObject::Load	(LPCSTR section)
@@ -68,8 +80,17 @@ void CShootingObject::Load	(LPCSTR section)
 
 	//время затрачиваемое на выстрел
 	fOneShotTime			= pSettings->r_float		(section,"rpm");
+
+	//Alundaio: Two-shot burst rpm; used for Abakan/AN-94
+	fModeShotTime			= READ_IF_EXISTS(pSettings, r_float, section, "rpm_mode_2", fOneShotTime);
+
+	//Cycle down RPM after first 2 shots; used for Abakan/AN-94
+	bCycleDown				= READ_IF_EXISTS(pSettings, r_bool, section, "cycle_down", false);
+
 	VERIFY(fOneShotTime>0.f);
 	fOneShotTime			= 60.f / fOneShotTime;
+	fModeShotTime			= 60.f / fModeShotTime;
+
 
 	LoadFireParams		(section);
 	LoadLights			(section, "");
@@ -77,6 +98,15 @@ void CShootingObject::Load	(LPCSTR section)
 	LoadFlameParticles	(section, "");
 
 	m_air_resistance_factor	= READ_IF_EXISTS(pSettings,r_float,section,"air_resistance_factor",1.f);
+
+	m_sOverheatingFlameParticles = READ_IF_EXISTS(pSettings, r_string, section, "overheating_flame_particles", m_sFlameParticles);
+	m_sOverheatingSmokeParticles = READ_IF_EXISTS(pSettings, r_string, section, "overheating_particles", nullptr);
+	m_sOverheatingSmokeParticles_2 = READ_IF_EXISTS(pSettings, r_string, section, "overheating_after_shoot_particles", m_sOverheatingSmokeParticles);
+
+	LPCSTR m_hud_sect = READ_IF_EXISTS(pSettings, r_string, section, "hud", nullptr);
+
+	if (m_sOverheatingSmokeParticles.size())
+		vLoadedOverheatingSmokePoint = READ_IF_EXISTS(pSettings, r_fvector3, section, "overheating_smoke_point", READ_IF_EXISTS(pSettings, r_fvector3, m_hud_sect, "fire_point", Fvector().set(0.0f, 0.0f, 0.0f)));
 }
 
 void CShootingObject::Light_Create		()
@@ -188,6 +218,8 @@ void CShootingObject::Light_Render	(const Fvector& P)
 	light_render->set_position	(P);
 	light_render->set_color		(light_build_color.r*light_scale,light_build_color.g*light_scale,light_build_color.b*light_scale);
 	light_render->set_range		(light_build_range*light_scale);
+
+	light_render->set_flare		(true);
 
 	if(	!light_render->get_active() )
 	{
@@ -312,17 +344,59 @@ void CShootingObject::OnShellDrop	(const Fvector& play_pos,
 
 
 //партиклы дыма
-void CShootingObject::StartSmokeParticles	(const Fvector& play_pos,
-											const Fvector& parent_vel)
+void CShootingObject::StartSmokeParticles	(const Fvector& play_pos, const Fvector& parent_vel)
 {
-	CParticlesObject* pSmokeParticles = NULL;
+	CParticlesObject* pSmokeParticles = nullptr;
 	StartParticles(pSmokeParticles, *m_sSmokeParticlesCurrent, play_pos, parent_vel, true);
 }
 
+void CShootingObject::StartOverheatingParticles(const Fvector& play_pos, const Fvector& parent_vel)
+{
+	m_pOverheatingSmokeParticles = nullptr;
+
+	StartParticles(m_pOverheatingSmokeParticles, *m_sOverheatingSmokeParticles, play_pos, parent_vel, true);
+}
+
+void CShootingObject::StopOverheatingParticles()
+{
+	if (!m_sOverheatingSmokeParticles.size())
+		return;
+
+	if (!m_pOverheatingSmokeParticles)
+		return;
+
+	m_pOverheatingSmokeParticles->SetAutoRemove(true);
+	m_pOverheatingSmokeParticles->Stop();
+	m_pOverheatingSmokeParticles = nullptr;
+}
+
+void CShootingObject::UpdateOverheatingParticles()
+{
+	if (!m_sOverheatingSmokeParticles.size())
+		return;
+
+	if (!m_pOverheatingSmokeParticles)
+		return;
+
+	Fmatrix		pos;
+	pos.set(get_ParticlesXFORM());
+	pos.c.set(get_CurrentFirePoint());
+
+	VERIFY(_valid(pos));
+
+	m_pOverheatingSmokeParticles->SetXFORM(pos);
+
+	if (!m_pOverheatingSmokeParticles->IsLooped() && !m_pOverheatingSmokeParticles->IsPlaying() && !m_pOverheatingSmokeParticles->PSI_alive())
+	{
+		m_pOverheatingSmokeParticles->Stop();
+		CParticlesObject::Destroy(m_pOverheatingSmokeParticles);
+	}
+}
 
 void CShootingObject::StartFlameParticles	()
 {
-	if(0==m_sFlameParticlesCurrent.size()) return;
+	if(!m_sFlameParticlesCurrent.size())
+		return;
 
 	//если партиклы циклические
 	if(m_pFlameParticles && m_pFlameParticles->IsLooped() && 
@@ -333,7 +407,7 @@ void CShootingObject::StartFlameParticles	()
 	}
 
 	StopFlameParticles();
-	m_pFlameParticles = CParticlesObject::Create(*m_sFlameParticlesCurrent,FALSE);
+	m_pFlameParticles = CParticlesObject::Create((m_sOverheatingFlameParticles.size() && m_fWeaponOverheating > 0.75f) ? *m_sOverheatingFlameParticles : *m_sFlameParticlesCurrent, FALSE);
 	UpdateFlameParticles();
 	
 	
@@ -345,23 +419,28 @@ void CShootingObject::StartFlameParticles	()
 		in_hud_mode = false;
 	}
 	m_pFlameParticles->Play(in_hud_mode);
-		
-
 }
+
 void CShootingObject::StopFlameParticles	()
 {
-	if(0==m_sFlameParticlesCurrent.size()) return;
-	if(m_pFlameParticles == NULL) return;
+	if(!m_sFlameParticlesCurrent.size())
+		return;
+
+	if(!m_pFlameParticles)
+		return;
 
 	m_pFlameParticles->SetAutoRemove(true);
 	m_pFlameParticles->Stop();
-	m_pFlameParticles = NULL;
+	m_pFlameParticles = nullptr;
 }
 
 void CShootingObject::UpdateFlameParticles	()
 {
-	if(0==m_sFlameParticlesCurrent.size())		return;
-	if(!m_pFlameParticles)				return;
+	if(!m_sFlameParticlesCurrent.size())
+		return;
+
+	if(!m_pFlameParticles)
+		return;
 
 	Fmatrix		pos; 
 	pos.set		(get_ParticlesXFORM()	); 
@@ -371,12 +450,72 @@ void CShootingObject::UpdateFlameParticles	()
 
 	m_pFlameParticles->SetXFORM			(pos);
 
-	if(!m_pFlameParticles->IsLooped() && 
-		!m_pFlameParticles->IsPlaying() &&
-		!m_pFlameParticles->PSI_alive())
+	if(!m_pFlameParticles->IsLooped() && !m_pFlameParticles->IsPlaying() && !m_pFlameParticles->PSI_alive())
 	{
 		m_pFlameParticles->Stop();
 		CParticlesObject::Destroy(m_pFlameParticles);
+	}
+}
+
+void CShootingObject::StartOverheatingAfterShootParticles()
+{
+	if (!m_sOverheatingSmokeParticles_2.size())
+		return;
+
+	//если партиклы циклические
+	if (m_pOverheatingSmokeParticles_2 && m_pOverheatingSmokeParticles_2->IsLooped() && m_pOverheatingSmokeParticles_2->IsPlaying())
+	{
+		UpdateOverheatingAfterShootParticles();
+		return;
+	}
+
+	StopOverheatingAfterShootParticles();
+	m_pOverheatingSmokeParticles_2 = CParticlesObject::Create(*m_sOverheatingSmokeParticles_2, FALSE);
+	UpdateOverheatingAfterShootParticles();
+
+
+	CSpectator* tmp_spectr = smart_cast<CSpectator*>(Level().CurrentControlEntity());
+	bool in_hud_mode = IsHudModeNow();
+	
+	if (in_hud_mode && tmp_spectr && (tmp_spectr->GetActiveCam() != CSpectator::eacFirstEye))
+		in_hud_mode = false;
+
+	m_pOverheatingSmokeParticles_2->Play(in_hud_mode);
+}
+
+void CShootingObject::StopOverheatingAfterShootParticles()
+{
+	if (!m_sOverheatingSmokeParticles_2.size())
+		return;
+
+	if (!m_pOverheatingSmokeParticles_2)
+		return;
+
+	m_pOverheatingSmokeParticles_2->SetAutoRemove(true);
+	m_pOverheatingSmokeParticles_2->Stop();
+	m_pOverheatingSmokeParticles_2 = nullptr;
+}
+
+void CShootingObject::UpdateOverheatingAfterShootParticles()
+{
+	if(!m_sOverheatingSmokeParticles_2.size())
+		return;
+
+	if(!m_pOverheatingSmokeParticles_2)
+		return;
+
+	Fmatrix		pos; 
+	pos.set		(get_ParticlesXFORM()	); 
+	pos.c.set	(get_CurrentFirePoint()	);
+
+	VERIFY(_valid(pos));
+
+	m_pOverheatingSmokeParticles_2->SetXFORM(pos);
+
+	if(!m_pOverheatingSmokeParticles_2->IsLooped() && !m_pOverheatingSmokeParticles_2->IsPlaying() && !m_pOverheatingSmokeParticles_2->PSI_alive())
+	{
+		m_pOverheatingSmokeParticles_2->Stop();
+		CParticlesObject::Destroy(m_pOverheatingSmokeParticles_2);
 	}
 }
 
@@ -395,6 +534,9 @@ void CShootingObject::StopLight			()
 	if(light_render){
 		light_render->set_active(false);
 	}
+
+	if (m_fWeaponOverheating > 0.2f)
+		StartOverheatingAfterShootParticles();
 }
 
 void CShootingObject::RenderLight()

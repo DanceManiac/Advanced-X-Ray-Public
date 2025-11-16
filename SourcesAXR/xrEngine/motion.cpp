@@ -80,15 +80,15 @@ void COMotion::Clear()
 	for (int ch=0; ch<ctMaxChannel; ch++) xr_delete(envs[ch]);
 }
 
-void COMotion::_Evaluate(float t, Fvector& T, Fvector& R)
+void COMotion::_Evaluate(float t, Fvector& T, Fvector& R, float m_fFactorMod)
 {
-	T.x = envs[ctPositionX]->Evaluate(t);
-	T.y = envs[ctPositionY]->Evaluate(t);
-	T.z = envs[ctPositionZ]->Evaluate(t);
+	T.x = envs[ctPositionX]->Evaluate(t) * m_fFactorMod;
+	T.y = envs[ctPositionY]->Evaluate(t) * m_fFactorMod;
+	T.z = envs[ctPositionZ]->Evaluate(t) * m_fFactorMod;
 
-	R.y = envs[ctRotationH]->Evaluate(t);
-	R.x = envs[ctRotationP]->Evaluate(t);
-	R.z = envs[ctRotationB]->Evaluate(t);
+	R.y = envs[ctRotationH]->Evaluate(t) * m_fFactorMod;
+	R.x = envs[ctRotationP]->Evaluate(t) * m_fFactorMod;
+	R.z = envs[ctRotationB]->Evaluate(t) * m_fFactorMod;
 }
 
 void COMotion::SaveMotion(const char* buf){

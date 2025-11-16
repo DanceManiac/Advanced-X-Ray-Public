@@ -53,8 +53,8 @@ typedef struct tagSoundElement
 	bool operator < (const tagSoundElement &s) const  { 
 		return (value < s.value);
 	}
-	IC void SetConvert(const CObject* who, int eType, const Fvector &position, float power, TTime time) {
-		this->who = who; type = ConvertSoundType((ESoundTypes)eType); this->position = position; this->power = power; this->time = time;
+	IC void SetConvert(const CObject* who_, int eType, const Fvector &position_, float power_, TTime time_) {
+		this->who = who_; type = ConvertSoundType((ESoundTypes)eType); this->position = position_; this->power = power_; this->time = time_;
 	}
 	TSoundDangerValue ConvertSoundType(ESoundTypes stype);
 
@@ -65,7 +65,7 @@ typedef struct tagSoundElement
 } SoundElem;
 
 class CMonsterSoundMemory {
-	TTime					time_memory;				// ����� �������� ������
+	TTime					time_memory;				// время хранения звуков
 	xr_vector<SoundElem>	Sounds;
 
 	CBaseMonster			*monster;
@@ -87,7 +87,7 @@ public:
 	int         GetNumSounds            () {return Sounds.size();}
 	void        GetFirstSound           (SoundElem& s, bool& bDangerous);
 
-	void		GetSound				(SoundElem& s, bool& bDangerous);	// ���������� ����� ������� ����
+	void		GetSound				(SoundElem& s, bool& bDangerous);	// возвращает самый опасный звук
 	SoundElem	&GetSound				();
 	bool		get_sound_from_object	(const CObject* who, SoundElem	&value);	
 

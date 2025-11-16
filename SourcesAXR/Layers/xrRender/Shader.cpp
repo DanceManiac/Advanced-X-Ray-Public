@@ -72,6 +72,9 @@ ShaderElement::ShaderElement()
 	flags.bEmissive		= FALSE;
 	flags.bDistort		= FALSE;
 	flags.bWmark		= FALSE;
+
+	// SSS Custom rendering
+	flags.isWater		= FALSE;
 }
 
 BOOL ShaderElement::equal	(ShaderElement& S)

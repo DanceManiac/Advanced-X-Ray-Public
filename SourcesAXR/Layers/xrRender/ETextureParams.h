@@ -163,7 +163,7 @@ struct ECORE_API STextureParams{
 			return FALSE;
 		}
 	}
-    void Load (IReader& F);
+    void Load (IReader& F, string128 tex_name);
     void Save (IWriter& F);
 #ifdef _EDITOR
 	PropValue::TOnChange			OnTypeChangeEvent;

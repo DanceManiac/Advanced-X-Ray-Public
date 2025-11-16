@@ -725,6 +725,8 @@ D3DXVECTOR2 BuildTSMProjectionMatrix_caster_depth_bounds(D3DXMATRIX& lightSpaceB
 
 void CRender::render_sun				()
 {
+	ZoneScoped;
+
 	light*			fuckingsun			= (light*)Lights.sun_adapted._get()	;
 	D3DXMATRIX		m_LightViewProj		;
 
@@ -1168,6 +1170,8 @@ void CRender::render_sun				()
 
 void CRender::render_sun_near	()
 {
+	ZoneScoped;
+
 	light*			fuckingsun			= (light*)Lights.sun_adapted._get()	;
 	D3DXMATRIX		m_LightViewProj		;
 
@@ -1431,6 +1435,8 @@ void CRender::render_sun_cascades ( )
 
 void CRender::render_sun_cascade ( u32 cascade_ind )
 {
+	ZoneScoped;
+
 	light*			fuckingsun			= (light*)Lights.sun_adapted._get()	;
 
 	// calculate view-frustum bounds in world space

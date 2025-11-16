@@ -93,6 +93,8 @@ void	ISpatial::spatial_unregister()
 
 void	ISpatial::spatial_move	()
 {
+	ZoneScoped;
+
 	if (spatial.node_ptr)
 	{
 		//*** somehow it was determined that object has been moved
@@ -110,6 +112,8 @@ void	ISpatial::spatial_move	()
 
 void	ISpatial::spatial_updatesector_internal()
 {
+	ZoneScoped;
+
 	IRender_Sector*		S				=	::Render->detectSector(spatial_sector_point());
 	spatial.type						&=	~STYPEFLAG_INVALIDSECTOR;
 	if (S)				spatial.sector	=	S;
@@ -167,6 +171,8 @@ ISpatial_DB::~ISpatial_DB()
 
 void			ISpatial_DB::initialize(Fbox& BB)
 {
+	ZoneScoped;
+
 	if (0==m_root)			
 	{
 		// initialize

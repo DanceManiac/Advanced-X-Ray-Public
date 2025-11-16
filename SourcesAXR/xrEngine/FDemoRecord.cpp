@@ -75,9 +75,13 @@ CDemoRecord::CDemoRecord(const char *name, float life_time) : CEffectorCam(cefDe
 	psHUD_Flags.set(HUD_CROSSHAIR, FALSE);
 */
 	m_b_redirect_input_to_level = false;
-	_unlink	(name);
-	file	= FS.w_open	(name);
-	if (file) 
+
+	if (name && name[0]) // что б можно было demo_record без файла использовать
+	{
+		_unlink	(name);
+		file	= FS.w_open	(name);
+	}
+	//if (file) 
 	{
 		g_position.set_position  = false;
 		IR_Capture		();	// capture input
@@ -105,6 +109,7 @@ CDemoRecord::CDemoRecord(const char *name, float life_time) : CEffectorCam(cefDe
 		m_bMakeCubeMap		= FALSE;
 		m_bMakeScreenshot	= FALSE;
 		m_bMakeLevelMap		= FALSE;
+		m_bMakePanoramic	= FALSE;
 
 		m_fSpeed0		= pSettings->r_float("demo_record","speed0");
 		m_fSpeed1		= pSettings->r_float("demo_record","speed1");
@@ -114,16 +119,17 @@ CDemoRecord::CDemoRecord(const char *name, float life_time) : CEffectorCam(cefDe
 		m_fAngSpeed1	= pSettings->r_float("demo_record","ang_speed1");
 		m_fAngSpeed2	= pSettings->r_float("demo_record","ang_speed2");
 		m_fAngSpeed3	= pSettings->r_float("demo_record","ang_speed3");
-	} else {
-		fLifeTime = -1;
+	//} else {
+	//	fLifeTime = -1;
 	}
 }
 
 CDemoRecord::~CDemoRecord()
 {
+	IR_Release	();	// release input
+
 	if (file) 
 	{
-		IR_Release	();	// release input
 		FS.w_close	(file);
 	}
 
@@ -249,6 +255,9 @@ void CDemoRecord::MakeLevelMapProcess()
 void CDemoRecord::MakeCubeMapFace(Fvector &D, Fvector &N)
 {
 	string32 buf;
+
+	m_bCubemapScreenshotInProcess = true;
+
 	switch (m_Stage){
 	case 0:
 		N.set		(cmNorm[m_Stage]);
@@ -270,16 +279,24 @@ void CDemoRecord::MakeCubeMapFace(Fvector &D, Fvector &N)
 		N.set		(m_Camera.j);
 		D.set		(m_Camera.k);
 		psHUD_Flags.assign(s_hud_flag);
+
+		if (m_bMakePanoramic)
+		{
+			Render->CreatePanorama();
+		}
+
+		m_bMakePanoramic = FALSE;
 		m_bMakeCubeMap = FALSE;
+		m_bCubemapScreenshotInProcess = false;
 	break;
 	}
 	m_Stage++;
 }
 
-BOOL CDemoRecord::ProcessCam(SCamEffectorInfo& info)
+BOOL CDemoRecord::ProcessCam(SCamEffectorInfo& info, float m_fFactorMod)
 {
 	info.dont_apply					= false;
-	if (0==file)					return TRUE;
+	//if (0==file)					return TRUE;
 
 	if (m_bMakeScreenshot)
 	{
@@ -294,6 +311,7 @@ BOOL CDemoRecord::ProcessCam(SCamEffectorInfo& info)
 		info.dont_apply = true;
 	}else if (m_bMakeCubeMap)
 	{
+		info.fFov		= 90.f;
 		MakeCubeMapFace	(info.d, info.n);
 		info.p.set		(m_Camera.c);
 		info.fAspect	= 1.f;
@@ -315,6 +333,7 @@ BOOL CDemoRecord::ProcessCam(SCamEffectorInfo& info)
 			pApp->pFontSystem->OutNext	("F11");
 			pApp->pFontSystem->OutNext	("LCONTROL+F11");
 			pApp->pFontSystem->OutNext	("F12");
+			pApp->pFontSystem->OutNext	("LCONTROL+BACK");
 			pApp->pFontSystem->SetAligment(CGameFont::alLeft);
 			pApp->pFontSystem->OutSetI	(0,+.05f);
 			pApp->pFontSystem->OutNext	("= Append Key");
@@ -323,6 +342,7 @@ BOOL CDemoRecord::ProcessCam(SCamEffectorInfo& info)
 			pApp->pFontSystem->OutNext	("= Level Map ScreenShot");
 			pApp->pFontSystem->OutNext	("= Level Map ScreenShot(High Quality)");
 			pApp->pFontSystem->OutNext	("= ScreenShot");
+			pApp->pFontSystem->OutNext	("= 360 Panorama");
 
 		}
 
@@ -395,7 +415,11 @@ BOOL CDemoRecord::ProcessCam(SCamEffectorInfo& info)
 
 void CDemoRecord::IR_OnKeyboardPress	(int dik)
 {
-	if (dik == DIK_MULTIPLY)	m_b_redirect_input_to_level	= !m_b_redirect_input_to_level;
+	if (dik == DIK_MULTIPLY)
+	{
+		m_b_redirect_input_to_level	= !m_b_redirect_input_to_level;
+		return;
+	}
 
 	if(m_b_redirect_input_to_level)
 	{
@@ -405,14 +429,14 @@ void CDemoRecord::IR_OnKeyboardPress	(int dik)
 	if (dik == DIK_GRAVE)
 							Console->Show			();
 	if (dik == DIK_SPACE)	RecordKey				();
-	if (dik == DIK_BACK)	MakeCubemap				();
+	if (dik == DIK_BACK)	MakeCubemap				(IR_GetKeyState(DIK_LCONTROL));
 	if (dik == DIK_F11)		MakeLevelMapScreenshot	(IR_GetKeyState(DIK_LCONTROL));
 	if (dik == DIK_F12)		MakeScreenshot			();
 	if (dik == DIK_ESCAPE)	fLifeTime				= -1;
 
 	if (bDeveloperMode)
 	{
-		if (dik == DIK_RETURN)
+		if (dik == DIK_T || dik == DIK_RETURN)
 		{
 			if (g_pGameLevel->CurrentEntity())
 			{
@@ -503,22 +527,27 @@ void CDemoRecord::IR_OnMouseHold		(int btn)
 	update_whith_timescale( m_vT, vT_delta );
 }
 
-void CDemoRecord::RecordKey			()
+void CDemoRecord::RecordKey()
 {
 	Fmatrix			g_matView;
  
 	g_matView.invert(m_Camera);
-	file->w			(&g_matView,sizeof(Fmatrix));
+	if (file)
+		file->w			(&g_matView,sizeof(Fmatrix));
 	iCount++;
 }
 
-void CDemoRecord::MakeCubemap		()
+void CDemoRecord::MakeCubemap(BOOL bHQ)
 {
 	m_bMakeCubeMap	= TRUE;
+
+	if (bHQ)
+		m_bMakePanoramic = TRUE;
+
 	m_Stage			= 0;
 }
 
-void CDemoRecord::MakeScreenshot	()
+void CDemoRecord::MakeScreenshot()
 {
 	m_bMakeScreenshot = TRUE;
 	m_Stage = 0;

@@ -16,6 +16,7 @@
 #define OBJECT_CHUNK_DATA			0x0002
 #define GAME_TIME_CHUNK_DATA		0x0005
 #define REGISTRY_CHUNK_DATA			0x0009
+#define SCRIPT_VARS_CHUNK_DATA		0x000D
 #define SECTION_HEADER				"location_"
 #define SAVE_EXTENSION				".sav"
 #define SPAWN_NAME					"game.spawn"
@@ -85,13 +86,13 @@ namespace ALife {
 	enum EHitType {
 		eHitTypeBurn = u32(0),
 		eHitTypeShock,
-		eHitTypeStrike,
-		eHitTypeWound,
+		eHitTypeChemicalBurn,
 		eHitTypeRadiation,
 		eHitTypeTelepatic,
-		eHitTypeChemicalBurn,
-		eHitTypeExplosion,
+		eHitTypeWound,
 		eHitTypeFireWound,
+		eHitTypeStrike,
+		eHitTypeExplosion,
 		eHitTypeWound_2,		//knife's alternative fire
 		eHitTypePhysicStrike,
 		eHitTypeMax,
@@ -112,18 +113,19 @@ namespace ALife {
 
 	enum EConditionRestoreType {
 		eHealthRestoreSpeed = u32(0),
-		eRadiationRestoreSpeed,
 		eSatietyRestoreSpeed,
 		eThirstRestoreSpeed,
-		eIntoxicationRestoreSpeed,
+		eRadiationRestoreSpeed,
+		ePowerRestoreSpeed,
+		eBleedingRestoreSpeed,
+		ePsyHealthRestoreSpeed,
 		eSleepenessRestoreSpeed,
+		eIntoxicationRestoreSpeed,
 		eAlcoholismRestoreSpeed,
 		eHangoverRestoreSpeed,
 		eNarcotismRestoreSpeed,
 		eWithDrawalRestoreSpeed,
-		ePsyHealthRestoreSpeed,
-		ePowerRestoreSpeed,
-		eBleedingRestoreSpeed,
+		eFrostbiteRestoreSpeed,
 		eRestoreTypeMax,
 	};
 

@@ -63,8 +63,8 @@ void CStateGroupEatAbstract::finalize()
 		const_cast<CEntityAlive *>(object->EatedCorpse)->m_use_timeout = object->m_corpse_use_timeout;
 		const_cast<CEntityAlive *>(object->EatedCorpse)->set_lock_corpse(false);
 	}
-	if (object->character_physics_support()->movement()->PHCapture())
-		object->character_physics_support()->movement()->PHReleaseObject();
+	if (object->character_physics_support()->get_movement()->PHCapture())
+		object->character_physics_support()->get_movement()->PHReleaseObject();
 	object->EatedCorpse = NULL;
 	object->b_end_state_eat = true;
 }
@@ -75,16 +75,16 @@ void CStateGroupEatAbstract::critical_finalize()
 	inherited::critical_finalize();
 	if ( (corpse==object->EatedCorpse) && object->EatedCorpse && check_completion() )
 	{
-		if (object->character_physics_support()->movement()->PHCapture())
-			object->character_physics_support()->movement()->PHReleaseObject();
+		if (object->character_physics_support()->get_movement()->PHCapture())
+			object->character_physics_support()->get_movement()->PHReleaseObject();
 		const_cast<CEntityAlive *>(object->EatedCorpse)->m_use_timeout = object->m_corpse_use_timeout;
 		const_cast<CEntityAlive *>(object->EatedCorpse)->set_lock_corpse(false);
 		object->EatedCorpse = NULL;
 		object->b_end_state_eat = true;
 	}
 	if (object->EnemyMan.get_enemy())
-		if (object->character_physics_support()->movement()->PHCapture())
-			object->character_physics_support()->movement()->PHReleaseObject();
+		if (object->character_physics_support()->get_movement()->PHCapture())
+			object->character_physics_support()->get_movement()->PHReleaseObject();
 	object->EatedCorpse = NULL;
 	object->b_end_state_eat = true;
 }
@@ -104,8 +104,8 @@ void CStateGroupEatAbstract::reselect_state()
 	if (object->saved_state == eStateEat_Eat)
 	{
 		object->saved_state = u32(-1);
-		if (object->character_physics_support()->movement()->PHCapture())
-			object->character_physics_support()->movement()->PHReleaseObject();
+		if (object->character_physics_support()->get_movement()->PHCapture())
+			object->character_physics_support()->get_movement()->PHReleaseObject();
 		select_state(eStateEat_Eat);					
 		return;
 	}
@@ -209,10 +209,10 @@ void CStateGroupEatAbstract::setup_substates()
 
 		// Определить позицию ближайшей боны у трупа
 		Fvector nearest_bone_pos;
-		const CEntityAlive *corpse = object->EatedCorpse;
+//		const CEntityAlive *corpse = object->EatedCorpse;
 		if ((corpse->m_pPhysicsShell == NULL) || (!corpse->m_pPhysicsShell->isActive())) {
 			nearest_bone_pos	= corpse->Position(); 
-		} else nearest_bone_pos = object->character_physics_support()->movement()->PHCaptureGetNearestElemPos(corpse);
+		} else nearest_bone_pos = object->character_physics_support()->get_movement()->PHCaptureGetNearestElemPos(corpse);
 
 		SStateDataMoveToPoint data;
 		data.point			= nearest_bone_pos;
@@ -293,7 +293,7 @@ void CStateGroupEatAbstract::setup_substates()
 
 		if ( (corpse->m_pPhysicsShell == NULL) || (!corpse->m_pPhysicsShell->isActive()) ) {
 			nearest_bone_pos	= corpse->Position();
-		} else nearest_bone_pos = object->character_physics_support()->movement()->PHCaptureGetNearestElemPos(corpse);
+		} else nearest_bone_pos = object->character_physics_support()->get_movement()->PHCaptureGetNearestElemPos(corpse);
 
 		SStateDataMoveToPoint data;
 		data.point			= nearest_bone_pos;
@@ -340,10 +340,10 @@ bool CStateGroupEatAbstract::hungry()
 }
 
 TEMPLATE_SPECIALIZATION
-void CStateGroupEatAbstract::remove_links	(CObject* object)
+void CStateGroupEatAbstract::remove_links(CObject* object_)
 {
-	if (corpse == object)
-		corpse	= 0;
+	if (corpse == object_)
+		corpse = 0;
 }
 
 #undef TEMPLATE_SPECIALIZATION

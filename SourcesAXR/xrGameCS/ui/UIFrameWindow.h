@@ -31,6 +31,9 @@ public:
 	virtual void	Update						();
 	
 	void			SetVisiblePart				(CUIFrameRect::EFramePart p, BOOL b)	{m_UIWndFrame.SetVisiblePart(p,b);};
+
+	pcstr			GetDebugType				() override { return "CUIFrameWindow"; }
+
 protected:
 
 	CUIFrameRect	m_UIWndFrame;

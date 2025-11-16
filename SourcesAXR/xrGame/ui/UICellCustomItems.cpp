@@ -12,10 +12,10 @@
 #include "../CustomDetector.h"
 #include "../Torch.h"
 #include "../AnomalyDetector.h"
-#include "../AdvancedXrayGameConstants.h"
+#include "../ArtefactContainer.h"
+#include "../Weapon.h"
 
-#define INV_GRID_WIDTHF(HQ_ICONS) ((HQ_ICONS) ? (100.0f) : (50.0f))
-#define INV_GRID_HEIGHTF(HQ_ICONS) ((HQ_ICONS) ? (100.0f) : (50.0f))
+#define INV_BACKGR_ICON_NAME "__bgr_icon"  // Название CUIStatic иконки, которое используется для определения порядка отрисовки аддонов оружия --#SM+#--
 
 namespace detail 
 {
@@ -39,12 +39,12 @@ CUIInventoryCellItem::CUIInventoryCellItem(CInventoryItem* itm)
 	inherited::SetShader							(InventoryUtilities::GetEquipmentIconsShader());
 
 	m_grid_size.set									(itm->GetInvGridRect().rb);
-	Frect rect; 
-	rect.lt.set										(	INV_GRID_WIDTHF(GameConstants::GetUseHQ_Icons()) * itm->GetInvGridRect().x1,
-														INV_GRID_HEIGHTF(GameConstants::GetUseHQ_Icons()) * itm->GetInvGridRect().y1 );
+	Frect rect{}; 
+	rect.lt.set										(	UI().inv_grid_kx() * itm->GetInvGridRect().x1,
+														UI().inv_grid_kx() * itm->GetInvGridRect().y1 );
 
-	rect.rb.set										(	rect.lt.x+INV_GRID_WIDTHF(GameConstants::GetUseHQ_Icons()) * m_grid_size.x,
-														rect.lt.y+INV_GRID_HEIGHTF(GameConstants::GetUseHQ_Icons()) * m_grid_size.y);
+	rect.rb.set										(	rect.lt.x + UI().inv_grid_kx() * m_grid_size.x,
+														rect.lt.y + UI().inv_grid_kx() * m_grid_size.y);
 
 	inherited::SetTextureRect						(rect);
 	inherited::SetStretchTexture					(true);
@@ -110,6 +110,16 @@ bool CUIInventoryCellItem::EqualTo(CUICellItem* itm)
 	}
 	auto ano_det = smart_cast<CDetectorAnomaly*>(object());
 	if (ano_det && ano_det->GetCurrentChargeLevel() != smart_cast<CDetectorAnomaly*>(ci->object())->GetCurrentChargeLevel())
+	{
+		return false;
+	}
+	auto art_con = smart_cast<CArtefactContainer*>(object());
+	if (art_con && art_con->GetArtefactsInside() != smart_cast<CArtefactContainer*>(ci->object())->GetArtefactsInside())
+	{
+		return false;
+	}
+	auto wpn = smart_cast<CWeapon*>(object());
+	if (wpn && wpn->m_weapon_attaches != smart_cast<CWeapon*>(ci->object())->m_weapon_attaches)
 	{
 		return false;
 	}
@@ -284,13 +294,20 @@ bool CUIWeaponCellItem::is_torch()
 	return object()->TacticalTorchAttachable() && object()->IsTacticalTorchAttached();
 }
 
-void CUIWeaponCellItem::CreateIcon(eAddonType t)
+void CUIWeaponCellItem::CreateIcon(eAddonType t, const shared_str& sAddonName) //--#SM+#--
 {
 	if(m_addons[t])				return;
 	m_addons[t]					= xr_new<CUIStatic>();	
 	m_addons[t]->SetAutoDelete	(true);
 	AttachChild					(m_addons[t]);
 	m_addons[t]->SetShader		(InventoryUtilities::GetEquipmentIconsShader());
+
+	// Регулируем порядок отрисовки иконок аддонов --#SM+#--
+	bool bIconToBackground = READ_IF_EXISTS(pSettings, r_bool, sAddonName, "inv_icon_to_back", false);
+	if (bIconToBackground)
+	{
+		m_addons[t]->SetWindowName(INV_BACKGR_ICON_NAME);
+	}
 
 	u32 color = GetTextureColor	();
 	m_addons[t]->SetTextureColor(color);
@@ -299,7 +316,7 @@ void CUIWeaponCellItem::CreateIcon(eAddonType t)
 void CUIWeaponCellItem::DestroyIcon(eAddonType t)
 {
 	DetachChild		(m_addons[t]);
-	m_addons[t]		= NULL;
+	m_addons[t]		= nullptr;
 }
 
 CUIStatic* CUIWeaponCellItem::GetIcon(eAddonType t)
@@ -325,12 +342,45 @@ void CUIWeaponCellItem::RefreshOffset()
 }
 
 void CUIWeaponCellItem::Draw()
-{	
-	inherited::Draw();
+{
+	// Рисуем только аддоны заднего плана
+	bool bBackgrIconsFound = false;
+	for (auto it = m_ChildWndList.begin(); m_ChildWndList.end() != it; ++it)
+	{
+		if (auto pStatic = smart_cast<CUIStatic*>(*it))
+		{
+			if (pStatic->WindowName().equal(INV_BACKGR_ICON_NAME))
+			{
+				bBackgrIconsFound = true;
+				pStatic->TextureOn(); //--> Включаем текстуру у аддонов заднего плана
+			}
+			else
+				pStatic->TextureOff(); //--> Отключаем текстуру у аддонов переднего плана
+		}
+	}
+	if (bBackgrIconsFound == true)
+	{
+		TextureOff(); //--> Отключаем текстуру оружия
+		inherited::Draw(); //--> Рисуем иконки заднего плана
+		TextureOn(); //--> Включаем текстуру оружия
+	}
+
+	// Рисуем только оружие и аддоны переднего плана
+	for (auto it = m_ChildWndList.begin(); m_ChildWndList.end() != it; ++it)
+	{
+		if (auto pStatic = smart_cast<CUIStatic*>(*it))
+		{
+			if (pStatic->WindowName().equal(INV_BACKGR_ICON_NAME))
+				pStatic->TextureOff(); //--> Отключаем текстуру у аддонов заднего плана
+			else
+				pStatic->TextureOn(); //--> Включаем текстуру у аддонов переднего плана
+		}
+	}
+	inherited::Draw(); //--> Рисуем оружие и иконки переднего плана
 
 	if(m_upgrade && m_upgrade->IsShown())
 		m_upgrade->Draw();
-};
+}
 
 void CUIWeaponCellItem::Update()
 {
@@ -345,7 +395,7 @@ void CUIWeaponCellItem::Update()
 		{
 			if (!GetIcon(eSilencer) || bForceReInitAddons)
 			{
-				CreateIcon	(eSilencer);
+				CreateIcon	(eSilencer, object()->GetSilencerName());
 				RefreshOffset();
 				InitAddon	(GetIcon(eSilencer), *object()->GetSilencerName(), m_addon_offset[eSilencer], Heading());
 			}
@@ -362,7 +412,7 @@ void CUIWeaponCellItem::Update()
 		{
 			if (!GetIcon(eScope) || bForceReInitAddons)
 			{
-				CreateIcon	(eScope);
+				CreateIcon	(eScope, object()->GetScopeName());
 				RefreshOffset();
 				InitAddon	(GetIcon(eScope), *object()->GetScopeName(), m_addon_offset[eScope], Heading());
 			}
@@ -379,7 +429,7 @@ void CUIWeaponCellItem::Update()
 		{
 			if (!GetIcon(eLauncher) || bForceReInitAddons)
 			{
-				CreateIcon	(eLauncher);
+				CreateIcon	(eLauncher, object()->GetGrenadeLauncherName());
 				RefreshOffset();
 				InitAddon	(GetIcon(eLauncher), *object()->GetGrenadeLauncherName(), m_addon_offset[eLauncher], Heading());
 			}
@@ -397,7 +447,7 @@ void CUIWeaponCellItem::Update()
 		{
 			if (!GetIcon(eLaser) || bForceReInitAddons)
 			{
-				CreateIcon(eLaser);
+				CreateIcon(eLaser, object()->GetLaserName());
 				RefreshOffset();
 				InitAddon(GetIcon(eLaser), *object()->GetLaserName(), m_addon_offset[eLaser], Heading());
 			}
@@ -415,7 +465,7 @@ void CUIWeaponCellItem::Update()
 		{
 			if (!GetIcon(eTorch) || bForceReInitAddons)
 			{
-				CreateIcon(eTorch);
+				CreateIcon(eTorch, object()->GetTacticalTorchName());
 				RefreshOffset();
 				InitAddon(GetIcon(eTorch), *object()->GetTacticalTorchName(), m_addon_offset[eTorch], Heading());
 			}
@@ -474,25 +524,25 @@ void CUIWeaponCellItem::OnAfterChild(CUIDragDropListEx* parent_list)
 void CUIWeaponCellItem::InitAddon(CUIStatic* s, LPCSTR section, Fvector2 addon_offset, bool b_rotate, bool is_dragging, bool is_scope, bool is_silencer, bool is_gl)
 {
 	
-		Frect					tex_rect;
-		Fvector2				base_scale;
+		Frect					tex_rect{};
+		Fvector2				base_scale{};
 
 		if(Heading())
 		{
-			base_scale.x			= GetHeight()/(INV_GRID_WIDTHF(GameConstants::GetUseHQ_Icons()) * m_grid_size.x);
-			base_scale.y			= GetWidth()/(INV_GRID_HEIGHTF(GameConstants::GetUseHQ_Icons()) * m_grid_size.y);
+			base_scale.x			= GetHeight()/(UI().inv_grid_kx() * m_grid_size.x);
+			base_scale.y			= GetWidth()/(UI().inv_grid_kx() * m_grid_size.y);
 		}
 		else
 		{
-			base_scale.x			= GetWidth()/(INV_GRID_WIDTHF(GameConstants::GetUseHQ_Icons()) * m_grid_size.x);
-			base_scale.y			= GetHeight()/(INV_GRID_HEIGHTF(GameConstants::GetUseHQ_Icons()) * m_grid_size.y);
+			base_scale.x			= GetWidth()/(UI().inv_grid_kx() * m_grid_size.x);
+			base_scale.y			= GetHeight()/(UI().inv_grid_kx() * m_grid_size.y);
 		}
-		Fvector2				cell_size;
-		cell_size.x				= pSettings->r_u32(section, "inv_grid_width")*INV_GRID_WIDTHF(GameConstants::GetUseHQ_Icons());
-		cell_size.y				= pSettings->r_u32(section, "inv_grid_height")*INV_GRID_HEIGHTF(GameConstants::GetUseHQ_Icons());
+		Fvector2				cell_size{};
+		cell_size.x				= pSettings->r_u32(section, "inv_grid_width")*UI().inv_grid_kx();
+		cell_size.y				= pSettings->r_u32(section, "inv_grid_height")*UI().inv_grid_kx();
 
-		tex_rect.x1				= pSettings->r_u32(section, "inv_grid_x")*INV_GRID_WIDTHF(GameConstants::GetUseHQ_Icons());
-		tex_rect.y1				= pSettings->r_u32(section, "inv_grid_y")*INV_GRID_HEIGHTF(GameConstants::GetUseHQ_Icons());
+		tex_rect.x1				= pSettings->r_u32(section, "inv_grid_x")*UI().inv_grid_kx();
+		tex_rect.y1				= pSettings->r_u32(section, "inv_grid_y")*UI().inv_grid_kx();
 
 		tex_rect.rb.add			(tex_rect.lt,cell_size);
 
@@ -562,7 +612,7 @@ void CUIWeaponCellItem::InitAddon(CUIStatic* s, LPCSTR section, Fvector2 addon_o
 		if(b_rotate)
 		{
 			s->SetHeading			(GetHeading());
-			Fvector2 offs;
+			Fvector2 offs{};
 			offs.set				(0.0f, s->GetWndSize().y);
 			s->SetHeadingPivot		(Fvector2().set(0.0f,0.0f), /*Fvector2().set(0.0f,0.0f)*/offs, true);
 		}
@@ -602,20 +652,20 @@ CUIDragItem* CUIWeaponCellItem::CreateDragItem()
 
 	if (GetIcon(eLaser))
 	{
-		s = xr_new<CUIStatic>(); s->SetAutoDelete(true);
-		s->SetShader(InventoryUtilities::GetEquipmentIconsShader());
-		InitAddon(s, *object()->GetLaserName(), m_addon_offset[eLaser], false, true, is_scope(), is_silencer(), is_launcher());
+		s				= xr_new<CUIStatic>(); s->SetAutoDelete(true);
+		s->SetShader	(InventoryUtilities::GetEquipmentIconsShader());
+		InitAddon		(s, *object()->GetLaserName(), m_addon_offset[eLaser], false, true, is_scope(), is_silencer(), is_launcher());
 		s->SetTextureColor(i->wnd()->GetTextureColor());
-		i->wnd()->AttachChild(s);
+		i->wnd			()->AttachChild(s);
 	}
 
 	if (GetIcon(eTorch))
 	{
-		s = xr_new<CUIStatic>(); s->SetAutoDelete(true);
-		s->SetShader(InventoryUtilities::GetEquipmentIconsShader());
-		InitAddon(s, *object()->GetTacticalTorchName(), m_addon_offset[eTorch], false, true, is_scope(), is_silencer(), is_launcher());
+		s				= xr_new<CUIStatic>(); s->SetAutoDelete(true);
+		s->SetShader	(InventoryUtilities::GetEquipmentIconsShader());
+		InitAddon		(s, *object()->GetTacticalTorchName(), m_addon_offset[eTorch], false, true, is_scope(), is_silencer(), is_launcher());
 		s->SetTextureColor(i->wnd()->GetTextureColor());
-		i->wnd()->AttachChild(s);
+		i->wnd			()->AttachChild(s);
 	}
 
 	return				i;

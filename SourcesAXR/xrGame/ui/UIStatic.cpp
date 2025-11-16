@@ -12,11 +12,13 @@
 #include "UICursor.h"
 #include "MainMenu.h"
 
+#include <imgui.h>
+
 bool is_in2(const Frect& b1, const Frect& b2);
 
 void lanim_cont::set_defaults()
 {
-	m_lanim					= NULL;	
+	m_lanim					= nullptr;	
 	m_lanim_start_time		= -1.0f;
 	m_lanim_delay_time		= 0.0f;
 	m_lanimFlags.zero		();
@@ -33,9 +35,10 @@ m_bStretchTexture(false),
 m_bHeading(false),
 m_bConstHeading(false),
 m_fHeading(0.0f),
-m_pTextControl(NULL)
+m_pTextControl(nullptr)
 {
 	m_TextureOffset.set		(0.0f,0.0f);
+	m_BaseTextureOffset.set	(0.0f,0.0f);
 	m_lanim_xform.set_defaults	();
 }
 
@@ -49,7 +52,7 @@ void CUIStatic::SetXformLightAnim(LPCSTR lanim, bool bCyclic)
 	if(lanim && lanim[0]!=0)
 		m_lanim_xform.m_lanim			= LALib.FindItem(lanim);
 	else
-		m_lanim_xform.m_lanim			= NULL;
+		m_lanim_xform.m_lanim			= nullptr;
 	
 	m_lanim_xform.m_lanimFlags.zero		();
 
@@ -69,6 +72,13 @@ void CUIStatic::CreateShader(const char* tex, const char* sh)
 
 void CUIStatic::InitTextureEx(LPCSTR tex_name, LPCSTR sh_name)
 {
+	if (!tex_name || !xr_strlen(tex_name))
+	{
+		m_bTextureEnable = false;
+
+		return;
+	}
+
 	LPCSTR res_shname = UIRender->UpdateShaderName(tex_name, sh_name);
 	CUITextureMaster::InitTexture	(tex_name, &m_UIStaticItem, res_shname);
 
@@ -270,6 +280,25 @@ void CUIStatic::SetHint(LPCSTR hint_text)
 	m_stat_hint_text = hint_text;
 }
 
+void CUIStatic::FillDebugInfo()
+{
+#ifndef MASTER_GOLD
+	CUIWindow::FillDebugInfo();
+	if (ImGui::CollapsingHeader(CUIStatic::GetDebugType()))
+	{
+		ImGui::Checkbox("Enable texture", &m_bTextureEnable);
+		ImGui::Checkbox("Stretch texture", &m_bStretchTexture);
+		ImGui::DragFloat2("Texture offset", (float*)&m_TextureOffset);
+		//m_UIStaticItem->FillDebugInfo(); // XXX: to do
+		ImGui::Checkbox("Enable heading", &m_bHeading);
+		ImGui::Checkbox("Const heading", &m_bConstHeading);
+		ImGui::DragFloat("Heading", &m_fHeading);
+		//m_pTextControl->FillDebugInfo(); // XXX: to do
+		ImGui::LabelText("Stat hint text", "%s", m_stat_hint_text.size() ? m_stat_hint_text.c_str() : "");
+	}
+#endif
+}
+
 void CUIStatic::OnFocusLost()
 {
 	inherited::OnFocusLost();
@@ -296,7 +325,7 @@ void CUITextWnd::AdjustWidthToText()
 {
 	float _len		= TextItemControl().GetFont()->SizeOf_(TextItemControl().GetText());
 	UI().ClientToScreenScaledWidth(_len);
-	SetWidth		(_len);
+	SetWidth		(iCeil(_len));
 }
 
 
@@ -325,3 +354,9 @@ void CUITextWnd::ColorAnimationSetTextColor(u32 color, bool only_alpha)
 	SetTextColor( (only_alpha)?subst_alpha(GetTextColor(),color) : color);
 }
 
+void CUITextWnd::FillDebugInfo()
+{
+#ifndef MASTER_GOLD
+	CUIWindow::FillDebugInfo();
+#endif
+}

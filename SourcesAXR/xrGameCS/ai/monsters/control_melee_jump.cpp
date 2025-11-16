@@ -26,7 +26,7 @@ bool CControlMeleeJump::check_start_conditions()
 
 	Fvector				enemy_position;
 	enemy_position.set	(m_object->EnemyMan.get_enemy()->Position());
-	if (m_man->direction().is_face_target(enemy_position, CHECK_YAW))				return false;
+	if (m_man->get_direction().is_face_target(enemy_position, CHECK_YAW))				return false;
 	if (enemy_position.distance_to(m_object->Position()) > MAX_DISTANCE_TO_ENEMY)	return false;
 
 	return true;		
@@ -48,8 +48,8 @@ void CControlMeleeJump::activate()
 	dir_to_enemy.normalize	();
 	
 	float		target_yaw		= angle_normalize(-dir_to_enemy.getH());
-	MotionID	motion			= ((m_man->direction().is_from_right(target_yaw)) ? m_data.anim_rs : m_data.anim_ls );
-	float		anim_time		= m_man->animation().motion_time(motion, m_object->Visual());	
+	MotionID	motion			= ((m_man->get_direction().is_from_right(target_yaw)) ? m_data.anim_rs : m_data.anim_ls );
+	float		anim_time		= m_man->get_animation().motion_time(motion, m_object->Visual());	
 
 	// set yaw
 	SControlDirectionData		*ctrl_data_dir = (SControlDirectionData*)m_man->data(this, ControlCom::eControlDir); 
@@ -58,7 +58,7 @@ void CControlMeleeJump::activate()
 
 	// set angular speed
 	float cur_yaw;
-	m_man->direction().get_heading			(cur_yaw, target_yaw);
+	m_man->get_direction().get_heading			(cur_yaw, target_yaw);
 	ctrl_data_dir->heading.target_speed		= angle_difference(cur_yaw,target_yaw)/ anim_time;
 	ctrl_data_dir->linear_dependency		= false;
 	VERIFY									(!fis_zero(ctrl_data_dir->heading.target_speed));
@@ -67,7 +67,7 @@ void CControlMeleeJump::activate()
 	SControlAnimationData		*ctrl_data = (SControlAnimationData*)m_man->data(this, ControlCom::eControlAnimation); 
 	VERIFY						(ctrl_data);
 
-	ctrl_data->global.motion	= motion;
+	ctrl_data->global.set_motion (motion);
 	ctrl_data->global.actual	= false;
 }
 

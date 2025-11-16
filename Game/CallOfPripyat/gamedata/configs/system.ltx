@@ -66,7 +66,6 @@
 #include "misc\backpacks.ltx"
 #include "misc\sound_layers.ltx"
 
-
 [zone_pick_dof]
 near    = -1500.0
 far     = 10.0
@@ -150,8 +149,7 @@ slot_persistent_12  = false ;helmet
 slot_active_12      = false
 
 slot_persistent_13  = false ;backpack
-
-slot_active_13      = false
+//The activity of the slot depends on whether the animated backpack is enabled
 
 slot_persistent_14  = false ;second helmet
 slot_active_14      = false
@@ -164,7 +162,6 @@ slot_active_16      = false
 
 slot_persistent_17  = false ;pistol
 slot_active_17      = true
-
 
 [lights_hanging_lamp]
 GroupControlSection = spawn_group
@@ -610,6 +607,7 @@ alcoholism	= 0.0
 hangover	= 1.0
 narcotism	= 0.0
 withdrawal	= 1.0
+frostbite	= 0.5
 
 [squad_manager]
 schedule_min      =   1

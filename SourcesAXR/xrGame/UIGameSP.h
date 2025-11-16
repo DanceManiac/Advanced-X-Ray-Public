@@ -14,7 +14,7 @@ class CInventoryBox;
 class CInventoryOwner;
 class CCar;
 
-class CUIGameSP : public CUIGameCustom
+class CUIGameSP final : public CUIGameCustom
 {
 private:
 	game_cl_Single*		m_game;
@@ -42,10 +42,14 @@ public:
 	CChangeLevelWnd*	UIChangeLevelWnd;
 
 	SDrawStaticStruct*	m_game_objective;
+
+	pcstr				GetDebugType			() override { return "CUIGameSP"; }
+	bool				FillDebugTree			(const CUIDebugState& debugState) override;
+	void				FillDebugInfo			() override;
 };
 
 
-class CChangeLevelWnd :public CUIDialogWnd
+class CChangeLevelWnd final : public CUIDialogWnd
 {
 	CUIMessageBox*			m_messageBox;
 	typedef CUIDialogWnd	inherited;
@@ -68,4 +72,7 @@ public:
 	virtual bool		WorkInPause					()const {return true;}
 	virtual void		Show						(bool status);
 	virtual bool		OnKeyboardAction					(int dik, EUIMessages keyboard_action);
+
+	pcstr				GetDebugType				() override { return "Change level window"; }
+	void				FillDebugInfo				() override;
 };

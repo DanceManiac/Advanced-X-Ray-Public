@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "pch_script.h"
 #include "embedded_editor_weather.h"
+#include "embedded_editor_helper.h"
 #include "../../xrEngine/Environment.h"
 #include "../../xrEngine/IGame_Level.h"
 #include "../../xrEngine/thunderbolt.h"
@@ -12,6 +13,8 @@
 #include "../xrServerEntities/script_engine.h"
 #include <imgui.h>
 #include "imgui_internal.h"
+
+#include "string_table.h"
 
 Fvector convert(const Fvector& v)
 {
@@ -123,6 +126,13 @@ void saveWeather(shared_str name, const xr_vector<CEnvDescriptor*>& env)
 		f.w_fvector3(el->m_identifier.c_str(), "dof", el->dof_value);
 		f.w_float(el->m_identifier.c_str(), "dof_kernel", el->dof_kernel);
 		f.w_float(el->m_identifier.c_str(), "dof_sky", el->dof_sky);
+		f.w_float(el->m_identifier.c_str(), "aurora_intensity", el->m_fAuroraIntensity);
+		f.w_fvector3(el->m_identifier.c_str(), "aurora_color", el->aurora_color);
+		f.w_float(el->m_identifier.c_str(), "air_temperature", el->m_fAirTemperature);
+		f.w_string(el->m_identifier.c_str(), "weather_type", el->m_sWeatherType.c_str());
+		f.w_float(el->m_identifier.c_str(), "bloom_threshold", el->bloom_threshold);
+		f.w_float(el->m_identifier.c_str(), "bloom_exposure", el->bloom_exposure);
+		f.w_float(el->m_identifier.c_str(), "bloom_sky_intensity", el->bloom_sky_intensity);
 	}
 	string_path fileName;
 	FS.update_path(fileName, "$game_weathers$", name.c_str());
@@ -156,47 +166,34 @@ void nextTexture(char* tex, int texSize, int offset)
 	FS.file_list_close(files);
 }
 
-bool ImGui_ListBox(const char* label, int* current_item, bool(*items_getter)(void*, int, const char**), void* data,
-	int items_count, const ImVec2& size_arg = ImVec2(0, 0));
+bool ImGui_ListBox(const char* label, int* current_item, bool(*items_getter)(void*, int, const char**), void* data, int items_count, const ImVec2& size_arg = ImVec2(0, 0));
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// from https://www.strchr.com/natural_sorting
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-int count_digits(const char* s)
+static bool stristr(const xr_string& str, const char* search)
 {
-	const char* p = s;
-	while (isdigit(*p))
-		p++;
-	return (int)(p - s);
-}
+	if (search[0] == '\0')
+		return true;
 
-int compare_naturally(const void* a_ptr, const void* b_ptr)
-{
-	const char* a = (const char*)a_ptr;
-	const char* b = (const char*)b_ptr;
+	const char* s = str.c_str();
+	const char* p = search;
 
-	for (;;) {
-		if (isdigit(*a) && isdigit(*b)) {
-			int a_count = count_digits(a);
-			int diff = a_count - count_digits(b);
-			if (diff)
-				return diff;
-			diff = memcmp(a, b, a_count);
-			if (diff)
-				return diff;
-			a += a_count;
-			b += a_count;
+	for (; *s != '\0'; s++)
+	{
+		if (tolower(*s) == tolower(*p))
+		{
+			const char* s2 = s + 1;
+			const char* p2 = p + 1;
+			while (*s2 != '\0' && *p2 != '\0' && tolower(*s2) == tolower(*p2))
+			{
+				s2++;
+				p2++;
+			}
+
+			if (*p2 == '\0')
+				return true;
 		}
-		if (*a != *b)
-			return *a - *b;
-		if (*a == '\0')
-			return 0;
-		a++, b++;
 	}
+	return false;
 }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
 
 bool editTexture(const char* label, shared_str& texName)
 {
@@ -211,17 +208,21 @@ bool editTexture(const char* label, shared_str& texName)
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("...")) {
-		ImGui::OpenPopup("Choose texture");
+		ImGui::OpenPopup(toUtf8(CStringTable().translate("st_editor_imgui_choose_texture").c_str()).c_str());
 		prevValue = texName;
 	}
 	ImGui::SameLine();
 	ImGui::Text(label);
 	ImGui::SetNextWindowSize(ImVec2(250, 400), ImGuiCond_FirstUseEver);
-	if (ImGui::BeginPopupModal("Choose texture", NULL, 0)) {
+	if (ImGui::BeginPopupModal(toUtf8(CStringTable().translate("st_editor_imgui_choose_texture").c_str()).c_str(), NULL, 0)) {
 		string_path dir, fn;
 		_splitpath(tex, nullptr, dir, fn, nullptr);
 		strconcat(sizeof(fn), fn, fn, ".dds");
 		static xr_map<xr_string, xr_vector<xr_string>> dirs;
+		static char searchStr[128] = "";
+
+		ImGui::InputText(toUtf8(CStringTable().translate("st_spawner_search").c_str()).c_str(), searchStr, IM_ARRAYSIZE(searchStr));
+
 		auto filtered = dirs[dir];
 		if (filtered.empty()) {
 			xr_vector<LPSTR>* files = FS.file_list_open("$game_textures$", dir, FS_ListFiles);
@@ -236,30 +237,44 @@ bool editTexture(const char* label, shared_str& texName)
 			}
 			FS.file_list_close(files);
 		}
+
+		xr_vector<xr_string> displayList;
+		for (const auto& name : filtered) {
+			if (searchStr[0] == '\0' || stristr(name, searchStr)) {
+				displayList.push_back(name);
+			}
+		}
+
 		int cur = -1;
-		for (size_t i = 0; i != filtered.size(); i++)
-			if (filtered[i] == fn) {
-				cur = i;
+		for (size_t i = 0; i < displayList.size(); i++)
+			if (displayList[i] == fn) {
+				cur = (int)i;
 				break;
 			}
+
 		if (ImGui_ListBox("", &cur,
 			[](void* data, int idx, const char** out_text) -> bool {
 				xr_vector<xr_string>* textures = (xr_vector<xr_string>*)data;
+				if (idx < 0 || idx >= (int)textures->size()) return false;
 				*out_text = (*textures)[idx].c_str();
 				return true;
 			},
-			&filtered, filtered.size(), ImVec2(-1.0f, -20.0f))) {
-			string_path newFn;
-			_splitpath(filtered[cur].c_str(), nullptr, nullptr, newFn, nullptr);
-			strconcat(100, tex, dir, newFn);
-			texName = tex;
-			changed = true;
+			&displayList, (int)displayList.size(), ImVec2(-1.0f, -20.0f)))
+		{
+			if (cur >= 0 && cur < (int)displayList.size()) {
+				string_path newFn;
+				_splitpath(displayList[cur].c_str(), nullptr, nullptr, newFn, nullptr);
+				strconcat(100, tex, dir, newFn);
+				texName = tex;
+				changed = true;
+			}
 		}
-		if (ImGui::Button("OK", ImVec2(120, 0))) {
+
+		if (ImGui::Button(toUtf8(CStringTable().translate("st_weather_editor_btn_ok").c_str()).c_str(), ImVec2(120, 0))) {
 			ImGui::CloseCurrentPopup();
 		}
 		ImGui::SameLine();
-		if (ImGui::Button("Cancel", ImVec2(120, 0))) {
+		if (ImGui::Button(toUtf8(CStringTable().translate("st_weather_editor_btn_cancel").c_str()).c_str(), ImVec2(120, 0))) {
 			ImGui::CloseCurrentPopup();
 			string_path newFn;
 			_splitpath(prevValue.data(), nullptr, nullptr, newFn, nullptr);
@@ -287,7 +302,7 @@ void ShowWeatherEditor(bool& show)
     u64 time = Level().GetEnvironmentGameTime() / 1000;
     ImGui::Text("Time: %02d:%02d:%02d", int(time / (60 * 60) % 24), int(time / 60 % 60), int(time % 60));
     float tf = Level().GetEnvironmentTimeFactor();
-    if (ImGui::SliderFloat("Time factor", &tf, 0.0f, 1000.0f, "%.3f", ImGuiSliderFlags_Logarithmic))
+    if (ImGui::SliderFloat(toUtf8(CStringTable().translate("st_weather_editor_time_factor").c_str()).c_str(), &tf, 0.0f, 1000.0f, "%.3f", ImGuiSliderFlags_Logarithmic))
         Level().SetEnvironmentTimeFactor(tf);
     xr_vector<shared_str> cycles;
     int iCycle = -1;
@@ -297,15 +312,15 @@ void ShowWeatherEditor(bool& show)
             iCycle = cycles.size() - 1;
     }
 
-	ImGui::Text(u8"Main parameters");
+	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_main_options").c_str()).c_str());
 
-	if (ImGui::Combo("Weather cycle", &iCycle, enumCycle, &cycles, env.WeatherCycles.size()))
+	if (ImGui::Combo(toUtf8(CStringTable().translate("st_weather_editor_wth_cycle").c_str()).c_str(), &iCycle, enumCycle, &cycles, env.WeatherCycles.size()))
 		env.SetWeather(cycles[iCycle], true);
 	int sel = -1;
-	for (int i = 0; i != env.CurrentWeather->size(); i++)
+	for (u32 i = 0; i != env.CurrentWeather->size(); i++)
 		if (cur->m_identifier == env.CurrentWeather->at(i)->m_identifier)
 			sel = i;
-	if (ImGui::Combo("Current section", &sel, enumWeather, env.CurrentWeather, env.CurrentWeather->size())) {
+	if (ImGui::Combo(toUtf8(CStringTable().translate("st_weather_editor_cur_sect").c_str()).c_str(), &sel, enumWeather, env.CurrentWeather, env.CurrentWeather->size())) {
 		env.SetGameTime(env.CurrentWeather->at(sel)->exec_time + 0.5f, tf);
 		time = time / (24 * 60 * 60) * 24 * 60 * 60 * 1000;
 		time += u64(env.CurrentWeather->at(sel)->exec_time * 1000 + 0.5f);
@@ -313,16 +328,18 @@ void ShowWeatherEditor(bool& show)
 		env.SetWeather(cycles[iCycle], true);
 	}
 	static bool b = getScriptWeather();
-	if (ImGui::Checkbox("Script weather", &b))
+	if (ImGui::Checkbox(toUtf8(CStringTable().translate("st_weather_editor_script_wth").c_str()).c_str(), &b))
 		setScriptWeather(b);
 	ImGui::Separator();
 	bool changed = false;
 	sel = -1;
-	for (int i = 0; i != env.m_ambients_config->sections().size(); i++)
+	for (u32 i = 0; i != env.m_ambients_config->sections().size(); i++)
+	{
 		if (cur->env_ambient->name() == env.m_ambients_config->sections()[i]->Name)
 			sel = i;
+	}
 
-	ImGui::Text(u8"Ambient light parameters");
+	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_amb_light_options").c_str()).c_str());
 
 	if (ImGui::Combo("ambient", &sel, enumIni, env.m_ambients_config, env.m_ambients_config->sections().size())) {
 		cur->env_ambient = env.AppendEnvAmb(env.m_ambients_config->sections()[sel]->Name);
@@ -331,14 +348,15 @@ void ShowWeatherEditor(bool& show)
 	if (ImGui::ColorEdit3("ambient_color", (float*)&cur->ambient))
 		changed = true;
 
-	ImGui::Text(u8"Clouds parameters");
+	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_clouds_options").c_str()).c_str());
 
 	if (ImGui::ColorEdit4("clouds_color", (float*)&cur->clouds_color, ImGuiColorEditFlags_AlphaBar))
 		changed = true;
 	char buf[100];
 	if (editTexture("clouds_texture", cur->clouds_texture_name))
 	{
-		cur->on_device_create();
+		cur->on_unload();
+		cur->on_prepare();
 		changed = true;
 	}
 
@@ -351,7 +369,7 @@ void ShowWeatherEditor(bool& show)
 			changed = true;
 	}
 
-	ImGui::Text(u8"Fog parameters");
+	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_fog_options").c_str()).c_str());
 
 	if (ImGui::SliderFloat("far_plane", &cur->far_plane, 0.01f, 10000.0f))
 		changed = true;
@@ -366,19 +384,19 @@ void ShowWeatherEditor(bool& show)
 	if (ImGui::ColorEdit3("fog_color", (float*)&cur->fog_color))
 		changed = true;
 
-	ImGui::Text(u8"Hemi parameters");
+	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_hemi_options").c_str()).c_str());
 
 	if (ImGui::ColorEdit4("hemisphere_color", (float*)&cur->hemi_color, ImGuiColorEditFlags_AlphaBar))
 		changed = true;
 
-	ImGui::Text(u8"Rain parameters");
+	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_rain_options").c_str()).c_str());
 
 	if (ImGui::SliderFloat("rain_density", &cur->rain_density, 0.0f, 10.0f))
 		changed = true;
 	if (ImGui::ColorEdit3("rain_color", (float*)&cur->rain_color))
 		changed = true;
 
-	ImGui::Text(u8"Sky parameters");
+	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_sky_options").c_str()).c_str());
 
 	if (ImGui::ColorEdit3("sky_color", (float*)&cur->sky_color))
 		changed = true;
@@ -389,14 +407,15 @@ void ShowWeatherEditor(bool& show)
 	if (editTexture("sky_texture", cur->sky_texture_name)) {
 		strconcat(sizeof(buf), buf, cur->sky_texture_name.data(), "#small");
 		cur->sky_texture_env_name = buf;
-		cur->on_device_create();
+		cur->on_unload();
+		cur->on_prepare();
 		changed = true;
 	}
 
-	ImGui::Text(u8"Sun parameters");
+	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_sun_options").c_str()).c_str());
 
 	sel = -1;
-	for (int i = 0; i != env.m_suns_config->sections().size(); i++)
+	for (u32 i = 0; i != env.m_suns_config->sections().size(); i++)
 		if (cur->lens_flare_id == env.m_suns_config->sections()[i]->Name)
 			sel = i;
 	if (ImGui::Combo("sun", &sel, enumIni, env.m_suns_config, env.m_suns_config->sections().size())) {
@@ -422,11 +441,13 @@ void ShowWeatherEditor(bool& show)
 	if (ImGui::SliderFloat("sun_shafts_intensity", &cur->m_fSunShaftsIntensity, 0.0f, 2.0f))
 		changed = true;
 	sel = 0;
-	for (int i = 0; i != env.m_thunderbolt_collections_config->sections().size(); i++)
+	for (u32 i = 0; i != env.m_thunderbolt_collections_config->sections().size(); i++)
+	{
 		if (cur->tb_id == env.m_thunderbolt_collections_config->sections()[i]->Name)
 			sel = i + 1;
+	}
 
-	ImGui::Text(u8"Thunder bolt parameters");
+	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_thunder_bolt_options").c_str()).c_str());
 
 	if (ImGui::Combo("thunderbolt_collection", &sel, enumIniWithEmpty, env.m_thunderbolt_collections_config,
 		env.m_thunderbolt_collections_config->sections().size() + 1)) {
@@ -441,12 +462,12 @@ void ShowWeatherEditor(bool& show)
 	if (ImGui::SliderFloat("thunderbolt_period", &cur->bolt_period, 0.0f, 10.0f))
 		changed = true;
 
-	ImGui::Text(u8"Water parameters");
+	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_water_options").c_str()).c_str());
 
 	if (ImGui::SliderFloat("water_intensity", &cur->m_fWaterIntensity, 0.0f, 2.0f))
 		changed = true;
 
-	ImGui::Text(u8"Wind parameters");
+	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_wind_options").c_str()).c_str());
 
 	if (ImGui::SliderFloat("wind_velocity", &cur->wind_velocity, 0.0f, 100.0f))
 		changed = true;
@@ -455,12 +476,12 @@ void ShowWeatherEditor(bool& show)
 
 	if (!bWeatherWindInfluenceKoef)
 	{
-		ImGui::Text(u8"Trees parameters");
+		ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_trees_options").c_str()).c_str());
 
 		if (ImGui::SliderFloat("trees_amplitude_intensity", &cur->m_fTreeAmplitudeIntensity, 0.01f, 0.250f))
 			changed = true;
 
-		ImGui::Text(u8"Grass swing parameters");
+		ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_grass_swing_options").c_str()).c_str());
 
 		if (ImGui::SliderFloat("swing_normal_amp1", &cur->m_cSwingDesc[0].amp1, 0.0f, 10.0f))
 			changed = true;
@@ -486,15 +507,26 @@ void ShowWeatherEditor(bool& show)
 
 	if (bWeatherColorGrading)
 	{
-		ImGui::Text(u8"Color Grading Parameters");
+		ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_clr_grad_options").c_str()).c_str());
 
 		if (ImGui::ColorEdit4("color_grading", (float*)&cur->color_grading))
 			changed = true;
 	}
 
+	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_bloom_options").c_str()).c_str());
+
+	if (ImGui::SliderFloat("bloom_threshold", &cur->bloom_threshold, 0.0f, 2.5f))
+		changed = true;
+
+	if (ImGui::SliderFloat("bloom_exposure", &cur->bloom_exposure, 0.0f, 10.0f))
+		changed = true;
+
+	if (ImGui::SliderFloat("bloom_sky_intensity", &cur->bloom_sky_intensity, 0.0f, 1.0f))
+		changed = true;
+
 	if (bDofWeather)
 	{
-		ImGui::Text(u8"DoF parameters");
+		ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_dof_options").c_str()).c_str());
 
 		if (ImGui::InputFloat3("dof", (float*)&cur->dof_value), 3)
 			changed = true;
@@ -504,9 +536,34 @@ void ShowWeatherEditor(bool& show)
 			changed = true;
 	}
 
+	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_other_options").c_str()).c_str());
+
+	if (ImGui::SliderFloat("aurora_intensity", &cur->m_fAuroraIntensity, 0.0f, 1.0f))
+		changed = true;
+
+	if (ImGui::ColorEdit3("aurora_color", (float*)&cur->aurora_color))
+		changed = true;
+
+	if (ImGui::SliderFloat("air_temperature", &cur->m_fAirTemperature, -50.0f, 50.0f))
+		changed = true;
+
+	static char newType[256]{};
+
+	if (cur->m_sWeatherType.size())
+		strcpy(newType, cur->m_sWeatherType.c_str());
+	else
+		memset(newType, 0, sizeof(newType));
+
+	if (ImGui::InputText("weather_type", newType, 512))
+		changed = true;
+
 	if (changed)
+	{
+		cur->m_sWeatherType = newType;
 		modifiedWeathers.insert(env.CurrentWeatherName);
-	if (ImGui::Button("Save")) {
+	}
+
+	if (ImGui::Button(toUtf8(CStringTable().translate("st_editor_imgui_save").c_str()).c_str())) {
 		for (auto name : modifiedWeathers)
 			saveWeather(name, env.WeatherCycles[name]);
 		modifiedWeathers.clear();

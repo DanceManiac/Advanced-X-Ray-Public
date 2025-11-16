@@ -52,7 +52,7 @@ void killer_victim_angle::OnPlayerKilled(u16 killer_id,
 	if (!tmp_cphys)
 		return;
 	
-	CPHMovementControl*	tmp_movc = tmp_cphys->movement();
+	CPHMovementControl*	tmp_movc = tmp_cphys->get_movement();
 	if (!tmp_movc)
 		return;
 

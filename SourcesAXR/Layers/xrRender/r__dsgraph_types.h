@@ -115,6 +115,12 @@ namespace	R_dsgraph
 	typedef xr_fixed_map<float,_MatrixItemS>			mapHUD_T;
 	typedef mapHUD_T::value_type						mapHUD_Node;
 
+	typedef xr_fixed_map<float, _MatrixItemS>			HUDMask_T;
+	typedef HUDMask_T::value_type						HUDMask_Node;
+
 	typedef xr_fixed_map<float,_LodItem>				mapLOD_T;
 	typedef mapLOD_T::value_type						mapLOD_Node;
+
+	typedef xr_fixed_map<float, _MatrixItemS>			mapWater_T;
+	typedef mapWater_T::value_type						mapWater_Node;
 };

@@ -10,7 +10,6 @@
 #include "ui/UIInventoryUtilities.h"
 #include "object_broker.h"
 #include "../Include/xrRender/UIShader.h"
-#include "AdvancedXrayGameConstants.h"
 
 using namespace InventoryUtilities;
 
@@ -78,10 +77,10 @@ void CEncyclopediaArticle::load_shared	(LPCSTR)
 	{
 		data()->image.SetShader(InventoryUtilities::GetEquipmentIconsShader());
 
-		float x			= float(pSettings->r_u32(ltx, "inv_grid_x") * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()));
-		float y			= float(pSettings->r_u32(ltx, "inv_grid_y") * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()));
-		float width		= float(pSettings->r_u32(ltx, "inv_grid_width") * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()));
-		float height	= float(pSettings->r_u32(ltx, "inv_grid_height") * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()));
+		float x			= float(pSettings->r_u32(ltx, "inv_grid_x") * UI().inv_grid_kx());
+		float y			= float(pSettings->r_u32(ltx, "inv_grid_y") * UI().inv_grid_kx());
+		float width		= float(pSettings->r_u32(ltx, "inv_grid_width") * UI().inv_grid_kx());
+		float height	= float(pSettings->r_u32(ltx, "inv_grid_height") * UI().inv_grid_kx());
 
 		data()->image.GetUIStaticItem().SetOriginalRect(x, y, width, height);
 		data()->image.ClipperOn();
@@ -108,14 +107,14 @@ void CEncyclopediaArticle::load_shared	(LPCSTR)
 		{
 			float dx = minSize - r.width();
 			r.x2 += dx;
-			data()->image.SetTextureOffset(dx / 2, data()->image.GetTextureOffeset()[1]);
+			data()->image.SetBaseTextureOffset(dx / 2, data()->image.GetBaseTextureOffset()[1]);
 		}
 
 		if (r.height() < minSize)
 		{
 			float dy = minSize - r.height();
 			r.y2 += dy;
-			data()->image.SetTextureOffset(data()->image.GetTextureOffeset()[0], dy / 2);
+			data()->image.SetBaseTextureOffset(data()->image.GetBaseTextureOffset()[0], dy / 2);
 		}
 
 		data()->image.SetWndRect(Frect().set(0,0,r.width(),r.height()));

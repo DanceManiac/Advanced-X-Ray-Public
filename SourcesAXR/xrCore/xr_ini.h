@@ -30,6 +30,7 @@ public:
     struct XRCORE_API	Sect {
 		shared_str		Name;
 		Items			Data;
+		xr_vector<Item> Ordered_Data;
 
 		BOOL			line_exist	(LPCSTR L, LPCSTR* val=0);
 	};
@@ -44,8 +45,6 @@ public:
 	static void			Destroy		( CInifile*);
     static IC BOOL		IsBOOL		( LPCSTR B)	{ return (xr_strcmp(B,"on")==0 || xr_strcmp(B,"yes")==0 || xr_strcmp(B,"true")==0 || xr_strcmp(B,"1")==0);}
 private:
-	enum{eSaveAtEnd = (1<<0), eReadOnly= (1<<1), eOverrideNames=(1<<2),};
-	Flags8			m_flags;
 	string_path		m_file_name;
 	Root			DATA;
 	
@@ -55,6 +54,8 @@ private:
                                 #endif
                                 );
 public:
+	enum{eSaveAtEnd = (1<<0), eReadOnly= (1<<1), eOverrideNames=(1<<2),};
+	Flags8			m_flags;
 				CInifile		( IReader* F,
 								   LPCSTR path=0
                                 #ifndef _EDITOR
@@ -74,6 +75,7 @@ public:
 
 	virtual 	~CInifile		( );
     bool		save_as         ( LPCSTR new_fname = nullptr );
+	std::string	get_as_string();
 	void		save_as			(IWriter& writer, bool bcheck=false)const;
 	void		set_override_names(BOOL b){m_flags.set(eOverrideNames,b);}
 	void		save_at_end		(BOOL b){m_flags.set(eSaveAtEnd,b);}

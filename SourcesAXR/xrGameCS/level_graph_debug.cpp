@@ -8,7 +8,6 @@
 
 #include "stdafx.h"
 
-#ifdef DEBUG
 #ifndef AI_COMPILER
 
 #include "level_graph.h"
@@ -25,28 +24,20 @@
 
 #include "debug_renderer.h"
 
-void CLevelGraph::setup_current_level	(const int &level_id)
+void CLevelGraph::render()
 {
-	if (m_current_level_id == level_id)
-		return;
+#ifndef DEBUG
+	draw_nodes();
+	draw_restrictions();
 
-	m_current_actual		= false;
-	m_current_level_id		= level_id;
-}
-
-void CLevelGraph::render	()
-{
-	if (psAI_Flags.test(aiDrawGameGraph)) {
+#else
+	if (psAI_Flags.test(aiDrawGameGraph))
+	{
 //		if (psHUD_Flags.test(HUD_DRAW))
 			draw_game_graph	();
 	}
 
-	if (!bDebug && !psAI_Flags.test(aiMotion))
-		return;
-
-	if (bDebug && psAI_Flags.test(aiDebug))
-		draw_nodes			();
-
+	draw_nodes				();
 	draw_restrictions		();
 
 	if (psAI_Flags.test(aiCover))
@@ -58,9 +49,19 @@ void CLevelGraph::render	()
 	if (psAI_Flags.test(aiMotion))
 		draw_objects		();
 
-#ifdef DEBUG
 	draw_debug_node			();
 #endif
+}
+
+#ifdef DEBUG
+
+void CLevelGraph::setup_current_level(const int& level_id)
+{
+	if (m_current_level_id == level_id)
+		return;
+
+	m_current_actual = false;
+	m_current_level_id = level_id;
 }
 
 void modify							(const int &vertex_id, Fbox &bounding_box)
@@ -242,8 +243,8 @@ void CLevelGraph::draw_stalkers		(const int &vertex_id)
 			if (!stalker)
 				continue;
 
-			const PATH			&path = stalker->brain().movement().detail().path();
-			const float			&walked_distance = (path.size() < 2) ? 0.f : stalker->brain().movement().detail().walked_distance();
+			const PATH			&path = stalker->get_brain().get_movement().detail().path();
+			const float			&walked_distance = (path.size() < 2) ? 0.f : stalker->get_brain().get_movement().detail().walked_distance();
 //			font.OutNext		("%s",stalker->name_replace());
 
 			if ((path.size() >= 2) && !fis_zero(walked_distance))
@@ -272,13 +273,13 @@ void CLevelGraph::draw_stalkers		(const int &vertex_id)
 		if (!stalker)
 			continue;
 
-		const PATH				&path = stalker->brain().movement().detail().path();
+		const PATH				&path = stalker->get_brain().get_movement().detail().path();
 		if (path.size() < 2)
 			continue;
 
 		u32						game_vertex_id0 = stalker->m_tGraphID;
 		u32						game_vertex_id1 = path[path.size() - 2];
-		const float				&walked_distance = stalker->brain().movement().detail().walked_distance();
+		const float				&walked_distance = stalker->get_brain().get_movement().detail().walked_distance();
 
 		if (fis_zero(walked_distance))
 			continue;
@@ -408,8 +409,8 @@ void CLevelGraph::draw_objects		(const int &vertex_id)
 			if (!monster)
 				continue;
 
-			const PATH			&path = monster->brain().movement().detail().path();
-			const float			&walked_distance = (path.size() < 2) ? 0.f : monster->brain().movement().detail().walked_distance();
+			const PATH			&path = monster->get_brain().get_movement().detail().path();
+			const float			&walked_distance = (path.size() < 2) ? 0.f : monster->get_brain().get_movement().detail().walked_distance();
 //			font.OutNext		("%s",monster->name_replace());
 
 			if ((path.size() >= 2) && !fis_zero(walked_distance))
@@ -438,13 +439,13 @@ void CLevelGraph::draw_objects		(const int &vertex_id)
 		if (!monster)
 			continue;
 
-		const PATH				&path = monster->brain().movement().detail().path();
+		const PATH				&path = monster->get_brain().get_movement().detail().path();
 		if (path.size() < 2)
 			continue;
 
 		u32						game_vertex_id0 = monster->m_tGraphID;
 		u32						game_vertex_id1 = path[path.size() - 2];
-		const float				&walked_distance = monster->brain().movement().detail().walked_distance();
+		const float				&walked_distance = monster->get_brain().get_movement().detail().walked_distance();
 
 		if (fis_zero(walked_distance))
 			continue;
@@ -626,13 +627,13 @@ void CLevelGraph::draw_game_graph	()
 				CSE_ALifeMonsterAbstract *tpALifeMonsterAbstract = smart_cast<CSE_ALifeMonsterAbstract *>((*I).second);
 				if (tpALifeMonsterAbstract && tpALifeMonsterAbstract->m_bDirectControl && !tpALifeMonsterAbstract->m_bOnline) {
 					CSE_ALifeHumanAbstract *tpALifeHuman = smart_cast<CSE_ALifeHumanAbstract *>(tpALifeMonsterAbstract);
-					if (tpALifeHuman && tpALifeHuman->brain().movement().detail().path().size()) {
-						Fvector t1 = ai().game_graph().vertex(tpALifeHuman->brain().movement().detail().path().back())->game_point();
+					if (tpALifeHuman && tpALifeHuman->get_brain().get_movement().detail().path().size()) {
+						Fvector t1 = ai().game_graph().vertex(tpALifeHuman->get_brain().get_movement().detail().path().back())->game_point();
 						t1.y += .6f;
 						NORMALIZE_VECTOR(t1);
 						Level().debug_renderer().draw_aabb(t1,.05f,.05f,.05f,color_xrgb(0,0,255));
-						for (int i=(int)tpALifeHuman->brain().movement().detail().path().size() - 2; i>=0;--i) {
-							Fvector t2 = ai().game_graph().vertex(tpALifeHuman->brain().movement().detail().path()[i])->game_point();
+						for (int i=(int)tpALifeHuman->get_brain().get_movement().detail().path().size() - 2; i>=0;--i) {
+							Fvector t2 = ai().game_graph().vertex(tpALifeHuman->get_brain().get_movement().detail().path()[i])->game_point();
 							t2.y += .6f;
 							NORMALIZE_VECTOR(t2);
 							Level().debug_renderer().draw_aabb(t2,.05f,.05f,.05f,color_xrgb(0,0,255));

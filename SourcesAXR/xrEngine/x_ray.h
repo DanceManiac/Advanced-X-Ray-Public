@@ -77,8 +77,6 @@ ENGINE_API extern bool bWinterMode;
 ENGINE_API extern bool bDofWeather;
 ENGINE_API extern bool bLowlandFogWeather;
 ENGINE_API extern bool bWeatherColorGrading;
-ENGINE_API extern bool bWeatherFogDistanceClamping;
-ENGINE_API extern float bWeatherFogDistanceClampingMax;
 ENGINE_API extern float bWeatherWindInfluenceKoef;
 ENGINE_API extern float fHUDFov;
 ENGINE_API extern Fvector4 ps_ssfx_wpn_dof_1;
@@ -92,5 +90,8 @@ ENGINE_API extern float rain_max_distance_koef;
 ENGINE_API extern float rain_particles_time;
 ENGINE_API extern int	rain_max_particles;
 ENGINE_API extern int	rain_particles_cache;
+
+//For Cubemap screenshots
+ENGINE_API extern bool	m_bCubemapScreenshotInProcess;
 
 #endif //__XR_BASE_H__

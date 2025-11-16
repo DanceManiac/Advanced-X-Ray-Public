@@ -33,7 +33,7 @@ v2p_bumped _main( v_model I )
 	// Calculate the 3x3 transform from tangent space to eye-space
 	// TangentToEyeSpace = object2eye * tangent2object
 	//		     = object2eye * transpose(object2tangent) (since the inverse of a rotation is its transpose)
-	float3 	N 	= I.N;		// just scale (assume normal in the -.5f, .5f)
+	float3 	N 	= I.N * normal_strength_params.x;		// just scale (assume normal in the -.5f, .5f)
 	float3 	T 	= I.T;		// 
 	float3 	B 	= I.B;		// 
 	float3x3 xform	= mul	((float3x3)m_WV, float3x3(

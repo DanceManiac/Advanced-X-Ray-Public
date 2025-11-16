@@ -2,7 +2,7 @@
 #include "AnomalyDetector.h"
 #include "CustomZone.h"
 #include "HudManager.h"
-//#include "Artifact.h"
+//#include "Artefact.h"
 #include "Inventory.h"
 #include "Level.h"
 #include "map_manager.h"
@@ -149,14 +149,18 @@ void CDetectorAnomaly::UpdateCL()
 {
 	inherited::UpdateCL();
 
+	if( !IsWorking() ) return;
+	if( !H_Parent()  ) return;
+	if(!m_pCurrentActor) return;
+
 	if (GameConstants::GetAnoDetectorUseBattery())
 		UpdateChargeLevel();
 
-	if( !IsWorking() ) return;
-	if( !H_Parent()  ) return;
-	if (m_fCurrentChargeLevel <= 0.0) return;
-
-	if(!m_pCurrentActor) return;
+	if (m_fCurrentChargeLevel <= 0.0f)
+	{
+		TurnOff();
+		return;
+	}
 
 	ZONE_INFO_MAP_IT it;
 	for(it = m_ZoneInfoMap.begin(); m_ZoneInfoMap.end() != it; ++it) 
@@ -250,9 +254,9 @@ void CDetectorAnomaly::OnMoveToRuck(EItemPlace prev)
 	TurnOff();
 }
 
-void CDetectorAnomaly::OnMoveToSlot()
+void CDetectorAnomaly::OnMoveToSlot(EItemPlace prev)
 {
-	inherited::OnMoveToSlot();
+	inherited::OnMoveToSlot(prev);
 	TurnOn();
 }
 
@@ -302,6 +306,9 @@ void CDetectorAnomaly::SetCurrentChargeLevel(float val)
 
 	float condition = 1.f * m_fCurrentChargeLevel / m_fUnchargeSpeed;
 	SetChargeLevel(condition);
+
+	if (!IsWorking() && m_fCurrentChargeLevel > 0.0f && (m_eItemCurrPlace == eItemPlaceBelt || m_eItemCurrPlace == eItemPlaceSlot))
+		TurnOn();
 }
 
 void CDetectorAnomaly::Recharge(float val)
@@ -310,6 +317,9 @@ void CDetectorAnomaly::Recharge(float val)
 	clamp(m_fCurrentChargeLevel, 0.f, m_fMaxChargeLevel);
 
 	SetChargeLevel(m_fCurrentChargeLevel);
+
+	if (!IsWorking() && m_fCurrentChargeLevel > 0.0f && (m_eItemCurrPlace == eItemPlaceBelt || m_eItemCurrPlace == eItemPlaceSlot))
+		TurnOn();
 }
 
 bool CDetectorAnomaly::IsNecessaryItem(const shared_str& item_sect, xr_vector<shared_str> item)

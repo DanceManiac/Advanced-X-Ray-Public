@@ -1,0 +1,75 @@
+#include "weapons\addon_tactical.ltx"
+
+[hud_base]
+aim_hud_offset_pos				= 0,0,0
+aim_hud_offset_rot				= 0,0,0
+
+aim_hud_offset_pos_16x9			= 0,0,0
+aim_hud_offset_rot_16x9			= 0,0,0
+
+gl_hud_offset_pos_16x9			= 0,0,0
+gl_hud_offset_rot_16x9			= 0,0,0
+
+gl_hud_offset_pos				= 0,0,0
+gl_hud_offset_rot				= 0,0,0
+
+lean_hud_offset_pos		= 0,0,0
+lean_hud_offset_rot		= 0,0,0
+
+[sect_identity_immunities]
+burn_immunity			= 1.0
+strike_immunity			= 1.0
+shock_immunity			= 1.0
+wound_immunity			= 1.0		
+wound_2_immunity		= 1.0
+radiation_immunity		= 1.0
+telepatic_immunity		= 1.0
+chemical_burn_immunity	= 1.0
+explosion_immunity		= 1.0
+fire_wound_immunity		= 1.0
+
+[identity_immunities]
+immunities_sect				= sect_identity_immunities
+use_aim_bullet				= false
+hit_probability_gd_novice	= 0.20
+hit_probability_gd_stalker	= 0.30
+hit_probability_gd_veteran	= 0.40
+hit_probability_gd_master	= 0.50
+
+[default_weapon_params]
+; Стрейфы
+strafe_enabled = true 
+strafe_transition_time = 0.25
+strafe_hud_offset_pos = 0.015,0.0,0.00
+strafe_hud_offset_rot = 0.0,0.0,4.5
+
+; Настройки для режима прицеливания
+strafe_aim_enabled = false
+strafe_aim_transition_time = 0.15
+strafe_aim_hud_offset_pos = 0.005,0.0,0.00
+strafe_aim_hud_offset_rot = 0.0,0.0,2.5
+
+[common_ph_friction_params_on_npc_death] ;Параметры для задания изменения трения в момент смерти персонажа
+
+ph_skeleton_airr_lin_factor   = 2.0 ;550.0 (изменно из-за того, что убрано домножение коэффициент 0.002 из кода)
+ph_skeleton_airr_ang_factor   = 0.0 ;0.0 (изменно из-за того, что убрано домножение на коэффициент 0.3 из кода (0.0*0.3=0.0))
+ph_skeleton_hinger_factor1    = 1.0 ;1.0 (изменно из-за того, что убрано домножение на коэффициент 5.0 из кода)
+ph_skeleton_ddelay	     	  = 15.0 ;Время изменения значения трения в суставе с момента создания шелла, сек
+
+ph_skel_fatal_impulse_factor  = 6.0
+ph_after_death_velocity_factor= 0.75
+ph_skel_shot_up_factor        = 0.25
+
+
+
+ph_skeleton_skin_friction_start	= 0.0   ;Стартовое значение трения для оболочки
+ph_skeleton_skin_friction_end	= 2.0   ;Финальное значение трения для оболочки
+ph_skeleton_skin_ddelay			= 6.0		;Время изменения значения трения с момента создания шелла, сек.
+ph_skeleton_skin_ddelay_after_wound = 2.0 ;Время изменения значения трения с момента создания шелла, сек.(для персонажа после ранения)
+ph_pelvis_factor_low_pose_detect =0.3	;длинна луча на коллизию с землёй из центра пелвиса
+										;если коллизиться, то персонаж находиться в нижней позе(или ранен)(в этом случае для него задаються другие параметры 
+										;трения и отсутствует домножение импульса для первого хита)
+ph_character_have_wounded_state = false; имеет ли персонаж состояние раненый
+
+[monster_base]:common_ph_friction_params_on_npc_death
+actor_hit_effect = effector_monster_hit

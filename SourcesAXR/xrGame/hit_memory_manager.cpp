@@ -129,7 +129,7 @@ void CHitMemoryManager::add					(float amount, const Fvector &vLocalDir, const C
 	if (m_hits->end() == J) {
 		CHitObject						hit_object;
 
-		hit_object.fill					(entity_alive,m_object,!m_stalker ? squad_mask_type(-1) : m_stalker->agent_manager().member().mask(m_stalker));
+		hit_object.fill					(entity_alive,m_object,!m_stalker ? squad_mask_type(-1) : m_stalker->agent_manager().get_member().mask(m_stalker));
 		
 #ifdef USE_FIRST_GAME_TIME
 		hit_object.m_first_game_time	= Level().GetGameTime();
@@ -148,7 +148,7 @@ void CHitMemoryManager::add					(float amount, const Fvector &vLocalDir, const C
 			m_hits->push_back	(hit_object);
 	}
 	else {
-		(*J).fill				(entity_alive,m_object,(!m_stalker ? (*J).m_squad_mask.get() : ((*J).m_squad_mask.get() | m_stalker->agent_manager().member().mask(m_stalker))));
+		(*J).fill				(entity_alive,m_object,(!m_stalker ? (*J).m_squad_mask.get() : ((*J).m_squad_mask.get() | m_stalker->agent_manager().get_member().mask(m_stalker))));
 		(*J).m_amount			= _max(amount,(*J).m_amount);
 	}
 }
@@ -165,7 +165,7 @@ void CHitMemoryManager::add					(const CHitObject &_hit_object)
 		return;
 
 	CHitObject					hit_object = _hit_object;
-	hit_object.m_squad_mask.set	(m_stalker->agent_manager().member().mask(m_stalker),TRUE);
+	hit_object.m_squad_mask.set	(m_stalker->agent_manager().get_member().mask(m_stalker),TRUE);
 
 	const CEntityAlive			*entity_alive = hit_object.m_object;
 	HITS::iterator	J = std::find(m_hits->begin(),m_hits->end(),object_id(entity_alive));
@@ -319,7 +319,7 @@ void CHitMemoryManager::load	(IReader &packet)
 
 	typedef CClientSpawnManager::CALLBACK_TYPE	CALLBACK_TYPE;
 	CALLBACK_TYPE					callback;
-	callback.bind					(&m_object->memory(),&CMemoryManager::on_requested_spawn);
+	callback.bind					(&m_object->get_memory(),&CMemoryManager::on_requested_spawn);
 
 	int								count = packet.r_u8();
 	for (int i=0; i<count; ++i) {
@@ -372,8 +372,7 @@ void CHitMemoryManager::load	(IReader &packet)
 
 		const CClientSpawnManager::CSpawnCallback	*spawn_callback = Level().client_spawn_manager().callback(delayed_object.m_object_id,m_object->ID());
 		if (!spawn_callback || !spawn_callback->m_object_callback)
-			if(!g_dedicated_server)
-				Level().client_spawn_manager().add	(delayed_object.m_object_id,m_object->ID(),callback);
+			Level().client_spawn_manager().add	(delayed_object.m_object_id,m_object->ID(),callback);
 #ifdef DEBUG
 		else {
 			if (spawn_callback && spawn_callback->m_object_callback) {

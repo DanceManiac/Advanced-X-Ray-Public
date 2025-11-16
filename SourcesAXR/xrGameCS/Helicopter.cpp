@@ -150,6 +150,8 @@ BOOL CHelicopter::net_Spawn(CSE_Abstract*	DC)
 	if (!inherited::net_Spawn(DC))
 		return			(FALSE);
 
+	renderable.visual->_ignore_optimization = true;
+
 	CPHSkeleton::Spawn((CSE_Abstract*)(DC));
 	for(u32 i=0; i<4; ++i)
 		CRocketLauncher::SpawnRocket(*m_sRocketSection, smart_cast<CGameObject*>(this));
@@ -233,6 +235,7 @@ BOOL CHelicopter::net_Spawn(CSE_Abstract*	DC)
 	m_light_render->set_type			(IRender_Light::POINT);
 	m_light_render->set_range			(m_light_range);
 	m_light_render->set_color			(m_light_color);
+	m_light_render->set_moveable		(true);
 
 	if(g_Alive())processing_activate	();
 	TurnEngineSound(false);

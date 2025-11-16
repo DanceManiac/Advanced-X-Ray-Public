@@ -9,16 +9,27 @@
 #include "ui/UIActorMenu.h"
 #include "uigamecustom.h"
 #include "inventory_item.h"
+#include "AdvancedXrayGameConstants.h"
 
 CInventoryBox::CInventoryBox()
 {
 	m_in_use   = false;
 	m_can_take = true;
 	m_closed   = false;
+
+	m_fInventoryFullness = 0.0f;
+	m_fInventoryCapacity = 500.0f;
 }
 
 CInventoryBox::~CInventoryBox()
 {
+}
+
+void CInventoryBox::Load(LPCSTR section)
+{
+	inherited::Load(section);
+
+	m_fInventoryCapacity = READ_IF_EXISTS(pSettings, r_float, section, "inventory_capacity", 500.0f);
 }
 
 void CInventoryBox::OnEvent(NET_Packet& P, u16 type)
@@ -33,12 +44,16 @@ void CInventoryBox::OnEvent(NET_Packet& P, u16 type)
 			u16 id;
             P.r_u16					(id);
 			CObject* itm			= Level().Objects.net_Find(id);  VERIFY(itm);
+			CInventoryItem* pIItem	= smart_cast<CInventoryItem*>(itm);
+
 			m_items.push_back		(id);
 			itm->H_SetParent		(this);
 			itm->setVisible			(FALSE);
 			itm->setEnabled			(FALSE);
 
-			CInventoryItem *pIItem	= smart_cast<CInventoryItem*>(itm);
+			if (GameConstants::GetLimitedInvBoxes())
+				m_fInventoryFullness += pIItem->GetOccupiedInvSpace();
+
 			VERIFY					(pIItem);
 			if( CurrentGameUI() )
 			{
@@ -67,8 +82,14 @@ void CInventoryBox::OnEvent(NET_Packet& P, u16 type)
 
 			if( m_in_use )
 			{
-				CGameObject* GO		= smart_cast<CGameObject*>(itm);
+				CGameObject* GO				= smart_cast<CGameObject*>(itm);
 				Actor()->callback(GameObject::eInvBoxItemTake)( this->lua_game_object(), GO->lua_game_object() );
+
+				if (GameConstants::GetLimitedInvBoxes())
+				{
+					CInventoryItem* inv_item = smart_cast<CInventoryItem*>(GO);
+					m_fInventoryFullness -= inv_item->GetOccupiedInvSpace();
+				}
 			}
 		}break;
 	};
@@ -77,6 +98,19 @@ void CInventoryBox::OnEvent(NET_Packet& P, u16 type)
 void CInventoryBox::UpdateCL()
 {
 	inherited::UpdateCL	();
+
+	/*if (GameConstants::GetLimitedInventory())
+	{
+		xr_vector<u16>::const_iterator it = m_items.begin();
+		xr_vector<u16>::const_iterator it_e = m_items.end();
+
+		for (; it != it_e; ++it)
+		{
+			PIItem itm = smart_cast<PIItem>(Level().Objects.net_Find(*it)); VERIFY(itm);
+			CInventoryItem* inv_item = smart_cast<CInventoryItem*>(itm);
+			m_fInventoryFullness += inv_item->GetOccupiedInvSpace();
+		}
+	}*/
 }
 
 void CInventoryBox::net_Destroy()
@@ -106,7 +140,7 @@ void CInventoryBox::net_Relcase(CObject* O)
 {
 	inherited::net_Relcase(O);
 }
-#include "inventory_item.h"
+
 void CInventoryBox::AddAvailableItems(TIItemContainer& items_container) const
 {
 	xr_vector<u16>::const_iterator it = m_items.begin();

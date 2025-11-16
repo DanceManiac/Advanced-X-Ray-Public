@@ -7,7 +7,7 @@
 #include "../../build_config_defines.h"
 
 // SSR quality option
-u32			dt_ssr_samp = 16;
+u32			dt_ssr_samp = 2;
 xr_token							qdt_ssr_samp_token[] = {
 	{ "dtssr_off",					0												},
 	{ "dtssr_lowest",				1												},
@@ -85,7 +85,7 @@ xr_token							qsun_shafts_token							[ ]={
 };
 
 //ogse sunshafts
-u32 ps_sunshafts_mode = 0;
+u32 ps_sunshafts_mode = 1;
 xr_token sunshafts_mode_token[] = {
 	{ "volumetric", 0 },
 	{ "screen_space", 1 },
@@ -134,7 +134,7 @@ xr_token							qmsaa__atest_token					[ ]={
 	{ 0,							0												}
 };
 
-u32			ps_r3_minmax_sm			=	3;			//	=	0;
+u32			ps_r3_minmax_sm			=	0;			//	=	0;
 xr_token							qminmax_sm_token					[ ]={
 	{ "off",						0												},
 	{ "on",							1												},
@@ -171,6 +171,21 @@ xr_token							qshader_preset_token[] = {
 	{ 0,							0												}
 };
 
+u32 ps_r_panorama_scr_size = 2048;
+xr_token qpanorama_scr_size_token[] =
+{
+	{ "512",						512											},
+	{ "1024",						1024										},
+	{ "1536",						1536										},
+	{ "2048",						2048										},
+	{ "2560",						2560										},
+	{ "3072",						3072										},
+	{ "4096",						4096										},
+	{ "8192",						8192										},
+	{ "16384",						16384										},
+	 { 0,							0											}
+};
+
 //	“Off”
 //	“DX10.0 style [Standard]”
 //	“DX10.1 style [Higher quality]”
@@ -178,6 +193,8 @@ xr_token							qshader_preset_token[] = {
 // Common
 extern int			psSkeletonUpdate;
 extern float		r__dtex_range;
+
+Flags32 ps_r__common_flags = { RFLAG_USE_SHADERS_CACHE }; // All renders
 
 //int		ps_r__Supersample			= 1		;
 int			ps_r__LightSleepFrames		= 10	;
@@ -199,18 +216,18 @@ float		ps_r__WallmarkSHIFT_V		= 0.0001f;
 
 float		ps_r__GLOD_ssa_start		= 256.f	;
 float		ps_r__GLOD_ssa_end			=  64.f	;
-float		ps_r__LOD					=  0.75f	;
+float		ps_r__LOD					= READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "r__geometry_lod", 0.75f);
 //. float		ps_r__LOD_Power				=  1.5f	;
 float		ps_r__ssaDISCARD			=  3.5f	;					//RO
 float		ps_r__ssaDONTSORT			=  32.f	;					//RO
 float		ps_r__ssaHZBvsTEX			=  96.f	;					//RO
 
 int			ps_r__tf_Anisotropic		= 8		;
+float		ps_r__tf_Mipbias			= READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "r__tf_mipbias", 0.f);
 
 // R1
 float		ps_r1_ssaLOD_A				= 64.f	;
 float		ps_r1_ssaLOD_B				= 48.f	;
-float		ps_r1_tf_Mipbias			= 0.0f	;
 Flags32		ps_r1_flags					= { R1FLAG_DLIGHTS };		// r1-only
 float		ps_r1_lmodel_lerp			= 0.1f	;
 float		ps_r1_dlights_clip			= 40.f	;
@@ -225,7 +242,6 @@ int			ps_r1_SoftwareSkinning		= 0		;					// r1-only
 // R2
 float		ps_r2_ssaLOD_A				= 64.f	;
 float		ps_r2_ssaLOD_B				= 48.f	;
-float		ps_r2_tf_Mipbias			= 0.0f	;
 
 // R2-specific
 Flags32		ps_r2_ls_flags				= { R2FLAG_SUN 
@@ -245,7 +261,6 @@ Flags32		ps_r2_ls_flags				= { R2FLAG_SUN
 	|R2FLAG_SUN_FOCUS
 	|R2FLAG_SUN_TSM
 	|R2FLAG_TONEMAP
-	|R2FLAG_VOLUMETRIC_LIGHTS
 	|R2FLAG_EXP_MT_DETAILS
 	};	// r2-only
 
@@ -342,6 +357,7 @@ Fvector4	ps_color_grading = { 1.0f, 1.0f, 1.0f, 0.0f };
 float		ps_r2_rain_drops_intensity = 0.00025f;
 float		ps_r2_rain_drops_speed = 1.25f;
 
+Flags32		ps_r2_ls_flags_2 = { 0 };
 Flags32		ps_actor_shadow_flags = { 0 };
 
 Flags32		ps_r2_postscreen_flags = { R_FLAG_HUD_MASK
@@ -354,7 +370,7 @@ Flags32		ps_r_textures_flags = { R3_NO_RAM_TEXTURES };
 
 int ps_force_enable_lens_flares = 0;
 
-float ps_r2_gloss_factor = READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "gloss_factor", 10.0f);
+float ps_r2_gloss_factor = READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "gloss_factor", 0.001f);
 float ps_r2_gloss_min = READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "gloss_min", 0.0f);
 
 Fvector4 ps_pp_bloom_thresh = { .7, .8f, .9f, .0f };
@@ -371,11 +387,8 @@ Fvector4 ps_dev_param_7 = { .0f, .0f, .0f, .0f };
 Fvector4 ps_dev_param_8 = { .0f, .0f, .0f, .0f };
 
 //Geometry optimization from Anomaly
-int opt_static = 0;
-int opt_dynamic = 0;
-
-//SFZ Lens Flares
-int ps_r2_lfx = 1;
+int opt_static = 2;
+int opt_dynamic = 2;
 
 //Многопоточная загрузка текстур
 int ps_mt_texture_load = 1;
@@ -385,12 +398,12 @@ int ps_r2_ao_debug = 0;
 
 float ps_r2_reflections_distance = 300.0f;
 
-Flags32 psDeviceFlags2 = { 0 };
+Flags32 psDeviceFlags2 = { rsOptShadowGeom };
 
 //Static on R2+
 Flags32	ps_r2_static_flags = { R2FLAG_USE_BUMP };
 
-Flags32	ps_r4_shaders_flags = { R4FLAG_SSS_ADDON | R4FLAG_ES_ADDON };
+Flags32	ps_r4_shaders_flags = { R4FLAG_ES_ADDON };
 
 //Screen Space Shaders Stuff
 
@@ -399,6 +412,9 @@ float ps_r2_img_exposure = 1.0f;
 float ps_r2_img_gamma = 1.0f;
 float ps_r2_img_saturation = 1.0f;
 Fvector ps_r2_img_cg = READ_IF_EXISTS(pAdvancedSettings, r_fvector3, "start_settings", "color_grading_es", Fvector3().set(0.5f, 0.5f, 0.5f));
+
+float ps_r2_aref_strength = READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "r2_aref_strength", 300.f);
+Fvector4 ps_r4_normal_strength = READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "start_settings", "r4_normal_strength", Fvector4().set(0.25f, 0.25f, 0.85f, 0.5f)); //x - world, y - hud, z - terrain, w - trees
 
 // Ascii1457's Screen Space Shaders
 extern ENGINE_API Fvector3 ps_ssfx_shadow_cascades;
@@ -424,14 +440,37 @@ extern ENGINE_API float	   ps_ssfx_gloss_factor;
 extern ENGINE_API Fvector3 ps_ssfx_gloss_minmax;
 extern ENGINE_API Fvector4 ps_ssfx_lightsetup_1;
 extern ENGINE_API Fvector3 ps_ssfx_shadows;
-extern ENGINE_API Fvector3 ps_ssfx_volumetric;
+extern ENGINE_API Fvector4 ps_ssfx_volumetric;
 extern ENGINE_API Fvector3 ps_ssfx_shadow_bias;
 extern ENGINE_API Fvector4 ps_ssfx_lut;
 extern ENGINE_API Fvector4 ps_ssfx_wind_grass;
 extern ENGINE_API Fvector4 ps_ssfx_wind_trees;
+extern ENGINE_API Fvector4 ps_ssfx_ssr ;					// Res, Blur, Temp, Noise
+extern ENGINE_API Fvector4 ps_ssfx_ssr_2 ;					// Quality, Fade, Int, Wpn Int
+extern ENGINE_API Fvector4 ps_ssfx_terrain_offset;
+extern ENGINE_API int ps_ssfx_il_quality;
+extern ENGINE_API Fvector4 ps_ssfx_il;						// Res, Int, Vibrance, Blur
+extern ENGINE_API Fvector4 ps_ssfx_il_setup1;
+extern ENGINE_API int ps_ssfx_ao_quality;
+extern ENGINE_API Fvector4 ps_ssfx_ao;
+extern ENGINE_API Fvector4 ps_ssfx_ao_setup1;
+extern ENGINE_API int ps_ssfx_terrain_grass_align;			// Grass align
+extern ENGINE_API float ps_ssfx_terrain_grass_slope;		// Grass slope limit // Recommended 0.3f
+extern ENGINE_API int ps_ssfx_bloom_from_weather;
+extern ENGINE_API Fvector4 ps_ssfx_bloom_1;					// Threshold, Exposure, -, Sky
+extern ENGINE_API Fvector4 ps_ssfx_bloom_2;					// Blur Radius, Vibrance, Lens, Dirt
+extern ENGINE_API int ps_ssfx_pom_refine;
+extern ENGINE_API Fvector4 ps_ssfx_pom;						// Samples , Range, Height, AO
+extern ENGINE_API Fvector4 ps_ssfx_terrain_pom;				// Samples, Range, Height, Water Limit
+extern ENGINE_API int ps_ssfx_terrain_pom_refine;
+
+extern ENGINE_API float psWeatherFogClamping;
 
 int ps_r4_ss_grass_collision = ps_r4_shaders_flags.test(R4FLAG_SSS_ADDON) ? 1 : 0;
 int ps_r4_pseudo_pbr = 0;
+
+float ps_r__opt_dist = 100.f;
+float ps_r4_sss_water_waves_koef = READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "r4_sss_water_waves_koef", 0.2f);
 
 //extern ENGINE_API Fvector4 ps_ssfx_wpn_dof_1;
 //extern ENGINE_API float ps_ssfx_wpn_dof_2;
@@ -533,15 +572,14 @@ public:
 		if (0==HW.pDevice)	return	;
 
 #ifdef USE_DX11
-		//	TODO: DX10: Implement mip bias control
-		//VERIFY(!"apply not implmemented.");
+		SSManager.SetMipLODBias(*value);
 #else	//	USE_DX11
 		for (u32 i=0; i<HW.Caps.raster.dwStages; i++)
 			CHK_DX(HW.pDevice->SetSamplerState( i, D3DSAMP_MIPMAPLODBIAS, *((LPDWORD) value)));
 #endif	//	USE_DX11
 	}
 
-	CCC_tf_MipBias(LPCSTR N, float*	v) : CCC_Float(N, v, -0.5f, +0.5f)	{ };
+	CCC_tf_MipBias(LPCSTR N, float*	v) : CCC_Float(N, v, -3.0f, +3.0f)	{ };
 	virtual void Execute(LPCSTR args)
 	{
 		CCC_Float::Execute	(args);
@@ -581,9 +619,6 @@ class CCC_Screenshot : public IConsole_Command
 public:
 	CCC_Screenshot(LPCSTR N) : IConsole_Command(N)  { };
 	virtual void Execute(LPCSTR args) {
-		if (g_dedicated_server)
-			return;
-
 		string_path	name;	name[0]=0;
 		sscanf		(args,"%s",	name);
 		LPCSTR		image	= xr_strlen(name)?name:0;
@@ -802,7 +837,7 @@ public:
 		if (v<ps_r2_dof.y+0.1f)
 		{
 			char	pBuf[256];
-			_snprintf( pBuf, sizeof(pBuf)/sizeof(pBuf[0]), "float value greater or equal to r2_dof_focus+0.1");
+			sprintf_s( pBuf, sizeof(pBuf)/sizeof(pBuf[0]), "float value greater or equal to r2_dof_focus+0.1");
 			Msg("~ Invalid syntax in call to '%s'",cName);
 			Msg("~ Valid arguments: %s", pBuf);
 			Console->Execute("r2_dof_focus");
@@ -832,7 +867,7 @@ public:
 		if (v>ps_r2_dof.y-0.1f)
 		{
 			char	pBuf[256];
-			_snprintf( pBuf, sizeof(pBuf)/sizeof(pBuf[0]), "float value less or equal to r2_dof_focus-0.1");
+			sprintf_s( pBuf, sizeof(pBuf)/sizeof(pBuf[0]), "float value less or equal to r2_dof_focus-0.1");
 			Msg("~ Invalid syntax in call to '%s'",cName);
 			Msg("~ Valid arguments: %s", pBuf);
 			Console->Execute("r2_dof_focus");
@@ -862,7 +897,7 @@ public:
 		if (v>ps_r2_dof.z-0.1f)
 		{
 			char	pBuf[256];
-			_snprintf( pBuf, sizeof(pBuf)/sizeof(pBuf[0]), "float value less or equal to r2_dof_far-0.1");
+			sprintf_s( pBuf, sizeof(pBuf)/sizeof(pBuf[0]), "float value less or equal to r2_dof_far-0.1");
 			Msg("~ Invalid syntax in call to '%s'",cName);
 			Msg("~ Valid arguments: %s", pBuf);
 			Console->Execute("r2_dof_far");
@@ -870,7 +905,7 @@ public:
 		else if (v<ps_r2_dof.x+0.1f)
 		{
 			char	pBuf[256];
-			_snprintf( pBuf, sizeof(pBuf)/sizeof(pBuf[0]), "float value greater or equal to r2_dof_far-0.1");
+			sprintf_s( pBuf, sizeof(pBuf)/sizeof(pBuf[0]), "float value greater or equal to r2_dof_far-0.1");
 			Msg("~ Invalid syntax in call to '%s'",cName);
 			Msg("~ Valid arguments: %s", pBuf);
 			Console->Execute("r2_dof_near");
@@ -1019,7 +1054,7 @@ void		xrRender_initconsole	()
 
 	Fvector	tw_min,tw_max;
 	
-	CMD4(CCC_Float,		"r__geometry_lod",		&ps_r__LOD,					0.1f,   3.f		); //AVO: extended from 1.2f to 3.f
+	CMD4(CCC_Float,		"r__geometry_lod",		&ps_r__LOD,					0.1f,   10.f	);
 //.	CMD4(CCC_Float,		"r__geometry_lod_pow",	&ps_r__LOD_Power,			0,		2		);
 
 //.	CMD4(CCC_Float,		"r__detail_density",	&ps_r__Detail_density,		.05f,	0.99f	);
@@ -1040,12 +1075,12 @@ void		xrRender_initconsole	()
 #endif // DEBUG
 
 	CMD2(CCC_tf_Aniso,	"r__tf_aniso",			&ps_r__tf_Anisotropic		); //	{1..16}
+	CMD2(CCC_tf_MipBias, "r__tf_mipbias",		&ps_r__tf_Mipbias			); //	{-3 +3}
 
 	// R1
 	CMD4(CCC_Float,		"r1_ssa_lod_a",			&ps_r1_ssaLOD_A,			16,		96		);
 	CMD4(CCC_Float,		"r1_ssa_lod_b",			&ps_r1_ssaLOD_B,			16,		64		);
 	CMD4(CCC_Float,		"r1_lmodel_lerp",		&ps_r1_lmodel_lerp,			0,		0.333f	);
-	CMD2(CCC_tf_MipBias,"r1_tf_mipbias",		&ps_r1_tf_Mipbias			);//	{-3 +3}
 	CMD3(CCC_Mask,		"r1_dlights",			&ps_r1_flags,				R1FLAG_DLIGHTS	);
 	CMD4(CCC_Float,		"r1_dlights_clip",		&ps_r1_dlights_clip,		10.f,	150.f	);
 	CMD4(CCC_Float,		"r1_pps_u",				&ps_r1_pps_u,				-1.f,	+1.f	);
@@ -1067,7 +1102,6 @@ void		xrRender_initconsole	()
 	// R2
 	CMD4(CCC_Float,		"r2_ssa_lod_a",			&ps_r2_ssaLOD_A,			16,		96		);
 	CMD4(CCC_Float,		"r2_ssa_lod_b",			&ps_r2_ssaLOD_B,			32,		64		);
-	CMD2(CCC_tf_MipBias,"r2_tf_mipbias",		&ps_r2_tf_Mipbias			);
 
 	// R2-specific
 	CMD2(CCC_R2GM,		"r2em",					&ps_r2_gmaterial							);
@@ -1104,7 +1138,7 @@ void		xrRender_initconsole	()
 	Fvector4 clr_drag_min = { 0.f, 0.f, 0.f, -1.0f };
 	Fvector4 clr_drag_max = { 2.55f, 2.55f, 2.55f, 1.f };
 	CMD4(CCC_Vector4,	"r_color_grading",		&ps_color_grading,			clr_drag_min, clr_drag_max);
-
+	
 	//tw_min.set(0, 0, 0);
 	//tw_max.set(1, 1, 1);
 
@@ -1308,7 +1342,6 @@ void		xrRender_initconsole	()
 	CMD3(CCC_Mask,			"r__optimize_shadow_geom",		&psDeviceFlags2,			rsOptShadowGeom);
 
 	CMD3(CCC_Token,			"r2_use_flares",				&ps_r2_flares,				qflares_token);
-	CMD4(CCC_Integer,		"r2_lfx",						&ps_r2_lfx,					 0, 1		); //SFZ Lens Flares
 
 
 	CMD4(CCC_Integer,		"r__mt_textures_load",			&ps_mt_texture_load,		0, 1); //Многопоточная загрузка текстур
@@ -1328,6 +1361,7 @@ void		xrRender_initconsole	()
 
     // Screen Space Shaders
 	CMD3(CCC_Mask,			"r4_enchanted_shaders",			&ps_r4_shaders_flags,		R4FLAG_ES_ADDON); //Need restart
+	CMD3(CCC_Mask,			"r4_es_aces_tonemap",			&ps_r4_shaders_flags,		R4FLAG_ES_ACES_TONEMAPPING); //Need restart
 	CMD3(CCC_Mask,			"r4_screen_space_shaders",		&ps_r4_shaders_flags,		R4FLAG_SSS_ADDON); //Need restart
 	CMD3(CCC_Mask,			"r4_ss_sky_debanding",			&ps_r4_shaders_flags,		R4FLAG_SS_DEBANDING); //Need restart
 	CMD3(CCC_Mask,			"r4_ss_flora_fix",				&ps_r4_shaders_flags,		R4FLAG_SS_FLORAFIX); //Need restart
@@ -1338,6 +1372,9 @@ void		xrRender_initconsole	()
 	CMD3(CCC_Mask,			"r4_ss_shadows",				&ps_r4_shaders_flags,		R4FLAG_SS_SHADOWS); //Need restart
 	CMD3(CCC_Mask,			"r4_ss_lut",					&ps_r4_shaders_flags,		R4FLAG_SS_LUT); //Need restart
 	CMD3(CCC_Mask,			"r4_ss_wind",					&ps_r4_shaders_flags,		R4FLAG_SS_WIND); //Need restart
+	CMD3(CCC_Mask,			"r4_ss_puddles",				&ps_r4_shaders_flags,		R4FLAG_SS_PUDDLES); //Need restart
+	CMD3(CCC_Mask,			"r4_ss_bloom",					&ps_r4_shaders_flags,		R4FLAG_SS_BLOOM); //Need restart
+	CMD3(CCC_Mask,			"r4_ss_bloom_mask_dirt",		&ps_r4_shaders_flags,		R4FLAG_SS_BLOOM_MASK_DIRT); //Need restart
 	CMD3(CCC_Shader_Preset, "shaders_preset",				&ps_ShaderPreset,			qshader_preset_token);
 
 	CMD4(CCC_Vector4,		"ssfx_wpn_dof_1",				&ps_ssfx_wpn_dof_1,			tw2_min, tw2_max);
@@ -1364,25 +1401,43 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Float,			"ssfx_gloss_factor",			&ps_ssfx_gloss_factor,		0.0f, 1.0f);
 	CMD4(CCC_Vector4,		"ssfx_lightsetup_1",			&ps_ssfx_lightsetup_1,		Fvector4().set(0, 0, 0, 0), Fvector4().set(1.0, 1.0, 1.0, 1.0));
 	CMD4(CCC_Vector3,		"ssfx_shadows",					&ps_ssfx_shadows,			Fvector3().set(128, 1536, 0), Fvector3().set(1536, 4096, 0));
-	CMD4(CCC_Vector3,		"ssfx_volumetric",				&ps_ssfx_volumetric,		Fvector3().set(0, 0, 1.0), Fvector3().set(1.0, 1.0, 5.0));
+	CMD4(CCC_Vector4,		"ssfx_volumetric",				&ps_ssfx_volumetric,		Fvector4().set(0, 0, 1.0, 1.0), Fvector4().set(1.0, 5.0, 5.0, 16.0));
 	CMD4(CCC_Vector3,		"ssfx_shadow_bias",				&ps_ssfx_shadow_bias,		Fvector3().set(0, 0, 0), Fvector3().set(1.0, 1.0, 1.0));
 	CMD4(CCC_Vector4,		"ssfx_lut",						&ps_ssfx_lut,				Fvector4().set(0.0, 0.0, 0.0, 0.0), tw2_max);
 	CMD4(CCC_Vector4,		"ssfx_wind_grass",				&ps_ssfx_wind_grass,		Fvector4().set(0.0, 0.0, 0.0, 0.0), Fvector4().set(20.0, 5.0, 5.0, 5.0));
 	CMD4(CCC_Vector4,		"ssfx_wind_trees",				&ps_ssfx_wind_trees,		Fvector4().set(0.0, 0.0, 0.0, 0.0), Fvector4().set(20.0, 5.0, 5.0, 1.0));
+	CMD4(CCC_Vector4,		"ssfx_ssr",						&ps_ssfx_ssr,				Fvector4().set(1, 0, 0, 0), Fvector4().set(2, 1, 1, 1));
+	CMD4(CCC_Vector4,		"ssfx_ssr_2",					&ps_ssfx_ssr_2,				Fvector4().set(0, 0, 0, 0), Fvector4().set(2, 2, 2, 2));
+	CMD4(CCC_Vector4,		"ssfx_terrain_offset",			&ps_ssfx_terrain_offset,	Fvector4().set(-1, -1, -1, -1), Fvector4().set(1, 1, 1, 1));
+	CMD4(CCC_Integer,		"ssfx_il_quality",				&ps_ssfx_il_quality,		16, 64);
+	CMD4(CCC_Vector4,		"ssfx_il",						&ps_ssfx_il,				Fvector4().set(0, 0, 0, 0), Fvector4().set(8, 10, 3, 6));
+	CMD4(CCC_Vector4,		"ssfx_il_setup1",				&ps_ssfx_il_setup1,			Fvector4().set(0, 0, 0, 0), Fvector4().set(300, 1, 1, 1));
+	CMD4(CCC_Integer,		"ssfx_ao_quality",				&ps_ssfx_ao_quality,		2, 8);
+	CMD4(CCC_Vector4,		"ssfx_ao",						&ps_ssfx_ao,				Fvector4().set(0, 0, 0, 0), Fvector4().set(8, 10, 1, 10));
+	CMD4(CCC_Vector4,		"ssfx_ao_setup1",				&ps_ssfx_ao_setup1,			Fvector4().set(0, 0, 0, 0), Fvector4().set(300, 1, 1, 1));
+	CMD4(CCC_Integer,		"ssfx_terrain_grass_align",		&ps_ssfx_terrain_grass_align, 0, 1);
+	CMD4(CCC_Float,			"ssfx_terrain_grass_slope",		&ps_ssfx_terrain_grass_slope, 0, 1);
+	CMD4(CCC_Integer,		"ssfx_bloom_from_weather",		&ps_ssfx_bloom_from_weather, 0, 1);
+	CMD4(CCC_Vector4,		"ssfx_bloom_1",					&ps_ssfx_bloom_1,			Fvector4().set(1, 1, 0, 0), Fvector4().set(10, 100, 100, 10));
+	CMD4(CCC_Vector4,		"ssfx_bloom_2",					&ps_ssfx_bloom_2,			Fvector4().set(1, 0, 0, 0), Fvector4().set(5, 1.0f, 10, 10));
+	CMD4(CCC_Integer,		"ssfx_pom_refine",				&ps_ssfx_pom_refine,		0, 1);
+	CMD4(CCC_Vector4,		"ssfx_pom",						&ps_ssfx_pom,				Fvector4().set(0, 0, 0, 0), Fvector4().set(36, 60, 1, 1));
+	CMD4(CCC_Integer,		"ssfx_terrain_pom_refine",		&ps_ssfx_terrain_pom_refine, 0, 1);
+	CMD4(CCC_Vector4,		"ssfx_terrain_pom",				&ps_ssfx_terrain_pom,		Fvector4().set(0, 0, 0, 0), Fvector4().set(36, 60, 1, 2));
 
 	CMD4(CCC_Integer,		"r4_ss_grass_collision",		&ps_r4_ss_grass_collision,	0, 1); //Screen Space Grass Shaders Collision
 	CMD4(CCC_Integer,		"r4_es_pseudo_pbr",				&ps_r4_pseudo_pbr,			0, 1); //Enchanted Shaders Pseudo PBR
-//	CMD3(CCC_Mask,		"r2_sun_ignore_portals",		&ps_r2_ls_flags,			R2FLAG_SUN_IGNORE_PORTALS);
-}
 
-void	xrRender_apply_tf		()
-{
-	Console->Execute	("r__tf_aniso"	);
-#if RENDER==R_R1
-	Console->Execute	("r1_tf_mipbias");
-#else
-	Console->Execute	("r2_tf_mipbias");
-#endif
+	CMD3(CCC_Mask,			"r__use_shader_cache",			&ps_r__common_flags,		RFLAG_USE_SHADERS_CACHE);
+	CMD4(CCC_Float,			"r__dyn_opt_dist",				&ps_r__opt_dist,			100.0f, 1000.0f);
+	CMD3(CCC_Token,			"r__panorama_scr_size",			&ps_r_panorama_scr_size,	qpanorama_scr_size_token);
+	CMD4(CCC_Float,			"r2_aref_strength",				&ps_r2_aref_strength,		10.0f,	450.f);
+	CMD4(CCC_Vector4,		"r4_normal_strength",			&ps_r4_normal_strength,		Fvector4().set(0.1f, 0.1f, 0.1f, 0.1f), Fvector4().set(1.0f, 1.0f, 1.0f, 1.0f));
+	CMD4(CCC_Float,			"r4_water_waves_koef",			&ps_r4_sss_water_waves_koef,0.0f,	0.5f);
+
+	psWeatherFogClamping	= READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "weather_fog_clamping", 0.0f);
+	CMD4(CCC_Float,			"weather_fog_clamping",			&psWeatherFogClamping,		0.0f,	10000.0f);
+//	CMD3(CCC_Mask,		"r2_sun_ignore_portals",		&ps_r2_ls_flags,			R2FLAG_SUN_IGNORE_PORTALS);
 }
 
 #endif

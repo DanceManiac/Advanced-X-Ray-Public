@@ -16,10 +16,10 @@ namespace doors {
 class actor;
 enum door_state;
 
-class door : private boost::noncopyable {
+class CDoor : private boost::noncopyable {
 public:
-						door				( CPhysicObject* object );
-						~door				( );
+						CDoor				( CPhysicObject* object );
+						~CDoor				( );
 	void				change_state		( actor* initiator, door_state state );
 	void 				on_change_state		( door_state const state );
 #ifdef DEBUG

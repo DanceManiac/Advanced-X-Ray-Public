@@ -58,23 +58,28 @@ void ParseFile(LPCSTR path, CMemoryWriter& W, IReader *F, CXml* xml )
 	}
 }
 
-void CXml::Load(LPCSTR path_alias, LPCSTR path, LPCSTR _xml_filename)
+bool CXml::Load(LPCSTR path_alias, LPCSTR path, LPCSTR _xml_filename, bool fatal)
 {
 	shared_str fn			= correct_file_name(path, _xml_filename);
 
 	string_path				str;
-	xr_sprintf					(str,"%s\\%s", path, *fn);
-	return Load				(path_alias, str);
+	xr_sprintf				(str,"%s\\%s", path, *fn);
+	return Load				(path_alias, str, fatal);
 }
 
 //инициализация и загрузка XML файла
-void CXml::Load(LPCSTR path, LPCSTR  xml_filename)
+bool CXml::Load(LPCSTR path, LPCSTR  xml_filename, bool fatal)
 {
-	xr_strcpy					(m_xml_file_name, xml_filename);
 	// Load and parse xml file
 
 	IReader *F				= FS.r_open(path, xml_filename);
-	R_ASSERT2				(F,xml_filename);
+	if (!F)
+	{
+		R_ASSERT3(!fatal, "Can't find specified xml file", xml_filename);
+		return false;
+	}
+	//R_ASSERT2				(F,xml_filename);
+	xr_strcpy				(m_xml_file_name, xml_filename);
 
 	CMemoryWriter			W;
 	ParseFile				(path, W, F, this);
@@ -85,18 +90,16 @@ void CXml::Load(LPCSTR path, LPCSTR  xml_filename)
 	if (m_Doc.Error())
 	{
 		string1024			str;
-		xr_sprintf				(str, "XML file:%s value:%s errDescr:%s",m_xml_file_name,m_Doc.Value(), m_Doc.ErrorDesc());
+		xr_sprintf			(str, "XML file:%s value:%s errDescr:%s",m_xml_file_name,m_Doc.Value(), m_Doc.ErrorDesc());
 		if (xrGameManager::GetGame() == EGame::COP)
-		{
 			R_ASSERT2(false, str);
-		}
 		else
-		{
 			Msg(str);
-		}
 	} 
 
 	m_root					= m_Doc.FirstChildElement();
+
+	return true;
 }
 
 XML_NODE* CXml::NavigateToNode(XML_NODE* start_node, LPCSTR  path, int node_index)
@@ -165,6 +168,18 @@ XML_NODE* CXml::NavigateToNodeWithAttribute(LPCSTR tag_name, LPCSTR attrib_name,
 	return NULL;
 }
 
+bool CXml::HasNode(LPCSTR path, int index)
+{
+	const XML_NODE* node = NavigateToNode(path, index);
+	return !!node;
+}
+
+bool CXml::HasNodeAttribute(LPCSTR path, int index, LPCSTR attrib)
+{
+	XML_NODE* node = NavigateToNode(path, index);
+	const LPCSTR result = ReadAttrib(node, attrib, NULL);
+	return !!result;
+}
 
 LPCSTR CXml::Read(LPCSTR path, int index, LPCSTR   default_str_val)
 {

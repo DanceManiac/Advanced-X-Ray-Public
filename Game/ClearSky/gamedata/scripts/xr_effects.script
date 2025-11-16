@@ -42,26 +42,41 @@ function enable_ui_elements(actor, npc, p)
 	--printf("xr_effects <enable_ui_elements>")
 end
 
-function disable_ui(actor, npc)
+local ui_active_slot = -1
+
+function disable_ui(actor, npc, p)
 	if db.actor:is_talking() then
 		db.actor:stop_talk()
 	end
---	get_console():execute("hud_crosshair 0")
---	get_console():execute("hud_weapon 0")
-    level.show_weapon(false)
+	
 	level.disable_input()
 	level.hide_indicators_safe()
 	local hud = get_hud()
 	hud:HideActorMenu()
 	hud:HidePdaMenu()
+
+	level.show_weapon(false)
+	
+	if not p or (p and p[1] ~= "true") then
+		local slot = db.actor:active_slot()
+		if(slot~=0) then
+			ui_active_slot = slot
+			db.actor:activate_slot(-1)
+		end
+	end
 end
 
-function enable_ui(actor, npc)
---	get_console():execute("hud_crosshair 1")
---	get_console():execute("hud_weapon 1")
-    level.show_weapon(true)
-    level.enable_input()
-    level.show_indicators()
+function enable_ui(actor, npc, p)
+	if not p or (p and p[1] ~= "true") then
+		if ui_active_slot ~= -1 and db.actor:item_in_slot(ui_active_slot) ~= nil then
+			db.actor:activate_slot(ui_active_slot)
+		end
+	end
+
+	ui_active_slot = -1
+	level.show_weapon(true)
+	level.enable_input()
+	level.show_indicators()
 end
 
 local cam_effector_playing_object_id = nil

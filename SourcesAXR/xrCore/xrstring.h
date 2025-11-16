@@ -1,6 +1,7 @@
-#ifndef xrstringH
-#define xrstringH
 #pragma once
+
+#include <locale>
+#include <algorithm>
 
 #pragma pack(push,4)
 //////////////////////////////////////////////////////////////////////////
@@ -8,6 +9,52 @@ typedef const char*		str_c;
 
 //////////////////////////////////////////////////////////////////////////
 #pragma warning(disable : 4200)
+
+static std::unordered_map<char, char> lowerCaseTable = {
+	{'А', 'а'}, {'Б', 'б'}, {'В', 'в'}, {'Г', 'г'}, {'Д', 'д'},
+	{'Е', 'е'}, {'Ё', 'ё'}, {'Ж', 'ж'}, {'З', 'з'}, {'И', 'и'},
+	{'Й', 'й'}, {'К', 'к'}, {'Л', 'л'}, {'М', 'м'}, {'Н', 'н'},
+	{'О', 'о'}, {'П', 'п'}, {'Р', 'р'}, {'С', 'с'}, {'Т', 'т'},
+	{'У', 'у'}, {'Ф', 'ф'}, {'Х', 'х'}, {'Ц', 'ц'}, {'Ч', 'ч'},
+	{'Ш', 'ш'}, {'Щ', 'щ'}, {'Ъ', 'ъ'}, {'Ы', 'ы'}, {'Ь', 'ь'},
+	{'Э', 'э'}, {'Ю', 'ю'}, {'Я', 'я'}
+};
+
+static std::unordered_map<xr_string, xr_string> lowerCaseTableUtf8 = {
+	{"\xD0\x90", "\xD0\xB0"}, // А -> а
+	{"\xD0\x91", "\xD0\xB1"}, // Б -> б
+	{"\xD0\x92", "\xD0\xB2"}, // В -> в
+	{"\xD0\x93", "\xD0\xB3"}, // Г -> г
+	{"\xD0\x94", "\xD0\xB4"}, // Д -> д
+	{"\xD0\x95", "\xD0\xB5"}, // Е -> е
+	{"\xD0\x96", "\xD0\xB6"}, // Ж -> ж
+	{"\xD0\x97", "\xD0\xB7"}, // З -> з
+	{"\xD0\x98", "\xD0\xB8"}, // И -> и
+	{"\xD0\x99", "\xD0\xB9"}, // Й -> й
+	{"\xD0\x9A", "\xD0\xBA"}, // К -> к
+	{"\xD0\x9B", "\xD0\xBB"}, // Л -> л
+	{"\xD0\x9C", "\xD0\xBC"}, // М -> м
+	{"\xD0\x9D", "\xD0\xBD"}, // Н -> н
+	{"\xD0\x9E", "\xD0\xBE"}, // О -> о
+	{"\xD0\x9F", "\xD0\xBF"}, // П -> п
+	{"\xD0\xA0", "\xD1\x80"}, // Р -> р
+	{"\xD0\xA1", "\xD1\x81"}, // С -> с
+	{"\xD0\xA2", "\xD1\x82"}, // Т -> т
+	{"\xD0\xA3", "\xD1\x83"}, // У -> у
+	{"\xD0\xA4", "\xD1\x84"}, // Ф -> ф
+	{"\xD0\xA5", "\xD1\x85"}, // Х -> х
+	{"\xD0\xA6", "\xD1\x86"}, // Ц -> ц
+	{"\xD0\xA7", "\xD1\x87"}, // Ч -> ч
+	{"\xD0\xA8", "\xD1\x88"}, // Ш -> ш
+	{"\xD0\xA9", "\xD1\x89"}, // Щ -> щ
+	{"\xD0\xAA", "\xD1\x8A"}, // Ъ -> ъ
+	{"\xD0\xAB", "\xD1\x8B"}, // Ы -> ы
+	{"\xD0\xAC", "\xD1\x8C"}, // Ь -> ь
+	{"\xD0\xAD", "\xD1\x8D"}, // Э -> э
+	{"\xD0\xAE", "\xD1\x8E"}, // Ю -> ю
+	{"\xD0\xAF", "\xD1\x8F"}, // Я -> я
+};
+
 struct		XRCORE_API	str_value
 {
 	u32					dwReference		;
@@ -123,6 +170,155 @@ IC int	xr_strcmp		(const shared_str & a, const shared_str & b)		{
 IC void	xr_strlwr		(xr_string& src)									{ for(xr_string::iterator it=src.begin(); it!=src.end(); it++) *it=xr_string::value_type(tolower(*it));}
 IC void	xr_strlwr		(shared_str& src)									{ if (*src){LPSTR lp=xr_strdup(*src); xr_strlwr(lp); src=lp; xr_free(lp);} }
 
+// Преобразование char* в Utf8 xr_string
+IC xr_string toUtf8(const char* s)
+{
+	static xr_vector<wchar_t> buf;
+	int n = MultiByteToWideChar(CP_ACP, 0, s, -1, nullptr, 0);
+	buf.resize(n);
+	MultiByteToWideChar(CP_ACP, 0, s, -1, &buf[0], buf.size());
+	xr_string result;
+	n = WideCharToMultiByte(CP_UTF8, 0, &buf[0], buf.size(), nullptr, 0, nullptr, nullptr);
+	result.resize(n);
+	n = WideCharToMultiByte(CP_UTF8, 0, &buf[0], buf.size(), &result[0], result.size(), nullptr, nullptr);
+	return result;
+}
+
+// Преобразование Utf8 xr_string в нижний регистр
+IC void ToLowerUtf8(xr_string& src)
+{
+	std::locale loc;
+	for (xr_string::iterator it = src.begin(); it != src.end(); ++it)
+	{
+		*it = std::tolower(*it, loc);
+	}
+}
+
+// Преобразование Utf8 shared_str в нижний регистр
+IC void ToLowerUtf8(shared_str& src)
+{
+	if (*src)
+	{
+		xr_string tempStr = src.c_str();
+
+		std::locale loc;
+		std::transform(tempStr.begin(), tempStr.end(), tempStr.begin(), [&loc](char c)
+			{
+				return std::tolower(c, loc);
+			});
+
+		src = shared_str(tempStr.c_str());
+	}
+}
+
+// Преобразование кириллической Utf8 xr_string в нижний регистр
+IC void ToLowerUtf8RU(xr_string& str)
+{
+	xr_string result;
+
+	for (size_t i = 0; i < str.size();)
+	{
+		if ((str[i] & 0xC0) == 0xC0)
+		{
+			int charLength = 1;
+
+			if ((str[i] & 0xF0) == 0xF0)
+				charLength = 4;
+			else if ((str[i] & 0xE0) == 0xE0)
+				charLength = 3;
+			else if ((str[i] & 0xC0) == 0xC0)
+				charLength = 2;
+
+			xr_string utf8Char = str.substr(i, charLength);
+
+			auto it = lowerCaseTableUtf8.find(utf8Char);
+
+			if (it != lowerCaseTableUtf8.end())
+				result += it->second;
+			else
+				result += utf8Char;
+
+			i += charLength;
+		}
+		else
+		{
+			result += std::tolower(str[i]);
+			i++;
+		}
+	}
+
+	str = result;
+}
+
+// Преобразование кириллической Utf8 shared_str в нижний регистр
+IC void ToLowerUtf8RU(shared_str& str)
+{
+	xr_string tempStr = str.c_str();
+	ToLowerUtf8RU(tempStr);
+	str = tempStr.c_str();
+}
+
+// Поиск подстроки в кириллической Utf8 xr_string
+IC size_t xr_string_find(const xr_string& str, const xr_string& substr)
+{
+	xr_string strLower = str;
+	xr_string substrLower = substr;
+
+	for (char& ch : strLower)
+	{
+		auto it = lowerCaseTable.find(ch);
+
+		if (it != lowerCaseTable.end())
+			ch = it->second;
+		else
+			ch = std::tolower(ch);
+	}
+
+	for (char& ch : substrLower)
+	{
+		auto it = lowerCaseTable.find(ch);
+
+		if (it != lowerCaseTable.end())
+			ch = it->second;
+		else
+			ch = std::tolower(ch);
+	}
+
+	return strLower.find(substrLower);
+}
+
 #pragma pack(pop)
 
-#endif
+#include <unordered_map>
+
+struct transparent_string_hash
+{
+	using is_transparent = void; // https://www.cppstories.com/2021/heterogeneous-access-cpp20/
+	using hash_type = std::hash<std::string_view>;
+	[[nodiscard]] size_t operator()(const std::string_view txt) const noexcept { return hash_type{}(txt); }
+	[[nodiscard]] size_t operator()(const std::string& txt) const noexcept { return hash_type{}(txt); }
+	[[nodiscard]] size_t operator()(const char* txt) const noexcept { return hash_type{}(txt); }
+	[[nodiscard]] size_t operator()(const shared_str& txt)  const noexcept { return hash_type{}(txt.c_str() ? txt.c_str() : ""); }
+};
+
+struct transparent_string_equal
+{
+	using is_transparent = void;
+	[[nodiscard]] bool operator()(const std::string_view lhs, const std::string_view rhs) const { return lhs == rhs; }
+	[[nodiscard]] bool operator()(const shared_str& lhs, const shared_str& rhs) const { return lhs == rhs; }
+	[[nodiscard]] bool operator()(const char* lhs, const char* rhs) const { return !strcmp(lhs, rhs); }
+};
+
+template <typename Key, typename Value, class _Alloc = xr_allocator<std::pair<const Key, Value>>>
+using string_unordered_map = std::unordered_map<Key, Value, transparent_string_hash, transparent_string_equal, _Alloc>;
+
+inline bool SplitFilename(std::string& str)
+{
+	size_t found = str.find_last_of("/\\");
+	if (found != std::string::npos)
+	{
+		str.erase(found);
+		return true;
+	}
+	return false;
+}

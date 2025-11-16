@@ -109,6 +109,7 @@ BOOL CHangingLamp::net_Spawn(CSE_Abstract* DC)
 	light_render->set_color	(clr);
 	light_render->set_cone	(lamp->spot_cone_angle);
 	light_render->set_texture(*lamp->light_texture);
+	light_render->set_flare	(!!lamp->flags.is(CSE_ALifeObjectHangingLamp::flCastShadow));
 
 	light_render->set_volumetric_quality(lamp->m_volumetric_quality);
 	light_render->set_volumetric_intensity(lamp->m_volumetric_intensity);
@@ -408,5 +409,6 @@ void CHangingLamp::script_register(lua_State *L)
 			.def(luabind::constructor<>())
 			.def("turn_on",		&CHangingLamp::TurnOn)
 			.def("turn_off",	&CHangingLamp::TurnOff)
+			//.def("set_flare",	[](CHangingLamp* self, const bool val) { self->light_render->set_flare(val); })
 	];
 }

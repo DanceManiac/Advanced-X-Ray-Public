@@ -2,6 +2,7 @@
 #include "ui_base.h"
 #include "GamePersistent.h"
 #include "UICursor.h"
+#include "AdvancedXrayGameConstants.h"
 
 CUICursor&	GetUICursor		()	{return UI().GetUICursor();};
 ui_core&	UI				()	{return *GamePersistent().m_pUI_core;};
@@ -57,7 +58,7 @@ sPoly2D* C2DFrustum::ClipPoly	(sPoly2D& S, sPoly2D& D) const
 		cls[src->size()] = cls[0]	;
 		src->push_back((*src)[0])	;
 		Fvector2 dir_pt,dir_uv;		float denum,t;
-		for (j=0; j<src->size()-1; j++)	{
+		for (u32 j=0; j<src->size()-1; j++)	{
 			if ((*src)[j].pt.similar((*src)[j+1].pt,EPS_S)) continue;
 			if (negative(cls[j]))	{
 				dest->push_back((*src)[j])	;
@@ -198,15 +199,8 @@ void ui_core::PopScissor()
 
 ui_core::ui_core()
 {
-	if(!g_dedicated_server)
-	{
-		m_pUICursor					= xr_new<CUICursor>();
-		m_pFontManager				= xr_new<CFontManager>();
-	}else
-	{
-		m_pUICursor					= NULL;
-		m_pFontManager				= NULL;
-	}
+	m_pUICursor					= xr_new<CUICursor>();
+	m_pFontManager				= xr_new<CFontManager>();
 	m_bPostprocess				= false;
 	
 	OnDeviceReset				();
@@ -266,10 +260,19 @@ float ui_core::get_current_kx()
 	return res;
 }
 
+float ui_core::get_icons_kx()
+{
+	return (GameConstants::GetUseHQ_Icons()) ? 2.0f : 1.0f;
+}
+
 shared_str	ui_core::get_xml_name(LPCSTR fn)
 {
 	string_path				str;
-	if(!is_widescreen()){
+	
+	// cari0us - ну надо мне вот такое на время
+	const bool b_disable_16_xml = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "disable_16_xml", false);
+
+	if(!is_widescreen() || b_disable_16_xml){
 		xr_sprintf(str, "%s", fn);
 		if ( NULL==strext(fn) ) xr_strcat(str, ".xml");
 	}else{

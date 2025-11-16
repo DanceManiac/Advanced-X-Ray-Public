@@ -17,6 +17,7 @@
 #define OBJECT_CHUNK_DATA			0x0002
 #define GAME_TIME_CHUNK_DATA		0x0005
 #define REGISTRY_CHUNK_DATA			0x0009
+#define SCRIPT_VARS_CHUNK_DATA		0x000D
 #define SECTION_HEADER				"location_"
 #define SAVE_EXTENSION				".scop"
 #define SPAWN_NAME					"game.spawn"
@@ -116,16 +117,17 @@ namespace ALife {
 		eHealthRestoreSpeed = u32(0),
 		eSatietyRestoreSpeed,
 		eThirstRestoreSpeed,
-		eIntoxicationRestoreSpeed,
+		eRadiationRestoreSpeed,
+		ePowerRestoreSpeed,
+		eBleedingRestoreSpeed,
+		ePsyHealthRestoreSpeed,
 		eSleepenessRestoreSpeed,
+		eIntoxicationRestoreSpeed,
 		eAlcoholismRestoreSpeed,
 		eHangoverRestoreSpeed,
 		eNarcotismRestoreSpeed,
-		eWithdrawalRestoreSpeed,
-		ePsyHealthRestoreSpeed,
-		ePowerRestoreSpeed,
-		eBleedingRestoreSpeed,
-		eRadiationRestoreSpeed,
+		eWithDrawalRestoreSpeed,
+		eFrostbiteRestoreSpeed,
 		eRestoreTypeMax,
 	};
 

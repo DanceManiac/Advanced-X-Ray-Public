@@ -24,8 +24,8 @@ CStalkerActionBase::CStalkerActionBase		(CAI_Stalker *object, LPCSTR action_name
 void CStalkerActionBase::initialize			()
 {
 	inherited::initialize							();
-	object().animation().clear_script_animations	();
-	object().brain().affect_cover					(false);
+	object().get_animation().clear_script_animations	();
+	object().get_brain().affect_cover					(false);
 }
 
 void CStalkerActionBase::execute			()
@@ -36,5 +36,5 @@ void CStalkerActionBase::execute			()
 void CStalkerActionBase::finalize			()
 {
 	inherited::finalize								();
-	object().animation().clear_script_animations	();
+	object().get_animation().clear_script_animations	();
 }

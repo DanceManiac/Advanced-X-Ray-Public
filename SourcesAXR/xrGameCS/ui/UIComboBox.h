@@ -23,7 +23,7 @@ public:
 	virtual void		SetCurrentValue			();
 	virtual void		SaveValue				();
 	virtual bool		IsChanged				();
-	virtual void 		SeveBackUpValue			();
+	virtual void 		SaveBackUpValue			();
 	virtual void 		Undo					();
 
 	virtual void	OnRender					(); // only for list-box
@@ -42,6 +42,8 @@ public:
 			int			CurrentID				()	{return m_itoken_id;}
 			void		disable_id				(int id);
 			void		enable_id				(int id);
+
+			pcstr		GetDebugType			() override { return "CUIComboBox"; }
 protected:
 	virtual void		SetState				(UIState state);	
 	virtual bool		OnMouseAction					(float x, float y, EUIMessages mouse_action);

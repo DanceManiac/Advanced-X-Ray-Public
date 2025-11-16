@@ -695,6 +695,9 @@ void NvStripifier::RemoveSmallStrips(NvStripInfoVec& allStrips, NvStripInfoVec& 
 		}
 	}
 	
+	if (tempFaceList.empty())
+		return;
+
 	bool *bVisitedList	= xr_alloc<bool> (tempFaceList.size());
 	ZeroMemory			(bVisitedList, tempFaceList.size()*sizeof(bool));
 	
@@ -872,7 +875,7 @@ void NvStripifier::CreateStrips(const NvStripInfoVec& allStrips, IntVec& stripIn
 		// Update last face info
 		tLastFace.m_v0 = tLastFace.m_v1;
 		tLastFace.m_v1 = tLastFace.m_v2;
-		tLastFace.m_v2 = tLastFace.m_v2;
+		//tLastFace.m_v2 = tLastFace.m_v2; //???
 	}
 	
 	if(bStitchStrips)

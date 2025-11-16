@@ -59,9 +59,6 @@
 #include "UIHelper.h"
 #include "UIArtefactPanel.h"
 
-void test_draw	();
-void test_key	(int dik);
-
 #include "../Include/xrRender/Kinematics.h"
 
 
@@ -112,6 +109,8 @@ CUIMainIngameWnd::~CUIMainIngameWnd()
 
 void CUIMainIngameWnd::Init()
 {
+	ZoneScoped;
+
 	CUIXml						uiXml;
 	uiXml.Load					(CONFIG_PATH, UI_PATH, MAININGAME_XML);
 	
@@ -153,6 +152,13 @@ void CUIMainIngameWnd::Init()
 	xml_init.InitScrollView		(uiXml, "icons_scroll_view", 0, m_UIIcons);
 	AttachChild					(m_UIIcons);
 
+	m_ind_temperature		= UIHelper::CreateStatic(uiXml, "indicator_temperature", this, false);
+	m_min_temperature_clr	= CUIXmlInit::GetColor(uiXml,	"indicator_temperature:min_color",		0, color_rgba(255, 255, 255, 255));
+	m_mid_temperature_clr	= CUIXmlInit::GetColor(uiXml,	"indicator_temperature:middle_color",	0, color_rgba(255, 255, 255, 255));
+	m_max_temperature_clr	= CUIXmlInit::GetColor(uiXml,	"indicator_temperature:max_color",		0, color_rgba(255, 255, 255, 255));
+
+	m_ind_weather_type		= UIHelper::CreateStatic(uiXml, "indicator_weather_icon", this, false);
+
 	m_ind_boost_psy			= UIHelper::CreateStatic(uiXml, "indicator_booster_psy", this);
 	m_ind_boost_radia		= UIHelper::CreateStatic(uiXml, "indicator_booster_radia", this);
 	m_ind_boost_chem		= UIHelper::CreateStatic(uiXml, "indicator_booster_chem", this);
@@ -171,6 +177,7 @@ void CUIMainIngameWnd::Init()
 	m_ind_boost_hangover	= UIHelper::CreateStatic(uiXml, "indicator_booster_hangover", this);
 	m_ind_boost_narcotism	= UIHelper::CreateStatic(uiXml, "indicator_booster_narcotism", this);
 	m_ind_boost_withdrawal	= UIHelper::CreateStatic(uiXml, "indicator_booster_withdrawal", this);
+	m_ind_boost_frostbite	= UIHelper::CreateStatic(uiXml, "indicator_booster_frostbite", this);
 
 	m_ind_boost_psy			->Show(false);
 	m_ind_boost_radia		->Show(false);
@@ -189,6 +196,7 @@ void CUIMainIngameWnd::Init()
 	m_ind_boost_hangover	->Show(false);
 	m_ind_boost_narcotism	->Show(false);
 	m_ind_boost_withdrawal	->Show(false);
+	m_ind_boost_frostbite	->Show(false);
 
 	// Загружаем иконки 
 	if ( IsGameTypeSingle() )
@@ -211,35 +219,40 @@ void CUIMainIngameWnd::Init()
 	xml_init.InitStatic			(uiXml, "invincible_static", 0, &UIInvincibleIcon);
 	UIInvincibleIcon.Show		(false);
 
+	xml_init.InitStatic			(uiXml, "frostbite_static", 0, &UIFrostbiteIcon);
+	UIFrostbiteIcon.Show		(false);
+
+	xml_init.InitStatic			(uiXml, "heating_static", 0, &UIHeatingIcon);
+	UIHeatingIcon.Show			(false);
+
 	hud_info_x					= uiXml.ReadAttribFlt("hud_info:position",		0, "x", 0.f);
 	hud_info_y					= uiXml.ReadAttribFlt("hud_info:position",		0, "y", 0.f);
 
 
 	u32 clr{};
+	m_HudInfoFont				= UI().Font().pFontGraffiti19Russian;
 	if (uiXml.NavigateToNode("hud_info:font", 0))
-		xml_init.InitFont		(uiXml, "hud_info:font", 0, clr, m_HudInfoFont);
-	else
-		m_HudInfoFont			= UI().Font().pFontGraffiti19Russian;
+		xml_init.InitFont(uiXml, "hud_info:font", 0, clr, m_HudInfoFont);
 
 	hud_info_item_x				= uiXml.ReadAttribFlt("hud_info:item_name",		0, "x", 0.f);
-	hud_info_item_y1			= uiXml.ReadAttribFlt("hud_info:item_name",		0, "y1",0.25f);
-	hud_info_item_y2			= uiXml.ReadAttribFlt("hud_info:item_name",		0, "y2",0.3f);
-	hud_info_item_y3			= uiXml.ReadAttribFlt("hud_info:item_name",		0, "y3",0.32f);
+	hud_info_item_y_pos.x		= uiXml.ReadAttribFlt("hud_info:item_name",		0, "y1",0.44f);
+	hud_info_item_y_pos.y		= uiXml.ReadAttribFlt("hud_info:item_name",		0, "y2",0.48f);
+	hud_info_item_y_pos.z		= uiXml.ReadAttribFlt("hud_info:item_name",		0, "y3",0.55f);
 
-	hud_info_r_e 				= uiXml.ReadAttribInt("hud_info_color:enemy",   0, "r", 0xff);
-	hud_info_g_e 				= uiXml.ReadAttribInt("hud_info_color:enemy",   0, "g", 0);
-	hud_info_b_e 				= uiXml.ReadAttribInt("hud_info_color:enemy",   0, "b", 0);
-	hud_info_a_e 				= uiXml.ReadAttribInt("hud_info_color:enemy",   0, "a", 0x80);
+	hud_info_e.x				= uiXml.ReadAttribInt("hud_info_color:enemy",	0, "r", 255);
+	hud_info_e.y				= uiXml.ReadAttribInt("hud_info_color:enemy",	0, "g", 0);
+	hud_info_e.z				= uiXml.ReadAttribInt("hud_info_color:enemy",	0, "b", 0);
+	hud_info_e.w				= uiXml.ReadAttribInt("hud_info_color:enemy",	0, "a", 128);
 
-	hud_info_r_n 				= uiXml.ReadAttribInt("hud_info_color:neutral", 0, "r", 0xff);
-	hud_info_g_n 				= uiXml.ReadAttribInt("hud_info_color:neutral", 0, "g", 0xff);
-	hud_info_b_n 				= uiXml.ReadAttribInt("hud_info_color:neutral", 0, "b", 0x80);
-	hud_info_a_n 				= uiXml.ReadAttribInt("hud_info_color:neutral", 0, "a", 0x80);
+	hud_info_n.x				= uiXml.ReadAttribInt("hud_info_color:neutral", 0, "r", 255);
+	hud_info_n.y				= uiXml.ReadAttribInt("hud_info_color:neutral", 0, "g", 255);
+	hud_info_n.z				= uiXml.ReadAttribInt("hud_info_color:neutral", 0, "b", 128);
+	hud_info_n.w				= uiXml.ReadAttribInt("hud_info_color:neutral", 0, "a", 128);
 
-	hud_info_r_f 				= uiXml.ReadAttribInt("hud_info_color:friend",  0, "r", 0);
-	hud_info_g_f 				= uiXml.ReadAttribInt("hud_info_color:friend",  0, "g", 0xff);
-	hud_info_b_f 				= uiXml.ReadAttribInt("hud_info_color:friend",  0, "b", 0);
-	hud_info_a_f 				= uiXml.ReadAttribInt("hud_info_color:friend",  0, "a", 0x80);
+	hud_info_f.x				= uiXml.ReadAttribInt("hud_info_color:friend",  0, "r", 0);
+	hud_info_f.y				= uiXml.ReadAttribInt("hud_info_color:friend",  0, "g", 255);
+	hud_info_f.z				= uiXml.ReadAttribInt("hud_info_color:friend",  0, "b", 0);
+	hud_info_f.w				= uiXml.ReadAttribInt("hud_info_color:friend",  0, "a", 128);
 
 
 	if ( (GameID() == eGameIDArtefactHunt) || (GameID() == eGameIDCaptureTheArtefact) )
@@ -248,20 +261,22 @@ void CUIMainIngameWnd::Init()
 		UIArtefactIcon.Show		(false);
 	}
 	
-	shared_str warningStrings[7] = 
+	shared_str warningStrings[10] = 
 	{	
 		"jammed",
 		"radiation",
 		"wounds",
+		"frostbite",
 		"starvation",
 		"thirst",
 		"fatigue",
-		"invincible"
+		"invincible",
+		"heating",
 		"artefact"
 	};
 
 	// Загружаем пороговые значения для индикаторов
-	EWarningIcons j = ewiStarvation;
+	EWarningIcons j = ewiWeaponJammed;
 	while (j < ewiInvincible)
 	{
 		// Читаем данные порогов для каждого индикатора
@@ -314,10 +329,9 @@ void CUIMainIngameWnd::Init()
 float UIStaticDiskIO_start_time = 0.0f;
 void CUIMainIngameWnd::Draw()
 {
+	ZoneScoped;
+
 	CActor* m_pActor		= smart_cast<CActor*>(Level().CurrentViewEntity());
-#ifdef DEBUG
-	test_draw				();
-#endif
 	// show IO icon
 	bool IOActive	= (FS.dwOpenCounter>0);
 	if	(IOActive)	UIStaticDiskIO_start_time = Device.fTimeGlobal;
@@ -366,6 +380,8 @@ void CUIMainIngameWnd::SetMPChatLog(CUIWindow* pChat, CUIWindow* pLog){
 
 void CUIMainIngameWnd::Update()
 {
+	ZoneScoped;
+
 	CUIWindow::Update();
 	CActor* m_pActor = smart_cast<CActor*>(Level().CurrentViewEntity());
 
@@ -419,6 +435,17 @@ void CUIMainIngameWnd::Update()
 		SetWarningIconColor( ewiInvincible, 0x00ffffff );
 	}
 
+	UpdateMainIndicators();
+
+	if (m_pActor->GetHeatingStatus() && GameConstants::GetActorFrostbite())
+	{
+		SetWarningIconColor(ewiHeating, 0xffffffff);
+	}
+	else
+	{
+		SetWarningIconColor(ewiHeating, 0x00ffffff);
+	}
+
 	// ewiArtefact
 	if ( GameID() == eGameIDArtefactHunt && !IsGameTypeSingle())
 	{
@@ -458,7 +485,7 @@ void CUIMainIngameWnd::Update()
 
 	//	UpdateActiveItemInfo();
 
-	EWarningIcons i	= ewiStarvation;
+	EWarningIcons i	= ewiWeaponJammed;
 	while ( i <= ewiStarvation) // ewiInvincible
 	{
 		float value = 0;
@@ -485,9 +512,17 @@ void CUIMainIngameWnd::Update()
 				}
 				break;
 			}
+		case ewiFrostbite:
+			{
+				if (GameConstants::GetActorFrostbite())
+					value = m_pActor->conditions().GetFrostbite();
+
+				break;
+			}
 		case ewiStarvation:
 			value =  _max( 0.0f, 1.0f - m_pActor->conditions().GetSatiety() );
 			break;
+
 		/*case ewiPsyHealth:
 			value = 1 - m_pActor->conditions().GetPsyHealth();
 			break;
@@ -530,9 +565,6 @@ void CUIMainIngameWnd::Update()
 
 bool CUIMainIngameWnd::OnKeyboardPress(int dik)
 {
-#ifdef DEBUG
-	test_key(dik);
-#endif // #ifdef DEBUG
 /*
 	if(Level().IR_GetKeyState(DIK_LSHIFT) || Level().IR_GetKeyState(DIK_RSHIFT))
 	{
@@ -648,6 +680,12 @@ void CUIMainIngameWnd::SetWarningIconColor(EWarningIcons icon, const u32 cl)
 		SetWarningIconColorUI	(&UIWoundIcon, cl);
 		if (bMagicFlag) break;*/
 
+	case ewiFrostbite:
+		SetWarningIconColorUI(&UIFrostbiteIcon, cl);
+		if (bMagicFlag) break;
+	case ewiHeating:
+		SetWarningIconColorUI(&UIHeatingIcon, cl);
+		if (bMagicFlag) break;
 	case ewiStarvation:
 		SetWarningIconColorUI	(&UIStarvationIcon, cl);
 		if (bMagicFlag) break;	
@@ -696,7 +734,7 @@ void CUIMainIngameWnd::SetFlashIconState_(EFlashingIcons type, bool enable)
 		iconType = "mail";
 		break;
 	default:
-		Msg("! [CUIMainIngameWnd::SetFlashIconState_]: Unknown flashing icon type: [%s]", iconType);
+		Msg("! [CUIMainIngameWnd::SetFlashIconState_]: Unknown flashing icon type: [%s]", iconType.c_str());
 	}
 
 	R_ASSERT3(icon != m_FlashingIcons.end(), "Flashing icon with this type not existed!", iconType.c_str());
@@ -706,6 +744,8 @@ void CUIMainIngameWnd::SetFlashIconState_(EFlashingIcons type, bool enable)
 
 void CUIMainIngameWnd::InitFlashingIcons(CUIXml* node)
 {
+	ZoneScoped;
+
 	const char * const flashingIconNodeName = "flashing_icon";
 	int staticsCount = node->GetNodesNum("", 0, flashingIconNodeName);
 
@@ -791,6 +831,8 @@ void CUIMainIngameWnd::SetPickUpItem	(CInventoryItem* PickUpItem)
 
 void CUIMainIngameWnd::OnConnected()
 {
+	ZoneScoped;
+
 	UIZoneMap->SetupCurrentMap();
 	if ( m_ui_hud_states )
 	{
@@ -805,6 +847,8 @@ void CUIMainIngameWnd::OnSectorChanged(int sector)
 
 void CUIMainIngameWnd::reset_ui()
 {
+	ZoneScoped;
+
 //	m_pWeapon						= NULL;
 	m_pGrenade						= NULL;
 	m_pItem							= NULL;
@@ -816,32 +860,57 @@ void CUIMainIngameWnd::reset_ui()
 	}
 }
 
-
-#include "../../xrEngine/xr_input.h"
-#include "../GamePersistent.h"
-
-void hud_adjust_mode_keyb(int dik);
-void hud_draw_adjust_mode();
-	void attach_adjust_mode_keyb(int dik);
-	void attach_draw_adjust_mode();
-
 struct TS{
 	ref_sound test_sound;
 };
 TS* pTS = NULL;
-void test_key(int dik)
-{
-	if (Actor()->active_cam() == eacFirstEye)
-	{
-		hud_adjust_mode_keyb(dik);
-		attach_adjust_mode_keyb(dik);
-	}
-}
 
-void test_draw()
+void CUIMainIngameWnd::UpdateMainIndicators()
 {
-	hud_draw_adjust_mode();
-	attach_draw_adjust_mode();
+	CActor* pActor = smart_cast<CActor*>(Level().CurrentViewEntity());
+	if (!pActor)
+		return;
+
+	if (m_ind_temperature)
+	{
+		float heating = pActor->GetCurrentHeating();
+		float cur_temperature = g_pGamePersistent->Environment().CurrentEnv->m_fAirTemperature;
+		float diff = cur_temperature + heating;
+		string16 temper = "";
+		Fcolor curr, neg, neut, pos;
+		float zero_to_one = remapval(diff, -30.f, 40.f, 0.f, 1.f);
+		curr.lerp(neg.set(m_min_temperature_clr), neut.set(m_mid_temperature_clr), pos.set(m_max_temperature_clr), zero_to_one);
+
+		if (diff < 0)
+			xr_sprintf(temper, "%.1f %s", diff, *CStringTable().translate("st_degree"));
+		else
+			xr_sprintf(temper, "+%.1f %s", diff, *CStringTable().translate("st_degree"));
+
+		m_ind_temperature->SetTextColor(curr.get());
+
+		if (!m_ind_temperature->IsShown())
+			m_ind_temperature->Show(true);
+
+		m_ind_temperature->SetText(temper);
+	}
+
+	if (m_ind_weather_type)
+	{
+		m_ind_weather_type->Show(false);
+		shared_str cur_weather_type = g_pGamePersistent->Environment().Current[0]->m_sWeatherType;
+
+		if (cur_weather_type.size())
+		{
+
+			string128 iconName{};
+			strconcat(sizeof(iconName), iconName, "ui_inGame2_WeatherTypeIcon_", cur_weather_type.c_str());
+
+			if (!m_ind_weather_type->IsShown())
+				m_ind_weather_type->Show(true);
+
+			m_ind_weather_type->InitTexture(iconName);
+		}
+	}
 }
 
 void CUIMainIngameWnd::DrawMainIndicatorsForInventory()
@@ -955,6 +1024,12 @@ void CUIMainIngameWnd::DrawMainIndicatorsForInventory()
 		m_ind_boost_withdrawal->Draw();
 	}
 
+	if (m_ind_boost_frostbite->IsShown())
+	{
+		m_ind_boost_frostbite->Update();
+		m_ind_boost_frostbite->Draw();
+	}
+
 	if (UIArtefactsPanel && UIArtefactsPanel->GetShowInInventory() && UIArtefactsPanel->IsShown())
 		UIArtefactsPanel->Draw();
 }
@@ -978,6 +1053,7 @@ void CUIMainIngameWnd::UpdateBoosterIndicators(const xr_map<EBoostParams, SBoost
 	m_ind_boost_hangover->Show(false);
 	m_ind_boost_narcotism->Show(false);
 	m_ind_boost_withdrawal->Show(false);
+	m_ind_boost_frostbite->Show(false);
 
 	LPCSTR str_flag	= "ui_slow_blinking_alpha";
 
@@ -1140,6 +1216,15 @@ void CUIMainIngameWnd::UpdateBoosterIndicators(const xr_map<EBoostParams, SBoost
 						m_ind_boost_withdrawal->SetClrLightAnim(str_flag, true, true, false, true);
 					else
 						m_ind_boost_withdrawal->ResetClrAnimation();
+				}
+				break;
+			case eBoostFrostbiteRestore:
+				{
+					m_ind_boost_frostbite->Show(true);
+					if (b->second.fBoostTime <= 3.0f)
+						m_ind_boost_frostbite->SetClrLightAnim(str_flag, true, true, false, true);
+					else
+						m_ind_boost_frostbite->ResetClrAnimation();
 				}
 				break;
 		}

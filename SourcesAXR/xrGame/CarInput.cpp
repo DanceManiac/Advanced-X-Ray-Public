@@ -191,8 +191,7 @@ void CCar::OnKeyboardPress(int cmd)
 		break;
 
 	case kSPRINT_TOGGLE:
-		if (!CurrentGameUI()->TopInputReceiver())
-			ShowTrunk();
+		m_indoor_lights.SwitchIndoorLights();
 		break;
 	};
 }

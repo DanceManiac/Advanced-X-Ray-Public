@@ -67,12 +67,12 @@ class_<CScriptGameObject> script_register_game_object2(class_<CScriptGameObject>
 		.def("add_combat_sound",			(u32 (CScriptGameObject::*)(LPCSTR,u32,ESoundTypes,u32,u32,u32,LPCSTR))(&CScriptGameObject::add_combat_sound))
 		.def("remove_sound",				&CScriptGameObject::remove_sound)
 		.def("set_sound_mask",				&CScriptGameObject::set_sound_mask)
-		.def("play_sound",					(void (CScriptGameObject::*)(u32))(&CScriptGameObject::play_sound))
-		.def("play_sound",					(void (CScriptGameObject::*)(u32,u32))(&CScriptGameObject::play_sound))
-		.def("play_sound",					(void (CScriptGameObject::*)(u32,u32,u32))(&CScriptGameObject::play_sound))
-		.def("play_sound",					(void (CScriptGameObject::*)(u32,u32,u32,u32))(&CScriptGameObject::play_sound))
-		.def("play_sound",					(void (CScriptGameObject::*)(u32,u32,u32,u32,u32))(&CScriptGameObject::play_sound))
-		.def("play_sound",					(void (CScriptGameObject::*)(u32,u32,u32,u32,u32,u32))(&CScriptGameObject::play_sound))
+		.def("play_sound",					(float (CScriptGameObject::*)(u32))(&CScriptGameObject::play_sound))
+		.def("play_sound",					(float (CScriptGameObject::*)(u32,u32))(&CScriptGameObject::play_sound))
+		.def("play_sound",					(float (CScriptGameObject::*)(u32,u32,u32))(&CScriptGameObject::play_sound))
+		.def("play_sound",					(float (CScriptGameObject::*)(u32,u32,u32,u32))(&CScriptGameObject::play_sound))
+		.def("play_sound",					(float (CScriptGameObject::*)(u32,u32,u32,u32,u32))(&CScriptGameObject::play_sound))
+		.def("play_sound",					(float (CScriptGameObject::*)(u32,u32,u32,u32,u32,u32))(&CScriptGameObject::play_sound))
 		.def("binded_object",				&CScriptGameObject::binded_object)
 		.def("set_previous_point",			&CScriptGameObject::set_previous_point)
 		.def("set_start_point",				&CScriptGameObject::set_start_point)
@@ -144,6 +144,10 @@ class_<CScriptGameObject> script_register_game_object2(class_<CScriptGameObject>
 		.def("weapon_strapped",				&CScriptGameObject::weapon_strapped)
 		.def("weapon_unstrapped",			&CScriptGameObject::weapon_unstrapped)
 		.def("is_weapon_shooting",			&CScriptGameObject::weapon_shooting)
+		.def("is_weapon_reloading",			&CScriptGameObject::weapon_reloading)
+
+		.def("start_weapon_shoot",			&CScriptGameObject::start_weapon_shoot)
+		.def("start_weapon_reload",			&CScriptGameObject::start_weapon_reload)
 
 		//////////////////////////////////////////////////////////////////////////
 		//inventory owner
@@ -515,6 +519,8 @@ class_<CScriptGameObject> script_register_game_object2(class_<CScriptGameObject>
 		.def("get_max_uses", 					&CScriptGameObject::GetMaxUses)
 		.def("destroy_object", 					&CScriptGameObject::DestroyObject)
 
+		.def("is_quest_item", 					&CScriptGameObject::IsQuestItem)
+
 		.def("set_artefact_charge_level",		&CScriptGameObject::SetArtefactChargeLevel)
 		.def("get_artefact_charge_level",		&CScriptGameObject::GetArtefactChargeLevel)
 		.def("set_artefact_rank",				&CScriptGameObject::SetArtefactRank)
@@ -522,6 +528,8 @@ class_<CScriptGameObject> script_register_game_object2(class_<CScriptGameObject>
 
 		.def("set_filter_condition",			&CScriptGameObject::SetFilterChargeLevel)
 		.def("get_filter_condition",			&CScriptGameObject::GetFilterChargeLevel)
+		.def("set_outfit_filter_condition",		&CScriptGameObject::SetOutfitFilterCondition)
+		.def("get_outfit_filter_condition",		&CScriptGameObject::GetOutfitFilterCondition)
 		//-AVO
 
 		.def("is_entity_alive",					&CScriptGameObject::IsEntityAlive)

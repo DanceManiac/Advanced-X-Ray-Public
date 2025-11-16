@@ -37,10 +37,10 @@ void CUIStatsIcon::InitTexInfo(){
 
 	m_tex_info[ARTEFACT][0].sh = InventoryUtilities::GetEquipmentIconsShader();
 	m_tex_info[ARTEFACT][0].rect.set(
-		fXPos * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()),
-		fYPos * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()),
-		fXPos * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()) + fGridWidth * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()),
-		fYPos * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()) + fGridHeight * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()));
+		fXPos * UI().inv_grid_kx(),
+		fYPos * UI().inv_grid_kx(),
+		fXPos * UI().inv_grid_kx() + fGridWidth * UI().inv_grid_kx(),
+		fYPos * UI().inv_grid_kx() + fGridHeight * UI().inv_grid_kx());
 	
 	m_tex_info[ARTEFACT][1] = m_tex_info[ARTEFACT][0];
 
@@ -51,19 +51,6 @@ void CUIStatsIcon::InitTexInfo(){
 	m_tex_info[DEATH][0].rect.y1 = 202;
 	m_tex_info[DEATH][0].rect.x2 = m_tex_info[DEATH][0].rect.x1 + 30;
 	m_tex_info[DEATH][0].rect.y2 = m_tex_info[DEATH][0].rect.y1 + 30;	
-}
-
-void CUIStatsIcon::FreeTexInfo(){
-		// ranks
-	for (int i = RANK_0; i <= RANK_4; i++)
-	{
-		m_tex_info[i][0].sh->destroy();
-		m_tex_info[i][1].sh->destroy();
-	}
-	m_tex_info[ARTEFACT][0].sh->destroy();
-	m_tex_info[ARTEFACT][1].sh->destroy();
-	m_tex_info[DEATH][0].sh->destroy();	
-	m_tex_info[DEATH][1].sh->destroy();	
 }
 
 void CUIStatsIcon::SetText(LPCSTR str){

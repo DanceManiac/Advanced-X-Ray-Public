@@ -217,12 +217,8 @@ void CActor::RunTalkDialog(CInventoryOwner* talk_partner, bool disable_break)
 
 void CActor::StartTalk (CInventoryOwner* talk_partner)
 {
-	PIItem det_active = inventory().ItemFromSlot(DETECTOR_SLOT);
-	if (det_active)
-	{
-		CCustomDetector* det = smart_cast<CCustomDetector*>(det_active);
-		det->HideDetector(true);
-	}
+	if (auto det = smart_cast<CCustomDetector*>(inventory().ItemFromSlot(DETECTOR_SLOT)); IsDetectorActive())
+		det->ToggleDetector(true);
 
 	CGameObject* GO = smart_cast<CGameObject*>(talk_partner); VERIFY(GO);
 	CInventoryOwner::StartTalk(talk_partner);
@@ -232,8 +228,9 @@ void CActor::NewPdaContact		(CInventoryOwner* pInvOwner)
 {	
 	if(!IsGameTypeSingle()) return;
 
-	bool b_alive = !!(smart_cast<CEntityAlive*>(pInvOwner))->g_Alive();
-	HUD().GetUI()->UIMainIngameWnd->AnimateContacts(b_alive);
+	CEntityAlive* pEntity = smart_cast<CEntityAlive*>(pInvOwner);
+	bool bContactSound = pEntity && !!pEntity->g_Alive() && !!pEntity->cast_base_monster();
+	HUD().GetUI()->UIMainIngameWnd->AnimateContacts(bContactSound);
 
 	Level().MapManager().AddRelationLocation		( pInvOwner );
 }

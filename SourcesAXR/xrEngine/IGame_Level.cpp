@@ -12,13 +12,15 @@
 #include "xr_object.h"
 #include "feel_sound.h"
 
-#include "securom_api.h"
+#include "../Layers/xrAPI/xrGameManager.h"
 
 ENGINE_API	IGame_Level*	g_pGameLevel	= NULL;
 extern	BOOL g_bLoaded;
 
 IGame_Level::IGame_Level	()
 {
+	ZoneScoped;
+
 	m_pCameras					= xr_new<CCameraManager>(true);
 	g_pGameLevel				= this;
 	pLevel						= NULL;
@@ -34,6 +36,8 @@ IGame_Level::IGame_Level	()
 
 IGame_Level::~IGame_Level	()
 {
+	ZoneScoped;
+
 	if(strstr(Core.Params,"-nes_texture_storing") )
 		//Device.Resources->StoreNecessaryTextures();
 		Device.m_pRender->ResourcesStoreNecessaryTextures();
@@ -61,6 +65,8 @@ IGame_Level::~IGame_Level	()
 
 void IGame_Level::net_Stop			()
 {
+	ZoneScoped;
+
 	for (int i=0; i<6; i++)
 		Objects.Update			(false);
 	// Destroy all objects
@@ -93,7 +99,7 @@ static bool deserialize_callback(IReader& reader)
 
 BOOL IGame_Level::Load			(u32 dwNum) 
 {
-	SECUROM_MARKER_PERFORMANCE_ON(10)
+	ZoneScoped;
 
 	// Initialize level data
 	pApp->Level_Set				( dwNum );
@@ -139,26 +145,27 @@ BOOL IGame_Level::Load			(u32 dwNum)
 	Objects.Load				();
 //. ANDY	R_ASSERT					(Load_GameSpecific_After ());
 
+	if (xrGameManager::GetGame() == EGame::SHOC)
+	{
+		R_ASSERT(Load_GameSpecific_After());
+	}
+
 	// Done
 	FS.r_close					( LL_Stream );
 	bReady						= true;
-	if (!g_dedicated_server)	IR_Capture();
-#ifndef DEDICATED_SERVER
+	IR_Capture();
 	Device.seqRender.Add		(this);
-#endif
 
 	Device.seqFrame.Add			(this);
-
-	SECUROM_MARKER_PERFORMANCE_OFF(10)
 
 	return TRUE;	
 }
 
-int		psNET_DedicatedSleep	= 5;
 void	IGame_Level::OnRender		( ) 
 {
-#ifndef DEDICATED_SERVER
 //	if (_abs(Device.fTimeDelta)<EPS_S) return;
+
+	ZoneScoped;
 
 	#ifdef _GPA_ENABLED	
 		TAL_ID rtID = TAL_MakeID( 1 , Core.dwFrame , 0);	
@@ -169,11 +176,9 @@ void	IGame_Level::OnRender		( )
 	#endif // _GPA_ENABLED
 
 	// Level render, only when no client output required
-	if (!g_dedicated_server)	{
+	{
 		Render->Calculate			();
 		Render->Render				();
-	} else {
-		Sleep						(psNET_DedicatedSleep);
 	}
 
 	#ifdef _GPA_ENABLED	
@@ -183,13 +188,14 @@ void	IGame_Level::OnRender		( )
 	// Font
 //	pApp->pFontSystem->SetSizeI(0.023f);
 //	pApp->pFontSystem->OnRender	();
-#endif
 }
 
 void	IGame_Level::OnFrame		( ) 
 {
 	// Log				("- level:on-frame: ",u32(Device.dwFrame));
 //	if (_abs(Device.fTimeDelta)<EPS_S) return;
+
+	ZoneScoped;
 
 	// Update all objects
 	VERIFY						(bReady);
@@ -314,6 +320,8 @@ void	IGame_Level::SoundEvent_Register	( ref_sound_data_ptr S, float range )
 
 void	IGame_Level::SoundEvent_Dispatch	( )
 {
+	ZoneScoped;
+
 	while	(!snd_Events.empty())	{
 		_esound_delegate&	D	= snd_Events.back	();
 		VERIFY				(D.dest && D.source);

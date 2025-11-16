@@ -477,7 +477,7 @@ bool CStateGroupAttackAbstract::check_behinder()
 		if (m_time_start_check_behinder == 0) {
 
 			// - check if object is behind
-			if (!object->control().direction().is_face_target(object->EnemyMan.get_enemy(), ANGLE_START_CHECK_BEHINDER)) {
+			if (!object->control().get_direction().is_face_target(object->EnemyMan.get_enemy(), ANGLE_START_CHECK_BEHINDER)) {
 				m_time_start_check_behinder = time();
 			}
 
@@ -485,7 +485,7 @@ bool CStateGroupAttackAbstract::check_behinder()
 			// if we already in check mode
 
 			// - check if object is not behind (break checker)
-			if (object->control().direction().is_face_target(object->EnemyMan.get_enemy(), ANGLE_CONTINUE_CHECK_BEHINDER)) {
+			if (object->control().get_direction().is_face_target(object->EnemyMan.get_enemy(), ANGLE_CONTINUE_CHECK_BEHINDER)) {
 				m_time_start_check_behinder = 0;
 			} 
 
@@ -508,11 +508,11 @@ bool CStateGroupAttackAbstract::check_behinder()
 }
 
 TEMPLATE_SPECIALIZATION
-void CStateGroupAttackAbstract::remove_links(CObject* object)
+void CStateGroupAttackAbstract::remove_links(CObject* object_)
 {
-	if ( m_enemy == object )
+	if (m_enemy == object_)
 	{
-		m_enemy	= 0;
+		m_enemy = 0;
 	}
 }
 

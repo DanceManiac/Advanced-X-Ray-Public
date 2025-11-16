@@ -43,15 +43,15 @@ void CMonsterEnemyMemory::update()
 		}
 	}
 
-	for (xr_vector<const CEntityAlive *>::const_iterator I = monster->memory().enemy().objects().begin();
-		 I != monster->memory().enemy().objects().end(); ++I) 
+	for (xr_vector<const CEntityAlive *>::const_iterator I = monster->get_memory().get_enemy().objects().begin();
+		 I != monster->get_memory().get_enemy().objects().end(); ++I) 
 	{
 		const CEntityAlive* enemy = *I;
 		const bool feel_enemy	  = monster->Position().distance_to(enemy->Position()) 
 													< 
 									monster->get_feel_enemy_max_distance();
 
-		if ( feel_enemy || monster->memory().visual().visible_now(*I) )
+		if ( feel_enemy || monster->get_memory().visual().visible_now(*I) )
 		{
 			add_enemy(*I);
 		}

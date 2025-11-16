@@ -56,6 +56,26 @@ void SThunderboltDesc::create_center_gradient	(CInifile& pIni, shared_str const&
 	m_GradientCenter->m_pFlare->CreateShader		(*m_GradientCenter->shader,*m_GradientCenter->texture);
 }
 
+void SThunderboltDesc::create_top_gradient_shoc(CInifile* pIni, shared_str const& sect)
+{
+    m_GradientTop = xr_new<SFlare>();
+    m_GradientTop->shader = pIni->r_string(sect, "gradient_top_shader");
+    m_GradientTop->texture = pIni->r_string(sect, "gradient_top_texture");
+    m_GradientTop->fRadius = pIni->r_fvector2(sect, "gradient_top_radius");
+    m_GradientTop->fOpacity = pIni->r_float(sect, "gradient_top_opacity");
+    m_GradientTop->m_pFlare->CreateShader(*m_GradientTop->shader, *m_GradientTop->texture);
+}
+
+void SThunderboltDesc::create_center_gradient_shoc(CInifile* pIni, shared_str const& sect)
+{
+    m_GradientCenter = xr_new<SFlare>();
+    m_GradientCenter->shader = pIni->r_string(sect, "gradient_center_shader");
+    m_GradientCenter->texture = pIni->r_string(sect, "gradient_center_texture");
+    m_GradientCenter->fRadius = pIni->r_fvector2(sect, "gradient_center_radius");
+    m_GradientCenter->fOpacity = pIni->r_float(sect, "gradient_center_opacity");
+    m_GradientCenter->m_pFlare->CreateShader(*m_GradientCenter->shader, *m_GradientCenter->texture);
+}
+
 void SThunderboltDesc::load						(CInifile& pIni, shared_str const& sect)
 {
 	create_top_gradient			(pIni, sect);
@@ -83,6 +103,34 @@ void SThunderboltDesc::load						(CInifile& pIni, shared_str const& sect)
     if (m_name&&m_name[0]) snd.create(m_name,st_Effect,sg_Undefined);
 }
 
+void SThunderboltDesc::load_shoc(CInifile* pIni, shared_str const& sect)
+{
+    create_top_gradient_shoc(pIni, sect);
+    create_center_gradient_shoc(pIni, sect);
+
+    name = sect;
+    color_anim = LALib.FindItem(pIni->r_string(sect, "color_anim"));
+    VERIFY(color_anim);
+    color_anim->fFPS = (float)color_anim->iFrameCount;
+
+    // models
+    LPCSTR m_name;
+    m_name = pIni->r_string(sect, "lightning_model");
+    m_pRender->CreateModel(m_name);
+
+    /*
+    IReader* F			= 0;
+    F					= FS.r_open("$game_meshes$",m_name); R_ASSERT2(F,"Empty 'lightning_model'.");
+    l_model				= ::Render->model_CreateDM(F);
+    FS.r_close			(F);
+    */
+
+    // sound
+    m_name = pIni->r_string(sect, "sound");
+    if (m_name && m_name[0])
+        snd.create(m_name, st_Effect, sg_Undefined);
+}
+
 //----------------------------------------------------------------------------------------------
 // collection
 //----------------------------------------------------------------------------------------------
@@ -100,6 +148,19 @@ void SThunderboltCollection::load				(CInifile* pIni, CInifile* thunderbolts, LP
 			palette.push_back	(g_pGamePersistent->Environment().thunderbolt_description(*thunderbolts, N));
 	}
 }
+
+void SThunderboltCollection::load_shoc(CInifile* pIni, LPCSTR sect)
+{
+    section = sect;
+    int tb_count = pIni->line_count(sect);
+    for (int tb_idx = 0; tb_idx < tb_count; tb_idx++)
+    {
+        LPCSTR N, V;
+        if (pIni->r_line(sect, tb_idx, &N, &V))
+            palette.push_back(g_pGamePersistent->Environment().thunderbolt_description_shoc(pIni, N));
+    }
+}
+
 SThunderboltCollection::~SThunderboltCollection	()
 {
 	for (DescIt d_it=palette.begin(); d_it!=palette.end(); d_it++)
@@ -154,8 +215,24 @@ shared_str CEffect_Thunderbolt::AppendDef(CEnvironment& environment, CInifile* p
 	return collection.back()->section;
 }
 
+shared_str CEffect_Thunderbolt::AppendDef_shoc(CEnvironment& environment, CInifile* pIni, LPCSTR sect)
+{
+    if (!sect || (0 == sect[0]))
+        return "";
+
+    for (CollectionVecIt it = collection.begin(); it != collection.end(); it++)
+        if ((*it)->section == sect)
+            return (*it)->section;
+
+    collection.push_back(environment.thunderbolt_collection_shoc(pIni, sect));
+
+    return collection.back()->section;
+}
+
 BOOL CEffect_Thunderbolt::RayPick(const Fvector& s, const Fvector& d, float& dist)
 {
+    ZoneScoped;
+
 	BOOL bRes 	= TRUE;
 #ifdef _EDITOR
     bRes 				= Tools->RayPick	(s,d,dist,0,0);
@@ -178,6 +255,8 @@ BOOL CEffect_Thunderbolt::RayPick(const Fvector& s, const Fvector& d, float& dis
 
 void CEffect_Thunderbolt::Bolt(shared_str id, float period, float lt)
 {
+    ZoneScoped;
+
 	VERIFY					(id.size());
 	state 		            = stWorking;
 	life_time	            = lt+Random.randF(-lt*0.5f,lt*0.5f);
@@ -226,6 +305,8 @@ void CEffect_Thunderbolt::Bolt(shared_str id, float period, float lt)
 
 void CEffect_Thunderbolt::OnFrame(shared_str id, float period, float duration)
 {
+    ZoneScoped;
+
 	BOOL enabled			= !!(id.size());
 	if (bEnabled!=enabled){
     	bEnabled			= enabled;

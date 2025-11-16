@@ -1,5 +1,3 @@
-#ifndef GameFontH
-#define GameFontH
 #pragma once
 
 #include "MbHelpers.h"
@@ -33,12 +31,18 @@ protected:
 	float					fCurrentHeight;
 	float					fCurrentX, fCurrentY;
 	Fvector2				vInterval;
-
+	
 	Fvector 				*TCMap;
 	float					fHeight;
 	float					fXStep;
 	float					fYStep;
 	float					fTCHeight;
+	float					fXScale{};
+	float					fYScale{};
+	bool					bFontShadowEnabled{};
+	bool					bFontShadowForBlackText{};
+	float					fXFontShadow{};
+	float					fYFontShadow{};
 	xr_vector<String>		strings;
 
 	IFontRender				*pFontRender;
@@ -74,9 +78,12 @@ public:
 	IC void					SetHeightI		(float S);
 	IC void					SetHeight		(float S);
 
-	IC float				GetHeight		(){return fCurrentHeight;};
+	IC float				GetHeight		() {return fCurrentHeight;}
 	IC void					SetInterval		(float x, float y) {vInterval.set(x,y);};
 	IC void					SetInterval		(const Fvector2& v) {vInterval.set(v);};
+
+	IC Fvector2				GetInterval		() { return vInterval; }
+
 	IC void					SetAligment		(EAligment aligment){ eCurrentAlignment=aligment; }
 
 	float					SizeOf_			( LPCSTR s );
@@ -85,6 +92,8 @@ public:
 	float					SizeOf_			( const char cChar );  // only ANSII 
 
 	float					CurrentHeight_	();
+
+	float					ScaleHeightDelta() { return (fCurrentHeight * vInterval.y * GetCurrentHeightScale() - fCurrentHeight * vInterval.y) / 2; }
 
 	void					OutSetI			(float x, float y);
 	void					OutSet			(float x, float y);
@@ -100,6 +109,7 @@ public:
 	void  					OutI			( float _x , float _y , LPCSTR fmt , ... );
 	void  					Out				( float _x , float _y , LPCSTR fmt , ... );
 	void             		OutNext			( LPCSTR fmt , ... );
+	void             		OutPrev			( LPCSTR fmt , ... );
 
 	void					OutSkip			(float val=1.f);
 
@@ -107,9 +117,26 @@ public:
 
 	IC	void				Clear			()  { strings.clear(); };
 
-#ifdef DEBUG
-	shared_str				m_font_name;
-#endif
-};
+	float					GetCurrentWidthScale() const;
+	float					GetCurrentHeightScale() const;
 
-#endif // _XR_GAMEFONT_H_
+	void					SetWidthScale(float f) { fXScale = f; }
+	void					SetHeightScale(float f) { fYScale = f; }
+
+	float					GetWidthScale() const { return fXScale; }
+	float					GetHeightScale() const { return fYScale; }
+
+	float					GetfXStep() const { return fXStep; }
+
+	void					SetFontShadowEnabled(bool b) { bFontShadowEnabled = b; }
+	bool					GetFontShadowEnabled() const { return bFontShadowEnabled; }
+	void					SetFontShadowForBlackText(bool b) { bFontShadowForBlackText = b; }
+	bool					GetFontShadowForBlackText() const { return bFontShadowForBlackText; }
+	void					SetFontShadowX(float f) { fXFontShadow = f; }
+	float					GetFontShadowX() const { return fXFontShadow; }
+	void					SetFontShadowY(float f) { fYFontShadow = f; }
+	float					GetFontShadowY() const { return fYFontShadow; }
+
+	shared_str				m_font_name;
+	bool					m_bCustom{};
+};

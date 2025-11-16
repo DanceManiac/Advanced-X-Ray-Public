@@ -1,0 +1,22 @@
+--Arkada: не нужно теперь писать all, если tip нужен для всех локаций
+tips_table =
+{
+	--for example:
+	--[tip_number] = level_name
+	--[33] = "marsh"
+}
+function get_tip_number(level_name)
+	local t = {}
+	local MAX_TIPS = 100
+	for i=1,MAX_TIPS do
+		if tips_table[i] == nil or tips_table[i]==level_name then
+			table.insert(t, i)
+		end
+	end
+	if(#t==0) then
+		return 1
+	end
+	
+	math.randomseed(device():time_global())
+	return t[math.random(#t)]
+end

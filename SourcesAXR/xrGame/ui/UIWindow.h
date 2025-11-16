@@ -1,5 +1,7 @@
 #pragma once
 #include "../xr_level_controller.h"
+#include "embedded_editor/embedded_editor_ui.h"
+
 class CUIWindow;
 
 struct _12b	{ DWORD _[3]; };
@@ -69,7 +71,7 @@ template<class _Ty, class _Other>	inline	bool operator!=(const uialloc<_Ty>&, co
 #include "uiabstract.h"
 
 
-class CUIWindow  : public CUISimpleWindow
+class CUIWindow  : public CUISimpleWindow, public CUIDebuggable
 {
 public:
 				CUIWindow						();
@@ -183,6 +185,9 @@ public:
 	
 	IC bool					GetCustomDraw		() const					{return m_bCustomDraw;}
 	IC void					SetCustomDraw		(bool b) 					{m_bCustomDraw = b;}
+	pcstr					GetDebugType		() override					{ return typeid(*this).name(); }
+	bool					FillDebugTree		(const CUIDebugState& debugState) override;
+	void					FillDebugInfo		() override;
 
 protected:
 	IC void					SafeRemoveChild(CUIWindow* child)				{WINDOW_LIST_it it = std::find(m_ChildWndList.begin(),m_ChildWndList.end(),child); if(it!=m_ChildWndList.end())m_ChildWndList.erase(it);};
@@ -206,7 +211,7 @@ protected:
 	CUIWindow*				m_pMessageTarget;
 
 	// ѕоследн€€ позици€ мышки
-	Fvector2 cursor_pos;
+	Fvector2				m_cursor_pos;
 
 	//врем€ прошлого клика мышки
 	//дл€ определени€ DoubleClick
@@ -222,10 +227,6 @@ protected:
 	// ≈сли курсор над окном
 	bool					m_bCursorOverWindow;
 	bool					m_bCustomDraw;
-
-#ifdef DEBUG
-	int m_dbg_id;
-#endif
 
 public:
 	DECLARE_SCRIPT_REGISTER_FUNCTION

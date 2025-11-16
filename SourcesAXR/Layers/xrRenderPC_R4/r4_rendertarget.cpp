@@ -23,10 +23,10 @@
 #include "blender_hud_stamina.h"
 #include "blender_hud_bleeding.h"
 #include "blender_hud_intoxication.h"
+#include "blender_hud_frost.h"
 #include "blender_nightvision.h"
 #include "blender_blur.h"
 #include "blender_pp_bloom.h"
-#include "blender_lens_flares.h"
 #include "blender_dof.h"
 #include "blender_chromatic_aberration.h"
 #include "blender_film_grain.h"
@@ -38,6 +38,15 @@
 #include <D3DX10Tex.h>
 
 extern ENGINE_API float psSVPImageSizeK;
+
+D3D_VIEWPORT custom_viewport[1] = { 0, 0, 0, 0, 0.f, 1.f };
+
+void CRenderTarget::set_viewport_size(ID3DDeviceContext* dev, float w, float h)
+{
+	custom_viewport[0].Width = w;
+	custom_viewport[0].Height = h;
+	dev->RSSetViewports(1, custom_viewport);
+}
 
 void	CRenderTarget::u_setrt			(const ref_rt& _1, const ref_rt& _2, const ref_rt& _3, ID3DDepthStencilView* zb)
 {
@@ -320,6 +329,8 @@ CRenderTarget::CRenderTarget		()
 	param_color_add.set( 0.0f, 0.0f, 0.0f );
 
 	needClearAccumulator = true;
+	dwFlareClearMark = 0;
+
 	dxRenderDeviceRender::Instance().Resources->Evict			();
 
 	// Blenders
@@ -355,14 +366,14 @@ CRenderTarget::CRenderTarget		()
 	b_hud_bleeding			= xr_new<CBlender_Hud_Bleeding>		();
 	//HUD INTOXICATION
 	b_hud_intoxication		= xr_new<CBlender_Hud_Intoxication>	();
+	//HUD FROST
+	b_hud_frost				= xr_new<CBlender_Hud_Frost>		();
 	//Nightvision
 	b_nightvision			= xr_new<CBlender_nightvision>		();
 	//Blur
 	b_blur					= xr_new<CBlender_blur>				();
 	//PP Bloom
 	b_pp_bloom				= xr_new<CBlender_pp_bloom>			();
-	//SFZ Lens Flares
-	b_lfx					= xr_new<CBlender_LFX>				();
 	//Anomaly DoF
 	b_dof					= xr_new<CBlender_dof>				();
 	//Chromatic Aberration
@@ -373,6 +384,14 @@ CRenderTarget::CRenderTarget		()
 	b_cut					= xr_new<CBlender_cut>				();
 	// Anomaly lut
 	b_lut					= xr_new<CBlender_lut>				();
+	// Screen Space Shaders Stuff
+	b_ssfx_ssr				= xr_new<CBlender_ssfx_ssr>			(); // [Ascii1457] SSS new Phase
+	b_ssfx_volumetric_blur	= xr_new<CBlender_ssfx_volumetric_blur>(); // [Ascii1457] SSS new Phase
+	b_ssfx_ao				= xr_new<CBlender_ssfx_ao>			(); // AO
+	b_ssfx_bloom			= xr_new<CBlender_ssfx_bloom_build>	();
+	b_ssfx_bloom_lens		= xr_new<CBlender_ssfx_bloom_lens>	();
+	b_ssfx_bloom_downsample = xr_new<CBlender_ssfx_bloom_downsample>();
+	b_ssfx_bloom_upsample	= xr_new<CBlender_ssfx_bloom_upsample>();
 
 	// HDAO
 	b_hdao_cs               = xr_new<CBlender_CS_HDAO>			();
@@ -462,6 +481,12 @@ CRenderTarget::CRenderTarget		()
 
 		// generic(LDR) RTs
 		rt_Generic_0.create		(r2_RT_generic0, vp_params_main_secondary,D3DFMT_A8R8G8B8, 1		);
+
+		if (RImplementation.o.dx10_msaa)
+			rt_Generic_0_temp.create(r2_RT_generic0_temp, vp_params_main_secondary, D3DFMT_A8R8G8B8, SampleCount);
+		else
+			rt_Generic_0_temp.create(r2_RT_generic0_temp, vp_params_main_secondary, D3DFMT_A8R8G8B8, 1);
+
 		rt_Generic_1.create		(r2_RT_generic1, vp_params_main_secondary,D3DFMT_A8R8G8B8, 1		);
 		rt_Generic.create		(r2_RT_generic,	 vp_params_main_secondary,D3DFMT_A8R8G8B8, 1		);
 		rt_secondVP.create		(r2_RT_secondVP, RtCreationParams(Device.m_SecondViewport.screenWidth, Device.m_SecondViewport.screenHeight, MAIN_VIEWPORT), D3DFMT_A8R8G8B8, 1); //--#SM+#-- +SecondVP+
@@ -491,6 +516,8 @@ CRenderTarget::CRenderTarget		()
 		if (RImplementation.o.advancedpp)
 			rt_Generic_2.create(r2_RT_generic2, vp_params_main_secondary, D3DFMT_A16B16G16R16F, SampleCount);
 
+		rt_UI3dStatic.create(r2_RT_3dstatic, vp_params_main_secondary, D3DFMT_A8R8G8B8, 1);
+
 		if (RImplementation.o.dx10_msaa)
 			rt_Generic_temp.create("$user$generic_temp", vp_params_main_secondary, D3DFMT_A8R8G8B8, SampleCount);
 		else
@@ -507,6 +534,36 @@ CRenderTarget::CRenderTarget		()
 		rt_blur_8.create(r2_RT_blur_8, RtCreationParams(u32(w / 8), u32(h / 8), MAIN_VIEWPORT), D3DFMT_A8R8G8B8);
 
 		rt_pp_bloom.create(r2_RT_pp_bloom, vp_params_main_secondary, D3DFMT_A8R8G8B8);
+
+		// Screen Space Shaders Stuff
+		rt_ssfx.create(r2_RT_ssfx, vp_params_main_secondary, D3DFMT_A8R8G8B8); // Generic RT
+		rt_ssfx_temp.create(r2_RT_ssfx_temp, vp_params_main_secondary, D3DFMT_A8R8G8B8); // Temp RT
+		rt_ssfx_temp2.create(r2_RT_ssfx_temp2, vp_params_main_secondary, D3DFMT_A8R8G8B8); // Temp RT 8B
+		rt_ssfx_temp3.create(r2_RT_ssfx_temp3, vp_params_main_secondary, D3DFMT_A8R8G8B8); // Temp RT
+		rt_ssfx_accum.create(r2_RT_ssfx_accum, vp_params_main_secondary, D3DFMT_A16B16G16R16F, SampleCount); // Temp RT 16B
+		rt_ssfx_hud.create(r2_RT_ssfx_hud, vp_params_main_secondary, D3DFMT_L8); // Temp RT 8B
+		rt_flares.create(r2_RT_flares, vp_params_main_secondary, D3DFMT_A8R8G8B8);
+		rt_ssfx_ao.create(r2_RT_ssfx_ao, vp_params_main_secondary, D3DFMT_A8R8G8B8); // AO Acc
+		rt_ssfx_il.create(r2_RT_ssfx_il, vp_params_main_secondary, D3DFMT_A8R8G8B8); // IL Acc
+		rt_ssfx_prevPos.create(r2_RT_ssfx_prevPos, vp_params_main_secondary, D3DFMT_A16B16G16R16F, SampleCount);
+		rt_ssfx_water_waves.create(r2_RT_blur_8, RtCreationParams(u32(512), (u32(512)), MAIN_VIEWPORT), D3DFMT_A8R8G8B8);
+		
+		if (RImplementation.o.ssfx_bloom)
+		{
+			rt_ssfx_bloom1.create(r2_RT_ssfx_bloom1, RtCreationParams(u32(w / 2), u32(h / 2), MAIN_VIEWPORT), D3DFMT_A16B16G16R16F); // Bloom
+			rt_ssfx_bloom_emissive.create(r2_RT_ssfx_bloom_emissive, vp_params_main_secondary, D3DFMT_A8R8G8B8, SampleCount); // Emissive
+			rt_ssfx_bloom_lens.create(r2_RT_ssfx_bloom_lens, RtCreationParams(u32(w / 4), u32(h / 4), MAIN_VIEWPORT), D3DFMT_A8R8G8B8); // Lens
+			rt_ssfx_bloom_tmp2.create(r2_RT_ssfx_bloom_tmp2, RtCreationParams(u32(w / 2), u32(h / 2), MAIN_VIEWPORT), D3DFMT_A16B16G16R16F); // Bloom / 2
+			rt_ssfx_bloom_tmp4.create(r2_RT_ssfx_bloom_tmp4, RtCreationParams(u32(w / 4), u32(h / 4), MAIN_VIEWPORT), D3DFMT_A16B16G16R16F); // Bloom / 4
+			rt_ssfx_bloom_tmp8.create(r2_RT_ssfx_bloom_tmp8, RtCreationParams(u32(w / 8), u32(h / 8), MAIN_VIEWPORT), D3DFMT_A16B16G16R16F); // Bloom / 8
+			rt_ssfx_bloom_tmp16.create(r2_RT_ssfx_bloom_tmp16, RtCreationParams(u32(w / 16), u32(h / 16), MAIN_VIEWPORT), D3DFMT_A16B16G16R16F); // Bloom / 16
+			rt_ssfx_bloom_tmp32.create(r2_RT_ssfx_bloom_tmp32, RtCreationParams(u32(w / 32), u32(h / 32), MAIN_VIEWPORT), D3DFMT_A16B16G16R16F); // Bloom / 32
+			rt_ssfx_bloom_tmp64.create(r2_RT_ssfx_bloom_tmp64, RtCreationParams(u32(w / 64), u32(h / 64), MAIN_VIEWPORT), D3DFMT_A16B16G16R16F); // Bloom / 64
+			rt_ssfx_bloom_tmp32_2.create(r2_RT_ssfx_bloom_tmp32_2, RtCreationParams(u32(w / 32), u32(h / 32), MAIN_VIEWPORT), D3DFMT_A16B16G16R16F); // Bloom / 32
+			rt_ssfx_bloom_tmp16_2.create(r2_RT_ssfx_bloom_tmp16_2, RtCreationParams(u32(w / 16), u32(h / 16), MAIN_VIEWPORT), D3DFMT_A16B16G16R16F); // Bloom / 16
+			rt_ssfx_bloom_tmp8_2.create(r2_RT_ssfx_bloom_tmp8_2, RtCreationParams(u32(w / 8), u32(h / 8), MAIN_VIEWPORT), D3DFMT_A16B16G16R16F); // Bloom / 8
+			rt_ssfx_bloom_tmp4_2.create(r2_RT_ssfx_bloom_tmp4_2, RtCreationParams(u32(w / 4), u32(h / 4), MAIN_VIEWPORT), D3DFMT_A16B16G16R16F); // Bloom / 4
+		}
 	}
 
 	s_sunshafts.create(b_sunshafts, "r2\\sunshafts");
@@ -518,6 +575,16 @@ CRenderTarget::CRenderTarget		()
     //FXAA
     s_fxaa.create(b_fxaa, "r3\\fxaa");
     g_fxaa.create(FVF::F_V, RCache.Vertex.Buffer(), RCache.QuadIB);
+
+	// Screen Space Shaders Stuff
+	s_ssfx_ssr.create(b_ssfx_ssr, "r2\\ssfx_ssr"); // SSR
+	s_ssfx_volumetric_blur.create(b_ssfx_volumetric_blur, "r2\\ssfx_volumetric_blur"); // Volumetric Blur
+	s_ssfx_dumb.create("ssfx_dumb"); // Dumb shader
+	s_ssfx_ao.create(b_ssfx_ao, "ssfx_ao"); // SSR
+	s_ssfx_bloom.create(b_ssfx_bloom, "ssfx_bloom"); // SSS Bloom
+	s_ssfx_bloom_lens.create(b_ssfx_bloom_lens, "ssfx_bloom_flares"); // SSS Bloom Lens flare
+	s_ssfx_bloom_downsample.create(b_ssfx_bloom_downsample, "ssfx_bloom_downsample"); // SSS Bloom
+	s_ssfx_bloom_upsample.create(b_ssfx_bloom_upsample, "ssfx_bloom_upsample"); // SSS Bloom
 
 	//DLAA
 	s_dlaa.create("effects_dlaa");
@@ -536,15 +603,14 @@ CRenderTarget::CRenderTarget		()
 	s_hud_bleeding.create(b_hud_bleeding, "r3\\hud_bleeding");
 	//Hud Intoxication
 	s_hud_intoxication.create(b_hud_intoxication, "r3\\hud_intoxication");
+	//Hud Frost
+	s_hud_frost.create(b_hud_frost, "r3\\hud_frost");
 	//Nightvision
 	s_nightvision.create(b_nightvision, "r2\\nightvision");
 	//Blur
 	s_blur.create(b_blur, "r2\\blur");
 	//PP Bloom
 	s_pp_bloom.create(b_pp_bloom, "r2\\pp_bloom");
-	//SFZ Lens Flares
-	s_lfx.create(b_lfx, "r3\\lfx");
-	g_lfx.create(FVF::F_V, RCache.Vertex.Buffer(), RCache.QuadIB);
 	//Anomaly DoF
 	s_dof.create(b_dof, "r3\\dof");
 	//Chromatic Aberration
@@ -555,6 +621,8 @@ CRenderTarget::CRenderTarget		()
 	s_cut.create(b_cut, "r3\\cut");
 	// Anomaly lut
 	s_lut.create(b_lut, "r3\\lut");
+	// OGSE Flares
+	s_flare.create("effects\\lensflare", "shaders\\lensflare");
 
 	// DIRECT (spot)
 	D3DFORMAT						depth_format	= (D3DFORMAT)RImplementation.o.HW_smap_FORMAT;
@@ -831,6 +899,7 @@ CRenderTarget::CRenderTarget		()
 		g_combine.create					(FVF::F_TL,		RCache.Vertex.Buffer(), RCache.QuadIB);
 		g_combine_2UV.create				(FVF::F_TL2uv,	RCache.Vertex.Buffer(), RCache.QuadIB);
 		g_combine_cuboid.create				(dwDecl,	RCache.Vertex.Buffer(), RCache.Index.Buffer());
+		g_flare.create						(FVF::F_LIT,	RCache.Vertex.Buffer(), RCache.QuadIB);
 
 		u32 fvf_aa_blur				= D3DFVF_XYZRHW|D3DFVF_TEX4|D3DFVF_TEXCOORDSIZE2(0)|D3DFVF_TEXCOORDSIZE2(1)|D3DFVF_TEXCOORDSIZE2(2)|D3DFVF_TEXCOORDSIZE2(3);
 		g_aa_blur.create			(fvf_aa_blur,	RCache.Vertex.Buffer(), RCache.QuadIB);
@@ -1200,15 +1269,22 @@ CRenderTarget::~CRenderTarget	()
 	xr_delete					(b_hud_power			); //Hud Stamina
 	xr_delete					(b_hud_bleeding			); //Hud Bleeding
 	xr_delete					(b_hud_intoxication		); //Hud Intoxication
+	xr_delete					(b_hud_frost			); //Hud Frost
 	xr_delete					(b_nightvision			); //Nightvision
 	xr_delete					(b_blur					); //Blur (LVutner)
 	xr_delete					(b_pp_bloom				); //PP Bloom (LVutner)
-	xr_delete					(b_lfx					); //SFZ Lens Flares
 	xr_delete					(b_dof					); //Anomaly DoF
 	xr_delete					(b_chromatic_aberration	); //Chromatic Aberration
 	xr_delete					(b_film_grain			); //Film Grain
 	xr_delete					(b_cut					); //STCoP Engine
 	xr_delete					(b_lut					); // Anomaly lut
+	xr_delete					(b_ssfx_ssr				); // [Ascii1457] SSS new Phase
+	xr_delete					(b_ssfx_volumetric_blur	); // [Ascii1457] SSS new Phase
+	xr_delete					(b_ssfx_ao				); // AO Phase
+	xr_delete					(b_ssfx_bloom			); // SSS Bloom
+	xr_delete					(b_ssfx_bloom_lens		); // SSS Bloom Lens
+	xr_delete					(b_ssfx_bloom_downsample); // SSS Bloom Blur
+	xr_delete					(b_ssfx_bloom_upsample	); // SSS Bloom Blur
 
    if( RImplementation.o.dx10_msaa )
    {

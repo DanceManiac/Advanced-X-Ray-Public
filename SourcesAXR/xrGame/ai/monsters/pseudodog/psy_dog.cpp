@@ -159,6 +159,7 @@ void CPsyDog::Think()
 
 void CPsyDog::net_Destroy()
 {
+	m_aura->on_death	();
 	delete_all_phantoms	();
 	inherited::net_Destroy();
 }
@@ -246,9 +247,9 @@ void CPsyDogPhantom::Think()
 	EnemyMan.transfer_enemy(m_parent);
 	
 	//SVelocityParam &velocity_run = move().get_velocity(MonsterMovement::eVelocityParameterRunNormal);
-	//if (control().movement().real_velocity() < 2*velocity_run.velocity.linear/3) return;
+	//if (control().get_movement().real_velocity() < 2*velocity_run.velocity.linear/3) return;
 	if ( EnemyMan.get_enemy() )
-		if ( !control().direction().is_face_target(EnemyMan.get_enemy(), PI_DIV_6) ) return;
+		if ( !control().get_direction().is_face_target(EnemyMan.get_enemy(), PI_DIV_6) ) return;
 
 	Fvector target;
 	target.mad(Position(),Direction(), 10.f);
@@ -316,12 +317,13 @@ void CPsyDogPhantom::try_to_register_to_parent()
 	if (obj) {
 		CPsyDog *dog = smart_cast<CPsyDog *>(obj);
 		VERIFY(dog);
+		if (!dog) return;
 		
 		m_parent = dog;
 		m_parent->register_phantom	(this);
 
-		movement().restrictions().add_restrictions( m_parent->movement().restrictions().out_restrictions(), 
-													m_parent->movement().restrictions().in_restrictions() );
+		get_movement().restrictions().add_restrictions( m_parent->get_movement().restrictions().out_restrictions(), 
+													m_parent->get_movement().restrictions().in_restrictions() );
 
 		m_state						= eWaitToAppear;
 	}

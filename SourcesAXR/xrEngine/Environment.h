@@ -41,10 +41,6 @@ public:
 	float				far_plane;
 	Fvector3			fog_color;
 	float				fog_density;
-	float				lowland_fog_height;
-	float				lowland_fog_density;
-
-	Fvector4			color_grading;
 
 	Fvector3			ambient;
 	Fvector3			sky_color;		
@@ -59,15 +55,15 @@ class ENGINE_API	CEnvAmbient
 {
 public:
 	struct SEffect{
-		u32 			life_time;
-		ref_sound		sound;		
-		shared_str		particles;
-		Fvector			offset;
-		float			wind_gust_factor;
-		float			wind_blast_in_time;
-		float			wind_blast_out_time;
-		float			wind_blast_strength;
-		Fvector			wind_blast_direction;
+		u32 			m_life_time;
+		ref_sound		m_sound;		
+		shared_str		m_particles;
+		Fvector			m_offset;
+		float			m_wind_gust_factor;
+		float			m_wind_blast_in_time;
+		float			m_wind_blast_out_time;
+		float			m_wind_blast_strength;
+		Fvector			m_wind_blast_direction;
 
 		INGAME_EDITOR_VIRTUAL	~SEffect				()	{}
 	};
@@ -101,6 +97,12 @@ protected:
 	SSndChannelVec			m_sound_channels;
 	shared_str              m_ambients_config_filename;
 
+	shared_str				m_section;
+	xr_vector<SEffect>		m_effects_shoc;
+	xr_vector<ref_sound>	m_sounds;
+	Fvector2				m_sound_dist;
+	Ivector2				m_sound_period;
+
 public:
 	IC const shared_str&	name				()	{return m_load_section;}
 	IC const shared_str&	get_ambients_config_filename ()	{return m_ambients_config_filename;}
@@ -120,6 +122,13 @@ public:
 							void			destroy					();
 	inline INGAME_EDITOR_VIRTUAL EffectVec&			effects			() { return m_effects; }
 	inline INGAME_EDITOR_VIRTUAL SSndChannelVec&	get_snd_channels() { return m_sound_channels; }
+
+	void load_shoc(const shared_str& section);
+
+	IC ref_sound* get_rnd_sound() { return m_sounds.empty() ? 0 : &m_sounds[Random.randI(m_sounds.size())]; }
+	IC u32 get_rnd_sound_time() { return Random.randI(m_sound_period.x, m_sound_period.y); }
+	IC float get_rnd_sound_dist() { return Random.randF(m_sound_dist.x, m_sound_dist.y); }
+	IC u32 get_rnd_effect_time_shoc() { return Random.randI(m_effect_period.x, m_effect_period.y); }
 };
 
 class ENGINE_API	CEnvDescriptor
@@ -153,6 +162,11 @@ public:
 	float				lowland_fog_height;
 	float				lowland_fog_density;
 
+	float				m_fAirTemperature;
+
+	float				m_fAuroraIntensity;
+	Fvector3			aurora_color;
+
 	Fvector4			color_grading;
 
 	float				rain_density;
@@ -182,12 +196,17 @@ public:
 	float m_fTreeAmplitudeIntensity;
 #endif
 
+	float				bloom_threshold;
+	float				bloom_exposure;
+	float				bloom_sky_intensity;
 
 //	int					lens_flare_id;
 //	int					tb_id;
 	shared_str			lens_flare_id;
 	shared_str			lens_flare_id_phased;
 	shared_str			tb_id;
+
+	shared_str			m_sWeatherType;
 
 	//: swing values
 	struct EnvSwingValue
@@ -205,9 +224,12 @@ public:
 	CEnvAmbient*		env_ambient;
 
 
-						CEnvDescriptor	(shared_str const& identifier);
+						CEnvDescriptor	(shared_str const& identifier = 0);
 
-	void				load			(CEnvironment& environment, CInifile& config);
+	void				load			(CEnvironment& environment, CInifile& config, bool isWFX = false);
+	void				load_shoc		(CEnvironment& environment, LPCSTR exec_tm, LPCSTR S);
+	void				load_shoc		(float exec_tm, LPCSTR S, CEnvironment& environment);
+
 	void				copy			(const CEnvDescriptor& src)
 	{
 		float tm0		= exec_time;
@@ -219,6 +241,9 @@ public:
 
 	void				on_device_create	();
 	void				on_device_destroy	();
+
+	void				on_prepare			();
+	void				on_unload			();
 
 	shared_str			m_identifier;
 };
@@ -287,15 +312,15 @@ public:
 	float					wind_gust_factor;
 
 	// wind blast params
-	float					wind_blast_strength;
-	Fvector					wind_blast_direction;
+	float					m_wind_blast_strength;
+	Fvector					m_wind_blast_direction;
 	Fquaternion				wind_blast_start_time;
 	Fquaternion				wind_blast_stop_time;
 	float					wind_blast_strength_start_value;
 	float					wind_blast_strength_stop_value;
 	Fquaternion				wind_blast_current;
 
-	Fvector3				wind_anim;
+	Fvector4				wind_anim;
 	
 	float					wetness_accum;
 	
@@ -320,6 +345,8 @@ public:
 	CEffect_Rain*			eff_Rain;
 	CLensFlare*				eff_LensFlare;
 	CEffect_Thunderbolt*	eff_Thunderbolt;
+
+	bool					used_soc_weather;
 
 	float					fTimeFactor;
 
@@ -374,7 +401,7 @@ public:
 	bool					m_paused;
 #endif // #ifdef _EDITOR
 
-	bool					useDynamicSunDir;
+	u8						m_iSunDirMode;
 
 	CInifile*				m_ambients_config;
 	CInifile*				m_sound_channels_config;
@@ -384,7 +411,8 @@ public:
 	CInifile*				m_thunderbolts_config;
 
 protected:
-	INGAME_EDITOR_VIRTUAL	CEnvDescriptor* create_descriptor	(shared_str const& identifier, CInifile* config);
+	INGAME_EDITOR_VIRTUAL	CEnvDescriptor* create_descriptor	(shared_str const& identifier, CInifile* config, bool isWFX = false);
+	INGAME_EDITOR_VIRTUAL	CEnvDescriptor* create_descriptor_shoc(LPCSTR exec_tm, LPCSTR S);
 	INGAME_EDITOR_VIRTUAL	void load_weathers					();
 	INGAME_EDITOR_VIRTUAL	void load_weather_effects			();
 	INGAME_EDITOR_VIRTUAL	void create_mixer					();
@@ -393,9 +421,11 @@ protected:
 							void load_level_specific_ambients   ();
 
 public:
-	INGAME_EDITOR_VIRTUAL	SThunderboltDesc* thunderbolt_description		(CInifile& config, shared_str const& section);
+	INGAME_EDITOR_VIRTUAL	SThunderboltDesc*		thunderbolt_description	(CInifile& config, shared_str const& section);
 	INGAME_EDITOR_VIRTUAL	SThunderboltCollection* thunderbolt_collection	(CInifile* pIni, CInifile* thunderbolts, LPCSTR section);
 	INGAME_EDITOR_VIRTUAL	SThunderboltCollection* thunderbolt_collection	(xr_vector<SThunderboltCollection*>& collection,  shared_str const& id);
+	INGAME_EDITOR_VIRTUAL	SThunderboltDesc*		thunderbolt_description_shoc(CInifile* config, shared_str const& section);
+	INGAME_EDITOR_VIRTUAL	SThunderboltCollection* thunderbolt_collection_shoc(CInifile* pIni, LPCSTR section);
 	INGAME_EDITOR_VIRTUAL	CLensFlareDescriptor*	add_flare				(xr_vector<CLensFlareDescriptor*>& collection, shared_str const& id);
 
 public:
@@ -413,5 +443,6 @@ public:
 
 ENGINE_API extern Flags32	psEnvFlags;
 ENGINE_API extern float		psVisDistance;
+ENGINE_API extern float		psWeatherFogClamping;
 
 #endif //EnvironmentH

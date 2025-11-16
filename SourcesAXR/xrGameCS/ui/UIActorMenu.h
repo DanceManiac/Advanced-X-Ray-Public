@@ -1,5 +1,7 @@
 #pragma once
 
+#include "script_export_space.h"
+
 #include "UIDialogWnd.h"
 #include "UIWndCallback.h"
 #include "../../XrServerEntitiesCS/inventory_space.h"
@@ -8,6 +10,7 @@
 
 class CUICharacterInfo;
 class CUIDragDropListEx;
+class CUIDragDropReferenceList;
 class CUICellItem;
 class CUIDragItem;
 class ui_actor_state_wnd;
@@ -38,6 +41,7 @@ enum EDDListType{
 		iPartnerTradeBag,
 		iPartnerTrade,
 		iDeadBodyBag,
+		iQuickSlot,
 		iTrashSlot,
 		iListTypeMax
 };
@@ -91,6 +95,7 @@ protected:
 	CUIDragDropListEx*			m_pInventoryPistolList;
 	CUIDragDropListEx*			m_pInventoryAutomaticList;
 	CUIDragDropListEx*			m_pInventoryOutfitList;
+	CUIDragDropListEx*			m_pInventoryHelmetList;
 	CUIDragDropListEx*			m_pInventoryDetectorList;
 	CUIDragDropListEx*			m_pInventoryBagList;
 
@@ -104,21 +109,27 @@ protected:
 	CUIDragDropListEx*			m_pInventoryBinocularList;
 	CUIDragDropListEx*			m_pInventoryTorchList;
 	CUIDragDropListEx*			m_pInventoryBackpackList;
+	CUIDragDropListEx*			m_pInventorySecondHelmetList;
 	CUIDragDropListEx*			m_pInventoryDosimeterList;
 	CUIDragDropListEx*			m_pInventoryPantsList;
 	CUIDragDropListEx*			m_pInventoryPdaList;
 
 	xr_vector<CUIStatic*>		m_belt_list_over;
+	CUIStatic*					m_HelmetOver;
+	CUIStatic*					m_SecondHelmetOver;
 	
 	CUIStatic*					m_PistolSlotHighlight;
 	CUIStatic*					m_RiffleSlotHighlight;
 	CUIStatic*					m_OutfitSlotHighlight;
+	CUIStatic*					m_HelmetSlotHighlight;
 	CUIStatic*					m_DetectorSlotHighlight;
+	CUIStatic*					m_QuickSlotsHighlight[4];
 	xr_vector<CUIStatic*>		m_ArtefactSlotsHighlight;
 	CUIStatic*					m_KnifeSlotHighlight;
 	CUIStatic*					m_BinocularSlotHighlight;
 	CUIStatic*					m_TorchSlotHighlight;
 	CUIStatic*					m_BackpackSlotHighlight;
+	CUIStatic*					m_SecondHelmetSlotHighlight;
 	CUIStatic*					m_DosimeterSlotHighlight;
 	CUIStatic*					m_PantsSlotHighlight;
 	CUIStatic*					m_PdaSlotHighlight;
@@ -131,13 +142,18 @@ protected:
 	CUIMessageBoxEx*			m_message_box_yes_no;
 	CUIMessageBoxEx*			m_message_box_ok;
 
-	CInventoryOwner*			m_pActorInvOwner;
-	CInventoryOwner*			m_pPartnerInvOwner;
-	CInventoryBox*				m_pInvBox;
-	CCar*						m_pCar;
+	CInventoryOwner*			m_pActorInvOwner{};
+	CInventoryOwner*			m_pPartnerInvOwner{};
+	CInventoryBox*				m_pInvBox{};
+	CCar*						m_pCar{};
 
 	CUIStatic*					m_ActorMoney;
 	CUIStatic*					m_PartnerMoney;
+	CUIStatic*					m_QuickSlot1;
+	CUIStatic*					m_QuickSlot2;
+	CUIStatic*					m_QuickSlot3;
+	CUIStatic*					m_QuickSlot4;
+	
 
 	// bottom ---------------------------------
 	CUIStatic*					m_ActorBottomInfo;
@@ -148,6 +164,10 @@ protected:
 	CUIStatic*					m_PartnerWeight;
 	float						m_PartnerWeight_end_x;
 //*	CUIStatic*					m_PartnerWeightMax;
+
+	CUIStatic*					m_PartnerInvCapacityInfo;
+	CUIStatic*					m_PartnerInvFullness;
+	CUIStatic*					m_PartnerInvCapacity;
 
 	CUIStatic*					m_ActorInvCapacityInfo;
 	CUIStatic*					m_ActorInvFullness;
@@ -172,12 +192,23 @@ protected:
 	CUI3tButtonEx*				m_exit_button;
 	CUIStatic*					m_clock_value;
 
+	CUI3tButtonEx*				m_sleep_button;
+
 	u32							m_last_time;
 	bool						m_repair_mode;
 	bool						m_item_info_view;
 	bool						m_highlight_clear;
 	u32							m_trade_partner_inventory_state;
 	bool						m_bNeedMoveAfsToBag;
+
+	bool						m_bArtefactSlotsHighlightInitialized = false;
+	bool						m_bBeltSlotsOverInitialized = false;
+
+public:
+	CUIDragDropReferenceList*	m_pQuickSlot;
+	LPCSTR						m_quick_vert_attrib;
+	bool						b_quick_vert;
+
 public:
 	void						SetMenuMode					(EMenuMode mode);
 	EMenuMode					GetMenuMode					() {return m_currMenuMode;};
@@ -274,6 +305,7 @@ protected:
 	bool						ToBag						(CUICellItem* itm, bool b_use_cursor_pos);
 	bool						ToBelt						(CUICellItem* itm, bool b_use_cursor_pos);
 	bool						TryUseItem					(CUICellItem* cell_itm);
+	bool						ToQuickSlot					(CUICellItem* itm);
 
 	void						UpdateActorMP				();
 	void						UpdateOutfit				();
@@ -340,6 +372,7 @@ public:
 
 	void		xr_stdcall		OnBtnPerformTrade			(CUIWindow* w, void* d);
 	void		xr_stdcall		OnBtnExitClicked			(CUIWindow* w, void* d);
+	void		xr_stdcall		OnBtnSleepClicked			(CUIWindow* w, void* d);
 	void		xr_stdcall		TakeAllFromPartner			(CUIWindow* w, void* d);
 	void						TakeAllFromInventoryBox		();
 	CUICellItem*				GetCurrentConsumable		() { return m_pCurrentConsumable; };

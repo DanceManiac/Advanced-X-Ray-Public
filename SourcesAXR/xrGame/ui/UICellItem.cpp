@@ -12,6 +12,7 @@
 #include "UIProgressBar.h"
 #include "UIGameCustom.h"
 #include "UIActorMenu.h"
+#include "UIHelper.h"
 
 #include "eatable_item.h"
 #include "AntigasFilter.h"
@@ -58,62 +59,50 @@ CUICellItem::~CUICellItem()
 
 void CUICellItem::init()
 {
-	CUIXml	uiXml;
-	uiXml.Load( CONFIG_PATH, UI_PATH, "actor_menu_item.xml" );
+	static CUIXml uiXml;
+	static bool is_xml_ready = false;
+
+	if (!is_xml_ready)
+	{
+		bool xml_result		= uiXml.Load(CONFIG_PATH, UI_PATH, "actor_menu_item.xml");
+		R_ASSERT3			(xml_result, "file parsing error ", uiXml.m_xml_file_name);
+		is_xml_ready		= true;
+	}
+		
+	if (m_text				= UIHelper::CreateStatic(uiXml, "cell_item_text", this, false))
+		m_text->Show		( false );
+
+	if (m_custom_text		= UIHelper::CreateStatic(uiXml, "cell_item_custom_text", this, false))
+	{
+		m_custom_text_pos	= m_custom_text->GetWndPos();
+		m_custom_text->Show	(false);
+	}
 	
-	m_text					= xr_new<CUIStatic>();
-	m_text->SetAutoDelete	( true );
-	AttachChild				( m_text );
-	CUIXmlInit::InitStatic	( uiXml, "cell_item_text", 0, m_text );
-	m_text->Show			( false );
-
-	if (uiXml.NavigateToNode("cell_item_custom_text", 0))
+	if (m_qmark				= UIHelper::CreateStatic(uiXml, "cell_item_quest_mark", this, false))
 	{
-		m_custom_text = xr_new<CUIStatic>();
-		m_custom_text->SetAutoDelete(true);
-		AttachChild(m_custom_text);
-		CUIXmlInit::InitStatic(uiXml, "cell_item_custom_text", 0, m_custom_text);
-		m_custom_text_pos = m_custom_text->GetWndPos();
-		m_custom_text->Show(false);
+		m_qmark_pos			= m_qmark->GetWndPos();
+		m_qmark->Show		( false );
 	}
-
-	m_qmark					= xr_new<CUIStatic>();
-	m_qmark->SetAutoDelete	( true );
-	AttachChild				( m_qmark );
-	CUIXmlInit::InitStatic	( uiXml, "cell_item_quest_mark", 0, m_qmark );
-	m_qmark_pos				= m_qmark->GetWndPos();
-	m_qmark->Show			( false );
-
-	m_upgrade				= xr_new<CUIStatic>();
-	m_upgrade->SetAutoDelete( true );
-	AttachChild				( m_upgrade );
-	CUIXmlInit::InitStatic	( uiXml, "cell_item_upgrade", 0, m_upgrade );
-	m_upgrade_pos			= m_upgrade->GetWndPos();
-	m_upgrade->Show			( false );
-
-	m_pConditionState = xr_new<CUIProgressBar>();
-	m_pConditionState->SetAutoDelete(true);
-	AttachChild(m_pConditionState);
-	CUIXmlInit::InitProgressBar(uiXml, "condition_progess_bar", 0, m_pConditionState);
-	m_pConditionState->Show(false);
-
-	if (uiXml.NavigateToNode("portions_progess_bar", 0))
+	
+	if (m_upgrade			= UIHelper::CreateStatic(uiXml, "cell_item_upgrade", this, false))
 	{
-		m_pPortionsState = xr_new<CUIProgressBar>();
-		m_pPortionsState->SetAutoDelete(true);
-		AttachChild(m_pPortionsState);
-		CUIXmlInit::InitProgressBar(uiXml, "portions_progess_bar", 0, m_pPortionsState);
+		m_upgrade_pos		= m_upgrade->GetWndPos();
+		m_upgrade->Show		( false );
+	}
+	
+	// Try progress first and then progess
+	m_pConditionState		= UIHelper::CreateProgressBar(uiXml, "condition_progress_bar", this, false);
+
+	if (!m_pConditionState)
+		m_pConditionState	= UIHelper::CreateProgressBar(uiXml, "condition_progess_bar", this, false);
+
+	if (m_pConditionState)
+		m_pConditionState->Show(false);
+
+	if (m_pPortionsState	= UIHelper::CreateProgressBar(uiXml, "portions_progess_bar", this, false))
 		m_pPortionsState->Show(false);
-	}
-
-	if (uiXml.NavigateToNode("charge_level_progess_bar", 0))
-	{
-		m_pChargeState = xr_new<CUIProgressBar>();
-		m_pChargeState->SetAutoDelete(true);
-		AttachChild(m_pChargeState);
-		CUIXmlInit::InitProgressBar(uiXml, "charge_level_progess_bar", 0, m_pChargeState);
+	if (m_pChargeState		= UIHelper::CreateProgressBar(uiXml, "charge_level_progess_bar", this, false))
 		m_pChargeState->Show(false);
-	}
 }
 
 void CUICellItem::Draw()
@@ -129,11 +118,13 @@ void CUICellItem::Update()
 {
 	if (m_pParentList)
 		EnableHeading(m_pParentList->GetVerticalPlacement() && m_pParentList);
+	
 	if(Heading())
 	{
 		SetHeading			( 90.0f * (PI/180.0f) );
 		SetHeadingPivot		(Fvector2().set(0.0f,0.0f), Fvector2().set(0.0f,GetWndSize().y), true);
-	}else
+	}
+	else
 		ResetHeadingPivot	();
 
 	inherited::Update();
@@ -157,13 +148,15 @@ void CUICellItem::UpdateIndicators()
 	{
 		m_has_upgrade	= item->has_any_upgrades();
 		m_is_quest		= item->IsQuestItem();
-		m_with_custom_text = item->m_custom_text!=nullptr;
+		
+		if (m_custom_text)
+			m_with_custom_text = item->m_custom_text!=nullptr;
 
 //		Fvector2 size      = GetWndSize();
 //		Fvector2 up_size = m_upgrade->GetWndSize();
 //		pos.x = size.x - up_size.x - 4.0f;
 		Fvector2 pos;
-		if (m_has_upgrade)
+		if (m_has_upgrade && m_upgrade)
 		{
 			pos.set(m_upgrade_pos);
 			if (ChildsCount())
@@ -172,7 +165,7 @@ void CUICellItem::UpdateIndicators()
 			}
 			m_upgrade->SetWndPos	(pos);
 		}
-		if (m_is_quest)
+		if (m_is_quest && m_qmark)
 		{
 			pos.set(m_qmark_pos);
 			Fvector2 size		= GetWndSize();
@@ -212,8 +205,10 @@ void CUICellItem::UpdateIndicators()
 			}
 		}
 	}
-	m_upgrade->Show				(m_has_upgrade);
-	m_qmark->Show				(m_is_quest);
+	if (m_upgrade)
+		m_upgrade->Show			(m_has_upgrade);
+	if (m_qmark)
+		m_qmark->Show			(m_is_quest);
 	if (m_custom_text)
 		m_custom_text->Show		(m_with_custom_text);
 }
@@ -351,6 +346,9 @@ void CUICellItem::UpdateConditionProgressBar()
 
 void CUICellItem::UpdatePortionsProgressBar()
 {
+	if (!m_pPortionsState)
+		return;
+		
 	if (m_pParentList && m_pParentList->GetConditionProgBarVisibility())
 	{
 		PIItem itm = (PIItem)m_pData;
@@ -433,6 +431,9 @@ void CUICellItem::UpdatePortionsProgressBar()
 
 void CUICellItem::UpdateChargeLevelProgressBar()
 {
+	if (!m_pChargeState)
+		return;
+		
 	if (m_pParentList && m_pParentList->GetConditionProgBarVisibility())
 	{
 		PIItem itm = (PIItem)m_pData;

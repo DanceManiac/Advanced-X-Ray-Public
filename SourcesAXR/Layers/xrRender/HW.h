@@ -118,8 +118,6 @@ public:
 	virtual void	OnAppDeactivate();
 #endif	//	USE_DX11
 
-    int maxRefreshRate; //ECO_RENDER add
-
 private:
 	bool					m_move_window;
 };

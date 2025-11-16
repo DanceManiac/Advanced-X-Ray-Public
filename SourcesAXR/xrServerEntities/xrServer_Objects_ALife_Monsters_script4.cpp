@@ -19,13 +19,13 @@ using namespace luabind;
 CALifeMonsterBrain *monster_brain	(CSE_ALifeMonsterAbstract *monster)
 {
 	THROW	(monster);
-	return	(&monster->brain());
+	return	(&monster->get_brain());
 }
 
 CALifeHumanBrain *human_brain		(CSE_ALifeHumanAbstract *human)
 {
 	THROW	(human);
-	return	(&human->brain());
+	return	(&human->get_brain());
 }
 
 void clear_smart_terrain			(CSE_ALifeMonsterAbstract *monster)

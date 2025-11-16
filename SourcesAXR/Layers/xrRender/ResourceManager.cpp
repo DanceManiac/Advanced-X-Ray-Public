@@ -260,10 +260,6 @@ Shader*	CResourceManager::_cpp_Create	(IBlender* B, LPCSTR s_shader, LPCSTR s_te
 
 Shader*	CResourceManager::_cpp_Create	(LPCSTR s_shader, LPCSTR s_textures, LPCSTR s_constants, LPCSTR s_matrices)
 {
-//#ifndef DEDICATED_SERVER
-#ifndef _EDITOR
-	if (!g_dedicated_server)
-#endif    
 	{
 		//	TODO: DX10: When all shaders are ready switch to common path
 #ifdef USE_DX11
@@ -273,42 +269,16 @@ Shader*	CResourceManager::_cpp_Create	(LPCSTR s_shader, LPCSTR s_textures, LPCST
 #else	//	USE_DX11
 		return	_cpp_Create(_GetBlender(s_shader?s_shader:"null"),s_shader,s_textures,s_constants,s_matrices);
 #endif	//	USE_DX11
-//#else
 	}
-#ifndef _EDITOR
-	else
-#endif    
-	{
-		return NULL;
-	}
-//#endif
 }
 
 Shader*		CResourceManager::Create	(IBlender*	B,		LPCSTR s_shader,	LPCSTR s_textures,	LPCSTR s_constants, LPCSTR s_matrices)
 {
-//#ifndef DEDICATED_SERVER
-#ifndef _EDITOR
-	if (!g_dedicated_server)
-#endif
-	{
-		return	_cpp_Create	(B,s_shader,s_textures,s_constants,s_matrices);
-//#else
-	}
-#ifndef _EDITOR
-	else
-#endif
-	{
-		return NULL;
-//#endif
-	}
+	return	_cpp_Create	(B,s_shader,s_textures,s_constants,s_matrices);
 }
 
 Shader*		CResourceManager::Create	(LPCSTR s_shader,	LPCSTR s_textures,	LPCSTR s_constants,	LPCSTR s_matrices)
 {
-//#ifndef DEDICATED_SERVER
-#ifndef _EDITOR
-	if (!g_dedicated_server)
-#endif
 	{
 		//	TODO: DX10: When all shaders are ready switch to common path
 #ifdef USE_DX11
@@ -339,14 +309,6 @@ Shader*		CResourceManager::Create	(LPCSTR s_shader,	LPCSTR s_textures,	LPCSTR s_
 			return	_cpp_Create	(s_shader,s_textures,s_constants,s_matrices);
 #endif	//	USE_DX11
 	}
-//#else
-#ifndef _EDITOR
-	else
-#endif
-	{
-		return NULL;
-	}
-//#endif
 }
 
 void CResourceManager::Delete(const Shader* S)
@@ -380,6 +342,8 @@ void CResourceManager::DeferredUpload()
 {
 	if (!RDEVICE.b_is_Ready) return;
 
+	ZoneScoped;
+
 	Msg("CResourceManager::DeferredUpload [%s] -> START, size = [%u]", ps_mt_texture_load ? "MT" : "NO MT", m_textures.size());
 
 	// “еперь многопоточна€ загрузка текстур даЄт очень существенный прирост скорости, проверено.
@@ -395,6 +359,9 @@ void CResourceManager::DeferredUpload()
 void	CResourceManager::DeferredUnload	()
 {
 	if (!RDEVICE.b_is_Ready)				return;
+
+	ZoneScoped;
+
 	for (map_TextureIt t=m_textures.begin(); t!=m_textures.end(); t++)
 		t->second->Unload();
 }
@@ -507,4 +474,35 @@ void CResourceManager::RMPrefetchUITextures()
 		}
 	}
 	Msg("*RMPrefetchUITextures %fms", time.GetElapsed_sec() * 1000.f);
+}
+
+xr_vector<ITexture*> CResourceManager::FindTexture(const char* Name) const
+{
+	R_ASSERT(Name && strlen(Name));
+
+	string_path filename;
+	strcpy_s(filename, Name);
+	fix_texture_name(filename);
+
+	char* ch = strchr(filename, '*');
+
+	xr_vector<ITexture*> res;
+
+	if (!ch) // no wildcard?
+	{
+		auto I = m_textures.find(filename);
+		if (I != m_textures.end())
+			res.emplace_back(dynamic_cast<ITexture*>(I->second));
+	}
+	else
+	{
+		// alpet: test for wildcard matching
+		ch[0] = 0; // remove *
+
+		for (const auto& [name, tex] : m_textures)
+			if (strstr(name, filename))
+				res.emplace_back(dynamic_cast<ITexture*>(tex));
+	}
+
+	return res;
 }

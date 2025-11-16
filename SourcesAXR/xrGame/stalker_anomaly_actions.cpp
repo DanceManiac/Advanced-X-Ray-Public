@@ -46,16 +46,16 @@ void CStalkerActionGetOutOfAnomaly::initialize	()
 {
 	inherited::initialize				();
 
-	object().sound().remove_active_sounds		(u32(eStalkerSoundMaskNoHumming));
+	object().get_sound().remove_active_sounds		(u32(eStalkerSoundMaskNoHumming));
 
-	object().movement().set_desired_direction		(0);
-	object().movement().set_path_type				(MovementManager::ePathTypeLevelPath);
-	object().movement().set_detail_path_type		(DetailPathManager::eDetailPathTypeSmooth);
-	object().movement().set_body_state			(eBodyStateStand);
-	object().movement().set_movement_type			(eMovementTypeWalk);
-	object().movement().set_mental_state			(eMentalStateDanger);
-	object().sight().setup				(SightManager::eSightTypeCurrentDirection);
-	if	(	object().memory().enemy().selected() && 
+	object().get_movement().set_desired_direction		(0);
+	object().get_movement().set_path_type				(MovementManager::ePathTypeLevelPath);
+	object().get_movement().set_detail_path_type		(DetailPathManager::eDetailPathTypeSmooth);
+	object().get_movement().set_body_state			(eBodyStateStand);
+	object().get_movement().set_movement_type			(eMovementTypeWalk);
+	object().get_movement().set_mental_state			(eMentalStateDanger);
+	object().get_sight().setup				(SightManager::eSightTypeCurrentDirection);
+	if	(	object().get_memory().get_enemy().selected() && 
 			object().inventory().ActiveItem() && 
 			object().best_weapon() && 
 			(object().inventory().ActiveItem()->object().ID() == object().best_weapon()->object().ID())
@@ -73,18 +73,18 @@ void CStalkerActionGetOutOfAnomaly::finalize	()
 	if (!object().g_Alive())
 		return;
 
-	object().sound().set_sound_mask			(0);
+	object().get_sound().set_sound_mask			(0);
 }
 
 void CStalkerActionGetOutOfAnomaly::execute	()
 {
 	inherited::execute					();
 //
-	object().movement().set_path_type				(MovementManager::ePathTypeLevelPath);
-	object().movement().set_detail_path_type		(DetailPathManager::eDetailPathTypeSmooth);
-	object().movement().set_body_state			(eBodyStateStand);
-	object().movement().set_movement_type			(eMovementTypeWalk);
-	object().movement().set_mental_state			(eMentalStateDanger);
+	object().get_movement().set_path_type				(MovementManager::ePathTypeLevelPath);
+	object().get_movement().set_detail_path_type		(DetailPathManager::eDetailPathTypeSmooth);
+	object().get_movement().set_body_state			(eBodyStateStand);
+	object().get_movement().set_movement_type			(eMovementTypeWalk);
+	object().get_movement().set_mental_state			(eMentalStateDanger);
 //
 
 	m_temp0.clear						();
@@ -116,8 +116,8 @@ void CStalkerActionGetOutOfAnomaly::execute	()
 		}
 	}
 	
-	object().movement().restrictions().add_restrictions	(m_temp1,m_temp0);
-	object().movement().set_nearest_accessible_position	();
+	object().get_movement().restrictions().add_restrictions	(m_temp1,m_temp0);
+	object().get_movement().set_nearest_accessible_position	();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -132,7 +132,7 @@ CStalkerActionDetectAnomaly::CStalkerActionDetectAnomaly	(CAI_Stalker *object, L
 void CStalkerActionDetectAnomaly::initialize	()
 {
 	inherited::initialize			();
-	object().sound().remove_active_sounds	(u32(eStalkerSoundMaskNoHumming));
+	object().get_sound().remove_active_sounds	(u32(eStalkerSoundMaskNoHumming));
 	m_inertia_time					= 15000 + ::Random32.random(5000);
 
 	Fvector							result;
@@ -148,14 +148,14 @@ void CStalkerActionDetectAnomaly::finalize	()
 		return;
 
 	object().CObjectHandler::set_goal	(eObjectActionIdle);
-	object().sound().set_sound_mask		(0);
+	object().get_sound().set_sound_mask		(0);
 }
 
 void CStalkerActionDetectAnomaly::execute	()
 {
 	inherited::execute				();
 
-	if (completed() || object().memory().enemy().selected()) {
+	if (completed() || object().get_memory().get_enemy().selected()) {
 		set_property				(eWorldPropertyAnomaly,false);
 		return;
 	}

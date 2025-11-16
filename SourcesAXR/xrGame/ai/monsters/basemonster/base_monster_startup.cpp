@@ -65,9 +65,9 @@ void CBaseMonster::Load(LPCSTR section)
 	m_left_eye_bone_name			= READ_IF_EXISTS(pSettings,r_string,section, "bone_eye_left", 0);
 	m_right_eye_bone_name			= READ_IF_EXISTS(pSettings,r_string,section, "bone_eye_right", 0);
 
-	m_corpse_cover_evaluator		= xr_new<CMonsterCorpseCoverEvaluator>	(&movement().restrictions());
-	m_enemy_cover_evaluator			= xr_new<CCoverEvaluatorFarFromEnemy>	(&movement().restrictions());
-	m_cover_evaluator_close_point	= xr_new<CCoverEvaluatorCloseToEnemy>	(&movement().restrictions());
+	m_corpse_cover_evaluator		= xr_new<CMonsterCorpseCoverEvaluator>	(&get_movement().restrictions());
+	m_enemy_cover_evaluator			= xr_new<CCoverEvaluatorFarFromEnemy>	(&get_movement().restrictions());
+	m_cover_evaluator_close_point	= xr_new<CCoverEvaluatorCloseToEnemy>	(&get_movement().restrictions());
 
 	MeleeChecker.load				(section);
 	Morale.load						(section);
@@ -135,6 +135,7 @@ void CBaseMonster::Load(LPCSTR section)
 	m_psy_aura.load_from_ini					(pSettings, section);
 	m_radiation_aura.load_from_ini				(pSettings, section);
 	m_fire_aura.load_from_ini					(pSettings, section);
+	m_acid_aura.load_from_ini					(pSettings, section);
 	m_base_aura.load_from_ini					(pSettings, section);
 
 	//------------------------------------
@@ -176,8 +177,14 @@ void CBaseMonster::Load(LPCSTR section)
 	m_bEnablePsyAuraAfterDie = READ_IF_EXISTS(pSettings, r_bool, section, "enable_psy_infl_for_dead", false);
 	m_bEnableRadAuraAfterDie = READ_IF_EXISTS(pSettings, r_bool, section, "enable_rad_infl_for_dead", true);
 	m_bEnableFireAuraAfterDie = READ_IF_EXISTS(pSettings, r_bool, section, "enable_fire_infl_for_dead", false);
+	m_bEnableAcidAuraAfterDie = READ_IF_EXISTS(pSettings, r_bool, section, "enable_acid_infl_for_dead", false);
 	m_bDropItemAfterSuperAttack = READ_IF_EXISTS(pSettings, r_bool, section, "drop_item_after_super_attack", false);
 	m_iSuperAttackDropItemPer = READ_IF_EXISTS(pSettings, r_u32, section, "super_attack_drop_item_per", 50);
+
+	m_bModelScaleRandom			= READ_IF_EXISTS(pSettings, r_bool, section, "random_scale", false);
+	m_fModelScale				= READ_IF_EXISTS(pSettings, r_float, section, "model_scale", 1.0f);
+	m_fModelScaleRandomMin		= READ_IF_EXISTS(pSettings, r_float, section, "model_scale_random_min", 1.0f);
+	m_fModelScaleRandomMax		= READ_IF_EXISTS(pSettings, r_float, section, "model_scale_random_min", 1.0f);
 }
 
 void CBaseMonster::PostLoad (LPCSTR section)
@@ -248,7 +255,7 @@ steering_behaviour::manager*   CBaseMonster::get_steer_manager ()
 // if sound is absent just do not load that one
 #define LOAD_SOUND(sound_name,_type,_prior,_mask,_int_type)		\
 	if (pSettings->line_exist(section,sound_name))						\
-		sound().add(pSettings->r_string(section,sound_name), DEFAULT_SAMPLE_COUNT,_type,_prior,u32(_mask),_int_type,m_head_bone_name);
+		get_sound().add(pSettings->r_string(section,sound_name), DEFAULT_SAMPLE_COUNT,_type,_prior,u32(_mask),_int_type,m_head_bone_name);
 
 void CBaseMonster::reload	(LPCSTR section)
 {
@@ -257,7 +264,7 @@ void CBaseMonster::reload	(LPCSTR section)
 	if (!CCustomMonster::use_simplified_visual())
 		CStepManager::reload	(section);
 
-	movement().reload	(section);
+	get_movement().reload	(section);
 
 	// load base sounds
 	LOAD_SOUND("sound_idle",			SOUND_TYPE_MONSTER_TALKING,		MonsterSound::eLowPriority,			MonsterSound::eBaseChannel,			MonsterSound::eMonsterSoundIdle);
@@ -363,7 +370,7 @@ BOOL CBaseMonster::net_Spawn (CSE_Abstract* DC)
 
 
 	if (GetScriptControl()) {
-		m_control_manager->animation().reset_data	();
+		m_control_manager->get_animation().reset_data	();
 		ProcessScripts						();
 	}
 	m_pPhysics_support->in_NetSpawn			(e);

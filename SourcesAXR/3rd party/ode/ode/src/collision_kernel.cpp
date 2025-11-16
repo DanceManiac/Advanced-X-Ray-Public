@@ -64,7 +64,7 @@ static void space_geom_collider (void *data, dxGeom *o1, dxGeom *o2)
 	if(d->flags<=0)
 	{
 		//char s[64];
-		//_snprintf (s,sizeof(s),"tmp %f,%f,%f \n avel %f,%f,%f",tmp[0],tmp[1],tmp[2],b->avel[0],b->avel[1],b->avel[2]);
+		//sprintf_s (s,sizeof(s),"tmp %f,%f,%f \n avel %f,%f,%f",tmp[0],tmp[1],tmp[2],b->avel[0],b->avel[1],b->avel[2]);
 		//dUASSERT(0,"tmp %f,%f,%f \n avel %f,%f,%f",tmp[0],tmp[1],tmp[2],b->avel[0],b->avel[1],b->avel[2]);
 
 		dMessage(0, "Collider exceed contact buffer");

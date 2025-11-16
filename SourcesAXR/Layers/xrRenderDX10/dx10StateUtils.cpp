@@ -6,6 +6,16 @@
 namespace dx10StateUtils
 {
 
+D3D_FILL_MODE ConvertFillMode(D3DFILLMODE Mode)
+{
+	switch (Mode)
+	{
+	case D3DFILL_WIREFRAME: return D3D_FILL_SOLID;
+	case D3DFILL_SOLID: return D3D_FILL_WIREFRAME;
+	default: VERIFY(!"Unexpected fill mode!"); return D3D_FILL_SOLID;
+	}
+}
+
 D3D_CULL_MODE ConvertCullMode(D3DCULL Mode)
 {
 	switch (Mode)
@@ -262,24 +272,46 @@ bool operator==(const D3D_RASTERIZER_DESC &desc1, const D3D_RASTERIZER_DESC &des
 
 bool operator==(const D3D_DEPTH_STENCIL_DESC &desc1, const D3D_DEPTH_STENCIL_DESC &desc2)
 {
-	if ( desc1.DepthEnable != desc2.DepthEnable) return false;
-	if ( desc1.DepthWriteMask != desc2.DepthWriteMask) return false;
-	if ( desc1.DepthFunc != desc2.DepthFunc) return false;
-	if ( desc1.StencilEnable != desc2.StencilEnable) return false;
-	if ( desc1.StencilReadMask != desc2.StencilReadMask) return false;
-	if ( desc1.StencilWriteMask != desc2.StencilWriteMask) return false;
+    if (desc1.DepthEnable != desc2.DepthEnable)
+        return false;
+    if (desc1.DepthEnable)
+    {
+        // сравниваем эти поля, только если включен DepthEnable
+        // directx любит менять поля, если DepthEnable не включен и проверка не срабатывает
+        if (desc1.DepthWriteMask != desc2.DepthWriteMask)
+            return false;
+        if (desc1.DepthFunc != desc2.DepthFunc)
+            return false;
+    }
+    if (desc1.StencilEnable != desc2.StencilEnable)
+        return false;
+    if (desc1.StencilEnable)
+    {
+        // сравниваем эти поля, только если включен StencilEnable
+        if (desc1.StencilReadMask != desc2.StencilReadMask)
+            return false;
+        if (desc1.StencilWriteMask != desc2.StencilWriteMask)
+            return false;
 
-	if ( desc1.FrontFace.StencilFailOp != desc2.FrontFace.StencilFailOp) return false;
-	if ( desc1.FrontFace.StencilDepthFailOp != desc2.FrontFace.StencilDepthFailOp) return false;
-	if ( desc1.FrontFace.StencilPassOp != desc2.FrontFace.StencilPassOp) return false;
-	if ( desc1.FrontFace.StencilFunc != desc2.FrontFace.StencilFunc) return false;
+        if (desc1.FrontFace.StencilFailOp != desc2.FrontFace.StencilFailOp)
+            return false;
+        if (desc1.FrontFace.StencilDepthFailOp != desc2.FrontFace.StencilDepthFailOp)
+            return false;
+        if (desc1.FrontFace.StencilPassOp != desc2.FrontFace.StencilPassOp)
+            return false;
+        if (desc1.FrontFace.StencilFunc != desc2.FrontFace.StencilFunc)
+            return false;
 
-	if ( desc1.BackFace.StencilFailOp != desc2.BackFace.StencilFailOp) return false;
-	if ( desc1.BackFace.StencilDepthFailOp != desc2.BackFace.StencilDepthFailOp) return false;
-	if ( desc1.BackFace.StencilPassOp != desc2.BackFace.StencilPassOp) return false;
-	if ( desc1.BackFace.StencilFunc != desc2.BackFace.StencilFunc) return false;
-	
-	return true;
+        if (desc1.BackFace.StencilFailOp != desc2.BackFace.StencilFailOp)
+            return false;
+        if (desc1.BackFace.StencilDepthFailOp != desc2.BackFace.StencilDepthFailOp)
+            return false;
+        if (desc1.BackFace.StencilPassOp != desc2.BackFace.StencilPassOp)
+            return false;
+        if (desc1.BackFace.StencilFunc != desc2.BackFace.StencilFunc)
+            return false;
+    }
+    return true;
 }
 
 bool operator==(const D3D_BLEND_DESC &desc1, const D3D_BLEND_DESC &desc2)
@@ -308,7 +340,7 @@ bool operator==(const D3D_SAMPLER_DESC &desc1, const D3D_SAMPLER_DESC &desc2)
 	if( desc1.AddressU != desc2.AddressU) return false;
 	if( desc1.AddressV != desc2.AddressV) return false;
 	if( desc1.AddressW != desc2.AddressW) return false;
-	if( desc1.MipLODBias != desc2.MipLODBias) return false;
+	//if( desc1.MipLODBias != desc2.MipLODBias) return false;
 //	Ignore anisotropy since it's set up automatically by the manager
 //	if( desc1.MaxAnisotropy != desc2.MaxAnisotropy) return false;
 	if( desc1.ComparisonFunc != desc2.ComparisonFunc) return false;
@@ -394,7 +426,7 @@ u32 GetHash( const D3D_SAMPLER_DESC &desc )
 	Hash.AddData( &desc.AddressU, sizeof(desc.AddressU) );
 	Hash.AddData( &desc.AddressV, sizeof(desc.AddressV) );
 	Hash.AddData( &desc.AddressW, sizeof(desc.AddressW) );
-	Hash.AddData( &desc.MipLODBias, sizeof(desc.MipLODBias) );
+	//Hash.AddData( &desc.MipLODBias, sizeof(desc.MipLODBias) );
 //	Ignore anisotropy since it's set up automatically by the manager
 //	Hash.AddData( &desc.MaxAnisotropy, sizeof(desc.MaxAnisotropy) );
 	Hash.AddData( &desc.ComparisonFunc, sizeof(desc.ComparisonFunc) );

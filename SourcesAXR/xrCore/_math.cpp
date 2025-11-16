@@ -86,6 +86,8 @@ namespace CPU
 //------------------------------------------------------------------------------------
 void _initialize_cpu(void)
 {
+	ZoneScoped;
+
 	shared_str vendor = "Unknown";
 
 	if (CPU::Info.isAmd)
@@ -190,6 +192,10 @@ typedef struct tagTHREADNAME_INFO
 
 static void set_thread_name(DWORD dwThreadID, const char* threadName)
 {
+#ifdef TRACY_ENABLE
+	tracy::SetThreadName(threadName);
+#endif
+
 	// DWORD dwThreadID = ::GetThreadId( static_cast<HANDLE>( t.native_handle() ) );
 
 	THREADNAME_INFO info;

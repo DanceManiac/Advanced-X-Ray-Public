@@ -38,6 +38,7 @@ public:
 	CAttachableItem*		attachedItem		(CLASS_ID clsid)		const;
 	CAttachableItem*		attachedItem		(u16 id)				const;
 	CAttachableItem*		attachedItem		(shared_str& section)	const;
+	xr_vector<CAttachableItem*> GetAttachedItems() { return m_attached_objects;	}
 };
 
 #include "attachment_owner_inline.h"

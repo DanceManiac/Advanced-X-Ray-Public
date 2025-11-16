@@ -14,6 +14,8 @@
     <texture>ui_inv_mechanic_back</texture>
   </background>
   
+  <item_static x="135" y="214" width="249" height="135" stretch="1" align="c" alignment="c"/>
+  
   <!--delimiter  x="0" y="260" width="275" height="19" stretch="1">
     <texture>ui_inv_delimiter</texture>
   </delimiter-->

@@ -51,6 +51,10 @@ public:
 						  void	load					(CInifile& pIni, shared_str const& sect);
 	INGAME_EDITOR_VIRTUAL void	create_top_gradient		(CInifile& pIni, shared_str const& sect);
 	INGAME_EDITOR_VIRTUAL void	create_center_gradient	(CInifile& pIni, shared_str const& sect);
+
+						  void	load_shoc				(CInifile* pIni, shared_str const& sect);
+	INGAME_EDITOR_VIRTUAL void	create_top_gradient_shoc(CInifile* pIni, shared_str const& sect);
+	INGAME_EDITOR_VIRTUAL void	create_center_gradient_shoc(CInifile* pIni, shared_str const& sect);
 };
 
 #undef INGAME_EDITOR_VIRTUAL
@@ -64,6 +68,7 @@ public:
 								SThunderboltCollection	();
 								~SThunderboltCollection	();
 						void	load					(CInifile* pIni, CInifile* thunderbolts, LPCSTR sect);
+						void	load_shoc				(CInifile* pIni, LPCSTR sect);
 	SThunderboltDesc*			GetRandomDesc			(){VERIFY(palette.size()>0); return palette[Random.randI(palette.size())];}
 };
 
@@ -72,7 +77,7 @@ public:
 class ENGINE_API CEffect_Thunderbolt
 {
 	friend class dxThunderboltRender;
-protected:
+public:
 	DEFINE_VECTOR(SThunderboltCollection*,CollectionVec,CollectionVecIt);
 	CollectionVec				collection;
 	SThunderboltDesc*			current;
@@ -121,6 +126,9 @@ public:
 	void						Render				();
 
 	shared_str 					AppendDef			(CEnvironment& environment, CInifile* pIni, CInifile* thunderbolts, LPCSTR sect);
+	shared_str					AppendDef_shoc		(CEnvironment& environment, CInifile* pIni, LPCSTR sect);
+
+	CEffect_Thunderbolt*		GetThunderboltClass	() { return this; };
 };
 
 #endif //ThunderboltH

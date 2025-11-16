@@ -1,16 +1,23 @@
 # Advanced X-Ray
 
-![Advanced X-Ray](https://i.ibb.co/VJFnVk7/Untitled-1.png)
-![VK](https://i.ibb.co/cknxjxD/24.png) [M.F.S. Team](https://vk.com/mfs_studio)
-![DS](https://i.ibb.co/wdQGG8k/discord-icon.png) [Discord Server](https://discord.gg/AFPqkfBfQs)
+<div align="center">
+  <p>
+    <a href="https://github.com/DanceManiac/Advanced-X-Ray-Public">
+      <img src="GitHub/Images/AdvancedXRaySplash.png" alt="Advanced X-Ray" />
+    </a>
+  </p>
+</div>
 
-Advanced X-Ray - improved X-Ray 1.6 engine used in the famous series of computer games S.T.A.L.K.E.R. developed by GSC Game World.
+![VK](./GitHub/Images/vk_icon.png) [M.F.S. Team](https://vk.com/mfs_studio)
+![DS](./GitHub/Images/discord_icon.png) [Discord Server](https://discord.gg/AFPqkfBfQs)
+
+Advanced X-Ray - A complete modding platform for the S.T.A.L.K.E.R. trilogy, based on the X-Ray 1.6 engine. Delivers essential bug fixes from the original engine, enhanced stability, and comprehensive tools for mod creation. Fully supports Shadow of Chernobyl, Clear Sky, and Call of Pripyat.
 
 ## Supported games
 
 |Call of Pripyat|Clear Sky|Shadow of Chernobyl|
 |---|---|---|
-|Yes|Yes|No|
+|Yes|Yes|Yes|
 
 ## Supported renders
 
@@ -26,39 +33,60 @@ Advanced X-Ray - improved X-Ray 1.6 engine used in the famous series of computer
 
 ## How to Build
 
-- Install Visual Studio 2019
+- Install Visual Studio 2022
 - Open engine.sln
 - Build solution
 
-## Thanks to
+## Latest version
+
+Check out the latest release [here](https://github.com/DanceManiac/Advanced-X-Ray-Public/releases/latest).
+
+## Documentation
+
+- [Changelog](https://github.com/DanceManiac/Advanced-X-Ray-Public/wiki/Changelog)
+- [Wiki](https://github.com/DanceManiac/Advanced-X-Ray-Public/wiki)
+- [License](./LICENSE.md)
+
+## Thanks
 
 - [OpenXRay](https://github.com/OpenXRay/xray-16)
 - [OGSR Engine](https://github.com/OGSR/OGSR-Engine)
+- [Shoker Weapon Mod](https://github.com/ShokerStlk/xray-16-SWM)
+- [Call of Chernobyl](https://github.com/revolucas/CoC-Xray)
+- [Lost Alpha](https://www.moddb.com/mods/lost-alpha)
 - [ForserX](https://github.com/ForserX)
 - [Xottab_DUTY](https://github.com/Xottab-DUTY)
 - [Abramcumner](https://github.com/abramcumner)
 - [LVutner](https://github.com/LVutner)
-- [Zaurus'72](https://github.com/oldSerpskiStalker)
-- [ggGhosTt](https://gitlab.com/ggGhosTt)
+- [sodat1de](https://github.com/sodat1de)
 - [Mortan](https://github.com/mortany)
 - [RedProjects](https://github.com/RedPandaProjects)
 - [xrLil Batya](https://github.com/xrLil-Batya)
 - [Anomaly](https://github.com/Roman-n/xray-monolith)
-- [Hrust](https://github.com/Hrusteckiy)
+- [Hrusteckiy](https://github.com/Hrusteckiy)
 - [ValeroK](https://github.com/VaIeroK)
 - [IX-Ray Team](https://github.com/ixray-team)
-- [Sergii T](https://github.com/joye-ramone)
 - [Graff46](https://github.com/Graff46)
 - [CoC-Xray](https://github.com/revolucas/CoC-Xray)
 - [v2v3v4](https://github.com/v2v3v4)
-- [Hozar2002](https://github.com/Hozar2002)
 - [yohjimane](https://github.com/yohjimane)
+- [joye-ramone](https://github.com/joye-ramone)
+- [xrSimpodin](https://github.com/xrSimpodin)
+- [PRXPHET](https://github.com/PRXPHET)
+- [VlaGan](https://github.com/VlaGan)
+- [I-AmDead](https://github.com/I-AmDead)
+- [PilotOfTheHighestSeniority](https://github.com/PilotOfTheHighestSeniority)
+- [dsh2dsh](https://github.com/dsh2dsh)
+- [Desert Cliff](https://github.com/mrGlock5)
+- [solbjorn](https://github.com/solbjorn)
+- [CeasarLFO](https://github.com/CeasarLFO)
+- [yuriks](https://github.com/yuriks)
+- [Screen Space Shaders](https://www.moddb.com/mods/stalker-anomaly/addons/screen-space-shaders)
+- [Enhanced Shaders and Color Grading](https://www.moddb.com/mods/stalker-anomaly/addons/enhanced-shaders-and-color-grading-for-151)
+- NS OGSR
 - DWM Team
 - CorryZeron
 - Oxygen Engine
 - Lex Addon
-- exDeMODER
-- Screen Space Shaders
-- Enchanted Shaders and Color Grading
 
-Sorry if I forgot someone. Write to VK and I'll add it.
+Sorry if I forgot someone. Write to [VK](https://vk.com/mfs_studio) of [Discord](https://discord.gg/AFPqkfBfQs) and I'll add it.

@@ -110,7 +110,7 @@ void CControlJump::start_jump(const Fvector &point)
 
 		if (is_flag(SControlJumpData::ePrepareInMove)) {
 			// get animation time
-			float time			= m_man->animation().motion_time(m_data.state_prepare_in_move.motion, m_object->Visual());
+			float time			= m_man->get_animation().motion_time(m_data.state_prepare_in_move.motion, m_object->Visual());
 			// set acceleration and velocity
 			SVelocityParam &vel	= m_object->move().get_velocity(m_data.state_prepare_in_move.velocity_mask);
 			float dist = time * vel.velocity.linear;
@@ -190,10 +190,10 @@ void CControlJump::select_next_anim_state()
 	ctrl_data->global.actual	= false;
 	
 	switch (m_anim_state_current) {
-	case eStatePrepare:			ctrl_data->global.motion	= m_data.state_prepare.motion;			break;
-	case eStatePrepareInMove:	ctrl_data->global.motion	= m_data.state_prepare_in_move.motion;	break;
-	case eStateGlide:			ctrl_data->global.motion	= m_data.state_glide.motion;			break;
-	case eStateGround:			ctrl_data->global.motion	= m_data.state_ground.motion;			break;
+	case eStatePrepare:			ctrl_data->global.set_motion (m_data.state_prepare.motion);			break;
+	case eStatePrepareInMove:	ctrl_data->global.set_motion (m_data.state_prepare_in_move.motion);	break;
+	case eStateGlide:			ctrl_data->global.set_motion (m_data.state_glide.motion);			break;
+	case eStateGround:			ctrl_data->global.set_motion (m_data.state_ground.motion);			break;
 	default:					NODEFAULT;
 	}
 	//---------------------------------------------------------------------------------------------------
@@ -337,11 +337,11 @@ void CControlJump::on_event(ControlCom::EEventType type, ControlCom::IEventData 
 			// start jump here
 			//---------------------------------------------------------------------------------
 			// получить время физ.прыжка
-			float ph_time = m_object->character_physics_support()->movement()->JumpMinVelTime(m_target_position);
+			float ph_time = m_object->character_physics_support()->get_movement()->JumpMinVelTime(m_target_position);
 			// выполнить прыжок в соответствии с делителем времени
 			float cur_factor	= ((m_data.force_factor > 0) ? m_data.force_factor : m_jump_factor);
 			m_jump_time			= ph_time/cur_factor;
-			m_object->character_physics_support()->movement()->Jump(m_target_position,m_jump_time);
+			m_object->character_physics_support()->get_movement()->Jump(m_target_position,m_jump_time);
 			m_time_started		= time();
 			m_time_next_allowed	= m_time_started + m_delay_after_jump;
 			//---------------------------------------------------------------------------------
@@ -350,15 +350,15 @@ void CControlJump::on_event(ControlCom::EEventType type, ControlCom::IEventData 
 			SControlDirectionData					*ctrl_data_dir = (SControlDirectionData*)m_man->data(this, ControlCom::eControlDir); 
 			VERIFY									(ctrl_data_dir);	
 
-			ctrl_data_dir->heading.target_angle		= m_man->direction().angle_to_target(m_target_position);
+			ctrl_data_dir->heading.target_angle		= m_man->get_direction().angle_to_target(m_target_position);
 
 			float cur_yaw,target_yaw;
-			m_man->direction().get_heading			(cur_yaw, target_yaw);
+			m_man->get_direction().get_heading			(cur_yaw, target_yaw);
 			ctrl_data_dir->heading.target_speed		= angle_difference(cur_yaw,target_yaw)/ m_jump_time;
 			ctrl_data_dir->linear_dependency		= false;
 			//---------------------------------------------------------------------------------
 
-			ctrl_data->set_speed	(m_man->animation().current_blend()->timeTotal/ m_man->animation().current_blend()->speed / m_jump_time);
+			ctrl_data->set_speed	(m_man->get_animation().current_blend()->timeTotal/ m_man->get_animation().current_blend()->speed / m_jump_time);
 
 		} else 
 			ctrl_data->set_speed	(-1.f);
@@ -444,7 +444,7 @@ bool CControlJump::can_jump(CObject *target)
 
 	// проверка на angle
 	float yaw_current, yaw_target;
-	m_object->control().direction().get_heading(yaw_current, yaw_target);
+	m_object->control().get_direction().get_heading(yaw_current, yaw_target);
 
 	if (angle_difference(yaw_current, dir_yaw) > m_max_angle) return false;
 	
@@ -463,10 +463,10 @@ bool CControlJump::can_jump(CObject *target)
 			bool good_trace_res = false;
 
 			// get animation time
-			float time			= m_man->animation().motion_time(m_data.state_prepare_in_move.motion, m_object->Visual());
+			float time			= m_man->get_animation().motion_time(m_data.state_prepare_in_move.motion, m_object->Visual());
 			// set acceleration and velocity
 			SVelocityParam &vel	= m_object->move().get_velocity(m_data.state_prepare_in_move.velocity_mask);
-			float dist = time * vel.velocity.linear;
+			dist = time * vel.velocity.linear;
 
 			// check nodes in direction
 			Fvector target_point;
@@ -526,7 +526,7 @@ Fvector CControlJump::predict_position(CObject *obj, const Fvector &pos)
 
 	//// проверка на angle и на dist
 	//float yaw_current, yaw_target;
-	//m_object->control().direction().get_heading(yaw_current, yaw_target);
+	//m_object->control().get_direction().get_heading(yaw_current, yaw_target);
 	//if (angle_difference(yaw_current, -dir_yaw) > m_max_angle) return pos;
 	
 //#ifdef DEBUG

@@ -11,6 +11,7 @@
 #include "UIPdaMsgListItem.h"
 #include "UIPdaKillMessage.h"
 #include "UILines.h"
+#include "../AdvancedXrayGameConstants.h"
 
 CUIGameLog::CUIGameLog()
 {
@@ -21,21 +22,38 @@ CUIGameLog::CUIGameLog()
 
 CUITextWnd* CUIGameLog::AddLogMessage(LPCSTR msg)
 {
+	u32 curr_size = GetSize();
+
 	CUITextWnd* pItem				= NULL;
 	ADD_TEXT_TO_VIEW3				(msg, pItem, this);
 	pItem->SetFont					(m_pFont);
 	pItem->SetTextColor				(txt_color);
 	pItem->SetColorAnimation		("ui_main_msgs_short", LA_ONLYALPHA|LA_TEXTCOLOR, 5000.0f);
 	ForceUpdate						();
+
+	if (GameConstants::GetSmoothScrollEnabled() && (curr_size == 0))
+	{
+		const Fvector2 w_pos = { m_pad->GetWndPos().x, GetHeight() };
+		m_pad->SetWndPos(w_pos);
+	}
+
 	return							pItem;
 }
 
 CUIPdaMsgListItem* CUIGameLog::AddPdaMessage()
 {
+	u32 curr_size							= GetSize();
+
 	CUIPdaMsgListItem* pItem				= xr_new<CUIPdaMsgListItem>();
 	pItem->InitPdaMsgListItem				(Fvector2().set(GetDesiredChildWidth(),10.0f));
 	pItem->SetColorAnimation				("ui_main_msgs_short", LA_ONLYALPHA|LA_TEXTCOLOR|LA_TEXTURECOLOR);
 	AddWindow								(pItem, true);
+
+	if (GameConstants::GetSmoothScrollEnabled() && (curr_size == 0))
+	{
+		const Fvector2 w_pos = { m_pad->GetWndPos().x, GetHeight() };
+		m_pad->SetWndPos(w_pos);
+	}
 
 	return pItem;
 }
@@ -91,17 +109,22 @@ void CUIGameLog::Update()
 			toDelList.push_back(*it);
 	}
 
-	// Delete elements
-	it_e = toDelList.end();
+	if (!toDelList.empty())
+	{
+		// Delete elements
+		{
+			for (const auto& it : toDelList)
+				RemoveWindow(it);
+		}
+		if (GameConstants::GetSmoothScrollEnabled())
+			ForceScrollPosition();
 
-	for (it = toDelList.begin(); it!=it_e; ++it)
-		RemoveWindow(*it);
+		toDelList.clear();
+	}
 
-	// REMOVE INVISIBLE AND PART VISIBLE ITEMS
-	if(m_flags.test	(eNeedRecalc) )
-		RecalcSize			();
+	/* dsh: не могу понять, для чего это нужно. Но из-за этого, в
+	   некоторых случаях, не показываются некоторые сообщения.
 
-	toDelList.clear();
 	Frect visible_rect;
 	GetAbsoluteRect	(visible_rect);
 	it_e			= m_pad->GetChildWndList().end();
@@ -122,4 +145,5 @@ void CUIGameLog::Update()
 
 	if(m_flags.test	(eNeedRecalc) )
 		RecalcSize			();
+	*/
 }

@@ -16,12 +16,14 @@ public:
 	virtual void 	OnH_B_Independent(bool just_before_destroy);
 
 	virtual void 	shedule_Update(u32 dt);
-	virtual void 	UpdateCL();
 
-	virtual void 	OnMoveToSlot();
+	virtual void 	OnMoveToSlot(EItemPlace prev);
 	virtual void 	OnMoveToRuck(EItemPlace prev);
 	virtual void	OnActiveItem();
 	virtual void	OnHiddenItem();
+	virtual bool	ParentIsActor() override;
+	virtual void	OnDrop		() override;
+	virtual void	OnBeforeDrop() override;
 
 	void			ToggleBackpack();
 	void			HideBackpack();
@@ -32,6 +34,7 @@ public:
 	virtual	void	UpdateXForm();
 
 	float			GetInventoryCapacity() const { return m_fInventoryCapacity; }
+	float			GetRadiationProtection() { return m_fRadiationProtection; }
 
 	float			m_fPowerLoss;
 	float			m_additional_weight;
@@ -48,14 +51,22 @@ public:
 	float 			m_fAlcoholismRestoreSpeed;
 	float 			m_fNarcotismRestoreSpeed;
 	float 			m_fPsyHealthRestoreSpeed;
+	float 			m_fFrostbiteRestoreSpeed;
 
 	float			m_fJumpSpeed;
 	float			m_fWalkAccel;
 	float			m_fOverweightWalkK;
 
 	float			m_fInventoryCapacity;
+	float			m_fRadiationProtection;
+
+	bool			m_bUseAttach;
+	bool			m_bAutoCrouch;
+	bool			m_bInvOnIdle;
 
 protected:
 	virtual bool	install_upgrade_impl(LPCSTR section, bool test);
+
+	virtual bool	use_parent_ai_locations() const override { return (!H_Parent()); }
 };
 

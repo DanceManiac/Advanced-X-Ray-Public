@@ -21,7 +21,7 @@ TEMPLATE_SPECIALIZATION
 void CStateMonsterAttackMeleeAbstract::execute()
 {
 	object->set_action			(ACT_ATTACK);
-	if (object->control().direction().is_face_target(object->EnemyMan.get_enemy(), PI_DIV_3))
+	if (object->control().get_direction().is_face_target(object->EnemyMan.get_enemy(), PI_DIV_3))
 		object->dir().face_target	(object->EnemyMan.get_enemy(), 800);
 	else 
 		object->dir().face_target	(object->EnemyMan.get_enemy(), 0, deg(15));
@@ -43,5 +43,3 @@ bool CStateMonsterAttackMeleeAbstract::check_completion()
 {
 	return (object->MeleeChecker.should_stop_melee(object->EnemyMan.get_enemy()));
 }
-
-

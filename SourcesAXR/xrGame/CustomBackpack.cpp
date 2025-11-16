@@ -1,9 +1,11 @@
 ////////////////////////////////////////////////////////////////////////////
 //	Module 		: CustomBackpack.cpp
 //	Created 	: 21.08.2023
-//  Modified 	: 21.08.2023
-//	Author		: Dance Maniac (M.F.S. Team)
+//  Modified 	: 27.07.2025
+//	Author		: Dance Maniac
 //	Description : Backpack class
+//  MIT License
+//	Copyright(c) 2020 M.F.S. Team
 ////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
@@ -39,12 +41,18 @@ CCustomBackpack::CCustomBackpack()
 	m_fAlcoholismRestoreSpeed	= 0.0f;
 	m_fNarcotismRestoreSpeed	= 0.0f;
 	m_fPsyHealthRestoreSpeed	= 0.0f;
+	m_fFrostbiteRestoreSpeed	= 0.0f;
 
 	m_fJumpSpeed				= 1.0f;
 	m_fWalkAccel				= 1.0f;
 	m_fOverweightWalkK			= 1.0f;
 
 	m_fInventoryCapacity		= 0.0f;
+	m_fRadiationProtection		= 0.0f;
+
+	m_bUseAttach				= false;
+	m_bAutoCrouch				= true;
+	m_bInvOnIdle				= true;
 }
 
 CCustomBackpack::~CCustomBackpack()
@@ -80,37 +88,23 @@ void CCustomBackpack::Load(LPCSTR section)
 	m_fAlcoholismRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "alcoholism_restore_speed", 0.0f);
 	m_fNarcotismRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "narcotism_restore_speed", 0.0f);
 	m_fPsyHealthRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "psy_health_restore_speed", 0.0f);
+	m_fFrostbiteRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "frostbite_restore_speed", 0.0f);
 
 	m_fJumpSpeed				= READ_IF_EXISTS(pSettings, r_float, section, "jump_speed", 1.f);
 	m_fWalkAccel				= READ_IF_EXISTS(pSettings, r_float, section, "walk_accel", 1.f);
 	m_fOverweightWalkK			= READ_IF_EXISTS(pSettings, r_float, section, "overweight_walk_k", 1.f);
 
 	m_fInventoryCapacity		= READ_IF_EXISTS(pSettings, r_float, section, "inventory_capacity", 0.0f);
+	m_fRadiationProtection		= READ_IF_EXISTS(pSettings, r_float, section, "radiation_protection", 0.0f);
+
+	m_bUseAttach				= READ_IF_EXISTS(pSettings, r_bool, section, "use_attaching", false);
+	m_bAutoCrouch				= READ_IF_EXISTS(pSettings, r_bool, section, "auto_crouch", true);
+	m_bInvOnIdle				= READ_IF_EXISTS(pSettings, r_bool, section, "inventory_on_idle", true);
 }
 
 void CCustomBackpack::shedule_Update(u32 dt)
 {
 	inherited::shedule_Update(dt);
-}
-
-void CCustomBackpack::UpdateCL()
-{
-	inherited::UpdateCL();
-
-	if (!ParentIsActor())
-		return;
-
-	float cam_height = Actor()->GetCamHeightFactor();
-	const float start_cam_height = pSettings->r_float("actor", "camera_height_factor");
-
-	if (GetState() == eShowing)
-		cam_height -= 0.01f;
-
-	if (GetState() == eHiding)
-		cam_height += 0.01f;
-
-	clamp(cam_height, 0.55f, start_cam_height);
-	Actor()->SetCamHeightFactor(cam_height);
 }
 
 void CCustomBackpack::OnH_A_Chield()
@@ -135,18 +129,8 @@ void CCustomBackpack::OnMoveToRuck(const SInvItemPlace& prev)
 		g_actor_allow_ladder = true;
 		g_block_actor_movement = false;
 
-		float cam_height = Actor()->GetCamHeightFactor();
-		const float start_cam_height = pSettings->r_float("actor", "camera_height_factor");
-
-		while (cam_height != start_cam_height)
-		{
-			cam_height += 0.01f;
-			clamp(cam_height, 0.55f, start_cam_height);
-			Actor()->SetCamHeightFactor(cam_height);
-		}
-
-		SwitchState(eHidden);
-		g_player_hud->detach_item(this);
+		if (m_bAutoCrouch)
+			Actor()->SetCamHeightFactor(pSettings->r_float("actor", "camera_height_factor"));
 	}
 
 	StopCurrentAnimWithoutCallback();
@@ -171,6 +155,28 @@ void CCustomBackpack::OnHiddenItem()
 		return;
 
 	SwitchState(eHiding);
+}
+
+void CCustomBackpack::OnDrop()
+{
+	inherited::OnDrop();
+
+	g_actor_allow_ladder = true;
+	g_block_actor_movement = false;
+
+	if (m_bAutoCrouch)
+		Actor()->SetCamHeightFactor(pSettings->r_float("actor", "camera_height_factor"));
+}
+
+void CCustomBackpack::OnBeforeDrop()
+{
+	inherited::OnBeforeDrop();
+
+	g_actor_allow_ladder = true;
+	g_block_actor_movement = false;
+
+	if (m_bAutoCrouch)
+		Actor()->SetCamHeightFactor(pSettings->r_float("actor", "camera_height_factor"));
 }
 
 void CCustomBackpack::HideBackpack()
@@ -206,6 +212,8 @@ void CCustomBackpack::OnStateSwitch(u32 S)
 
 	inherited::OnStateSwitch(S);
 
+	const float start_cam_height = pSettings->r_float("actor", "camera_height_factor");
+
 	switch (S)
 	{
 	case eShowing:
@@ -213,15 +221,25 @@ void CCustomBackpack::OnStateSwitch(u32 S)
 			g_actor_allow_ladder = false;
 			g_block_actor_movement = true;
 
+			if (m_bAutoCrouch)
+				Actor()->SetCamHeightFactor(start_cam_height / 2.0f);
+
 			g_player_hud->attach_item(this);
 			m_sounds.PlaySound("sndShow", Fvector().set(0, 0, 0), this, true, false);
 			PlayHUDMotion("anm_show", FALSE, this, GetState());
+
+			if (!m_bInvOnIdle && !CurrentGameUI()->ActorMenu().IsShown())
+				CurrentGameUI()->ShowActorMenu();
+
 			SetPending(TRUE);
 		}break;
 	case eHiding:
 		{
 			g_actor_allow_ladder = true;
 			g_block_actor_movement = false;
+
+			if (m_bAutoCrouch)
+				Actor()->SetCamHeightFactor(start_cam_height);
 
 			m_sounds.PlaySound("sndHide", Fvector().set(0, 0, 0), this, true, false);
 			PlayHUDMotion("anm_hide", FALSE, this, GetState());
@@ -235,7 +253,7 @@ void CCustomBackpack::OnStateSwitch(u32 S)
 		{
 			PlayAnimIdle();
 
-			if (!CurrentGameUI()->ActorMenu().IsShown())
+			if (m_bInvOnIdle && !CurrentGameUI()->ActorMenu().IsShown())
 				CurrentGameUI()->ShowActorMenu();
 
 			SetPending(FALSE);
@@ -274,6 +292,19 @@ void CCustomBackpack::UpdateXForm()
 	CInventoryItem::UpdateXForm();
 }
 
+bool CCustomBackpack::ParentIsActor()
+{
+	CObject* O = H_Parent();
+	if (!O)
+		return false;
+
+	CEntityAlive* EA = smart_cast<CEntityAlive*>(O);
+	if (!EA)
+		return false;
+
+	return EA->cast_actor() != nullptr;
+}
+
 bool CCustomBackpack::install_upgrade_impl(LPCSTR section, bool test)
 {
 	bool result = inherited::install_upgrade_impl(section, test);
@@ -292,10 +323,12 @@ bool CCustomBackpack::install_upgrade_impl(LPCSTR section, bool test)
 	result |= process_if_exists(section, "alcoholism_restore_speed", &CInifile::r_float, m_fAlcoholismRestoreSpeed, test);
 	result |= process_if_exists(section, "narcotism_restore_speed", &CInifile::r_float, m_fNarcotismRestoreSpeed, test);
 	result |= process_if_exists(section, "psy_health_restore_speed", &CInifile::r_float, m_fPsyHealthRestoreSpeed, test);
+	result |= process_if_exists(section, "frostbite_restore_speed", &CInifile::r_float, m_fFrostbiteRestoreSpeed, test);
 	result |= process_if_exists(section, "jump_speed", &CInifile::r_float, m_fJumpSpeed, test);
 	result |= process_if_exists(section, "walk_accel", &CInifile::r_float, m_fWalkAccel, test);
 	result |= process_if_exists(section, "overweight_walk_k", &CInifile::r_float, m_fOverweightWalkK, test);
 	result |= process_if_exists(section, "inventory_capacity", &CInifile::r_float, m_fInventoryCapacity, test);
+	result |= process_if_exists(section, "radiation_protection", &CInifile::r_float, m_fRadiationProtection, test);
 
 	result |= process_if_exists(section, "inv_weight", &CInifile::r_float, m_weight, test);
 

@@ -35,20 +35,17 @@ void RELATION_REGISTRY::FightRegister (u16 attacker, u16 defender, ALife::ERelat
 			fight_data.time_old = fight_data.time;
 			fight_data.time = Device.dwTimeGlobal;
 			fight_data.total_hit += hit_amount;
-			break;
+			return;
 		}
 	}
 
-	if(it == fights.end())
-	{
-		FIGHT_DATA fight_data;
-		fight_data.attacker = attacker;
-		fight_data.defender = defender;
-		fight_data.total_hit = hit_amount;
-		fight_data.time = Device.dwTimeGlobal;
-		fight_data.defender_to_attacker = defender_to_attacker;
-		fights.push_back(fight_data);
-	}
+	FIGHT_DATA fight_data;
+	fight_data.attacker = attacker;
+	fight_data.defender = defender;
+	fight_data.total_hit = hit_amount;
+	fight_data.time = Device.dwTimeGlobal;
+	fight_data.defender_to_attacker = defender_to_attacker;
+	fights.push_back(fight_data);
 }
 
 RELATION_REGISTRY::FIGHT_DATA* RELATION_REGISTRY::FindFight(u16 object_id, bool by_attacker)

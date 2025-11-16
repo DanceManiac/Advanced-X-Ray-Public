@@ -28,6 +28,8 @@ public:
 		u32						size_real;		// 
 		u32						size_compressed;// if (size_real==size_compressed) - uncompressed
         u32						modif;			// for editor
+
+		shared_str real_file_path;
 	};
 	struct	archive
 	{
@@ -36,10 +38,32 @@ public:
 		u32						size;
 		CInifile*				header;
 		u32						vfs_idx;
+		u32						modif = 0;
 		archive():hSrcFile(NULL),hSrcMap(NULL),header(NULL),size(0),vfs_idx(u32(-1)){}
 		void					open();
 		void					close();
 	};
+
+	// IMPORTNT: don't replace u32 with size_t for this struct
+	// (Letter A in the first word is forgotten intentionally,
+	//  size_t will blow up the engine compatibility with it's resources)
+	struct XRCORE_API archive_file_header
+	{
+		u16  size; // size of following members:
+		u32  size_real;
+		u32  size_compr;
+		u32  crc;
+		//char name[]; // there's a string with variable size between crc and ptr
+		string_path name; // but we use fixed-size string for simplicity
+		u32  ptr;
+
+		// Used in file name string size calculation
+		static constexpr auto ELEMENTS_SIZE = sizeof(size_real) + sizeof(size_compr) + sizeof(crc) + sizeof(ptr);
+
+		archive_file_header(IReader& reader);
+		archive_file_header(IWriter& writer, pcstr file_name, u32 real_size, u32 compressed_size, u32 crc_sum, u32 pointer);
+	};
+
     DEFINE_VECTOR				(archive,archives_vec,archives_it);
     archives_vec				m_archives;
 	void						LoadArchive		(archive& A, LPCSTR entrypoint=NULL);
@@ -59,7 +83,7 @@ private:
 	FFVec						rec_files;
 
     int							m_iLockRescan	; 
-    void						check_pathes	();
+    //void						check_pathes	();
 
 	files_set					m_files			;
 	BOOL						bNoRecurse		;
@@ -69,13 +93,23 @@ private:
 
 	void						Register		(LPCSTR name, u32 vfs, u32 crc, u32 ptr, u32 size_real, u32 size_compressed, u32 modif);
 	void						ProcessArchive	(LPCSTR path);
-	void						ProcessOne		(LPCSTR path, void* F);
-	bool						Recurse			(LPCSTR path);	
+	void						ProcessExternalAddons(LPCSTR base_path);
+	void						ProcessOne		(LPCSTR path, void* F, bool bNoRecurse);
+	bool						Recurse			(LPCSTR path, bool bNoRecurse);
 
 	files_it					file_find_it	(LPCSTR n);
+
+	CInifile*					gamedata_unused_references = nullptr;
+
+	// addons support. used only in ProcessExternalAddons
+	xr_string addon_base_path;
+	xr_string addon_subdir;
+	xr_string target_base_path;
+	// end of addons support :)
+
 public:
 	enum{
-		flNeedRescan			= (1<<0),
+		//flNeedRescan			= (1<<0),
 		flBuildCopy				= (1<<1),
 		flReady					= (1<<2),
 		flEBuildCopy			= (1<<3),
@@ -83,20 +117,21 @@ public:
 		flTargetFolderOnly		= (1<<5),
 		flCacheFiles			= (1<<6),
 		flScanAppRoot			= (1<<7),
-		flNeedCheck				= (1<<8),
+		flNeedExistsCheck		= (1<<8),
 		flDumpFileActivity		= (1<<9),
+		flLoadingAddons			= (1<<10),
 	};    
 	Flags32						m_Flags			;
 	u32							dwAllocGranularity;
 	u32							dwOpenCounter;
 
 private:
-			void				check_cached_files	(LPSTR fname, const u32 &fname_size, const file &desc, LPCSTR &source_name);
+			void				check_cached_files	(LPCSTR fname, const u32 &fname_size, const file &desc, LPCSTR &source_name);
 
-			void				file_from_cache_impl(IReader *&R, LPSTR fname, const file &desc);
-			void				file_from_cache_impl(CStreamReader *&R, LPSTR fname, const file &desc);
+			void				file_from_cache_impl(IReader *&R, LPCSTR fname, const file &desc);
+			void				file_from_cache_impl(CStreamReader *&R, LPCSTR fname, const file &desc);
 	template <typename T>
-			void				file_from_cache		(T *&R, LPSTR fname, const u32 &fname_size, const file &desc, LPCSTR &source_name);
+			void				file_from_cache		(T *&R, LPCSTR fname, const u32 &fname_size, const file &desc, LPCSTR &source_name);
 			
 			void				file_from_archive	(IReader *&R, LPCSTR fname, const file &desc);
 			void				file_from_archive	(CStreamReader *&R, LPCSTR fname, const file &desc);
@@ -176,8 +211,8 @@ public:
 	void						rescan_path			(LPCSTR full_path, BOOL bRecurse);
 	// editor functions
 	void						rescan_pathes		();
-	void						lock_rescan			();
-	void						unlock_rescan		();
+	//void						lock_rescan			();
+	//void						unlock_rescan		();
 };
 
 extern XRCORE_API	CLocatorAPI*					xr_FS;

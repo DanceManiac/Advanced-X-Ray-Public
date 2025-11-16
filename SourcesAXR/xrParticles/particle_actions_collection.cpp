@@ -1459,7 +1459,12 @@ void PATargetColor::Execute(ParticleEffect *effect, const float dt, float& tm_ma
 	for(u32 i = 0; i < effect->p_count; i++)
 	{
 		Particle &m = effect->particles[i];
-		if(m.age<timeFrom*tm_max || m.age>timeTo*tm_max ) continue;
+
+		if (xrGameManager::GetGame() != EGame::SHOC)
+		{
+			if (m.age < timeFrom * tm_max || m.age > timeTo * tm_max)
+				continue;
+		}
 
         c_p.set	(m.color);
         c_t.set	(c_p.r+(color.x-c_p.r)*scaleFac, c_p.g+(color.y-c_p.g)*scaleFac, c_p.b+(color.z-c_p.b)*scaleFac, c_p.a+(alpha-c_p.a)*scaleFac);
@@ -1778,6 +1783,8 @@ void PATurbulence::Execute(ParticleEffect *effect, const float dt, float& tm_max
 	TAL_ID rtID = TAL_MakeID(1, Core.dwFrame, 0);
 	TAL_AddRelationThis(TAL_RELATION_IS_CHILD_OF, rtID);
 #endif // _GPA_ENABLED
+
+	ZoneScoped;
 
 	pVector pV;
 	pVector vX;

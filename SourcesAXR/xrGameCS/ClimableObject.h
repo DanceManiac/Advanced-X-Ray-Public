@@ -35,9 +35,8 @@ public:
 ////////////////////////////////////////////////////////////////////
 	virtual IPhysicsShellHolder			*cast_IPhysicsShellHolder	(){ return this; }
 
-#ifdef DEBUG
 	virtual void	OnRender			();
-#endif
+
 protected:
 	virtual BOOL	UsedAI_Locations	();
 public:

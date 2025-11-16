@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "resource.h"
-#include "dedicated_server_only.h"
 
 #ifdef INGAME_EDITOR
 #	include "../include/editor/ide.hpp"
@@ -33,8 +32,10 @@ void CRenderDevice::initialize_editor	()
 }
 #endif // #ifdef INGAME_EDITOR
 
-PROTECT_API void CRenderDevice::Initialize()
+void CRenderDevice::Initialize()
 {
+	ZoneScoped;
+
 	Log("Initializing Engine...");
 	TimerGlobal.Start();
 	TimerMM.Start();
@@ -68,6 +69,8 @@ PROTECT_API void CRenderDevice::Initialize()
 		ChangeDisplaySettings(&screen_settings, CDS_FULLSCREEN);
 
 		m_hWnd = CreateWindowExA(WS_EX_TOPMOST, wndclass, wndclass, m_dwWindowStyle, 0, 0, screen_width, screen_height, 0L, 0, hInstance, 0L);
+
+		TracySetProgramName("Advanced X-Ray Engine");
 }
 
 	// Save window properties

@@ -43,6 +43,8 @@
 #include "../../../ai_space.h"
 #include "../../../../XrServerEntitiesCS/script_engine.h"
 
+#include "../anti_aim_ability.h"
+
 // Lain: added 
 #include "../../../level_debug.h"
 #include "../../../../xrEngine/xrLevel.h"
@@ -56,7 +58,8 @@
 
 CBaseMonster::CBaseMonster() :	m_psy_aura(this, "psy"), 
 								m_fire_aura(this, "fire"), 
-								m_radiation_aura(this, "radiation"), 
+								m_radiation_aura(this, "radiation"),
+								m_acid_aura(this, "acid"),
 								m_base_aura(this, "base")
 {
 	m_pPhysics_support=xr_new<CCharacterPhysicsSupport>(CCharacterPhysicsSupport::etBitting,this);
@@ -106,6 +109,9 @@ CBaseMonster::CBaseMonster() :	m_psy_aura(this, "psy"),
 	m_feel_enemy_who_just_hit_max_distance	=	0;
 	m_feel_enemy_max_distance				=	0;
 
+	m_anti_aim								=	nullptr;
+	m_head_bone_name						=	"bip01_head";
+
 	light_bone								= "bip01_head";
 	particles_bone							= "bip01_head";
 
@@ -113,14 +119,21 @@ CBaseMonster::CBaseMonster() :	m_psy_aura(this, "psy"),
 	m_bEnablePsyAuraAfterDie				= false;
 	m_bEnableRadAuraAfterDie				= false;
 	m_bEnableFireAuraAfterDie				= false;
+	m_bEnableAcidAuraAfterDie				= false;
 	m_bDropItemAfterSuperAttack				= false;
 	m_iSuperAttackDropItemPer				= 50;
+
+	m_bModelScaleRandom						= false;
+	m_fModelScale							= 1.0f;
+	m_fModelScaleRandomMin					= 1.0f;
+	m_fModelScaleRandomMax					= 1.0f;
 }
 
 #pragma warning (pop)
 
 CBaseMonster::~CBaseMonster()
 {
+	xr_delete(m_anti_aim);
 	xr_delete(m_steer_manager);
 	xr_delete(m_pPhysics_support);
 	xr_delete(m_corpse_cover_evaluator);
@@ -190,7 +203,7 @@ void CBaseMonster::update_pos_by_grouping_behaviour ()
 	}
 
 	// use physics simulation to slide along obstacles
-	character_physics_support()->movement()->VirtualMoveTo(new_pos, new_pos);
+	character_physics_support()->get_movement()->VirtualMoveTo(new_pos, new_pos);
 
 	if ( !ai().level_graph().valid_vertex_position(new_pos) )
 	{
@@ -206,7 +219,7 @@ void CBaseMonster::update_pos_by_grouping_behaviour ()
 	}
 
 	// finally, new position is valid on the ai-map, we can use it
-	character_physics_support()->movement()->SetPosition(new_pos);
+	character_physics_support()->get_movement()->SetPosition(new_pos);
 	Position() = new_pos;
 	ai_location().level_vertex(new_vertex);
 }
@@ -221,7 +234,7 @@ bool   accessible_epsilon (CBaseMonster * const object, Fvector const pos, float
 	
 	for ( u32 i=0; i<sizeof(offsets)/sizeof(offsets[0]); ++i )
 	{
-		if ( object->movement().restrictions().accessible(pos + offsets[i]) )
+		if ( object->get_movement().restrictions().accessible(pos + offsets[i]) )
 			return						true;
 	}
 
@@ -368,13 +381,14 @@ void CBaseMonster::shedule_Update(u32 dt)
 
 	update_eyes_visibility		();
 
-	//if ( m_anti_aim )
-	//{
-	//	m_anti_aim->update_schedule();
-	//}
+	if ( m_anti_aim )
+	{
+		m_anti_aim->update_schedule();
+	}
 
 	m_psy_aura.update_schedule();
 	m_fire_aura.update_schedule();
+	m_acid_aura.update_schedule();
 	m_base_aura.update_schedule();
 	m_radiation_aura.update_schedule();
 
@@ -404,14 +418,20 @@ void CBaseMonster::Die(CObject* who)
 	m_psy_aura.on_monster_death();
 	m_radiation_aura.on_monster_death();
 	m_fire_aura.on_monster_death();
+	m_acid_aura.on_monster_death();
 	m_base_aura.on_monster_death();
+
+	if ( m_anti_aim )
+	{
+		m_anti_aim->on_monster_death ();
+	}
 
 	inherited::Die(who);
 
 	if (is_special_killer(who))
-		sound().play			(MonsterSound::eMonsterSoundDieInAnomaly);
+		get_sound().play			(MonsterSound::eMonsterSoundDieInAnomaly);
 	else
-		sound().play			(MonsterSound::eMonsterSoundDie);
+		get_sound().play			(MonsterSound::eMonsterSoundDie);
 
 	monster_squad().remove_member	((u8)g_Team(),(u8)g_Squad(),(u8)g_Group(),this);
 
@@ -479,7 +499,7 @@ CPHDestroyable*	CBaseMonster::ph_destroyable()
 bool CBaseMonster::useful(const CItemManager *manager, const CGameObject *object) const
 {
 	const Fvector& object_pos = object->Position();
-	if (!movement().restrictions().accessible(object_pos))
+	if (!get_movement().restrictions().accessible(object_pos))
 	{
 		return false;
 	}
@@ -498,7 +518,7 @@ bool CBaseMonster::useful(const CItemManager *manager, const CGameObject *object
 		object->ai_location().level_vertex(vertex_id);
 	}
 
-	if ( !movement().restrictions().accessible(object->ai_location().level_vertex_id()) )
+	if ( !get_movement().restrictions().accessible(object->ai_location().level_vertex_id()) )
 	{
 		return false;
 	}
@@ -555,7 +575,7 @@ void CBaseMonster::set_state_sound(u32 type, bool once)
 {
 	if (once) {
 	
-		sound().play(type);
+		get_sound().play(type);
 	
 	} else {
 
@@ -563,7 +583,7 @@ void CBaseMonster::set_state_sound(u32 type, bool once)
 		if ((type == MonsterSound::eMonsterSoundAggressive) && 
 			(m_prev_sound_type != MonsterSound::eMonsterSoundAggressive)) {
 			
-			sound().play(MonsterSound::eMonsterSoundAttackHit);
+			get_sound().play(MonsterSound::eMonsterSoundAttackHit);
 
 		} else {
 			// get count of monsters in squad
@@ -595,7 +615,7 @@ void CBaseMonster::set_state_sound(u32 type, bool once)
 				break;
 			}
 
-			sound().play(type, 0, 0, delay);
+			get_sound().play(type, 0, 0, delay);
 		} 
 	}
 
@@ -792,7 +812,7 @@ CParticlesObject* CBaseMonster::PlayParticles(const shared_str& name, const Fvec
 	Fvector::generate_orthonormal_basis_normalized(matrix.k,matrix.j,matrix.i);
 	matrix.translate_over	(position);
 	
-	(xformed) ?				ps->SetXFORM (matrix) : ps->UpdateParent(matrix,zero_vel); 
+	(xformed) ?				ps->SetXFORM (matrix) : ps->UpdateParent(matrix, m_zero_vel);
 	ps->Play				(false);
 
 	return ps;
@@ -860,7 +880,7 @@ void CBaseMonster::OnEvent(NET_Packet& P, u16 type)
 			CGameObject			*GO = smart_cast<CGameObject*>(O);
 			CInventoryItem		*pIItem = smart_cast<CInventoryItem*>(GO);
 			VERIFY				(inventory().CanTakeItem(pIItem));
-			pIItem->m_eItemCurrPlace = EItemPlaceRuck;
+			pIItem->m_eItemCurrPlace = eItemPlaceRuck;
 
 			O->H_SetParent		(this);
 			inventory().Take	(GO, true, true);
@@ -933,6 +953,11 @@ float   CBaseMonster::get_fire_influence ()
 	return m_fire_aura.calculate();
 }
 
+float   CBaseMonster::get_acid_influence()
+{
+	return m_acid_aura.calculate();
+}
+
 bool   CBaseMonster::get_enable_psy_aura_after_die()
 {
 	return m_bEnablePsyAuraAfterDie;
@@ -948,11 +973,17 @@ bool   CBaseMonster::get_enable_fire_aura_after_die()
 	return m_bEnableFireAuraAfterDie;
 }
 
+bool   CBaseMonster::get_enable_acid_aura_after_die()
+{
+	return m_bEnableAcidAuraAfterDie;
+}
+
 void   CBaseMonster::play_detector_sound()
 {
 	m_psy_aura.play_detector_sound();
 	m_radiation_aura.play_detector_sound();
 	m_fire_aura.play_detector_sound();
+	m_acid_aura.play_detector_sound();
 }
 
 void CBaseMonster::update_eyes_visibility ()
@@ -1015,5 +1046,31 @@ float CBaseMonster::get_screen_space_coverage_diagonal()
 void CBaseMonster::ReloadDamageAndAnimations()
 {
 	CDamageManager::reload(*CObject::cNameSect(), "damage", pSettings);
-	control().animation().restart();
+	control().get_animation().restart();
+}
+
+void CBaseMonster::renderable_Render()
+{
+	CObject::renderable_Render();
+
+	Fmatrix m_model_transform = XFORM();
+
+	if (m_fModelScale != 1.0f || m_bModelScaleRandom)
+	{
+		Fmatrix scale, t;
+		t = m_model_transform;
+
+		float cur_scale = m_fModelScale;
+
+		if (m_bModelScaleRandom)
+			cur_scale = ::Random.randF(m_fModelScaleRandomMin, m_fModelScaleRandomMax);
+
+		scale.scale(cur_scale, cur_scale, cur_scale);
+
+		m_model_transform.mul(t, scale);
+	}
+
+	::Render->set_Transform(&m_model_transform);
+	::Render->add_Visual(Visual());
+	Visual()->getVisData().hom_frame = Device.dwFrame;
 }

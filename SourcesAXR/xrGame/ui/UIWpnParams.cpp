@@ -171,7 +171,7 @@ void CUIWpnParams::SetInfo( CInventoryItem* slot_wpn, CInventoryItem& cur_wpn )
 	m_progressHandling.SetTwoPos( cur_hand,   slot_hand );
 	m_progressRPM.SetTwoPos(      cur_rpm,    slot_rpm );
 
-	const bool showAmmo READ_IF_EXISTS(pSettings, r_bool, cur_section, "show_ammo", true);
+	const bool showAmmo = READ_IF_EXISTS(pSettings, r_bool, cur_section, "show_ammo", true);
 	m_progressRPM.Show(showAmmo);
 	m_progressAccuracy.Show(showAmmo);
 	m_textAccuracy.Show(showAmmo);
@@ -237,19 +237,16 @@ void CUIWpnParams::SetInfo( CInventoryItem* slot_wpn, CInventoryItem& cur_wpn )
 
 		m_stAmmoType1.SetShader(InventoryUtilities::GetEquipmentIconsShader());
 		Frect				tex_rect;
-		tex_rect.x1			= float(pSettings->r_u32(ammo_types[0].c_str(), "inv_grid_x") * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()));
-		tex_rect.y1			= float(pSettings->r_u32(ammo_types[0].c_str(), "inv_grid_y") * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()));
-		tex_rect.x2			= float(pSettings->r_u32(ammo_types[0].c_str(), "inv_grid_width") * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()));
-		tex_rect.y2			= float(pSettings->r_u32(ammo_types[0].c_str(), "inv_grid_height") * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()));
+		tex_rect.x1			= float(pSettings->r_u32(ammo_types[0].c_str(), "inv_grid_x") * UI().inv_grid_kx());
+		tex_rect.y1			= float(pSettings->r_u32(ammo_types[0].c_str(), "inv_grid_y") * UI().inv_grid_kx());
+		tex_rect.x2			= float(pSettings->r_u32(ammo_types[0].c_str(), "inv_grid_width") * UI().inv_grid_kx());
+		tex_rect.y2			= float(pSettings->r_u32(ammo_types[0].c_str(), "inv_grid_height") * UI().inv_grid_kx());
 		tex_rect.rb.add		(tex_rect.lt);
 		m_stAmmoType1.SetTextureRect(tex_rect);
 		m_stAmmoType1.TextureOn();
 		m_stAmmoType1.SetStretchTexture(true);
 
-		if (GameConstants::GetUseHQ_Icons())
-			m_stAmmoType1.SetWndSize(Fvector2().set((tex_rect.x2 - tex_rect.x1) * UI().get_current_kx() / 2, (tex_rect.y2 - tex_rect.y1) / 2));
-		else
-			m_stAmmoType1.SetWndSize(Fvector2().set((tex_rect.x2 - tex_rect.x1) * UI().get_current_kx(), tex_rect.y2 - tex_rect.y1));
+		m_stAmmoType1.SetWndSize(Fvector2().set((tex_rect.x2 - tex_rect.x1) * UI().get_current_kx() * (1 / UI().get_icons_kx()), (tex_rect.y2 - tex_rect.y1) * (1 / UI().get_icons_kx())));
 
 		m_stAmmoType2.SetShader(InventoryUtilities::GetEquipmentIconsShader());
 		if(ammo_types.size() == 1)
@@ -258,20 +255,17 @@ void CUIWpnParams::SetInfo( CInventoryItem* slot_wpn, CInventoryItem& cur_wpn )
 		}
 		else
 		{
-			tex_rect.x1			= float(pSettings->r_u32(ammo_types[1].c_str(), "inv_grid_x") * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()));
-			tex_rect.y1			= float(pSettings->r_u32(ammo_types[1].c_str(), "inv_grid_y") * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()));
-			tex_rect.x2			= float(pSettings->r_u32(ammo_types[1].c_str(), "inv_grid_width") * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()));
-			tex_rect.y2			= float(pSettings->r_u32(ammo_types[1].c_str(), "inv_grid_height") * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()));
+			tex_rect.x1			= float(pSettings->r_u32(ammo_types[1].c_str(), "inv_grid_x") * UI().inv_grid_kx());
+			tex_rect.y1			= float(pSettings->r_u32(ammo_types[1].c_str(), "inv_grid_y") * UI().inv_grid_kx());
+			tex_rect.x2			= float(pSettings->r_u32(ammo_types[1].c_str(), "inv_grid_width") * UI().inv_grid_kx());
+			tex_rect.y2			= float(pSettings->r_u32(ammo_types[1].c_str(), "inv_grid_height") * UI().inv_grid_kx());
 			tex_rect.rb.add		(tex_rect.lt);
 		}
 		m_stAmmoType2.SetTextureRect(tex_rect);
 		m_stAmmoType2.TextureOn();
 		m_stAmmoType2.SetStretchTexture(true);
 
-		if (GameConstants::GetUseHQ_Icons())
-			m_stAmmoType2.SetWndSize(Fvector2().set((tex_rect.x2 - tex_rect.x1) * UI().get_current_kx() / 2, (tex_rect.y2 - tex_rect.y1) / 2));
-		else
-			m_stAmmoType2.SetWndSize(Fvector2().set((tex_rect.x2 - tex_rect.x1) * UI().get_current_kx(), tex_rect.y2 - tex_rect.y1));
+		m_stAmmoType2.SetWndSize(Fvector2().set((tex_rect.x2 - tex_rect.x1) * UI().get_current_kx() * (1 / UI().get_icons_kx()), (tex_rect.y2 - tex_rect.y1) * (1 / UI().get_icons_kx())));
 
 		/*m_stAmmoType3.SetShader(InventoryUtilities::GetEquipmentIconsShader());
 		if (ammo_types_size <= 2)

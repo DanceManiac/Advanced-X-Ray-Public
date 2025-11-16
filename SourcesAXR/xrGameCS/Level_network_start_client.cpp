@@ -27,6 +27,8 @@ BOOL CLevel::net_Start_client	( LPCSTR options )
 #include "string_table.h"
 bool	CLevel::net_start_client1				()
 {
+	ZoneScoped;
+
 	pApp->LoadBegin	();
 	// name_of_server
 	string64					name_of_server = "";
@@ -51,6 +53,8 @@ bool	CLevel::net_start_client1				()
 
 bool	CLevel::net_start_client2				()
 {
+	ZoneScoped;
+
 	if(psNET_direct_connect)
 	{
 		Server->create_direct_client();
@@ -62,6 +66,8 @@ bool	CLevel::net_start_client2				()
 }
 void rescan_mp_archives()
 {
+	ZoneScoped;
+
 	FS_Path* mp_archs_path = FS.get_path("$game_arch_mp$");
 	CLocatorAPI* RealFS = dynamic_cast<CLocatorAPI*>(xr_FS);
 	VERIFY(RealFS);
@@ -72,6 +78,8 @@ void rescan_mp_archives()
 
 bool	CLevel::net_start_client3				()
 {
+	ZoneScoped;
+
 	if(connected_to_server)
 	{
 		LPCSTR					level_name = NULL;
@@ -130,6 +138,8 @@ bool	CLevel::net_start_client3				()
 
 bool	CLevel::net_start_client4				()
 {
+	ZoneScoped;
+
 	if(connected_to_server){
 		// Begin spawn
 		g_pGamePersistent->SetLoadStageTitle("st_client_spawning");
@@ -191,11 +201,12 @@ bool	CLevel::net_start_client4				()
 
 bool	CLevel::net_start_client5				()
 {
+	ZoneScoped;
+
 	if(connected_to_server){
 		// HUD
 
 		// Textures
-		if	(!g_dedicated_server)
 		{
 			//HUD().Load							();
 			g_pGamePersistent->SetLoadStageTitle("st_loading_textures");
@@ -214,6 +225,8 @@ bool	CLevel::net_start_client5				()
 
 bool	CLevel::net_start_client6				()
 {
+	ZoneScoped;
+
 	if (connected_to_server) {
 		// Sync
 		if (!synchronize_map_data				())
@@ -225,7 +238,6 @@ bool	CLevel::net_start_client6				()
 			return true;
 		}
 		
-		if	(!g_dedicated_server)
 		{
 			HUD().Load							();
 			//g_pGamePersistent->LoadTitle				("st_loading_textures");
@@ -248,7 +260,7 @@ bool	CLevel::net_start_client6				()
 		}
 
 		g_pGamePersistent->SetLoadStageTitle("st_client_synchronising");
-		pApp->LoadForceFinish				();
+		//pApp->LoadForceFinish				();
 		g_pGamePersistent->LoadTitle		();
 		Device.PreCache						(60,true,true);
 		net_start_result_total				= TRUE;

@@ -31,6 +31,7 @@
 #include "AdvancedXrayGameConstants.h"
 #include "DynamicHudGlass.h"
 #include "CustomOutfit.h"
+#include "ActorHelmet.h"
 #include "Inventory.h"
 #include "string_table.h"
 #include "../xrEngine/x_ray.h"
@@ -57,6 +58,8 @@
 
 CGamePersistent::CGamePersistent(void)
 {
+	ZoneScoped;
+
 	m_bPickableDOF				= false;
 	m_game_params.m_e_game_type	= eGameIDNoGame;
 	ambient_effect_next_time	= 0;
@@ -71,7 +74,7 @@ CGamePersistent::CGamePersistent(void)
 
 	ls_tips_enabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "global", "ls_tips_enabled", true);
 
-	ZeroMemory					(ambient_sound_next_time, sizeof(ambient_sound_next_time));
+	ambient_sound_next_time.reserve(32);
 	
 
 	m_pUI_core					= NULL;
@@ -112,6 +115,8 @@ CGamePersistent::CGamePersistent(void)
 
 CGamePersistent::~CGamePersistent(void)
 {	
+	ZoneScoped;
+
 	FS.r_close					(pDemoFile);
 	Device.seqFrame.Remove		(this);
 	Engine.Event.Handler_Detach	(eDemoStart,this);
@@ -120,7 +125,7 @@ CGamePersistent::~CGamePersistent(void)
 
 void CGamePersistent::PreStart(LPCSTR op)
 {
-	pApp->SetLoadingScreen(new UILoadingScreen());
+	pApp->SetLoadingScreen(xr_new<UILoadingScreen>());
 	__super::PreStart(op);
 }
 
@@ -152,12 +157,15 @@ extern void init_game_globals	();
 
 void CGamePersistent::OnAppStart()
 {
+	ZoneScoped;
+
 	// load game materials
 	GMLib.Load					();
 	init_game_globals			();
 	__super::OnAppStart			();
 	m_pUI_core					= xr_new<ui_core>();
 	m_pMainMenu					= xr_new<CMainMenu>();
+	GameConstants::LoadConstants();
 }
 
 
@@ -199,7 +207,6 @@ void CGamePersistent::OnGameStart()
 {
 	__super::OnGameStart		();
 	UpdateGameType				();
-	GameConstants::LoadConstants();
 }
 
 LPCSTR GameTypeToString(EGameIDs gt, bool bShort)
@@ -281,17 +288,16 @@ void CGamePersistent::OnGameEnd	()
 
 void CGamePersistent::WeathersUpdate()
 {
-	if (g_pGameLevel && !g_dedicated_server)
+	ZoneScoped;
+
+	if (g_pGameLevel)
 	{
 		CActor* actor				= smart_cast<CActor*>(Level().CurrentViewEntity());
 		BOOL bIndoor				= TRUE;
 		if (actor) 
 			bIndoor = g_pGamePersistent->IsActorInHideout() && (actor->renderable_ROS()->get_luminocity_hemi() < 0.05f);
 
-		int data_set				= (Random.randF()<(1.f-Environment().CurrentEnv->weight))?0:1; 
-		
-		CEnvDescriptor* const current_env	= Environment().Current[0]; 
-		VERIFY						(current_env);
+		const size_t data_set		= (Random.randF() < (1.f - Environment().CurrentEnv->weight)) ? 0 : 1;
 
 		CEnvDescriptor* const _env	= Environment().Current[data_set]; 
 		VERIFY						(_env);
@@ -299,15 +305,13 @@ void CGamePersistent::WeathersUpdate()
 		CEnvAmbient* env_amb		= _env->env_ambient;
 		if (env_amb)
 		{
-			CEnvAmbient::SSndChannelVec& vec	= current_env->env_ambient->get_snd_channels();
-			CEnvAmbient::SSndChannelVecIt I		= vec.begin();
-			CEnvAmbient::SSndChannelVecIt E		= vec.end();
+			CEnvAmbient::SSndChannelVec& vec	= env_amb->get_snd_channels();
+			auto I								= vec.cbegin();
+			const auto E						= vec.cend();
 			
-			for (u32 idx=0; I!=E; ++I,++idx)
+			for (size_t idx=0; I!=E; ++I,++idx)
 			{
 				CEnvAmbient::SSndChannel& ch	= **I;
-
-				VERIFY							(idx < 40);
 
 				if(ambient_sound_next_time[idx]==0)//first
 				{
@@ -332,60 +336,43 @@ void CGamePersistent::WeathersUpdate()
 #endif // DEBUG
 
 					VERIFY							(snd._handle());
-					u32 _length_ms					= iFloor(snd.get_length_sec()*1000.0f);
+					const u32 _length_ms			= iFloor(snd.get_length_sec() * 1000.0f);
 					ambient_sound_next_time[idx]	= Device.dwTimeGlobal + _length_ms + ch.get_rnd_sound_time();
-//					Msg("- Playing ambient sound channel [%s] file[%s]",ch.m_load_section.c_str(),snd._handle()->file_name());
+					//Msg("- Playing ambient sound channel [%s] file[%s]", ch.m_load_section.c_str(), snd._handle()->file_name());
 				}
 			}
-/*
-			if (Device.dwTimeGlobal > ambient_sound_next_time)
-			{
-				ref_sound* snd			= env_amb->get_rnd_sound();
-				ambient_sound_next_time	= Device.dwTimeGlobal + env_amb->get_rnd_sound_time();
-				if (snd)
-				{
-					Fvector	pos;
-					float	angle		= ::Random.randF(PI_MUL_2);
-					pos.x				= _cos(angle);
-					pos.y				= 0;
-					pos.z				= _sin(angle);
-					pos.normalize		().mul(env_amb->get_rnd_sound_dist()).add(Device.vCameraPosition);
-					pos.y				+= 10.f;
-					snd->play_at_pos	(0,pos);
-				}
-			}
-*/
+
 			// start effect
 			if ((FALSE==bIndoor) && (0==ambient_particles) && Device.dwTimeGlobal>ambient_effect_next_time){
 				CEnvAmbient::SEffect* eff			= env_amb->get_rnd_effect(); 
 				if (eff){
-					Environment().wind_gust_factor	= eff->wind_gust_factor;
+					Environment().wind_gust_factor	= eff->m_wind_gust_factor;
 					ambient_effect_next_time		= Device.dwTimeGlobal + env_amb->get_rnd_effect_time();
-					ambient_effect_stop_time		= Device.dwTimeGlobal + eff->life_time;
+					ambient_effect_stop_time		= Device.dwTimeGlobal + eff->m_life_time;
 					ambient_effect_wind_start		= Device.fTimeGlobal;
-					ambient_effect_wind_in_time		= Device.fTimeGlobal + eff->wind_blast_in_time;
-					ambient_effect_wind_end			= Device.fTimeGlobal + eff->life_time/1000.f;
-					ambient_effect_wind_out_time	= Device.fTimeGlobal + eff->life_time/1000.f + eff->wind_blast_out_time;
+					ambient_effect_wind_in_time		= Device.fTimeGlobal + eff->m_wind_blast_in_time;
+					ambient_effect_wind_end			= Device.fTimeGlobal + eff->m_life_time/1000.f;
+					ambient_effect_wind_out_time	= Device.fTimeGlobal + eff->m_life_time/1000.f + eff->m_wind_blast_out_time;
 					ambient_effect_wind_on			= true;
 										
-					ambient_particles				= CParticlesObject::Create(eff->particles.c_str(),FALSE,false);
-					Fvector pos; pos.add			(Device.vCameraPosition,eff->offset); 
+					ambient_particles				= CParticlesObject::Create(eff->m_particles.c_str(),FALSE,false);
+					Fvector pos; pos.add			(Device.vCameraPosition,eff->m_offset);
 					ambient_particles->play_at_pos	(pos);
-					if (eff->sound._handle())		eff->sound.play_at_pos(0,pos);
+					if (eff->m_sound._handle())		eff->m_sound.play_at_pos(0,pos);
 
 
 					Environment().wind_blast_strength_start_value=Environment().wind_strength_factor;
-					Environment().wind_blast_strength_stop_value=eff->wind_blast_strength;
+					Environment().wind_blast_strength_stop_value=eff->m_wind_blast_strength;
 
 					if (Environment().wind_blast_strength_start_value==0.f)
 					{
-						Environment().wind_blast_start_time.set(0.f,eff->wind_blast_direction.x,eff->wind_blast_direction.y,eff->wind_blast_direction.z);
+						Environment().wind_blast_start_time.set(0.f,eff->m_wind_blast_direction.x,eff->m_wind_blast_direction.y,eff->m_wind_blast_direction.z);
 					}
 					else
 					{
-						Environment().wind_blast_start_time.set(0.f,Environment().wind_blast_direction.x,Environment().wind_blast_direction.y,Environment().wind_blast_direction.z);
+						Environment().wind_blast_start_time.set(0.f,Environment().m_wind_blast_direction.x,Environment().m_wind_blast_direction.y,Environment().m_wind_blast_direction.z);
 					}
-					Environment().wind_blast_stop_time.set(0.f,eff->wind_blast_direction.x,eff->wind_blast_direction.y,eff->wind_blast_direction.z);
+					Environment().wind_blast_stop_time.set(0.f,eff->m_wind_blast_direction.x,eff->m_wind_blast_direction.y,eff->m_wind_blast_direction.z);
 				}
 			}
 		}
@@ -404,7 +391,7 @@ void CGamePersistent::WeathersUpdate()
 			}
 			Environment().wind_blast_current.slerp(Environment().wind_blast_start_time,Environment().wind_blast_stop_time,t);
 
-			Environment().wind_blast_direction.set(Environment().wind_blast_current.x,Environment().wind_blast_current.y,Environment().wind_blast_current.z);
+			Environment().m_wind_blast_direction.set(Environment().wind_blast_current.x,Environment().wind_blast_current.y,Environment().wind_blast_current.z);
 			Environment().wind_strength_factor=Environment().wind_blast_strength_start_value+t*(Environment().wind_blast_strength_stop_value-Environment().wind_blast_strength_start_value);
 		}
 
@@ -452,23 +439,32 @@ void CGamePersistent::WeathersUpdate()
 
 bool allow_intro ()
 {
-#ifdef MASTER_GOLD
-	if (g_SASH.IsRunning())
-#else	// #ifdef MASTER_GOLD
 	if ((0!=strstr(Core.Params, "-nointro")) || g_SASH.IsRunning())
-#endif	// #ifdef MASTER_GOLD
 	{
 		return false;
 	}else
 		return true;
 }
 
+bool allow_game_intro()
+{
+	return !strstr(Core.Params, "-nogameintro");
+}
+
 void CGamePersistent::start_logo_intro()
 {
+	if (!allow_intro())
+	{
+		m_intro_event			= nullptr;
+		Console->Show			();
+		Console->Execute		("main_menu on");
+		return;
+	}
+
 	if (Device.dwPrecacheFrame==0)
 	{
 		m_intro_event.bind		(this, &CGamePersistent::update_logo_intro);
-		if (!g_dedicated_server && 0==xr_strlen(m_game_params.m_game_or_spawn) && NULL==g_pGameLevel)
+		if (0==xr_strlen(m_game_params.m_game_or_spawn) && NULL==g_pGameLevel)
 		{
 			VERIFY				(NULL==m_intro);
 			m_intro				= xr_new<CUISequencer>();
@@ -501,10 +497,11 @@ void CGamePersistent::game_loaded()
 	{
 		if (g_pGameLevel							&&
 			g_pGameLevel->bReady					&&
-			(allow_intro() && g_keypress_on_start)	&&
+			(allow_game_intro() && g_keypress_on_start)	&&
 			load_screen_renderer.b_need_user_input	&& 
 			m_game_params.m_e_game_type == eGameIDSingle)
 		{
+			pApp->LoadForceFinish();
 			VERIFY				(NULL==m_intro);
 			m_intro				= xr_new<CUISequencer>();
 			m_intro->Start		("game_loaded");
@@ -566,6 +563,8 @@ extern CUISequencer * g_tutorial2;
 
 void CGamePersistent::OnFrame	()
 {
+	ZoneScoped;
+
 	if (Device.dwPrecacheFrame==5 && m_intro_event.empty())
 	{
 		SetLoadStageTitle();
@@ -586,10 +585,10 @@ void CGamePersistent::OnFrame	()
 #ifdef DEBUG
 	++m_frame_counter;
 #endif
-	if (!g_dedicated_server && !m_intro_event.empty())
+	if (!m_intro_event.empty())
 		m_intro_event();
 
-	if (!g_dedicated_server && Device.dwPrecacheFrame == 0 && !m_intro && m_intro_event.empty())
+	if (Device.dwPrecacheFrame == 0 && !m_intro && m_intro_event.empty())
 		load_screen_renderer.stop();
 
 	if( !m_pMainMenu->IsActive() )
@@ -722,6 +721,8 @@ void CGamePersistent::OnFrame	()
 
 void CGamePersistent::OnEvent(EVENT E, u64 P1, u64 P2)
 {
+	ZoneScoped;
+
 	if(E==eQuickLoad)
 	{
 		if (Device.Paused())
@@ -940,6 +941,14 @@ float CGamePersistent::GetActorIntoxication()
 	return 0.0f;
 }
 
+float CGamePersistent::GetActorFrostbite()
+{
+	if (GameConstants::GetActorFrostbite())
+		return	(Actor()->conditions().GetFrostbite());
+
+	return 0.0f;
+}
+
 bool CGamePersistent::GetClearMaskProcess()
 {
 	return (Actor() && Actor()->MaskClearInProcess());
@@ -947,9 +956,15 @@ bool CGamePersistent::GetClearMaskProcess()
 
 bool CGamePersistent::GetActorNightvision()
 {
+	CHelmet* pHelmet = smart_cast<CHelmet*>(Actor()->inventory().ItemFromSlot(HELMET_SLOT));
+	CHelmet* pHelmet2 = smart_cast<CHelmet*>(Actor()->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
 	CCustomOutfit* pOutfit = smart_cast<CCustomOutfit*>(Actor()->inventory().ItemFromSlot(OUTFIT_SLOT));
 
-	if (pOutfit)
+	if (pHelmet)
+		return (Actor()->GetNightVisionStatus() && pHelmet->m_NightVisionSect.size());
+	else if (pHelmet2)
+		return (Actor()->GetNightVisionStatus() && pHelmet2->m_NightVisionSect.size());
+	else if (pOutfit)
 		return (Actor()->GetNightVisionStatus() && pOutfit->m_NightVisionSect.size());
 
 	return false;
@@ -976,9 +991,15 @@ bool CGamePersistent::GetActorHelmetStatus()
 		return false;
 
 	CCustomOutfit* outfit = Actor()->GetOutfit();
+	CHelmet* helmet = smart_cast<CHelmet*>(Actor()->inventory().ItemFromSlot(HELMET_SLOT));
 
-	if (outfit)
-		return outfit->m_b_HasGlass;
+	if (outfit || helmet)
+	{
+		if (outfit && !outfit->IsHelmetAvaliable())
+			return true;
+		else if (helmet)
+			return true;
+	}
 
 	return false;
 }
@@ -1070,4 +1091,9 @@ std::string CGamePersistent::GetMoonPhase()
 u32 CGamePersistent::GetTimeHours()
 {
 	return Level().GetTimeHours();
+}
+
+bool CGamePersistent::IsTutorialSequencerActive()
+{
+	return ((g_tutorial && g_tutorial->IsActive()) || g_tutorial2 && g_tutorial2->IsActive());
 }

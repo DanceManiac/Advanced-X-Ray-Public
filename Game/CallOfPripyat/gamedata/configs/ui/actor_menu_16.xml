@@ -213,6 +213,16 @@
 		<text align="l" font="arial_14" color="ui_7"/>
 	</partner_weight>
 	
+	<partner_capacity_caption x="123" y="745" width="68" height="14">
+		<text align="r" font="arial_14" color="ui_3">ui_inv_inventory_capacity</text>
+	</partner_capacity_caption>
+	<partner_inv_fullness x="291" y="745" width="36" height="14">
+		<text align="l" font="arial_14"/>
+	</partner_inv_fullness>
+	<partner_inv_capacity x="326" y="745" width="68" height="14">
+		<text align="l" font="arial_14" color="ui_3"/>
+	</partner_inv_capacity>
+	
 	<actor_inv_capacity_caption x="750" y="743" width="57" height="16">
 		<text align="r" font="arial_14" color="ui_3">ui_inv_inventory_capacity</text>
 	</actor_inv_capacity_caption>
@@ -257,6 +267,10 @@
 	<helmet_over x="467" y="11" width="89" height="115" stretch="1">
 		<texture >ui_inGame2_helmet_blocker</texture>
 	</helmet_over>
+
+	<second_helmet_over x="558" y="366" width="89" height="115" stretch="1">
+		<texture >ui_inGame2_helmet_blocker</texture>
+	</second_helmet_over>
 
   <dragdrop_trash x="0" y="0" width="375" height="768"
     	cell_width="375" cell_height="768" rows_num="1" cols_num="1" a="0"/>

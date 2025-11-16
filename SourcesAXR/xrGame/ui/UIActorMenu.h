@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include "script_export_space.h"
+
 #include "UIDialogWnd.h"
 #include "UIWndCallback.h"
 #include "../../xrServerEntities/inventory_space.h"
@@ -117,6 +119,7 @@ protected:
 
 	xr_vector<CUIStatic*>		m_belt_list_over;
 	CUIStatic*					m_HelmetOver;
+	CUIStatic*					m_SecondHelmetOver;
 
 	CUIStatic*					m_InvSlot2Highlight;
 	CUIStatic*					m_InvSlot3Highlight;
@@ -143,10 +146,10 @@ protected:
 	CUIMessageBoxEx*			m_message_box_yes_no;
 	CUIMessageBoxEx*			m_message_box_ok;
 
-	CInventoryOwner*			m_pActorInvOwner;
-	CInventoryOwner*			m_pPartnerInvOwner;
-	CInventoryBox*				m_pInvBox;
-	CCar*						m_pCar;
+	CInventoryOwner*			m_pActorInvOwner{};
+	CInventoryOwner*			m_pPartnerInvOwner{};
+	CInventoryBox*				m_pInvBox{};
+	CCar*						m_pCar{};
 
 	CUITextWnd*					m_ActorMoney;
 	CUITextWnd*					m_PartnerMoney;
@@ -174,6 +177,10 @@ protected:
 	float						m_PartnerWeight_end_x;
 //*	CUIStatic*					m_PartnerWeightMax;
 
+	CUIStatic*					m_PartnerInvCapacityInfo;
+	CUITextWnd*					m_PartnerInvFullness;
+	CUITextWnd*					m_PartnerInvCapacity;
+
 	CUIStatic*					m_ActorInvCapacityInfo;
 	CUITextWnd*					m_ActorInvFullness;
 	CUITextWnd*					m_ActorInvCapacity;
@@ -198,6 +205,8 @@ protected:
 	CUI3tButton*				m_exit_button;
 //	CUIStatic*					m_clock_value;
 
+	CUI3tButton*				m_sleep_button;
+
 	u32							m_last_time;
 	bool						m_repair_mode;
 	bool						m_item_info_view;
@@ -206,6 +215,8 @@ protected:
 	bool						m_bNeedMoveAfsToBag;
 public:
 	CUIDragDropReferenceList*	m_pQuickSlot;
+	LPCSTR						m_quick_vert_attrib;
+	bool						b_quick_vert;
 
 public:
 	void						SetMenuMode					(EMenuMode mode);
@@ -371,6 +382,7 @@ public:
 	void		xr_stdcall		OnBtnPerformTradeBuy		(CUIWindow* w, void* d);
 	void		xr_stdcall		OnBtnPerformTradeSell		(CUIWindow* w, void* d);
 	void		xr_stdcall		OnBtnExitClicked			(CUIWindow* w, void* d);
+	void		xr_stdcall		OnBtnSleepClicked			(CUIWindow* w, void* d);
 	void		xr_stdcall		TakeAllFromPartner			(CUIWindow* w, void* d);
 	void						TakeAllFromInventoryBox		();
 	void						UpdateConditionProgressBars	();

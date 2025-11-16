@@ -156,6 +156,7 @@ private:
 	u32								stencil_pass;
 	u32								stencil_zfail;
 	u32								colorwrite_mask;
+	u32								fill_mode;
 	u32								cull_mode;
 	u32								z_enable;
 	u32								z_func;
@@ -316,6 +317,7 @@ public:
 	IC  void						set_ColorWriteEnable(u32 _mask = D3DCOLORWRITEENABLE_RED | D3DCOLORWRITEENABLE_GREEN | D3DCOLORWRITEENABLE_BLUE | D3DCOLORWRITEENABLE_ALPHA);
 	IC  void						set_CullMode		(u32 _mode);
 	IC  u32							get_CullMode		(){return cull_mode;}
+	IC	void						set_FillMode		(u32 _mode);
 	void							set_ClipPlanes		(u32 _enable, Fplane*	_planes=NULL, u32 count=0);
 	void							set_ClipPlanes		(u32 _enable, Fmatrix*	_xform =NULL, u32 fmask=0xff);
 	IC	void						set_Scissor			(Irect*	rect=NULL);
@@ -394,29 +396,32 @@ public:
 	{ CHK_DX(HW.pDevice->SetSamplerState(sampler,type,value)); }
 #endif
 
-#ifdef DEBUG
 	void dbg_Draw					(D3DPRIMITIVETYPE T, FVF::L* pVerts, int vcnt, u16* pIdx, int pcnt);
 	void dbg_Draw					(D3DPRIMITIVETYPE T, FVF::L* pVerts, int pcnt);
-	IC void dbg_DrawAABB			(Fvector& T, float sx, float sy, float sz, u32 C)						{	Fvector half_dim;	half_dim.set(sx,sy,sz); Fmatrix	TM;	TM.translate(T); dbg_DrawOBB(TM,half_dim,C);	}
+	void dbg_Draw_Near				(D3DPRIMITIVETYPE T, FVF::L* pVerts, int vcnt, u16* pIdx, int pcnt);
+	IC void dbg_DrawAABB			(Fvector& T, float sx, float sy, float sz, u32 C) { Fvector half_dim;	half_dim.set(sx, sy, sz); Fmatrix	TM;	TM.translate(T); dbg_DrawOBB(TM, half_dim, C); }
+	IC void dbg_DrawTRI				(Fmatrix& T, Fvector* p, u32 C) { dbg_DrawTRI(T, p[0], p[1], p[2], C); }
+    void dbg_DrawTRI				(Fmatrix& T, Fvector& p1, Fvector& p2, Fvector& p3, u32 C);
 	void dbg_DrawOBB				(Fmatrix& T, Fvector& half_dim, u32 C);
-	IC void dbg_DrawTRI				(Fmatrix& T, Fvector* p, u32 C)											{	dbg_DrawTRI(T,p[0],p[1],p[2],C);	}
-	void dbg_DrawTRI				(Fmatrix& T, Fvector& p1, Fvector& p2, Fvector& p3, u32 C);
 	void dbg_DrawLINE				(Fmatrix& T, Fvector& p1, Fvector& p2, u32 C);
 	void dbg_DrawEllipse			(Fmatrix& T, u32 C);
-#endif
 
 	CBackend()						{	Invalidate(); };
 
 #ifdef USE_DX11
 private:
+	// Debug Draw
+	void InitializeDebugDraw();
+	void DestroyDebugDraw();
+	ref_geom vs_L, vs_TL;
+
 	//	DirectX 10 internal functionality
-	//void CreateConstantBuffers();
-	//void DestroyConstantBuffers();
 	void	ApplyVertexLayout();
-	void	ApplyRTandZB();
 	void	ApplyPrimitieTopology( D3D_PRIMITIVE_TOPOLOGY Topology );
 	bool	CBuffersNeedUpdate(ref_cbuffer	buf1[MaxCBuffers], ref_cbuffer	buf2[MaxCBuffers], u32	&uiMin, u32	&uiMax);
 
+public:
+	void	ApplyRTandZB();
 private:
 	ID3DBlob*				m_pInputSignature;
 

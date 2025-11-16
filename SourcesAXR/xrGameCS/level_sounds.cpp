@@ -142,6 +142,8 @@ CLevelSoundManager::CLevelSoundManager()
 
 void CLevelSoundManager::Load()
 {
+	ZoneScoped;
+
 	// static level sounds
  	VERIFY(m_StaticSounds.empty());
 	string_path fn;
@@ -189,6 +191,8 @@ void CLevelSoundManager::Unload()
 
 void CLevelSoundManager::Update()
 {
+	ZoneScoped;
+
 	if (Device.Paused())				return;
 	if (Device.dwPrecacheFrame!=0)		return;
 	// static sounds

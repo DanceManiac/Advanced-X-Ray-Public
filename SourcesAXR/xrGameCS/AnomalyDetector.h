@@ -59,7 +59,7 @@ public:
 			void TurnOff			();
 			bool IsWorking			() {return m_bWorking;}
 
-	virtual void OnMoveToSlot		();
+	virtual void OnMoveToSlot		(EItemPlace prev);
 	virtual void OnMoveToRuck		(EItemPlace prev);
 
 			void UpdateChargeLevel	(void);
@@ -70,6 +70,8 @@ public:
 			float GetUnchargeSpeed	(void) const;
 			void Recharge			(float val);
 			bool IsNecessaryItem	(const shared_str& item_sect, xr_vector<shared_str> item);
+
+			float GetVisRadius		() { return m_fRadius; };
 
 			xr_vector<shared_str> m_SuitableBatteries;
 

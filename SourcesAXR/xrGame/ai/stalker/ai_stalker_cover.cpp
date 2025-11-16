@@ -175,7 +175,7 @@ void CAI_Stalker::update_best_cover_actuality		(const Fvector &position_to_cover
 	if (m_best_cover->m_is_smart_cover) {
 		float							value;
 		smart_cover::cover const		*cover = static_cast<smart_cover::cover const*>(m_best_cover);
-		smart_cover::loophole			*loophole = cover->best_loophole(position_to_cover_from, value, false, movement().current_params().cover() == m_best_cover );
+		smart_cover::loophole			*loophole = cover->best_loophole(position_to_cover_from, value, false, get_movement().current_params().cover() == m_best_cover );
 		if (!loophole) {
 			m_ce_best->invalidate		();
 			m_best_cover_actual			= false;
@@ -227,14 +227,14 @@ void CAI_Stalker::update_best_cover_actuality		(const Fvector &position_to_cover
 
 const CCoverPoint *CAI_Stalker::best_cover			(const Fvector &position_to_cover_from)
 {
-//	shared_str const					&cover_id = movement().current_params().cover_id();
+//	shared_str const					&cover_id = get_movement().current_params().cover_id();
 //	if (cover_id != "")
 //		return							(ai().cover_manager().smart_cover(cover_id));
 
 	update_best_cover_actuality			(position_to_cover_from);
 
 	if (m_best_cover_actual) {
-		agent_manager().member().member(this).cover(m_best_cover);
+		agent_manager().get_member().member(this).cover(m_best_cover);
 		return							(m_best_cover);
 	}
 
@@ -250,7 +250,7 @@ const CCoverPoint *CAI_Stalker::best_cover			(const Fvector &position_to_cover_f
 
 	m_best_cover_value					= m_best_cover ? best_cover_value(position_to_cover_from) : flt_max;
 
-	agent_manager().member().member(this).cover(m_best_cover);
+	agent_manager().get_member().member(this).cover(m_best_cover);
 
 	return								(m_best_cover);
 }

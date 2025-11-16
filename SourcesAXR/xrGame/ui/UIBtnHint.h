@@ -3,7 +3,7 @@
 
 class CUITextWnd;
 
-class CUIButtonHint :public CUIFrameWindow
+class CUIButtonHint final : public CUIFrameWindow
 {
 	CUIWindow*			m_ownerWnd;
 
@@ -17,6 +17,7 @@ public:
 	void			OnRender		();
 	void			Draw_			()	{m_enabledOnFrame = true;};
 	void			SetHintText		(CUIWindow* w, LPCSTR text);
+	pcstr			GetDebugType	() override { return "CUIButtonHint"; }
 };
 
 extern CUIButtonHint* g_btnHint; 

@@ -14,7 +14,7 @@ using namespace luabind;
 
 CALifeMonsterMovementManager *get_movement	(const CALifeMonsterBrain *brain)
 {
-	return	(&brain->movement());
+	return	(&brain->get_movement());
 }
 
 #pragma optimize("s",on)

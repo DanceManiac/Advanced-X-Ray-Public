@@ -30,6 +30,8 @@
 #include "../CustomDetector.h"
 #include "../AnomalyDetector.h"
 #include "../ArtefactContainer.h"
+#include "../AntigasFilter.h"
+#include "../RepairKit.h"
 #include "../CustomBackpack.h"
 
 extern const LPCSTR g_inventory_upgrade_xml;
@@ -79,7 +81,7 @@ void CUIItemInfo::InitItemInfo(LPCSTR xml_name)
 
 	if(uiXml.NavigateToNode("main_frame",0))
 	{
-		Frect wnd_rect;
+		Frect wnd_rect{};
 		wnd_rect.x1		= uiXml.ReadAttribFlt("main_frame", 0, "x", 0);
 		wnd_rect.y1		= uiXml.ReadAttribFlt("main_frame", 0, "y", 0);
 
@@ -199,7 +201,7 @@ void CUIItemInfo::InitItem(CUICellItem* pCellItem, CInventoryItem* pCompareItem,
 {
 	if(!pCellItem)
 	{
-		m_pInvItem			= NULL;
+		m_pInvItem			= nullptr;
 		Enable				(false);
 		return;
 	}
@@ -209,7 +211,7 @@ void CUIItemInfo::InitItem(CUICellItem* pCellItem, CInventoryItem* pCompareItem,
 	Enable					(NULL != m_pInvItem);
 	if(!m_pInvItem)			return;
 
-	Fvector2				pos;	pos.set( 0.0f, 0.0f );
+	Fvector2				pos{};	pos.set(0.0f, 0.0f);
 	string256				str;
 	if ( UIName )
 	{
@@ -233,7 +235,6 @@ void CUIItemInfo::InitItem(CUICellItem* pCellItem, CInventoryItem* pCompareItem,
 					PIItem jitem	= (PIItem)pCellItem->Child(j)->m_pData;
 					weight			+= jitem->CInventoryItem::Weight();
 				}
-
 			}
 		}
 
@@ -248,8 +249,8 @@ void CUIItemInfo::InitItem(CUICellItem* pCellItem, CInventoryItem* pCompareItem,
 	}
 	if ( UICost && IsGameTypeSingle() && item_price!=u32(-1) )
 	{
-		xr_sprintf				(str, "%d RU", item_price);// will be owerwritten in multiplayer
-		UICost->SetText		(str);
+		xr_sprintf				(str, "%d %s", item_price, *CStringTable().translate("ui_st_currency"));// will be owerwritten in multiplayer
+		UICost->SetText			(str);
 		pos.x = UICost->GetWndPos().x;
 		if ( m_complex_desc )
 		{
@@ -340,8 +341,8 @@ void CUIItemInfo::InitItem(CUICellItem* pCellItem, CInventoryItem* pCompareItem,
 
 		Irect item_grid_rect				= pInvItem->GetInvGridRect();
 		Frect texture_rect;
-		texture_rect.lt.set					(item_grid_rect.x1*INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()),	item_grid_rect.y1*INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()));
-		texture_rect.rb.set					(item_grid_rect.x2*INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()),	item_grid_rect.y2*INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()));
+		texture_rect.lt.set					(item_grid_rect.x1*UI().inv_grid_kx(),	item_grid_rect.y1*UI().inv_grid_kx());
+		texture_rect.rb.set					(item_grid_rect.x2*UI().inv_grid_kx(),	item_grid_rect.y2*UI().inv_grid_kx());
 		texture_rect.rb.add					(texture_rect.lt);
 		UIItemImage->GetUIStaticItem().SetTextureRect(texture_rect);
 		UIItemImage->TextureOn				();
@@ -349,16 +350,8 @@ void CUIItemInfo::InitItem(CUICellItem* pCellItem, CInventoryItem* pCompareItem,
 
 		Fvector2 v_r{};
 
-		if (GameConstants::GetUseHQ_Icons())
-		{
-			v_r	= { item_grid_rect.x2 * INV_GRID_WIDTH2(GameConstants::GetUseHQ_Icons()) / 2,
-				item_grid_rect.y2 * INV_GRID_HEIGHT2(GameConstants::GetUseHQ_Icons()) / 2 };
-		}
-		else
-		{
-			v_r	= { item_grid_rect.x2 * INV_GRID_WIDTH2(GameConstants::GetUseHQ_Icons()),
-				item_grid_rect.y2 * INV_GRID_HEIGHT2(GameConstants::GetUseHQ_Icons()) };
-		}
+			v_r	= { item_grid_rect.x2 * UI().inv_grid_kx(),
+				item_grid_rect.y2 * UI().inv_grid_kx() };
 		
 		v_r.x								*= UI().get_current_kx();
 
@@ -442,15 +435,18 @@ void CUIItemInfo::ResetInventoryItem()
 
 void CUIItemInfo::TryAddItemInfo(CInventoryItem& pInvItem)
 {
-	CTorch* torch = smart_cast<CTorch*>(&pInvItem);
-	CCustomDetector* artefact_detector = smart_cast<CCustomDetector*>(&pInvItem);
-	CDetectorAnomaly* anomaly_detector = smart_cast<CDetectorAnomaly*>(&pInvItem);
-	CArtefactContainer* af_container = smart_cast<CArtefactContainer*>(&pInvItem);
-	CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(&pInvItem);
+	CTorch* pTorch = smart_cast<CTorch*>(&pInvItem);
+	CCustomDetector* pArtefact_detector = smart_cast<CCustomDetector*>(&pInvItem);
+	CDetectorAnomaly* pAnomaly_detector = smart_cast<CDetectorAnomaly*>(&pInvItem);
+	CArtefactContainer* pAf_container = smart_cast<CArtefactContainer*>(&pInvItem);
+	CCustomBackpack* pBackpack = smart_cast<CCustomBackpack*>(&pInvItem);
+	CBattery* pBattery = smart_cast<CBattery*>(&pInvItem);
+	CAntigasFilter* pFilter = smart_cast<CAntigasFilter*>(&pInvItem);
+	CRepairKit* pKit = smart_cast<CRepairKit*>(&pInvItem);
 
 	bool ShowChargeTorch = GameConstants::GetTorchHasBattery();
 
-	if ((torch && ShowChargeTorch || artefact_detector || anomaly_detector || af_container || backpack) && UIInventoryItem)
+	if ((pTorch && ShowChargeTorch || pArtefact_detector || pAnomaly_detector || pAf_container || pBackpack || pBattery || pFilter || pKit) && UIInventoryItem)
 	{
 		UIInventoryItem->SetInfo(pInvItem);
 		UIDesc->AddWindow(UIInventoryItem, false);

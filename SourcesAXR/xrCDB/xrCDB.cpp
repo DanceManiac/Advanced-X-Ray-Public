@@ -50,6 +50,8 @@ MODEL::~MODEL()
 
 void MODEL::build(Fvector* V, int Vcnt, TRI* T, int Tcnt, build_callback* bc, void* bcp, const bool rebuildTrisRequired)
 {
+    ZoneScoped;
+
     R_ASSERT(S_INIT == status);
     R_ASSERT((Vcnt >= 4) && (Tcnt >= 2));
 
@@ -59,6 +61,8 @@ void MODEL::build(Fvector* V, int Vcnt, TRI* T, int Tcnt, build_callback* bc, vo
 
 void MODEL::build_internal(Fvector* V, int Vcnt, TRI* T, int Tcnt, build_callback* bc, void* bcp, const bool rebuildTrisRequired)
 {
+    ZoneScoped;
+
     // verts
     verts_count = Vcnt;
     verts = CALLOC(Fvector, verts_count);
@@ -149,6 +153,8 @@ std::uint32_t MODEL::memory()
 
 bool MODEL::serialize(const char* fileName, serialize_callback callback /*= nullptr*/) const
 {
+    ZoneScoped;
+
     IWriter* wstream = FS.w_open(fileName);
     if (!wstream)
         return false;
@@ -181,6 +187,8 @@ bool MODEL::serialize(const char* fileName, serialize_callback callback /*= null
 
 bool MODEL::deserialize(const char* fileName, bool checkCrc32 /*= true*/, deserialize_callback callback /*= nullptr*/)
 {
+    ZoneScoped;
+
     IReader* rstream = FS.r_open(fileName);
     if (!rstream)
         return false;

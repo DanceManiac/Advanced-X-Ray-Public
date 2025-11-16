@@ -9,15 +9,15 @@
 #include "../xrcdb/xr_collide_defs.h"
 #include "x_ray.h"
 
-static const int	max_desired_items = rain_max_desired_items;
-static const float	source_radius = rain_source_radius;
-static const float	source_offset = rain_source_offset;
-static const float	max_distance = source_offset * rain_max_distance_koef;
-static const float	sink_offset = -(max_distance - source_offset);
+static const int	m_imax_desired_items = rain_max_desired_items;
+static const float	m_fsource_radius = rain_source_radius;
+static const float	m_fsource_offset = rain_source_offset;
+static const float	m_fmax_distance = m_fsource_offset * rain_max_distance_koef;
+static const float	m_fsink_offset = -(m_fmax_distance - m_fsource_offset);
 
-const int	max_particles = rain_max_particles;
-const int	particles_cache = rain_particles_cache;
-const float particles_time = rain_particles_time;
+const int	m_imax_particles = rain_max_particles;
+const int	m_iparticles_cache = rain_particles_cache;
+const float m_fparticles_time = rain_particles_time;
 
 //refs
 class ENGINE_API IRender_DetailModel;
@@ -109,6 +109,8 @@ public:
 
 	void							Render			();
 	void							OnFrame			();
+
+	void							InvalidateState	() { state = stIdle; }
 
 	float							GetRainHemi		() { return rain_hemi; }
 };

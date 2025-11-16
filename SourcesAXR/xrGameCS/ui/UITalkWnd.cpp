@@ -24,13 +24,13 @@
 
 CUITalkWnd::CUITalkWnd()
 {
-	m_pActor				= NULL;
+	m_pActor				= nullptr;
 
-	m_pOurInvOwner			= NULL;
-	m_pOthersInvOwner		= NULL;
+	m_pOurInvOwner			= nullptr;
+	m_pOthersInvOwner		= nullptr;
 
-	m_pOurDialogManager		= NULL;
-	m_pOthersDialogManager	= NULL;
+	m_pOurDialogManager		= nullptr;
+	m_pOthersDialogManager	= nullptr;
 
 	ToTopicMode				();
 
@@ -121,10 +121,14 @@ void CUITalkWnd::UpdateQuestions()
 		for(u32 i=0; i< m_pOurDialogManager->AvailableDialogs().size(); ++i)
 		{
 			const DIALOG_SHARED_PTR& phrase_dialog = m_pOurDialogManager->AvailableDialogs()[i];
-			bool bfinalizer = (phrase_dialog->GetPhrase("0"))->IsFinalizer();
 
-			AddQuestion(phrase_dialog->DialogCaption(), phrase_dialog->GetDialogID(), i, bfinalizer);
-		}
+			SPhraseInfo phInfo;
+			phInfo.bFinalizer = (phrase_dialog->GetPhrase("0"))->IsFinalizer();
+			phInfo.bUseIconLtx = (phrase_dialog->GetPhrase("0"))->GetIconUsingLTX();
+			phInfo.sIconName = (phrase_dialog->GetPhrase("0"))->GetIconName();
+
+			AddQuestion(phrase_dialog->DialogCaption(), phrase_dialog->GetDialogID(), i, phInfo);
+	}
 	}
 	else
 	{
@@ -145,8 +149,12 @@ void CUITalkWnd::UpdateQuestions()
 					it != m_pCurrentDialog->PhraseList().end(); ++it, ++number)
 				{
 					CPhrase* phrase = *it;
-					AddQuestion(m_pCurrentDialog->GetPhraseText(phrase->GetID()), phrase->GetID(), number,
-						phrase->IsFinalizer());
+					SPhraseInfo phInfo;
+					phInfo.bFinalizer = phrase->IsFinalizer();
+					phInfo.bUseIconLtx = phrase->GetIconUsingLTX();
+					phInfo.sIconName = phrase->GetIconName();
+
+					AddQuestion(m_pCurrentDialog->GetPhraseText(phrase->GetID() ), phrase->GetID(), number, phInfo);
 				}
 			}
 			else
@@ -210,7 +218,7 @@ void CUITalkWnd::Update()
 		CGameObject* pOurGO = smart_cast<CGameObject*>(m_pOurInvOwner);
 		CGameObject* pOtherGO = smart_cast<CGameObject*>(m_pOthersInvOwner);
 	
-		if(	NULL==pOurGO || NULL==pOtherGO )
+		if(	nullptr==pOurGO || nullptr==pOtherGO )
 			Game().StartStopMenu(this,true);
 	}
 
@@ -257,22 +265,24 @@ void CUITalkWnd::Hide()
 	UITalkDialogWnd->Hide		();
 
 	inherited::Hide				();
-	if(!m_pActor)				return;
+	if(!m_pActor)
+		return;
 	
 	ToTopicMode					();
 
-	if (m_pActor->IsTalking()) m_pActor->StopTalk();
-	m_pActor = NULL;
+	if (m_pActor->IsTalking())
+		m_pActor->StopTalk();
+	m_pActor = nullptr;
 }
 
 bool  CUITalkWnd::TopicMode			() 
 {
-	return NULL == m_pCurrentDialog.get();
+	return nullptr == m_pCurrentDialog.get();
 }
 
 void  CUITalkWnd::ToTopicMode		() 
 {
-	m_pCurrentDialog = DIALOG_SHARED_PTR((CPhraseDialog*)NULL);
+	m_pCurrentDialog = DIALOG_SHARED_PTR((CPhraseDialog*)nullptr);
 }
 
 void CUITalkWnd::AskQuestion()
@@ -288,7 +298,7 @@ void CUITalkWnd::AskQuestion()
 		{
 
 			string128	s;
-			sprintf_s		(s,"ID = [%s] of selected question is out of range of available dialogs ",*UITalkDialogWnd->m_ClickedQuestionID);
+			xr_sprintf		(s,"ID = [%s] of selected question is out of range of available dialogs ",UITalkDialogWnd->m_ClickedQuestionID);
 			VERIFY2(FALSE, s);
 		}
 
@@ -315,12 +325,12 @@ void CUITalkWnd::SayPhrase(const shared_str& phrase_id)
 	if(m_pCurrentDialog->IsFinished()) ToTopicMode();
 }
 
-void CUITalkWnd::AddQuestion(const shared_str& text, const shared_str& value, int number, bool b_finalizer)
+void CUITalkWnd::AddQuestion(const shared_str& text, const shared_str& value, int number, SPhraseInfo phInfo)
 {
 	if (text.size() == 0)
 		return;
 
-	UITalkDialogWnd->AddQuestion(CStringTable().translate(text).c_str(), value.c_str(), number, b_finalizer);
+	UITalkDialogWnd->AddQuestion(CStringTable().translate(text).c_str(), value.c_str(), number, phInfo);
 }
 
 void CUITalkWnd::AddAnswer(const shared_str& text, LPCSTR SpeakerName)
@@ -340,8 +350,7 @@ void CUITalkWnd::SwitchToTrade()
 {
 	if ( m_pOurInvOwner->IsTradeEnabled() && m_pOthersInvOwner->IsTradeEnabled() )
 	{
-		CUIGameSP* pGameSP = smart_cast<CUIGameSP*>( HUD().GetUI()->UIGame() );
-
+		CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
 		if ( pGameSP )
 		{
 			UITalkDialogWnd->Show(false);

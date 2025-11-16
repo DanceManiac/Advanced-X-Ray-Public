@@ -3,6 +3,13 @@
 
 #include "ResourceManager.h"
 
+#define USE_RENDERDOC
+
+#ifdef USE_RENDERDOC
+#include <../RenderDoc/renderdoc_app.h>
+RENDERDOC_API_1_0_0* g_renderdoc_api{};
+#endif
+
 dxRenderDeviceRender::dxRenderDeviceRender()
 	:	Resources(0)
 {
@@ -101,6 +108,9 @@ void dxRenderDeviceRender::SetupStates()
 #ifdef USE_DX11
 	//	TODO: DX10: Implement Resetting of render states into default mode
 	//VERIFY(!"dxRenderDeviceRender::SetupStates not implemented.");
+
+	SSManager.SetMaxAnisotropy(ps_r__tf_Anisotropic);
+	SSManager.SetMipLODBias(ps_r__tf_Mipbias);
 #else	//	USE_DX11
 	for (u32 i=0; i<HW.Caps.raster.dwStages; i++)				{
 		float fBias = -.5f	;
@@ -151,19 +161,53 @@ void dxRenderDeviceRender::OnDeviceCreate(LPCSTR shName)
 	::Render->create			();
 	Device.Statistic->OnDeviceCreate	();
 
-//#ifndef DEDICATED_SERVER
-	if (!g_dedicated_server)
 	{
 		m_WireShader.create			("editor\\wire");
 		m_SelectionShader.create	("editor\\selection");
 
 		DUImpl.OnDeviceCreate			();
 	}
-//#endif
 }
 
 void dxRenderDeviceRender::Create( HWND hWnd, u32 &dwWidth, u32 &dwHeight, float &fWidth_2, float &fHeight_2, bool move_window)
 {
+#ifdef USE_RENDERDOC
+	if (!g_renderdoc_api)
+	{
+		static HMODULE hModule = GetModuleHandle("renderdoc.dll");
+		if (!hModule)
+			hModule = LoadLibrary("renderdoc.dll");
+
+		if (hModule)
+		{
+			const auto RENDERDOC_GetAPI = reinterpret_cast<pRENDERDOC_GetAPI>(GetProcAddress(hModule, "RENDERDOC_GetAPI"));
+			const auto Result = RENDERDOC_GetAPI(eRENDERDOC_API_Version_1_0_0, reinterpret_cast<void**>(&g_renderdoc_api));
+
+			if (Result == 1)
+			{
+				g_renderdoc_api->UnloadCrashHandler();
+
+				string_path FolderName{};
+				FS.update_path(FolderName, "$app_data_root$", "renderdoc_captures\\");
+				VerifyPath(FolderName);
+				g_renderdoc_api->SetCaptureFilePathTemplate(FolderName);
+				Msg("~~[%s] RenderDoc folder: [%s]", __FUNCTION__, FolderName);
+
+				RENDERDOC_InputButton CaptureButton[] = { eRENDERDOC_Key_Home };
+				g_renderdoc_api->SetCaptureKeys(CaptureButton, std::size(CaptureButton));
+				g_renderdoc_api->SetCaptureOptionU32(eRENDERDOC_Option_AllowVSync, 0);
+				g_renderdoc_api->SetCaptureOptionU32(eRENDERDOC_Option_DebugOutputMute, 0);
+
+				g_renderdoc_api->SetCaptureOptionU32(eRENDERDOC_Option_RefAllResources, 1);
+				g_renderdoc_api->SetCaptureOptionU32(eRENDERDOC_Option_CaptureCallstacks, 1);
+				g_renderdoc_api->SetCaptureOptionU32(eRENDERDOC_Option_VerifyBufferAccess, 1);
+				g_renderdoc_api->SetCaptureOptionU32(eRENDERDOC_Option_APIValidation, 1);
+				g_renderdoc_api->SetCaptureOptionU32(eRENDERDOC_Option_CaptureAllCmdLists, 1);
+			}
+		}
+	}
+#endif
+
 	HW.CreateDevice		(hWnd, move_window);
 #ifdef USE_DX11
 	dwWidth					= HW.m_ChainDesc.BufferDesc.Width;
@@ -404,6 +448,10 @@ bool dxRenderDeviceRender::HWSupportsShaderYUV2RGB()
 
 void  dxRenderDeviceRender::OnAssetsChanged()
 {
+	ZoneScoped;
+
 	Resources->m_textures_description.UnLoad();
 	Resources->m_textures_description.Load();
 }
+
+IResourceManager* dxRenderDeviceRender::GetResourceManager() const { return dynamic_cast<IResourceManager*>(Resources); }

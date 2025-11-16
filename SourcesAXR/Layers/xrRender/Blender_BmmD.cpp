@@ -86,8 +86,17 @@ void	CBlender_BmmD::Compile	(CBlender_Compile& C)
 			C.StageEnd			();
 		}
 		C.PassEnd			();
-	} else {
-		if (C.L_textures.size()<2)	Debug.fatal	(DEBUG_INFO,"Not enought textures for shader, base tex: %s",*C.L_textures[0]);
+	}
+	else
+	{
+		if (C.L_textures.size()<2)
+		{
+			Msg("! xrRender_R1: WARNING! Not enought textures for shader, base tex: %s", *C.L_textures[0]);
+			//Debrovski: using VERY noticeable placeholder-texture
+			C.L_textures.emplace_back("$shadertest");
+			C.L_textures.emplace_back("$shadertest");
+		}
+
 		switch (C.iElement)
 		{
 		case SE_R1_NORMAL_HQ:	
@@ -140,10 +149,11 @@ void	CBlender_BmmD::Compile	(CBlender_Compile& C)
 	// ***only pixel shaders differ***
 	string256				mask;
 	strconcat				(sizeof(mask),mask,C.L_textures[0].c_str(),"_mask");
+
 	switch(C.iElement) 
 	{
 	case SE_R2_NORMAL_HQ: 		// deffer
-		uber_deffer		(C, true,	"impl","impl",false,oT2_Name[0]?oT2_Name:0,true);
+		uber_deffer(C, true, "impl", "impl", false, oT2_Name[0] ? oT2_Name : 0, true);
 		C.r_Sampler		("s_mask",	mask);
 		C.r_Sampler		("s_lmap",	C.L_textures[1]);
 
@@ -165,7 +175,7 @@ void	CBlender_BmmD::Compile	(CBlender_Compile& C)
 		C.r_End			();
 		break;
 	case SE_R2_NORMAL_LQ: 		// deffer
-		uber_deffer		(C, false,	"base","impl",false,oT2_Name[0]?oT2_Name:0,true);
+		uber_deffer(C, false, "base", "impl", false, oT2_Name[0] ? oT2_Name : 0, true);
 		C.r_Sampler		("s_lmap",	C.L_textures[1]);
 		C.r_End			();
 		break;
@@ -187,12 +197,15 @@ void	CBlender_BmmD::Compile	(CBlender_Compile& C)
 	IBlender::Compile		(C);
 	// codepath is the same, only the shaders differ
 	// ***only pixel shaders differ***
+
 	string256				mask;
 	strconcat				(sizeof(mask),mask,C.L_textures[0].c_str(),"_mask");
+
 	switch(C.iElement) 
 	{
 	case SE_R2_NORMAL_HQ: 		// deffer
-		uber_deffer		(C, true,	"impl","impl",false,oT2_Name[0]?oT2_Name:0,true);
+		uber_deffer			(C, true, "terrain", "terrain_high", false, oT2_Name[0] ? oT2_Name : 0);
+
 		//C.r_Sampler		("s_mask",	mask);
 		//C.r_Sampler		("s_lmap",	C.L_textures[1]);
 
@@ -225,6 +238,11 @@ void	CBlender_BmmD::Compile	(CBlender_Compile& C)
 		C.r_dx10Texture		("s_dp_b",	strconcat(sizeof(mask), mask, oB_Name, "_bump#"));
 		C.r_dx10Texture		("s_dp_a",	strconcat(sizeof(mask), mask, oA_Name, "_bump#"));
 
+		C.r_dx10Texture		("s_height_r", strconcat(sizeof(mask), mask, oR_Name, "_height"));
+        C.r_dx10Texture		("s_height_g", strconcat(sizeof(mask), mask, oG_Name, "_height"));
+        C.r_dx10Texture		("s_height_b", strconcat(sizeof(mask), mask, oB_Name, "_height"));
+        C.r_dx10Texture		("s_height_a", strconcat(sizeof(mask), mask, oA_Name, "_height"));
+
 		C.r_dx10Texture		("s_puddles_normal", "shaders\\water_normal");
 		C.r_dx10Texture		("s_puddles_perlin", "shaders\\puddles_perlin");
 		C.r_dx10Texture		("s_puddles_mask", strconcat(sizeof(mask), mask, C.L_textures[0].c_str(), "_puddles_mask"));
@@ -241,21 +259,22 @@ void	CBlender_BmmD::Compile	(CBlender_Compile& C)
 	case SE_R2_NORMAL_LQ: 		// deffer
 		uber_deffer		(C, false,	"base","impl",false,oT2_Name[0]?oT2_Name:0,true);
 
-		//C.r_Sampler		("s_lmap",	C.L_textures[1]);
-
-		C.r_dx10Texture		("s_lmap",	C.L_textures[1]);
+		C.r_dx10Texture		("s_lmap", C.L_textures[1]);
+		C.r_dx10Sampler		("smp_base");
 		C.r_dx10Sampler		("smp_linear");
-
 
 		C.r_Stencil		( TRUE,D3DCMP_ALWAYS,0xff,0x7f,D3DSTENCILOP_KEEP,D3DSTENCILOP_REPLACE,D3DSTENCILOP_KEEP);
 		C.r_StencilRef	(0x01);
 
 		C.r_End			();
 		break;
+
 	case SE_R2_SHADOW:			// smap
 		//if (RImplementation.o.HW_smap)	C.r_Pass	("shadow_direct_base","dumb",	FALSE,TRUE,TRUE,FALSE);
 		//else							C.r_Pass	("shadow_direct_base","shadow_direct_base",FALSE);
-		C.r_Pass	("shadow_direct_base","dumb",	FALSE,TRUE,TRUE,FALSE);
+
+		C.r_Pass("shadow_direct_terrain", "dumb", FALSE, TRUE, TRUE, FALSE);
+
 		//C.r_Sampler		("s_base",C.L_textures[0]);
 		C.r_dx10Texture		("s_base",C.L_textures[0]);
 		C.r_dx10Sampler		("smp_base");

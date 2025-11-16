@@ -18,6 +18,10 @@
 
 CRender RImplementation;
 extern ENGINE_API bool ps_enchanted_shaders;
+extern ENGINE_API int ps_ssfx_il_quality;
+extern ENGINE_API int ps_ssfx_ao_quality;
+extern ENGINE_API int ps_ssfx_terrain_pom_refine;
+extern ENGINE_API int ps_ssfx_pom_refine;
 
 //////////////////////////////////////////////////////////////////////////
 class CGlow				: public IRender_Glow
@@ -53,7 +57,7 @@ ShaderElement*			CRender::rimp_select_sh_static	(dxRender_Visual	*pVisual, float
 	int		id	= SE_R2_SHADOW;
 	if	(CRender::PHASE_NORMAL == RImplementation.phase)
 	{
-		id = ((_sqrt(cdist_sq)-pVisual->vis.sphere.R)<r_dtex_range)?SE_R2_NORMAL_HQ:SE_R2_NORMAL_LQ;
+		id = ((_sqrt(cdist_sq) - pVisual->vis.sphere.R) < r_dtex_range) ? SE_R2_NORMAL_HQ : SE_R2_NORMAL_LQ;
 	}
 	return pVisual->shader->E[id]._get();
 }
@@ -301,8 +305,8 @@ void					CRender::create					()
 		o.ssao_opt_data = true;
 	}
 
-    if( o.ssao_hdao )
-        o.ssao_opt_data = false;
+	if( o.ssao_hdao )
+		o.ssao_opt_data = false;
 
 	//	MSAA option dependencies
 
@@ -350,6 +354,8 @@ void					CRender::create					()
 
 	o.dx11_es_addon_enabled ? Console->Execute("shaders_preset es_shaders_preset") : Console->Execute("shaders_preset original_shaders_preset");
 
+	o.dx11_es_aces_tonemapping	= ps_r4_shaders_flags.test(R4FLAG_ES_ACES_TONEMAPPING);
+
 	o.dx11_ss_sky_debanding		= ps_r4_shaders_flags.test(R4FLAG_SS_DEBANDING);
 	o.dx11_ss_flora_fix			= ps_r4_shaders_flags.test(R4FLAG_SS_FLORAFIX);
 	o.dx11_ss_fog				= ps_r4_shaders_flags.test(R4FLAG_SS_FOG);
@@ -359,6 +365,9 @@ void					CRender::create					()
 	o.dx11_ss_shadows			= ps_r4_shaders_flags.test(R4FLAG_SS_SHADOWS);
 	o.dx11_ss_lut				= ps_r4_shaders_flags.test(R4FLAG_SS_LUT);
 	o.dx11_ss_wind				= ps_r4_shaders_flags.test(R4FLAG_SS_WIND);
+	o.dx11_ss_puddles			= ps_r4_shaders_flags.test(R4FLAG_SS_PUDDLES);
+	o.dx11_ss_bloom				= ps_r4_shaders_flags.test(R4FLAG_SS_BLOOM);
+	o.dx11_ss_bloom_mask_dirt	= ps_r4_shaders_flags.test(R4FLAG_SS_BLOOM_MASK_DIRT);
 
 	o.dx11_enable_tessellation = HW.FeatureLevel>=D3D_FEATURE_LEVEL_11_0 && ps_r2_ls_flags_ext.test(R2FLAGEXT_ENABLE_TESSELLATION);
 
@@ -393,15 +402,30 @@ void					CRender::create					()
 
 	// Ascii's Screen Space Shaders - Check if SSS shaders exist
 	string_path fn;
+	o.ssfx_core = FS.exist(fn, "$game_shaders$", "r3\\screenspace_common", ".h") ? 1 : 0;
 	o.ssfx_rain = FS.exist(fn, "$game_shaders$", "r3\\effects_rain_splash", ".ps") ? 1 : 0;
 	o.ssfx_blood = FS.exist(fn, "$game_shaders$", "r3\\effects_wallmark_blood", ".ps") ? 1 : 0;
 	o.ssfx_branches = FS.exist(fn, "$game_shaders$", "r3\\deffer_tree_branch_bump-hq", ".vs") ? 1 : 0;
 	o.ssfx_hud_raindrops = FS.exist(fn, "$game_shaders$", "r3\\deffer_base_hud_bump", ".ps") ? 1 : 0;
+	o.ssfx_ssr = FS.exist(fn, "$game_shaders$", "r3\\ssfx_ssr", ".ps") ? 1 : 0;
+	o.ssfx_terrain = FS.exist(fn, "$game_shaders$", "r3\\deffer_terrain_high_flat_d", ".ps") ? 1 : 0;
+	o.ssfx_volumetric = FS.exist(fn, "$game_shaders$", "r3\\ssfx_volumetric_blur", ".ps") ? 1 : 0;
+	o.ssfx_ao = FS.exist(fn, "$game_shaders$", "r3\\ssfx_ao", ".ps") ? 1 : 0;
+	o.ssfx_il = FS.exist(fn, "$game_shaders$", "r3\\ssfx_il", ".ps") ? 1 : 0;
+	o.ssfx_bloom = FS.exist(fn, "$game_shaders$", "r3\\ssfx_bloom", ".ps") ? 1 : 0;
 
+	Msg("- Supports SSS UPDATE 22");
+	Msg("- SSS CORE INSTALLED %i", o.ssfx_core);
 	Msg("- SSS HUD RAINDROPS SHADER INSTALLED %i", o.ssfx_hud_raindrops);
 	Msg("- SSS RAIN SHADER INSTALLED %i", o.ssfx_rain);
 	Msg("- SSS BLOOD SHADER INSTALLED %i", o.ssfx_blood);
 	Msg("- SSS BRANCHES SHADER INSTALLED %i", o.ssfx_branches);
+	Msg("- SSS SSR SHADER INSTALLED %i", o.ssfx_ssr);
+	Msg("- SSS TERRAIN SHADER INSTALLED %i", o.ssfx_terrain);
+	Msg("- SSS VOLUMETRIC SHADER INSTALLED %i", o.ssfx_volumetric);
+	Msg("- SSS AO SHADER INSTALLED %i", o.ssfx_ao);
+	Msg("- SSS IL SHADER INSTALLED %i", o.ssfx_il);
+	Msg("- SSS BLOOM SHADER INSTALLED %i", o.ssfx_bloom);
 
 	// constants
 	dxRenderDeviceRender::Instance().Resources->RegisterConstantSetup	("parallax",	&binder_parallax);
@@ -439,7 +463,6 @@ void					CRender::create					()
 		R_CHK(HW.pDevice->CreateQuery(&qdesc,&q_sync_point[i]));
 	HW.pContext->End(q_sync_point[0]);
 
-	xrRender_apply_tf			();
 	::PortalTraverser.initialize();
 	FluidManager.Initialize( 70, 70, 70 );
 //	FluidManager.Initialize( 100, 100, 100 );
@@ -527,7 +550,6 @@ void CRender::reset_end()
 	}
 	//-AVO
 
-	xrRender_apply_tf			();
 	FluidManager.SetScreenSize(Device.dwWidth, Device.dwHeight);
 
 	// Set this flag true to skip the first render frame,
@@ -546,7 +568,7 @@ void CRender::OnFrame()
 void CRender::OnFrame()
 {
 	Models->DeleteQueue			();
-	if (ps_r2_ls_flags.test(R2FLAG_EXP_MT_CALC))
+	if (ps_r2_ls_flags.test(R2FLAG_EXP_MT_CALC) && g_pGameLevel)
 	{
 		// MT-details (@front)
 		if (Details)
@@ -709,6 +731,17 @@ void					CRender::rmNormal			()
 	//CHK_DX				(HW.pDevice->SetViewport(&VP));
 }
 
+CRender::SurfaceParams CRender::getSurface(const char* nameTexture)
+{
+	auto texture = DEV->_CreateTexture(nameTexture);
+	SurfaceParams surface = {};
+	surface.Surface = texture->get_SRView();
+	surface.w = texture->get_Width();
+	surface.h = texture->get_Height();
+
+	return surface;
+}
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -767,10 +800,16 @@ static HRESULT create_shader				(
 		u32	const		buffer_size,
 		LPCSTR const	file_name,
 		T*&				result,
-		bool const		disasm
+		bool const		disasm,
+		const char*		dbg_name
 	)
 {
 	result->sh			= ShaderTypeTraits<T>::CreateHWShader(buffer, buffer_size);
+
+	if (result->sh)
+	{
+		result->sh->SetPrivateData(WKPDID_D3DDebugObjectName, strlen(dbg_name), dbg_name);
+	}
 
 	ID3DShaderReflection *pReflection = 0;
 
@@ -799,6 +838,10 @@ static HRESULT create_shader				(
 		bool const		disasm
 	)
 {
+	string128 dbg_name{}, dbg_ext{};
+	_splitpath(file_name, nullptr, nullptr, dbg_name, dbg_ext);
+	strcat_s(dbg_name, dbg_ext);
+
 	HRESULT		_result = E_FAIL;
 	if (pTarget[0] == 'p') {
 		SPS* sps_result = (SPS*)result;
@@ -809,6 +852,11 @@ static HRESULT create_shader				(
 			Log			("! PS: ", file_name);
 			Msg			("! CreatePixelShader hr == 0x%08x", _result);
 			return		E_FAIL;
+		}
+
+		if (sps_result->ps)
+		{
+			sps_result->ps->SetPrivateData(WKPDID_D3DDebugObjectName, strlen(dbg_name), dbg_name);
 		}
 
 		ID3DShaderReflection *pReflection = 0;
@@ -837,8 +885,13 @@ static HRESULT create_shader				(
 
 		if ( !SUCCEEDED(_result) ) {
 			Log			("! VS: ", file_name);
-			Msg			("! CreatePixelShader hr == 0x%08x", _result);
+			Msg			("! CreateVertexShader hr == 0x%08x", _result);
 			return		E_FAIL;
+		}
+
+		if (svs_result->vs)
+		{
+			svs_result->vs->SetPrivateData(WKPDID_D3DDebugObjectName, strlen(dbg_name), dbg_name);
 		}
 
 		ID3DShaderReflection *pReflection = 0;
@@ -883,6 +936,11 @@ static HRESULT create_shader				(
 			return		E_FAIL;
 		}
 
+		if (sgs_result->gs)
+		{
+			sgs_result->gs->SetPrivateData(WKPDID_D3DDebugObjectName, strlen(dbg_name), dbg_name);
+		}
+
 		ID3DShaderReflection *pReflection = 0;
 
 		_result			= D3DReflect(buffer, buffer_size, IID_ID3DShaderReflection, (void**)&pReflection);
@@ -903,13 +961,13 @@ static HRESULT create_shader				(
 		}
 	}
 	else if (pTarget[0] == 'c') {
-		_result = create_shader	( pTarget, buffer, buffer_size, file_name, (SCS*&)result, disasm );
+		_result = create_shader	( pTarget, buffer, buffer_size, file_name, (SCS*&)result, disasm, dbg_name);
 	}
 	else if (pTarget[0] == 'h') {
-		_result = create_shader	( pTarget, buffer, buffer_size, file_name, (SHS*&)result, disasm );
+		_result = create_shader	( pTarget, buffer, buffer_size, file_name, (SHS*&)result, disasm, dbg_name);
 	}
 	else if (pTarget[0] == 'd') {
-		_result = create_shader	( pTarget, buffer, buffer_size, file_name, (SDS*&)result, disasm );
+		_result = create_shader	( pTarget, buffer, buffer_size, file_name, (SDS*&)result, disasm, dbg_name);
 	}
 	else {
 		NODEFAULT;
@@ -964,10 +1022,6 @@ public:
 	}
 };
 
-#include <boost/crc.hpp>
-
-static inline bool match_shader_id		( LPCSTR const debug_shader_id, LPCSTR const full_shader_id, FS_FileSet const& file_set, string_path& result );
-
 HRESULT	CRender::shader_compile			(
 	LPCSTR							name,
 	DWORD const*                    pSrcData,
@@ -993,6 +1047,10 @@ HRESULT	CRender::shader_compile			(
 	// Ascii's Screen Space Shaders - SSS preprocessor stuff
 	char							c_inter_grass	[32];
 	char							c_rain_quality	[32];
+	char							c_ssfx_il		[32];
+	char							c_ssfx_ao		[32];
+	char							c_ssfx_terrain_pom_refine[32];
+	char							c_ssfx_pom_refine[32];
 
 	char	sh_name[MAX_PATH] = "";
 	
@@ -1008,7 +1066,7 @@ HRESULT	CRender::shader_compile			(
 		defines[def_it].Name		=	"SMAP_size";
 		defines[def_it].Definition	=	c_smapsize;
 		def_it						++	;
-        VERIFY(xr_strlen(c_smapsize) == 4 || atoi(c_smapsize) < 16384);
+		VERIFY(xr_strlen(c_smapsize) == 4 || atoi(c_smapsize) < 16384);
 		xr_strcat(sh_name, c_smapsize); len+=4;
 	}
 
@@ -1111,15 +1169,15 @@ HRESULT	CRender::shader_compile			(
 	}
 	sh_name[len]='0'+char(o.ssao_blur_on); ++len;
 
-    if (o.ssao_hdao)
-    {
-        defines[def_it].Name		=	"HDAO";
-        defines[def_it].Definition	=	"1";
-        def_it						++;
+	if (o.ssao_hdao)
+	{
+		defines[def_it].Name		=	"HDAO";
+		defines[def_it].Definition	=	"1";
+		def_it						++;
 		sh_name[len]='1'; ++len;
 		sh_name[len]='0'; ++len;
 		sh_name[len]='0'; ++len;
-    }
+	}
 	else {
 		sh_name[len]='0'; ++len;
 		sh_name[len]='0'+char(o.ssao_hbao); ++len;
@@ -1157,7 +1215,7 @@ HRESULT	CRender::shader_compile			(
 		}
 	}
 
-    if( o.dx10_msaa )
+	if( o.dx10_msaa )
 	{
 		if (o.dx10_msaa_opt) 
 		{
@@ -1341,6 +1399,26 @@ HRESULT	CRender::shader_compile			(
 	{
 		sh_name[len]='0'; ++len;
 	}
+
+	if (ShadowOfChernobylMode)
+	{
+		defines[def_it].Name		= "USE_SHOC_MODE";
+		defines[def_it].Definition	= "1";
+		def_it						++;
+	}
+	sh_name[len] = '0' + char(ShadowOfChernobylMode); ++len;
+
+	if (g_pGamePersistent && g_pGamePersistent->Environment().used_soc_weather)
+	{
+		defines[def_it].Name = "USED_SOC_WEATHER";
+		defines[def_it].Definition = "1";
+		def_it++;
+		sh_name[len] = '1'; ++len;
+	}
+	else
+	{
+		sh_name[len] = '0'; ++len;
+	}
 	
 	defines[def_it].Name = "USE_PUDDLES";
 	defines[def_it].Definition = "1";
@@ -1369,7 +1447,7 @@ HRESULT	CRender::shader_compile			(
 		defines[def_it].Definition	=	"1";
 		def_it++;
 	}
-	sh_name[len]='0'+0*char(HW.FeatureLevel == D3D_FEATURE_LEVEL_10_1); ++len;
+	sh_name[len]='0' + char(HW.FeatureLevel == D3D_FEATURE_LEVEL_10_1); ++len;
 
 	if( HW.FeatureLevel>=D3D_FEATURE_LEVEL_11_0 )
 	{
@@ -1419,6 +1497,19 @@ HRESULT	CRender::shader_compile			(
 		defines[def_it].Definition = "1";
 		def_it++;
 		sh_name[len] = '0' + char(ps_r4_pseudo_pbr); ++len;
+	}
+	else
+	{
+		sh_name[len] = '0';
+		++len;
+	}
+
+	if (o.dx11_es_addon_enabled && o.dx11_es_aces_tonemapping)
+	{
+		defines[def_it].Name = "USE_ACES";
+		defines[def_it].Definition = "1";
+		def_it++;
+		sh_name[len] = '0' + char(o.dx11_es_aces_tonemapping); ++len;
 	}
 	else
 	{
@@ -1544,6 +1635,25 @@ HRESULT	CRender::shader_compile			(
 		++len;
 	}
 
+	//SSS IL & AO Quality
+	{
+		xr_sprintf(c_ssfx_il, "%d", u8(_min(_max(ps_ssfx_il_quality, 0), 64)));
+		defines[def_it].Name = "SSFX_IL_QUALITY";
+		defines[def_it].Definition = c_ssfx_il;
+		def_it++;
+		xr_strcat(sh_name, c_ssfx_il);
+		len += xr_strlen(c_ssfx_il);
+
+		xr_sprintf(c_ssfx_ao, "%d", u8(_min(_max(ps_ssfx_ao_quality, 2), 8)));
+		defines[def_it].Name = "SSFX_AO_QUALITY";
+		defines[def_it].Definition = c_ssfx_ao;
+		def_it++;
+		xr_strcat(sh_name, c_ssfx_ao);
+		len += xr_strlen(c_ssfx_ao);
+	}
+
+	if (o.dx11_ss_indirect_light)
+
 	if (o.dx11_sss_addon_enabled && o.dx11_ss_new_gloss)
 	{
 		defines[def_it].Name = "SSFX_NEWGLOSS";
@@ -1585,7 +1695,7 @@ HRESULT	CRender::shader_compile			(
 
 	if (o.dx11_sss_addon_enabled && o.dx11_ss_lut)
 	{
-		defines[def_it].Name = "SSFX_LUT";
+		defines[def_it].Name = "SSFX_LUT_INUSE";
 		defines[def_it].Definition = "1";
 		def_it++;
 		sh_name[len] = '0' + char(o.dx11_ss_lut); ++len;
@@ -1609,6 +1719,46 @@ HRESULT	CRender::shader_compile			(
 		++len;
 	}
 
+	if (o.dx11_sss_addon_enabled && o.dx11_ss_puddles)
+	{
+		defines[def_it].Name = "SSFX_PUDDLES";
+		defines[def_it].Definition = "1";
+		def_it++;
+		sh_name[len] = '0' + char(o.dx11_ss_puddles); ++len;
+	}
+	else
+	{
+		sh_name[len] = '0';
+		++len;
+	}
+
+	if (o.dx11_sss_addon_enabled && o.dx11_ss_bloom)
+	{
+		defines[def_it].Name = "SSFX_BLOOM";
+		defines[def_it].Definition = "1";
+		def_it++;
+		sh_name[len] = '0' + char(o.dx11_ss_bloom); ++len;
+	}
+	else
+	{
+		sh_name[len] = '0';
+		++len;
+	}
+
+	xr_sprintf(c_ssfx_pom_refine, "%d", u8(_min(_max(ps_ssfx_pom_refine, 0), 1)));
+	defines[def_it].Name = "SSFX_POM_REFINE";
+	defines[def_it].Definition = c_ssfx_pom_refine;
+	def_it++;
+	xr_strcat(sh_name, c_ssfx_pom_refine);
+	len += xr_strlen(c_ssfx_pom_refine);
+
+	xr_sprintf(c_ssfx_terrain_pom_refine, "%d", u8(_min(_max(ps_ssfx_terrain_pom_refine, 0), 1)));
+	defines[def_it].Name = "SSFX_TERRA_POM_REFINE";
+	defines[def_it].Definition = c_ssfx_terrain_pom_refine;
+	def_it++;
+	xr_strcat(sh_name, c_ssfx_terrain_pom_refine);
+	len += xr_strlen(c_ssfx_terrain_pom_refine);
+
 	defines[def_it].Name = "SSFX_MODEXE";
 	defines[def_it].Definition = "1";
 	def_it++;
@@ -1623,7 +1773,7 @@ HRESULT	CRender::shader_compile			(
 	   defines[def_it].Name		=	"USE_MSAA";
 	   defines[def_it].Definition	=	"1";
 	   def_it						++;
-       sh_name[len]='1'; ++len;
+	   sh_name[len]='1'; ++len;
 
 	   static char samples[2];
 
@@ -1729,54 +1879,40 @@ HRESULT	CRender::shader_compile			(
 
 	HRESULT		_result = E_FAIL;
 
-	string_path	folder_name, folder;
-	xr_strcpy		( folder, "r3\\objects\\r4\\" );
-	xr_strcat		( folder, name );
-	xr_strcat		( folder, "." );
-
 	char extension[3];
-	strncpy_s		( extension, pTarget, 2 );
-	xr_strcat		( folder, extension );
+	strncpy_s(extension, pTarget, 2);
 
-	FS.update_path	( folder_name, "$game_shaders$", folder );
-	xr_strcat		( folder_name, "\\" );
-	
-	m_file_set.clear( );
-	FS.file_list	( m_file_set, folder_name, FS_ListFiles | FS_RootOnly, "*");
-
-	string_path temp_file_name, file_name;
-	if ( !match_shader_id(name, sh_name, m_file_set, temp_file_name) ) {
-		string_path file;
-		xr_strcpy		( file, "shaders_cache\\r4\\" );
-		xr_strcat		( file, name );
-		xr_strcat		( file, "." );
-		xr_strcat		( file, extension );
-		xr_strcat		( file, "\\" );
-		xr_strcat		( file, sh_name );
-		FS.update_path	( file_name, "$app_data_root$", file);
-	}
-	else {
-		xr_strcpy		( file_name, folder_name );
-		xr_strcat		( file_name, temp_file_name );
-	}
-
-	if (FS.exist(file_name))
+	string_path file_name;
 	{
-		IReader* file = FS.r_open(file_name);
-		if (file->length()>4)
+		string_path file;
+		xr_strcpy(file, "shaders_cache\\r4\\");
+		xr_strcat(file, name);
+		xr_strcat(file, ".");
+		xr_strcat(file, extension);
+		xr_strcat(file, "\\");
+		xr_strcat(file, sh_name);
+		FS.update_path(file_name, "$app_data_root$", file);
+	}
+
+	u32 const file_crc = crc32(pSrcData, SrcDataLen);
+
+	if (FS.exist(file_name) && ps_r__common_flags.test(RFLAG_USE_SHADERS_CACHE))
+	{
+		std::unique_ptr<IReader> file(FS.r_open(file_name));
+
+		if (file && file->length() > 4)
 		{
-			u32 crc = 0;
-			crc = file->r_u32();
+			u32 crc = file->r_u32();
+			u32 savedBytecodeCrc = file->r_u32();
 
-			boost::crc_32_type		processor;
-			processor.process_block	( file->pointer(), ((char*)file->pointer()) + file->elapsed() );
-			u32 const real_crc		= processor.checksum( );
+			if (file_crc == savedBytecodeCrc)
+			{
+				u32 real_crc = crc32(file->pointer(), file->elapsed());
 
-			if ( real_crc == crc ) {
-				_result				= create_shader(pTarget, (DWORD*)file->pointer(), file->elapsed(), file_name, result, o.disasm);
+				if (real_crc == crc)
+					_result = create_shader(pTarget, reinterpret_cast<DWORD*>(file->pointer()), file->elapsed(), file_name, result, o.disasm);
 			}
 		}
-		file->close();
 	}
 
 	if (FAILED(_result))
@@ -1798,103 +1934,26 @@ HRESULT	CRender::shader_compile			(
 
 		if (SUCCEEDED(_result))
 		{
-			IWriter* file = FS.w_open(file_name);
+			std::unique_ptr<IWriter> file(FS.w_open(file_name));
 
-			boost::crc_32_type		processor;
-			processor.process_block	( pShaderBuf->GetBufferPointer(), ((char*)pShaderBuf->GetBufferPointer()) + pShaderBuf->GetBufferSize() );
-			u32 const crc			= processor.checksum( );
+			u32 const crc = crc32(pShaderBuf->GetBufferPointer(), static_cast<u32>(pShaderBuf->GetBufferSize()));
+			file->w_u32(crc);
+			file->w_u32(file_crc);
 
-			file->w_u32				(crc);
-			file->w					(pShaderBuf->GetBufferPointer(), (u32)pShaderBuf->GetBufferSize());
-			FS.w_close				(file);
+			file->w(pShaderBuf->GetBufferPointer(), static_cast<u32>(pShaderBuf->GetBufferSize()));
 
-			_result					= create_shader(pTarget, (DWORD*)pShaderBuf->GetBufferPointer(), (u32)pShaderBuf->GetBufferSize(), file_name, result, o.disasm);
+			_result = create_shader(pTarget, reinterpret_cast<DWORD*>(pShaderBuf->GetBufferPointer()), static_cast<u32>(pShaderBuf->GetBufferSize()), file_name, result, o.disasm);
 		}
-		else {
-//			Msg						( "! shader compilation failed" );
-			Log						("! ", file_name);
-			if ( pErrorBuf )
-				Log					("! error: ",(LPCSTR)pErrorBuf->GetBufferPointer());
+		else
+		{
+			Log("! ", file_name);
+			
+			if (pErrorBuf)
+				Log("! error: ", (LPCSTR)pErrorBuf->GetBufferPointer());
 			else
-				Msg					("Can't compile shader hr=0x%08x", _result);
+				Msg("Can't compile shader hr=0x%08x", _result);
 		}
 	}
 
 	return		_result;
 }
-
-static inline bool match_shader(LPCSTR const debug_shader_id, LPCSTR const full_shader_id, LPCSTR const mask, size_t const mask_length)
-{
-	return true;
-}
-
-static inline bool match_shader_id(LPCSTR const debug_shader_id, LPCSTR const full_shader_id, FS_FileSet const& file_set, string_path& result)
-{
-	return (strstr(Core.Params, "-noscache")) ? (true) : (false);
-}
-
-/*
-static inline bool match_shader		( LPCSTR const debug_shader_id, LPCSTR const full_shader_id, LPCSTR const mask, size_t const mask_length )
-{
-	u32 const full_shader_id_length	= xr_strlen( full_shader_id );
-	R_ASSERT2				(
-		full_shader_id_length == mask_length,
-		make_string(
-			"bad cache for shader %s, [%s], [%s]",
-			debug_shader_id,
-			mask,
-			full_shader_id
-		)
-	);
-	char const* i			= full_shader_id;
-	char const* const e		= full_shader_id + full_shader_id_length;
-	char const* j			= mask;
-	for ( ; i != e; ++i, ++j ) {
-		if ( *i == *j )
-			continue;
-
-		if ( *j == '_' )
-			continue;
-
-		return				false;
-	}
-
-	return					true;
-}
-
-static inline bool match_shader_id	( LPCSTR const debug_shader_id, LPCSTR const full_shader_id, FS_FileSet const& file_set, string_path& result )
-{
-#if 0
-	strcpy_s					( result, "" );
-	return						false;
-#else // #if 1
-#ifdef DEBUG
-	LPCSTR temp					= "";
-	bool found					= false;
-	FS_FileSet::const_iterator	i = file_set.begin();
-	FS_FileSet::const_iterator	const e = file_set.end();
-	for ( ; i != e; ++i ) {
-		if ( match_shader(debug_shader_id, full_shader_id, (*i).name.c_str(), (*i).name.size() ) ) {
-			VERIFY				( !found );
-			found				= true;
-			temp				= (*i).name.c_str();
-		}
-	}
-
-	xr_strcpy					( result, temp );
-	return						found;
-#else // #ifdef DEBUG
-	FS_FileSet::const_iterator	i = file_set.begin();
-	FS_FileSet::const_iterator	const e = file_set.end();
-	for ( ; i != e; ++i ) {
-		if ( match_shader(debug_shader_id, full_shader_id, (*i).name.c_str(), (*i).name.size() ) ) {
-			xr_strcpy			( result, (*i).name.c_str() );
-			return				true;
-		}
-	}
-
-	return						false;
-#endif // #ifdef DEBUG
-#endif// #if 1
-}
-*/

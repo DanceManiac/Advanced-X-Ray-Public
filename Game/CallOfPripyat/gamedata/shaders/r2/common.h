@@ -67,6 +67,8 @@ uniform	half4				m_blender_mode;	//
 
 uniform half4				debug; // x - ao debug, yzw - null
 
+uniform half4				aref_params; // x - aref strength, yzw - null
+
 half          calc_fogging               (half4 w_pos)      { return dot(w_pos,fog_plane);         }
 half2         calc_detail                (half3 w_pos)      {
         float                 dtl        = distance                (w_pos,eye_position)*dt_params.w;
@@ -245,7 +247,7 @@ uniform sampler2D       s_tonemap;              // actually MidleGray / exp(Lw +
 //////////////////////////////////////////////////////////////////////////////////////////
 // Defines                                		//
 #define def_gloss       half(2.f /255.f)
-#define def_aref        half(200.f/255.f)
+#define def_aref        (aref_params.x)
 #define def_dbumph      half(0.333f)
 #define def_virtualh    half(0.05f)              // 5cm
 #define def_distort     half(0.05f)             // we get -0.5 .. 0.5 range, this is -512 .. 512 for 1024, so scale it
@@ -291,21 +293,36 @@ float3	v_hemi        	(float3 n)                        	{        return L_hemi_
 float3	v_hemi_wrap     (float3 n, float w)                	{        return L_hemi_color*(w + (1-w)*n.y);                   }
 float3	v_sun           (float3 n)                        	{        return L_sun_color*dot(n,-L_sun_dir_w);                }
 float3	v_sun_wrap      (float3 n, float w)                	{        return L_sun_color*(w+(1-w)*dot(n,-L_sun_dir_w));      }
-half3   p_hemi          (float2 tc)                         {
-//        half3        	t_lmh         = tex2D             	(s_hemi, tc);
-//        return  dot     (t_lmh,1.h/4.h);
-        half4        	t_lmh         = tex2D             	(s_hemi, tc);
-        return t_lmh.a;
+
+half3   p_hemi(float2 tc)
+{
+	half4 t_lmh = tex2D(s_hemi, tc);
+		
+#ifdef USE_SHOC_MODE
+	half r_lmh = (1.0/3.0);
+	return dot(t_lmh.rgb, float3(r_lmh, r_lmh, r_lmh));
+#else // USE_SHOC_MODE
+	return t_lmh.a;
+#endif // USE_SHOC_MODE
 }
 
 half   get_hemi( half4 lmh)
 {
+#ifdef USE_SHOC_MODE
+	half r_lmh = (1.0/3.0);
+	return dot(lmh.rgb, half3(r_lmh, r_lmh, r_lmh));
+#else // USE_SHOC_MODE
 	return lmh.a;
+#endif // USE_SHOC_MODE
 }
 
 half   get_sun( half4 lmh)
 {
+#ifdef USE_SHOC_MODE
+	return lmh.a;
+#else // USE_SHOC_MODE
 	return lmh.g;
+#endif // USE_SHOC_MODE
 }
 
 //	contrast function

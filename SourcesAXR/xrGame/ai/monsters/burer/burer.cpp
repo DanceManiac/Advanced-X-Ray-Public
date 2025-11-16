@@ -62,11 +62,11 @@ void CBurer::reload(LPCSTR section)
 	inherited::reload		(section);
 
 	// add specific sounds
-	sound().add				(pSettings->r_string(section,"sound_gravi_attack"),	DEFAULT_SAMPLE_COUNT,	
+	get_sound().add				(pSettings->r_string(section,"sound_gravi_attack"),	DEFAULT_SAMPLE_COUNT,	
 							SOUND_TYPE_MONSTER_ATTACKING,	MonsterSound::eHighPriority + 2,	
 							u32(MonsterSound::eBaseChannel),	eMonsterSoundGraviAttack, "head");
 
-	sound().add				(pSettings->r_string(section,"sound_tele_attack"),	DEFAULT_SAMPLE_COUNT,	
+	get_sound().add				(pSettings->r_string(section,"sound_tele_attack"),	DEFAULT_SAMPLE_COUNT,	
 							SOUND_TYPE_MONSTER_ATTACKING,	MonsterSound::eHighPriority + 3,	
 							u32(MonsterSound::eBaseChannel),	eMonsterSoundTeleAttack, "head");
 }
@@ -350,7 +350,7 @@ void CBurer::UpdateGraviObject()
 	// установить позицию
 	pos.translate_over(m_gravi_object.cur_pos);
 
-	ps->UpdateParent(pos, zero_vel);
+	ps->UpdateParent(pos, m_zero_vel);
 	ps->Play(false);
 	
 	// hit objects
@@ -362,10 +362,10 @@ void CBurer::UpdateGraviObject()
 		CPhysicsShellHolder  *obj = smart_cast<CPhysicsShellHolder *>(m_nearest[i]);
 		if (!obj || !obj->m_pPhysicsShell) continue;
 		
-		Fvector dir;
-		dir.sub(obj->Position(), m_gravi_object.cur_pos);
-		dir.normalize();
-		obj->m_pPhysicsShell->applyImpulse(dir,m_gravi.impulse_to_objects * obj->m_pPhysicsShell->getMass());
+		Fvector dir_;
+		dir_.sub(obj->Position(), m_gravi_object.cur_pos);
+		dir_.normalize();
+		obj->m_pPhysicsShell->applyImpulse(dir_,m_gravi.impulse_to_objects * obj->m_pPhysicsShell->getMass());
 	}
 
 	// играть звук

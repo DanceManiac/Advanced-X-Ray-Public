@@ -38,7 +38,7 @@ void CStateMonsterSmartTerrainTaskAbstract::initialize()
 	VERIFY							(monster);
 	VERIFY							(monster->m_smart_terrain_id != 0xffff);
 
-	m_current_task					= monster->brain().smart_terrain().task(monster);
+	m_current_task					= monster->get_brain().smart_terrain().task(monster);
 }
 
 
@@ -54,7 +54,7 @@ bool CStateMonsterSmartTerrainTaskAbstract::check_start_conditions()
 	if (phantom)					return false;
 	
 
-	monster->brain().select_task	();
+	monster->get_brain().select_task	();
 	
 	// there is no any available smart terrains
 	if (monster->m_smart_terrain_id == 0xffff) return false;
@@ -154,7 +154,7 @@ void CStateMonsterSmartTerrainTaskAbstract::check_force_state()
 	}
 
 	// check if task has changed
-	CALifeSmartTerrainTask			*task = monster->brain().smart_terrain().task(monster);
+	CALifeSmartTerrainTask			*task = monster->get_brain().smart_terrain().task(monster);
 	if (!task || (m_current_task != task)) {
 		if (current_substate != u32(-1)) get_state_current()->critical_finalize();
 		

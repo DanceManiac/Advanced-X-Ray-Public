@@ -94,7 +94,7 @@ void stalker_movement_manager_smart_cover::build_enter_path				()
 	
 	if (m_path.size() > 1) {
 		m_current_transition	= &action(target_cover, m_path[0], m_path[1]);
-		m_current_transition_animation = &m_current_transition->animation();
+		m_current_transition_animation = &m_current_transition->get_animation();
 	}
 	else {
 		m_current_transition	= 0;
@@ -319,7 +319,7 @@ void stalker_movement_manager_smart_cover::build_exit_path							()
 	
 	if (m_path.size() > 1) {
 		m_current_transition = &action(*m_current.cover(), m_path[0], m_path[1]);
-		m_current_transition_animation = &m_current_transition->animation();
+		m_current_transition_animation = &m_current_transition->get_animation();
 	}
 	else {
 		m_current_transition = 0;
@@ -409,7 +409,7 @@ void stalker_movement_manager_smart_cover::build_exit_path_to_cover					()
 	if (m_path.size() > 1) {
 		VERIFY				(selected_action);
 		m_current_transition = selected_action;
-		m_current_transition_animation = &m_current_transition->animation();
+		m_current_transition_animation = &m_current_transition->get_animation();
 	}
 	else {
 		m_current_transition = 0;
@@ -456,7 +456,7 @@ void stalker_movement_manager_smart_cover::actualize_path				()
 
 	if (m_path.size() > 1) {
 		m_current_transition = &action(*m_current.cover(), m_path[0], m_path[1]);
-		m_current_transition_animation = &m_current_transition->animation();
+		m_current_transition_animation = &m_current_transition->get_animation();
 	}
 	else {
 		m_current_transition = 0;
@@ -586,18 +586,18 @@ void stalker_movement_manager_smart_cover::non_animated_change_loophole	()
 	
 	if (!exit_loophole(loophole_id)) {
 		if (!target_approached(m_apply_loophole_direction_distance))
-			object().sight().setup	(CSightAction(SightManager::eSightTypePathDirection));
+			object().get_sight().setup	(CSightAction(SightManager::eSightTypePathDirection));
 		else {
 			loophole_type const&	loophole = this->loophole(cover, loophole_id);
 			Fvector					direction = cover.enter_direction(loophole);
-			object().sight().setup	(CSightAction(SightManager::eSightTypeDirection, direction, true));
+			object().get_sight().setup	(CSightAction(SightManager::eSightTypeDirection, direction, true));
 		}
 	}
 
 	if (!path_completed())
 		return;
 
-	if (!object().sight().current_action().target_reached())
+	if (!object().get_sight().current_action().target_reached())
 		return;
 
 	go_next_loophole		();
@@ -720,15 +720,15 @@ void stalker_movement_manager_smart_cover::lookout_max_time			(float const &valu
 
 void stalker_movement_manager_smart_cover::start_non_animated_loophole_change	()
 {
-	object().movement().unbind_global_selector		();
-	object().movement().non_animated_loophole_change(true);
-	object().movement().non_animated_change_loophole();
+	object().get_movement().unbind_global_selector		();
+	object().get_movement().non_animated_loophole_change(true);
+	object().get_movement().non_animated_change_loophole();
 }
 
 void stalker_movement_manager_smart_cover::stop_non_animated_loophole_change	()
 {
-	object().movement().non_animated_loophole_change(false);
-	object().movement().bind_global_selector		();
+	object().get_movement().non_animated_loophole_change(false);
+	object().get_movement().bind_global_selector		();
 }
 
 Fvector stalker_movement_manager_smart_cover::position_to_cover_from			() const
@@ -742,17 +742,17 @@ Fvector stalker_movement_manager_smart_cover::position_to_cover_from			() const
 		if (!object().g_Alive())
 			return				(fire_object->Position());
 		
-		CMemoryInfo				info = object().memory().memory(fire_object);
+		CMemoryInfo				info = object().get_memory().memory(fire_object);
 		if (info.m_visual_info | info.m_sound_info | info.m_hit_info)
 			 return				(info.m_object_params.m_position);
 
 		return					(fire_object->Position());
 	}
 
-	CEntityAlive const*			enemy = object().memory().enemy().selected();
+	CEntityAlive const*			enemy = object().get_memory().get_enemy().selected();
 	if (!enemy)
 		return					(object().Position());
 
 	VERIFY						(enemy);
-	return						(object().memory().memory(enemy).m_object_params.m_position);
+	return						(object().get_memory().memory(enemy).m_object_params.m_position);
 }

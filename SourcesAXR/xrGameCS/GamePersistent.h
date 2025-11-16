@@ -3,6 +3,8 @@
 #pragma once
 
 #include "../xrEngine/IGame_Persistent.h"
+#include "../xrServerEntitiesCS/associative_vector.h"
+
 class CMainMenu;
 class CUICursor;
 class CParticlesObject;
@@ -25,7 +27,7 @@ class CGamePersistent:
 
 	// ambient particles
 	CParticlesObject*	ambient_particles; 
-	u32					ambient_sound_next_time		[20]; //max snd channels
+	associative_vector<size_t, u32> ambient_sound_next_time; // max snd channels
 	u32					ambient_effect_next_time;
 	u32					ambient_effect_stop_time;
 
@@ -117,6 +119,7 @@ public:
 			float		GetActorPower			() override;
 			float		GetActorBleeding		() override;
 			float		GetActorIntoxication	() override;
+			float		GetActorFrostbite		() override;
 			bool		GetClearMaskProcess		() override;
 			bool		GetActorAliveStatus		();
 			bool		GetActor				();
@@ -125,6 +128,7 @@ public:
 			bool		GetFogInfluenceVolumetricLight();
 			std::string	GetMoonPhase			() override;
 			u32			GetTimeHours			() override;
+			bool		IsTutorialSequencerActive() override;
 
 	virtual void		EditorOnFrame			();
 

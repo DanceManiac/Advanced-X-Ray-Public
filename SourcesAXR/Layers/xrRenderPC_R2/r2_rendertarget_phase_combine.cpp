@@ -107,7 +107,7 @@ void	CRenderTarget::phase_combine	()
 		m_previous.mul		(m_saved_viewproj,m_invview);
 		m_current.set		(Device.mProject)		;
 		m_saved_viewproj.set(Device.mFullTransform)	;
-		float	scale		= ps_r2_mblur/2.f;
+		float	scale		= (ps_r2_mblur/2.f) * (BOOL)!m_bCubemapScreenshotInProcess;
 		m_blur_scale.set	(scale,-scale).div(12.f);
 	}
 
@@ -121,8 +121,11 @@ void	CRenderTarget::phase_combine	()
 		Fvector4	ambclr			= { _max(envdesc.ambient.x*2,minamb),	_max(envdesc.ambient.y*2,minamb),			_max(envdesc.ambient.z*2,minamb),	0	};
 					ambclr.mul		(ps_r2_sun_lumscale_amb);
 
-//.		Fvector4	envclr			= { envdesc.sky_color.x*2+EPS,	envdesc.sky_color.y*2+EPS,	envdesc.sky_color.z*2+EPS,	envdesc.weight					};
-		Fvector4	envclr			= { envdesc.hemi_color.x*2+EPS,	envdesc.hemi_color.y*2+EPS,	envdesc.hemi_color.z*2+EPS,	envdesc.weight					};
+		Fvector4	envclr;
+		if (g_pGamePersistent->Environment().used_soc_weather)
+			envclr					= { envdesc.sky_color.x * 2 + EPS, envdesc.sky_color.y * 2 + EPS, envdesc.sky_color.z * 2 + EPS, envdesc.weight };
+		else
+			envclr					= { envdesc.hemi_color.x * 2 + EPS, envdesc.hemi_color.y * 2 + EPS, envdesc.hemi_color.z * 2 + EPS, envdesc.weight };
 
 		Fvector4	fogclr			= { envdesc.fog_color.x,	envdesc.fog_color.y,	envdesc.fog_color.z,		0	};
 					envclr.x		*= 2*ps_r2_sun_lumscale_hemi; 
@@ -239,7 +242,7 @@ void	CRenderTarget::phase_combine	()
 	//ogse ss
 	if (!_menu_pp)
 	{
-		if (ps_r_sun_shafts > 0 && (ps_sunshafts_mode == R2SS_SCREEN_SPACE || ps_sunshafts_mode == R2SS_COMBINE_SUNSHAFTS))
+		if (ps_r_sun_shafts > 0 && !m_bCubemapScreenshotInProcess && (ps_sunshafts_mode == R2SS_SCREEN_SPACE || ps_sunshafts_mode == R2SS_COMBINE_SUNSHAFTS))
 			phase_sunshafts();
 	}
 
@@ -273,7 +276,10 @@ void	CRenderTarget::phase_combine	()
 		}
 
 		if (ps_r2_postscreen_flags.test(R_FLAG_HUD_MASK) && HudGlassEnabled && IsActorAlive)
+		{
 			phase_hud_mask();
+			phase_hud_frost();
+		}
 	}
 	
 	// PP enabled ?
@@ -541,9 +547,11 @@ void CRenderTarget::phase_combine_volumetric()
 		Fvector4	ambclr			= { _max(envdesc.ambient.x*2,minamb),	_max(envdesc.ambient.y*2,minamb),			_max(envdesc.ambient.z*2,minamb),	0	};
 		ambclr.mul		(ps_r2_sun_lumscale_amb);
 
-//.		Fvector4	envclr			= { envdesc.sky_color.x*2+EPS,	envdesc.sky_color.y*2+EPS,	envdesc.sky_color.z*2+EPS,	envdesc.weight					};
-		Fvector4	envclr			= { envdesc.hemi_color.x*2+EPS,	envdesc.hemi_color.y*2+EPS,	envdesc.hemi_color.z*2+EPS,	envdesc.weight					};
-
+		Fvector4	envclr;
+		if (g_pGamePersistent->Environment().used_soc_weather)
+			envclr					= { envdesc.sky_color.x * 2 + EPS, envdesc.sky_color.y * 2 + EPS, envdesc.sky_color.z * 2 + EPS, envdesc.weight };
+		else
+			envclr					= { envdesc.hemi_color.x * 2 + EPS, envdesc.hemi_color.y * 2 + EPS, envdesc.hemi_color.z * 2 + EPS, envdesc.weight };
 
 		Fvector4	fogclr			= { envdesc.fog_color.x,	envdesc.fog_color.y,	envdesc.fog_color.z,		0	};
 		envclr.x		*= 2*ps_r2_sun_lumscale_hemi; 

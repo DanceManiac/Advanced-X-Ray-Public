@@ -19,7 +19,9 @@
 #define BACKPACK_SLOT		12
 #define DOSIMETER_SLOT		13
 #define PANTS_SLOT			14
-#define LAST_SLOT			PANTS_SLOT
+#define HELMET_SLOT			15
+#define SECOND_HELMET_SLOT	16
+#define LAST_SLOT			SECOND_HELMET_SLOT
 //.#define SLOTS_TOTAL			12
 
 
@@ -35,11 +37,11 @@ typedef xr_vector<PIItem>			TIItemContainer;
 
 enum EItemPlace
 {			
-	EItemPlaceUndefined,
-	EItemPlaceSlot,
-	EItemPlaceBelt,
-	EItemPlaceRuck,
-	EItemPlaceFloor
+	eItemPlaceUndefined = 0,
+	eItemPlaceSlot,
+	eItemPlaceBelt,
+	eItemPlaceRuck,
+	eItemPlaceFloor
 };
 
 extern u32	INV_STATE_LADDER;

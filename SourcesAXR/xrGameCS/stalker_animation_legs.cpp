@@ -39,7 +39,7 @@ void CStalkerAnimationManager::legs_play_callback			(CBlend *blend)
 	CAI_Stalker					*object = (CAI_Stalker*)blend->CallbackParam;
 	VERIFY						(object);
 
-	CStalkerAnimationPair		&pair = object->animation().legs();
+	CStalkerAnimationPair		&pair = object->get_animation().legs();
 	pair.on_animation_end		();
 }
 
@@ -111,7 +111,7 @@ void CStalkerAnimationManager::legs_assign_direction		(float switch_factor, cons
 void CStalkerAnimationManager::legs_process_direction		(float yaw)
 {
 	float						switch_factor = legs_switch_factor();
-	stalker_movement_manager_smart_cover		&movement = object().movement();
+	stalker_movement_manager_smart_cover		&movement = object().get_movement();
 	float						head_current = movement.head_orientation().current.yaw;
 	float						left = left_angle(yaw,head_current);
 	float						test_angle_forward = right_forward_angle;
@@ -143,7 +143,7 @@ MotionID CStalkerAnimationManager::legs_move_animation		()
 {
 	m_no_move_actual			= false;
 
-	stalker_movement_manager_smart_cover		&movement = object().movement();
+	stalker_movement_manager_smart_cover		&movement = object().get_movement();
 
 	VERIFY						(
 		(movement.body_state() == eBodyStateStand) ||
@@ -164,7 +164,7 @@ MotionID CStalkerAnimationManager::legs_move_animation		()
 	}
 
 	float						yaw,pitch;
-	object().sight().GetDirectionAngles(yaw,pitch);
+	object().get_sight().GetDirectionAngles(yaw,pitch);
 
 	yaw							= angle_normalize_signed(-yaw);;
 	legs_process_direction		(yaw);
@@ -241,14 +241,14 @@ MotionID CStalkerAnimationManager::legs_no_move_animation	()
 	EBodyState					body_state = this->body_state();
 	const xr_vector<MotionID>	&animation = m_data_storage->m_part_animations.A[body_state].m_in_place->A;
 
-	stalker_movement_manager_smart_cover		&movement = object().movement();
+	stalker_movement_manager_smart_cover		&movement = object().get_movement();
 	const SBoneRotation			&body_orientation = movement.body_orientation();
 	float						current = body_orientation.current.yaw;
 	float						target = body_orientation.target.yaw;
 	if (angle_difference(target,current) < EPS_L) {
 
 		float					head_current = movement.head_orientation().current.yaw;
-		if ((movement.mental_state() != eMentalStateFree) || (!object().sight().turning_in_place() && (angle_difference(current,head_current) <= standing_turn_angle))) {
+		if ((movement.mental_state() != eMentalStateFree) || (!object().get_sight().turning_in_place() && (angle_difference(current,head_current) <= standing_turn_angle))) {
 			if (movement.mental_state() == eMentalStateFree)
 				return			(animation[1]);
 

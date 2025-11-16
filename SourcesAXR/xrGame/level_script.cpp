@@ -45,7 +45,7 @@
 
 using namespace luabind;
 bool g_block_all_except_movement = false;
-bool g_block_actor_movement = false;
+extern bool g_block_actor_movement;
 bool g_saves_locked = false;
 
 LPCSTR command_line	()
@@ -187,6 +187,11 @@ bool start_weather_fx_from_time	(LPCSTR weather_name, float time)
 #ifdef INGAME_EDITOR
 	return			(false);
 #endif // #ifdef INGAME_EDITOR
+}
+
+bool is_developer()
+{
+	return			(bDeveloperMode);
 }
 
 bool is_wfx_playing	()
@@ -331,6 +336,11 @@ float rain_hemi()
 	}
 }
 
+float air_temperature()
+{
+	return (g_pGamePersistent->Environment().CurrentEnv->m_fAirTemperature);
+}
+
 u32	vertex_in_direction(u32 level_vertex_id, Fvector direction, float max_distance)
 {
 	direction.normalize_safe();
@@ -460,6 +470,13 @@ void show_weapon(bool b)
 	psHUD_Flags.set	(HUD_WEAPON_RT2, b);
 }
 
+bool game_indicators_shown() 
+{ 
+	return (CurrentGameUI() && CurrentGameUI()->GameIndicatorsShown()); 
+}
+
+Flags32 get_hud_flags() { return psHUD_Flags; }
+
 bool is_level_present()
 {
 	return (!!g_pGameLevel);
@@ -544,9 +561,9 @@ CEnvironment *environment()
 	return		(g_pGamePersistent->pEnvironment);
 }
 
-CEnvDescriptor *current_environment(CEnvironment *self)
+CEnvDescriptor *current_environment(CEnvironment *self_)
 {
-	return		(self->CurrentEnv);
+	return		(self_->CurrentEnv);
 }
 extern bool g_bDisableAllInput;
 void disable_input()
@@ -857,6 +874,11 @@ float SetBlendAnmTime(LPCSTR name, float time)
 	return g_player_hud->SetBlendAnmTime(name, time);
 }
 
+void reload_language()
+{
+	CStringTable().ReloadLanguage();
+}
+
 LPCSTR translate_string(LPCSTR str)
 {
 	return *CStringTable().translate(str);
@@ -1050,6 +1072,26 @@ int get_endurance_skill()
 	return Actor()->ActorSkills->get_endurance_skill();
 }
 
+void set_packing_skill(int num)
+{
+	Actor()->ActorSkills->set_packing_skill(num);
+}
+
+void inc_packing_skill(int num)
+{
+	Actor()->ActorSkills->inc_packing_skill(num);
+}
+
+void dec_packing_skill(int num)
+{
+	Actor()->ActorSkills->dec_packing_skill(num);
+}
+
+int get_packing_skill()
+{
+	return Actor()->ActorSkills->get_packing_skill();
+}
+
 void buy_skill(int num)
 {
 	return Actor()->ActorSkills->BuySkill(num);
@@ -1124,7 +1166,7 @@ void g_send(NET_Packet& P, bool bReliable = false, bool bSequential = true, bool
 	Level().Send(P);
 }
 
-void create_custom_timer(LPCSTR name, int start_value, int mode = 0)
+void create_custom_timer(LPCSTR name, int start_value, ETimerMode mode = eTimerModeMilliseconds)
 {
 	if (!Actor()->TimerManager)
 	{
@@ -1179,7 +1221,7 @@ void delete_custom_timer(LPCSTR name)
 	Actor()->TimerManager->DeleteTimer(name);
 }
 
-int get_custom_timer(LPCSTR name)
+u64 get_custom_timer(LPCSTR name)
 {
 	if (!Actor()->TimerManager)
 	{
@@ -1190,9 +1232,72 @@ int get_custom_timer(LPCSTR name)
 	return Actor()->TimerManager->GetTimerValue(name);
 }
 
-std::string get_moon_phase()
+LPCSTR get_moon_phase()
 {
 	return Level().GetMoonPhase().c_str();
+}
+
+float get_air_temperature_f()
+{
+	if (!g_pGamePersistent || !g_pGamePersistent->Environment().CurrentEnv)
+	{
+		Msg("![level_script::get_air_temperature_f]: g_pGamePersistent or CurrentEnv is nullptr!");
+		return 0.0f;
+	}
+
+	return g_pGamePersistent->Environment().CurrentEnv->m_fAirTemperature;
+}
+
+luabind::internal_string get_air_temperature_fs()
+{
+	if (!g_pGamePersistent || !g_pGamePersistent->Environment().CurrentEnv)
+	{
+		Msg("![level_script::get_air_temperature_fs]: g_pGamePersistent or CurrentEnv is nullptr!");
+		return "";
+	}
+
+	float cur_temperature = g_pGamePersistent->Environment().CurrentEnv->m_fAirTemperature;
+	string16 temper = "";
+
+	if (cur_temperature < 0)
+		xr_sprintf(temper, "%.1f %s", cur_temperature, *CStringTable().translate("st_degree"));
+	else
+		xr_sprintf(temper, "+%.1f %s", cur_temperature, *CStringTable().translate("st_degree"));
+
+	return temper;
+}
+
+LPCSTR get_weather_type()
+{
+	if (!g_pGamePersistent || !g_pGamePersistent->Environment().Current[0])
+	{
+		Msg("![level_script::get_weather_type]: g_pGamePersistent or CurrentEnv is nullptr!");
+		return "";
+	}
+
+	return g_pGamePersistent->Environment().Current[0]->m_sWeatherType.c_str();
+}
+
+luabind::internal_string get_weather_type_icon()
+{
+	if (!g_pGamePersistent || !g_pGamePersistent->Environment().Current[0])
+	{
+		Msg("![level_script::get_weather_type_icon]: g_pGamePersistent or CurrentEnv is nullptr!");
+		return "";
+	}
+
+	shared_str cur_weather_type = g_pGamePersistent->Environment().Current[0]->m_sWeatherType;
+
+	if (!cur_weather_type)
+	{
+		Msg("![level_script::get_weather_type_icon]: cur_weather_type is nullptr!");
+		return "";
+	}
+
+	string128 iconName{};
+	strconcat(sizeof(iconName), iconName, "ui_inGame2_WeatherTypeIcon_", cur_weather_type.c_str());
+
+	return iconName;
 }
 
 #pragma optimize("s",on)
@@ -1251,6 +1356,11 @@ void CLevel::script_register(lua_State *L)
 		def("get_wfx_time",						get_wfx_time),
 		def("stop_weather_fx",					stop_weather_fx),
 		def("get_moon_phase",					get_moon_phase),
+		def("get_air_temperature_f",			get_air_temperature_f),
+		def("get_air_temperature_fs",			get_air_temperature_fs),
+		def("get_weather_type",					get_weather_type),
+		def("get_weather_type_icon",			get_weather_type_icon),
+		def("is_developer",						is_developer),
 
 		def("environment",						environment),
 		
@@ -1280,6 +1390,8 @@ void CLevel::script_register(lua_State *L)
 		def("rain_wetness",						rain_wetness),
 		def("rain_hemi",						rain_hemi),
 
+		def("air_temperature",					air_temperature),
+
 		def("map_add_object_spot_ser",			map_add_object_spot_ser),
 		def("map_add_object_spot",				map_add_object_spot),
 //-		def("map_add_object_spot_complex",		map_add_object_spot_complex),
@@ -1294,6 +1406,10 @@ void CLevel::script_register(lua_State *L)
 
 		def("show_indicators",					show_indicators),
 		def("show_weapon",						show_weapon),
+		
+		def("game_indicators_shown",			&game_indicators_shown), 
+		def("get_hud_flags",					&get_hud_flags),
+
 		def("add_call",							((void (*) (const luabind::functor<bool> &,const luabind::functor<void> &)) &add_call)),
 		def("add_call",							((void (*) (const luabind::object &,const luabind::functor<bool> &,const luabind::functor<void> &)) &add_call)),
 		def("add_call",							((void (*) (const luabind::object &, LPCSTR, LPCSTR)) &add_call)),
@@ -1364,6 +1480,10 @@ void CLevel::script_register(lua_State *L)
 		def("get_endurance_skill",				&get_endurance_skill),
 		def("inc_endurance_skill",				&inc_endurance_skill),
 		def("dec_endurance_skill",				&dec_endurance_skill),
+		def("set_packing_skill",				&set_packing_skill),
+		def("get_packing_skill",				&get_packing_skill),
+		def("inc_packing_skill",				&inc_packing_skill),
+		def("dec_packing_skill",				&dec_packing_skill),
 		def("buy_skill",						&buy_skill)
 	];
 
@@ -1404,13 +1524,13 @@ void CLevel::script_register(lua_State *L)
 		]
 		.def(						constructor<>()				)
 		.def(						constructor<const xrTime&>())
-		.def(const_self <			xrTime()					)
-		.def(const_self <=			xrTime()					)
-		.def(const_self >			xrTime()					)
-		.def(const_self >=			xrTime()					)
-		.def(const_self ==			xrTime()					)
-		.def(self +					xrTime()					)
-		.def(self -					xrTime()					)
+		.def(m_const_self <			xrTime()					)
+		.def(m_const_self <=			xrTime()					)
+		.def(m_const_self >			xrTime()					)
+		.def(m_const_self >=			xrTime()					)
+		.def(m_const_self ==			xrTime()					)
+		.def(m_self +					xrTime()					)
+		.def(m_self -					xrTime()					)
 
 		.def("diffSec"				,&xrTime::diffSec_script)
 		.def("add"					,&xrTime::add_script)
@@ -1431,6 +1551,7 @@ void CLevel::script_register(lua_State *L)
 		def("start_tutorial",		&start_tutorial),
 		def("stop_tutorial",		&stop_tutorial),
 		def("has_active_tutorial",	&has_active_tutotial),
+		def("reload_language",		&reload_language),
 		def("translate_string",		&translate_string),
 		def("play_hud_motion",		PlayHudMotion), 
 		def("stop_hud_motion",		StopHudMotion), 

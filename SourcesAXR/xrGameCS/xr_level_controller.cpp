@@ -23,7 +23,7 @@ _action  actions[]		= {
 	{ "back",				kBACK					,_both},	
 	{ "lstrafe",			kL_STRAFE				,_both},	
 	{ "rstrafe",			kR_STRAFE				,_both},	
-																
+
 	{ "llookout",			kL_LOOKOUT				,_both},	
 	{ "rlookout",			kR_LOOKOUT				,_both},	
 																
@@ -50,7 +50,7 @@ _action  actions[]		= {
 	{ "wpn_6",				kWPN_6					,_both},
 	{ "laser_on",			kLASER_ON				,_both},
 	{ "flashlight",			kFLASHLIGHT				,_both},
-	{ "artefact",			kARTEFACT				,_both/*_mp*/},		
+	{ "artefact",			kARTEFACT				,_both},
 	{ "wpn_next",			kWPN_NEXT				,_both},	
 	{ "wpn_fire",			kWPN_FIRE				,_both},	
 	{ "wpn_zoom",			kWPN_ZOOM				,_both},	
@@ -63,11 +63,11 @@ _action  actions[]		= {
 	{ "wpn_alt_aim",		kWPN_ALT_AIM			,_both},
 	{ "quick_kick",			kQUICK_KICK				,_both},
 	{ "quick_grenade",		kQUICK_GRENADE			,_both},
-															
+
 	{ "pause",				kPAUSE					,_both},	
 	{ "drop",				kDROP					,_both},	
 	{ "use",				kUSE					,_both},	
-	{ "scores",				kSCORES					,_both},	
+	{ "scores",				kSCORES					,_both},
 	{ "chat",				kCHAT					,_mp},		
 	{ "chat_team",			kCHAT_TEAM				,_mp},		
 	{ "screenshot",			kSCREENSHOT				,_both},	
@@ -103,6 +103,12 @@ _action  actions[]		= {
 																
 	{ "use_bandage",		kUSE_BANDAGE			,_sp},		
 	{ "use_medkit",			kUSE_MEDKIT				,_sp},		
+
+	{ "quick_use_1",		kQUICK_USE_1			,_both},		
+	{ "quick_use_2",		kQUICK_USE_2			,_both},
+	{ "quick_use_3",		kQUICK_USE_3			,_both},
+	{ "quick_use_4",		kQUICK_USE_4			,_both},	
+								
 	{ "quick_save",			kQUICK_SAVE				,_sp},		
 	{ "quick_load",			kQUICK_LOAD				,_sp},		
 	{ "alife_command",		kALIFE_CMD				,_sp},		
@@ -226,7 +232,7 @@ void remap_keys()
 	}
 }
 
-LPCSTR id_to_action_name(int _id)
+LPCSTR id_to_action_name(EGameActions _id)
 {
 	int idx				= 0;
 	while( actions[idx].action_name )
@@ -257,7 +263,7 @@ _action* action_name_to_ptr(LPCSTR _name)
 			return &actions[idx];
 		++idx;
 	}
-	Msg				("! cant find corresponding [id] for action_name %s", _name);
+	Msg				("! cant find corresponding [id] for action_name [%s]", _name);
 	return			NULL;
 }
 
@@ -328,16 +334,23 @@ bool is_binded(EGameActions _action_id, int _dik)
 	return false;
 }
 
-int get_action_dik(EGameActions _action_id)
+int get_action_dik(EGameActions _action_id, int idx)
 {
 	_binding* pbinding = &g_key_bindings[_action_id];
 
-	if(pbinding->m_keyboard[0] )
-		return pbinding->m_keyboard[0]->dik;
+	if (idx == -1)
+	{
+		if (pbinding->m_keyboard[0])
+			return pbinding->m_keyboard[0]->dik;
 
-	if(pbinding->m_keyboard[1] )
-		return pbinding->m_keyboard[1]->dik;
-
+		if (pbinding->m_keyboard[1])
+			return pbinding->m_keyboard[1]->dik;
+	}
+	else
+	{
+		if (pbinding->m_keyboard[idx])
+			return pbinding->m_keyboard[idx]->dik;
+	}
 	return 0;
 }
 
@@ -378,11 +391,11 @@ bool GetActionAllBinding(LPCSTR _action, char* dst_buff, int dst_buff_sz)
 	prim[0]		= 0;
 	sec[0]		= 0;
 
-	if(pbinding->m_keyboard[0])
+	if (pbinding->m_keyboard[0])
 	{
 		xr_strcpy(prim, pbinding->m_keyboard[0]->key_local_name.c_str());
 	}
-	if(pbinding->m_keyboard[1])
+	if (pbinding->m_keyboard[1])
 	{
 		xr_strcpy(sec, pbinding->m_keyboard[1]->key_local_name.c_str());
 	}
@@ -557,7 +570,7 @@ public:
 		for(int idx=0; idx<bindings_count;++idx)
 		{
 			_binding* pbinding		= &g_key_bindings[idx];
-			sprintf_s		(buff,"[%s] primary is[%s] secondary is[%s]",
+			xr_sprintf		(buff,"[%s] primary is[%s] secondary is[%s]",
 						pbinding->m_action->action_name,
 						(pbinding->m_keyboard[0])?pbinding->m_keyboard[0]->key_local_name.c_str():"NULL",
 						(pbinding->m_keyboard[1])?pbinding->m_keyboard[1]->key_local_name.c_str():"NULL");

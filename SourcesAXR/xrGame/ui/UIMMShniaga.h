@@ -56,6 +56,8 @@ protected:
 	void				ShowNetworkGame			();
 	float				pos						(float x1, float x2, u32 t);
 
+	pcstr				GetDebugType			() override { return "CUIMMShniaga"; }
+
     CUIStatic*			m_shniaga;
 	CUIStatic*			m_magnifier;
 	CUIScrollView*		m_view;

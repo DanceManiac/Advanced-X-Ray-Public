@@ -20,8 +20,6 @@ public:
 	virtual void		execute					();
 	virtual void		setup_substates			();
 	virtual void		check_force_state		();
-
-	// Lain: added
 	virtual void		remove_links			(CObject* object);
 };
 

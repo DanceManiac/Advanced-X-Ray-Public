@@ -8,6 +8,10 @@ function normal		(shader, t_base, t_second, t_detail)
 
 	shader:dx10texture	("s_vollight", 	"$user$generic2")
 	shader:dx10texture 	("s_tonemap", 	"$user$tonemap")
+	shader:dx10texture 	("noise_tex", 	"shaders\\blue_noise")
+	
+	shader:dx10texture 	("s_position", 	"$user$position")
 
+	shader:dx10sampler	("smp_linear")
 	shader:dx10sampler	("smp_nofilter")
 end

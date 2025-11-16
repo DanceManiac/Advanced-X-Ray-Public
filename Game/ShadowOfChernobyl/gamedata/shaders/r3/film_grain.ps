@@ -1,0 +1,25 @@
+#include "common.h"
+
+float4 main(p_screen I) : SV_Target
+{
+	float2 uv = I.hpos.xy * screen_res.zw;
+    
+    float4 color = s_image.Sample(smp_base, uv);
+
+    float strength = 16.0;
+    
+#ifndef STATIC_FILM_GRAIN
+	float time = timers.x;
+#else
+	float time = 1.0f;
+#endif
+    float x = (uv.x + 4.0 ) * (uv.y + 4.0 ) * (time * 10.0);
+	
+	float grain = float(fmod((fmod(x, 13.0f) + 1.0f) * (fmod(x, 123.0f) + 1.0f), 0.01f) - 0.005f) * strength;
+
+    grain = 1.0 - grain;
+	
+	color = color * grain;
+
+	return color;
+}

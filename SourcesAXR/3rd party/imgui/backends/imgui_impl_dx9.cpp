@@ -307,11 +307,16 @@ void ImGui_ImplDX9_Shutdown()
     IM_DELETE(bd);
 }
 
+#include "misc/fonts/FontUniDx9.h"
+
 static bool ImGui_ImplDX9_CreateFontsTexture()
 {
     // Build texture atlas
     ImGuiIO& io = ImGui::GetIO();
     ImGui_ImplDX9_Data* bd = ImGui_ImplDX9_GetBackendData();
+
+    io.Fonts->AddFontFromMemoryTTF(FontUniDx9, sizeof(FontUniDx9), 15.f, nullptr, io.Fonts->GetGlyphRangesCyrillic());
+
     unsigned char* pixels;
     int width, height, bytes_per_pixel;
     io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height, &bytes_per_pixel);

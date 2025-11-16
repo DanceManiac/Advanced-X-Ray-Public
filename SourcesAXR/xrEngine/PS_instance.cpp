@@ -39,6 +39,8 @@ CPS_Instance::~CPS_Instance					()
 //----------------------------------------------------
 void CPS_Instance::shedule_Update	(u32 dt)
 {
+	ZoneScoped;
+
 	if (renderable.pROS)			::Render->ros_destroy	(renderable.pROS);	//. particles doesn't need ROS
 
 	ISheduled::shedule_Update		(dt);
@@ -52,6 +54,7 @@ void CPS_Instance::shedule_Update	(u32 dt)
 //----------------------------------------------------
 void CPS_Instance::PSI_destroy		()
 {
+	if (m_bDead) return;
 	m_bDead								= TRUE;
 	m_iLifeTime							= 0;
 	g_pGamePersistent->ps_destroy.push_back	(this);

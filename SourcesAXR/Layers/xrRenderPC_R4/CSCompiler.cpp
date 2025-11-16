@@ -195,14 +195,16 @@ void CSCompiler::compile(const char* name)
 	LPCSTR						c_target	= "cs_5_0";
 	LPCSTR						c_entry		= "main";
 
-	HRESULT	const _hr			= ::Render->shader_compile(name,(DWORD const*)file->pointer(),file->length(), c_entry, c_target, D3D10_SHADER_PACK_MATRIX_ROW_MAJOR, (void*&)m_cs );
+	DWORD Flags = D3DCOMPILE_PACK_MATRIX_ROW_MAJOR | D3DCOMPILE_OPTIMIZATION_LEVEL3;
+	if (strstr(Core.Params, "-shadersdbg"))
+	{
+		Flags |= D3DCOMPILE_DEBUG;
+		Flags |= D3DCOMPILE_SKIP_OPTIMIZATION;
+	}
+
+	HRESULT	const _hr			= ::Render->shader_compile(name,(DWORD const*)file->pointer(),file->length(), c_entry, c_target, Flags, (void*&)m_cs );
 
 	FS.r_close					( file );
 
-	VERIFY(SUCCEEDED(_hr));
-
-	CHECK_OR_EXIT				(
-		!FAILED(_hr),
-		make_string("Your video card doesn't meet game requirements.\n\nTry to lower game settings.")
-	);
+	CHECK_OR_EXIT				(!FAILED(_hr), make_string("Can't compile shader: %s", name));
 }

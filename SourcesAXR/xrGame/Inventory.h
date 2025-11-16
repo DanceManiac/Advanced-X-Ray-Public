@@ -41,6 +41,7 @@ public:
 	virtual					~CInventory			();
 
 	void					ReloadInv			();
+	void					ReloadSlotsConfig	();
 	float 					TotalWeight			() const;
 	float 					CalcTotalWeight		();
 
@@ -81,7 +82,6 @@ public:
 	bool					Action				(u16 cmd, u32 flags);
 	void					ActiveWeapon		(u16 slot);
 	void					Update				();
-	void					UpdateUseAnim		(CActor* actor);
 	// Ищет на поясе аналогичный IItem
 	PIItem					Same				(const PIItem pIItem, bool bSearchRuck) const;
 	// Ищет на поясе IItem для указанного слота
@@ -122,32 +122,19 @@ public:
 	bool 					IsBeltUseful		() const			{return m_bBeltUseful;}
 	void 					SetBeltUseful		(bool belt_useful)	{m_bBeltUseful = belt_useful;}
 
-	void					SetSlotsBlocked		(u16 mask, bool bBlock);
+	void					SetSlotsBlocked		(u32 mask, bool bBlock);
 	
 	void					BlockSlot(u16 slot_id);
 	void					UnblockSlot(u16 slot_id);
 	bool					IsSlotBlocked(PIItem const iitem) const;
 
 	void					ChooseItmAnimOrNot	(PIItem pIItem);
-	void					TakeItemAnimCheck	(CGameObject* GameObj, CObject* Obj, bool use_pickup_anim);
-	void					TakeItemAnim		(CGameObject* GameObj, CObject* Obj, bool use_pickup_anim);
+	bool					ItmHasAnim			(PIItem pIItem);
 
 	TIItemContainer			m_all;
 	TIItemContainer			m_ruck, m_belt;
 	TIItemContainer			m_activ_last_items;
 	TISlotArr				m_slots;
-
-	bool					m_bTakeItemActivated;
-	bool					m_bItemTaked;
-	bool					m_bUsePickupAnim;
-	int						m_iTakeAnimLength;
-	int						m_iActionTiming;
-
-	CGameObject*			GameObject;
-	CObject*				Object;
-
-
-	ref_sound				m_action_anim_sound;
 
 public:
 	//возвращает все кроме PDA в слоте и болта
@@ -168,6 +155,10 @@ public:
 	void				InvalidateState				()							{ m_dwModifyFrame = Device.dwFrame; }
 	void				Items_SetCurrentEntityHud	(bool current_entity);
 	bool				isBeautifulForActiveSlot	(CInventoryItem *pIItem);
+
+	const char*			inv_sect;
+	CInifile*			inv_settings;
+
 protected:
 	void					UpdateDropTasks		();
 	void					UpdateDropItem		(PIItem pIItem);

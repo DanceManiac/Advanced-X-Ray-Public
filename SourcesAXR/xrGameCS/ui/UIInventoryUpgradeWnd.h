@@ -9,6 +9,7 @@
 #define UI_INVENTORY_UPGRADE_WND_H_INCLUDED
 
 #include "UIStatic.h"
+#include "UI3dStatic.h"
 #include "UIInvUpgrade.h"
 
 extern const LPCSTR g_inventory_upgrade_xml;
@@ -25,6 +26,7 @@ class CInventoryItem;
 class CUIItemInfo;
 class CUIFrameLineWnd;
 class CUI3tButtonEx;
+class CUI3dStatic;
 
 class CUIInventoryUpgradeWnd : public CUIWindow
 {
@@ -89,6 +91,7 @@ public:
 
 protected:
 	CUIStatic*				m_background;
+	CUI3dStatic*			m_item_3d;
 //	CUIFrameLineWnd*		m_delimiter;
 	CUIItemInfo*			m_item_info;
 //	Fvector2				m_info_orig_pos;

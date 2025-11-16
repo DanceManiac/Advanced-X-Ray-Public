@@ -16,6 +16,9 @@
     <Filter Include="addons">
       <UniqueIdentifier>{d4982901-7f51-4352-adaf-c6ee97bc7d7e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Fonts">
+      <UniqueIdentifier>{dfe6cf87-60c6-4070-b6c5-7dcf461901dc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui.cpp">
@@ -139,6 +142,12 @@
     </ClInclude>
     <ClInclude Include="backends\imgui_impl_dx9.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="misc\fonts\FontUni.h">
+      <Filter>Fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="misc\fonts\FontUniDx9.h">
+      <Filter>Fonts</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

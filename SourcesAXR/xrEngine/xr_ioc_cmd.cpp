@@ -545,16 +545,37 @@ ENGINE_API int ps_ssfx_gloss_method = 0;
 ENGINE_API float ps_ssfx_gloss_factor = 0.5f;
 ENGINE_API Fvector3 ps_ssfx_gloss_minmax = { 0.0f,0.92f,0.0f }; // Minimum value of gloss, Maximum value of gloss, Extra gloss to the weapons HUD elements when raining
 ENGINE_API Fvector4 ps_ssfx_lightsetup_1 = { 0.35f, 0.5f, 0.0f, 0.0f };  // intensity of specular lighting, Porcentage of the specular color. ( 0 = 0% | 1 = 100% ), Automatic adjustment of gloss based on wetness (0 or 1), Value to control the maximum value of gloss when full wetness is reached. ( 0 = 0% | 1 = 100% )
-ENGINE_API Fvector3 ps_ssfx_shadows = { 256, 1536, 0.0f };
-ENGINE_API Fvector3 ps_ssfx_volumetric = { 0, 0.15f, 1.5f };
+ENGINE_API Fvector3 ps_ssfx_shadows = { 1024, 1536, 0.0f };
+ENGINE_API Fvector4 ps_ssfx_volumetric = { 0, 0.15f, 1.5f, 1.0f };
 ENGINE_API Fvector3 ps_ssfx_shadow_bias = { 0.4f, 0.03f, 0.0f };
 ENGINE_API Fvector4 ps_ssfx_lut = { 0.0f, 0.0f, 0.0f, 0.0f };
 ENGINE_API Fvector4 ps_ssfx_wind_grass = { 5.0f, 1.4f, 1.5f, 0.4f }; // Branches Speed, Trunk Speed, Bending, Min Wind Speed
 ENGINE_API Fvector4 ps_ssfx_wind_trees = { 7.0f, 0.15f, 0.5f, 0.025f }; // Anim Speed, Turbulence, Push, Wave
+ENGINE_API Fvector4 ps_ssfx_ssr = { 1.0f, 0.25f, 0.0f, 0.0f }; // Res, Blur, Temp, Noise
+ENGINE_API Fvector4 ps_ssfx_ssr_2 = { 1.0f, 1.0f, 0.5f, 0.015f }; // Quality, Fade, Int, Wpn Int
+ENGINE_API Fvector4 ps_ssfx_terrain_offset = { 0, 0, 0, 0 };
+ENGINE_API int ps_ssfx_il_quality = 32; // IL Samples
+ENGINE_API Fvector4 ps_ssfx_il = { 6.66f, 1.0f, 1.0f, 5.0f }; // Res, Int, Vibrance, Blur
+ENGINE_API Fvector4 ps_ssfx_il_setup1 = { 150.0f, 1.0f, 0.5f, 0.0f }; // Distance, HUD, Flora, -
+ENGINE_API int ps_ssfx_ao_quality = 4; // AO Samples
+ENGINE_API Fvector4 ps_ssfx_ao = { 1.0f, 5.0f, 1.0f, 2.5f }; // Res, AO int, Blur, Radius
+ENGINE_API Fvector4 ps_ssfx_ao_setup1 = { 150.0, 1.0, 1.0, 0.0 }; // Distance, HUD, Flora, Max OCC
+ENGINE_API int ps_ssfx_terrain_grass_align = 0; // Grass align
+ENGINE_API float ps_ssfx_terrain_grass_slope = 1.0f; // Grass slope limit // Recommended 0.3f
+ENGINE_API int ps_ssfx_bloom_from_weather = 0;
+ENGINE_API Fvector4 ps_ssfx_bloom_1 = { 3.5f, 3.0f, 0.0f, 0.6f }; // Threshold, Exposure, -, Sky
+ENGINE_API Fvector4 ps_ssfx_bloom_2 = { 3.0f, 1.0f, 1.5f, 1.0f }; // Blur Radius, Vibrance, Lens, Dirt
+ENGINE_API int ps_ssfx_pom_refine = 0;
+ENGINE_API Fvector4 ps_ssfx_pom = { 16, 12, 0.01f, 0.4f };  // Samples , Range, Height, AO
+ENGINE_API Fvector4 ps_ssfx_terrain_pom = { 12, 20, 0.04f, 1.0f }; // Samples, Range, Height, Water Limit
+ENGINE_API int ps_ssfx_terrain_pom_refine = 0;
 
 ENGINE_API float ps_r3_dyn_wet_surf_near = 10.f; // 10.0f
-ENGINE_API float ps_r3_dyn_wet_surf_far = 100.f; // 30.0f
+ENGINE_API float ps_r3_dyn_wet_surf_far = 300.f; // 30.0f
 ENGINE_API int ps_r3_dyn_wet_surf_sm_res = 256; // 256
+
+// Fog Clamping
+ENGINE_API float psWeatherFogClamping = 0.0f;
 
 u32	renderer_value	= 3;
 //void fill_render_mode_list();
@@ -604,7 +625,7 @@ public:
 	}
 
 };
-#ifndef DEDICATED_SERVER
+
 class CCC_soundDevice : public CCC_Token
 {
 	typedef CCC_Token inherited;
@@ -640,7 +661,6 @@ public:
 		inherited::Save			(F);
 	}
 };
-#endif
 //-----------------------------------------------------------------------
 class CCC_ExclusiveMode : public IConsole_Command {
 private:
@@ -708,7 +728,7 @@ ENGINE_API float	hud_adj_delta_rot = 0.05f;
 
 ENGINE_API float	psSVPImageSizeK = 0.7f;
 ENGINE_API int		psSVPFrameDelay = 1;
-ENGINE_API float	fps_limit = 120.0f;
+ENGINE_API float	fps_limit = 500.0f;
 
 //extern int			psSkeletonUpdate;
 extern int			rsDVB_Size;
@@ -717,7 +737,6 @@ extern int			psNET_ClientUpdate;
 extern int			psNET_ClientPending;
 extern int			psNET_ServerUpdate;
 extern int			psNET_ServerPending;
-extern int			psNET_DedicatedSleep;
 extern char			psNET_Name[32];
 extern Flags32		psEnvFlags;
 //extern float		r__dtex_range;
@@ -735,6 +754,9 @@ ENGINE_API int			ps_r__ShaderNVG				= 0;
 ENGINE_API int			ps_detail_enable_collision	= 0;
 
 ENGINE_API bool			ps_enchanted_shaders		= 0; // For xrGame
+
+extern float		g_fontWidthScale;
+extern float		g_fontHeightScale;
 
 void CCC_Register()
 {
@@ -821,7 +843,6 @@ void CCC_Register()
 
 	// Texture manager	
 	CMD4(CCC_Integer,	"texture_lod",			&psTextureLOD,				0,	4	);
-	CMD4(CCC_Integer,	"net_dedicated_sleep",	&psNET_DedicatedSleep,		0,	64	);
 
 	// General video control
 	CMD1(CCC_VidMode,	"vid_mode"				);
@@ -869,9 +890,8 @@ void CCC_Register()
 
 	CMD1(CCC_r2,		"renderer"				);
 
-#ifndef DEDICATED_SERVER
 	CMD1(CCC_soundDevice, "snd_device"			);
-#endif
+
 	//psSoundRolloff	= pSettings->r_float	("sound","rolloff");		clamp(psSoundRolloff,			EPS_S,	2.f);
 	psSoundOcclusionScale	= pSettings->r_float	("sound","occlusion_scale");clamp(psSoundOcclusionScale,	0.1f,	.5f);
 
@@ -895,8 +915,6 @@ void CCC_Register()
 	extern int g_svTextConsoleUpdateRate;
 	CMD4(CCC_Integer, "sv_console_update_rate", &g_svTextConsoleUpdateRate, 1, 100);
 
-	extern int g_svDedicateServerUpdateReate;
-	CMD4(CCC_Integer, "sv_dedicated_server_update_rate", &g_svDedicateServerUpdateReate, 1, 1000);
 
 	CMD1(CCC_HideConsole,		"hide");
 
@@ -904,5 +922,8 @@ void CCC_Register()
 	extern BOOL debug_destroy;
 	CMD4(CCC_Integer, "debug_destroy", &debug_destroy, FALSE, TRUE );
 #endif
+
+	CMD4(CCC_Float, "g_font_scale_x", &g_fontWidthScale, 0.2f, 5.0f);
+	CMD4(CCC_Float, "g_font_scale_y", &g_fontHeightScale, 0.2f, 5.0f);
 };
  

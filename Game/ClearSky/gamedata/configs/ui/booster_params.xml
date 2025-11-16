@@ -267,6 +267,16 @@
 		</value>
 	</boost_psy_health_restore>
 	
+	<boost_frostbite_restore x="0" y="0" width="257" height="20" >
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_inv_icon_frostbite_restore_speed</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" magnitude="1000">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</boost_frostbite_restore>
+	
 	<boost_alcohol_restore x="0" y="0" width="257" height="20" >
 		<caption x="0" y="0" width="257" height="20" complex_mode="0">
 			<texture>ui_inv_icon_alcoholism_restore_speed</texture>
@@ -348,16 +358,6 @@
 		</value>
 	</quick_eat_bleeding>
 	
-	<quick_eat_battery x="0" y="0" width="257" height="20" >
-		<caption x="0" y="0" width="257" height="20" complex_mode="0">
-			<texture>ui_item_battery_icon</texture>
-			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
-		</caption>
-		<value x="140" y="0" width="30" height="20" magnitude="10" unit_str="%">
-			<text font="letterica16" vert_align="c"/>
-		</value>
-	</quick_eat_battery>
-	
 	<quick_eat_thirst x="0" y="0" width="257" height="20" >
 		<caption x="0" y="0" width="257" height="20" complex_mode="0">
 			<texture>ui_inv_icon_thirst_restore_speed</texture>
@@ -428,26 +428,6 @@
 		</value>
 	</quick_eat_withdrawal>
 	
-	<quick_eat_filter_condition x="0" y="0" width="257" height="20" >
-		<caption x="0" y="0" width="257" height="20" complex_mode="0">
-			<texture>ui_item_filter_icon</texture>
-			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
-		</caption>
-		<value x="140" y="0" width="30" height="20" magnitude="10" show_sign="0" unit_str="%">
-			<text font="letterica16" vert_align="c"/>
-		</value>
-	</quick_eat_filter_condition>
-	
-	<quick_eat_repair_kit_condition x="0" y="0" width="257" height="20" >
-		<caption x="0" y="0" width="257" height="20" complex_mode="0">
-			<texture>ui_item_repair_kit_icon</texture>
-			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
-		</caption>
-		<value x="140" y="0" width="30" height="20" magnitude="10" show_sign="1" unit_str="%">
-			<text font="letterica16" vert_align="c"/>
-		</value>
-	</quick_eat_repair_kit_condition>
-	
 	<quick_eat_psy_health x="0" y="0" width="257" height="20" >
 		<caption x="0" y="0" width="257" height="20" complex_mode="0">
 			<texture>ui_inv_icon_telepatic_immunity</texture>
@@ -457,6 +437,16 @@
 			<text font="letterica16" vert_align="c"/>
 		</value>
 	</quick_eat_psy_health>
+	
+	<quick_eat_frostbite x="0" y="0" width="257" height="20" >
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_inv_icon_frostbite_restore_speed</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" magnitude="10">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</quick_eat_frostbite>
 	
 	<quick_eat_alcohol x="0" y="0" width="257" height="20" >
 		<caption x="0" y="0" width="257" height="20" complex_mode="0">

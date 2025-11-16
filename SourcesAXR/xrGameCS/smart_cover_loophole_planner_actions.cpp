@@ -57,7 +57,7 @@ loophole_action_base::loophole_action_base	(CAI_Stalker *object, LPCSTR action_n
 
 Fvector loophole_action_base::nearest_loophole_direction(Fvector const& position) const
 {
-	stalker_movement_manager_smart_cover&	movement = object().movement();
+	stalker_movement_manager_smart_cover&	movement = object().get_movement();
 	
 	VERIFY						(movement.current_params().cover());
 	VERIFY						(movement.current_params().cover_loophole());
@@ -83,14 +83,14 @@ Fvector loophole_action_base::nearest_loophole_direction(Fvector const& position
 
 void loophole_action_base::process_fire_position(bool const& change_sight)
 {
-	VERIFY						(object().movement().current_params().cover_fire_position());
+	VERIFY						(object().get_movement().current_params().cover_fire_position());
 
-	Fvector const&				position = *object().movement().current_params().cover_fire_position();
-	if (!object().movement().in_current_loophole_fov(position)) {
-		object().sight().setup	(
+	Fvector const&				position = *object().get_movement().current_params().cover_fire_position();
+	if (!object().get_movement().in_current_loophole_fov(position)) {
+		object().get_sight().setup	(
 			CSightAction(
 				SightManager::eSightTypeDirection,
-				nearest_loophole_direction(*object().movement().current_params().cover_fire_position()),
+				nearest_loophole_direction(*object().get_movement().current_params().cover_fire_position()),
 				true
 			)
 		);
@@ -99,32 +99,32 @@ void loophole_action_base::process_fire_position(bool const& change_sight)
 		return;
 	}
 
-	object().sight().setup		(CSightAction(SightManager::eSightTypePosition, *object().movement().current_params().cover_fire_position(), true));
-	object().sight().update		();
+	object().get_sight().setup		(CSightAction(SightManager::eSightTypePosition, *object().get_movement().current_params().cover_fire_position(), true));
+	object().get_sight().update		();
 
 	if (!change_sight)
 		return;
 
-	object().sight().Exec_Look	(0.f);
+	object().get_sight().Exec_Look	(0.f);
 }
 
 void loophole_action_base::process_fire_object	(bool const& change_sight)
 {
-	VERIFY						(object().movement().current_params().cover_fire_object());
+	VERIFY						(object().get_movement().current_params().cover_fire_object());
 
-	CGameObject const*			fire_object = object().movement().current_params().cover_fire_object();
-	if (object().movement().in_current_loophole_fov(fire_object->Position())) {
-		object().sight().setup	( CSightAction( fire_object, true, true));
-		object().sight().update	();
+	CGameObject const*			fire_object = object().get_movement().current_params().cover_fire_object();
+	if (object().get_movement().in_current_loophole_fov(fire_object->Position())) {
+		object().get_sight().setup	( CSightAction( fire_object, true, true));
+		object().get_sight().update	();
 
 		if (!change_sight)
 			return;
 
-		object().sight().Exec_Look	(0.f);
+		object().get_sight().Exec_Look	(0.f);
 		return;
 	}
 
-	object().sight().setup		(
+	object().get_sight().setup		(
 		CSightAction(
 			SightManager::eSightTypeDirection,
 			nearest_loophole_direction(fire_object->Position()),
@@ -132,43 +132,43 @@ void loophole_action_base::process_fire_object	(bool const& change_sight)
 		)
 	);
 
-	object().sight().update		();
+	object().get_sight().update		();
 
 	if (!change_sight)
 		return;
 
-	object().sight().Exec_Look	(0.f);
+	object().get_sight().Exec_Look	(0.f);
 
 #pragma todo("insert here loophole selection")
 }
 
 void loophole_action_base::process_default	(bool const& change_sight)
 {
-	stalker_movement_manager_smart_cover&	movement = object().movement();
+	stalker_movement_manager_smart_cover&	movement = object().get_movement();
 	
 	VERIFY						(movement.current_params().cover());
 	VERIFY						(movement.current_params().cover_loophole());
 
 //	smart_cover::cover const&	cover = *movement.current_params().cover();
 //	smart_cover::loophole const&loophole = *movement.current_params().cover_loophole();
-	object().sight().setup		(
+	object().get_sight().setup		(
 		CSightAction(
 			SightManager::eSightTypeAnimationDirection,
 			true,
 			false
 		)
 	);
-	object().sight().update		();
+	object().get_sight().update		();
 
 	if (!change_sight)
 		return;
 
-	object().sight().Exec_Look	(0.f);
+	object().get_sight().Exec_Look	(0.f);
 
-	if (object().movement().current_params().cover() != object().movement().target_params().cover())
+	if (object().get_movement().current_params().cover() != object().get_movement().target_params().cover())
 		return;
 
-	if (object().movement().target_params().cover_loophole())
+	if (object().get_movement().target_params().cover_loophole())
 		return;
 
 #pragma todo("insert here loophole selection")
@@ -176,11 +176,11 @@ void loophole_action_base::process_default	(bool const& change_sight)
 
 bool loophole_action_base::enemy_in_fov		() const
 {
-	CEntityAlive const*			enemy = object().memory().enemy().selected();
+	CEntityAlive const*			enemy = object().get_memory().get_enemy().selected();
 	if (!enemy)
 		return					(false);
 
-	if (!object().movement().in_current_loophole_fov(enemy->Position()))
+	if (!object().get_movement().in_current_loophole_fov(enemy->Position()))
 		return					(false);
 
 	return						(true);
@@ -188,58 +188,58 @@ bool loophole_action_base::enemy_in_fov		() const
 
 bool loophole_action_base::process_enemy	(bool const& change_sight)
 {
-	CEntityAlive const*				enemy = object().memory().enemy().selected();
+	CEntityAlive const*				enemy = object().get_memory().get_enemy().selected();
 	VERIFY							(enemy);
 
 	if (enemy_in_fov()) {
-		if (object().memory().visual().visible_now(enemy))
-			object().sight().setup	(CSightAction(enemy, true, true));
+		if (object().get_memory().visual().visible_now(enemy))
+			object().get_sight().setup	(CSightAction(enemy, true, true));
 		else
-			object().sight().setup	(
+			object().get_sight().setup	(
 				CSightAction(
 					SightManager::eSightTypePosition,
-					object().memory().memory_position(enemy),
+					object().get_memory().memory_position(enemy),
 					true
 				)
 			);
 
-		object().sight().update		();
+		object().get_sight().update		();
 		if (!change_sight)
 			return					(true);
 
-		object().sight().Exec_Look	(0.f);
+		object().get_sight().Exec_Look	(0.f);
 		return						(true);
 	}
 	
-	object().sight().setup	(
+	object().get_sight().setup	(
 		CSightAction(
 			SightManager::eSightTypeDirection,
 			nearest_loophole_direction(enemy->Position()),
 			true
 		)
 	);
-	object().sight().update			();
+	object().get_sight().update			();
 
 	if (!change_sight)
 		return						(true);
 
-	object().sight().Exec_Look		(0.f);
+	object().get_sight().Exec_Look		(0.f);
 	return							(true);
 }
 
 bool loophole_action_base::setup_sight		(bool const& change_sight)
 {
-	if (object().movement().current_params().cover_fire_position()) {
+	if (object().get_movement().current_params().cover_fire_position()) {
 		process_fire_position			(change_sight);
 		return							(true);
 	}
 
-	if (object().movement().current_params().cover_fire_object()) {
+	if (object().get_movement().current_params().cover_fire_object()) {
 		process_fire_object				(change_sight);
 		return							(true);
 	}
 
-	if (!object().memory().enemy().selected()) {
+	if (!object().get_memory().get_enemy().selected()) {
 		process_default					(change_sight);
 		return							(true);
 	}
@@ -264,7 +264,7 @@ void loophole_action::initialize		()
 
 	LPCSTR animation_id			= "idle";
 	typedef smart_cover::loophole::Animations ActionAnimations;
-	ActionAnimations const		&animations = object().movement().current_params().cover_loophole()->action_animations(m_action_id, animation_id);
+	ActionAnimations const		&animations = object().get_movement().current_params().cover_loophole()->action_animations(m_action_id, animation_id);
 	m_animation					= animations[m_random.randI(animations.size())];
 }
 
@@ -300,7 +300,7 @@ void loophole_action_no_sight::initialize		()
 {
 	inherited::initialize						();
 
-	object().sight().setup						(CSightAction(SightManager::eSightTypeAnimationDirection, true, false));
+	object().get_sight().setup						(CSightAction(SightManager::eSightTypeAnimationDirection, true, false));
 }
 
 void loophole_action_no_sight::finalize			()
@@ -342,7 +342,7 @@ void transition::initialize				()
 	inherited::initialize		();
 
 	typedef smart_cover::loophole::TransitionData TransitionData;
-	TransitionData const		&animations = object().movement().current_params().cover_loophole()->transition_animations(m_action_from, m_action_to);
+	TransitionData const		&animations = object().get_movement().current_params().cover_loophole()->transition_animations(m_action_from, m_action_to);
 	m_animation					= animations[m_random.randI(animations.size())];
 }
 
@@ -377,7 +377,7 @@ void loophole_lookout::initialize		()
 {
 	inherited::initialize		();
 
-	object().sight().bone_aiming(m_animation, CSightManager::animation_frame_start, CSightManager::aiming_head);
+	object().get_sight().bone_aiming(m_animation, CSightManager::animation_frame_start, CSightManager::aiming_head);
 }
 
 void loophole_lookout::execute			()
@@ -389,7 +389,7 @@ void loophole_lookout::execute			()
 
 void loophole_lookout::finalize			()
 {
-	object().sight().bone_aiming();
+	object().get_sight().bone_aiming();
 
 	inherited::finalize			();
 }
@@ -409,7 +409,7 @@ void loophole_fire::initialize			()
 
 	m_firing					= true;
 
-	object().sight().bone_aiming(m_animation, CSightManager::animation_frame_start, CSightManager::aiming_weapon);
+	object().get_sight().bone_aiming(m_animation, CSightManager::animation_frame_start, CSightManager::aiming_weapon);
 }
 
 void loophole_fire::execute				()
@@ -418,10 +418,10 @@ void loophole_fire::execute				()
 
 	LPCSTR						animation_id = "idle";
 	if	(
-			object().sight().current_action().target_reached() &&
+			object().get_sight().current_action().target_reached() &&
 			m_firing &&
 			(
-				!object().movement().check_can_kill_enemy() ||
+				!object().get_movement().check_can_kill_enemy() ||
 				object().fire_make_sense()
 			)
 		)
@@ -430,7 +430,7 @@ void loophole_fire::execute				()
 		m_firing				= false;
 
 	typedef smart_cover::loophole::Animations Animations;
-	Animations const			&animations = object().movement().current_params().cover_loophole()->action_animations(m_action_id, animation_id);
+	Animations const			&animations = object().get_movement().current_params().cover_loophole()->action_animations(m_action_id, animation_id);
 	m_animation					= animations[m_random.randI(animations.size())];
 
 	setup_sight					(false);
@@ -438,7 +438,7 @@ void loophole_fire::execute				()
 
 void loophole_fire::finalize			()
 {
-	object().sight().bone_aiming();
+	object().get_sight().bone_aiming();
 
 	inherited::finalize			();
 }
@@ -467,8 +467,8 @@ void loophole_fire::on_mark				()
 
 void loophole_fire::on_no_mark			()
 {
-	VERIFY						(object().movement().current_params().cover());
-	if (!object().movement().current_params().cover()->is_combat_cover())
+	VERIFY						(object().get_movement().current_params().cover());
+	if (!object().get_movement().current_params().cover()->is_combat_cover())
 		return;
 
 	object().set_goal			(eObjectActionIdle,object().best_weapon(), 1, 3);
@@ -487,18 +487,18 @@ void idle_2_fire_transition::initialize			()
 {
 	inherited::initialize	();
 
-	object().animation().remove_bone_callbacks		();
-	object().animation().assign_bone_blend_callbacks(true);
-	object().sight().bone_aiming					(m_animation, CSightManager::animation_frame_end, CSightManager::aiming_weapon);
+	object().get_animation().remove_bone_callbacks		();
+	object().get_animation().assign_bone_blend_callbacks(true);
+	object().get_sight().bone_aiming					(m_animation, CSightManager::animation_frame_end, CSightManager::aiming_weapon);
 	setup_sight										(true);
-//	object().sight().enable							(false);
+//	object().get_sight().enable							(false);
 }
 
 void idle_2_fire_transition::finalize			()
 {
-	object().sight().bone_aiming					();
-	object().animation().remove_bone_callbacks		();
-	object().animation().assign_bone_callbacks		();
+	object().get_sight().bone_aiming					();
+	object().get_animation().remove_bone_callbacks		();
+	object().get_animation().assign_bone_callbacks		();
 
 	inherited::finalize		();
 }
@@ -516,19 +516,19 @@ void fire_2_idle_transition::initialize			()
 {
 	inherited::initialize							();
 
-	object().animation().remove_bone_callbacks		();
-	object().animation().assign_bone_blend_callbacks(false);
-	object().sight().bone_aiming					(m_animation, CSightManager::animation_frame_start, CSightManager::aiming_weapon);
+	object().get_animation().remove_bone_callbacks		();
+	object().get_animation().assign_bone_blend_callbacks(false);
+	object().get_sight().bone_aiming					(m_animation, CSightManager::animation_frame_start, CSightManager::aiming_weapon);
 	setup_sight										(true);
-	object().sight().enable							(false);
+	object().get_sight().enable							(false);
 }
 
 void fire_2_idle_transition::finalize			()
 {
-	object().sight().bone_aiming					();
-	object().animation().remove_bone_callbacks		();
-	object().animation().assign_bone_callbacks		();
-	object().sight().enable							(true);
+	object().get_sight().bone_aiming					();
+	object().get_animation().remove_bone_callbacks		();
+	object().get_animation().assign_bone_callbacks		();
+	object().get_sight().enable							(true);
 
 	inherited::finalize								();
 }
@@ -546,18 +546,18 @@ void idle_2_lookout_transition::initialize			()
 {
 	inherited::initialize	();
 
-	object().animation().remove_bone_callbacks		();
-	object().animation().assign_bone_blend_callbacks(true);
-	object().sight().bone_aiming					(m_animation, CSightManager::animation_frame_end, CSightManager::aiming_head);
+	object().get_animation().remove_bone_callbacks		();
+	object().get_animation().assign_bone_blend_callbacks(true);
+	object().get_sight().bone_aiming					(m_animation, CSightManager::animation_frame_end, CSightManager::aiming_head);
 	setup_sight										(true);
-//	object().sight().enable							(false);
+//	object().get_sight().enable							(false);
 }
 
 void idle_2_lookout_transition::finalize			()
 {
-	object().sight().bone_aiming					();
-	object().animation().remove_bone_callbacks		();
-	object().animation().assign_bone_callbacks		();
+	object().get_sight().bone_aiming					();
+	object().get_animation().remove_bone_callbacks		();
+	object().get_animation().assign_bone_callbacks		();
 
 	inherited::finalize		();
 }
@@ -575,19 +575,19 @@ void lookout_2_idle_transition::initialize			()
 {
 	inherited::initialize							();
 
-	object().animation().remove_bone_callbacks		();
-	object().animation().assign_bone_blend_callbacks(false);
-	object().sight().bone_aiming					(m_animation, CSightManager::animation_frame_start, CSightManager::aiming_head);
+	object().get_animation().remove_bone_callbacks		();
+	object().get_animation().assign_bone_blend_callbacks(false);
+	object().get_sight().bone_aiming					(m_animation, CSightManager::animation_frame_start, CSightManager::aiming_head);
 	setup_sight										(true);
-	object().sight().enable							(false);
+	object().get_sight().enable							(false);
 }
 
 void lookout_2_idle_transition::finalize			()
 {
-	object().sight().bone_aiming					();
-	object().animation().remove_bone_callbacks		();
-	object().animation().assign_bone_callbacks		();
-	object().sight().enable							(true);
+	object().get_sight().bone_aiming					();
+	object().get_animation().remove_bone_callbacks		();
+	object().get_animation().assign_bone_callbacks		();
+	object().get_sight().enable							(true);
 
 	inherited::finalize								();
 }

@@ -77,6 +77,10 @@ public:
 			bool					weapon_unstrapped		() const;
 			bool					weapon_unstrapped		(CWeapon *weapon) const;
 			bool					weapon_shooting			() const;
+			bool					weapon_reloading		() const;
+
+			void					start_weapon_shoot		();
+			void					start_weapon_reload		();
 
 private:
 			void					set_inertia				(const CWeapon &weapon, const u32 &action_id, const u32 &aim_time) const;

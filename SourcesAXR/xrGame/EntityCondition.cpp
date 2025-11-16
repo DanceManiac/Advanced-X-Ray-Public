@@ -13,13 +13,13 @@
 #include "ActorHelmet.h"
 #include "eatable_item.h"
 
-#define MAX_HEALTH 1.0f
-#define MIN_HEALTH -0.01f
+constexpr auto MAX_HEALTH = 1.0f;
+constexpr auto MIN_HEALTH = -0.01f;
 
 
-#define MAX_POWER 1.0f
-#define MAX_RADIATION 1.0f
-#define MAX_PSY_HEALTH 1.0f
+constexpr auto MAX_POWER = 1.0f;
+constexpr auto MAX_RADIATION = 1.0f;
+constexpr auto MAX_PSY_HEALTH = 1.0f;
 
 CEntityConditionSimple::CEntityConditionSimple()
 {
@@ -53,7 +53,6 @@ CEntityCondition::CEntityCondition(CEntityAlive *object)
 
 	m_fMinWoundSize			= 0.00001f;
 
-	
 	m_fHealthHitPart		= 1.0f;
 	m_fPowerHitPart			= 0.5f;
 
@@ -92,6 +91,7 @@ CEntityCondition::CEntityCondition(CEntityAlive *object)
 
 	m_bIsBleeding			= false;
 	m_bCanBeHarmed			= true;
+
 	m_fSatiety				= 1.0f;
 	m_fThirst				= 1.0f;
 	m_fIntoxication			= 0.0f;
@@ -101,6 +101,7 @@ CEntityCondition::CEntityCondition(CEntityAlive *object)
 	m_fHangover				= 0.0f;
 	m_fNarcotism			= 0.0f;
 	m_fWithdrawal			= 0.0f;
+	m_fFrostbite			= 0.0f;
 }
 
 CEntityCondition::~CEntityCondition(void)
@@ -162,7 +163,6 @@ void CEntityCondition::reinit	()
 	m_fDeltaHealth			= 0;
 	m_fDeltaPower			= 0;
 	m_fDeltaRadiation		= 0;
-
 	m_fDeltaCircumspection	= 0;
 	m_fDeltaEntityMorale	= 0;
 	m_fDeltaPsyHealth		= 0;
@@ -212,12 +212,12 @@ void CEntityCondition::ChangeBleeding(const float percent)
 	for(WOUND_VECTOR_IT it = m_WoundVector.begin(); m_WoundVector.end() != it; ++it)
 	{
 		(*it)->Incarnation			(percent, m_fMinWoundSize);
-		if(0 == (*it)->TotalSize	())
+		if(fis_zero((*it)->TotalSize()))
 			(*it)->SetDestroy		(true);
 	}
 }
 
-bool RemoveWoundPred(CWound* pWound)
+static bool RemoveWoundPred(CWound* pWound)
 {
 	if(pWound->GetDestroy())
 	{
@@ -340,7 +340,7 @@ void CEntityCondition::UpdateCondition()
 
 
 
-float CEntityCondition::HitOutfitEffect(float hit_power, ALife::EHitType hit_type, s16 element, float ap, bool& add_wound)
+float CEntityCondition::HitOutfitEffect( float hit_power, ALife::EHitType hit_type, s16 element, float ap, bool& add_wound )
 {
     CInventoryOwner* pInvOwner = smart_cast<CInventoryOwner*>(m_object);
 	if(!pInvOwner)
@@ -667,7 +667,8 @@ bool CEntityCondition::ApplyInfluence(const SMedicineInfluenceValues& V, const s
 	ChangeNarcotism	(V.fNarcotism);
 	ChangeWithdrawal(V.fWithdrawal);
 	ChangeDrugs		(V.fDrugs);
-	ChangePsyHealth(V.fPsyHealth);
+	ChangePsyHealth	(V.fPsyHealth);
+	ChangeFrostbite	(V.fFrostbite);
 	return true;
 }
 
@@ -678,24 +679,27 @@ bool CEntityCondition::ApplyBooster(const SBooster& B, const shared_str& sect)
 
 void SMedicineInfluenceValues::Load(const shared_str& sect)
 {
-	fHealth			= pSettings->r_float(sect.c_str(), "eat_health");
-	fPower			= pSettings->r_float(sect.c_str(), "eat_power");
-	fSatiety		= pSettings->r_float(sect.c_str(), "eat_satiety");
-	fThirst			= pSettings->r_float(sect.c_str(), "eat_thirst");
-	fIntoxication	= pSettings->r_float(sect.c_str(), "eat_intoxication");
-	fSleepeness		= pSettings->r_float(sect.c_str(), "eat_sleepeness");
-	fAlcoholism		= pSettings->r_float(sect.c_str(), "eat_alcoholism");
-	fHangover		= pSettings->r_float(sect.c_str(), "eat_hangover");
-	fNarcotism		= pSettings->r_float(sect.c_str(), "eat_narcotism");
-	fWithdrawal		= pSettings->r_float(sect.c_str(), "eat_withdrawal");
-	fRadiation		= pSettings->r_float(sect.c_str(), "eat_radiation");
-	fPsyHealth		= pSettings->r_float(sect.c_str(), "eat_psy_health");
-	fWoundsHeal		= pSettings->r_float(sect.c_str(), "wounds_heal_perc");
+	fHealth			= READ_IF_EXISTS(pSettings, r_float, sect.c_str(), "eat_health", 0.0f);
+	fPower			= READ_IF_EXISTS(pSettings, r_float, sect.c_str(), "eat_power", 0.0f);
+	fSatiety		= READ_IF_EXISTS(pSettings, r_float, sect.c_str(), "eat_satiety", 0.0f);
+	fThirst			= READ_IF_EXISTS(pSettings, r_float, sect.c_str(), "eat_thirst", 0.0f);
+	fRadiation		= READ_IF_EXISTS(pSettings, r_float, sect.c_str(), "eat_radiation", 0.0f);
+	fWoundsHeal		= READ_IF_EXISTS(pSettings, r_float, sect.c_str(), "wounds_heal_perc", 0.0f);
 	clamp			(fWoundsHeal, 0.f, 1.f);
 	fMaxPowerUp		= READ_IF_EXISTS	(pSettings,r_float,sect.c_str(),	"eat_max_power",0.0f);
 	fAlcohol		= READ_IF_EXISTS	(pSettings, r_float, sect.c_str(),	"eat_alcohol", 0.0f);
-	fDrugs			= READ_IF_EXISTS	(pSettings, r_float, sect.c_str(),	"eat_drugs", 0.0f);
 	fTimeTotal		= READ_IF_EXISTS	(pSettings, r_float, sect.c_str(),	"apply_time_sec", -1.0f);
+
+	// New stuff
+	fIntoxication	= READ_IF_EXISTS(pSettings, r_float, sect.c_str(), "eat_intoxication", 0.0f);
+	fSleepeness		= READ_IF_EXISTS(pSettings, r_float, sect.c_str(), "eat_sleepeness", 0.0f);
+	fAlcoholism		= READ_IF_EXISTS(pSettings, r_float, sect.c_str(), "eat_alcoholism", 0.0f);
+	fHangover		= READ_IF_EXISTS(pSettings, r_float, sect.c_str(), "eat_hangover", 0.0f);
+	fNarcotism		= READ_IF_EXISTS(pSettings, r_float, sect.c_str(), "eat_narcotism", 0.0f);
+	fWithdrawal		= READ_IF_EXISTS(pSettings, r_float, sect.c_str(), "eat_withdrawal", 0.0f);
+	fPsyHealth		= READ_IF_EXISTS(pSettings, r_float, sect.c_str(), "eat_psy_health", 0.0f);
+	fFrostbite		= READ_IF_EXISTS(pSettings, r_float, sect.c_str(), "eat_frostbite", 0.0f);
+	fDrugs			= READ_IF_EXISTS(pSettings, r_float, sect.c_str(), "eat_drugs", 0.0f);
 }
 
 void SBooster::Load(const shared_str& sect, EBoostParams type)
@@ -732,8 +736,13 @@ void SBooster::Load(const shared_str& sect, EBoostParams type)
 		case eBoostDrugsRestore: fBoostValue = pSettings->r_float(sect.c_str(), "boost_drugs_restore"); break;
 		case eBoostNarcotismRestore: fBoostValue = pSettings->r_float(sect.c_str(), "boost_narcotism_restore"); break;
 		case eBoostWithdrawalRestore: fBoostValue = pSettings->r_float(sect.c_str(), "boost_withdrawal_restore"); break;
-		case eBoostTimeFactor: fBoostValue = pSettings->r_float(sect.c_str(), "boost_time_factor"); break;
-		default: NODEFAULT;	
+		case eBoostFrostbiteRestore: fBoostValue = pSettings->r_float(sect.c_str(), "boost_frostbite_restore"); break;
+		case eBoostTimeFactor:
+			{
+				fBoostValue = pSettings->r_float(sect.c_str(), "boost_time_factor");
+				clamp(fBoostValue, -0.9f, 1.0f);
+			} break;
+		default: NODEFAULT;
 	}
 }
 

@@ -243,7 +243,7 @@ class cl_wind_params : public R_constant_setup
 	{
 		Fvector4 result;
 		CEnvDescriptor& E = *g_pGamePersistent->Environment().CurrentEnv;
-		result.set(E.wind_direction, E.wind_velocity, E.m_fTreeAmplitudeIntensity, 0.0f);
+		result.set(E.wind_direction, E.wind_velocity, E.m_fTreeAmplitudeIntensity, ps_r4_sss_water_waves_koef);
 		RCache.set_c(C, result);
 	}
 };
@@ -278,6 +278,28 @@ class cl_sky_color : public R_constant_setup
 	}
 };
 static cl_sky_color binder_sky_color;
+
+class cl_aurora_params : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		Fvector4 result;
+		CEnvDescriptor& desc = *g_pGamePersistent->Environment().CurrentEnv;
+		RCache.set_c(C, desc.aurora_color.x, desc.aurora_color.y, desc.aurora_color.z, desc.m_fAuroraIntensity);
+	}
+};
+static cl_aurora_params binder_aurora_params;
+
+class cl_temperature_params : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		Fvector4 result;
+		CEnvDescriptor& desc = *g_pGamePersistent->Environment().CurrentEnv;
+		RCache.set_c(C, desc.m_fAirTemperature, 0, 0, 0);
+	}
+};
+static cl_temperature_params binder_temperature_params;
 
 // times
 class cl_times		: public R_constant_setup {
@@ -526,6 +548,16 @@ static class cl_device_params : public R_constant_setup
 
 } binder_device_params;
 
+static class cl_weapon_params : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		float weapon_overheating = g_pGamePersistent->devices_shader_data.cur_weapon_overheating;
+		RCache.set_c(C, weapon_overheating, 0.0f, 0.0f, 0.0f);
+	}
+
+} binder_weapon_params;
+
 static class cl_inv_v : public R_constant_setup
 {
 	u32	marker;
@@ -553,10 +585,24 @@ extern ENGINE_API Fvector4 ps_ssfx_wetsurfaces_2;
 extern ENGINE_API int ps_ssfx_is_underground;
 extern ENGINE_API Fvector4 ps_ssfx_lightsetup_1;
 
+extern ENGINE_API Fvector4 ps_ssfx_volumetric;
+extern ENGINE_API Fvector4 ps_ssfx_ssr_2;
+extern ENGINE_API Fvector4 ps_ssfx_terrain_offset;
+
 extern ENGINE_API Fvector3 ps_ssfx_shadow_bias;
 extern ENGINE_API Fvector4 ps_ssfx_lut;
 extern ENGINE_API Fvector4 ps_ssfx_wind_grass;
 extern ENGINE_API Fvector4 ps_ssfx_wind_trees;
+
+extern ENGINE_API Fvector4 ps_ssfx_il;
+extern ENGINE_API Fvector4 ps_ssfx_il_setup1;
+
+extern ENGINE_API int ps_ssfx_bloom_from_weather;
+extern ENGINE_API Fvector4 ps_ssfx_bloom_1;
+extern ENGINE_API Fvector4 ps_ssfx_bloom_2;
+
+extern ENGINE_API Fvector4 ps_ssfx_pom;
+extern ENGINE_API Fvector4 ps_ssfx_terrain_pom;
 
 static class ssfx_wpn_dof_1 : public R_constant_setup
 {
@@ -709,8 +755,8 @@ static class ssfx_wind_anim : public R_constant_setup
 {
 	virtual void setup(R_constant * C)
 	{
-		Fvector3 WindAni = g_pGamePersistent->Environment().wind_anim;
-		RCache.set_c(C, WindAni.x, WindAni.y, WindAni.z, 0);
+		Fvector4 WindAni = g_pGamePersistent->Environment().wind_anim;
+		RCache.set_c(C, WindAni.x, WindAni.y, WindAni.z, WindAni.w);
 	}
 } ssfx_wind_anim;
 
@@ -730,6 +776,120 @@ static class ssfx_shadow_bias : public R_constant_setup
 	}
 } ssfx_shadow_bias;
 
+static class ssfx_terrain_offset : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		Fvector4 level_offset = g_discord.SSS_TerrainOffset, cmd_offset = ps_ssfx_terrain_offset, final_offset{};
+		final_offset.set(level_offset.x + cmd_offset.x, level_offset.y + cmd_offset.y, level_offset.z + cmd_offset.z, level_offset.w + cmd_offset.w);
+		RCache.set_c(C, final_offset);
+	}
+}    ssfx_terrain_offset;
+
+static class ssfx_ssr_2 : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_ssfx_ssr_2);
+	}
+}    ssfx_ssr_2;
+
+static class ssfx_volumetric : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_ssfx_volumetric);
+	}
+}    ssfx_volumetric;
+
+static class ssfx_il : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, (Render->currentViewPort == MAIN_VIEWPORT) ? ps_ssfx_il : Fvector4().set(0.f, 0.f, 0.f, 0.f));
+	}
+}    ssfx_il;
+
+static class ssfx_il_setup1 : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_ssfx_il_setup1);
+	}
+}    ssfx_il_setup1;
+
+static class aref_params : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_r2_aref_strength / 500.f, 0.f, 0.f, 0.f);
+	}
+}    aref_params;
+
+static class normal_strength_params : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		//x - world, y - hud, z - terrain, w - trees
+		RCache.set_c(C, ps_r4_normal_strength.x, ps_r4_normal_strength.y, ps_r4_normal_strength.z, ps_r4_normal_strength.w);
+	}
+}    normal_strength_params;
+
+static class ssfx_bloom_1 : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		Fvector4 BloomSetup = { 0,0,0,0 };
+
+		if (ps_ssfx_bloom_from_weather)
+		{
+			BloomSetup.x = g_pGamePersistent->Environment().CurrentEnv->bloom_threshold;
+			BloomSetup.y = g_pGamePersistent->Environment().CurrentEnv->bloom_exposure;
+			BloomSetup.w = g_pGamePersistent->Environment().CurrentEnv->bloom_sky_intensity;
+		}
+		else
+		{
+			BloomSetup.x = ps_ssfx_bloom_1.x;
+			BloomSetup.y = ps_ssfx_bloom_1.y;
+			BloomSetup.w = ps_ssfx_bloom_1.w;
+		}
+
+		RCache.set_c(C, BloomSetup);
+	}
+}    ssfx_bloom_1;
+
+static class ssfx_bloom_2 : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_ssfx_bloom_2);
+	}
+}    ssfx_bloom_2;
+
+static class ssfx_terrain_pom : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_ssfx_terrain_pom);
+	}
+}    ssfx_terrain_pom;
+
+static class ssfx_pom : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_ssfx_pom);
+	}
+}    ssfx_pom;
+
+static class ssfx_issvp : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, Render->currentViewPort != MAIN_VIEWPORT, 0, 0, 0);
+	}
+}    ssfx_issvp;
+
 // Standart constant-binding
 void	CBlender_Compile::SetMapping	()
 {
@@ -744,6 +904,9 @@ void	CBlender_Compile::SetMapping	()
 	r_Constant("screen_res_alt", &binder_screen_res);
     r_Constant("rain_params", &binder_rain_params);
 	r_Constant("wind_params", &binder_wind_params);
+	r_Constant("aurora_params", &binder_aurora_params);
+
+	r_Constant("temperature_params", &binder_temperature_params);
 
 	// misc
 	r_Constant("m_hud_params", &binder_hud_params);	//--#SM+#--
@@ -823,6 +986,8 @@ void	CBlender_Compile::SetMapping	()
 	r_Constant				("pda_params",		&binder_pda_params);
 	// Nightvision
 	r_Constant				("device_influence",	&binder_device_params);
+	// Weapon
+	r_Constant				("weapon_params",		&binder_weapon_params);
 	//Screen Space Shaders
 	r_Constant				("ssfx_wpn_dof_1",		&ssfx_wpn_dof_1);
 	r_Constant				("ssfx_wpn_dof_2",		&ssfx_wpn_dof_2);
@@ -836,15 +1001,30 @@ void	CBlender_Compile::SetMapping	()
 	r_Constant				("ssfx_gloss",			&binder_ssfx_gloss);
 	r_Constant				("ssfx_florafixes_1",	&binder_ssfx_florafixes_1);
 	r_Constant				("ssfx_florafixes_2",	&binder_ssfx_florafixes_2);
+	r_Constant				("ssfx_volumetric",		&ssfx_volumetric);
+	r_Constant				("ssfx_ssr_2",			&ssfx_ssr_2);
+	r_Constant				("ssfx_terrain_offset", &ssfx_terrain_offset);
 	r_Constant				("ssfx_shadow_bias",	&ssfx_shadow_bias);
 	r_Constant				("ssfx_wind_anim",		&ssfx_wind_anim);
 	r_Constant				("ssfx_wsetup_grass",	&ssfx_wind_grass);
 	r_Constant				("ssfx_wsetup_trees",	&ssfx_wind_trees);
 	r_Constant				("ssfx_lut",			&ssfx_lut);
+	r_Constant				("ssfx_il_setup",		&ssfx_il);
+	r_Constant				("ssfx_il_setup2",		&ssfx_il_setup1);
+	r_Constant				("ssfx_bloom_1",		&ssfx_bloom_1);
+	r_Constant				("ssfx_bloom_2",		&ssfx_bloom_2);
+	r_Constant				("ssfx_issvp",			&ssfx_issvp);
+	r_Constant				("ssfx_pom",			&ssfx_pom);
+	r_Constant				("ssfx_terrain_pom",	&ssfx_terrain_pom);
+
 	//Reflections distance
 	r_Constant				("reflections_distance", &cl_refl_dist);
 	//AO Debug
-	r_Constant				("debug",			&binder_debug);
+	r_Constant				("debug",				&binder_debug);
+	//Def Aref
+	r_Constant				("aref_params",			&aref_params);
+	//Normal settings
+	r_Constant				("normal_strength_params", &normal_strength_params);
 
 	// detail
 	//if (bDetail	&& detail_scaler)

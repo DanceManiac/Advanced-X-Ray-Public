@@ -23,10 +23,10 @@
 #include "AdvancedXrayGameConstants.h"
 #include "CustomOutfit.h"
 
-#define MAX_SATIETY					1.0f
-#define START_SATIETY				0.5f
-#define MAX_THIRST					1.0f
-#define START_THIRST				0.5f
+constexpr auto MAX_SATIETY = 1.0f;
+constexpr auto START_SATIETY = 0.5f;
+constexpr auto MAX_THIRST = 1.0f;
+constexpr auto START_THIRST = 0.5f;
 
 BOOL	GodMode	()	
 { 
@@ -57,6 +57,7 @@ CActorCondition::CActorCondition(CActor *object) :
 	m_fNarcotism				= 0.0f;
 	m_fWithdrawal				= 0.0f;
 	m_fDrugs					= 0.0f;
+	m_fFrostbite				= 0.0f;
 	m_fV_PsyHealth_Health		= 0.0f;
 
 	m_bPsyHealthKillActor		= false;
@@ -147,57 +148,73 @@ void CActorCondition::LoadCondition(LPCSTR entity_section)
 	VERIFY( !fis_zero(m_zone_max_power[ALife::infl_electra]) );
 
 	// M.F.S. Team Thirst
-	m_fV_Thirst					= pSettings->r_float(section, "thirst_v");
-	m_fV_ThirstPower			= pSettings->r_float(section, "thirst_power_v");
-	m_fV_ThirstHealth			= pSettings->r_float(section, "thirst_health_v");
-
+	m_fThirstCritical = READ_IF_EXISTS(pSettings,r_float,section,"thirst_critical", 1.0f);
+	clamp(m_fThirstCritical, 0.0f, 1.0f);
+	m_fV_Thirst					= READ_IF_EXISTS(pSettings,r_float,section,"thirst_v", 0.0f);
+	m_fV_ThirstPower			= READ_IF_EXISTS(pSettings,r_float,section,"thirst_power_v", 0.0f);
+	m_fV_ThirstHealth			= READ_IF_EXISTS(pSettings,r_float,section,"thirst_health_v", 0.0f);
+	m_fThirstAccelTemp			= READ_IF_EXISTS(pSettings,r_float,section,"thirst_accel_temp", 0.0f);
 
 	// M.F.S. Team Intoxication
-	m_fIntoxicationCritical = pSettings->r_float(section, "intoxication_critical");
+	m_fIntoxicationCritical		= READ_IF_EXISTS(pSettings,r_float,section,"intoxication_critical", 0.0f);
 	clamp(m_fIntoxicationCritical, 0.0f, 1.0f);
-	m_fV_Intoxication = pSettings->r_float(section, "intoxication_v");
-	m_fV_IntoxicationHealth = pSettings->r_float(section, "intoxication_health_v");
+	m_fV_Intoxication			= READ_IF_EXISTS(pSettings,r_float,section,"intoxication_v", 0.0f);
+	m_fV_IntoxicationHealth		= READ_IF_EXISTS(pSettings,r_float,section,"intoxication_health_v", 0.0f);
 
 	// M.F.S. Team Sleepeness
-	m_fSleepenessCritical = pSettings->r_float(section, "sleepeness_critical");
+	m_fSleepenessCritical		= READ_IF_EXISTS(pSettings,r_float,section,"sleepeness_critical", 0.0f);
 	clamp(m_fSleepenessCritical, 0.0f, 1.0f);
-	m_fV_Sleepeness = pSettings->r_float(section, "sleepeness_v");
-	m_fV_SleepenessPower = pSettings->r_float(section, "sleepeness_power_v");
-	m_fV_SleepenessPsyHealth = pSettings->r_float(section, "sleepeness_psy_health_v");
-	m_fSleepeness_V_Sleep = pSettings->r_float(section, "sleepeness_v_sleep");
+	m_fV_Sleepeness				= READ_IF_EXISTS(pSettings,r_float,section,"sleepeness_v", 0.0f);
+	m_fV_SleepenessPower		= READ_IF_EXISTS(pSettings,r_float,section,"sleepeness_power_v", 0.0f);
+	m_fV_SleepenessPsyHealth	= READ_IF_EXISTS(pSettings,r_float,section,"sleepeness_psy_health_v", 0.0f);
+	m_fSleepeness_V_Sleep		= READ_IF_EXISTS(pSettings,r_float,section,"sleepeness_v_sleep", 0.0f);
 
 	// M.F.S. Team Alcoholism (History Of Puhtinskyi)
-	m_fV_Alcoholism = pSettings->r_float(section, "alcoholism_v");
-	m_fHangoverCritical = pSettings->r_float(section, "hangover_critical");
+	m_fV_Alcoholism				= READ_IF_EXISTS(pSettings,r_float,section,"alcoholism_v", 0.0f);
+	m_fHangoverCritical			= READ_IF_EXISTS(pSettings,r_float,section,"hangover_critical", 0.0f);
 	clamp(m_fHangoverCritical, 0.0f, 1.0f);
-	m_fV_Hangover = pSettings->r_float(section, "hangover_v");
-	m_fV_HangoverPower = pSettings->r_float(section, "hangover_power_v");
+	m_fV_Hangover				= READ_IF_EXISTS(pSettings,r_float,section,"hangover_v", 0.0f);
+	m_fV_HangoverPower			= READ_IF_EXISTS(pSettings,r_float,section,"hangover_power_v", 0.0f);
 
 	// M.F.S. Team Narcotism (History Of Puhtinskyi)
-	m_fV_Narcotism = pSettings->r_float(section, "narcotism_v");
-	m_fWithdrawalCritical = pSettings->r_float(section, "withdrawal_critical");
+	m_fV_Narcotism				= READ_IF_EXISTS(pSettings,r_float,section,"narcotism_v", 0.0f);
+	m_fWithdrawalCritical		= READ_IF_EXISTS(pSettings,r_float,section,"withdrawal_critical", 0.0f);
 	clamp(m_fWithdrawalCritical, 0.0f, 1.0f);
-	m_fV_Withdrawal = pSettings->r_float(section, "withdrawal_v");
-	m_fV_WithdrawalPower = pSettings->r_float(section, "withdrawal_power_v");
-	m_fV_WithdrawalHealth = pSettings->r_float(section, "withdrawal_health_v");
-	m_fV_Drugs = pSettings->r_float(section, "drugs_v");
+	m_fV_Withdrawal				= READ_IF_EXISTS(pSettings,r_float,section,"withdrawal_v", 0.0f);
+	m_fV_WithdrawalPower		= READ_IF_EXISTS(pSettings,r_float,section,"withdrawal_power_v", 0.0f);
+	m_fV_WithdrawalHealth		= READ_IF_EXISTS(pSettings,r_float,section,"withdrawal_health_v", 0.0f);
+	m_fV_Drugs					= READ_IF_EXISTS(pSettings,r_float,section,"drugs_v", 0.0f);
 
-	m_bPsyHealthKillActor = READ_IF_EXISTS(pSettings, r_bool, section, "psy_health_kill_actor", false);
-	m_fV_PsyHealth_Health = READ_IF_EXISTS(pSettings, r_float, section, "psy_health_health_v", 0.0f);
+	// M.F.S. Team Frostbite
+	m_fFrostbiteCritical		= READ_IF_EXISTS(pSettings,r_float,section,"frostbite_critical", 0.0f);
+	clamp(m_fFrostbiteCritical, 0.0f, 1.0f);
+	m_fV_Frostbite				= READ_IF_EXISTS(pSettings,r_float,section,"frostbite_v", 0.0f);
+	m_fV_FrostbiteAdd			= READ_IF_EXISTS(pSettings,r_float,section,"frostbite_v_add", 0.0f);
+	m_fFrostbiteIncTemp			= READ_IF_EXISTS(pSettings,r_float,section,"frostbite_inc_temp", 0.0f);;
+	m_fFrostbiteDecTemp			= READ_IF_EXISTS(pSettings,r_float,section,"frostbite_dec_temp", 0.0f);
+	m_fV_FrostbiteHealth		= READ_IF_EXISTS(pSettings,r_float,section,"frostbite_health_v", 0.0f);
+
+	// Psy Health Stuff
+	m_bPsyHealthKillActor		= READ_IF_EXISTS(pSettings, r_bool, section, "psy_health_kill_actor", false);
+	m_fV_PsyHealth_Health		= READ_IF_EXISTS(pSettings, r_float, section, "psy_health_health_v", 0.0f);
 
 	// M.F.S. Team Skills System
-	m_fV_SatietySkill = READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_satiety_restore", 0.0f);
-	m_fV_HealthSkill = READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_health_restore", 0.0f);
-	m_fV_BleedingSkill = READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_bleeding_restore", 0.0f);
-	m_fV_RadiationSkill = READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_radiation_restore", 0.0f);
-	m_fV_PowerSkill = READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_power_restore", 0.0f);
-	m_fV_ThirstSkill = READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_thirst_restore", 0.0f);
-	m_fV_IntoxicationSkill = READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_intoxication_restore", 0.0f);
-	m_fV_SleepenessSkill = READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_sleepeness_restore", 0.0f);
+	m_fV_SatietySkill			= READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_satiety_restore", 0.0f);
+	m_fV_HealthSkill			= READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_health_restore", 0.0f);
+	m_fV_BleedingSkill			= READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_bleeding_restore", 0.0f);
+	m_fV_RadiationSkill			= READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_radiation_restore", 0.0f);
+	m_fV_PowerSkill				= READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_power_restore", 0.0f);
+	m_fV_ThirstSkill			= READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_thirst_restore", 0.0f);
+	m_fV_IntoxicationSkill		= READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_intoxication_restore", 0.0f);
+	m_fV_SleepenessSkill		= READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_sleepeness_restore", 0.0f);
+	m_fV_FrostbiteSkill			= READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_frostbite_restore", 0.0f);
+	m_fV_FrostbiteAddSkill		= READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_frostbite_v_add", 0.0f);
 
-	m_fMaxWeightSkill = READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_max_weight", 0.0f);
-	m_fJumpSpeedSkill = READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_jump_speed", 0.0f);
-	m_fWalkAccelSkill = READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_walk_accel", 0.0f);
+	m_fMaxWeightSkill			= READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_max_weight", 0.0f);
+	m_fJumpSpeedSkill			= READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_jump_speed", 0.0f);
+	m_fWalkAccelSkill			= READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_walk_accel", 0.0f);
+
+	m_fPackingSkill				= READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_packing", 0.0f);
 }
 
 float CActorCondition::GetZoneMaxPower( ALife::EInfluenceType type) const
@@ -241,6 +258,45 @@ float CActorCondition::GetZoneMaxPower( ALife::EHitType hit_type ) const
 
 void CActorCondition::UpdateCondition()
 {
+	if(psActorFlags.test(AF_GODMODE_RT))
+	{
+		UpdateSatiety();
+		UpdateBoosters();
+
+		if (GameConstants::GetActorThirst())
+			UpdateThirst();
+
+		if (GameConstants::GetActorIntoxication())
+			UpdateIntoxication();
+
+		if (GameConstants::GetActorSleepeness())
+			UpdateSleepeness();
+		
+		if (GameConstants::GetActorAlcoholism())
+			UpdateAlcoholism();
+
+		if (GameConstants::GetActorNarcotism())
+			UpdateNarcotism();
+
+		if (GameConstants::GetActorFrostbite())
+			UpdateFrostbite();
+
+		UpdatePsyHealth();
+
+		m_fAlcohol		+= m_fV_Alcohol*m_fDeltaTime;
+		clamp			(m_fAlcohol,			0.0f,		1.0f);
+
+		m_fDrugs += m_fV_Drugs * m_fDeltaTime;
+		clamp(m_fDrugs, 0.0f, 1.0f);
+
+		if(IsGameTypeSingle())
+		{
+			CEffectorCam* ce = Actor()->Cameras().GetCamEffector((ECamEffectorType)effAlcohol);
+			if(ce)
+				RemoveEffector(m_object,effAlcohol);
+		}
+	}
+
 	if (GodMode())				return;
 	if (!object().g_Alive())	return;
 	if (!object().Local() && m_object != Level().CurrentViewEntity())		return;	
@@ -313,31 +369,22 @@ void CActorCondition::UpdateCondition()
 	UpdatePsyHealth();
 
 	if (GameConstants::GetActorThirst())
-	{
 		UpdateThirst();
-	}
 
 	if (GameConstants::GetActorIntoxication())
-	{
 		UpdateIntoxication();
-	}
 
 	if (GameConstants::GetActorSleepeness())
-	{
 		UpdateSleepeness();
-	}
 
 	if (GameConstants::GetActorAlcoholism())
-	{
 		UpdateAlcoholism();
-	}
 
 	if (GameConstants::GetActorNarcotism())
-	{
 		UpdateNarcotism();
-	}
 
-	UpdatePsyHealth();
+	if (GameConstants::GetActorFrostbite())
+		UpdateFrostbite();
 
 	inherited::UpdateCondition();
 
@@ -385,36 +432,35 @@ void CActorCondition::AffectDamage_InjuriousMaterialAndMonstersInfluence()
 	float one = 0.1f;
 	float tg = Device.fTimeGlobal;
 	if (m_f_time_affected + one > tg)
-	{
 		return;
-	}
 
-	clamp(m_f_time_affected, tg - (one * 3), tg);
+	clamp( m_f_time_affected, tg - (one * 3), tg );
 
-	float psy_influence = 0;
-	float fire_influence = 0;
-	float radiation_influence = GetInjuriousMaterialDamage(); // Get Radiation from Material
+	float psy_influence					=	0;
+	float fire_influence				=	0;
+	float acid_influence				=	0;
+	float radiation_influence			=	GetInjuriousMaterialDamage(); // Get Radiation from Material
 
 	// Add Radiation and Psy Level from Monsters
-	CPda* const pda = m_object->GetPDA();
+	CPda* const pda						=	m_object->GetPDA();
 
-	if (pda)
+	if ( pda )
 	{
 		typedef xr_vector<CObject*>				monsters;
 
-		for (monsters::const_iterator	it = pda->feel_touch.begin();
-			it != pda->feel_touch.end();
-			++it)
+		for ( monsters::const_iterator	it	=	pda->feel_touch.begin();
+										it	!=	pda->feel_touch.end();
+										++it )
 		{
-			CBaseMonster* const	monster = smart_cast<CBaseMonster*>(*it);
-
+			CBaseMonster* const	monster		=	smart_cast<CBaseMonster*>(*it);
 			if (!monster) continue;
 
 			if (monster->g_Alive())
 			{
-				psy_influence += monster->get_psy_influence();
+				psy_influence		+= monster->get_psy_influence();
 				radiation_influence += monster->get_radiation_influence();
-				fire_influence += monster->get_fire_influence();
+				fire_influence		+= monster->get_fire_influence();
+				acid_influence		+= monster->get_acid_influence();
 			}
 			else
 			{
@@ -426,31 +472,35 @@ void CActorCondition::AffectDamage_InjuriousMaterialAndMonstersInfluence()
 
 				if (monster->get_enable_fire_aura_after_die())
 					fire_influence += monster->get_fire_influence();
+
+				if (monster->get_enable_acid_aura_after_die())
+					acid_influence += monster->get_acid_influence();
 			}
 		}
 	}
 
-	struct
+	struct 
 	{
 		ALife::EHitType	type;
 		float			value;
 
-	} hits[] = { { ALife::eHitTypeRadiation, radiation_influence * one },
-							{ ALife::eHitTypeTelepatic, psy_influence * one },
-							{ ALife::eHitTypeBurn,		fire_influence * one } };
+	} hits[]		=	{	{ ALife::eHitTypeRadiation,		radiation_influence	*	one },
+							{ ALife::eHitTypeTelepatic,		psy_influence		*	one }, 
+							{ ALife::eHitTypeBurn,			fire_influence		*	one },
+							{ ALife::eHitTypeChemicalBurn,	acid_influence		*	one } };
 
-	NET_Packet	np;
+ 	NET_Packet	np;
 
-	while (m_f_time_affected + one < tg)
+	while ( m_f_time_affected + one < tg )
 	{
-		m_f_time_affected += one;
+		m_f_time_affected			+=	one;
 
-		for (int i = 0; i < sizeof(hits) / sizeof(hits[0]); ++i)
+		for ( int i=0; i<sizeof(hits)/sizeof(hits[0]); ++i )
 		{
-			float			damage = hits[i].value;
-			ALife::EHitType	type = hits[i].type;
+			float			damage	=	hits[i].value;
+			ALife::EHitType	type	=	hits[i].type;
 
-			if (damage > EPS)
+			if ( damage > EPS )
 			{
 				SHit HDS = SHit(damage, 
 //.								0.0f, 
@@ -464,8 +514,8 @@ void CActorCondition::AffectDamage_InjuriousMaterialAndMonstersInfluence()
 								false);
 
 				HDS.GenHeader(GE_HIT, m_object->ID());
-				HDS.Write_Packet(np);
-				CGameObject::u_EventSend(np);
+				HDS.Write_Packet( np );
+				CGameObject::u_EventSend( np );
 			}
 
 		} // for
@@ -476,7 +526,7 @@ void CActorCondition::AffectDamage_InjuriousMaterialAndMonstersInfluence()
 #include "characterphysicssupport.h"
 float CActorCondition::GetInjuriousMaterialDamage()
 {
-	u16 mat_injurios = m_object->character_physics_support()->movement()->injurious_material_idx();
+	u16 mat_injurios = m_object->character_physics_support()->get_movement()->injurious_material_idx();
 
 	if(mat_injurios!=GAMEMTL_NONE_IDX)
 	{
@@ -512,23 +562,23 @@ void CActorCondition::UpdateRadiation()
 
 void CActorCondition::UpdateSatiety()
 {
-	if (!IsGameTypeSingle())
+ 	if (!IsGameTypeSingle()) 
 	{
 		m_fDeltaPower += m_fV_SatietyPower * m_fDeltaTime;
-		return;
+ 		return;
 	}
 
-	if (m_fSatiety > 0)
+	if(m_fSatiety>0)
 	{
-		m_fSatiety -= m_fV_Satiety * m_fDeltaTime;
+		m_fSatiety -= m_fV_Satiety*m_fDeltaTime;
 		clamp(m_fSatiety, 0.0f, 1.0f);
 	}
-
-	float satiety_health_koef = (m_fSatiety - m_fSatietyCritical) / (m_fSatiety >= m_fSatietyCritical ? 1 - m_fSatietyCritical : m_fSatietyCritical);
-	if (CanBeHarmed() && !psActorFlags.test(AF_GODMODE_RT))
+		
+	float satiety_health_koef = (m_fSatiety-m_fSatietyCritical)/(m_fSatiety>=m_fSatietyCritical?1-m_fSatietyCritical:m_fSatietyCritical);
+	if(CanBeHarmed() && !psActorFlags.test(AF_GODMODE_RT) )
 	{
-		m_fDeltaHealth += m_fV_SatietyHealth * satiety_health_koef * m_fDeltaTime;
-		m_fDeltaPower += m_fV_SatietyPower * m_fSatiety * m_fDeltaTime;
+		m_fDeltaHealth += m_fV_SatietyHealth*satiety_health_koef*m_fDeltaTime;
+		m_fDeltaPower += m_fV_SatietyPower*m_fSatiety*m_fDeltaTime;
 	}
 }
 
@@ -536,37 +586,33 @@ void CActorCondition::UpdateSatiety()
 void CActorCondition::UpdateThirst()
 {
 	if (!IsGameTypeSingle()) return;
+	if (fis_zero(m_fV_Thirst)) return;
 
-	float k = 1.0f;
 	if (m_fThirst > 0)
 	{
-		m_fThirst -= m_fV_Thirst *
-			k*
-			m_fDeltaTime;
+		float cur_temperature = g_pGamePersistent->Environment().CurrentEnv->m_fAirTemperature;
+
+		if (cur_temperature >= m_fThirstAccelTemp)
+			m_fThirst -= (m_fV_Thirst + (cur_temperature / 1000000.f)) * m_fDeltaTime;
+		else
+			m_fThirst -= m_fV_Thirst * m_fDeltaTime;
 
 		clamp(m_fThirst, 0.0f, 1.0f);
-
 	}
 
-	//жажда увеличивает здоровье только если нет открытых ран
-	if (!m_bIsBleeding)
+	float thirst_health_koef = (m_fThirst - m_fThirstCritical) / (m_fThirst >= m_fThirstCritical ? 1 - m_fThirstCritical : m_fThirstCritical);
+	if (CanBeHarmed() && !psActorFlags.test(AF_GODMODE_RT))
 	{
-		m_fDeltaHealth += CanBeHarmed() ?
-			(m_fV_ThirstHealth*(m_fThirst > 0.0f ? 1.f : -1.f)*m_fDeltaTime)
-			: 0;
+		m_fDeltaHealth += m_fV_ThirstHealth * thirst_health_koef*m_fDeltaTime;
+		m_fDeltaPower += m_fV_ThirstPower * m_fThirst*m_fDeltaTime;
 	}
-
-	//коэффициенты уменьшения восстановления силы от жажды
-	float thirst_power_k = 1.f;
-
-	m_fDeltaPower += m_fV_ThirstPower *
-		thirst_power_k*
-		m_fDeltaTime;
 }
 
 //M.F.S. Team Intoxication
 void CActorCondition::UpdateIntoxication()
 {
+	if (fis_zero(m_fV_Intoxication)) return;
+	
 	CEffectorCam* ce = Actor()->Cameras().GetCamEffector((ECamEffectorType)effIntoxication);
 	if ((m_fIntoxication >= m_fIntoxicationCritical))
 	{
@@ -597,6 +643,8 @@ void CActorCondition::UpdateIntoxication()
 //M.F.S. Team Sleepeness
 void CActorCondition::UpdateSleepeness()
 {
+	if (fis_zero(m_fV_Sleepeness)) return;
+	
 	if (GetSleepeness() >= 0.85f && !GameConstants::GetSleepInfluenceOnPsyHealth())
 	{
 		luabind::functor<void> funct;
@@ -648,6 +696,8 @@ void CActorCondition::UpdateSleepeness()
 //M.F.S. Team Alcoholism
 void CActorCondition::UpdateAlcoholism()
 {
+	if (fis_zero(m_fV_Alcoholism)) return;
+	
 	if (m_fAlcoholism > 0.0f)
 	{
 		if (m_fAlcohol <= 0.0f)
@@ -684,6 +734,8 @@ void CActorCondition::UpdateAlcoholism()
 //M.F.S. Team Narcotism
 void CActorCondition::UpdateNarcotism()
 {
+	if (fis_zero(m_fV_Narcotism)) return;
+	
 	if (m_fNarcotism > 0.0f)
 	{
 		if (m_fDrugs <= 0.0f)
@@ -754,6 +806,48 @@ void CActorCondition::UpdatePsyHealth()
 	}
 }
 
+//M.F.S. Team Frostbite
+void CActorCondition::UpdateFrostbite()
+{
+	if (fis_zero(m_fV_Frostbite)) return;
+	
+	CEffectorCam* ce = Actor()->Cameras().GetCamEffector((ECamEffectorType)effFrostbite);
+	if ((m_fFrostbite >= m_fFrostbiteCritical))
+	{
+		if (!ce)
+			AddEffector(m_object, effFrostbite, "effector_frostbite", GetFrostbite() / 4);
+	}
+	else
+	{
+		if (ce)
+			RemoveEffector(m_object, effFrostbite);
+	}
+
+	if (Actor()->GetCurrentHeating() <= 0.0f)
+		Actor()->SetHeatingStatus(false);
+
+	float cur_temperature = g_pGamePersistent->Environment().CurrentEnv->m_fAirTemperature;
+	bool IsHeat = Actor()->GetHeatingStatus() || cur_temperature > m_fFrostbiteDecTemp; // Сейчас ГГ около источника тепла
+
+	if (IsHeat)
+		m_fFrostbite -= (m_fV_Frostbite * Actor()->GetCurrentHeating() + (cur_temperature / 1000000.f)) * m_fDeltaTime;
+	else
+	{
+		if (!g_pGamePersistent->IsActorInHideout() && cur_temperature < m_fFrostbiteIncTemp)
+			m_fFrostbite += ((m_fV_FrostbiteAdd - m_fV_FrostbiteAddSkill + abs(cur_temperature / 1000000.f))) * m_fDeltaTime;
+	}
+
+	clamp(m_fFrostbite, 0.0f, 1.0f);
+
+	if (CanBeHarmed() && !psActorFlags.test(AF_GODMODE_RT))
+	{
+		if (m_fFrostbite >= m_fFrostbiteCritical && GetHealth() >= 0.25)
+			m_fDeltaHealth -= m_fV_FrostbiteHealth * m_fFrostbite * m_fDeltaTime;
+		else if (m_fFrostbite >= 0.75f && GetHealth() <= 0.25)
+			m_fDeltaHealth -= m_fV_FrostbiteHealth * m_fFrostbite * m_fDeltaTime;
+	}
+}
+
 CWound* CActorCondition::ConditionHit(SHit* pHDS)
 {
 	if (GodMode()) return NULL;
@@ -769,9 +863,12 @@ void CActorCondition::PowerHit(float power, bool apply_outfit)
 //weight - "удельный" вес от 0..1
 void CActorCondition::ConditionJump(float weight)
 {
+	if (GodMode()) return;
+
 	float power			=	m_fJumpPower;
 	power				+=	m_fJumpWeightPower*weight*(weight>1.f?m_fOverweightJumpK:1.f);
 	m_fPower			-=	HitPowerEffect(power);
+	clamp				(m_fPower, 0.f, 1.f);
 }
 void CActorCondition::ConditionWalk(float weight, bool accel, bool sprint)
 {	
@@ -784,7 +881,8 @@ void CActorCondition::ConditionWalk(float weight, bool accel, bool sprint)
 	float power = m_fWalkPower;
 	power += m_fWalkWeightPower * weight*(weight > 1.f ? overweight_k : 1.f);
 	power *= m_fDeltaTime * (accel ? (sprint ? m_fSprintK : m_fAccelK) : 1.f);
-	m_fPower -= HitPowerEffect(power);
+	m_fPower			-= HitPowerEffect(power);
+	clamp				(m_fPower, 0.f, 1.f);
 }
 
 void CActorCondition::ConditionStand(float weight)
@@ -792,6 +890,7 @@ void CActorCondition::ConditionStand(float weight)
 	float power			= m_fStandPower;
 	power				*= m_fDeltaTime;
 	m_fPower			-= power;
+	clamp				(m_fPower, 0.f, 1.f);
 }
 
 
@@ -853,6 +952,7 @@ void CActorCondition::save(NET_Packet &output_packet)
 	save_data			(m_fNarcotism, output_packet);
 	save_data			(m_fWithdrawal, output_packet);
 	save_data			(m_fDrugs, output_packet);
+	save_data			(m_fFrostbite, output_packet);
 
 	save_data			(m_curr_medicine_influence.fHealth, output_packet);
 	save_data			(m_curr_medicine_influence.fPower, output_packet);
@@ -871,6 +971,7 @@ void CActorCondition::save(NET_Packet &output_packet)
 	save_data			(m_curr_medicine_influence.fNarcotism, output_packet);
 	save_data			(m_curr_medicine_influence.fWithdrawal, output_packet);
 	save_data			(m_curr_medicine_influence.fDrugs, output_packet);
+	save_data			(m_curr_medicine_influence.fFrostbite, output_packet);
 
 	output_packet.w_u8((u8)m_booster_influences.size());
 	BOOSTER_MAP::iterator b = m_booster_influences.begin(), e = m_booster_influences.end();
@@ -896,6 +997,7 @@ void CActorCondition::load(IReader &input_packet)
 	load_data			(m_fNarcotism, input_packet);
 	load_data			(m_fWithdrawal, input_packet);
 	load_data			(m_fDrugs, input_packet);
+	load_data			(m_fFrostbite, input_packet);
 
 	load_data			(m_curr_medicine_influence.fHealth, input_packet);
 	load_data			(m_curr_medicine_influence.fPower, input_packet);
@@ -914,6 +1016,7 @@ void CActorCondition::load(IReader &input_packet)
 	load_data			(m_curr_medicine_influence.fNarcotism, input_packet);
 	load_data			(m_curr_medicine_influence.fWithdrawal, input_packet);
 	load_data			(m_curr_medicine_influence.fDrugs, input_packet);
+	load_data			(m_curr_medicine_influence.fFrostbite, input_packet);
 
 	u8 cntr = input_packet.r_u8();
 	for (; cntr > 0; cntr--)
@@ -1004,55 +1107,11 @@ void CActorCondition::ChangePsyHealth(float value)
 	clamp(m_fPsyHealth, 0.0f, 1.0f);
 }
 
-bool CActorCondition::ApplyInfluence(const SMedicineInfluenceValues& V, const shared_str& sect, CEatableItem* cur_eatable)
+//M.F.S. Team Frostbite
+void CActorCondition::ChangeFrostbite(float value)
 {
-	if (m_curr_medicine_influence.InProcess())
-		return false;
-
-	if (m_object->Local() && m_object == Level().CurrentViewEntity())
-	{
-		if (pSettings->line_exist(sect, "use_sound"))
-		{
-			if (m_use_sound._feedback())
-				m_use_sound.stop();
-
-			shared_str snd_name = pSettings->r_string(sect, "use_sound");
-			m_use_sound.create(snd_name.c_str(), st_Effect, sg_SourceType);
-			m_use_sound.play(NULL, sm_2D);
-		}
-	}
-
-	if (V.fTimeTotal < 0.0f)
-		return inherited::ApplyInfluence(V, sect, cur_eatable);
-
-	m_curr_medicine_influence = V;
-	m_curr_medicine_influence.fTimeCurrent = m_curr_medicine_influence.fTimeTotal;
-	return true;
-}
-
-bool CActorCondition::ApplyBooster(const SBooster& B, const shared_str& sect)
-{
-	if (!fis_zero(B.fBoostValue))
-	{
-		if (m_object->Local() && m_object == Level().CurrentViewEntity())
-		{
-			if (pSettings->line_exist(sect, "use_sound"))
-			{
-				if (m_use_sound._feedback())
-					m_use_sound.stop();
-				shared_str snd_name = pSettings->r_string(sect, "use_sound");
-				m_use_sound.create(snd_name.c_str(), st_Effect, sg_SourceType);
-				m_use_sound.play(NULL, sm_2D);
-			}
-		}
-
-		BOOSTER_MAP::iterator it = m_booster_influences.find(B.m_type);
-		if (it != m_booster_influences.end())
-			DisableBoostParameters((*it).second);
-		m_booster_influences[B.m_type] = B;
-		BoostParameters(B);
-	}
-	return true;
+	m_fFrostbite += value;
+	clamp(m_fFrostbite, 0.0f, 1.0f);
 }
 
 void CActorCondition::BoostParameters(const SBooster& B, bool need_change_tf)
@@ -1089,6 +1148,7 @@ void CActorCondition::BoostParameters(const SBooster& B, bool need_change_tf)
 			case eBoostDrugsRestore: BoostDrugsRestore(B.fBoostValue); break;
 			case eBoostNarcotismRestore: BoostNarcotismRestore(B.fBoostValue); break;
 			case eBoostWithdrawalRestore: BoostWithdrawalRestore(B.fBoostValue); break;
+			case eBoostFrostbiteRestore: BoostFrostbiteRestore(B.fBoostValue); break;
 			case eBoostTimeFactor: need_change_tf ? BoostTimeFactor(B.fBoostValue) : BoostTimeFactor(0.0f); break;
 			default: NODEFAULT;	
 		}
@@ -1129,6 +1189,7 @@ void CActorCondition::DisableBoostParameters(const SBooster& B)
 		case eBoostDrugsRestore: BoostDrugsRestore(-B.fBoostValue); break;
 		case eBoostNarcotismRestore: BoostNarcotismRestore(-B.fBoostValue); break;
 		case eBoostWithdrawalRestore: BoostWithdrawalRestore(-B.fBoostValue); break;
+		case eBoostFrostbiteRestore: BoostFrostbiteRestore(-B.fBoostValue); break;
 		case eBoostTimeFactor: BoostTimeFactor(-B.fBoostValue); break;
 		default: NODEFAULT;	
 	}
@@ -1249,7 +1310,7 @@ void CActorCondition::BoostTimeFactor(const float value)
 	m_fBoostTimeFactor = Device.time_factor();
 
 	m_fBoostTimeFactor += value;
-	clamp(m_fBoostTimeFactor, 0.25f, 1.5f);
+	clamp(m_fBoostTimeFactor, 0.1f, 2.0f);
 
 	Device.time_factor(m_fBoostTimeFactor);
 	psSpeedOfSound = m_fBoostTimeFactor;
@@ -1299,6 +1360,10 @@ void CActorCondition::BoostWithdrawalRestore(const float value)
 {
 	m_fV_Withdrawal += value;
 }
+void CActorCondition::BoostFrostbiteRestore(const float value)
+{
+	m_fV_Frostbite += value;
+}
 
 void CActorCondition::UpdateTutorialThresholds()
 {
@@ -1307,16 +1372,17 @@ void CActorCondition::UpdateTutorialThresholds()
 	static float _cPowerMaxThr		= pSettings->r_float("tutorial_conditions_thresholds","max_power");
 	static float _cBleeding			= pSettings->r_float("tutorial_conditions_thresholds","bleeding");
 	static float _cSatiety			= pSettings->r_float("tutorial_conditions_thresholds","satiety");
-	static float _cThirst			= pSettings->r_float("tutorial_conditions_thresholds", "thirst");
-	static float _cIntoxication		= pSettings->r_float("tutorial_conditions_thresholds", "intoxication");
+	static float _cThirst			= READ_IF_EXISTS(pSettings, r_float, "tutorial_conditions_thresholds", "thirst", 0.0f);
+	static float _cIntoxication		= READ_IF_EXISTS(pSettings, r_float, "tutorial_conditions_thresholds", "intoxication", 0.0f);
 	static float _cRadiation		= pSettings->r_float("tutorial_conditions_thresholds","radiation");
 	static float _cWpnCondition		= pSettings->r_float("tutorial_conditions_thresholds","weapon_jammed");
 	static float _cPsyHealthThr		= pSettings->r_float("tutorial_conditions_thresholds","psy_health");
-	static float _cSleepeness		= pSettings->r_float("tutorial_conditions_thresholds", "sleepeness");
-	static float _cAlcoholism		= pSettings->r_float("tutorial_conditions_thresholds", "alcoholism");
-	static float _cHangover			= pSettings->r_float("tutorial_conditions_thresholds", "hangover");
-	static float _cNarcotism		= pSettings->r_float("tutorial_conditions_thresholds", "narcotism");
-	static float _cWithdrawal		= pSettings->r_float("tutorial_conditions_thresholds", "withdrawal");
+	static float _cSleepeness		= READ_IF_EXISTS(pSettings, r_float, "tutorial_conditions_thresholds", "sleepeness", 0.0f);
+	static float _cAlcoholism		= READ_IF_EXISTS(pSettings, r_float, "tutorial_conditions_thresholds", "alcoholism", 0.0f);
+	static float _cHangover			= READ_IF_EXISTS(pSettings, r_float, "tutorial_conditions_thresholds", "hangover", 0.0f);
+	static float _cNarcotism		= READ_IF_EXISTS(pSettings, r_float, "tutorial_conditions_thresholds", "narcotism", 0.0f);
+	static float _cWithdrawal		= READ_IF_EXISTS(pSettings, r_float, "tutorial_conditions_thresholds", "withdrawal", 0.0f);
+	static float _cFrostbite		= READ_IF_EXISTS(pSettings, r_float, "tutorial_conditions_thresholds", "frostbite", 0.0f);
 
 	bool b = true;
 	if(b && !m_condition_flags.test(eCriticalPowerReached) && GetPower()<_cPowerThr){
@@ -1343,44 +1409,44 @@ void CActorCondition::UpdateTutorialThresholds()
 		xr_strcpy(cb_name,"_G.on_actor_satiety");
 	}
 
-	if (b && !m_condition_flags.test(eCriticalThirstReached) && GetThirst()<_cThirst)
+	if (b && !m_condition_flags.test(eCriticalThirstReached) && GetThirst()<_cThirst && (!fis_zero(m_fV_Thirst)))
 	{
 		m_condition_flags.set(eCriticalThirstReached, TRUE);
 		b = false;
 		xr_strcpy(cb_name, "_G.on_actor_thirst");
 	}
 
-	if (b && !m_condition_flags.test(eCriticalIntoxicationReached) && GetIntoxication() > _cIntoxication) {
+	if (b && !m_condition_flags.test(eCriticalIntoxicationReached) && GetIntoxication() > _cIntoxication && (!fis_zero(m_fV_Intoxication))) {
 		m_condition_flags.set(eCriticalIntoxicationReached, TRUE);
 		b = false;
 		xr_strcpy(cb_name, "_G.on_actor_intoxication");
 	}
 
-	if (b && !m_condition_flags.test(eCriticalSleepenessReached) && GetSleepeness() >= _cSleepeness) {
+	if (b && !m_condition_flags.test(eCriticalSleepenessReached) && GetSleepeness() >= _cSleepeness && (!fis_zero(m_fV_Sleepeness))) {
 		m_condition_flags.set(eCriticalSleepenessReached, TRUE);
 		b = false;
 		xr_strcpy(cb_name, "_G.on_actor_sleepeness");
 	}
 
-	if (b && !m_condition_flags.test(eCriticalAlcoholismReached) && GetAlcoholism() > _cAlcoholism) {
+	if (b && !m_condition_flags.test(eCriticalAlcoholismReached) && GetAlcoholism() > _cAlcoholism && (!fis_zero(m_fV_Alcoholism))) {
 		m_condition_flags.set(eCriticalAlcoholismReached, TRUE);
 		b = false;
 		xr_strcpy(cb_name, "_G.on_actor_alcoholism");
 	}
 
-	if (b && !m_condition_flags.test(eCriticalNarcotismReached) && GetNarcotism() > _cNarcotism) {
+	if (b && !m_condition_flags.test(eCriticalNarcotismReached) && GetNarcotism() > _cNarcotism && (!fis_zero(m_fV_Narcotism))) {
 		m_condition_flags.set(eCriticalNarcotismReached, TRUE);
 		b = false;
 		xr_strcpy(cb_name, "_G.on_actor_narcotism");
 	}
 
-	if (b && !m_condition_flags.test(eCriticalWithdrawalReached) && GetWithdrawal() > _cWithdrawal) {
+	if (b && !m_condition_flags.test(eCriticalWithdrawalReached) && GetWithdrawal() > _cWithdrawal && (!fis_zero(m_fV_Withdrawal))) {
 		m_condition_flags.set(eCriticalWithdrawalReached, TRUE);
 		b = false;
 		xr_strcpy(cb_name, "_G.on_actor_withdrawal");
 	}
 
-	if (b && !m_condition_flags.test(eCriticalHangoverReached) && GetHangover() > _cHangover) {
+	if (b && !m_condition_flags.test(eCriticalHangoverReached) && GetHangover() > _cHangover && (!fis_zero(m_fV_Hangover))) {
 		m_condition_flags.set(eCriticalHangoverReached, TRUE);
 		b = false;
 		xr_strcpy(cb_name, "_G.on_actor_hangover");
@@ -1391,15 +1457,20 @@ void CActorCondition::UpdateTutorialThresholds()
 		b=false;
 		xr_strcpy(cb_name,"_G.on_actor_radiation");
 	}
-
-	if(b && !m_condition_flags.test(ePhyHealthMinReached) && GetPsyHealth()<_cPsyHealthThr){
-//.		m_condition_flags.set			(ePhyHealthMinReached, TRUE);
+	if(b && !m_condition_flags.test(ePsyHealthMinReached) && GetPsyHealth()<_cPsyHealthThr){
+		m_condition_flags.set			(ePsyHealthMinReached, TRUE);
 		b=false;
 		xr_strcpy(cb_name,"_G.on_actor_psy");
 	}
 
-	if(b && !m_condition_flags.test(eCantWalkWeight)){
-//.		m_condition_flags.set			(eCantWalkWeight, TRUE);
+	if (b && !m_condition_flags.test(eCriticalFrostbiteReached) && GetFrostbite() > _cFrostbite && (!fis_zero(m_fV_Frostbite))) {
+		m_condition_flags.set			(eCriticalFrostbiteReached, TRUE);
+		b = false;
+		xr_strcpy(cb_name, "_G.on_actor_frostbite");
+	}
+
+	if(b && m_condition_flags.test(eCantWalkWeight) && !m_condition_flags.test(eCantWalkWeightReached)){
+		m_condition_flags.set			(eCantWalkWeightReached, TRUE);
 		b=false;
 		xr_strcpy(cb_name,"_G.on_actor_cant_walk_weight");
 	}
@@ -1465,7 +1536,44 @@ float CActorCondition::HitSlowmo(SHit* pHDS)
 	}else
 		ret						= 0.0f;
 
-	return ret;
+	return ret;	
+}
+
+bool CActorCondition::ApplyInfluence(const SMedicineInfluenceValues& V, const shared_str& sect, CEatableItem* cur_eatable)
+{
+	if(m_curr_medicine_influence.InProcess())
+		return false;
+
+	if(V.fTimeTotal<0.0f)
+		return inherited::ApplyInfluence	(V, sect, cur_eatable);
+
+	m_curr_medicine_influence				= V;
+	m_curr_medicine_influence.fTimeCurrent  = m_curr_medicine_influence.fTimeTotal;
+	return true;
+}
+bool CActorCondition::ApplyBooster(const SBooster& B, const shared_str& sect)
+{
+	if(!fis_zero(B.fBoostValue))
+	{
+		if (m_object->Local() && m_object == Level().CurrentViewEntity())
+		{
+			if(pSettings->line_exist(sect, "use_sound"))
+			{
+				if(m_use_sound._feedback())
+					m_use_sound.stop		();
+				shared_str snd_name			= pSettings->r_string(sect, "use_sound");
+				m_use_sound.create			(snd_name.c_str(), st_Effect, sg_SourceType);
+				m_use_sound.play			(NULL, sm_2D);
+			}
+		}
+
+		BOOSTER_MAP::iterator it = m_booster_influences.find(B.m_type);
+		if(it!=m_booster_influences.end())
+			DisableBoostParameters((*it).second);
+		m_booster_influences[B.m_type] = B;
+		BoostParameters(B);
+	}
+	return true;
 }
 
 void disable_input();

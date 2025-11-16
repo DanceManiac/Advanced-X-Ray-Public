@@ -128,6 +128,8 @@ void CScriptGameObject::script_register(lua_State *L)
 				value("on_foot_step",				int(GameObject::eOnFootStep)),
 				//Dance Maniac
 				value("on_actor_jump",				int(GameObject::eOnActorJump)),
+				//-Dance Maniac
+				value("on_actor_land",				int(GameObject::eOnActorLand)),
 				
 				value("map_location_added",			int(GameObject::eMapLocationAdded))
 			],

@@ -46,6 +46,8 @@ IPHWorld * __stdcall physics_world()
 
 void	__stdcall create_physics_world( bool mt, CObjectSpace *os, CObjectList *lo, CRenderDeviceBase *dv ) //IPHWorldUpdateCallbck &commander, 
 {
+	ZoneScoped;
+
 		ph_world							= xr_new<CPHWorld>(); //&commander
 		VERIFY( os );
 //		VERIFY( lo );
@@ -55,6 +57,8 @@ void	__stdcall create_physics_world( bool mt, CObjectSpace *os, CObjectList *lo,
 
 void	__stdcall	destroy_physics_world()
 {
+	ZoneScoped;
+
 		ph_world->Destroy		();
 		xr_delete				(ph_world);
 }
@@ -88,6 +92,7 @@ void __stdcall destroy_object_space(CObjectSpace* &os)
 }
 
 void CPHMesh ::Create(dSpaceID space, dWorldID world){
+	ZoneScoped;
 	Geom = dCreateTriList(space, 0, 0);
 	CPHGeometryBits::init_geom( *this );
 }
@@ -96,7 +101,7 @@ void CPHMesh ::Create(dSpaceID space, dWorldID world){
 ////////////////////////////////////////////////////////////////////////////
 
 void CPHMesh ::Destroy(){
-	
+	ZoneScoped;
 	dGeomDestroy(Geom);
 	dTriListClass=-1;
 
@@ -269,6 +274,8 @@ void CPHWorld::SetGravity(float g)
 
 void CPHWorld::OnFrame()
 {
+	ZoneScoped;
+
 	// Msg									("------------- physics: %d / %d",u32(Device.dwFrame),u32(m_steps_num));
 	//просчитать полет пуль
 	/*

@@ -2,7 +2,7 @@
 #include "UIWindow.h"
 #include "../EntityCondition.h"
 #include "UIDoubleProgressBar.h"
-#include "..\..\xrServerEntities\alife_space.h"
+#include "..\..\xrServerEntitiesCS\alife_space.h"
 
 class CUIXml;
 class CUIStatic;
@@ -11,6 +11,7 @@ class CUIOutfitItemInfo;
 class CInventoryItem;
 
 class CCustomOutfit;
+class CHelmet;
 
 class CUIOutfitItem : public CUIWindow
 {
@@ -19,6 +20,7 @@ public:
 	virtual				~CUIOutfitItem();
 	void				InitFromXml(CUIXml& xml);
 	void				SetInfo(CCustomOutfit* cur_outfit, CCustomOutfit* slot_outfit);
+	void				SetInfo(CHelmet* cur_helmet, CHelmet* slot_helmet);
 
 protected:
 

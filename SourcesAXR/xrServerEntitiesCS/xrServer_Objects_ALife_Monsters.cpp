@@ -241,7 +241,7 @@ void CSE_ALifeTraderAbstract::STATE_Read	(NET_Packet &tNetPacket, u16 size)
 			load_data			(m_character_name, tNetPacket);
 		}
 
-		if (m_wVersion > 126)
+		if (m_wVersion > 125)
 			load_data			(m_character_icon, tNetPacket);
 	}
 
@@ -578,7 +578,7 @@ void CSE_ALifeTrader::STATE_Read			(NET_Packet &tNetPacket, u16 size)
 			shared_str			temp;
 			tNetPacket.r_stringZ(temp);
 			tNetPacket.r_u32	();
-			for (int i=0, n=tNetPacket.r_u32(); i<n; ++i) {
+			for (int i_=0, n=tNetPacket.r_u32(); i_<n; ++i_) {
 				tNetPacket.r_stringZ(temp);
 				tNetPacket.r_u32	();
 				tNetPacket.r_u32	();
@@ -1992,14 +1992,14 @@ void CSE_ALifeHumanAbstract::STATE_Write	(NET_Packet &tNetPacket)
 {
 	inherited1::STATE_Write		(tNetPacket);
 	inherited2::STATE_Write		(tNetPacket);
-	brain().on_state_write		(tNetPacket);
+	get_brain().on_state_write		(tNetPacket);
 }
 
 void CSE_ALifeHumanAbstract::STATE_Read		(NET_Packet &tNetPacket, u16 size)
 {
 	inherited1::STATE_Read		(tNetPacket, size);
 	inherited2::STATE_Read		(tNetPacket, size);
-	brain().on_state_read		(tNetPacket);
+	get_brain().on_state_read		(tNetPacket);
 	if ((m_wVersion >= 110) && (m_wVersion < 112))
 		tNetPacket.r			(&m_smart_terrain_id,sizeof(m_smart_terrain_id));
 }

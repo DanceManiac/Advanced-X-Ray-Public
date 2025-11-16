@@ -1,5 +1,3 @@
-#ifndef SoundRender_SourceH
-#define SoundRender_SourceH
 #pragma once
 
 #include "SoundRender_Cache.h"
@@ -14,10 +12,10 @@ public:
 	shared_str				fname;
 	cache_cat				CAT;
 
-	float					fTimeTotal;
-	u32						dwBytesTotal;
+	float					fTimeTotal{};
+	u32						dwBytesTotal{};
 
-	WAVEFORMATEX			m_wformat; //= SoundRender->wfm;
+	WAVEFORMATEX			m_wformat{}; //= SoundRender->wfm;
 
 
 	float					m_fBaseVolume;
@@ -43,4 +41,3 @@ public:
 	virtual u16				channels_num			() const	{return m_wformat.nChannels;}
 	virtual u32				bytes_total				() const	{return dwBytesTotal;}
 };
-#endif

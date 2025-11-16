@@ -22,24 +22,20 @@
 #include "player_hud.h"
 #include "ai/stalker/ai_stalker.h"
 #include "weaponmagazined.h"
-#include "../xrPhysics/ElevatorState.h"
 #include "CustomDetector.h"
 #include "CustomBackpack.h"
+#include "ActorHelmet.h"
+#include "PDA.h"
 
 using namespace InventoryUtilities;
 
-extern bool g_block_all_except_movement;
-
-std::atomic<bool> isHidingInProgressInv(false);
-std::atomic<bool> TakeItemAnimNeeded(false);
-
 // what to block
-u16	INV_STATE_BLOCK_ALL		= 0xffff;
-u16	INV_STATE_LADDER		= INV_STATE_BLOCK_ALL;
-u16	INV_STATE_CAR			= INV_STATE_BLOCK_ALL;
-u16	INV_STATE_INV_WND		= INV_STATE_BLOCK_ALL;
-u16	INV_STATE_BUY_MENU		= INV_STATE_BLOCK_ALL;
-u16 INV_STATE_HIDE_WEAPON	= (1 << KNIFE_SLOT | 1 << INV_SLOT_2 | 1 << INV_SLOT_3 | 1 << GRENADE_SLOT |  1 << PISTOL_SLOT);
+u32	INV_STATE_BLOCK_ALL		= 0xffffffff;
+u32	INV_STATE_LADDER		= INV_STATE_BLOCK_ALL;
+u32	INV_STATE_CAR			= INV_STATE_BLOCK_ALL;
+u32	INV_STATE_INV_WND		= INV_STATE_BLOCK_ALL;
+u32	INV_STATE_BUY_MENU		= INV_STATE_BLOCK_ALL;
+u32 INV_STATE_HIDE_WEAPON	= (1 << KNIFE_SLOT | 1 << INV_SLOT_2 | 1 << INV_SLOT_3 | 1 << GRENADE_SLOT |  1 << PISTOL_SLOT);
 
 CInventorySlot::CInventorySlot() 
 {
@@ -59,7 +55,15 @@ bool CInventorySlot::CanBeActivated() const
 
 CInventory::CInventory() 
 {
-	m_fMaxWeight								= pSettings->r_float	("inventory","max_weight");
+	inv_sect = "inventory";
+	inv_settings = pSettings;
+	if (pAdvancedSettings->section_exist("axr_inventory"))
+	{
+		inv_sect = "axr_inventory";
+		inv_settings = pAdvancedSettings;
+	}
+
+	m_fMaxWeight								= inv_settings->r_float	(inv_sect,"max_weight");
 	
 	ReloadInv();
 	
@@ -71,10 +75,10 @@ CInventory::CInventory()
 	for(u16 i=FirstSlot(); i<=LastSlot(); ++i ) 
 	{
 		xr_sprintf(temp, "slot_persistent_%d", i);
-		m_slots[i].m_bPersistent = !!pSettings->r_bool("inventory",temp);
+		m_slots[i].m_bPersistent = !!inv_settings->r_bool(inv_sect,temp);
 
 		xr_sprintf			(temp, "slot_active_%d", i);
-		m_slots[i].m_bAct	= !!pSettings->r_bool("inventory",temp);
+		m_slots[i].m_bAct	= !!inv_settings->r_bool(inv_sect,temp);
 	};*/
 
 	m_bSlotsUseful								= true;
@@ -83,12 +87,6 @@ CInventory::CInventory()
 	m_fTotalWeight								= -1.f;
 	m_dwModifyFrame								= 0;
 	m_drop_last_frame							= false;
-
-	m_bTakeItemActivated						= false;
-	m_bItemTaked								= false;
-	m_iTakeAnimLength							= 0;
-	m_iActionTiming								= 0;
-	Object										= nullptr;
 	
 	InitPriorityGroupsForQSwitch				();
 	m_next_item_iteration_time					= 0;
@@ -103,17 +101,38 @@ void CInventory::ReloadInv()
 {
 	m_slots.clear();
 
-	u32 sz = pSettings->r_s32("inventory", "slots_count");
+	u32 sz = inv_settings->r_s32(inv_sect, "slots_count");
 	m_slots.resize(sz + 1); //first is [1]
 
 	string256 temp;
 	for (u16 i = FirstSlot(); i <= LastSlot(); ++i)
 	{
 		xr_sprintf(temp, "slot_persistent_%d", i);
-		m_slots[i].m_bPersistent = !!pSettings->r_bool("inventory", temp);
+		m_slots[i].m_bPersistent = !!inv_settings->r_bool(inv_sect, temp);
 
 		xr_sprintf(temp, "slot_active_%d", i);
-		m_slots[i].m_bAct = !!pSettings->r_bool("inventory", temp);
+
+		if (i == BACKPACK_SLOT)
+			m_slots[i].m_bAct = !!GameConstants::GetBackpackAnimsEnabled();	 // Для опции анимированного рюкзака
+		else
+			m_slots[i].m_bAct = !!inv_settings->r_bool(inv_sect, temp);
+	};
+}
+
+void CInventory::ReloadSlotsConfig()
+{
+	string256 temp;
+	for (u16 i = FirstSlot(); i <= LastSlot(); ++i)
+	{
+		xr_sprintf(temp, "slot_persistent_%d", i);
+		m_slots[i].m_bPersistent = !!inv_settings->r_bool(inv_sect, temp);
+
+		xr_sprintf(temp, "slot_active_%d", i);
+
+		if (i == BACKPACK_SLOT)
+			m_slots[i].m_bAct = !!GameConstants::GetBackpackAnimsEnabled(); // Для опции анимированного рюкзака
+		else
+			m_slots[i].m_bAct = !!inv_settings->r_bool(inv_sect, temp);
 	};
 }
 
@@ -135,148 +154,6 @@ void CInventory::Clear()
 	ReloadInv							();
 	CalcTotalWeight						();
 	InvalidateState						();
-}
-
-void CInventory::TakeItemAnimCheck(CGameObject* GameObj, CObject* Obj, bool use_pickup_anim)
-{
-	if (Actor()->m_bActionAnimInProcess)
-		return;
-
-	GameObject = GameObj;
-	Object = Obj;
-	m_bUsePickupAnim = use_pickup_anim;
-
-	if (isHidingInProgressInv.load())
-		return;
-
-	CCustomDetector* pDet = smart_cast<CCustomDetector*>(Actor()->inventory().ItemFromSlot(DETECTOR_SLOT));
-
-	if (!pDet || pDet->IsHidden())
-	{
-		TakeItemAnim(GameObj, Obj, use_pickup_anim);
-		return;
-	}
-	else
-	{
-		if (!use_pickup_anim)
-		{
-			TakeItemAnim(GameObj, Obj, use_pickup_anim);
-			return;
-		}
-	}
-
-	isHidingInProgressInv.store(true);
-
-	std::thread hidingThread([&, pDet]
-		{
-			while (pDet && !pDet->IsHidden())
-				pDet->HideDetector(true);
-
-			isHidingInProgressInv.store(false);
-			TakeItemAnimNeeded.store(true);
-		});
-
-	hidingThread.detach();
-}
-
-void CInventory::TakeItemAnim(CGameObject* GameObj, CObject* Obj, bool use_pickup_anim)
-{
-	LPCSTR anim_sect = READ_IF_EXISTS(pAdvancedSettings, r_string, "actions_animations", "take_item_section", nullptr);
-
-	if (!anim_sect || !use_pickup_anim)
-	{
-		Obj->H_SetParent(smart_cast<CObject*>(Actor()));
-		Take(GameObj, false, true);
-		return;
-	}
-
-	Object = GameObj;
-
-	CWeapon* Wpn = smart_cast<CWeapon*>(ActiveItem());
-
-	if (Wpn && !(Wpn->GetState() == CWeapon::eIdle))
-		return;
-
-	m_bTakeItemActivated = true;
-
-	int anim_timer = READ_IF_EXISTS(pSettings, r_u32, anim_sect, "anim_timing", 0);
-
-	g_block_all_except_movement = true;
-	g_actor_allow_ladder = false;
-
-	LPCSTR use_cam_effector = READ_IF_EXISTS(pSettings, r_string, anim_sect, !Wpn ? "anim_camera_effector" : "anim_camera_effector_weapon", nullptr);
-	float effector_intensity = READ_IF_EXISTS(pSettings, r_float, anim_sect, "cam_effector_intensity", 1.0f);
-	float anim_speed = READ_IF_EXISTS(pSettings, r_float, anim_sect, "anim_speed", 1.0f);
-
-	if (pSettings->line_exist(anim_sect, "anm_use"))
-	{
-		g_player_hud->script_anim_play(!GetActiveSlot() ? 2 : 1, anim_sect, !Wpn ? "anm_use" : "anm_use_weapon", true, anim_speed, GameObj->cNameVisual().c_str());
-
-		if (use_cam_effector)
-			g_player_hud->PlayBlendAnm(use_cam_effector, 0, anim_speed, effector_intensity, false);
-
-		m_iTakeAnimLength = Device.dwTimeGlobal + g_player_hud->motion_length_script(anim_sect, !Wpn ? "anm_use" : "anm_use_weapon", anim_speed);
-	}
-
-	if (pSettings->line_exist(anim_sect, "snd_using"))
-	{
-		if (m_action_anim_sound._feedback())
-			m_action_anim_sound.stop();
-
-		shared_str snd_name = pSettings->r_string(anim_sect, "snd_using");
-		m_action_anim_sound.create(snd_name.c_str(), st_Effect, sg_SourceType);
-		m_action_anim_sound.play(NULL, sm_2D);
-	}
-
-	m_iActionTiming = Device.dwTimeGlobal + anim_timer;
-
-	m_bItemTaked = false;
-	Actor()->m_bActionAnimInProcess = true;
-}
-
-void CInventory::UpdateUseAnim(CActor* actor)
-{
-	if (TakeItemAnimNeeded.load())
-	{
-		TakeItemAnim(GameObject, Object, m_bUsePickupAnim);
-		TakeItemAnimNeeded.store(false);
-	}
-
-	if (!m_bTakeItemActivated)
-		return;
-
-	if (!Actor()->m_bActionAnimInProcess)
-		return;
-
-	bool IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
-
-	if ((m_iActionTiming <= Device.dwTimeGlobal && !m_bItemTaked) && IsActorAlive)
-	{
-		m_iActionTiming = Device.dwTimeGlobal;
-
-		bool vis_status = READ_IF_EXISTS(pSettings, r_bool, Object->cNameSect(), "visible_with_take_anim", true);
-
-		g_player_hud->SetScriptItemVisible(vis_status);
-
-		Object->H_SetParent(smart_cast<CObject*>(actor));
-		Take(GameObject, false, true);
-
-		m_bItemTaked = true;
-	}
-
-	if (m_bTakeItemActivated)
-	{
-		if ((m_iTakeAnimLength <= Device.dwTimeGlobal) || !IsActorAlive)
-		{
-			m_iTakeAnimLength = Device.dwTimeGlobal;
-			m_iActionTiming = Device.dwTimeGlobal;
-			m_action_anim_sound.stop();
-			g_block_all_except_movement = false;
-			g_actor_allow_ladder = true;
-			actor->m_bActionAnimInProcess = false;
-			m_bTakeItemActivated = false;
-		}
-	}
 }
 
 void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placement)
@@ -321,7 +198,7 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 			pIItem->m_ItemCurrPlace.type	= eItemPlaceUndefined;
 #ifdef DEBUG
 		if(!result) 
-			Msg("cant put in belt item %s", *pIItem->object().cName());
+			Msg("!![%s] cant put in belt item [%s], moving to ruck...", __FUNCTION__, pIItem->object().cName().c_str());
 #endif
 
 		break;
@@ -331,7 +208,7 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 			pIItem->m_ItemCurrPlace.type = eItemPlaceUndefined;
 #ifdef DEBUG
 		if(!result) 
-			Msg("cant put in ruck item %s", *pIItem->object().cName());
+			Msg("!![%s] cant put in ruck item [%s], moving to ruck...", __FUNCTION__, pIItem->object().cName().c_str());
 #endif
 
 		break;
@@ -341,7 +218,7 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 			pIItem->m_ItemCurrPlace.type = eItemPlaceUndefined;
 #ifdef DEBUG
 		if(!result) 
-			Msg("cant slot in slot item %s", *pIItem->object().cName());
+			Msg("!![%s] cant put in slot item [%s], moving to ruck...", __FUNCTION__, pIItem->object().cName().c_str());
 #endif
 		break;
 	}
@@ -404,11 +281,15 @@ bool CInventory::DropItem(CGameObject *pObj, bool just_before_destroy, bool dont
 {
 	CInventoryItem *pIItem				= smart_cast<CInventoryItem*>(pObj);
 	VERIFY								(pIItem);
+	if (!pIItem)
+		return false;
+
 	VERIFY								(pIItem->m_pInventory);
 	VERIFY								(pIItem->m_pInventory==this);
 	VERIFY								(pIItem->m_ItemCurrPlace.type!=eItemPlaceUndefined);
 	
 	pIItem->object().processing_activate(); 
+	pIItem->OnBeforeDrop();
 	
 	switch(pIItem->CurrPlace())
 	{
@@ -457,7 +338,8 @@ bool CInventory::DropItem(CGameObject *pObj, bool just_before_destroy, bool dont
 					}
 				}
 			}
-			m_slots[pIItem->CurrSlot()].m_pIItem = NULL;							
+			m_slots[pIItem->CurrSlot()].m_pIItem = NULL;
+			pIItem->OnDrop();
 			pIItem->object().processing_deactivate();
 		}break;
 	default:
@@ -470,7 +352,7 @@ bool CInventory::DropItem(CGameObject *pObj, bool just_before_destroy, bool dont
 		Msg("! CInventory::Drop item not found in inventory!!!");
 
 	pIItem->m_pInventory = NULL;
-
+	pIItem->SetItemDropNowFlag(TRUE);
 
 	m_pOwner->OnItemDrop	(smart_cast<CInventoryItem*>(pObj), just_before_destroy);
 
@@ -708,6 +590,9 @@ void CInventory::Activate(u16 slot, bool bForce)
 		return;
 	}
 
+	if (m_iActiveSlot == BACKPACK_SLOT && slot != NO_ACTIVE_SLOT && CurrentGameUI()->ActorMenu().IsShown())
+		return;
+
 	PIItem tmp_item = NULL;
 	if (slot != NO_ACTIVE_SLOT)
 		tmp_item = ItemFromSlot(slot);
@@ -806,7 +691,10 @@ void CInventory::Activate(u16 slot, bool bForce)
 
 PIItem CInventory::ItemFromSlot(u16 slot) const
 {
-	VERIFY(NO_ACTIVE_SLOT != slot);
+	if (slot == NO_ACTIVE_SLOT)
+		return (0);
+
+	//VERIFY(NO_ACTIVE_SLOT != slot);
 	return m_slots[slot].m_pIItem;
 }
 
@@ -918,10 +806,10 @@ bool CInventory::Action(u16 cmd, u32 flags)
 		}break;
 	case kARTEFACT:
 		{
-		    b_send_event = true;
+			b_send_event = true;
 			if(flags&CMD_START)
 			{
-                if(GetActiveSlot() == ARTEFACT_SLOT &&
+				if(GetActiveSlot() == ARTEFACT_SLOT &&
 					ActiveItem() /*&& IsGameTypeSingle()*/)
 				{
 					Activate(NO_ACTIVE_SLOT);
@@ -935,16 +823,14 @@ bool CInventory::Action(u16 cmd, u32 flags)
 			b_send_event = true;
 			if (flags & CMD_START)
 			{
-				if (!psActorFlags.test(AF_3D_PDA)) return false;
+				auto Pda = m_pOwner->GetPDA();
+				if (!Pda || !Pda->Is3DPDA() || !psActorFlags.test(AF_3D_PDA))
+					break;
 
 				if (GetActiveSlot() == PDA_SLOT && ActiveItem())
-				{
 					Activate(NO_ACTIVE_SLOT);
-				}
 				else
-				{
 					Activate(PDA_SLOT);
-				}
 			}
 		}break;
 	case kINVENTORY:
@@ -955,13 +841,9 @@ bool CInventory::Action(u16 cmd, u32 flags)
 				if (!GameConstants::GetBackpackAnimsEnabled() || !smart_cast<CCustomBackpack*>(Actor()->inventory().ItemFromSlot(BACKPACK_SLOT))) return false;
 
 				if (GetActiveSlot() == BACKPACK_SLOT && ActiveItem())
-				{
 					Activate(NO_ACTIVE_SLOT);
-				}
 				else
-				{
 					Activate(BACKPACK_SLOT);
-				}
 			}
 		}break;
 	}
@@ -1098,7 +980,7 @@ void CInventory::UpdateDropTasks()
 
 void CInventory::UpdateDropItem(PIItem pIItem)
 {
-	if( pIItem->GetDropManual() )
+	if (pIItem && pIItem->GetDropManual())
 	{
 		pIItem->SetDropManual(FALSE);
 		pIItem->DenyTrade();
@@ -1205,7 +1087,7 @@ PIItem CInventory::item(CLASS_ID cls_id) const
 	for(TIItemContainer::const_iterator it = list.begin(); list.end() != it; ++it) 
 	{
 		PIItem pIItem = *it;
-		if(pIItem->object().CLS_ID == cls_id && 
+		if (pIItem && pIItem->object().CLS_ID == cls_id &&
 			pIItem->Useful()) 
 			return pIItem;
 	}
@@ -1238,7 +1120,7 @@ u32 CInventory::dwfGetSameItemCount(LPCSTR caSection, bool SearchAll)
 	{
 		PIItem	l_pIItem = *l_it;
 		if (!xr_strcmp(l_pIItem->object().cNameSect(), caSection))
-            ++l_dwCount;
+			++l_dwCount;
 	}
 	
 	return		(l_dwCount);
@@ -1250,7 +1132,7 @@ u32		CInventory::dwfGetGrenadeCount(LPCSTR caSection, bool SearchAll)
 	for(TIItemContainer::iterator l_it = l_list.begin(); l_list.end() != l_it; ++l_it) 
 	{
 		PIItem	l_pIItem = *l_it;
-		if (l_pIItem->object().CLS_ID == CLSID_GRENADE_F1 || l_pIItem->object().CLS_ID == CLSID_GRENADE_RGD5)
+		if (l_pIItem && l_pIItem->object().CLS_ID == CLSID_GRENADE_F1 || l_pIItem->object().CLS_ID == CLSID_GRENADE_RGD5)
 			++l_dwCount;
 	}
 
@@ -1263,7 +1145,7 @@ bool CInventory::bfCheckForObject(ALife::_OBJECT_ID tObjectID)
 	for(TIItemContainer::iterator l_it = l_list.begin(); l_list.end() != l_it; ++l_it) 
 	{
 		PIItem	l_pIItem = *l_it;
-		if (l_pIItem->object().ID() == tObjectID)
+		if (l_pIItem && l_pIItem->object().ID() == tObjectID)
 			return(true);
 	}
 	return		(false);
@@ -1275,7 +1157,7 @@ CInventoryItem *CInventory::get_object_by_id(ALife::_OBJECT_ID tObjectID)
 	for(TIItemContainer::iterator l_it = l_list.begin(); l_list.end() != l_it; ++l_it) 
 	{
 		PIItem	l_pIItem = *l_it;
-		if (l_pIItem->object().ID() == tObjectID)
+		if (l_pIItem && l_pIItem->object().ID() == tObjectID)
 			return	(l_pIItem);
 	}
 	return		(0);
@@ -1289,15 +1171,28 @@ CInventoryItem *CInventory::get_object_by_id(ALife::_OBJECT_ID tObjectID)
 void CInventory::ChooseItmAnimOrNot(PIItem pIItem)
 {
 	CEatableItem* pItemToEat = smart_cast<CEatableItem*>(pIItem);
-	if (!pItemToEat) return;
+	if (!pItemToEat) 
+		return;
+
+	if (ItmHasAnim(pItemToEat))
+		pItemToEat->HideWeapon();
+	else
+		Eat(pItemToEat);
+}
+
+bool CInventory::ItmHasAnim(PIItem pIItem)
+{
+	CEatableItem* pItemToEat = smart_cast<CEatableItem*>(pIItem);
+	if (!pItemToEat) 
+		return false;
 
 	bool HasAnim = pItemToEat->m_bHasAnimation;
 	bool AnimSect = pItemToEat->anim_sect != nullptr;
 
 	if (HasAnim && AnimSect)
-		pItemToEat->HideWeapon();
+		return true;
 	else
-		Eat(pItemToEat);
+		return false;
 }
 
 bool CInventory::Eat(PIItem pIItem)
@@ -1319,6 +1214,25 @@ bool CInventory::Eat(PIItem pIItem)
 	
 	if (!pItemToEat->UseBy(entity_alive))
 		return false;
+
+	if (xr_strcmp(pItemToEat->m_use_functor_str, ""))
+	{
+		luabind::functor<void> m_functor;
+		if (ai().script_engine().functor(pItemToEat->m_use_functor_str.c_str(), m_functor))
+		{
+			m_functor();
+
+#ifdef DEBUG
+			Msg("[CInventory::Eat]: Lua function [%s] called from item [%s] by use_functor.", pItemToEat->m_use_functor_str.c_str(), pItemToEat->m_section_id.c_str());
+#endif
+		}
+#ifdef DEBUG
+		else
+		{
+			Msg("[CInventory::Eat]: ERROR: Lua function [%s] called from item [%s] by use_functor not found!", pItemToEat->m_use_functor_str.c_str(), pItemToEat->m_section_id.c_str());
+		}
+#endif
+	}
 
 #ifdef MP_LOGGING
 	Msg( "--- Actor [%d] use or eat [%d][%s]", entity_alive->ID(), pItemToEat->object().ID(), pItemToEat->object().cNameSect().c_str() );
@@ -1386,12 +1300,23 @@ bool CInventory::CanPutInSlot(PIItem pIItem, u16 slot_id) const
 
 	if( !GetOwner()->CanPutInSlot(pIItem, slot_id ) ) return false;
 
+	CCustomOutfit* pOutfit = m_pOwner->GetOutfit();
+	CHelmet* pHelmet1 = smart_cast<CHelmet*>(m_pOwner->inventory().ItemFromSlot(HELMET_SLOT));
+	CHelmet* pHelmet2 = smart_cast<CHelmet*>(m_pOwner->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
 
-	if(slot_id==HELMET_SLOT)
+	if (pOutfit || pHelmet1 || pHelmet2)
 	{
-		CCustomOutfit* pOutfit = m_pOwner->GetOutfit();
-		if(pOutfit && !pOutfit->bIsHelmetAvaliable)
-			return false;
+		if (slot_id == HELMET_SLOT)
+		{
+			if ((pOutfit && !pOutfit->bIsHelmetAvaliable) || (pHelmet2 && !pHelmet2->m_bSecondHelmetEnabled))
+				return false;
+		}
+
+		if (slot_id == SECOND_HELMET_SLOT)
+		{
+			if ((pOutfit && !pOutfit->bIsSecondHelmetAvaliable) || (pHelmet1 && !pHelmet1->m_bSecondHelmetEnabled))
+				return false;
+		}
 	}
 
 	if(slot_id!=NO_ACTIVE_SLOT && 
@@ -1431,7 +1356,7 @@ CInventoryItem	*CInventory::tpfGetObjectByIndex(int iIndex)
 		int			i = 0;
 		for(TIItemContainer::iterator l_it = l_list.begin(); l_list.end() != l_it; ++l_it, ++i) 
 			if (i == iIndex)
-                return	(*l_it);
+				return	(*l_it);
 	}
 	else {
 		ai().script_engine().script_log	(ScriptStorage::eLuaMessageTypeError,"invalid inventory index!");
@@ -1464,9 +1389,8 @@ bool CInventory::CanTakeItem(CInventoryItem *inventory_item) const
 	if (inventory_item->object().getDestroy()) return false;
 
 	if(!inventory_item->CanTake()) return false;
-
-
-	for(TIItemContainer::const_iterator it = m_all.begin(); it != m_all.end(); it++)
+	TIItemContainer::const_iterator it = m_all.begin();
+	for(; it != m_all.end(); it++)
 		if((*it)->object().ID() == inventory_item->object().ID()) break;
 	VERIFY3(it == m_all.end(), "item already exists in inventory",*inventory_item->object().cName());
 
@@ -1584,13 +1508,13 @@ void CInventory::Items_SetCurrentEntityHud(bool current_entity)
 };
 
 //call this only via Actor()->SetWeaponHideState()
-void CInventory::SetSlotsBlocked(u16 mask, bool bBlock)
+void CInventory::SetSlotsBlocked(u32 mask, bool bBlock)
 {
 	R_ASSERT(OnServer() || Level().IsDemoPlayStarted());
 
-	for(u16 i = FirstSlot(), ie = LastSlot(); i <= ie; ++i)
+	for(u32 i = FirstSlot(), ie = LastSlot(); i <= ie; ++i)
 	{
-		if(mask & (1<<i))
+		if(mask & ((u32)1<<i))
 		{
 			if (bBlock)
 				BlockSlot(i);
@@ -1602,7 +1526,8 @@ void CInventory::SetSlotsBlocked(u16 mask, bool bBlock)
 	if (bBlock)
 	{
 		TryDeactivateActiveSlot();	
-	} else
+	}
+	else
 	{
 		TryActivatePrevSlot();
 	}

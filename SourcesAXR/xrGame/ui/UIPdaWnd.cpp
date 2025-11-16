@@ -168,12 +168,12 @@ void CUIPdaWnd::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 
 bool CUIPdaWnd::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {
+	auto pda = Actor()->GetPDA();
 	switch (mouse_action)
 	{
 	case WINDOW_LBUTTON_DOWN:
 	case WINDOW_LBUTTON_UP:
 	{
-		CPda* pda = Actor()->GetPDA();
 		if (pda)
 		{
 			if (pda->IsPending())
@@ -187,13 +187,10 @@ bool CUIPdaWnd::OnMouseAction(float x, float y, EUIMessages mouse_action)
 		break;
 	}
 	case WINDOW_RBUTTON_DOWN:
-		if (auto pda = Actor()->GetPDA())
+		if (pda && pda->Is3DPDA() && psActorFlags.test(AF_3D_PDA))
 		{
 			pda->m_bZoomed = false;
-
-			if (psActorFlags.test(AF_3D_PDA))
-				CurrentGameUI()->SetMainInputReceiver(nullptr, false);
-
+			CurrentGameUI()->SetMainInputReceiver(nullptr, false);
 			return true;
 		}
 		break;
@@ -502,20 +499,10 @@ bool CUIPdaWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 {
 	if (WINDOW_KEY_PRESSED == keyboard_action && IsShown())
 	{
-		if (!psActorFlags.test(AF_3D_PDA))
-		{
-			EGameActions action = get_binded_action(dik);
-
-			if (action == kQUIT || action == kINVENTORY || action == kACTIVE_JOBS)
-			{
-				HideDialog();
-				return true;
-			}
-		}
-		else
+		if (psActorFlags.test(AF_3D_PDA))
 		{
 			CPda* pda = Actor()->GetPDA();
-			if (pda)
+			if (pda && pda->Is3DPDA())
 			{
 				EGameActions action = get_binded_action(dik);
 
@@ -585,6 +572,16 @@ bool CUIPdaWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 						return true;
 					}
 				}
+			}
+		}
+		else
+		{
+			EGameActions action = get_binded_action(dik);
+
+			if (action == kQUIT || action == kINVENTORY || action == kACTIVE_JOBS)
+			{
+				HideDialog();
+				return true;
 			}
 		}
 	}

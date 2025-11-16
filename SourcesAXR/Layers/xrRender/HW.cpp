@@ -37,8 +37,7 @@ CHW::CHW() :
 	pDevice(NULL),
 	pBaseRT(NULL),
 	pBaseZB(NULL),
-	m_move_window(true),
-	maxRefreshRate(200)/*ECO_RENDER*/ 
+	m_move_window(true)
 {}
 
 CHW::~CHW()
@@ -57,14 +56,8 @@ void CHW::Reset		(HWND hwnd)
 	_RELEASE			(pBaseRT);
 
 #ifndef _EDITOR
-//#ifndef DEDICATED_SERVER
-//	BOOL	bWindowed		= !psDeviceFlags.is	(rsFullscreen);
-//#else
-//	BOOL	bWindowed		= TRUE;
-//#endif
 	BOOL	bWindowed		= TRUE;
-	if (!g_dedicated_server)
-		bWindowed		= !psDeviceFlags.is	(rsFullscreen);
+	bWindowed				= !psDeviceFlags.is	(rsFullscreen);
 
 	selectResolution		(DevPP.BackBufferWidth, DevPP.BackBufferHeight, bWindowed);
 	// Windoze
@@ -105,10 +98,6 @@ LPCSTR _name = "d3d9.dll";
 
 void CHW::CreateD3D	()
 {
-#ifndef _EDITOR
-	if (!g_dedicated_server)
-#endif
-
 	hD3D            			= LoadLibrary(_name);
 	R_ASSERT2	           	 	(hD3D,"Can't find 'd3d9.dll'\nPlease install latest version of DirectX before running this program");
     typedef IDirect3D9 * WINAPI _Direct3DCreate9(UINT SDKVersion);
@@ -159,6 +148,7 @@ void	CHW::DestroyDevice	()
 {
 	ImGui_ImplDX9_Shutdown();
     ImGui_ImplWin32_Shutdown();
+	ImGui::GetIO().Fonts->ConfigData.clear();
     ImGui::DestroyContext();
 
 	_SHOW_REF				("refCount:pBaseZB",pBaseZB);
@@ -192,14 +182,6 @@ void	CHW::selectResolution	(u32 &dwWidth, u32 &dwHeight, BOOL bWindowed)
 	if (psCurrentVidMode[0] == 0 || psCurrentVidMode[1] == 0)
 		GetMonitorResolution(psCurrentVidMode[0], psCurrentVidMode[1]);
 
-#ifndef _EDITOR
-	if (g_dedicated_server)
-	{
-		dwWidth		= 640;
-		dwHeight	= 480;
-	}
-	else
-#endif
 	{
 		if(bWindowed)
 		{
@@ -232,17 +214,11 @@ void		CHW::CreateDevice		(HWND m_hWnd, bool move_window)
 	CreateD3D				();
 
 	// General - select adapter and device
-//#ifdef DEDICATED_SERVER
-//	BOOL  bWindowed			= TRUE;
-//#else
-//	BOOL  bWindowed			= !psDeviceFlags.is(rsFullscreen);
-//#endif
 
 	BOOL  bWindowed			= TRUE;
 	
 #ifndef _EDITOR
-	if (!g_dedicated_server)
-		bWindowed			= !psDeviceFlags.is(rsFullscreen);
+	bWindowed				= !psDeviceFlags.is(rsFullscreen);
 #else
 	bWindowed				= 1;
 #endif        
@@ -545,10 +521,8 @@ u32 CHW::selectRefresh(u32 dwWidth, u32 dwHeight, D3DFORMAT fmt)
 			pD3D->EnumAdapterModes(DevAdapter,fmt,I,&Mode);
 			if (Mode.Width==dwWidth && Mode.Height==dwHeight)
 			{
-                //if (Mode.RefreshRate > selected)
-                //    selected = Mode.RefreshRate;
-                if (Mode.RefreshRate <= maxRefreshRate && Mode.RefreshRate>selected)
-                    selected = Mode.RefreshRate;  //ECO_RENDER modif.
+				if (Mode.RefreshRate > selected)
+					selected = Mode.RefreshRate;
 			}
 		}
 		return selected;
@@ -564,26 +538,23 @@ BOOL	CHW::support	(D3DFORMAT fmt, DWORD type, DWORD usage)
 
 void	CHW::updateWindowProps	(HWND m_hWnd)
 {
-//	BOOL	bWindowed				= strstr(Core.Params,"-dedicated") ? TRUE : !psDeviceFlags.is	(rsFullscreen);
-//#ifndef DEDICATED_SERVER
-//	BOOL	bWindowed				= !psDeviceFlags.is	(rsFullscreen);
-//#else
-//	BOOL	bWindowed				= TRUE;
-//#endif
-
 	BOOL	bWindowed				= TRUE;
 #ifndef _EDITOR
-	if (!g_dedicated_server)
-		bWindowed			= !psDeviceFlags.is(rsFullscreen);
+	bWindowed						= !psDeviceFlags.is(rsFullscreen);
 #endif	
 
 	u32		dwWindowStyle			= 0;
 	// Set window properties depending on what mode were in.
-	if (bWindowed)		{
-		if (m_move_window) {
-            dwWindowStyle = WS_BORDER | WS_VISIBLE;
-            if (!strstr(Core.Params, "-no_dialog_header"))
-                dwWindowStyle |= WS_DLGFRAME | WS_SYSMENU | WS_MINIMIZEBOX;
+	if (bWindowed)
+	{
+		if (m_move_window)
+		{
+			bool bBordersMode = strstr(Core.Params, "-draw_borders");
+			dwWindowStyle = WS_VISIBLE;
+			
+			if (bBordersMode)
+				dwWindowStyle |= WS_BORDER | WS_DLGFRAME | WS_SYSMENU | WS_MINIMIZEBOX;
+
             SetWindowLong(m_hWnd, GWL_STYLE, dwWindowStyle);
 			// When moving from fullscreen to windowed mode, it is important to
 			// adjust the window size after recreating the device rather than
@@ -594,26 +565,36 @@ void	CHW::updateWindowProps	(HWND m_hWnd)
 			// changed to 1024x768, because windows cannot be larger than the
 			// desktop.
 
-			RECT			m_rcWindowBounds;
-			RECT				DesktopRect;
-				
-			GetClientRect		(GetDesktopWindow(), &DesktopRect);
+			RECT m_rcWindowBounds;
+			float fYOffset = 0.f;
+			bool bCenter = false;
 
-			SetRect(			&m_rcWindowBounds, 
-								(DesktopRect.right-DevPP.BackBufferWidth)/2, 
-								(DesktopRect.bottom-DevPP.BackBufferHeight)/2, 
-								(DesktopRect.right+DevPP.BackBufferWidth)/2, 
-								(DesktopRect.bottom+DevPP.BackBufferHeight)/2);	
+			if (strstr(Core.Params, "-center_screen"))
+				bCenter = true;
+
+			if (bCenter)
+			{
+				RECT DesktopRect;
+
+				GetClientRect(GetDesktopWindow(), &DesktopRect);
+
+				SetRect(&m_rcWindowBounds, (DesktopRect.right - DevPP.BackBufferWidth) / 2,
+					(DesktopRect.bottom - DevPP.BackBufferHeight) / 2, (DesktopRect.right + DevPP.BackBufferWidth) / 2,
+					(DesktopRect.bottom + DevPP.BackBufferHeight) / 2);
+			}
+			else
+			{
+				if (bBordersMode)
+					fYOffset = GetSystemMetrics(SM_CYCAPTION); // size of the window title bar
+				SetRect(&m_rcWindowBounds, 0, 0, DevPP.BackBufferWidth, DevPP.BackBufferHeight);
+			};
 
 			AdjustWindowRect		(	&m_rcWindowBounds, dwWindowStyle, FALSE );
 
-			SetWindowPos			(	m_hWnd, 
-										HWND_NOTOPMOST,	
-                                        m_rcWindowBounds.left,
-                                        m_rcWindowBounds.top,
-										( m_rcWindowBounds.right - m_rcWindowBounds.left ),
-										( m_rcWindowBounds.bottom - m_rcWindowBounds.top ),
-										SWP_SHOWWINDOW|SWP_NOCOPYBITS|SWP_DRAWFRAME );
+			SetWindowPos(m_hWnd, HWND_NOTOPMOST, m_rcWindowBounds.left, m_rcWindowBounds.top + fYOffset,
+						( m_rcWindowBounds.right - m_rcWindowBounds.left ),
+						( m_rcWindowBounds.bottom - m_rcWindowBounds.top ),
+						SWP_SHOWWINDOW|SWP_NOCOPYBITS|SWP_DRAWFRAME );
 		}
 	}
 	else
@@ -623,7 +604,6 @@ void	CHW::updateWindowProps	(HWND m_hWnd)
 	}
 
 #ifndef _EDITOR
-	if (!g_dedicated_server)
 	{
 		ShowCursor	(FALSE);
 		SetForegroundWindow( m_hWnd );

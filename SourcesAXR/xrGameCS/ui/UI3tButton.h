@@ -9,6 +9,7 @@
 
 #pragma once
 #include "UIButton.h"
+#include "UIStatic.h"
 #include "UI_IB_Static.h"
 
 class CUI3tButton : public CUIButton 
@@ -21,7 +22,7 @@ public:
 	virtual			~CUI3tButton				();
 	// appearance
 
-	virtual	void 	InitButton					(Fvector2 pos, Fvector2 size);
+	virtual void 	InitButton					(Fvector2 pos, Fvector2 size);
 	virtual void 	InitTexture					(LPCSTR tex_name);
 	virtual void 	InitTexture					(LPCSTR tex_enabled, LPCSTR tex_disabled, LPCSTR tex_touched, LPCSTR tex_highlighted);
 
@@ -29,7 +30,10 @@ public:
 			void 	SetTextColorH				(u32 color);
 			void 	SetTextColorD				(u32 color);
 			void 	SetTextColorT				(u32 color);
-	virtual void 	SetTextureOffset			(float x, float y);	
+	virtual void 	SetTextureOffset			(float x, float y);
+	virtual void 	SetBaseTextureOffset		(float x, float y);
+	virtual void 	SetTextureOffset			(Fvector2 offset);
+	virtual void 	SetBaseTextureOffset		(Fvector2 offset);
 	virtual void 	SetWidth					(float width);
 	virtual void 	SetHeight					(float height);
 			void 	InitSoundH					(LPCSTR sound_file);
@@ -47,19 +51,22 @@ public:
 	IC void			SetCheck					(bool ch)
 	{
 		m_eButtonState = ch ? BUTTON_PUSHED : BUTTON_NORMAL;
-		SeveBackUpValue();
+		SaveBackUpValue();
 	}*/
 	
 	// behavior
 	virtual void	DrawTexture					();
 	virtual void	Update						();
 	virtual void 	Draw						();
+	virtual void	AddStatic					();
+	CUIStatic*		GetBtnStatic				() { return m_BtnStatic; }
 	
 	//virtual void Enable(bool bEnable);	
-	virtual bool 	OnMouseAction						(float x, float y, EUIMessages mouse_action);
+	virtual bool 	OnMouseAction				(float x, float y, EUIMessages mouse_action);
 	virtual bool 	OnMouseDown					(int mouse_btn);
 			void 	SetCheckMode				(bool mode) {m_bCheckMode = mode;}
 
+			pcstr	GetDebugType				() override { return "CUI3tButton"; }
 
 	CUIStatic*				m_hint;
 	bool					m_frameline_mode;
@@ -73,7 +80,8 @@ private:
 			void		PlaySoundT					();
 
 	ref_sound			m_sound_h;
-	ref_sound			m_sound_t;	
+	ref_sound			m_sound_t;
+	CUIStatic*			m_BtnStatic;
 
 }; // class CUI3tButton
 

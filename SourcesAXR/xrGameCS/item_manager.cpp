@@ -48,17 +48,17 @@ bool CItemManager::useful			(const CGameObject *object) const
 	if (!const_cast<CGameObject*>(object)->UsedAI_Locations())
 		return				(false);
 
-	if (!m_object->movement().restrictions().accessible(object->Position()))
+	if (!m_object->get_movement().restrictions().accessible(object->Position()))
 		return				(false);
 
-	if (!m_object->movement().restrictions().accessible(object->ai_location().level_vertex_id()))
+	if (!m_object->get_movement().restrictions().accessible(object->ai_location().level_vertex_id()))
 		return				(false);
 
 	const CInventoryItem	*inventory_item = smart_cast<const CInventoryItem*>(object);
 	if (inventory_item && !inventory_item->useful_for_NPC())
 		return				(false);
 
-	if ( m_stalker && (!m_stalker->can_take(inventory_item) || !m_stalker->movement().restrictions().accessible(inventory_item->object().Position())) )
+	if ( m_stalker && (!m_stalker->can_take(inventory_item) || !m_stalker->get_movement().restrictions().accessible(inventory_item->object().Position())) )
 		return				(false);
 
 	if ( !ai().get_level_graph() )
@@ -76,7 +76,7 @@ bool CItemManager::useful			(const CGameObject *object) const
 float CItemManager::do_evaluate		(const CGameObject *object) const
 {
 	VERIFY3					(
-		m_object->movement().restrictions().accessible(
+		m_object->get_movement().restrictions().accessible(
 			object->ai_location().level_vertex_id()
 		),
 		*m_object->cName(),
@@ -102,7 +102,7 @@ void CItemManager::update			()
 	OBJECTS::const_iterator	E = m_objects.end();
 	for ( ; I != E; ++I)
 		VERIFY3				(
-			m_object->movement().restrictions().accessible(
+			m_object->get_movement().restrictions().accessible(
 				(*I)->ai_location().level_vertex_id()
 			),
 			*m_object->cName(),
@@ -114,7 +114,7 @@ void CItemManager::update			()
 
 	VERIFY3					(
 		!selected() ||
-		m_object->movement().restrictions().accessible(selected()->ai_location().level_vertex_id()),
+		m_object->get_movement().restrictions().accessible(selected()->ai_location().level_vertex_id()),
 		*m_object->cName(),
 		selected() ? *selected()->cName() : "<no selected item>"
 	);
@@ -139,12 +139,12 @@ void CItemManager::on_restrictions_change	()
 	if (!m_selected)
 		return;
 
-	if (!m_object->movement().restrictions().accessible(m_selected->ai_location().level_vertex_id())) {
+	if (!m_object->get_movement().restrictions().accessible(m_selected->ai_location().level_vertex_id())) {
 		m_selected			= 0;
 		return;
 	}
 
-	if (m_object->movement().restrictions().accessible(m_selected->Position()))
+	if (m_object->get_movement().restrictions().accessible(m_selected->Position()))
 		return;
 
 	m_selected				= 0;

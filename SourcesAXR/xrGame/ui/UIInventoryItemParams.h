@@ -21,6 +21,8 @@ protected:
 	CUIInventoryItemInfo*	m_af_radius;
 	CUIInventoryItemInfo*	m_af_vis_radius;
 	CUIInventoryItemInfo*	m_charge_level;
+	CUIInventoryItemInfo*	m_filter_cond;
+	CUIInventoryItemInfo*	m_rep_kit_cond;
 	CUIInventoryItemInfo*	m_max_charge;
 	CUIInventoryItemInfo*	m_uncharge_speed;
 	CUIInventoryItemInfo*	m_artefacts_count;

@@ -8,23 +8,34 @@
 	#include "screenspace_debanding.h"
 #endif
 
+// Used by FOG and IL. Keep it here for the moment...
+uniform float4 fakescope_params3;
+
 #ifdef SSFX_FOG
 	#include "screenspace_fog.h"
+	#include "settings_screenspace_FOG.h"
 #endif
 
-#ifdef SSFX_INDIRECT_LIGHT
-	#include "screenspace_il.h"
+#ifdef SSFX_LUT_INUSE
+	#include "screenspace_lut.h"
+#endif
+
+#ifdef SSFX_BLOOM
+	Texture2D s_ssfx_bloom;
 #endif
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #ifndef USE_MSAA
 Texture2D 			s_distort;
+Texture2D 			s_flares;
 #define	EPSDEPTH	0.001
 #else
 	#ifndef SM_5
 		Texture2DMS<float4,MSAA_SAMPLES> s_distort;
+		Texture2DMS<float4,MSAA_SAMPLES> s_flares;
 	#else
 		Texture2DMS<float4>	s_distort;
+		Texture2DMS<float4>	s_flares;
 	#endif
 #define	EPSDEPTH	0.001
 #endif
@@ -77,33 +88,76 @@ c2_out main( v2p_aa_AA I )
 
 	float3 img = s_image.Load(int3(center.xy * screen_res.xy, 0),0);
 
-	float4 bloom = s_bloom.Sample(smp_rtlinear,center);
+#ifdef SSFX_BLOOM
+	float4 bloom = s_ssfx_bloom.Sample(smp_rtlinear, center);
+#else
+	float4 bloom = s_bloom.Sample(smp_rtlinear, center);
+#endif
 
 	if (!isSecondVPActive())
 		img = mblur( center, ( gbd ).P, img.rgb);
 
-	// Indirect light - SCREEN SPACE SHADERS - UPDATE 14
-#ifdef SSFX_INDIRECT_LIGHT
-	ssfx_il(I.Tex0, I.HPos, gbd.P, gbd.N, img, iSample);
-#endif
+#ifdef SSFX_FOG
 
-	// Sky Debanding Implementation  - SCREEN SPACE SHADERS - UPDATE 12.5
+	// Calc Fog
+	float fogresult = SSFX_CALC_FOG(gbd.P);
+	fogresult *= fogresult;
+
+	// Fog Scattering -----------------------
+	#ifdef G_FOG_USE_SCATTERING
+		// Blur sample
+		float3 foggg = s_blur_2.Sample(smp_rtlinear, center);
+
+		// Scopes
+		int disablefog = (fakescope_params3.x > 0 ? 0 : 1);
+
+		// NVGs
+		#ifdef SSFX_BEEFS_NVG
+			disablefog *= (shader_param_8.x > 0 ? 0 : 1);
+		#endif
+
+		// Blend
+		img = lerp(img, max(img, foggg), smoothstep(0.2f, 0.8f, fogresult) * disablefog);
+	#endif
+	// --------------------------------------
+#endif
+	
 #ifdef SSFX_DEBAND
-	if (depth <= SKY_EPS)
-		img = ssfx_debanding(img, I.Tex0.xy);
+	#ifdef SSFX_FOG
+		float Debanding = depth <= SKY_EPS ? 1.0 : fogresult;
+	#else
+		float Debanding = depth <= SKY_EPS ? 1.0 : 0;
+	#endif
+
+	// Debanding  - SCREEN SPACE SHADERS - UPDATE 12.5
+	img = lerp(img, ssfx_debanding(img, I.Tex0.xy), Debanding);
 #endif
 
 	img = blend_soft(img, bloom.xyz*bloom.w);
 
-#ifndef SSFX_LUT
-	// Move this to the LUT phase if the module is installed.
+// Color grading --------------------------------
+#ifndef SSFX_ENHANCED_SHADERS
 	if (tnmp_onoff == 1.0)
 	{		
 		img = Uncharted2ToneMapping(img);
 	}
-
-	img = img_corrections(img);
 #endif
+
+#ifndef USE_MSAA
+	float4 	flares	= s_flares.Sample(smp_nofilter, center);
+#else // USE_MSAA
+	float4 	flares	= s_flares.Load( int3( center * screen_res.xy, 0 ), iSample );
+#endif // USE_MSAA
+	
+    img += flares.xyz * flares.a;
+
+	// Vanilla color grading ( Exposure, saturation and gamma )
+	img = img_corrections(img);
+	
+#ifdef SSFX_LUT_INUSE
+	img = ssfx_lut_pp(img);
+#endif
+// ----------------------------------------------
 		
 #ifdef 	USE_DISTORT
  	float3	blurred	= bloom*def_hdr	;

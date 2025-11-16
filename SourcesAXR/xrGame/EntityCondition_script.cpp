@@ -64,6 +64,7 @@ void CEntityCondition::script_register(lua_State* L)
                 value("eBoostDrugsRestore",             int(EBoostParams::eBoostDrugsRestore)),
                 value("eBoostNarcotismRestore",         int(EBoostParams::eBoostNarcotismRestore)),
                 value("eBoostWithdrawalRestore",        int(EBoostParams::eBoostWithdrawalRestore)),
+                value("eBoostFrostbiteRestore",         int(EBoostParams::eBoostFrostbiteRestore)),
                 value("eBoostTimeFactor",               int(EBoostParams::eBoostTimeFactor))
             ]
     ];
@@ -128,6 +129,7 @@ void CActorCondition::script_register(lua_State* L)
             .def("BoostDrugsRestore",           &CActorCondition::BoostDrugsRestore)
             .def("BoostNarcotismRestore",       &CActorCondition::BoostNarcotismRestore)
             .def("BoostWithdrawalRestore",      &CActorCondition::BoostWithdrawalRestore)
+            .def("BoostFrostbiteRestore",       &CActorCondition::BoostFrostbiteRestore)
             .def("BoostTimeFactor",             &CActorCondition::BoostTimeFactor)
             .def("IsLimping",                   &CActorCondition::IsLimping)
             .def("IsCantWalk",                  &CActorCondition::IsCantWalk)

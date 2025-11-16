@@ -103,3 +103,28 @@ Fvector CScriptIniFile::r_fvector3		(LPCSTR S, LPCSTR L)
 	THROW3		(inherited::line_exist(S,L),"Cannot find line",L);
 	return		(inherited::r_fvector3(S,L));
 }
+
+
+void CScriptIniFile::w_string(LPCSTR S, LPCSTR L, LPCSTR V, LPCSTR comment)
+{
+    THROW3(inherited::section_exist(S), "Cannot find section", S);
+    THROW3(inherited::line_exist(S, L), "Cannot find line", L);
+    inherited::w_string(S, L, V, comment);
+}
+
+void CScriptIniFile::remove_line(LPCSTR S, LPCSTR L)
+{
+    THROW3(inherited::section_exist(S), "Cannot find section", S);
+    THROW3(inherited::line_exist(S, L), "Cannot find line", L);
+    inherited::remove_line(S, L);
+}
+
+void CScriptIniFile::set_override_names(bool b)
+{
+    inherited::set_override_names(b);
+}
+
+void CScriptIniFile::set_readonly(bool b)
+{
+	inherited::m_flags.set(eReadOnly, b);
+}

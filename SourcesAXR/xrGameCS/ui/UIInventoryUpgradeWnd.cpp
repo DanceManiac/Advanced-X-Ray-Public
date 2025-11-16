@@ -29,6 +29,7 @@
 #include "UIFrameLineWnd.h"
 #include "UI3tButton.h"
 #include "UIHelper.h"
+#include "UI3dStatic.h"
 
 // -----
 
@@ -75,6 +76,14 @@ void CUIInventoryUpgradeWnd::Init()
 	m_background = UIHelper::CreateStatic( uiXml, "background", this );
 //	m_delimiter  = UIHelper::CreateFrameLine( uiXml, "delimiter", this );
 
+	if (uiXml.NavigateToNode("item_static", 0))
+	{
+		m_item_3d = xr_new<CUI3dStatic>();
+		m_item_3d->SetAutoDelete(true);
+		AttachChild(m_item_3d);
+		xml_init.InitStatic(uiXml, "item_static", 0, m_item_3d);
+	}
+
 	m_scheme_wnd = xr_new<CUIWindow>();
 	m_scheme_wnd->SetAutoDelete( true );
 	AttachChild( m_scheme_wnd );
@@ -100,7 +109,38 @@ void CUIInventoryUpgradeWnd::Init()
 void CUIInventoryUpgradeWnd::InitInventory( CInventoryItem* item, bool can_upgrade )
 {
 	m_inv_item = item;
-	m_item_info->InitItemUpgrade(item);
+	bool is_3d_static = m_inv_item && m_inv_item->GetUpgradeIcon3D();
+	bool b_r4 = !!psDeviceFlags.test(rsR4);
+
+	m_item_info->InitItemUpgrade(item, (!is_3d_static || !b_r4));
+
+	if (is_3d_static && b_r4)
+	{
+		if (m_item_3d && m_inv_item)
+		{
+			const int iGridWidth = 6;
+			const int iGridHeight = 2;
+
+			Frect v_r = { 0.0f, 0.0f, float(iGridWidth * 50.f), float(iGridHeight * 50.f) };
+			if (UI().is_widescreen())
+				v_r.x2 /= 1.328f;
+
+			m_item_3d->SetWidth(_min(v_r.width(), 2500.f));
+			m_item_3d->SetHeight(_min(v_r.height(), 2500.f));
+			m_item_3d->SetGameObject(m_inv_item);
+			m_item_3d->Show(true);
+		}
+		else
+		{
+			if (m_item_3d)
+				m_item_3d->Show(false);
+		}
+	}
+	else
+	{
+		if (m_item_3d)
+			m_item_3d->Show(false);
+	}
 	
 	m_scheme_wnd->DetachAll();
 	m_scheme_wnd->Show( false );

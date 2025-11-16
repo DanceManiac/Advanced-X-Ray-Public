@@ -198,6 +198,9 @@ void CObject::Load				(LPCSTR section )
 
 BOOL CObject::net_Spawn			(CSE_Abstract* data)
 {
+	ZoneScoped;
+	TracyMessageL				(cNameSect().c_str());
+
 	PositionStack.clear			();
 
 	VERIFY						(_valid(renderable.xform));

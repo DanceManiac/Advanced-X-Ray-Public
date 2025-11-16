@@ -31,7 +31,12 @@ public:
 			string256	m_game_type;
 			string256	m_alife;
 			string256	m_new_or_load;
-			EGameIDs	m_e_game_type;
+
+			union
+			{
+				EGameIDs	m_e_game_type;
+				u32			m_e_game_type_for_soc;
+			};
 		};
 		string256		m_params[4];
 						params		()	{	reset();	}
@@ -114,6 +119,10 @@ public:
 	CEnvironment&					Environment()	{return *pEnvironment;};
 	void							Prefetch			( );
 #endif
+
+	void							DestroyEnvironment	();
+	void							CreateEnvironment	();
+
 	IMainMenu*						m_pMainMenu;
 
 	ShadersExternalData*			m_pGShaderConstants; //--#SM+#--
@@ -148,6 +157,7 @@ public:
 	virtual float					GetActorPower		() { return 0; };
 	virtual float					GetActorBleeding	() { return 0; };
 	virtual float					GetActorIntoxication() { return 0; };
+	virtual float					GetActorFrostbite	() { return 0; };
 	virtual float					GetRainDropsFactor	() { return 0; };
 	virtual void					SetRainDropsFactor	(float factor) {};
 	virtual bool					GetClearMaskProcess	() { return 0; };
@@ -162,6 +172,8 @@ public:
 
 	virtual int						GetNightvisionType	() { return 0; };
 	virtual bool					IsCamFirstEye		() { return 0; };
+
+	virtual bool					IsTutorialSequencerActive() { return 0; };
 
 	virtual void					EditorOnFrame		() {};
 	virtual void					RegisterModel		(IRenderVisual* V)
@@ -202,6 +214,7 @@ public:
 		float device_psy_zone_influence;
 		float device_radiation_zone_influence;
 		float nightvision_lum_factor;
+		float cur_weapon_overheating;
 	} devices_shader_data;
 };
 
@@ -238,7 +251,6 @@ extern ENGINE_API	Fvector4 ps_ssfx_lightsetup_1;
 extern ENGINE_API	float ps_r3_dyn_wet_surf_far; // 30.0f
 extern ENGINE_API	int ps_r3_dyn_wet_surf_sm_res; // 256
 
-extern ENGINE_API	bool g_dedicated_server;
 extern ENGINE_API	IGame_Persistent*	g_pGamePersistent;
 #endif //IGame_PersistentH
 

@@ -204,8 +204,10 @@ void CCF_Skeleton::BuildTopLevel()
 
 BOOL CCF_Skeleton::_RayQuery( const collide::ray_defs& Q, collide::rq_results& R)
 {
-	if (dwFrameTL!=Device.dwFrame)			BuildTopLevel();
+	ZoneScoped;
 
+	if (dwFrameTL!=Device.dwFrame)
+		BuildTopLevel();
 
 	Fsphere w_bv_sphere;
 	owner->XFORM().transform_tiny		(w_bv_sphere.P,bv_sphere.P);
@@ -315,6 +317,8 @@ CCF_Shape::CCF_Shape(CObject* _owner) : ICollisionForm(_owner,cftShape)
 }
 BOOL CCF_Shape::_RayQuery(const collide::ray_defs& Q, collide::rq_results& R)
 {	
+	ZoneScoped;
+
 	// Convert ray into local model space
 	Fvector dS, dD;
 	Fmatrix temp; 
@@ -428,6 +432,8 @@ void CCF_Shape::ComputeBounds()
 
 BOOL CCF_Shape::Contact		( CObject* O )
 {
+	ZoneScoped;
+
 	// Build object-sphere in World-Space
 	Fsphere			S;
 	if (O->Visual()){

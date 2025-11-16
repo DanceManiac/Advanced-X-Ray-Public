@@ -24,9 +24,9 @@ effect::effect			(manager const& manager, shared_str const& id) :
 	m_manager			(manager),
 	m_property_holder	(0),
 	m_id				(id),
-	m_sound				("")
+	m_sound_eff			("")
 {
-	particles			= "";
+	m_particles			= "";
 }
 
 effect::~effect			()
@@ -39,24 +39,24 @@ effect::~effect			()
 
 void effect::load		(CInifile& config)
 {
-	life_time			= config.r_u32			(m_id, "life_time");
-	offset				= config.r_fvector3		(m_id, "offset");
-	particles			= config.r_string		(m_id, "particles");
-	m_sound				= config.r_string		(m_id, "sound");
-	wind_gust_factor	= config.r_float		(m_id, "wind_gust_factor");
+	m_life_time			= config.r_u32			(m_id, "life_time");
+	m_offset			= config.r_fvector3		(m_id, "offset");
+	m_particles			= config.r_string		(m_id, "particles");
+	m_sound_eff			= config.r_string		(m_id, "sound");
+	m_wind_gust_factor	= config.r_float		(m_id, "wind_gust_factor");
 }
 
 void effect::save		(CInifile& config)
 {
-	config.w_u32		(m_id.c_str(), "life_time",				life_time			);
-	config.w_fvector3	(m_id.c_str(), "offset",				offset				);
-	config.w_string		(m_id.c_str(), "particles",				particles.c_str()	);
-	config.w_string		(m_id.c_str(), "sound",					m_sound.c_str()		);
-	config.w_float		(m_id.c_str(), "wind_gust_factor",		wind_gust_factor	);
-	config.w_float		(m_id.c_str(), "wind_blast_in_time",	wind_blast_in_time	);
-	config.w_float		(m_id.c_str(), "wind_blast_out_time",	wind_blast_out_time	);
-	config.w_float		(m_id.c_str(), "wind_blast_strength",	wind_blast_strength	);
-	config.w_float		(m_id.c_str(), "wind_blast_longitude",	rad2deg(wind_blast_direction.getH()));
+	config.w_u32		(m_id.c_str(), "life_time",				m_life_time				);
+	config.w_fvector3	(m_id.c_str(), "offset",				m_offset				);
+	config.w_string		(m_id.c_str(), "particles",				m_particles.c_str()		);
+	config.w_string		(m_id.c_str(), "sound",					m_sound_eff.c_str()			);
+	config.w_float		(m_id.c_str(), "wind_gust_factor",		m_wind_gust_factor		);
+	config.w_float		(m_id.c_str(), "wind_blast_in_time",	m_wind_blast_in_time	);
+	config.w_float		(m_id.c_str(), "wind_blast_out_time",	m_wind_blast_out_time	);
+	config.w_float		(m_id.c_str(), "wind_blast_strength",	m_wind_blast_strength	);
+	config.w_float		(m_id.c_str(), "wind_blast_longitude",	rad2deg(m_wind_blast_direction.getH()));
 }
 
 LPCSTR effect::id_getter() const
@@ -75,26 +75,26 @@ void effect::id_setter	(LPCSTR value_)
 
 LPCSTR effect::sound_getter		()
 {
-	return				(m_sound.c_str());
+	return				(m_sound_eff.c_str());
 }
 
 void effect::sound_setter		(LPCSTR value)
 {
-	m_sound				= value;
-	sound.destroy		();
-	sound.create		(value, st_Effect, sg_SourceType);
+	m_sound_eff			= value;
+	m_sound.destroy		();
+	m_sound.create		(value, st_Effect, sg_SourceType);
 }
 
 float effect::wind_blast_longitude_getter	() const
 {
 	float						h, p;
-	wind_blast_direction.getHP	(h, p);
+	m_wind_blast_direction.getHP	(h, p);
 	return						(rad2deg(h));
 }
 
 void effect::wind_blast_longitude_setter	(float value)
 {
-	wind_blast_direction.setHP	(deg2rad(value), 0.f);
+	m_wind_blast_direction.setHP	(deg2rad(value), 0.f);
 }
 
 void effect::fill		(editor::property_holder_collection* collection)
@@ -122,22 +122,22 @@ void effect::fill		(editor::property_holder_collection* collection)
 		"life time",
 		"properties",
 		"this option is resposible for effect life time (in milliseconds)",
-		(int const&)life_time,
-		(int&)life_time
+		(int const&)m_life_time,
+		(int&)m_life_time
 	);
 	m_property_holder->add_property	(
 		"offset",
 		"properties",
 		"this option is resposible for effect offset (3D vector)",
-		(vec3f const&)offset,
-		(vec3f&)offset
+		(vec3f const&)m_offset,
+		(vec3f&)m_offset
 	);
 	m_property_holder->add_property(
 		"particles",
 		"properties",
 		"this option is resposible for effect particles",
-		particles.c_str(),
-		particles,
+		m_particles.c_str(),
+		m_particles,
 		&*m_manager.environment().particle_ids().begin(),
 		m_manager.environment().particle_ids().size(),
 		editor::property_holder::value_editor_tree_view,
@@ -150,7 +150,7 @@ void effect::fill		(editor::property_holder_collection* collection)
 		"sound",
 		"properties",
 		"this option is resposible for effect sound",
-		m_sound.c_str(),
+		m_sound_eff.c_str(),
 		string_getter,
 		string_setter,
 		".ogg",
@@ -164,22 +164,22 @@ void effect::fill		(editor::property_holder_collection* collection)
 		"wind gust factor",
 		"properties",
 		"this option is resposible for effect wind gust factor",
-		wind_gust_factor,
-		wind_gust_factor
+		m_wind_gust_factor,
+		m_wind_gust_factor
 	);
 	m_property_holder->add_property	(
 		"wind blast strength",
 		"properties",
 		"this option is resposible for effect wind blast strength",
-		wind_blast_strength,
-		wind_blast_strength
+		m_wind_blast_strength,
+		m_wind_blast_strength
 	);
 	m_property_holder->add_property	(
 		"wind blast start time",
 		"properties",
 		"this option is resposible for effect wind blast start time",
-		wind_blast_in_time,
-		wind_blast_in_time,
+		m_wind_blast_in_time,
+		m_wind_blast_in_time,
 		0.f,
 		1000.f
 	);
@@ -187,8 +187,8 @@ void effect::fill		(editor::property_holder_collection* collection)
 		"wind blast stop time",
 		"properties",
 		"this option is resposible for effect wind blast stop time",
-		wind_blast_out_time,
-		wind_blast_out_time,
+		m_wind_blast_out_time,
+		m_wind_blast_out_time,
 		0.f,
 		1000.f
 	);

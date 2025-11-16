@@ -43,14 +43,11 @@ void CAttachableItem::reload			(LPCSTR section)
 
 bool CAttachableItem::load_attach_position(LPCSTR section) 
 {
-	if (!pSettings->line_exist(section,"attach_angle_offset"))
-		return false;
-
-	Fvector							angle_offset = pSettings->r_fvector3	(section,"attach_angle_offset");
-	Fvector							position_offset	= pSettings->r_fvector3	(section,"attach_position_offset");
+	Fvector							angle_offset = READ_IF_EXISTS(pSettings,r_fvector3,section,"attach_angle_offset", Fvector().set(0.f, 0.f, 0.f));
+	Fvector							position_offset	= READ_IF_EXISTS(pSettings,r_fvector3,section,"attach_position_offset", Fvector().set(0.f, 0.f, 0.f));
 	m_offset.setHPB					(VPUSH(angle_offset));
 	m_offset.c						= position_offset;
-	m_bone_name						= pSettings->r_string	(section,"attach_bone_name");
+	m_bone_name						= READ_IF_EXISTS(pSettings, r_string, section, "attach_bone_name", nullptr);
 	return							true;
 }
 
@@ -80,9 +77,10 @@ void CAttachableItem::enable			(bool value)
 		return;
 	}
 
-	if (value && !enabled() && object().H_Parent()) {
+	if (value && !enabled() && object().H_Parent())
+	{
 		CGameObject			*game_object = smart_cast<CGameObject*>(object().H_Parent());
-		CAttachmentOwner	*owner = smart_cast<CAttachmentOwner*>(game_object);
+		CAttachmentOwner	*owner = game_object->cast_attachment_owner();
 		if (owner) {
 			m_enabled			= value;
 			owner->attach		(&item());
@@ -90,9 +88,10 @@ void CAttachableItem::enable			(bool value)
 		}
 	}
 	
-	if (!value && enabled() && object().H_Parent()) {
+	if (!value && enabled() && object().H_Parent())
+	{
 		CGameObject			*game_object = smart_cast<CGameObject*>(object().H_Parent());
-		CAttachmentOwner	*owner = smart_cast<CAttachmentOwner*>(game_object);
+		CAttachmentOwner	*owner = game_object->cast_attachment_owner();
 		if (owner) {
 			m_enabled			= value;
 			owner->detach		(&item());
@@ -109,7 +108,7 @@ bool  CAttachableItem::can_be_attached	() const
 	if (!item().m_pInventory->IsBeltUseful())
 		return				(true);
 
-	if (item().m_eItemCurrPlace != EItemPlaceBelt)
+	if (item().m_eItemCurrPlace != eItemPlaceBelt)
 		return				(false);
 	 
 	return					(true);

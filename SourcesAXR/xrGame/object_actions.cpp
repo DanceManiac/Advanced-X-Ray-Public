@@ -339,7 +339,7 @@ CObjectActionStrapping::~CObjectActionStrapping	()
 {
 	if (m_callback_removed) {
 		VERIFY					(
-			!object().animation().torso().callback(
+			!object().get_animation().torso().callback(
 				CStalkerAnimationPair::CALLBACK_ID(
 					this,
 					&CObjectActionStrapping::on_animation_end
@@ -349,7 +349,7 @@ CObjectActionStrapping::~CObjectActionStrapping	()
 		return;
 	}
 
-	object().animation().torso().remove_callback(
+	object().get_animation().torso().remove_callback(
 		CStalkerAnimationPair::CALLBACK_ID(
 			this,
 			&CObjectActionStrapping::on_animation_end
@@ -363,7 +363,7 @@ void CObjectActionStrapping::on_animation_end	()
 
 	m_storage->set_property		(ObjectHandlerSpace::eWorldPropertyStrapped,true);
 
-	object().animation().torso().remove_callback(
+	object().get_animation().torso().remove_callback(
 		CStalkerAnimationPair::CALLBACK_ID(
 			this,
 			&CObjectActionStrapping::on_animation_end
@@ -388,7 +388,7 @@ void CObjectActionStrapping::initialize			()
 
 	m_storage->set_property		(ObjectHandlerSpace::eWorldPropertyStrapped2Idle,true);
 	
-	object().animation().torso().add_callback	(
+	object().get_animation().torso().add_callback	(
 		CStalkerAnimationPair::CALLBACK_ID(
 			this,
 			&CObjectActionStrapping::on_animation_end
@@ -412,7 +412,7 @@ void CObjectActionStrapping::finalize		()
 	inherited::finalize					();
 
 	if (!m_callback_removed) {
-		object().animation().torso().remove_callback	(
+		object().get_animation().torso().remove_callback	(
 			CStalkerAnimationPair::CALLBACK_ID(
 				this,
 				&CObjectActionStrapping::on_animation_end
@@ -423,7 +423,7 @@ void CObjectActionStrapping::finalize		()
 	}
 	else {
 		VERIFY					(
-			!object().animation().torso().callback(
+			!object().get_animation().torso().callback(
 				CStalkerAnimationPair::CALLBACK_ID(
 					this,
 					&CObjectActionStrapping::on_animation_end
@@ -447,7 +447,7 @@ CObjectActionStrappingToIdle::~CObjectActionStrappingToIdle	()
 {
 	if (m_callback_removed) {
 		VERIFY					(
-			!object().animation().torso().callback(
+			!object().get_animation().torso().callback(
 				CStalkerAnimationPair::CALLBACK_ID(
 					this,
 					&CObjectActionStrappingToIdle::on_animation_end
@@ -457,7 +457,7 @@ CObjectActionStrappingToIdle::~CObjectActionStrappingToIdle	()
 		return;
 	}
 
-	object().animation().torso().remove_callback(
+	object().get_animation().torso().remove_callback(
 		CStalkerAnimationPair::CALLBACK_ID(
 			this,
 			&CObjectActionStrappingToIdle::on_animation_end
@@ -471,7 +471,7 @@ void CObjectActionStrappingToIdle::on_animation_end	()
 
 	m_storage->set_property		(ObjectHandlerSpace::eWorldPropertyStrapped2Idle,false);
 
-	object().animation().torso().remove_callback(
+	object().get_animation().torso().remove_callback(
 		CStalkerAnimationPair::CALLBACK_ID(
 			this,
 			&CObjectActionStrappingToIdle::on_animation_end
@@ -494,7 +494,7 @@ void CObjectActionStrappingToIdle::initialize		()
 
 	m_callback_removed			= false;
 
-	object().animation().torso().add_callback	(
+	object().get_animation().torso().add_callback	(
 		CStalkerAnimationPair::CALLBACK_ID(
 			this,
 			&CObjectActionStrappingToIdle::on_animation_end
@@ -518,7 +518,7 @@ void CObjectActionStrappingToIdle::finalize		()
 	inherited::finalize					();
 
 	if (!m_callback_removed) {
-		object().animation().torso().remove_callback	(
+		object().get_animation().torso().remove_callback	(
 			CStalkerAnimationPair::CALLBACK_ID(
 				this,
 				&CObjectActionStrappingToIdle::on_animation_end
@@ -529,7 +529,7 @@ void CObjectActionStrappingToIdle::finalize		()
 	}
 	else {
 		VERIFY					(
-			!object().animation().torso().callback(
+			!object().get_animation().torso().callback(
 				CStalkerAnimationPair::CALLBACK_ID(
 					this,
 					&CObjectActionStrappingToIdle::on_animation_end
@@ -553,7 +553,7 @@ CObjectActionUnstrapping::~CObjectActionUnstrapping	()
 {
 	if (m_callback_removed) {
 		VERIFY					(
-			!object().animation().torso().callback(
+			!object().get_animation().torso().callback(
 				CStalkerAnimationPair::CALLBACK_ID(
 					this,
 					&CObjectActionUnstrapping::on_animation_end
@@ -563,7 +563,7 @@ CObjectActionUnstrapping::~CObjectActionUnstrapping	()
 		return;
 	}
 
-	object().animation().torso().remove_callback(
+	object().get_animation().torso().remove_callback(
 		CStalkerAnimationPair::CALLBACK_ID(
 			this,
 			&CObjectActionUnstrapping::on_animation_end
@@ -577,7 +577,7 @@ void CObjectActionUnstrapping::on_animation_end	()
 
 	m_storage->set_property		(ObjectHandlerSpace::eWorldPropertyStrapped,false);
 
-	object().animation().torso().remove_callback(
+	object().get_animation().torso().remove_callback(
 		CStalkerAnimationPair::CALLBACK_ID(
 			this,
 			&CObjectActionUnstrapping::on_animation_end
@@ -602,7 +602,7 @@ void CObjectActionUnstrapping::initialize		()
 
 	m_storage->set_property(ObjectHandlerSpace::eWorldPropertyStrapped2Idle,true);
 
-	object().animation().torso().add_callback	(
+	object().get_animation().torso().add_callback	(
 		CStalkerAnimationPair::CALLBACK_ID(
 			this,
 			&CObjectActionUnstrapping::on_animation_end
@@ -626,7 +626,7 @@ void CObjectActionUnstrapping::finalize		()
 	inherited::finalize					();
 
 	if (!m_callback_removed) {
-		object().animation().torso().remove_callback	(
+		object().get_animation().torso().remove_callback	(
 			CStalkerAnimationPair::CALLBACK_ID(
 				this,
 				&CObjectActionUnstrapping::on_animation_end
@@ -637,7 +637,7 @@ void CObjectActionUnstrapping::finalize		()
 	}
 	else {
 		VERIFY					(
-			!object().animation().torso().callback(
+			!object().get_animation().torso().callback(
 				CStalkerAnimationPair::CALLBACK_ID(
 					this,
 					&CObjectActionUnstrapping::on_animation_end
@@ -661,7 +661,7 @@ CObjectActionUnstrappingToIdle::~CObjectActionUnstrappingToIdle	()
 {
 	if (m_callback_removed) {
 		VERIFY					(
-			!object().animation().torso().callback(
+			!object().get_animation().torso().callback(
 				CStalkerAnimationPair::CALLBACK_ID(
 					this,
 					&CObjectActionUnstrappingToIdle::on_animation_end
@@ -671,7 +671,7 @@ CObjectActionUnstrappingToIdle::~CObjectActionUnstrappingToIdle	()
 		return;
 	}
 
-	object().animation().torso().remove_callback(
+	object().get_animation().torso().remove_callback(
 		CStalkerAnimationPair::CALLBACK_ID(
 			this,
 			&CObjectActionUnstrappingToIdle::on_animation_end
@@ -685,7 +685,7 @@ void CObjectActionUnstrappingToIdle::on_animation_end	()
 
 	m_storage->set_property		(ObjectHandlerSpace::eWorldPropertyStrapped2Idle,false);
 
-	object().animation().torso().remove_callback(
+	object().get_animation().torso().remove_callback(
 		CStalkerAnimationPair::CALLBACK_ID(
 			this,
 			&CObjectActionUnstrappingToIdle::on_animation_end
@@ -708,7 +708,7 @@ void CObjectActionUnstrappingToIdle::initialize		()
 
 	m_callback_removed			= false;
 
-	object().animation().torso().add_callback	(
+	object().get_animation().torso().add_callback	(
 		CStalkerAnimationPair::CALLBACK_ID(
 			this,
 			&CObjectActionUnstrappingToIdle::on_animation_end
@@ -732,7 +732,7 @@ void CObjectActionUnstrappingToIdle::finalize		()
 	inherited::finalize					();
 
 	if (!m_callback_removed) {
-		object().animation().torso().remove_callback	(
+		object().get_animation().torso().remove_callback	(
 			CStalkerAnimationPair::CALLBACK_ID(
 				this,
 				&CObjectActionUnstrappingToIdle::on_animation_end
@@ -743,7 +743,7 @@ void CObjectActionUnstrappingToIdle::finalize		()
 	}
 	else {
 		VERIFY					(
-			!object().animation().torso().callback(
+			!object().get_animation().torso().callback(
 				CStalkerAnimationPair::CALLBACK_ID(
 					this,
 					&CObjectActionUnstrappingToIdle::on_animation_end

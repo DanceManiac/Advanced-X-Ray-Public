@@ -1,0 +1,75 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Devices
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+[device_atifact_merger]:identity_immunities
+GroupControlSection	= spawn_group
+discovery_dependency = 
+$spawn 				= "devices\artifact merger"
+;$prefetch 			= 32
+class				= II_ATTCH
+cform				= skeleton
+visual				= equipments\item_merger.ogf
+radius				= 1
+
+inv_name			= ArtefactMerger
+inv_name_short		= AfMerger
+inv_weight			= 3	;0.2
+
+inv_grid_width		= 2
+inv_grid_height		= 1
+inv_grid_x			= 6
+inv_grid_y			= 13
+cost				= 5000
+
+
+[inventory_box]
+GroupControlSection	= spawn_group
+discovery_dependency = 
+$spawn 				= "devices\inventory box"
+class				= O_INVBOX
+cform				= skeleton
+visual				= physics\box\expl_dinamit.ogf
+script_binding      = bind_physic_object.init
+
+;;M.F.S. Team
+
+[artefact_container_base]:identity_immunities
+GroupControlSection		= spawn_group
+discovery_dependency 		=
+$spawn 				= "devices\artefact_container_base"
+class				= D_AFCONT
+cform           		= skeleton
+visual				= dynamics\devices\dev_af_container\dev_af_container_open.ogf
+description			= st_af_container_descr
+$prefetch 			= 32
+inv_name			= st_af_container
+inv_name_short			= st_af_container
+inv_weight			= 1.5
+inv_grid_width			= 1
+inv_grid_height			= 2
+inv_grid_x			= 0
+inv_grid_y			= 37
+cost				= 750
+container_size			= 1
+use_sound			= interface\inv_attach_addon
+
+[sleeping_bag]:identity_immunities
+GroupControlSection		= spawn_group
+discovery_dependency 		=
+$spawn 				= "devices\sleeping_bag"
+class				= D_SLEBAG
+cform           		= skeleton
+visual				= dynamics\devices\dev_af_container\dev_af_container_open.ogf
+description			= st_sleeping_bag_descr
+$prefetch 			= 32
+inv_name			= st_sleeping_bag
+inv_name_short			= st_sleeping_bag
+inv_weight			= 1.2
+inv_grid_width			= 2
+inv_grid_height			= 2
+inv_grid_x			= 12
+inv_grid_y			= 0
+cost				= 500
+container_size			= 1
+use_sound			= interface\inv_attach_addon

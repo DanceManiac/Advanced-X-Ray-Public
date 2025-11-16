@@ -22,6 +22,8 @@ CHelmet::CHelmet()
 
 	m_b_HasGlass = false;
 	m_bUseFilter = false;
+	m_bFilterProtectionDropsInstantly = false;
+	m_bUseAttach = false;
 	m_NightVisionType = 0;
 	m_fNightVisionLumFactor = 0.0f;
 	m_fFilterDegradation = 0.0f;
@@ -63,6 +65,14 @@ void CHelmet::Load(LPCSTR section)
 	m_fSatietyRestoreSpeed			= READ_IF_EXISTS(pSettings, r_float, section, "satiety_restore_speed",   0.0f );
 	m_fPowerRestoreSpeed			= READ_IF_EXISTS(pSettings, r_float, section, "power_restore_speed",     0.0f );
 	m_fBleedingRestoreSpeed			= READ_IF_EXISTS(pSettings, r_float, section, "bleeding_restore_speed",  0.0f );
+	m_fThirstRestoreSpeed			= READ_IF_EXISTS(pSettings, r_float, section, "thirst_restore_speed",	 0.0f );
+	m_fIntoxicationRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "intoxication_restore_speed", 0.0f);
+	m_fSleepenessRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "sleepeness_restore_speed", 0.0f);
+	m_fAlcoholismRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "alcoholism_restore_speed", 0.0f);
+	m_fNarcotismRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "narcotism_restore_speed", 0.0f);
+	m_fPsyHealthRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "psy_health_restore_speed", 0.0f);
+	m_fFrostbiteRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "frostbite_restore_speed", 0.0f);
+
 	m_fPowerLoss					= READ_IF_EXISTS(pSettings, r_float, section, "power_loss",    1.0f );
 	m_fFilterDegradation			= READ_IF_EXISTS(pSettings, r_float, section, "filter_degradation_speed", 0.0f);
 	m_fMaxFilterCondition			= READ_IF_EXISTS(pSettings, r_float, section, "max_filter_condition", 1.0f);
@@ -76,6 +86,8 @@ void CHelmet::Load(LPCSTR section)
 
 	m_b_HasGlass					= !!READ_IF_EXISTS(pSettings, r_bool, section, "has_glass", FALSE);
 	m_bUseFilter					= READ_IF_EXISTS(pSettings, r_bool, section, "use_filter", false);
+	m_bFilterProtectionDropsInstantly = READ_IF_EXISTS(pSettings, r_bool, section, "filter_protection_drops_instantly", false);
+	m_bUseAttach					= READ_IF_EXISTS(pSettings, r_bool, section, "use_attaching", false);
 
 	m_sShaderNightVisionSect		= READ_IF_EXISTS(pSettings, r_string, section, "shader_nightvision_sect", "shader_nightvision_default");
 	m_NightVisionType				= READ_IF_EXISTS(pSettings, r_u32, m_sShaderNightVisionSect, "shader_nightvision_type", 0);
@@ -84,6 +96,7 @@ void CHelmet::Load(LPCSTR section)
 	m_SuitableFilters.clear();
 	m_SuitableRepairKits.clear();
 	m_ItemsForRepair.clear();
+	m_ItemsForRepairNames.clear();
 
 	LPCSTR filters = READ_IF_EXISTS(pSettings, r_string, section, "suitable_filters", "antigas_filter");
 	LPCSTR repair_kits = READ_IF_EXISTS(pSettings, r_string, section, "suitable_repair_kits", "repair_kit");
@@ -126,7 +139,10 @@ void CHelmet::Load(LPCSTR section)
 			if ((it % 2 != 0 && it != 0) || it == 1)
 				m_ItemsForRepair[it / 2].second = std::stoi(items_for_repair_sect);
 			else
+			{
 				m_ItemsForRepair.push_back(std::make_pair(items_for_repair_sect, 0));
+				m_ItemsForRepairNames.push_back(pSettings->r_string(items_for_repair_sect, "inv_name"));
+			}
 		}
 	}
 
@@ -191,65 +207,49 @@ void CHelmet::OnH_A_Chield()
 
 void CHelmet::UpdateFilterCondition(void)
 {
-	CHelmet* helmet = smart_cast<CHelmet*>(Actor()->inventory().ItemFromSlot(HELMET_SLOT));
-	CHelmet* helmet2 = smart_cast<CHelmet*>(Actor()->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
+	if (!ParentIsActor() || ParentIsActor() && m_ItemCurrPlace.type != eItemPlaceSlot)
+		return;
 
-	if ((helmet && helmet->m_bUseFilter) || (helmet2 && helmet2->m_bUseFilter))
+	if (m_bUseFilter)
 	{
-		float m_radia_hit = CurrentGameUI()->get_zone_cur_power(ALife::eHitTypeRadiation) * 4;
-		float m_chemical_hit = CurrentGameUI()->get_zone_cur_power(ALife::eHitTypeChemicalBurn);
+		float radia_hit = CurrentGameUI()->get_zone_cur_power(ALife::eHitTypeRadiation) * 4;
+		float chemical_hit = CurrentGameUI()->get_zone_cur_power(ALife::eHitTypeChemicalBurn);
 
-		if (helmet)
-		{
-			float uncharge_coef = ((helmet->m_fFilterDegradation + m_radia_hit + m_chemical_hit) / 16) * Device.fTimeDelta;
+			float uncharge_coef = (m_fFilterDegradation / 16) * Device.fTimeDelta;
 
-			helmet->m_fFilterCondition -= uncharge_coef;
-			clamp(helmet->m_fFilterCondition, 0.0f, m_fMaxFilterCondition);
+			m_fFilterCondition -= uncharge_coef;
+			clamp(m_fFilterCondition, 0.0f, m_fMaxFilterCondition);
 
-			float condition = 1.f * helmet->m_fFilterCondition;
-			float percent = helmet->m_fFilterCondition * 100;
+			float condition = 1.f * m_fFilterCondition;
+			float percent = m_fFilterCondition * 100;
 
-			if (percent > 20.0f)
+			if (m_bFilterProtectionDropsInstantly)
 			{
-				if (!fis_zero(helmet->m_HitTypeProtection[ALife::eHitTypeRadiation]) && !fis_zero(m_ConstHitTypeProtection[ALife::eHitTypeRadiation]))
-					helmet->m_HitTypeProtection[ALife::eHitTypeRadiation] = (m_ConstHitTypeProtection[ALife::eHitTypeRadiation] / 100) * percent;
-				if (!fis_zero(helmet->m_HitTypeProtection[ALife::eHitTypeChemicalBurn]) && !fis_zero(m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn]))
-					helmet->m_HitTypeProtection[ALife::eHitTypeChemicalBurn] = (m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn] / 100) * percent;
+				if (fis_zero(percent))
+				{
+					if (!fis_zero(m_HitTypeProtection[ALife::eHitTypeRadiation]) && !fis_zero(m_ConstHitTypeProtection[ALife::eHitTypeRadiation]))
+						m_HitTypeProtection[ALife::eHitTypeRadiation] = (m_ConstHitTypeProtection[ALife::eHitTypeRadiation] / 100) * 20.0f;
+					if (!fis_zero(m_HitTypeProtection[ALife::eHitTypeChemicalBurn]) && !fis_zero(m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn]))
+						m_HitTypeProtection[ALife::eHitTypeChemicalBurn] = (m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn] / 100) * 20.0f;
+				}
 			}
 			else
 			{
-				if (!fis_zero(helmet->m_HitTypeProtection[ALife::eHitTypeRadiation]) && !fis_zero(m_ConstHitTypeProtection[ALife::eHitTypeRadiation]))
-					helmet->m_HitTypeProtection[ALife::eHitTypeRadiation] = (m_ConstHitTypeProtection[ALife::eHitTypeRadiation] / 100) * 20.0f;
-				if (!fis_zero(helmet->m_HitTypeProtection[ALife::eHitTypeChemicalBurn]) && !fis_zero(m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn]))
-					helmet->m_HitTypeProtection[ALife::eHitTypeChemicalBurn] = (m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn] / 100) * 20.0f;
+				if (percent > 20.0f)
+				{
+					if (!fis_zero(m_HitTypeProtection[ALife::eHitTypeRadiation]) && !fis_zero(m_ConstHitTypeProtection[ALife::eHitTypeRadiation]))
+						m_HitTypeProtection[ALife::eHitTypeRadiation] = (m_ConstHitTypeProtection[ALife::eHitTypeRadiation] / 100) * percent;
+					if (!fis_zero(m_HitTypeProtection[ALife::eHitTypeChemicalBurn]) && !fis_zero(m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn]))
+						m_HitTypeProtection[ALife::eHitTypeChemicalBurn] = (m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn] / 100) * percent;
+				}
+				else
+				{
+					if (!fis_zero(m_HitTypeProtection[ALife::eHitTypeRadiation]) && !fis_zero(m_ConstHitTypeProtection[ALife::eHitTypeRadiation]))
+						m_HitTypeProtection[ALife::eHitTypeRadiation] = (m_ConstHitTypeProtection[ALife::eHitTypeRadiation] / 100) * 20.0f;
+					if (!fis_zero(m_HitTypeProtection[ALife::eHitTypeChemicalBurn]) && !fis_zero(m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn]))
+						m_HitTypeProtection[ALife::eHitTypeChemicalBurn] = (m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn] / 100) * 20.0f;
+				}
 			}
-		}
-
-		if (helmet2)
-		{
-			float uncharge_coef = ((helmet2->m_fFilterDegradation + m_radia_hit + m_chemical_hit) / 16) * Device.fTimeDelta;
-
-			helmet2->m_fFilterCondition -= uncharge_coef;
-			clamp(helmet2->m_fFilterCondition, 0.0f, m_fMaxFilterCondition);
-
-			float condition = 1.f * helmet2->m_fFilterCondition;
-			float percent = helmet2->m_fFilterCondition * 100;
-
-			if (percent > 20.0f)
-			{
-				if (!fis_zero(helmet2->m_HitTypeProtection[ALife::eHitTypeRadiation]) && !fis_zero(m_ConstHitTypeProtection[ALife::eHitTypeRadiation]))
-					helmet2->m_HitTypeProtection[ALife::eHitTypeRadiation] = (m_ConstHitTypeProtection[ALife::eHitTypeRadiation] / 100) * percent;
-				if (!fis_zero(helmet2->m_HitTypeProtection[ALife::eHitTypeChemicalBurn]) && !fis_zero(m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn]))
-					helmet2->m_HitTypeProtection[ALife::eHitTypeChemicalBurn] = (m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn] / 100) * percent;
-			}
-			else
-			{
-				if (!fis_zero(helmet2->m_HitTypeProtection[ALife::eHitTypeRadiation]) && !fis_zero(m_ConstHitTypeProtection[ALife::eHitTypeRadiation]))
-					helmet2->m_HitTypeProtection[ALife::eHitTypeRadiation] = (m_ConstHitTypeProtection[ALife::eHitTypeRadiation] / 100) * 20.0f;
-				if (!fis_zero(helmet2->m_HitTypeProtection[ALife::eHitTypeChemicalBurn]) && !fis_zero(m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn]))
-					helmet2->m_HitTypeProtection[ALife::eHitTypeChemicalBurn] = (m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn] / 100) * 20.0f;
-			}
-		}
 	}
 }
 
@@ -264,34 +264,14 @@ void CHelmet::UpdateCL()
 void CHelmet::OnMoveToSlot(const SInvItemPlace& previous_place)
 {
 	inherited::OnMoveToSlot		(previous_place);
-	if (m_pInventory)
+	if (m_pInventory && (previous_place.type == eItemPlaceSlot))
 	{
 		CActor* pActor = smart_cast<CActor*> (H_Parent());
-		if (!pActor)
-			return;
 
-		if (previous_place.type == eItemPlaceSlot)
+		if (pActor)
 		{
 			if (pActor->GetNightVisionStatus())
 				pActor->SwitchNightVision(true, false);
-		}
-
-		CHelmet* pHelmet1 = smart_cast<CHelmet*>(pActor->inventory().ItemFromSlot(HELMET_SLOT));
-		CHelmet* pHelmet2 = smart_cast<CHelmet*>(pActor->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
-
-		if (this == pHelmet1 && !pHelmet1->m_bSecondHelmetEnabled)
-		{
-			if (pHelmet2)
-			{
-				pActor->inventory().Ruck(pHelmet2, false);
-			}
-		}
-		else if (this == pHelmet2 && !pHelmet2->m_bSecondHelmetEnabled)
-		{
-			if (pHelmet1)
-			{
-				pActor->inventory().Ruck(pHelmet1, false);
-			}
 		}
 	}
 }
@@ -311,8 +291,24 @@ void CHelmet::OnMoveToRuck(const SInvItemPlace& previous_place)
 
 void CHelmet::Hit(float hit_power, ALife::EHitType hit_type)
 {
+	float hit_power_not_k = hit_power;
 	hit_power *= GetHitImmunity(hit_type);
 	ChangeCondition(-hit_power);
+
+	if (!GameConstants::GetOutfitUseFilters() || !Actor()->inventory().InSlot(this) || !m_bUseFilter)
+		return;
+
+	switch (hit_type)
+	{
+	case ALife::eHitTypeChemicalBurn:
+	case ALife::eHitTypeRadiation:
+	{
+		m_fFilterCondition -= hit_power_not_k / 50;
+		clamp(m_fFilterCondition, 0.0f, m_fMaxFilterCondition);
+	} break;
+	default:
+		break;
+	}
 }
 
 float CHelmet::GetDefHitTypeProtection(ALife::EHitType hit_type)
@@ -368,6 +364,12 @@ bool CHelmet::install_upgrade_impl( LPCSTR section, bool test )
 	result |= process_if_exists( section, "satiety_restore_speed",   &CInifile::r_float, m_fSatietyRestoreSpeed,   test );
 	result |= process_if_exists( section, "power_restore_speed",     &CInifile::r_float, m_fPowerRestoreSpeed,     test );
 	result |= process_if_exists( section, "bleeding_restore_speed",  &CInifile::r_float, m_fBleedingRestoreSpeed,  test );
+	result |= process_if_exists( section, "thirst_restore_speed",	 &CInifile::r_float, m_fThirstRestoreSpeed,	   test );
+	result |= process_if_exists( section, "intoxication_restore_speed", &CInifile::r_float, m_fIntoxicationRestoreSpeed, test);
+	result |= process_if_exists( section, "sleepeness_restore_speed",&CInifile::r_float, m_fSleepenessRestoreSpeed,test );
+	result |= process_if_exists( section, "alcoholism_restore_speed",&CInifile::r_float, m_fAlcoholismRestoreSpeed,test);
+	result |= process_if_exists( section, "narcotism_restore_speed", &CInifile::r_float, m_fNarcotismRestoreSpeed, test);
+	result |= process_if_exists( section, "frostbite_restore_speed", &CInifile::r_float, m_fFrostbiteRestoreSpeed, test);
 
 	result |= process_if_exists( section, "power_loss", &CInifile::r_float, m_fPowerLoss, test );
 	clamp( m_fPowerLoss, 0.0f, 1.0f );

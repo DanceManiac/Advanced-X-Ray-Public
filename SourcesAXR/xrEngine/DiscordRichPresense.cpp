@@ -49,6 +49,7 @@ void xrDiscordPresense::SetStatus()
     presenseInfo.largeImageKey    = rpc_settings.LargeImageKey;
 
 	LowlandFogBaseHeight = 0.0;
+	SSS_TerrainOffset.set(0.f, 0.f, 0.f, 0.f);
 
 	if (pApp->Level_Current < pApp->Levels.size())
 	{
@@ -56,6 +57,7 @@ void xrDiscordPresense::SetStatus()
 		if (LevelInfo.name != nullptr)
 		{
 			LowlandFogBaseHeight = READ_IF_EXISTS(pAdvancedSettings, r_float, "lowland_fog_params", LevelInfo.name, 0.0f);
+			SSS_TerrainOffset = READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "terrain_offset_params", LevelInfo.name, SSS_TerrainOffset.set(0.f, 0.f, 0.f, 0.f));
 		}
 	}
 
@@ -74,7 +76,7 @@ void xrDiscordPresense::SetStatus()
 	}
 	else
 	{
-		presenseInfo.largeImageText = "Advanced X-Ray Engine";
+		presenseInfo.largeImageText = "Режим Advanced X-Ray: Тень Чернобыля";
 	}
 
 	if (g_current_renderer == 1)

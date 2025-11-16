@@ -14,11 +14,7 @@
 #endif //USE_DX11
 
 void CBackend::OnFrameEnd	()
-{
-//#ifndef DEDICATED_SERVER
-#ifndef _EDITOR
-	if (!g_dedicated_server)
-#endif    
+{   
 	{
 #ifdef USE_DX11
 		HW.pContext->ClearState();
@@ -34,15 +30,10 @@ void CBackend::OnFrameEnd	()
 		Invalidate			();
 #endif
 	}
-//#endif
 }
 
 void CBackend::OnFrameBegin	()
 {
-//#ifndef DEDICATED_SERVER
-#ifndef _EDITOR
-	if (!g_dedicated_server)
-#endif    
 	{
 		PGO					(Msg("PGO:*****frame[%d]*****",RDEVICE.dwFrame));
 #ifdef USE_DX11
@@ -63,7 +54,6 @@ void CBackend::OnFrameBegin	()
 		Index.Flush			();
 		set_Stencil			(FALSE);
 	}
-//#endif
 }
 
 void CBackend::Invalidate	()
@@ -103,6 +93,7 @@ DX10_ONLY(gs					= NULL);
 	stencil_pass=u32(-1);
 	stencil_zfail=u32(-1);
 	cull_mode=u32(-1);
+	fill_mode = u32(-1);
 	z_enable=u32(-1);
 	z_func=u32(-1);
 	alpha_ref=u32(-1);

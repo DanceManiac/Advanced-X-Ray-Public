@@ -54,15 +54,17 @@
 
 #include "UIGameCustom.h"
 #include "ui/UIPdaWnd.h"
+#include "ui/UIStatic.h"
 #include "UICursor.h"
 #include "PDA.h"
 
 #include "../xrphysics/iphworld.h"
 #include "../xrphysics/console_vars.h"
+#	include "debug_renderer.h"
+
 #ifdef DEBUG
 #	include "level_debug.h"
 #	include "ai/stalker/ai_stalker.h"
-#	include "debug_renderer.h"
 #	include "physicobject.h"
 #	include "phdebug.h"
 
@@ -81,12 +83,11 @@
 
 #include "AdvancedXrayGameConstants.h"
 
-ENGINE_API bool g_dedicated_server;
-
 //extern BOOL	g_bDebugDumpPhysicsStep;
 extern CUISequencer * g_tutorial;
 extern CUISequencer * g_tutorial2;
 
+BOOL g_dbgShowMaterialInfo = FALSE;
 
 float		g_cl_lvInterp		= 0.1;
 u32			lvInterpSteps		= 0;
@@ -99,6 +100,8 @@ CLevel::CLevel():IPureClient	(Device.GetTimerGlobal())
 	,DemoCS(MUTEX_PROFILE_ID(DemoCS))
 #endif // PROFILE_CRITICAL_SECTIONS
 {
+	ZoneScoped;
+
 	g_bDebugEvents				= strstr(Core.Params,"-debug_ge")?TRUE:FALSE;
 
 	Server						= NULL;
@@ -119,15 +122,8 @@ CLevel::CLevel():IPureClient	(Device.GetTimerGlobal())
 
 	m_pBulletManager			= xr_new<CBulletManager>();
 
-	if(!g_dedicated_server)
-	{
-		m_map_manager				= xr_new<CMapManager>();
-		m_game_task_manager			= xr_new<CGameTaskManager>();
-	}else
-	{
-		m_map_manager				= NULL;
-		m_game_task_manager			= NULL;
-	}
+	m_map_manager				= xr_new<CMapManager>();
+	m_game_task_manager			= xr_new<CGameTaskManager>();
 
 //----------------------------------------------------
 	m_bNeed_CrPr				= false;
@@ -140,28 +136,16 @@ CLevel::CLevel():IPureClient	(Device.GetTimerGlobal())
 	//physics_step_time_callback	= (PhysicsStepTimeCallback*) &PhisStepsCallback;
 	m_seniority_hierarchy_holder= xr_new<CSeniorityHierarchyHolder>();
 
-	if(!g_dedicated_server)
 	{
 		m_level_sound_manager		= xr_new<CLevelSoundManager>();
 		m_space_restriction_manager = xr_new<CSpaceRestrictionManager>();
 		m_client_spawn_manager		= xr_new<CClientSpawnManager>();
 		m_autosave_manager			= xr_new<CAutosaveManager>();
-
-	#ifdef DEBUG
 		m_debug_renderer			= xr_new<CDebugRenderer>();
+
+#ifdef DEBUG
 		m_level_debug				= xr_new<CLevelDebug>();
 		m_bEnvPaused				= false;
-	#endif
-
-	}else
-	{
-		m_level_sound_manager		= NULL;
-		m_client_spawn_manager		= NULL;
-		m_autosave_manager			= NULL;
-		m_space_restriction_manager = NULL;
-	#ifdef DEBUG
-		m_debug_renderer			= NULL;
-		m_level_debug				= NULL;
 	#endif
 	}
 
@@ -244,6 +228,8 @@ extern CAI_Space *g_ai_space;
 
 CLevel::~CLevel()
 {
+	ZoneScoped;
+
 	xr_delete					(g_player_hud);
 	delete_data					(hud_zones_list);
 	hud_zones_list				= NULL;
@@ -288,13 +274,10 @@ CLevel::~CLevel()
 	xr_delete					(m_client_spawn_manager);
 
 	xr_delete					(m_autosave_manager);
-	
-#ifdef DEBUG
-	xr_delete					(m_debug_renderer);
-#endif
 
-	if (!g_dedicated_server)
-		ai().script_engine().remove_script_process(ScriptEngine::eScriptProcessorLevel);
+	xr_delete					(m_debug_renderer);
+
+	ai().script_engine().remove_script_process(ScriptEngine::eScriptProcessorLevel);
 
 	xr_delete					(game);
 	xr_delete					(game_events);
@@ -336,7 +319,6 @@ CLevel::~CLevel()
 
 	if(g_tutorial2 && g_tutorial2->m_pStoredInputReceiver==this)
 		g_tutorial2->m_pStoredInputReceiver = NULL;
-
 
 	if (IsDemoPlay())
 	{
@@ -404,6 +386,8 @@ BOOL		g_bDebugEvents = FALSE	;
 
 void CLevel::cl_Process_Event				(u16 dest, u16 type, NET_Packet& P)
 {
+	ZoneScoped;
+
 	//			Msg				("--- event[%d] for [%d]",type,dest);
 	CObject*	 O	= Objects.net_Find	(dest);
 	if (0==O)		{
@@ -468,6 +452,8 @@ void CLevel::cl_Process_Event				(u16 dest, u16 type, NET_Packet& P)
 
 void CLevel::ProcessGameEvents		()
 {
+	ZoneScoped;
+
 	// Game events
 	{
 		NET_Packet			P;
@@ -586,6 +572,8 @@ void CLevel::MakeReconnect()
 
 void CLevel::OnFrame	()
 {
+	ZoneScoped;
+
 #ifdef DEBUG_MEMORY_MANAGER
 	debug_memory_guard					__guard__;
 #endif // DEBUG_MEMORY_MANAGER
@@ -632,7 +620,6 @@ void CLevel::OnFrame	()
 
 	if (m_bNeed_CrPr)					make_NetCorrectionPrediction();
 
-	if(!g_dedicated_server )
 	{
 		if (g_mt_config.test(mtMap)) 
 			Device.seqParallel.push_back	(fastdelegate::FastDelegate0<>(m_map_manager,&CMapManager::Update));
@@ -651,7 +638,7 @@ void CLevel::OnFrame	()
 	inherited::OnFrame		();
 
 	// Draw client/server stats
-	if ( !g_dedicated_server && psDeviceFlags.test(rsStatistic))
+	if (psDeviceFlags.test(rsStatistic))
 	{
 		CGameFont* F = UI().Font().pFontDI;
 		if (!psNET_direct_connect) 
@@ -747,8 +734,7 @@ void CLevel::OnFrame	()
 	g_pGamePersistent->Environment().SetGameTime	(GetEnvironmentGameDayTimeSec(),game->GetEnvironmentGameTimeFactor());
 
 	//Device.Statistic->cripting.Begin	();
-	if (!g_dedicated_server)
-		ai().script_engine().script_process	(ScriptEngine::eScriptProcessorLevel)->update();
+	ai().script_engine().script_process	(ScriptEngine::eScriptProcessorLevel)->update();
 	//Device.Statistic->Scripting.End	();
 	m_ph_commander->update				();
 	m_ph_commander_scripts->update		();
@@ -760,7 +746,6 @@ void CLevel::OnFrame	()
 	Device.Statistic->TEST0.End			();
 
 	// update static sounds
-	if(!g_dedicated_server)
 	{
 		if (g_mt_config.test(mtLevelSounds)) 
 			Device.seqParallel.push_back	(fastdelegate::FastDelegate0<>(m_level_sound_manager,&CLevelSoundManager::Update));
@@ -768,7 +753,6 @@ void CLevel::OnFrame	()
 			m_level_sound_manager->Update	();
 	}
 	// deffer LUA-GC-STEP
-	if (!g_dedicated_server)
 	{
 		if (g_mt_config.test(mtLUA_GC))	Device.seqParallel.push_back	(fastdelegate::FastDelegate0<>(this,&CLevel::script_gc));
 		else							script_gc	()	;
@@ -789,6 +773,7 @@ void CLevel::OnFrame	()
 int		psLUA_GCSTEP					= 10			;
 void	CLevel::script_gc				()
 {
+	ZoneScoped;
 	lua_gc	(ai().script_engine().lua(), LUA_GCSTEP, psLUA_GCSTEP);
 }
 
@@ -800,17 +785,23 @@ void test_precise_path	();
 extern	Flags32	dbg_net_Draw_Flags;
 #endif
 
+// Immediately stop the current GC iteration. Can be used to avoid unintentional CPU load,
+// since we anyway have one full script_gc() above each frame
+void CLevel::stop_gc() { lua_gc(ai().script_engine().lua(), LUA_GCSTOP, 0); }
+
 extern void draw_wnds_rects();
 
 #include "ui/UIBtnHint.h"
 void CLevel::OnRender()
 {
+	ZoneScoped;
+
 	// PDA
 	if (game && HUD().GetUI()->UIGame())
 	{
 		const auto pda = &HUD().GetUI()->UIGame()->PdaMenu();
 		const auto pda_actor = Actor() ? Actor()->GetPDA() : nullptr;
-		if (psActorFlags.test(AF_3D_PDA) && pda && pda->IsShown())
+		if (psActorFlags.test(AF_3D_PDA) && pda_actor && pda_actor->Is3DPDA() && pda && pda->IsShown())
 		{
 			pda->Draw();
 			if (g_btnHint)
@@ -877,16 +868,15 @@ void CLevel::OnRender()
 	//отрисовать интерфейc пользователя
 	HUD().RenderUI();
 
+	// Фикс отрисовки имгуи, когда на экране нет элементов интерфейса
+	if (psDeviceFlags.test(rsR4))
+		::Render->RenderApplyRTandZB();
+
+	embedded_editor_render();
+
 #ifdef DEBUG
 	draw_wnds_rects();
 	physics_world()->OnRender	();
-#endif // DEBUG
-
-#ifdef DEBUG
-	if (ai().get_level_graph())
-		ai().level_graph().render();
-
-	embedded_editor_render();
 
 #ifdef DEBUG_PRECISE_PATH
 	test_precise_path		();
@@ -912,16 +902,6 @@ void CLevel::OnRender()
 			if (physic_object)
 				physic_object->OnRender();
 
-			CSpaceRestrictor	*space_restrictor = smart_cast<CSpaceRestrictor*>	(_O);
-			if (space_restrictor)
-				space_restrictor->OnRender();
-
-			CLevelChanger*		lchanger = smart_cast<CLevelChanger*>	(_O);
-			if (lchanger)
-				lchanger->OnRender();
-			CClimableObject		*climable		  = smart_cast<CClimableObject*>	(_O);
-			if(climable)
-				climable->OnRender();
 			CTeamBaseZone	*team_base_zone = smart_cast<CTeamBaseZone*>(_O);
 			if (team_base_zone)
 				team_base_zone->OnRender();
@@ -963,6 +943,8 @@ void CLevel::OnRender()
 	}
 #endif
 
+	debug_renderer().render();
+
 #ifdef DEBUG
 	if (bDebug) {
 		DBG().draw_object_info				();
@@ -970,10 +952,7 @@ void CLevel::OnRender()
 		DBG().draw_level_info				();
 	}
 
-	debug_renderer().render					();
-	
 	DBG().draw_debug_text();
-
 
 	if (psAI_Flags.is(aiVision)) {
 		for (u32 I=0; I < Level().Objects.o_count(); I++) {
@@ -1001,6 +980,8 @@ void CLevel::OnRender()
 
 void CLevel::OnEvent(EVENT E, u64 P1, u64 /**P2/**/)
 {
+	ZoneScoped;
+
 	if (E==eEntitySpawn)	{
 		char	Name[128];	Name[0]=0;
 		sscanf	(LPCSTR(P1),"%s", Name);
@@ -1062,6 +1043,8 @@ void	CLevel::RemoveObject_From_4CrPr		(CGameObject* pObj)
 
 void CLevel::make_NetCorrectionPrediction	()
 {
+	ZoneScoped;
+
 	m_bNeed_CrPr	= false;
 	m_bIn_CrPr		= true;
 	u64 NumPhSteps = physics_world()->StepsNum();
@@ -1399,6 +1382,15 @@ CZoneList::~CZoneList()
 
 ICF static BOOL GetPickDist_Callback(collide::rq_result& result, LPVOID params)
 {
+	SDrawStaticStruct* _s = nullptr;
+	string2048 a = "";
+
+	if (g_dbgShowMaterialInfo)
+	{
+		_s = HUD().GetUI()->UIGame()->AddCustomStatic("item_used", true);
+		_s->m_endTime = Device.fTimeGlobal + 3.0f;
+	}
+
 	collide::rq_result* RQ = (collide::rq_result*)params;
 	if (result.O)
 	{
@@ -1418,6 +1410,13 @@ ICF static BOOL GetPickDist_Callback(collide::rq_result& result, LPVOID params)
 	{
 		CDB::TRI* T = Level().ObjectSpace.GetStaticTris() + result.element;
 		SGameMtl* pMtl = GMLib.GetMaterialByIdx(T->material);
+
+		if (_s)
+		{
+			sprintf_s(a, "Material: %s", GMLib.GetMaterialByIdx(T->material)->m_Name.c_str());
+			_s->wnd()->SetText(a);
+		}
+
 		if (pMtl && (pMtl->Flags.is(SGameMtl::flPassable) || pMtl->Flags.is(SGameMtl::flActorObstacle)))
 			return TRUE;
 	}
@@ -1429,7 +1428,7 @@ collide::rq_result CLevel::GetPickResult(Fvector pos, Fvector dir, float range, 
 {
 	collide::rq_result        RQ; RQ.set(NULL, range, -1);
 	collide::rq_results        RQR;
-	collide::ray_defs    RD(pos, dir, RQ.range, CDB::OPT_FULL_TEST, collide::rqtBoth);
+	collide::ray_defs    RD(pos, dir, RQ.range, CDB::OPT_ONLYNEAREST, collide::rqtBoth);
 	Level().ObjectSpace.RayQuery(RQR, RD, GetPickDist_Callback, &RQ, NULL, ignore);
 	return RQ;
 }
@@ -1464,7 +1463,7 @@ std::string CLevel::GetMoonPhase()
 			day += 1;
 
 		int phase = -1;
-		std::string opt_moon_phase = GameConstants::GetMoonPhasesMode();
+		shared_str opt_moon_phase = GameConstants::GetMoonPhasesMode();
 
 		if (opt_moon_phase == "28days")
 			phase = static_cast<int>(std::fmod(day, 28) / 3.5);

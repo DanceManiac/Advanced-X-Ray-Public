@@ -22,7 +22,7 @@ public:
 	virtual bool		OnMouseAction								(float x, float y, EUIMessages mouse_action);
 	virtual bool		OnKeyboardAction							(int dik, EUIMessages keyboard_action);
 
-	bool				AddItem								(LPCSTR  str, void* pData = NULL, u32 tag_value = 0);
+	bool				AddItem								(LPCSTR  str, void* pData = NULL, u32 tag_value = 0, LPCSTR hint_str = nullptr);
 	bool				AddItem_script						(LPCSTR  str){return AddItem(str);};
 	u32					GetItemsCount						() {return m_UIListWnd.GetSize();};
 	void				RemoveItemByTAG						(u32 tag_value);
@@ -40,6 +40,9 @@ public:
 	
 	void				ShowSubMenu							();
 	void	xr_stdcall	OnItemReceivedFocus					(CUIWindow* w, void* d);
+
+	pcstr				GetDebugType						() override { return "CUIPropertiesBox"; }
+
 protected:
 	CUIListBox			m_UIListWnd;
 private:

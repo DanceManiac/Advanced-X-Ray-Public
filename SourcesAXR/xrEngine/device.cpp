@@ -58,26 +58,7 @@ static INT64 g_TicksPerSecond = 0;
 
 BOOL CRenderDevice::Begin	()
 {
-#ifndef DEDICATED_SERVER
-
-	/*
-	HW.Validate		();
-	HRESULT	_hr		= HW.pDevice->TestCooperativeLevel();
-    if (FAILED(_hr))
-	{
-		// If the device was lost, do not render until we get it back
-		if		(D3DERR_DEVICELOST==_hr)		{
-			Sleep	(33);
-			return	FALSE;
-		}
-
-		// Check if the device is ready to be reset
-		if		(D3DERR_DEVICENOTRESET==_hr)
-		{
-			Reset	();
-		}
-	}
-	*/
+	ZoneScoped;
 
 	switch (m_pRender->GetDeviceState())
 	{
@@ -102,7 +83,7 @@ BOOL CRenderDevice::Begin	()
 	m_pRender->Begin();
 
 	g_bRendering = 	TRUE;
-#endif
+
 	return		TRUE;
 }
 
@@ -113,8 +94,7 @@ void CRenderDevice::Clear	()
 
 void CRenderDevice::End		(void)
 {
-#ifndef DEDICATED_SERVER
-
+	ZoneScoped;
 
 #ifdef INGAME_EDITOR
 	bool							load_finished = false;
@@ -189,7 +169,6 @@ void CRenderDevice::End		(void)
 		if (load_finished && m_editor)
 			m_editor->on_load_finished	();
 #	endif // #ifdef INGAME_EDITOR
-#endif
 }
 
 
@@ -221,9 +200,6 @@ void CRenderDevice::SecondaryThreadProc(void* context)
 void CRenderDevice::PreCache	(u32 amount, bool b_draw_loadscreen, bool b_wait_user_input)
 {
 	if (m_pRender->GetForceGPU_REF()) amount=0;
-#ifdef DEDICATED_SERVER
-	amount = 0;
-#endif
 	// Msg			("* PCACHE: start for %d...",amount);
 	dwPrecacheFrame	= dwPrecacheTotal = amount;
 	if (amount && !precache_light && g_pGameLevel && g_loading_events.empty()) {
@@ -241,15 +217,37 @@ void CRenderDevice::PreCache	(u32 amount, bool b_draw_loadscreen, bool b_wait_us
 	}
 }
 
+void CRenderDevice::CalcFrameStats()
+{
+	auto& stats = *Statistic;
+	stats.RenderTOTAL.FrameEnd();
 
-int g_svDedicateServerUpdateReate = 100;
+	// calc FPS & TPS
+	if (fTimeDelta <= EPS_S)
+		goto out;
 
-ENGINE_API xr_list<LOADING_EVENT>			g_loading_events;
+	const float fps = 1.f / fTimeDelta;
+	constexpr float fOne = 0.3f;
+	constexpr float fInv = 1.f - fOne;
+	stats.fFPS = fInv * stats.fFPS + fOne * fps;
 
-//extern bool IsMainMenuActive(); //ECO_RENDER add
+	if (stats.RenderTOTAL.result > EPS_S)
+	{
+		const u32 renderedPolys = m_pRender->GetCacheStatPolys();
+		stats.fTPS = fInv * stats.fTPS + fOne * float(renderedPolys) / (stats.RenderTOTAL.result * 1000.f);
+		stats.fRFPS = fInv * stats.fRFPS + fOne * 1000.f / stats.RenderTOTAL.result;
+	}
+
+out:
+	stats.RenderTOTAL.FrameStart();
+}
+
+ENGINE_API xr_list<LOADING_EVENT> g_loading_events;
 
 void ImGui_NewFrame()
 {
+	ZoneScoped;
+
 	ImGuiIO& io = ImGui::GetIO();
 
 	// Setup display size (every frame to accommodate for window resizing)
@@ -325,18 +323,20 @@ bool CRenderDevice::bMainMenuActive()
 
 void CRenderDevice::on_idle		()
 {
+	ZoneScoped;
+
 	if (!b_is_Ready) {
 		Sleep	(100);
 		return;
 	}
 
-#ifdef DEDICATED_SERVER
-	u32 FrameStartTime = TimerGlobal.GetElapsed_ms();
-#endif
 	const u64 frameStartTime = TimerGlobal.GetElapsed_ms();
 
-	if (psDeviceFlags.test(rsStatistic))	g_bEnableStatGather	= TRUE;
-	else									g_bEnableStatGather	= FALSE;
+	if (psDeviceFlags.test(rsStatistic))
+		g_bEnableStatGather	= TRUE;
+	else
+		g_bEnableStatGather	= FALSE;
+
 	if(g_loading_events.size())
 	{
 		if( g_loading_events.front()() )
@@ -379,6 +379,9 @@ void CRenderDevice::on_idle		()
 		Render->lastViewPort = MAIN_VIEWPORT;
 	}
 
+	bool calc = g_bEnableStatGather;
+
+	g_bEnableStatGather = true;
 	Statistic->RenderTOTAL_Real.FrameStart();
 	Statistic->RenderTOTAL_Real.Begin();
 
@@ -386,19 +389,7 @@ void CRenderDevice::on_idle		()
 	u32 stored_cur_frame = dwFrame;
 #endif
 
-#ifdef ECO_RENDER // ECO_RENDER START
-    static u32 time_frame = 0;
-    u32 time_curr = timeGetTime();
-    u32 time_diff = time_curr - time_frame;
-    time_frame = time_curr;
-    u32 optimal = 10;
-    if (Device.Paused() || IGame_Persistent::IsMainMenuActive())
-        optimal = 32;
-    if (time_diff < optimal)
-        Sleep(optimal - time_diff);
-#else
-	Sleep						(0);
-#endif // ECO_RENDER END
+	Sleep(0);
 
 	u32 t_width = Device.dwWidth, t_height = Device.dwHeight;
 
@@ -452,10 +443,17 @@ void CRenderDevice::on_idle		()
 
 		if (b_is_Active)
 		{
+			ZoneScoped;
+
 			if (Begin())
 			{
+				{
+					ZoneScopedN("Render process");
+					seqRender.Process(rp_Render);
+				}
 
-				seqRender.Process(rp_Render);
+				CalcFrameStats();
+
 				if ((psDeviceFlags.test(rsCameraPos) || psDeviceFlags.test(rsStatistic) || Statistic->errors.size()) && (Render->currentViewPort == MAIN_VIEWPORT || debugSecondVP))
 					Statistic->Show();
 				// TEST!!!
@@ -478,9 +476,13 @@ void CRenderDevice::on_idle		()
 	mView_saved = mainVPViewSaved;
 	mProject_saved = mainVPProjectSaved;
 
+	g_bEnableStatGather = true;
+
 	Statistic->RenderTOTAL_Real.End();
 	Statistic->RenderTOTAL_Real.FrameEnd();
 	Statistic->RenderTOTAL.accum = Statistic->RenderTOTAL_Real.accum;
+
+	g_bEnableStatGather = calc;
 
 	Render->viewPortsThisFrame.clear();
 
@@ -494,10 +496,8 @@ void CRenderDevice::on_idle		()
 
 	u32 updateDelta = 1; // 1 ms
 
-//	IMainMenu* pMainMenu = g_pGamePersistent ? g_pGamePersistent->m_pMainMenu : 0;
-
 	if (Device.Paused() || bMainMenuActive())
-		updateDelta = 16; // 16 ms, ~60 FPS max while paused
+		updateDelta = 8; // 16 ms, ~60 FPS max while paused
 	else
 		updateDelta = (u32)fps_to_rate;
 
@@ -517,6 +517,8 @@ void CRenderDevice::on_idle		()
 
 	if (!b_is_Active)
 		Sleep		(1);
+
+	FrameMark;
 }
 
 void CRenderDevice::message_loop()
@@ -536,6 +538,8 @@ void CRenderDevice::message_loop()
 
 void CRenderDevice::Run			()
 {
+	ZoneScoped;
+
 //	DUMP_PHASE;
 	g_bLoaded		= FALSE;
 	Log				("Starting engine...");
@@ -582,11 +586,13 @@ u32 app_inactive_time_start = 0;
 
 void CRenderDevice::FrameMove()
 {
+	ZoneScoped;
+
 	dwFrame			++;
 
 	Core.dwFrame = dwFrame;
 
-	if(!(Paused() && !bMainMenuActive()) || load_screen_renderer.IsActive())
+	if(!(Paused() && !bMainMenuActive()) || load_screen_renderer.IsActive() || g_pGamePersistent && g_pGamePersistent->IsTutorialSequencerActive())
 	{
 		TimerMM.Pause(FALSE);
 		dwTimeContinual	= TimerMM.GetElapsed_ms();
@@ -653,8 +659,6 @@ void CRenderDevice::Pause(BOOL bOn, BOOL bTimer, BOOL bSound
 //	Msg("pause [%s] timer=[%s] sound=[%s] reason=%s",bOn?"ON":"OFF", bTimer?"ON":"OFF", bSound?"ON":"OFF", reason);
 #endif // DEBUG
 
-#ifndef DEDICATED_SERVER	
-
 	if(bOn)
 	{
 		if(!Paused())						
@@ -664,7 +668,7 @@ void CRenderDevice::Pause(BOOL bOn, BOOL bTimer, BOOL bSound
 #endif // DEBUG
 				TRUE;
 
-		if( bTimer && (!g_pGamePersistent || g_pGamePersistent->CanBePaused()) )
+		if( bTimer && (!g_pGamePersistent || g_pGamePersistent && g_pGamePersistent->CanBePaused()) )
 		{
 			g_pauseMngr.Pause				(TRUE);
 #ifdef DEBUG
@@ -703,20 +707,20 @@ void CRenderDevice::Pause(BOOL bOn, BOOL bTimer, BOOL bSound
 		}
 	}
 
-#endif
-
 }
 
 BOOL CRenderDevice::Paused()
 {
 	return g_pauseMngr.Paused();
-};
+}
 
 void CRenderDevice::OnWM_Activate(WPARAM wParam, LPARAM lParam)
 {
-	u16 fActive						= LOWORD(wParam);
-	BOOL fMinimized					= (BOOL) HIWORD(wParam);
-	BOOL bActive					= ((fActive!=WA_INACTIVE) && (!fMinimized))?TRUE:FALSE;
+	ZoneScoped;
+
+	const u16 fActive						= LOWORD(wParam);
+	const BOOL fMinimized					= (BOOL) HIWORD(wParam);
+	const BOOL bActive					= ((fActive!=WA_INACTIVE) && (!fMinimized))?TRUE:FALSE;
 	
 	if (bActive!=Device.b_is_Active)
 	{
@@ -727,12 +731,10 @@ void CRenderDevice::OnWM_Activate(WPARAM wParam, LPARAM lParam)
 			Device.seqAppActivate.Process(rp_AppActivate);
 			app_inactive_time		+= TimerMM.GetElapsed_ms() - app_inactive_time_start;
 
-#ifndef DEDICATED_SERVER
 #	ifdef INGAME_EDITOR
 			if (!editor())
 #	endif // #ifdef INGAME_EDITOR
-				ShowCursor			(FALSE);
-#endif // #ifndef DEDICATED_SERVER
+			ShowCursor				(FALSE);
 		}else	
 		{
 			app_inactive_time_start	= TimerMM.GetElapsed_ms();
@@ -792,4 +794,11 @@ void CSecondVPParams::SetSVPActive(bool bState) //--#SM+#-- +SecondVP+
 bool CSecondVPParams::IsSVPFrame() //--#SM+#-- +SecondVP+
 {
 	return (Device.dwFrame % GetSVPFrameDelay() == 0);
+}
+
+void CRenderDevice::time_factor(const float& time_factor)
+{
+    Timer.time_factor(time_factor);
+    TimerGlobal.time_factor(time_factor);
+    psSoundTimeFactor = time_factor; //--#SM+#--
 }

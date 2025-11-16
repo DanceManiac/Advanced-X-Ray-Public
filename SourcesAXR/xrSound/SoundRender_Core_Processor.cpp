@@ -19,8 +19,11 @@ CSoundRender_Emitter*	CSoundRender_Core::i_play(ref_sound* S, BOOL _loop, float 
 
 void CSoundRender_Core::update	( const Fvector& P, const Fvector& D, const Fvector& N )
 {
+	ZoneScoped;
+
 	if (0 == bReady)	return;
 	bLocked = true;
+	Timer.time_factor(psSoundTimeFactor); //--#SM+#--
 	const float new_tm = Timer.GetElapsed_sec();
 	fTimer_Delta = new_tm - fTimer_Value;
 	float dt_sec = fTimer_Delta;

@@ -21,6 +21,8 @@ void CDetailManager::soft_Unload	()
 
 void CDetailManager::soft_Render	()
 {
+	ZoneScoped;
+
 	// Render itself
 	// float	fPhaseRange	= PI/16;
 	// float	fPhaseX		= _sin(RDEVICE.fTimeGlobal*0.1f)	*fPhaseRange;

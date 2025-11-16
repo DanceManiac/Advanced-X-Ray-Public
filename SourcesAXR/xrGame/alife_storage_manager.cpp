@@ -22,6 +22,7 @@
 #include "string_table.h"
 #include "../xrEngine/igame_persistent.h"
 #include "autosave_manager.h"
+#include "script_vars_storage.h"
 
 XRCORE_API string_path g_bug_report_file;
 
@@ -65,6 +66,8 @@ void CALifeStorageManager::save	(LPCSTR save_name_no_check, bool update_name)
 		spawns().save			(stream);
 		objects().save			(stream);
 		registry().save			(stream);
+
+		g_ScriptVars.save		(stream);
 
 		source_count			= stream.tell();
 		void					*source_data = stream.pointer();
@@ -115,6 +118,8 @@ void CALifeStorageManager::load	(void *buffer, const u32 &buffer_size, LPCSTR fi
 	}
 
 	registry().load				(source);
+
+	g_ScriptVars.load			(source);
 
 	can_register_objects		(true);
 

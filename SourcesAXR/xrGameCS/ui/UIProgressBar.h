@@ -16,6 +16,8 @@ protected:
 		om_vert = 1,
 		om_back = 2,
 		om_down = 3,
+		om_fromcenter = 4,
+		om_vfromcenter = 5,
 		om_count
 	}	m_orient_mode;
 
@@ -28,7 +30,6 @@ protected:
 	bool				m_bBackgroundPresent;
 	Fvector2			m_BackgroundOffset;
 	u32					m_last_render_frame;
-	void				UpdateProgressBar();
 	
 public:
 	bool				m_bUseColor;
@@ -48,11 +49,13 @@ public:
 
 			void		InitProgressBar				(Fvector2 pos, Fvector2 size, EOrientMode mode);
 
+	void				UpdateProgressBar			();
 	void				SetRange					(float _Min, float _Max)	{ m_MinPos = _Min;  m_MaxPos = _Max; UpdateProgressBar();}
 	float				GetRange_min				() 							{ return  m_MinPos; }
 	float				GetRange_max				() 							{ return  m_MaxPos; }
 
 	void				SetProgressPos				(float _Pos);
+	void				ForceSetProgressPos			(float pos);
 	float				GetProgressPos				()							{ return m_ProgressPos.y; }
 
 	void				ShowBackground				(bool status)				{ m_bBackgroundPresent = status; }
@@ -60,6 +63,8 @@ public:
 
 	virtual void		Draw						();
 	virtual void		Update						();
+
+			pcstr		GetDebugType				() override { return "CUIProgressBar"; }
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };

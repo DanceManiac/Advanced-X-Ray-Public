@@ -10,6 +10,7 @@
 #include "../ai/monsters/BaseMonster/base_monster.h"
 #include "UIInventoryUtilities.h"
 #include "game_cl_base.h"
+#include "string_table.h"
 
 #include "../Weapon.h"
 #include "../WeaponMagazinedWGrenade.h"
@@ -47,6 +48,7 @@
 #include "../CustomBackpack.h"
 #include "../AnomalyDetector.h"
 #include "../PDA.h"
+#include "../Car.h"
 #include "../xrEngine/x_ray.h"
 
 extern BOOL UIRedraw;
@@ -214,6 +216,7 @@ void CUIActorMenu::Show(bool status)
 {
 	CCustomDetector* pDet = smart_cast<CCustomDetector*>(Actor()->inventory().ItemFromSlot(DETECTOR_SLOT));
 	inherited::Show							(status);
+	clear_highlight_lists					();
 
 	if(status)
 	{
@@ -327,14 +330,14 @@ void CUIActorMenu::CheckDistance()
 			HideDialog();
 		}
 	}
-	else if (m_pCar && Actor()->Holder())
+	else if (m_pCar && pActorGO->Position().distance_to(m_pCar->Position()) > 3.0f)
 	{
 		//nop
 	}
 	else //pBoxGO
 	{
 		VERIFY( pBoxGO );
-		if ( pActorGO->Position().distance_to( pBoxGO->Position() ) > 3.0f )
+		if ( !m_pCar && pActorGO->Position().distance_to( pBoxGO->Position() ) > 3.0f )
 		{
 			g_btnHint->Discard();
 			HideDialog();
@@ -359,7 +362,9 @@ EDDListType CUIActorMenu::GetListType(CUIDragDropListEx* l)
 	if(l==m_pTradePartnerList)			return iPartnerTrade;
 	if(l==m_pDeadBodyBagList)			return iDeadBodyBag;
 
-	if(l==m_pQuickSlot)					return iQuickSlot;
+	if(l == m_pQuickSlot && m_pQuickSlot != nullptr)					
+		return iQuickSlot;
+
 	if(l==m_pTrashList)					return iTrashSlot;
 
 	if (GameConstants::GetKnifeSlotEnabled())
@@ -628,8 +633,12 @@ void CUIActorMenu::clear_highlight_lists()
 		m_PistolNewSlotHighlight->Show(false);
 	}
 
-	for(u8 i=0; i<4; i++)
-		m_QuickSlotsHighlight[i]->Show(false);
+	if (m_QuickSlotsHighlight[0])
+	{
+		for(u8 i=0; i<4; i++)
+			m_QuickSlotsHighlight[i]->Show(false);
+	}
+
 	for(u8 i=0; i<GameConstants::GetArtefactsCount(); i++)
 		m_ArtefactSlotsHighlight[i]->Show(false);
 
@@ -723,10 +732,10 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 		m_DetectorSlotHighlight->Show(true);
 		return;
 	}
-
-	if(eatable)
+	
+	if (eatable && m_QuickSlotsHighlight[0])
 	{
-		if(cell_item->OwnerList() && GetListType(cell_item->OwnerList())==iQuickSlot)
+		if (cell_item->OwnerList() && GetListType(cell_item->OwnerList()) == iQuickSlot)
 			return;
 
 		for(u8 i=0; i<4; i++)
@@ -1098,7 +1107,8 @@ void CUIActorMenu::ClearAllLists()
 	m_pInventoryDetectorList->ClearAll			(true);
 	m_pInventoryPistolList->ClearAll			(true);
 	m_pInventoryAutomaticList->ClearAll			(true);
-	m_pQuickSlot->ClearAll						(true);
+	if (m_pQuickSlot)
+		m_pQuickSlot->ClearAll					(true);
 
 	m_pTradeActorBagList->ClearAll				(true);
 	m_pTradeActorList->ClearAll					(true);
@@ -1193,7 +1203,7 @@ void CUIActorMenu::UpdateActorMP()
 	int money = Game().local_player->money_for_round;
 
 	string64 buf;
-	xr_sprintf( buf, "%d RU", money );
+	xr_sprintf(buf, "%d %s", money, *CStringTable().translate("ui_st_currency"));
 	m_ActorMoney->SetText( buf );
 
 	m_ActorCharacterInfo->InitCharacterMP( Game().local_player->getName(), "ui_npc_u_nebo_1" );

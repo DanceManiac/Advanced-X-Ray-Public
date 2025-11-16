@@ -51,7 +51,6 @@ public:
 	virtual void		SetOriginalRectEx			(const Frect& r)			{m_UIStaticItem.SetOriginalRectEx(r);}
 	const Frect&		GetOriginalRect				() const					{return m_UIStaticItem.GetOriginalRect();}
 	//
-			void		SetVTextAlignment(EVTextAlignment al);
 	virtual void		SetColor					(u32 color)					{ m_UIStaticItem.SetColor(color);		}
 	u32					GetColor					() const					{ return m_UIStaticItem.GetColor();		}
 	u32&				GetColorRef					()							{ return m_UIStaticItem.GetColorRef();	}
@@ -63,8 +62,12 @@ public:
 
 			void		SetHeadingPivot				(const Fvector2& p, const Fvector2& offset, bool fixedLT)				{m_UIStaticItem.SetHeadingPivot(p,offset,fixedLT);}
 			void		ResetHeadingPivot			()				{m_UIStaticItem.ResetHeadingPivot();}
-	virtual void		SetTextureOffset			(float x, float y)			{ m_TextureOffset.set(x, y); }
-			Fvector2	GetTextureOffeset			() const					{ return m_TextureOffset; }
+	virtual void		SetTextureOffset			(float x, float y) { m_TextureOffset.set(x, y); }
+	virtual void		SetBaseTextureOffset		(float x, float y) { m_TextureOffset.set(x, y); m_BaseTextureOffset.set(x, y); }
+	virtual void		SetTextureOffset			(Fvector2 offset) { m_TextureOffset = offset; }
+	virtual void		SetBaseTextureOffset		(Fvector2 offset) { m_TextureOffset = offset; m_BaseTextureOffset = offset; }
+			Fvector2	GetTextureOffset			() const { return m_TextureOffset; }
+			Fvector2	GetBaseTextureOffset		() const { return m_BaseTextureOffset; }
 			void		TextureOn					()							{ m_bTextureEnable = true; }
 			void		TextureOff					()							{ m_bTextureEnable = false; }
 
@@ -98,13 +101,18 @@ public:
 	virtual CGameFont*		GetFont					();
 	virtual void			SetTextAlignment		(ETextAlignment alignment);
 	virtual ETextAlignment	GetTextAlignment		();
+			void			SetVTextAlignment		(EVTextAlignment al);
+			EVTextAlignment	GetVTextAlignment		() const;
+
+			void			SetNoShaderCache		(bool v) { m_UIStaticItem.SetNoShaderCache(v); }
 
 	// text additional
 			void	SetTextComplexMode			(bool md);
+			bool	GetTextComplexMode			();
 			void	SetTextAlign_script			(u32 align);
 			u32		GetTextAlign_script			();
-			void	SetTextColor_script			(int a, int r, int g, int b){SetTextColor(color_argb(a,r,g,b));}
-			u32&	GetTextColorRef				();
+			//void	SetTextColor_script			(int a, int r, int g, int b){SetTextColor(color_argb(a,r,g,b));}
+			u32&	GetTextColorRef				() const;
 
 			void AdjustHeightToText			();
 			void AdjustWidthToText			();
@@ -128,8 +136,8 @@ public:
 			float GetTextX					()						{return m_TextOffset.x;}
 			float GetTextY					()						{return m_TextOffset.y;}
 
-	void		SetStretchTexture			(bool stretch_texture)	{m_bStretchTexture = stretch_texture;}
-	bool		GetStretchTexture			()						{return m_bStretchTexture;}
+	virtual	void SetStretchTexture			(bool stretch_texture)	{ m_bStretchTexture = stretch_texture; }
+	virtual	bool GetStretchTexture			()						{ return m_bStretchTexture; }
 
 	void		SetClipRect					(Frect r);
 	Frect		GetSelfClipRect				();
@@ -146,6 +154,9 @@ public:
 	bool	GetConstHeading					()						{return m_bConstHeading;}
 
 	void	SetHint							(LPCSTR hint_text); //MNP
+
+	pcstr	GetDebugType					() override { return "CUIStatic"; }
+	void	FillDebugInfo					() override;
 
 	// will be need by CUI3tButton
 	// Don't change order!!!!!
@@ -184,6 +195,7 @@ protected:
 	float			m_fHeading;
 
 	Fvector2		m_TextureOffset;
+	Fvector2		m_BaseTextureOffset;
 
 	Frect	m_ClipRect;
 public:

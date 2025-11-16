@@ -287,7 +287,7 @@ IC u32 it_height_rev_base(u32 d, u32 s)	{	return	color_rgba	(
 
 ID3DBaseTexture*	CRender::texture_load(LPCSTR fRName, u32& ret_msize)
 {
-	ID3DTexture2D*		pTexture2D		= NULL;
+	ID3DTexture2D*			pTexture2D		= NULL;
 	IDirect3DCubeTexture9*	pTextureCUBE	= NULL;
 	string_path				fn;
 	u32						dwWidth,dwHeight;
@@ -316,8 +316,8 @@ ID3DBaseTexture*	CRender::texture_load(LPCSTR fRName, u32& ret_msize)
 	return 0;
 #else
 
-	Msg("! Can't find texture '%s'",fname);
-	R_ASSERT(FS.exist(fn,"$game_textures$",	"ed\\ed_not_existing_texture",".dds"));
+	Msg("! Can't find texture '%s'", fname);
+	R_ASSERT(FS.exist(fn, "$game_textures$", "ed\\ed_not_existing_texture", ".dds"));
 	goto _DDS;
 
 //	Debug.fatal(DEBUG_INFO,"Can't find texture '%s'",fname);

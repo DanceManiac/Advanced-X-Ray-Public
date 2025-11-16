@@ -32,7 +32,7 @@ void CControlDirectionBase::face_target(const Fvector &position, u32 delay, floa
 	dir.getHP	(yaw,pitch);
 	yaw			*= -1;
 
-	yaw			+= (m_man->direction().is_from_right(position)) ? add_yaw : -add_yaw;
+	yaw			+= (m_man->get_direction().is_from_right(position)) ? add_yaw : -add_yaw;
 	yaw			= angle_normalize(yaw);
 
 	m_heading.target	= yaw;
@@ -47,7 +47,7 @@ void CControlDirectionBase::face_target(const CObject *obj,	u32 delay, float add
 void CControlDirectionBase::use_path_direction(bool reversed)
 {
 	float yaw,pitch;
-	m_man->path_builder().detail().direction().getHP	(yaw,pitch);
+	m_man->path_builder().detail().get_direction().getHP	(yaw,pitch);
 
 	if (fsimilar(yaw,0.f,EPS_S)) return;
 

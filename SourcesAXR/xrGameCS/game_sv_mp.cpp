@@ -1961,9 +1961,6 @@ void game_sv_mp::DumpOnlineStatistic()
 		void operator()(IClient* client)
 		{
 			xrClientData *l_pC			= static_cast<xrClientData*>(client);
-		
-			if(m_server->GetServerClient()==l_pC && g_dedicated_server) 
-				return;
 			
 			if(!l_pC->net_Ready)
 				return;
@@ -2154,8 +2151,6 @@ void game_sv_mp::DumpRoundStatistics()
 		{
 			xrClientData *l_pC			= static_cast<xrClientData*>(client);
 		
-			if(m_server->GetServerClient()==l_pC && g_dedicated_server) 
-				return;
 			if (!l_pC->m_cdkey_digest.size())
 				return;
 			

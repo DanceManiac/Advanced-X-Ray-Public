@@ -37,7 +37,7 @@ public:
 			void		InitTalkWnd				();
 
 	virtual bool		StopAnyMove				(){return true;}
-	virtual void		SendMessage				(CUIWindow* pWnd, s16 msg, void* pData = NULL);
+	virtual void		SendMessage				(CUIWindow* pWnd, s16 msg, void* pData = nullptr);
 
 	virtual void		Draw					();
 	virtual void		Update					();
@@ -52,7 +52,7 @@ public:
 	void				NeedUpdateQuestions		();
 	//инициализации начального диалога собеседника
 	void				InitOthersStartDialog	();
-	virtual bool		OnKeyboardAction				(int dik, EUIMessages keyboard_action);
+	virtual bool		OnKeyboardAction		(int dik, EUIMessages keyboard_action);
 	void				SwitchToTrade			();
 	void				SwitchToUpgrade			();
 	void				AddIconedMessage		(LPCSTR caption, LPCSTR text, LPCSTR texture_name, LPCSTR templ_name);
@@ -66,7 +66,7 @@ protected:
 
 	// Функции добавления строк в листы вопросов и ответов
 public:
-	void                AddQuestion				(const shared_str& text, const shared_str& id, int number, bool b_finalizer);
+	void				AddQuestion				(const shared_str& text, const shared_str& id, int number, SPhraseInfo phInfo);
 	void				AddAnswer				(const shared_str& text, LPCSTR SpeakerName);
 	bool				b_disable_break;
 protected:
@@ -81,7 +81,7 @@ protected:
 
 	bool				m_bNeedToUpdateQuestions;
 
-	//текущий диалог, если NULL, то переходим в режим выбора темы
+	//текущий диалог, если nullptr, то переходим в режим выбора темы
 	DIALOG_SHARED_PTR	m_pCurrentDialog;
 	bool				TopicMode				();
 	void				ToTopicMode				();

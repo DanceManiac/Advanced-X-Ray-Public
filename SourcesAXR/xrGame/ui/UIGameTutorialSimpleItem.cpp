@@ -32,7 +32,7 @@ bool CUISequenceSimpleItem::IsPlaying()
 	if(m_time_start<0.0f)
 		return true;
 
-	return (m_time_start+m_time_length)>(Device.dwTimeContinual/1000.0f);
+	return (m_time_start + m_time_length) > (GetTime() / 1000.f);
 }
 
 CUIWindow* find_child_window(CUIWindow* parent, const shared_str& _name)
@@ -87,13 +87,13 @@ void CUISequenceSimpleItem::Load(CUIXml* xml, int idx)
 	
 	int actions_count				= xml->GetNodesNum	(0,0,"action");
 	m_actions.resize				(actions_count);
-	for(int idx=0; idx<actions_count; ++idx)
+	for(int idx_=0; idx_<actions_count; ++idx_)
 	{
-		SActionItem& itm			= m_actions[idx];
-		LPCSTR str					= xml->ReadAttrib("action", idx, "id");
+		SActionItem& itm			= m_actions[idx_];
+		LPCSTR str					= xml->ReadAttrib("action", idx_, "id");
 		itm.m_action				= action_name_to_id(str);
-		itm.m_bfinalize				= !!xml->ReadAttribInt("action", idx, "finalize", FALSE);
-		itm.m_functor				= xml->Read(xml->GetLocalRoot(), "action", idx, "");
+		itm.m_bfinalize				= !!xml->ReadAttribInt("action", idx_, "finalize", FALSE);
+		itm.m_functor				= xml->Read(xml->GetLocalRoot(), "action", idx_, "");
 	}
 
 	//ui-components
@@ -169,7 +169,7 @@ void CUISequenceSimpleItem::OnRender()
 		m_time_start = -1.0f;
 	else
 	if(m_time_start < 0.0f)
-		m_time_start				= float(Device.dwTimeContinual)/1000.0f;
+		m_time_start				= float(GetTime()) / 1000.0f;
 }
 
 float CUISequenceSimpleItem::current_factor()
@@ -177,15 +177,15 @@ float CUISequenceSimpleItem::current_factor()
 	if(m_time_start < 0.0f || fis_zero(m_time_length))
 		return 0.0f;
 	else
-		return ((Device.dwTimeContinual/1000.0f)-m_time_start) / m_time_length;
+		return ((GetTime() / 1000.0f) - m_time_start) / m_time_length;
 }
 
 void CUISequenceSimpleItem::Update()
 {
 	inherited::Update();
-	float _start					= (m_time_start<0.0f)? (float(Device.dwTimeContinual)/1000.0f) : m_time_start;
+	float _start					= (m_time_start < 0.0f) ? (float(GetTime()) / 1000.0f) : m_time_start;
 
-	float gt						= float(Device.dwTimeContinual)/1000.0f;
+	float gt						= float(GetTime()) / 1000.0f;
 	SubItemVecIt _I					= m_subitems.begin();
 	SubItemVecIt _E					= m_subitems.end();
 	for(;_I!=_E;++_I)
@@ -254,6 +254,7 @@ void CUISequenceSimpleItem::Start()
 		if (     !stricmp( m_pda_section, "pda_tasks"       ) ) {ui_game_sp->PdaMenu().SetActiveSubdialog("eptTasks");		bShowPda = true;	}
 		else if( !stricmp( m_pda_section, "pda_ranking"     ) ) {ui_game_sp->PdaMenu().SetActiveSubdialog("eptRanking");	bShowPda = true;	}
 		else if( !stricmp( m_pda_section, "pda_logs"        ) ) {ui_game_sp->PdaMenu().SetActiveSubdialog("eptLogs");		bShowPda = true;	}
+		else if( !stricmp( m_pda_section, "pda_encyclopedia") ) {ui_game_sp->PdaMenu().SetActiveSubdialog("eptEncyclopedia");bShowPda = true;	}
 		else if( !stricmp( m_pda_section, "pda_show_second_task_wnd" ) )
 		{
 			ui_game_sp->PdaMenu().Show_SecondTaskWnd(true);	bShowPda = true;

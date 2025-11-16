@@ -25,13 +25,14 @@ bool pgd_find_pred	(const PS::CPGDef* a, 	LPCSTR b)				{	return xr_strcmp(a->m_N
 void CPSLibrary::OnCreate()
 {
 #ifdef _EDITOR
-    if(pCreateEAction)
-    {
-        Load2();
-    }else
+	if (pCreateEAction && xrGameManager::GetGame() != EGame::SHOC)
+	{
+		Load2();
+	}
+	else
 #endif
-    {
-    	string_path		fn;
+	{
+		string_path fn;
 
 		if (!bWinterMode)
 		{
@@ -51,7 +52,7 @@ void CPSLibrary::OnDestroy()
 	for (PS::PEDIt e_it = m_PEDs.begin(); e_it!=m_PEDs.end(); e_it++)
     	(*e_it)->DestroyShader();
 
-	for (e_it = m_PEDs.begin(); e_it!=m_PEDs.end(); e_it++)
+	for (PS::PEDIt e_it = m_PEDs.begin(); e_it!=m_PEDs.end(); e_it++)
 		xr_delete	(*e_it);
 	m_PEDs.clear	();
 

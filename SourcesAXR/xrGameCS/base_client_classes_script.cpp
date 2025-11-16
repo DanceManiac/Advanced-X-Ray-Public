@@ -16,6 +16,7 @@
 #include "ai/stalker/ai_stalker.h"
 #include "patrol_point.h"
 #include "patrol_path.h"
+#include "script_game_object.h"
 
 using namespace luabind;
 
@@ -204,6 +205,30 @@ void FHierrarhyVisualScript::script_register		(lua_State *L)
 		];
 }
 */
+
+luabind::object script_texture_find(const char* name)
+{
+	auto textures = Device.m_pRender->GetResourceManager()->FindTexture(name);
+
+	auto table = luabind::newtable(ai().script_engine().lua());
+
+	for (const auto& tex : textures)
+		table[tex->GetName()] = tex; // key - texture name, value - texture object
+
+	return table;
+}
+
+void script_texture_load(ITexture* t, const char* name)
+{
+	t->Unload();
+	t->Load(name);
+}
+
+void ITextureScript::script_register(lua_State* L)
+{
+	module(L)[def("texture_find", &script_texture_find), class_<ITexture>("ITexture").def("load", &script_texture_load).def("get_name", &ITexture::GetName)];
+}
+
 
 LPCSTR CPatrolPointScript::getName( CPatrolPoint *pp ) {
   return pp->m_name.c_str();
