@@ -1,9 +1,9 @@
 [backpack_base]:identity_immunities
 GroupControlSection	= spawn_group
-$spawn 			= "devices\detector_simple"
+$spawn 			= "devices\backpack_base"
 $prefetch 		= 32
-class			= E_BKPK
-cform			= skeleton
+class = E_BKPK
+cform           = skeleton
 visual			= dynamics\outfit\novice_outfit.ogf
 
 hud			= backpack_base_hud
@@ -12,6 +12,9 @@ animation_slot		= 3
 inv_name		= st_backpack_base
 inv_name_short		= st_backpack_base
 description		= st_backpack_base_descr
+
+auto_crouch = false
+inventory_on_idle = false
 
 slot			= 12
 
@@ -24,7 +27,7 @@ inv_grid_y		= 14
 
 cost			= 0
 can_trade		= false
-default_to_ruck		= false
+default_to_ruck     = false
 
 attach_angle_offset	= -1.303,-1.493,-1.202
 attach_position_offset	= 0.110,-0.019,0.000
@@ -32,17 +35,18 @@ attach_position_offset	= 0.110,-0.019,0.000
 attach_bone_name	= bip01_l_hand
 auto_attach		= false
 
-snd_draw                = mfs_team\item_use\inv_backpack_open
-snd_holster             = mfs_team\item_use\inv_backpack_close
+use_cam_effector = use_backpack
+snd_draw                = interface\inv_backpack_open
+snd_holster             = interface\inv_backpack_close
 
 [backpack_base_hud]:hud_base
-item_visual             = dynamics\devices\dev_backpack\dev_backpack_hud.ogf
+item_visual             					= dynamics\hoc_tool\hoc_backpack\hoc_backpack_hud.ogf
 
 hands_position          = 0,0,0
 hands_position_16x9     = 0,0,0
 
-hands_orientation	= -0.500000,1.000000,1.149999
-hands_orientation_16x9	= 2.349998,2.749999,2.849998
+hands_position								= 0, 0, 0.07
+hands_position_16x9							= 0, 0, 0.07
 
 item_position		= 0,0,0
 item_orientation	= 0,0,0
@@ -58,9 +62,9 @@ lean_hud_offset_rot	= 0,0,0
 
 attach_place_idx	= 0
 
-anm_show                = open_b_backpack, open_b_backpack_itm
-anm_show_16x9           = open_b_backpack, open_b_backpack_itm
-anm_idle                = idle_b_backpack, idle_b_backpack_itm
-anm_idle_16x9           = idle_b_backpack, idle_b_backpack_itm
-anm_hide                = close_b_backpack, close_b_backpack_itm
-anm_hide_16x9           = close_b_backpack, close_b_backpack_itm
+anm_show                = hoc_backpack_in, hoc_bkp_in
+anm_show_16x9           = hoc_backpack_in, hoc_bkp_in
+anm_idle                = hoc_backpack_idle, idle
+anm_idle_16x9           = hoc_backpack_idle, idle
+anm_hide                = hoc_backpack_out, hoc_bkp_out
+anm_hide_16x9           = hoc_backpack_out, hoc_bkp_out
