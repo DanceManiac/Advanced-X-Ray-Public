@@ -4941,17 +4941,25 @@ void CWeapon::OnStateSwitch	(u32 S)
 						ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_WeaponDoFIdle().z;
 					}
 				}
+				else if (IsZoomed() && lfo_scope_type == 3)
+				{
+					ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
+					ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
+				}
 				else
 				{
 					if (psActorFlags3.test(AF_HUD_DOF_WPN_IDLE))
 					{
-						ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_WeaponDoFIdle();
-						ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_WeaponDoFIdle().z;
-					}
-					else
-					{
-						ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
-						ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
+						if (GetState() == eIdle && !IsZoomed())
+						{
+							ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_WeaponDoFIdle();
+							ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_WeaponDoFIdle().z;
+						}
+						else
+						{
+							ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
+							ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
+						}
 					}
 				}
 			}
@@ -6368,7 +6376,10 @@ void CWeapon::UpdateFOVZoomIn()
 {
 	shared_str cur_scope_sect = (m_sScopeAttachSection.size() ? m_sScopeAttachSection : (m_eScopeStatus == ALife::eAddonAttachable) ? m_scopes[m_cur_scope].c_str() : "scope");
 
-	psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, "weapon_hud_fov_zoom_focus", GetHudFov());
+	if (lfo_scope_type == 3)
+		psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, "weapon_hud_fov_zoom_focus_pip", GetHudFov());
+	else
+		psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, "weapon_hud_fov_zoom_focus", GetHudFov());
 
 	ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
 	ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
@@ -6437,23 +6448,40 @@ void CWeapon::UpdateWeaponDoF()
 {
 	if (psActorFlags3.test(AF_HUD_DOF_WPN_ALL) && psActorFlags3.test(AF_HUD_DOF_WPN_AIM))
 	{
-		if (IsZoomed())
+		if (IsZoomed() && lfo_scope_type == 3)
 		{
-			ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_WeaponDoFAim();
-			ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_WeaponDoFAim().z;
+			ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
+			ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
 		}
 		else
 		{
-			if (psActorFlags3.test(AF_HUD_DOF_WPN_IDLE))
+			if (IsZoomed())
 			{
-				ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_WeaponDoFIdle();
-				ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_WeaponDoFIdle().z;
+				ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_WeaponDoFAim();
+				ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_WeaponDoFAim().z;
 			}
 			else
 			{
-				ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
-				ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
+				if (psActorFlags3.test(AF_HUD_DOF_WPN_IDLE))
+				{
+					ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_WeaponDoFIdle();
+					ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_WeaponDoFIdle().z;
+				}
+				else
+				{
+					ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
+					ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
+				}
 			}
+		}
+	}
+
+	if (psActorFlags3.test(AF_HUD_DOF_WPN_FIRE))
+	{
+		if (GetState() == eFire)
+		{
+			ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_WeaponDoFShoot();
+			ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_WeaponDoFShoot().z;
 		}
 	}
 }
