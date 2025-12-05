@@ -293,7 +293,7 @@ void CEatableItem::UpdateUseAnim(CActor* actor)
 
 	bool IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
 
-	if (!actor->inventory_disabled() && m_bItmStartAnim)
+	if (HUD().GetUI()->UIGame()->ActorMenu().IsShown() && m_bItmStartAnim)
 		HUD().GetUI()->UIGame()->HideActorMenu();
 
 	if (m_bItmStartAnim && actor->inventory().GetActiveSlot() == NO_ACTIVE_SLOT && (!pDet || pDet->IsHidden()) && !m_bActivated)
