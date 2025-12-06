@@ -1,6 +1,6 @@
 /**
  * @ Version: Advanced X-Ray Update 5
- * @ Description: Weapon shader with rust layer support
+ * @ Description: Weapon shader with scope_lens layer support
  * @ Modified time: 06.12.2025 13:46
  * @ Author: LVutner, Dance Maniac (SSS Adaptation, fixes)
  * @ Link: https://ap-pro.ru/forums/topic/2813-advanced-x-ray/
@@ -10,8 +10,8 @@
 #include "sload.h"
 #include "screenspace_hud_raindrops.h"
 
-Texture2D s_base_snow;
-Texture2D s_base_snow_bump;
+Texture2D s_base_scope_lens;
+Texture2D s_base_scope_lens_bump;
 
 float4 m_condition_params_layers_snow;
 
@@ -45,28 +45,28 @@ f_deffer main ( p_bumped I )
 
 	surface_bumped S = sload(I);
 	
-	// Rust
+	// scope_lens
 	float tile_factor = 1.0;
 
-	float4 snow_albedo_map = s_base_snow.Sample(smp_base, I.tcdh.xy * tile_factor);
-	float4 snow_bump_map = s_base_snow_bump.Sample(smp_base, I.tcdh.xy * tile_factor);
+	float4 scope_lens_albedo_map = s_base_scope_lens.Sample(smp_base, I.tcdh.xy * tile_factor);
+	float4 scope_lens_bump_map = s_base_scope_lens_bump.Sample(smp_base, I.tcdh.xy * tile_factor);
 	float4 bump_map = s_bump.Sample(smp_base, I.tcdh.xy); //Bump map
 
-	float snow_mask = saturate(1.0-m_condition_params_layers_snow.x) * snow_albedo_map.w;
-	float3 final_base = lerp(S.base.xyz, snow_albedo_map.xyz, snow_mask);
+	float scope_lens_mask = saturate(1.0-m_condition_params_layers_snow.x) * scope_lens_albedo_map.w;
+	float3 final_base = lerp(S.base.xyz, scope_lens_albedo_map.xyz, scope_lens_mask);
 
-	float3 snow_normal;
-	snow_normal.xy = snow_bump_map.wz * 2.0 - 1.0;
-	snow_normal.z = sqrt(1.0 - saturate(dot(snow_normal.xy, snow_normal.xy)));
+	float3 scope_lens_normal;
+	scope_lens_normal.xy = scope_lens_bump_map.wz * 2.0 - 1.0;
+	scope_lens_normal.z = sqrt(1.0 - saturate(dot(scope_lens_normal.xy, scope_lens_normal.xy)));
 
 	float3 base_normal;
 	base_normal.xy = bump_map.wz * 2.0 - 1.0;
 	base_normal.z = sqrt(1.0 - saturate(dot(base_normal.xy, base_normal.xy)));
 
-	float3 blended_normal = base_normal.xyz + snow_normal.xyz * snow_mask;
+	float3 blended_normal = base_normal.xyz + scope_lens_normal.xyz * scope_lens_mask;
 	blended_normal = normalize(blended_normal);
 
-	float blended_gloss = lerp(S.gloss, snow_bump_map.x, snow_mask);
+	float blended_gloss = lerp(S.gloss, scope_lens_bump_map.x, scope_lens_mask);
 
 	// Add sampled normal and droplets
 	float3 Ne = mul(float3x3(I.M1, I.M2, I.M3), blended_normal + float3(drops.xy * drops.w, 0.0f));

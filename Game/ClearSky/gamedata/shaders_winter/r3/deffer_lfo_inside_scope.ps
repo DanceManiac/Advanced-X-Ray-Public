@@ -1,60 +1,100 @@
+/**
+ * @ Version: Advanced X-Ray Update 5
+ * @ Description: Weapon shader with rust layer support
+ * @ Modified time: 06.12.2025 13:46
+ * @ Author: LVutner, Dance Maniac (SSS Adaptation, fixes)
+ * @ Link: https://ap-pro.ru/forums/topic/2813-advanced-x-ray/
+ */
+
 #include "common.h"
 #include "sload.h"
+#include "screenspace_hud_raindrops.h"
 
-Texture2D s_base_rust2;
-Texture2D s_base_rust2_bump;
+Texture2D s_base_iscope;
+Texture2D s_base_iscope_bump;
 
-float4 m_condition_params;
+float4 m_condition_params_layers_iscope;
 
-f_deffer main (p_bumped I)
+f_deffer main ( p_bumped I )
 {
-	//Initialize MRT struct
 	f_deffer O;
 
-	float tile_factor = 1.0;	//8.0;
+	// HUD Rain drops - SSS Update 17
+	// https://www.moddb.com/mods/stalker-anomaly/addons/screen-space-shaders/
+
+	float4 drops = 0; // xy = Normal | z = Overall str | w = reflection str
+
+	if (ssfx_hud_drops_1.y > 0)
+	{
+		// Calc droplets
+		drops.xyz = ssfx_hud_raindrops(s_hud_rain, I.RDrops.xyz, 1.0f);
+
+		// Only apply to facing up surfaces [ World Y+ ]
+		drops.xyz *= saturate(I.RDrops.w);
+
+		// Intensity from script ( Cover + Rain intensity )
+		drops.xyz *= ssfx_hud_drops_1.y;
+
+		// Refraction
+		I.tcdh.xy = I.tcdh.xy + drops.xy * ssfx_hud_drops_1.w;
+
+		// Reflection adjustments
+		drops.w = ssfx_hud_drops_1.z * dot(L_hemi_color, SSFX_HUD_LIGHTVECTOR);
+		drops.w = max(drops.w, 3.0f);
+	}
+
+	surface_bumped S = sload(I);
 	
-	//Sample textures
-	float3 albedo_map = s_base.Sample(smp_base, I.tcdh.xy).xyz; //Albedo map
+	// Rust
+	float tile_factor = 1.0;
+
+	float4 iscope_albedo_map = s_base_iscope.Sample(smp_base, I.tcdh.xy * tile_factor);
+	float4 iscope_bump_map = s_base_iscope_bump.Sample(smp_base, I.tcdh.xy * tile_factor);
 	float4 bump_map = s_bump.Sample(smp_base, I.tcdh.xy); //Bump map
-	float4 bumpx_map = s_bumpX.Sample(smp_base, I.tcdh.xy); //Error map
-	float4 rust2_albedo_map = s_base_rust2.Sample(smp_base, I.tcdh.xy * tile_factor); //rust2 albedo map
-	float4 rust2_bump_map = s_base_rust2_bump.Sample(smp_base, I.tcdh.xy * tile_factor); //rust2 albedo map
 
-	//rust2 mask
-	float rust2_mask = saturate(1.0-m_condition_params.x) * rust2_albedo_map.w;
+	float iscope_mask = saturate(1.0-m_condition_params_layers_iscope.x) * iscope_albedo_map.w;
+	float3 final_base = lerp(S.base.xyz, iscope_albedo_map.xyz, iscope_mask);
 
-	//Albedo mix
-	albedo_map = lerp(albedo_map, rust2_albedo_map.xyz, rust2_mask);
+	float3 iscope_normal;
+	iscope_normal.xy = iscope_bump_map.wz * 2.0 - 1.0;
+	iscope_normal.z = sqrt(1.0 - saturate(dot(iscope_normal.xy, iscope_normal.xy)));
 
-	//Normal mapping
-	float3 normal;
-	normal.xy = bump_map.wz * 2.0 - 1.0;
-	normal.z = sqrt(1.0 - saturate(dot(normal.xy, normal.xy)));
-	
-	//rust2 normal mapping
-	float3 rust2_normal;
-	rust2_normal.xy = rust2_bump_map.wz * 2.0 - 1.0;
-	rust2_normal.z = sqrt(1.0 - saturate(dot(rust2_normal.xy, rust2_normal.xy)));
-	
-	//Blending
-	normal = normalize(float3(normal.xy + rust2_normal.xy * rust2_mask, normal.z));
-	
-	//Tangent to view
-	normal.xyz = normalize(mul(float3x3(I.M1,I.M2,I.M3), normal.xyz)); //Rotate normals
+	float3 base_normal;
+	base_normal.xy = bump_map.wz * 2.0 - 1.0;
+	base_normal.z = sqrt(1.0 - saturate(dot(base_normal.xy, base_normal.xy)));
 
-	//Specular
-	float specular = lerp(bump_map.x, rust2_bump_map.x, rust2_mask);
+	float3 blended_normal = base_normal.xyz + iscope_normal.xyz * iscope_mask;
+	blended_normal = normalize(blended_normal);
 
-	//Hemi light
-	float hemi_light = I.position.w;
-	
-	//Material ID
-	float material_id = 0.3; //Static MID
-	
-	//G-Buffer output
+	float blended_gloss = lerp(S.gloss, iscope_bump_map.x, iscope_mask);
+
+	// Add sampled normal and droplets
+	float3 Ne = mul(float3x3(I.M1, I.M2, I.M3), blended_normal + float3(drops.xy * drops.w, 0.0f));
+	Ne = normalize(Ne);
+
+	// hemi,sun,material
+	float ms = xmaterial;
+
+	blended_gloss += (ssfx_hud_drops_1.y * ssfx_hud_drops_2.z) + drops.z * ssfx_hud_drops_2.w;
+
+#ifdef USE_LM_HEMI
+	float4 lm = s_hemi.Sample(smp_rtlinear, I.lmh);
+	float h = get_hemi(lm);
+#ifdef USE_R2_STATIC_SUN
+	ms = get_sun(lm);
+#endif
+#else
+	float h = I.position.w;
+#ifdef USE_R2_STATIC_SUN
+	ms = I.tcdh.w;
+#endif
+#endif
+
 	O = pack_gbuffer(
-	float4(normal, hemi_light),
-	float4(I.position.xyz, material_id),
-	float4(albedo_map.xyz, specular));
+		float4(Ne, h),
+		float4(I.position.xyz + Ne * S.height * def_virtualh, ms),
+		float4(final_base.xyz, blended_gloss)
+	);
+
 	return O;
 }
